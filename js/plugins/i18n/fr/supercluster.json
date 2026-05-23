@@ -1,0 +1,52 @@
+{
+  "supercluster": {
+    "virgo_supercluster": {
+      "name": "Superamas de la Vierge"
+    },
+    "hydra-centaurus_supercluster": {
+      "name": "Superamas de l'Hydre-Centaure"
+    },
+    "pavo-indus_supercluster": {
+      "name": "Superamas du Paon-Indien"
+    },
+    "southern_supercluster": {
+      "name": "Superamas austral"
+    },
+    "antlia_supercluster": {
+      "name": "Superamas de la Machine pneumatique"
+    },
+    "centaurus_supercluster": {
+      "name": "Superamas du Centaure"
+    },
+    "hydra_supercluster": {
+      "name": "Superamas de l'Hydre"
+    },
+    "fornax_supercluster": {
+      "name": "Superamas du Fourneau"
+    },
+    "norma_supercluster": {
+      "name": "Superamas de la Règle"
+    },
+    "great_attractor": {
+      "name": "Grand Attracteur"
+    },
+    "perseus-pisces_supercluster": {
+      "name": "Superamas de Persée-Poissons"
+    },
+    "coma_supercluster": {
+      "name": "Superamas de Coma"
+    },
+    "hercules_superclusters": {
+      "name": "Superamas d'Hercule"
+    },
+    "shapley_supercluster": {
+      "name": "Superamas de Shapley"
+    },
+    "sculptor_supercluster": {
+      "name": "Superamas du Sculpteur"
+    },
+    "bootes_supercluster": {
+      "name": "Superamas du Bouvier"
+    }
+  }
+}
