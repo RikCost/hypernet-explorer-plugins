@@ -1,253 +1,253 @@
 {
   "crime": {
     "pettytheft": {
-      "name": "Petty Theft"
+      "name": "소액절도"
     },
     "pickpocketing": {
-      "name": "Pickpocketing"
+      "name": "소매치기"
     },
     "shoplifting": {
-      "name": "Shoplifting"
+      "name": "점포내 절도"
     },
     "burglary": {
-      "name": "Burglary"
+      "name": "주거침입 절도"
     },
     "robbery": {
-      "name": "Robbery"
+      "name": "강도죄"
     },
     "armedrobbery": {
-      "name": "Armed Robbery"
+      "name": "특수강도죄(무장강도)"
     },
     "bankrobbery": {
-      "name": "Bank Robbery"
+      "name": "금융기관 강도죄"
     },
     "grandtheft": {
-      "name": "Grand Theft"
+      "name": "중대 절도"
     },
     "assault": {
-      "name": "Assault"
+      "name": "폭행죄"
     },
     "battery": {
-      "name": "Battery"
+      "name": "상해"
     },
     "aggravatedassault": {
-      "name": "Aggravated Assault"
+      "name": "중상해"
     },
     "murder": {
-      "name": "Murder"
+      "name": "살인죄"
     },
     "manslaughter": {
-      "name": "Manslaughter"
+      "name": "과실치사"
     },
     "serialkilling": {
-      "name": "Serial Killing"
+      "name": "연쇄살인"
     },
     "vandalism": {
-      "name": "Vandalism"
+      "name": "기물손괴"
     },
     "graffiti": {
-      "name": "Graffiti"
+      "name": "낙서"
     },
     "arson": {
-      "name": "Arson"
+      "name": "방화죄"
     },
     "propertydestruction": {
-      "name": "Property Destruction"
+      "name": "재물손괴"
     },
     "publicdisturbance": {
-      "name": "Public Disturbance"
+      "name": "공공질서 위반"
     },
     "disorderlyconduct": {
-      "name": "Disorderly Conduct"
+      "name": "난동"
     },
     "trespassing": {
-      "name": "Trespassing"
+      "name": "주거침입"
     },
     "breakingandentering": {
-      "name": "Breaking and Entering"
+      "name": "주거침입 및 절도"
     },
     "unlawfulentry": {
-      "name": "Unlawful Entry"
+      "name": "불법침입"
     },
     "drugpossession": {
-      "name": "Drug Possession"
+      "name": "마약 소지"
     },
     "drugdealing": {
-      "name": "Drug Dealing"
+      "name": "마약 거래"
     },
     "drugtrafficking": {
-      "name": "Drug Trafficking"
+      "name": "마약 밀매"
     },
     "smuggling": {
-      "name": "Smuggling"
+      "name": "밀수죄"
     },
     "contraband": {
-      "name": "Contraband Possession"
+      "name": "밀수품 소지"
     },
     "fraud": {
-      "name": "Fraud"
+      "name": "사기"
     },
     "embezzlement": {
-      "name": "Embezzlement"
+      "name": "횡령"
     },
     "bribery": {
-      "name": "Bribery"
+      "name": "뇌물수수"
     },
     "corruption": {
-      "name": "Corruption"
+      "name": "부패"
     },
     "taxevasion": {
-      "name": "Tax Evasion"
+      "name": "탈세"
     },
     "moneylaundering": {
-      "name": "Money Laundering"
+      "name": "자금세탁"
     },
     "forgery": {
-      "name": "Forgery"
+      "name": "문서위조"
     },
     "counterfeiting": {
-      "name": "Counterfeiting"
+      "name": "위조화폐 제조"
     },
     "identitytheft": {
-      "name": "Identity Theft"
+      "name": "신원도용"
     },
     "cybercrime": {
-      "name": "Cybercrime"
+      "name": "사이버범죄"
     },
     "hacking": {
-      "name": "Computer Hacking"
+      "name": "해킹"
     },
     "datatheft": {
-      "name": "Data Theft"
+      "name": "데이터 탈취"
     },
     "piracy": {
-      "name": "Digital Piracy"
+      "name": "불법복제"
     },
     "extortion": {
-      "name": "Extortion"
+      "name": "공갈죄"
     },
     "blackmail": {
-      "name": "Blackmail"
+      "name": "협박죄"
     },
     "kidnapping": {
-      "name": "Kidnapping"
+      "name": "납치"
     },
     "hostage": {
-      "name": "Hostage Taking"
+      "name": "인질강요죄"
     },
     "humantrafficking": {
-      "name": "Human Trafficking"
+      "name": "인신매매"
     },
     "slavery": {
-      "name": "Slavery"
+      "name": "노예화"
     },
     "poaching": {
-      "name": "Poaching"
+      "name": "밀렵"
     },
     "illegalhunting": {
-      "name": "Illegal Hunting"
+      "name": "불법수렵"
     },
     "animalcruelty": {
-      "name": "Animal Cruelty"
+      "name": "동물학대"
     },
     "environmentalcrime": {
-      "name": "Environmental Crime"
+      "name": "환경범죄"
     },
     "pollutionviolation": {
-      "name": "Pollution Violation"
+      "name": "환경오염"
     },
     "illegaldumping": {
-      "name": "Illegal Dumping"
+      "name": "불법폐기물 투기"
     },
     "speedingminor": {
-      "name": "Minor Speeding"
+      "name": "경미한 과속"
     },
     "speedingmajor": {
-      "name": "Major Speeding"
+      "name": "중대 과속"
     },
     "recklessdriving": {
-      "name": "Reckless Driving"
+      "name": "난폭운전"
     },
     "dui": {
-      "name": "Driving Under Influence"
+      "name": "음주운전"
     },
     "hitandrun": {
-      "name": "Hit and Run"
+      "name": "뺑소니"
     },
     "vehicletheft": {
-      "name": "Vehicle Theft"
+      "name": "차량절도"
     },
     "carjacking": {
-      "name": "Carjacking"
+      "name": "차량강탈"
     },
     "illegalracing": {
-      "name": "Illegal Street Racing"
+      "name": "불법 자동차 경주"
     },
     "publicintoxication": {
-      "name": "Public Intoxication"
+      "name": "공공장소 만취"
     },
     "underagedrinking": {
-      "name": "Underage Drinking"
+      "name": "미성년자 음주"
     },
     "disturbing": {
-      "name": "Disturbing the Peace"
+      "name": "소란행위"
     },
     "loitering": {
-      "name": "Loitering"
+      "name": "배회"
     },
     "jaywalking": {
-      "name": "Jaywalking"
+      "name": "무단횡단"
     },
     "littering": {
-      "name": "Littering"
+      "name": "무단투기"
     },
     "noisepollution": {
-      "name": "Noise Pollution"
+      "name": "소음공해"
     },
     "perjury": {
-      "name": "Perjury"
+      "name": "위증죄"
     },
     "contemptofcourt": {
-      "name": "Contempt of Court"
+      "name": "법정모독"
     },
     "obstructingjustice": {
-      "name": "Obstructing Justice"
+      "name": "사법방해"
     },
     "resistingarrest": {
-      "name": "Resisting Arrest"
+      "name": "체포 거부"
     },
     "escapingcustody": {
-      "name": "Escaping Custody"
+      "name": "구금 탈출"
     },
     "prisonbreak": {
-      "name": "Prison Break"
+      "name": "탈옥"
     },
     "weaponspossession": {
-      "name": "Illegal Weapons Possession"
+      "name": "불법무기 소지"
     },
     "illegalweapons": {
-      "name": "Illegal Weapons Manufacturing"
+      "name": "불법무기 제작"
     },
     "weaponstrafficking": {
-      "name": "Weapons Trafficking"
+      "name": "무기밀매"
     },
     "terrorism": {
-      "name": "Terrorism"
+      "name": "테러"
     },
     "treason": {
-      "name": "Treason"
+      "name": "반역죄"
     },
     "espionage": {
-      "name": "Espionage"
+      "name": "간첩행위"
     },
     "warcrimes": {
-      "name": "War Crimes"
+      "name": "전쟁범죄"
     },
     "genocide": {
-      "name": "Genocide"
+      "name": "집단학살"
     },
     "crimesagainsthumanity": {
-      "name": "Crimes Against Humanity"
+      "name": "반인도적 범죄"
     }
   }
 }

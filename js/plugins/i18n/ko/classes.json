@@ -1,200 +1,200 @@
 {
   "1": {
-    "name": "Freelancer"
+    "name": "프리랜서"
   },
   "2": {
-    "name": "Witch"
+    "name": "마녀"
   },
   "3": {
-    "name": "Nun"
+    "name": "수녀"
   },
   "4": {
-    "name": "Knight"
+    "name": "기사"
   },
   "5": {
-    "name": "Wrestler"
+    "name": "레슬러"
   },
   "6": {
     "name": "CEO"
   },
   "7": {
-    "name": "Vampire"
+    "name": "흡혈귀"
   },
   "8": {
-    "name": "Cultist"
+    "name": "사교도"
   },
   "9": {
-    "name": "Combat Medic"
+    "name": "전투 의무병"
   },
   "10": {
-    "name": "Elementalist"
+    "name": "원소술사"
   },
   "11": {
-    "name": "Martial Artist"
+    "name": "무술가"
   },
   "12": {
-    "name": "Enchanter"
+    "name": "인챈터"
   },
   "13": {
-    "name": "Berserker"
+    "name": "버서커"
   },
   "14": {
-    "name": "Acrobat"
+    "name": "곡예사"
   },
   "15": {
-    "name": "Monk"
+    "name": "수도승"
   },
   "16": {
-    "name": "Brawler"
+    "name": "격투가"
   },
   "17": {
-    "name": "Boxer"
+    "name": "복서"
   },
   "18": {
-    "name": "Pro Wrestler"
+    "name": "프로레슬러"
   },
   "19": {
-    "name": "Fire Mage"
+    "name": "화염술사"
   },
   "20": {
-    "name": "Ice Mage"
+    "name": "빙결술사"
   },
   "21": {
-    "name": "Rogue"
+    "name": "도적"
   },
   "22": {
-    "name": "Paladin"
+    "name": "성기사"
   },
   "23": {
-    "name": "Warlock"
+    "name": "흑마법사"
   },
   "24": {
-    "name": "Ranger"
+    "name": "레인저"
   },
   "25": {
-    "name": "Cleric"
+    "name": "성직자"
   },
   "26": {
-    "name": "Samurai"
+    "name": "사무라이"
   },
   "27": {
-    "name": "Archmage"
+    "name": "대마법사"
   },
   "28": {
-    "name": "Scout"
+    "name": "정찰병"
   },
   "29": {
-    "name": "Oracle"
+    "name": "예언가"
   },
   "30": {
-    "name": "Gladiator"
+    "name": "검투사"
   },
   "31": {
-    "name": "Necromancer"
+    "name": "네크로맨서"
   },
   "32": {
-    "name": "Commander"
+    "name": "지휘관"
   },
   "33": {
-    "name": "Guardian"
+    "name": "수호자"
   },
   "34": {
-    "name": "Spellblade"
+    "name": "마검사"
   },
   "35": {
-    "name": "Bard"
+    "name": "음유시인"
   },
   "36": {
-    "name": "Illusionist"
+    "name": "환영술사"
   },
   "37": {
-    "name": "Battlemage"
+    "name": "전투마법사"
   },
   "38": {
-    "name": "Mercenary"
+    "name": "용병"
   },
   "39": {
-    "name": "Sage"
+    "name": "현자"
   },
   "40": {
-    "name": "Barbarian"
+    "name": "야만인"
   },
   "41": {
-    "name": "Doctor"
+    "name": "의사"
   },
   "42": {
-    "name": "Scientist"
+    "name": "과학자"
   },
   "43": {
-    "name": "Firefighter"
+    "name": "소방관"
   },
   "44": {
-    "name": "Police Officer"
+    "name": "경찰관"
   },
   "45": {
-    "name": "Chef"
+    "name": "셰프"
   },
   "46": {
-    "name": "Journalist"
+    "name": "언론인"
   },
   "47": {
-    "name": "Construction Worker"
+    "name": "건설 노동자"
   },
   "48": {
-    "name": "Academic"
+    "name": "학자"
   },
   "49": {
-    "name": "Psychologist"
+    "name": "심리학자"
   },
   "50": {
-    "name": "Archaeologist"
+    "name": "고고학자"
   },
   "51": {
-    "name": "Nurse"
+    "name": "간호사"
   },
   "52": {
-    "name": "Hunter-Gatherer"
+    "name": "수렵채집인"
   },
   "53": {
-    "name": "Physicist"
+    "name": "물리학자"
   },
   "54": {
-    "name": "Mechanic"
+    "name": "정비공"
   },
   "55": {
-    "name": "Shopkeeper"
+    "name": "상점주인"
   },
   "56": {
-    "name": "Farmer"
+    "name": "농부"
   },
   "57": {
-    "name": "Lumberjack"
+    "name": "벌목꾼"
   },
   "58": {
-    "name": "Meteorologist"
+    "name": "기상학자"
   },
   "59": {
-    "name": "Priest"
+    "name": "사제"
   },
   "60": {
-    "name": "Entertainer"
+    "name": "연예인"
   },
   "61": {
-    "name": "Demigod"
+    "name": "반신"
   },
   "62": {
-    "name": "Wretch"
+    "name": "비천한 자"
   },
   "63": {
-    "name": "Beast"
+    "name": "야수"
   },
   "64": {
-    "name": "Mimic"
+    "name": "미믹"
   },
   "65": {
-    "name": "Monster"
+    "name": "괴물"
   },
   "66": {
-    "name": "Mana Cyborg"
+    "name": "마나 사이보그"
   }
 }

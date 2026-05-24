@@ -1,124 +1,124 @@
 {
   "bodyparts": {
     "head": {
-      "name": "Head",
-      "damage_msg": "skull was fractured"
+      "name": "머리",
+      "damage_msg": "두개골이 골절됐다"
     },
     "brain": {
-      "name": "Brain",
-      "damage_msg": "brain was concussed"
+      "name": "뇌",
+      "damage_msg": "뇌진탕을 입었다"
     },
     "left_eye": {
-      "name": "Left Eye",
-      "damage_msg": "left eye was swollen shut"
+      "name": "왼쪽 눈",
+      "damage_msg": "왼쪽 눈이 부어올랐다"
     },
     "right_eye": {
-      "name": "Right Eye",
-      "damage_msg": "right eye was swollen shut"
+      "name": "오른쪽 눈",
+      "damage_msg": "오른쪽 눈이 부어올랐다"
     },
     "nose": {
-      "name": "Nose",
-      "damage_msg": "nose was broken"
+      "name": "코",
+      "damage_msg": "코가 박살났다"
     },
     "left_ear": {
-      "name": "Left Ear",
-      "damage_msg": "left ear is ringing"
+      "name": "왼쪽 귀",
+      "damage_msg": "왼쪽 귀에 이명이 들린다"
     },
     "right_ear": {
-      "name": "Right Ear",
-      "damage_msg": "right ear is ringing"
+      "name": "오른쪽 귀",
+      "damage_msg": "오른쪽 귀에 이명이 들린다"
     },
     "mouth": {
-      "name": "Mouth",
-      "damage_msg": "jaw was dislocated"
+      "name": "입",
+      "damage_msg": "턱이 탈구됐다"
     },
     "teeth": {
-      "name": "Teeth",
-      "damage_msg": "teeth were knocked out"
+      "name": "치아",
+      "damage_msg": "치아가 부러져 나갔다"
     },
     "genitals": {
-      "name": "Genitals",
-      "damage_msg": "genitals damaged"
+      "name": "성기",
+      "damage_msg": "성기가 손상되었다"
     },
     "torso": {
-      "name": "Torso",
-      "damage_msg": "ribs were broken"
+      "name": "몸통",
+      "damage_msg": "갈비뼈가 부러졌다"
     },
     "heart": {
-      "name": "Heart",
-      "damage_msg": "heart was damaged"
+      "name": "심장",
+      "damage_msg": "심장이 손상되었다"
     },
     "left_lung": {
-      "name": "Left Lung",
-      "damage_msg": "left lung collapsed"
+      "name": "왼쪽 폐",
+      "damage_msg": "왼쪽 폐가 허탈되었다"
     },
     "right_lung": {
-      "name": "Right Lung",
-      "damage_msg": "right lung collapsed"
+      "name": "오른쪽 폐",
+      "damage_msg": "오른쪽 폐가 허탈되었다"
     },
     "liver": {
-      "name": "Liver",
-      "damage_msg": "liver was lacerated"
+      "name": "간",
+      "damage_msg": "간이 찢어졌다"
     },
     "stomach": {
-      "name": "Stomach",
-      "damage_msg": "stomach was ruptured"
+      "name": "위",
+      "damage_msg": "위가 파열됐다"
     },
     "spleen": {
-      "name": "Spleen",
-      "damage_msg": "spleen was ruptured"
+      "name": "비장",
+      "damage_msg": "비장이 파열됐다"
     },
     "intestines": {
-      "name": "Intestines",
-      "damage_msg": "intestines were perforated"
+      "name": "장",
+      "damage_msg": "장이 천공됐다"
     },
     "left_arm": {
-      "name": "Left Arm",
-      "damage_msg": "left arm was damaged"
+      "name": "왼팔",
+      "damage_msg": "왼팔을 다쳤다"
     },
     "left_hand": {
-      "name": "Left Hand",
-      "damage_msg": "left hand was mangled"
+      "name": "왼손",
+      "damage_msg": "왼손이 짓이겨졌다"
     },
     "left_fingers": {
-      "name": "Left Fingers",
-      "damage_msg": "left fingers were broken"
+      "name": "왼손가락",
+      "damage_msg": "왼손가락이 부러졌다"
     },
     "right_arm": {
-      "name": "Right Arm",
-      "damage_msg": "right arm was damaged"
+      "name": "오른팔",
+      "damage_msg": "오른팔을 다쳤다"
     },
     "right_hand": {
-      "name": "Right Hand",
-      "damage_msg": "right hand was mangled"
+      "name": "오른손",
+      "damage_msg": "오른손이 짓이겨졌다"
     },
     "right_fingers": {
-      "name": "Right Fingers",
-      "damage_msg": "right fingers were broken"
+      "name": "오른손가락",
+      "damage_msg": "오른손가락이 부러졌다"
     },
     "left_leg": {
-      "name": "Left Leg",
-      "damage_msg": "left leg was damaged"
+      "name": "왼다리",
+      "damage_msg": "왼다리를 다쳤다"
     },
     "left_foot": {
-      "name": "Left Foot",
-      "damage_msg": "left foot was damaged"
+      "name": "왼발",
+      "damage_msg": "왼발을 다쳤다"
     },
     "left_toes": {
-      "name": "Left Toes",
-      "damage_msg": "left toes were crushed"
+      "name": "왼발가락",
+      "damage_msg": "왼발가락이 으스러졌다"
     },
     "right_leg": {
-      "name": "Right Leg",
-      "damage_msg": "right leg was damaged"
+      "name": "오른다리",
+      "damage_msg": "오른다리를 다쳤다"
     },
     "right_foot": {
-      "name": "Right Foot",
-      "damage_msg": "right foot was damaged"
+      "name": "오른발",
+      "damage_msg": "오른발을 다쳤다"
     },
     "right_toes": {
-      "name": "Right Toes",
-      "damage_msg": "right toes were crushed"
+      "name": "오른발가락",
+      "damage_msg": "오른발가락이 으스러졌다"
     }
   }
 }
