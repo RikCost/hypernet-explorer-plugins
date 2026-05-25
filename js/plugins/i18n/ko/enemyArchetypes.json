@@ -1,481 +1,481 @@
 {
   "enemyArchetypes": {
     "humanoid": {
-      "name": "Humanoid",
+      "name": "인간형",
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm ripped off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm ripped off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "brain": {
-        "name": "Brain",
-        "msg": "Brain concussed!"
+        "name": "뇌",
+        "msg": "뇌진탕을 입었다!"
       },
       "left_eye": {
-        "name": "Left Eye",
-        "msg": "Left eye swollen shut!"
+        "name": "왼쪽 눈",
+        "msg": "왼쪽 눈이 부어올랐다!"
       },
       "right_eye": {
-        "name": "Right Eye",
-        "msg": "Right eye swollen shut!"
+        "name": "오른쪽 눈",
+        "msg": "오른쪽 눈이 부어올랐다!"
       },
       "nose": {
-        "name": "Nose",
-        "msg": "Nose broken!"
+        "name": "코",
+        "msg": "코가 부러졌다!"
       },
       "left_ear": {
-        "name": "Left Ear",
-        "msg": "Left ear ringing!"
+        "name": "왼쪽 귀",
+        "msg": "왼쪽 귀에 이명이 들린다!"
       },
       "right_ear": {
-        "name": "Right Ear",
-        "msg": "Right ear ringing!"
+        "name": "오른쪽 귀",
+        "msg": "오른쪽 귀에 이명이 들린다!"
       },
       "mouth": {
-        "name": "Mouth",
-        "msg": "Jaw dislocated!"
+        "name": "입",
+        "msg": "턱이 탈구됐다!"
       },
       "teeth": {
-        "name": "Teeth",
-        "msg": "Teeth knocked out!"
+        "name": "치아",
+        "msg": "치아가 부러져 나갔다!"
       },
       "genitals": {
-        "name": "Genitals",
-        "msg": "Genitals damaged!"
+        "name": "성기",
+        "msg": "성기가 손상되었다!"
       },
       "heart": {
-        "name": "Heart",
-        "msg": "Heart damaged!"
+        "name": "심장",
+        "msg": "심장이 손상되었다!"
       },
       "left_lung": {
-        "name": "Left Lung",
-        "msg": "Left lung collapsed!"
+        "name": "왼쪽 폐",
+        "msg": "왼쪽 폐가 허탈되었다!"
       },
       "right_lung": {
-        "name": "Right Lung",
-        "msg": "Right lung collapsed!"
+        "name": "오른쪽 폐",
+        "msg": "오른쪽 폐가 허탈되었다!"
       },
       "liver": {
-        "name": "Liver",
-        "msg": "Liver lacerated!"
+        "name": "간",
+        "msg": "간이 찢어졌다!"
       },
       "stomach": {
-        "name": "Stomach",
-        "msg": "Stomach ruptured!"
+        "name": "위",
+        "msg": "위가 파열됐다!"
       },
       "spleen": {
-        "name": "Spleen",
-        "msg": "Spleen ruptured!"
+        "name": "비장",
+        "msg": "비장이 파열됐다!"
       },
       "intestines": {
-        "name": "Intestines",
-        "msg": "Intestines perforated!"
+        "name": "장",
+        "msg": "장이 천공됐다!"
       },
       "left_hand": {
-        "name": "Left Hand",
-        "msg": "Left hand mangled!"
+        "name": "왼손",
+        "msg": "왼손이 짓이겨졌다!"
       },
       "left_fingers": {
-        "name": "Left Fingers",
-        "msg": "Left fingers broken!"
+        "name": "왼손가락",
+        "msg": "왼손가락이 부러졌다!"
       },
       "right_hand": {
-        "name": "Right Hand",
-        "msg": "Right hand mangled!"
+        "name": "오른손",
+        "msg": "오른손이 짓이겨졌다!"
       },
       "right_fingers": {
-        "name": "Right Fingers",
-        "msg": "Right fingers broken!"
+        "name": "오른손가락",
+        "msg": "오른손가락이 부러졌다!"
       },
       "left_foot": {
-        "name": "Left Foot",
-        "msg": "Left foot damaged!"
+        "name": "왼발",
+        "msg": "왼발을 다쳤다!"
       },
       "left_toes": {
-        "name": "Left Toes",
-        "msg": "Left toes crushed!"
+        "name": "왼발가락",
+        "msg": "왼발가락이 으스러졌다!"
       },
       "right_foot": {
-        "name": "Right Foot",
-        "msg": "Right foot damaged!"
+        "name": "오른발",
+        "msg": "오른발을 다쳤다!"
       },
       "right_toes": {
-        "name": "Right Toes",
-        "msg": "Right toes crushed!"
+        "name": "오른발가락",
+        "msg": "오른발가락이 으스러졌다!"
       }
     },
     "beast": {
-      "name": "Beast",
+      "name": "짐승",
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽  앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
-        "msg": "Rear Left Leg cut off!"
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
-        "msg": "Rear Right Leg cut off!"
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail hacked off!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       }
     },
     "insectoid": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "thorax": {
-        "name": "Thorax",
-        "msg": "Thorax punctured!"
+        "name": "가슴부",
+        "msg": "가슴부가 관통됐다!"
       },
       "abdomen": {
-        "name": "Abdomen",
-        "msg": "Abdomen burst open!"
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "middle_left_leg": {
-        "name": "Middle Left Leg",
-        "msg": "Middle Left Leg cut off!"
+        "name": "왼쪽 가운데다리",
+        "msg": "왼쪽 가운데다리가 잘려나갔다!"
       },
       "middle_right_leg": {
-        "name": "Middle Right Leg",
-        "msg": "Middle Right Leg cut off!"
+        "name": "오른쪽 가운데다리",
+        "msg": "오른쪽 가운데다리가 잘려나갔다!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
-        "msg": "Rear Left Leg cut off!"
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
-        "msg": "Rear Right Leg cut off!"
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
       },
       "mandibles": {
-        "name": "Mandibles",
-        "msg": "Mandibles pulverized!"
+        "name": "아래턱",
+        "msg": "아래턱이 박살났다!"
       },
-      "name": "Insectoid"
+      "name": "곤충"
     },
     "frog": {
       "head": {
-        "name": "Head",
-        "msg": "Head cracked!"
+        "name": "머리",
+        "msg": "머리가 갈라졌다!"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
       },
       "tongue": {
-        "name": "Tongue",
-        "msg": "Tongue severed!"
+        "name": "혀",
+        "msg": "혀가 잘려나갔다!"
       },
       "vocal_sac": {
-        "name": "Vocal Sac",
-        "msg": "Vocal sac ruptured!"
+        "name": "발성낭",
+        "msg": "발성낭이 파열됐다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "hind_left_leg": {
-        "name": "Hind Left Leg",
-        "msg": "Hind Left Leg cut off!"
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
       },
       "hind_right_leg": {
-        "name": "Hind Right Leg",
-        "msg": "Hind Right Leg cut off!"
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
       },
-      "name": "Frog"
+      "name": "개구리"
     },
     "dragon": {
-      "name": "Dragon",
+      "name": "드래곤",
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "fire_breath_organ": {
-        "name": "Fire Breath Organ",
-        "msg": "Fire Breath Organ burst into gore!"
+        "name": "발화낭",
+        "msg": "발화낭이 터져 사방으로 비산했다!"
       },
       "neck": {
-        "name": "Neck",
-        "msg": "Neck twisted till it snapped!"
+        "name": "목",
+        "msg": "목이 꺾여 부러졌다!"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸통",
+        "msg": "몸통이 짓이겨졌다!"
       },
       "left_wing": {
-        "name": "Left Wing",
-        "msg": "Left Wing torn to ribbons!"
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢겼다!"
       },
       "right_wing": {
-        "name": "Right Wing",
-        "msg": "Right Wing torn to ribbons!"
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail hacked off!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       }
     },
     "skeleton": {
-      "name": "Skeleton",
-      "head": {
-        "name": "Head",
-        "msg": "Skull shattered into splinters!"
-      },
-      "torso": {
-        "name": "Torso",
-        "msg": "Ribcage collapsed into dust!"
-      },
-      "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left arm bone snapped off!"
-      },
-      "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right arm bone snapped off!"
-      },
-      "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left leg shattered!"
-      },
-      "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right leg shattered!"
-      }
+    "name": "스켈레톤",
+    "head": {
+      "name": "머리",
+      "msg": "두개골이 산산이 조각났다!"
     },
+    "torso": {
+      "name": "몸통",
+      "msg": "갈비뼈가 바스라져 먼지가 되었다!"
+    },
+    "left_arm": {
+      "name": "왼팔",
+      "msg": "왼팔 뼈가 부러져 떨어졌다!"
+    },
+    "right_arm": {
+      "name": "오른팔",
+      "msg": "오른팔 뼈가 부러져 떨어졌다!"
+    },
+    "left_leg": {
+      "name": "왼다리",
+      "msg": "왼다리가 바스라졌다!"
+    },
+    "right_leg": {
+      "name": "오른다리",
+      "msg": "오른다리가 바스라졌다!!"
+    }
+  },
     "fairy": {
       "head": {
-        "name": "Head",
-        "msg": "Head cracked!"
+        "name": "머리",
+        "msg": "머리가 갈라졌다!"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed into glittering dust!"
+        "name": "몸통",
+        "msg": "몸통이 산산이 부서져 반짝이는 가루가 되었다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm torn off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm torn off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_wing": {
-        "name": "Left Wing",
-        "msg": "Left Wing shredded!"
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢어졌다!"
       },
       "right_wing": {
-        "name": "Right Wing",
-        "msg": "Right Wing shredded!"
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
       },
       "pixie_dust_sac": {
-        "name": "Pixie Dust Sac",
-        "msg": "Dust sac ruptured!"
+        "name": "요정가루낭",
+        "msg": "가루낭이 파열되었다!"
       },
-      "name": "Fairy"
+      "name": "요정"
     },
     "slime": {
-      "name": "Slime",
+      "name": "슬라임",
       "core": {
-        "name": "Core",
-        "msg": "Core violently collapsed!"
+        "name": "핵",
+        "msg": "핵이 완전히 파괴되었다!"
       },
       "upper_body": {
-        "name": "Upper Body",
-        "msg": "Upper Body crushed!"
+        "name": "상반신",
+        "msg": "상반신이 짓이겨졌다!"
       },
       "lower_body": {
-        "name": "Lower Body",
-        "msg": "Lower Body crushed!"
+        "name": "하반신",
+        "msg": "하반신이 짓이겨졌다!"
       },
       "pseudopod_1": {
-        "name": "Pseudopod 1",
-        "msg": "Pseudopod 1 melted into sludge!"
+        "name": "위족 1",
+        "msg": "위족 1이 녹아내렸다!"
       },
       "pseudopod_2": {
-        "name": "Pseudopod 2",
-        "msg": "Pseudopod 2 melted into sludge!"
+        "name": "위족 2",
+        "msg": "위족 2가 녹아내렸다!"
       }
     },
     "undead": {
       "skull": {
-        "name": "Skull",
-        "msg": "Skull obliterated!"
+        "name": "두개골",
+        "msg": "두개골이 산산이 조각났다!"
       },
       "ribcage": {
-        "name": "Ribcage",
-        "msg": "Ribcage caved into gore!"
+        "name": "늑골",
+        "msg": "늑골이 형체 없이 무너졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm ripped off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm ripped off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
-      "name": "Undead"
+      "name": "언데드"
     },
     "scorpion": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
-      "cephalothorax": {
-        "name": "Cephalothorax",
-        "msg": "Cephalothorax crushed!"
+      "두흉부": {
+        "name": "두흉부",
+        "msg": "두흉부가 산산히 조각났다!"
       },
       "abdomen": {
-        "name": "Abdomen",
-        "msg": "Abdomen burst open!"
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail severed!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       },
       "stinger": {
-        "name": "Stinger",
-        "msg": "Stinger snapped off!"
+        "name": "독침",
+        "msg": "독침이 부러졌다!"
       },
       "pincer_left": {
-        "name": "Left Pincer",
-        "msg": "Left Pincer crushed!"
+        "name": "왼쪽 집게",
+        "msg": "왼쪽 집게가 으깨졌다!"
       },
       "pincer_right": {
-        "name": "Right Pincer",
-        "msg": "Right Pincer crushed!"
+        "name": "오른족 집게",
+        "msg": "오른쪽 집게가 으깨졌다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "mid_left_leg": {
-        "name": "Mid-Front Left Leg",
-        "msg": "Mid-Front Left Leg cut off!"
+        "name": "왼쪽 중간 앞다리",
+        "msg": "왼쪽 중간 앞다리가 잘려나갔다!"
       },
       "mid_right_leg": {
-        "name": "Mid-Front Right Leg",
-        "msg": "Mid-Front Right Leg cut off!"
+        "name": "오른쪽 중간 앞다리",
+        "msg": "오른쪽 중간 앞다리가 잘려나갔다!"
       },
       "mid_rear_left_leg": {
-        "name": "Mid-Rear Left Leg",
-        "msg": "Mid-Rear Left Leg cut off!"
+        "name": "왼쪽 중간 뒷다리",
+        "msg": "왼쪽 중간 뒷다리가 잘려나갔다!"
       },
       "mid_rear_right_leg": {
-        "name": "Mid-Rear Right Leg",
-        "msg": "Mid-Rear Right Leg cut off!"
+        "name": "오른쪽 중간 뒷다리",
+        "msg": "오른쪽 중간 뒷다리가 잘려나갔다!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
-        "msg": "Rear Left Leg cut off!"
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
-        "msg": "Rear Right Leg cut off!"
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
       },
-      "name": "Scorpion"
+      "name": "전갈"
     },
     "spider": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "cephalothorax": {
-        "name": "Cephalothorax",
-        "msg": "Cephalothorax cracked open!"
+        "name": "두흉부",
+        "msg": "두흉부가 산산히 조각났다!"
       },
       "abdomen": {
-        "name": "Abdomen",
-        "msg": "Abdomen ruptured!"
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
       },
       "fangs": {
-        "name": "Fangs",
-        "msg": "Fangs shattered!"
+        "name": "독니",
+        "msg": "독니가 산산이 부서졌다!"
       },
       "spinnerets": {
-        "name": "Spinnerets",
-        "msg": "Spinnerets severed!"
+        "name": "방적돌기",
+        "msg": "방적돌기가 잘려나갔다!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
-        "msg": "Front Left Leg cut off!"
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
-        "msg": "Front Right Leg cut off!"
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
       },
       "mid_left_leg": {
-        "name": "Mid-Front Left Leg",
-        "msg": "Mid-Front Left Leg cut off!"
+        "name": "왼쪽 중간 앞다리",
+        "msg": "왼쪽 중간 앞다리가 잘려나갔다!"
       },
       "mid_right_leg": {
-        "name": "Mid-Front Right Leg",
-        "msg": "Mid-Front Right Leg cut off!"
+        "name": "오른쪽 중간 앞다리",
+        "msg": "오른쪽 중간 앞다리가 잘려나갔다!"
       },
       "mid_rear_left_leg": {
-        "name": "Mid-Rear Left Leg",
-        "msg": "Mid-Rear Left Leg cut off!"
+        "name": "왼쪽 중간 뒷다리",
+        "msg": "왼쪽 중간 뒷다리가 잘려나갔다!"
       },
       "mid_rear_right_leg": {
         "name": "Mid-Rear Right Leg",
