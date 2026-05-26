@@ -1,0 +1,40 @@
+{
+  "stockmarket": {
+    "info": {
+      "money": "Деньги: {value}",
+      "oilPrice": "Цена НЕФТИ: {value}",
+      "oilShares": "Акций НЕФТИ: {value}",
+      "oilValue": "Ценность НЕФТИ: {value}",
+      "netWorth": "Чистые Активы: {value}",
+      "soulPrice": "Цена ДУШ: {value}",
+      "soulShares": "Акций ДУШ: {value}",
+      "soulValue": "Ценность ДУШ: {value}"
+    },
+    "graph": {
+      "oilLabel": "Нефть",
+      "soulLabel": "Души",
+      "oilCurrent": "Нефть: {value}",
+      "soulCurrent": "Души: {value}"
+    },
+    "commands": {
+      "buy": "Купить",
+      "sell": "Продать",
+      "oil": "Нефть",
+      "souls": "Души",
+      "cancel": "Отмена",
+      "sellAll": "Продать Все",
+      "share": "Акция",
+      "shares": "Акции"
+    },
+    "titles": {
+      "buyWhich": "Купить какие акции?",
+      "sellWhich": "Продать какие акции?",
+      "buyHowMany": "Купить сколько акций на {stock}?",
+      "sellHowMany": "Продать сколько акций на {stock}?"
+    },
+    "stockNames": {
+      "oil": "Нефть",
+      "souls": "Души"
+    }
+  }
+}

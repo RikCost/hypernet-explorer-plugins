@@ -1,0 +1,52 @@
+{
+  "supercluster": {
+    "virgo_supercluster": {
+      "name": "Сверхскопление Девы"
+    },
+    "hydra-centaurus_supercluster": {
+      "name": "Сверхскопление Гидры-Центавра"
+    },
+    "pavo-indus_supercluster": {
+      "name": "Сверхскопление Павлина — Индейца"
+    },
+    "southern_supercluster": {
+      "name": "Южное Сверхскопление"
+    },
+    "antlia_supercluster": {
+      "name": "Скопление Насоса"
+    },
+    "centaurus_supercluster": {
+      "name": "Скопление Центавра"
+    },
+    "hydra_supercluster": {
+      "name": "Скопление Гидры"
+    },
+    "fornax_supercluster": {
+      "name": "Скопление Печи"
+    },
+    "norma_supercluster": {
+      "name": "Скопление Наугольника"
+    },
+    "great_attractor": {
+      "name": "Великий Аттрактор"
+    },
+    "perseus-pisces_supercluster": {
+      "name": "Сверхскопление Персея — Рыб"
+    },
+    "coma_supercluster": {
+      "name": "Сверхскопление Волос Вероники"
+    },
+    "hercules_superclusters": {
+      "name": "Сверхскопление Геркулеса"
+    },
+    "shapley_supercluster": {
+      "name": "Сверхскопление Шепли"
+    },
+    "sculptor_supercluster": {
+      "name": "Стена Скульптора"
+    },
+    "bootes_supercluster": {
+      "name": "Войд Волопаса"
+    }
+  }
+}
