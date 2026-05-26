@@ -478,54 +478,54 @@
         "msg": "왼쪽 중간 뒷다리가 잘려나갔다!"
       },
       "mid_rear_right_leg": {
-        "name": "Mid-Rear Right Leg",
-        "msg": "Mid-Rear Right Leg cut off!"
+        "name": "오른쪽 중간 뒷다리",
+        "msg": "오른쪽 중간 뒷다리가 잘려나갔다!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
-        "msg": "Rear Left Leg cut off!"
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
-        "msg": "Rear Right Leg cut off!"
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
       },
-      "name": "Spider"
+      "name": "거미"
     },
     "plant": {
-      "name": "Plant",
+      "name": "식물",
       "flower": {
-        "name": "Flower",
-        "msg": "Flower withered to rot!"
+        "name": "꽃",
+        "msg": "꽃이 썩어 문들어졌다!"
       },
       "stem": {
-        "name": "Stem",
-        "msg": "Stem twisted till it split!"
+        "name": "줄기",
+        "msg": "줄기가 비틀려 부러졌다!"
       },
       "roots": {
-        "name": "Roots",
-        "msg": "Roots ripped out!"
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
       },
       "vine_1": {
-        "name": "Vine 1",
-        "msg": "Vine 1 ripped into gore!"
+        "name": "덩굴 1",
+        "msg": "덩굴 1이 산산이 찢어졌다!"
       },
       "vine_2": {
-        "name": "Vine 2",
-        "msg": "Vine 2 ripped into gore!"
+        "name": "덩굴 1",
+        "msg": "덩굴 2가 산산이 찢어졌다!"
       }
     },
     "elemental": {
       "core": {
-        "name": "Core",
-        "msg": "Core violently collapsed!"
+        "name": "핵",
+        "msg": "핵이 무너져내렸다!"
       },
       "upper_form": {
-        "name": "Upper Form",
-        "msg": "Upper Form unraveled!"
+        "name": "상반신",
+        "msg": "상반신이 흐트러졌다!"
       },
       "lower_form": {
-        "name": "Lower Form",
-        "msg": "Lower Form unraveled!"
+        "name": "하반신",
+        "msg": "하반신이 흐트러졌다!"
       },
       "left_appendage": {
         "name": "Left Appendage",
