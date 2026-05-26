@@ -133,7 +133,7 @@
       },
       "left_leg": {
         "name": "왼쪽 앞다리",
-        "msg": "왼쪽  앞다리가 잘려나갔다!"
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
       },
       "right_leg": {
         "name": "오른쪽 앞다리",
@@ -268,32 +268,32 @@
       }
     },
     "skeleton": {
-    "name": "스켈레톤",
-    "head": {
-      "name": "머리",
-      "msg": "두개골이 산산이 조각났다!"
+      "name": "스켈레톤",
+      "head": {
+        "name": "머리",
+        "msg": "두개골이 산산이 조각났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "갈비뼈가 바스라져 먼지가 되었다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔 뼈가 부러져 떨어졌다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔 뼈가 부러져 떨어졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 바스라졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 바스라졌다!"
+      }
     },
-    "torso": {
-      "name": "몸통",
-      "msg": "갈비뼈가 바스라져 먼지가 되었다!"
-    },
-    "left_arm": {
-      "name": "왼팔",
-      "msg": "왼팔 뼈가 부러져 떨어졌다!"
-    },
-    "right_arm": {
-      "name": "오른팔",
-      "msg": "오른팔 뼈가 부러져 떨어졌다!"
-    },
-    "left_leg": {
-      "name": "왼다리",
-      "msg": "왼다리가 바스라졌다!"
-    },
-    "right_leg": {
-      "name": "오른다리",
-      "msg": "오른다리가 바스라졌다!!"
-    }
-  },
     "fairy": {
       "head": {
         "name": "머리",
@@ -400,7 +400,7 @@
         "msg": "왼쪽 집게가 으깨졌다!"
       },
       "pincer_right": {
-        "name": "오른족 집게",
+        "name": "오른쪽 집게",
         "msg": "오른쪽 집게가 으깨졌다!"
       },
       "left_leg": {
@@ -510,7 +510,7 @@
         "msg": "덩굴 1이 산산이 찢어졌다!"
       },
       "vine_2": {
-        "name": "덩굴 1",
+        "name": "덩굴 2",
         "msg": "덩굴 2가 산산이 찢어졌다!"
       }
     },
@@ -598,43 +598,43 @@
         "msg": "핵이 완전히 파괴되었다!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left Arm detached!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right Arm detached!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "name": "Robot"
     },
     "bird": {
       "name": "Bird",
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
       },
       "beak": {
         "name": "Beak",
         "msg": "Beak obliterated!"
       },
       "left_wing": {
-        "name": "Left Wing",
-        "msg": "Left Wing torn to ribbons!"
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢겼다!"
       },
       "right_wing": {
-        "name": "Right Wing",
-        "msg": "Right Wing torn to ribbons!"
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
       },
       "talons": {
         "name": "Talons",
@@ -643,31 +643,31 @@
     },
     "reptilian": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm ripped off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm ripped off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail hacked off!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       },
       "name": "Reptilian"
     },
@@ -681,8 +681,8 @@
         "msg": "Stalk twisted till it snapped!"
       },
       "roots": {
-        "name": "Roots",
-        "msg": "Roots ripped out!"
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
       },
       "spore_sacs": {
         "name": "Spore Sacs",
@@ -701,8 +701,8 @@
         "msg": "Trunk cleaved brutally!"
       },
       "roots": {
-        "name": "Roots",
-        "msg": "Roots ripped out!"
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
       },
       "branch_1": {
         "name": "Branch 1",
@@ -742,34 +742,34 @@
         "msg": "Head Right torn apart!"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm ripped off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm ripped off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "name": "Double-Headed Humanoid"
     },
     "serpent": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "fangs": {
-        "name": "Fangs",
-        "msg": "Fangs shattered!"
+        "name": "독니",
+        "msg": "독니가 산산이 부서졌다!"
       },
       "body_segment_1": {
         "name": "Body Segment 1",
@@ -780,30 +780,30 @@
         "msg": "Body Segment 2 ruptured!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail hacked off!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       },
       "name": "Serpent"
     },
     "golem": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core cracked and collapsed!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left Arm crumbled!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right Arm crumbled!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left Leg fractured!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right Leg fractured!"
       },
       "name": "Golem"
@@ -811,27 +811,27 @@
     "demon": {
       "name": "Demon",
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "horns": {
         "name": "Horns",
         "msg": "Horns shattered!"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "left_wing": {
-        "name": "Left Wing",
-        "msg": "Left Wing shredded!"
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢어졌다!"
       },
       "right_wing": {
-        "name": "Right Wing",
-        "msg": "Right Wing shredded!"
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail severed!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       }
     },
     "ghost": {
@@ -897,7 +897,7 @@
     },
     "mutant": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "mass": {
         "name": "Shifting Mass",
@@ -946,40 +946,40 @@
     },
     "amphibian": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "tongue": {
-        "name": "Tongue",
+        "name": "혀",
         "msg": "Tongue ripped off!"
       },
       "left_leg": {
-        "name": "Left Leg",
-        "msg": "Left Leg cut off!"
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "Right Leg",
-        "msg": "Right Leg cut off!"
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "name": "Amphibian"
     },
     "constructedundead": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "torso": {
         "name": "Stitched Torso",
         "msg": "Stitched Torso torn down the middle!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left Arm torn loose!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right Arm torn loose!"
       },
       "power_stitch": {
@@ -990,23 +990,23 @@
     },
     "minotaur": {
       "head": {
-        "name": "Head"
+        "name": "머리"
       },
       "horns": {
         "name": "Horns",
         "msg": "Horns shattered!"
       },
       "torso": {
-        "name": "Torso",
-        "msg": "Torso crushed!"
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
-        "msg": "Left Arm ripped off!"
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "Right Arm",
-        "msg": "Right Arm ripped off!"
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
         "name": "Left Bull Leg",
@@ -1020,11 +1020,11 @@
     },
     "goblin": {
       "brain": {
-        "name": "Brain",
+        "name": "뇌",
         "msg": "Brain destroyed!"
       },
       "skull": {
-        "name": "Skull",
+        "name": "두개골",
         "msg": "Skull fractured!"
       },
       "cervical_vertebrae": {
@@ -1048,7 +1048,7 @@
         "msg": "Pelvis crushed!"
       },
       "heart": {
-        "name": "Heart",
+        "name": "심장",
         "msg": "Heart punctured!"
       },
       "lungs": {
@@ -1056,7 +1056,7 @@
         "msg": "Lungs collapsed!"
       },
       "liver": {
-        "name": "Liver",
+        "name": "간",
         "msg": "Liver ruptured!"
       },
       "kidneys": {
@@ -1064,8 +1064,8 @@
         "msg": "Kidneys destroyed!"
       },
       "stomach": {
-        "name": "Stomach",
-        "msg": "Stomach ruptured!"
+        "name": "위",
+        "msg": "위가 파열됐다!"
       },
       "small_intestine": {
         "name": "Small Intestine",
@@ -1080,27 +1080,27 @@
         "msg": "Pancreas obliterated!"
       },
       "spleen": {
-        "name": "Spleen",
-        "msg": "Spleen ruptured!"
+        "name": "비장",
+        "msg": "비장이 파열됐다!"
       },
       "eye_left": {
-        "name": "Left Eye",
+        "name": "왼쪽 눈",
         "msg": "Left eye gouged out!"
       },
       "eye_right": {
-        "name": "Right Eye",
+        "name": "오른쪽 눈",
         "msg": "Right eye gouged out!"
       },
       "ear_left": {
-        "name": "Left Ear",
+        "name": "왼쪽 귀",
         "msg": "Left ear torn off!"
       },
       "ear_right": {
-        "name": "Right Ear",
+        "name": "오른쪽 귀",
         "msg": "Right ear torn off!"
       },
       "tongue": {
-        "name": "Tongue",
+        "name": "혀",
         "msg": "Tongue removed!"
       },
       "left_upper_arm": {
@@ -1112,7 +1112,7 @@
         "msg": "Left forearm fractured!"
       },
       "left_hand": {
-        "name": "Left Hand",
+        "name": "왼손",
         "msg": "Left hand dismembered!"
       },
       "right_upper_arm": {
@@ -1124,7 +1124,7 @@
         "msg": "Right forearm fractured!"
       },
       "right_hand": {
-        "name": "Right Hand",
+        "name": "오른손",
         "msg": "Right hand dismembered!"
       },
       "left_thigh": {
@@ -1136,7 +1136,7 @@
         "msg": "Left shin broken!"
       },
       "left_foot": {
-        "name": "Left Foot",
+        "name": "왼발",
         "msg": "Left foot detached!"
       },
       "right_thigh": {
@@ -1148,7 +1148,7 @@
         "msg": "Right shin broken!"
       },
       "right_foot": {
-        "name": "Right Foot",
+        "name": "오른발",
         "msg": "Right foot detached!"
       },
       "name": "Goblin"
@@ -1167,8 +1167,8 @@
         "msg": "Carapace cracked wide open!"
       },
       "abdomen": {
-        "name": "Abdomen",
-        "msg": "Abdomen ruptured!"
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
       },
       "front_leg": {
         "name": "Front Leg",
@@ -1186,7 +1186,7 @@
     },
     "spherical": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core integrity compromised!"
       },
       "shell": {
@@ -1213,38 +1213,38 @@
         "msg": "Shell cracked open!"
       },
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head battered!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front left leg broken!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front right leg snapped!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Rear left leg severed!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Rear right leg hacked off!"
       },
       "tail": {
-        "name": "Tail",
+        "name": "꼬리",
         "msg": "Tail clipped!"
       },
       "name": "Turtle"
     },
     "manticore": {
       "brain": {
-        "name": "Brain",
+        "name": "뇌",
         "msg": "Brain destroyed!"
       },
       "skull": {
-        "name": "Skull",
+        "name": "두개골",
         "msg": "Skull cracked!"
       },
       "spine": {
@@ -1272,27 +1272,27 @@
         "msg": "Rear right leg mangled!"
       },
       "left_eye": {
-        "name": "Left Eye",
+        "name": "왼쪽 눈",
         "msg": "Left Eye gouged!"
       },
       "right_eye": {
-        "name": "Right Eye",
+        "name": "오른쪽 눈",
         "msg": "Right Eye gouged!"
       },
       "left_wing": {
-        "name": "Left Wing",
+        "name": "왼쪽 날개",
         "msg": "Left Wing torn!"
       },
       "right_wing": {
-        "name": "Right Wing",
+        "name": "오른쪽 날개",
         "msg": "Right Wing torn!"
       },
       "left_lung": {
-        "name": "Left Lung",
+        "name": "왼쪽 폐",
         "msg": "Left Lung punctured!"
       },
       "right_lung": {
-        "name": "Right Lung",
+        "name": "오른쪽 폐",
         "msg": "Right Lung punctured!"
       },
       "name": "Manticore"
@@ -1338,11 +1338,11 @@
         "msg": "Talons shattered!"
       },
       "left_wing": {
-        "name": "Left Wing",
+        "name": "왼쪽 날개",
         "msg": "Left Wing extinguished!"
       },
       "right_wing": {
-        "name": "Right Wing",
+        "name": "오른쪽 날개",
         "msg": "Right Wing extinguished!"
       },
       "left_eye": {
@@ -1357,61 +1357,61 @@
     },
     "ogre": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head smashed!"
       },
       "torso": {
-        "name": "Torso",
+        "name": "몸통",
         "msg": "Torso battered!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left arm broken!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right arm snapped!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left leg crippled!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right leg maimed!"
       },
       "name": "Ogre"
     },
     "scarecrow": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head smashed!"
       },
       "torso": {
-        "name": "Torso",
+        "name": "몸통",
         "msg": "Torso torn!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left arm ripped!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right arm torn!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left leg snapped!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right leg broken!"
       },
       "name": "Scarecrow"
     },
     "segmentworm": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head crushed!"
       },
       "heart_segment": {
@@ -1423,14 +1423,14 @@
         "msg": "Body segment severed!"
       },
       "tail": {
-        "name": "Tail",
+        "name": "꼬리",
         "msg": "Tail sliced off!"
       },
       "name": "Segment Worm"
     },
     "mineral": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core shattered!"
       },
       "shell": {
@@ -1461,76 +1461,76 @@
         "msg": "Right head chopped!"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail severed!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       },
       "name": "Hydra"
     },
     "vampire": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head struck!"
       },
       "heart": {
-        "name": "Heart",
+        "name": "심장",
         "msg": "Heart pierced!"
       },
       "fangs": {
-        "name": "Fangs",
-        "msg": "Fangs shattered!"
+        "name": "독니",
+        "msg": "독니가 산산이 부서졌다!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left arm broken!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right arm shattered!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right Leg crippled!"
       },
       "name": "Vampire"
     },
     "bat": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head stunned!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body battered!"
       },
       "left_wing": {
-        "name": "Left Wing",
+        "name": "왼쪽 날개",
         "msg": "Left wing torn!"
       },
       "right_wing": {
-        "name": "Right Wing",
+        "name": "오른쪽 날개",
         "msg": "Right wing shredded!"
       },
       "fangs": {
-        "name": "Fangs",
+        "name": "독니",
         "msg": "Fangs blunted!"
       },
       "name": "Bat"
     },
     "rabbit": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head stunned!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body battered!"
       },
       "ears": {
@@ -1538,23 +1538,23 @@
         "msg": "Ears torn!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front Left Leg broken!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front Right Leg broken!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Rear Left Leg crippled!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Rear Right Leg crippled!"
       },
       "tail": {
-        "name": "Tail",
+        "name": "꼬리",
         "msg": "Tail snapped!"
       },
       "name": "Rabbit"
@@ -1588,7 +1588,7 @@
     },
     "centaur": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head caved in!"
       },
       "torso": {
@@ -1596,11 +1596,11 @@
         "msg": "Human torso crushed!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left arm ripped off!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right arm ripped off!"
       },
       "body": {
@@ -1608,19 +1608,19 @@
         "msg": "Equine body buckles!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front left leg severed!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front right leg severed!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Rear left leg hacked off!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Rear right leg hacked off!"
       },
       "name": "Centaur"
@@ -1650,7 +1650,7 @@
     },
     "roboticdefender": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head disabled!"
       },
       "arm_cannon": {
@@ -1658,7 +1658,7 @@
         "msg": "Arm cannon destroyed!"
       },
       "torso": {
-        "name": "Torso",
+        "name": "몸통",
         "msg": "Torso breached!"
       },
       "leg_joints": {
@@ -1673,7 +1673,7 @@
     },
     "turret": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core deactivated!"
       },
       "gun_barrel": {
@@ -1705,11 +1705,11 @@
         "msg": "Snake hair severed!"
       },
       "upper_body": {
-        "name": "Upper Body",
+        "name": "상반신",
         "msg": "Upper body petrified!"
       },
       "lower_body": {
-        "name": "Lower Body",
+        "name": "하반신",
         "msg": "Lower body shattered!"
       }
     },
@@ -1742,15 +1742,15 @@
         "msg": "Shell shattered!"
       },
       "body": {
-        "name": "Body",
-        "msg": "Body crushed!"
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
       },
       "tentacle_1": {
-        "name": "Tentacle 1",
+        "name": "촉수 1",
         "msg": "Tentacle 1 severed!"
       },
       "tentacle_2": {
-        "name": "Tentacle 2",
+        "name": "촉수 2",
         "msg": "Tentacle 2 severed!"
       },
       "eye": {
@@ -1765,7 +1765,7 @@
     },
     "waterelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core collapsed into mist!"
       },
       "body": {
@@ -1788,7 +1788,7 @@
     },
     "thunderelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core shattered by lightning!"
       },
       "body": {
@@ -1815,7 +1815,7 @@
     },
     "stormelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core dissipated in gale!"
       },
       "body": {
@@ -1842,7 +1842,7 @@
     },
     "fireelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core incinerated!"
       },
       "body": {
@@ -1861,7 +1861,7 @@
     },
     "metalelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core warped!"
       },
       "plate_armor": {
@@ -1880,7 +1880,7 @@
     },
     "darkelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core consumed by shadows!"
       },
       "body": {
@@ -1907,7 +1907,7 @@
     },
     "sacredelemental": {
       "core": {
-        "name": "Core",
+        "name": "핵",
         "msg": "Core sanctified away!"
       },
       "body": {
@@ -1938,11 +1938,11 @@
         "msg": "Core shattered!"
       },
       "left_arm": {
-        "name": "Left Arm",
+        "name": "왼팔",
         "msg": "Left arm splintered!"
       },
       "right_arm": {
-        "name": "Right Arm",
+        "name": "오른팔",
         "msg": "Right arm splintered!"
       },
       "eyes": {
@@ -1980,11 +1980,11 @@
     },
     "angel": {
       "left_wing": {
-        "name": "Left Wing",
+        "name": "왼쪽 날개",
         "msg": "Left wing clipped!"
       },
       "right_wing": {
-        "name": "Right Wing",
+        "name": "오른쪽 날개",
         "msg": "Right wing clipped!"
       },
       "halo": {
@@ -2000,22 +2000,22 @@
         "msg": "Robe torn!"
       },
       "left_foot": {
-        "name": "Left Foot",
+        "name": "왼발",
         "msg": "Left foot broken!"
       },
       "right_foot": {
-        "name": "Right Foot",
+        "name": "오른발",
         "msg": "Right foot broken!"
       },
       "name": "Angel"
     },
     "elven": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head struck!"
       },
       "heart": {
-        "name": "Heart",
+        "name": "심장",
         "msg": "Heart ruptured!"
       },
       "bow": {
@@ -2027,18 +2027,18 @@
         "msg": "Robe torn!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right Leg crippled!"
       },
       "name": "Elven"
     },
     "gnome": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head bumped!"
       },
       "beard": {
@@ -2050,22 +2050,22 @@
         "msg": "Hat knocked off!"
       },
       "heart": {
-        "name": "Heart",
+        "name": "심장",
         "msg": "Heart squeezed!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left Leg buckled!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right Leg buckled!"
       },
       "name": "Gnome"
     },
     "elephant": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head bashed!"
       },
       "trunk": {
@@ -2077,23 +2077,23 @@
         "msg": "Tusks broken!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body bruised!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front Right Leg crippled!"
       },
       "hind_left_leg": {
-        "name": "Hind Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Hind Left Leg crippled!"
       },
       "hind_right_leg": {
-        "name": "Hind Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Hind Right Leg crippled!"
       },
       "name": "Elephant"
@@ -2112,7 +2112,7 @@
         "msg": "Tentacle two severed!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body battered!"
       },
       "name": "Tentacled Creature"
@@ -2131,27 +2131,27 @@
         "msg": "Human head severed!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front left leg dismantled!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front right leg dismantled!"
       },
       "middle_left_leg": {
-        "name": "Middle Left Leg",
+        "name": "왼쪽 가운데다리",
         "msg": "Middle left leg dismantled!"
       },
       "middle_right_leg": {
-        "name": "Middle Right Leg",
+        "name": "오른쪽 가운데다리",
         "msg": "Middle right leg dismantled!"
       },
       "rear_left_leg": {
-        "name": "Rear Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Rear left leg dismantled!"
       },
       "rear_right_leg": {
-        "name": "Rear Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Rear right leg dismantled!"
       },
       "name": "Spider-Human Hybrid"
@@ -2162,7 +2162,7 @@
         "msg": "Spikes shattered!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body stunned!"
       },
       "eyes": {
@@ -2170,42 +2170,42 @@
         "msg": "Eyes blinded!"
       },
       "left_leg": {
-        "name": "Left Leg",
+        "name": "왼다리",
         "msg": "Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Right Leg",
+        "name": "오른다리",
         "msg": "Right Leg crippled!"
       },
       "name": "Spiky Monster"
     },
     "horse": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head stunned!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body bruised!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front Right Leg crippled!"
       },
       "hind_left_leg": {
-        "name": "Hind Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Hind Left Leg crippled!"
       },
       "hind_right_leg": {
-        "name": "Hind Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Hind Right Leg crippled!"
       },
       "tail": {
-        "name": "Tail",
+        "name": "꼬리",
         "msg": "Tail snapped!"
       },
       "name": "Horse"
@@ -2216,34 +2216,34 @@
         "msg": "Horn shattered!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body wounded!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front Left Leg crippled!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front Right Leg crippled!"
       },
       "hind_left_leg": {
-        "name": "Hind Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Hind Left Leg crippled!"
       },
       "hind_right_leg": {
-        "name": "Hind Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Hind Right Leg crippled!"
       },
       "tail": {
-        "name": "Tail",
+        "name": "꼬리",
         "msg": "Tail clipped!"
       },
       "name": "Unicorno"
     },
     "hellhound": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head scorched!"
       },
       "collar": {
@@ -2251,43 +2251,43 @@
         "msg": "Collar broken!"
       },
       "body": {
-        "name": "Body",
+        "name": "몸",
         "msg": "Body burned!"
       },
       "left_leg": {
-        "name": "Front Left Leg",
+        "name": "왼쪽 앞다리",
         "msg": "Front Left Leg incapacitated!"
       },
       "right_leg": {
-        "name": "Front Right Leg",
+        "name": "오른쪽 앞다리",
         "msg": "Front Right Leg incapacitated!"
       },
       "hind_left_leg": {
-        "name": "Hind Left Leg",
+        "name": "왼쪽 뒷다리",
         "msg": "Hind Left Leg incapacitated!"
       },
       "hind_right_leg": {
-        "name": "Hind Right Leg",
+        "name": "오른쪽 뒷다리",
         "msg": "Hind Right Leg incapacitated!"
       },
       "name": "Hellhound"
     },
     "wingeddemon": {
       "head": {
-        "name": "Head",
+        "name": "머리",
         "msg": "Head cursed!"
       },
       "left_wing": {
-        "name": "Left Wing",
+        "name": "왼쪽 날개",
         "msg": "Left wing scorched!"
       },
       "right_wing": {
-        "name": "Right Wing",
+        "name": "오른쪽 날개",
         "msg": "Right wing scorched!"
       },
       "tail": {
-        "name": "Tail",
-        "msg": "Tail severed!"
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
       },
       "core": {
         "name": "Infernal Core",
@@ -2313,7 +2313,7 @@
         "msg": "Eyes blocked!"
       },
       "heart": {
-        "name": "Heart",
+        "name": "심장",
         "msg": "Heart crushed!"
       },
       "name": "Trash Creature"
