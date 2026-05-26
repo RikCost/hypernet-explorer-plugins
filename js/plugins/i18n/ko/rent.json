@@ -1,21 +1,21 @@
 {
   "rent": {
-    "rent_question": "Rent",
-    "free_access": "Free access",
-    "already_rented": "You have already rented this room",
-    "for_24h_rent": "for 24h rent",
-    "cancel": "Cancel",
-    "free_access_granted": "Free access granted to",
-    "access_restored": "Access restored to",
-    "rented_for_24h": "Enjoy your stay!",
-    "for_24_hours": "for 24 hours!",
-    "not_enough_gold": "Not enough euro!",
+    "rent_question": "대여",
+    "free_access": "자유 접근 권한",
+    "already_rented": "이 방을 이미 대여했습니다.",
+    "for_24h_rent": "24시간 동안",
+    "cancel": "취소",
+    "free_access_granted": "자유 접근 권한이 부여되었습니다:",
+    "access_restored": "접근 권한이 복구되었습니다:",
+    "rented_for_24h": "즐거운 이용 되세요!",
+    "for_24_hours": "24시간 동안!",
+    "not_enough_gold": "유로가 부족합니다!",
     "error_event_id": "Error: Cannot determine event ID",
-    "rented": "Rented",
-    "expired": "Expired",
-    "available_rooms": "Available Rooms",
-    "hours_remaining": "hours remaining",
-    "rent_now": "Rent Now",
-    "no_rooms": "No rooms available"
+    "rented": "대여됨",
+    "expired": "만료됨",
+    "available_rooms": "이용 가능한 방",
+    "hours_remaining": "남은 시간",
+    "rent_now": "지금 대여",
+    "no_rooms": "이용 가능한 방 없음"
   }
 }

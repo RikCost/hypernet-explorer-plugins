@@ -1,342 +1,342 @@
 {
   "1": {
-    "name": "Dead",
-    "message1": "%1 has fallen!",
-    "message2": "%1 is slain!",
+    "name": "사망",
+    "message1": "%1(이)가 쓰러졌다!",
+    "message2": "%1(이)가 처치되었다!",
     "message3": "",
-    "message4": "%1 revives!"
+    "message4": "%1(이)가 부활했다!"
   },
   "2": {
-    "name": "Guard",
+    "name": "방어",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "3": {
-    "name": "Immortal",
+    "name": "불사",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "4": {
-    "name": "Poison",
-    "message1": "%1 is poisoned!",
-    "message2": "%1 is poisoned!",
+    "name": "독",
+    "message1": "%1(이)가 중독되었다!",
+    "message2": "%1(이)가 중독되었다!",
     "message3": "",
-    "message4": "%1 is no longer poisoned!"
+    "message4": "%1의 중독이 풀렸다!"
   },
   "5": {
-    "name": "Blind",
-    "message1": "%1 is blinded!",
-    "message2": "%1 is blinded!",
+    "name": "실명",
+    "message1": "%1(이)가 실명 상태에 빠졌다!",
+    "message2": "%1(이)가 실명 상태에 빠졌다!",
     "message3": "",
-    "message4": "%1 is no longer blinded!"
+    "message4": "%1의 실명이 풀렸다!"
   },
   "6": {
-    "name": "Silence",
-    "message1": "%1 is silenced!",
-    "message2": "%1 is silenced!",
+    "name": "침묵",
+    "message1": "%1(이)가 침묵에 걸렸다!",
+    "message2": "%1(이)가 침묵에 걸렸다!",
     "message3": "",
-    "message4": "%1 is no longer silenced!"
+    "message4": "%1의 침묵이 풀렸다!"
   },
   "7": {
-    "name": "Rage",
-    "message1": "%1 is enraged!",
-    "message2": "%1 is enraged!",
+    "name": "분노",
+    "message1": "%1(이)가 격노했다!",
+    "message2": "%1(이)가 격노했다!",
     "message3": "",
-    "message4": "%1 is no longer enraged!"
+    "message4": "%1의 분노가 가라앉았다!"
   },
   "8": {
-    "name": "Confusion",
-    "message1": "%1 is confused!",
-    "message2": "%1 is confused!",
+    "name": "혼란",
+    "message1": "%1(이)가 혼란에 빠졌다!",
+    "message2": "%1(이)가 혼란에 빠졌다!",
     "message3": "",
-    "message4": "%1 is no longer confused!"
+    "message4": "%1의 혼란이 풀렸다!"
   },
   "9": {
-    "name": "Charm",
-    "message1": "%1 is charmed!",
-    "message2": "%1 is charmed!",
+    "name": "매혹",
+    "message1": "%1(이)가 매혹되었다!",
+    "message2": "%1(이)가 매혹되었다!",
     "message3": "",
-    "message4": "%1 is no longer charmed!"
+    "message4": "%1의 매혹이 풀렸다!"
   },
   "10": {
-    "name": "Sleep",
-    "message1": "%1 falls asleep!",
-    "message2": "%1 falls asleep!",
-    "message3": "%1 is sleeping.",
-    "message4": "%1 wakes up!"
+    "name": "수면",
+    "message1": "%1(이)가 잠들었다!",
+    "message2": "%1(이)가 잠들었다!",
+    "message3": "%1이 잠들어 있다.",
+    "message4": "%1이 깨어났다!"
   },
   "11": {
-    "name": "Freeze",
-    "message1": "%1 is freezed solid and can’t move!",
-    "message2": "%1 is freezed solid!",
-    "message3": "%1 is freezed and can’t move!",
-    "message4": "%1 is no longer freezed!"
+    "name": "빙결",
+    "message1": "%1(이)가 얼어붙어 움직일 수 없다!",
+    "message2": "%1(이)가 얼어붙었다!",
+    "message3": "%1(이)가 얼어붙어 움직일 수 없다!",
+    "message4": "%1의 빙결이 풀렸다!"
   },
   "12": {
-    "name": "Paralysis",
-    "message1": "%1 is paralyzed and can’t move!",
-    "message2": "%1 is paralyzed!",
-    "message3": "%1 is paralyzed and can’t move!",
-    "message4": "%1 is no longer paralyzed!"
+    "name": "마비",
+    "message1": "%1(이)가 마비되어 움직일 수 없다!",
+    "message2": "%1(이)가 마비되었다!",
+    "message3": "%1(이)가 마비되어 움직일 수 없다!",
+    "message4": "%1의 마비가 풀렸다!"
   },
   "13": {
-    "name": "Stun",
-    "message1": "%1 lost balance!",
-    "message2": "%1 lost balance!",
-    "message3": "%1 is still off-balance...",
-    "message4": "%1 has regained balance!"
+    "name": "기절",
+    "message1": "%1(이)가 균형을 잃었다!",
+    "message2": "%1(이)가 균형을 잃었다!",
+    "message3": "%1(이)가 아직 비틀거린다...",
+    "message4": "%1(이)가 균형을 되찾았다!"
   },
   "14": {
-    "name": "Locked on",
-    "message1": "%1 is locked on!",
-    "message2": "%1 is locked on",
-    "message3": "%1 is locked on!",
-    "message4": "%1's focus subsides!"
+    "name": "조준 고정",
+    "message1": "%1(이)가 조준 고정되었다!",
+    "message2": "%1(이)가 조준 고정되었다!",
+    "message3": "%1이 조준 고정 상태다!",
+    "message4": "%1의 조준 고정이 풀렸다!"
   },
   "15": {
-    "name": "HP Regeneration",
+    "name": "HP 회복",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "16": {
-    "name": "MP Regeneration",
+    "name": "MP 회복",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "17": {
-    "name": "AP Regeneration",
+    "name": "AP 회복",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "18": {
-    "name": "Magic Reflection",
+    "name": "마법 반사",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "19": {
-    "name": "Protect",
+    "name": "보호",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "20": {
-    "name": "Provoke",
-    "message1": "%1 became easier to hit!",
+    "name": "도발",
+    "message1": "%1(이)가 더 쉽게 공격당하게 되었다!",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "21": {
-    "name": "Hide",
-    "message1": "%1 became harder to hit!",
+    "name": "은신",
+    "message1": "%1(이)가 더 공격하기 어려워졌다!",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "22": {
-    "name": "Counter Attack",
+    "name": "반격",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "23": {
-    "name": "Status Ailment Block",
+    "name": "상태 이상 방어",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "24": {
-    "name": "Inspired",
-    "message1": "%1 is now inspired!",
+    "name": "영감",
+    "message1": "%1(이)가 영감을 받았다!",
     "message2": "",
     "message3": "",
-    "message4": "%1 is no longer inspired!"
+    "message4": "%1의 영감이 사라졌다!"
   },
   "25": {
-    "name": "Hot",
-    "message1": "%1 is now enveloped in an aura of fire.",
-    "message2": "%1 is now enveloped in an aura of fire.",
+    "name": "열",
+    "message1": "%1(이)가 불의 오라에 휩싸였다.",
+    "message2": "%1(이)가 불의 오라에 휩싸였다.",
     "message3": "",
     "message4": ""
   },
   "26": {
-    "name": "Cold",
-    "message1": "%1 is now enveloped in an freezing aura.",
-    "message2": "%1 is now enveloped in an freezing aura.",
+    "name": "냉기",
+    "message1": "%1(이)가 얼음의 오라에 휩싸였다.",
+    "message2": "%1(이)가 얼음의 오라에 휩싸였다.",
     "message3": "",
     "message4": ""
   },
   "27": {
-    "name": "Static",
-    "message1": "%1 is now enveloped in a static aura.",
-    "message2": "%1 is now enveloped in a static aura.",
+    "name": "전기",
+    "message1": "%1(이)가 전기 오라에 휩싸였다.",
+    "message2": "%1(이)가 전기 오라에 휩싸였다.",
     "message3": "",
-    "message4": "%1 is now grounded."
+    "message4": "%1의 전기 오라가 사라졌다."
   },
   "28": {
-    "name": "Wet",
-    "message1": "%1 is now wet.",
-    "message2": "%1 is now wet.",
+    "name": "젖음",
+    "message1": "%1(이)가 젖었다.",
+    "message2": "%1(이)가 젖었다.",
     "message3": "",
-    "message4": "%1 is dry."
+    "message4": "%1이 말랐다."
   },
   "29": {
-    "name": "Half Encounters",
+    "name": "조우 감소",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "30": {
-    "name": "Double Money/Items",
+    "name": "재화/아이템 2배",
     "message1": "",
     "message2": "",
     "message3": "",
     "message4": ""
   },
   "31": {
-    "name": "Berserk",
-    "message1": "%1 is berserked!",
-    "message2": "%1 is berserked!",
-    "message3": "%1 is consumed by bloodlust!",
-    "message4": "%1's bloodlust subsides!"
+    "name": "광폭화",
+    "message1": "%1(이)가 광폭화되었다!",
+    "message2": "%1(이)가 광폭화되었다!",
+    "message3": "%1이 광기에 사로잡혔다!",
+    "message4": "%1의 광기가 가라앉았다!"
   },
   "32": {
-    "name": "Divine Shield",
-    "message1": "%1 is blessed with divine protection!",
-    "message2": "%1 is blessed with divine protection!",
+    "name": "신성한 보호막",
+    "message1": "%1(이)가 신성한 보호를 받았다!",
+    "message2": "%1(이)가 신성한 보호를 받았다!",
     "message3": "",
-    "message4": "The divine protection around %1 fades away."
+    "message4": "%1의 신성한 보호가 사라졌다."
   },
   "33": {
-    "name": "Death Mark",
-    "message1": "%1 is marked for death!",
-    "message2": "%1 is marked for death!",
-    "message3": "Death's mark lingers on %1...",
-    "message4": "The mark of death on %1 disappears."
+    "name": "죽음의 표식",
+    "message1": "%1(이)가 죽음의 표식을 받았다!",
+    "message2": "%1(이)가 죽음의 표식을 받았다!",
+    "message3": "%1에게 죽음의 표식이 남아 있다...",
+    "message4": "%1의 죽음의 표식이 사라졌다."
   },
   "34": {
-    "name": "Perfect Focus",
-    "message1": "%1 is in a state of perfect focus!",
-    "message2": "%1 is in a state of perfect focus!",
-    "message3": "%1 maintains perfect focus...",
-    "message4": "%1's focus returns to normal."
+    "name": "완벽한 집중",
+    "message1": "%1(이)가 완벽한 집중 상태에 들어갔다!",
+    "message2": "%1(이)가 완벽한 집중 상태에 들어갔다!",
+    "message3": "%1이 집중을 유지하고 있다...",
+    "message4": "%1의 집중이 정상으로 돌아왔다."
   },
   "35": {
-    "name": "Shadow Veil",
-    "message1": "%1 is engulfed in shadow!",
-    "message2": "%1 is engulfed in shadow!",
-    "message3": "Shadows continue to swirl around %1...",
-    "message4": "The shadows surrounding %1 dissipate."
+    "name": "그림자 장막",
+    "message1": "%1(이)가 그림자에 휩싸였다!",
+    "message2": "%1(이)가 그림자에 휩싸였다!",
+    "message3": "그림자가 %1 주변을 맴돈다...",
+    "message4": "%1을 감싸던 그림자가 사라졌다."
   },
   "36": {
-    "name": "Arcane Surge",
-    "message1": "%1 is burning with arcane power!",
-    "message2": "%1 is burning with arcane power!",
-    "message3": "Arcane energy surges through %1...",
-    "message4": "The arcane energy within %1 fades away."
+    "name": "비전 폭주",
+    "message1": "%1(이)가 비전 힘으로 타오른다!",
+    "message2": "%1(이)가 비전 힘으로 타오른다!",
+    "message3": "%1에게 비전 에너지가 흐른다...",
+    "message4": "%1의 비전 에너지가 사라졌다."
   },
   "37": {
-    "name": "Ethereal",
-    "message1": "%1 is now ethereal!",
-    "message2": "%1 is now ethereal!",
-    "message3": "%1 remains in ethereal form...",
-    "message4": "%1 returns to normal form."
+    "name": "에테르",
+    "message1": "%1(이)가 에테르 상태가 되었다!",
+    "message2": "%1(이)가 에테르 상태가 되었다!",
+    "message3": "%1이 에테르 상태를 유지 중이다...",
+    "message4": "%1이 정상 상태로 돌아왔다."
   },
   "38": {
-    "name": "Unbalanced",
-    "message1": "%1 is unbalanced!",
-    "message2": "%1 is unbalanced!",
-    "message3": "%1 struggles to maintain balance...",
-    "message4": "%1 regains proper balance."
+    "name": "불균형",
+    "message1": "%1(이)가 균형을 잃었다!",
+    "message2": "%1(이)가 균형을 잃었다!",
+    "message3": "%1이 균형을 유지하려 애쓴다...",
+    "message4": "%1이 균형을 되찾았다!"
   },
   "39": {
-    "name": "Life Link",
-    "message1": "%1 is linked to the party's life force!",
-    "message2": "%1 is linked to the party's life force!",
-    "message3": "%1 maintains the life link...",
-    "message4": "The life link with %1 is severed."
+    "name": "생명 연결",
+    "message1": "%1(이)가 파티의 생명력과 연결되었다!",
+    "message2": "%1(이)가 파티의 생명력과 연결되었다!",
+    "message3": "%1이 생명 연결을 유지 중이다...",
+    "message4": "%1과의 생명 연결이 끊어졌다."
   },
   "40": {
-    "name": "Vulnerability",
-    "message1": "%1 is cursed with vulnerability!",
-    "message2": "%1 is cursed with vulnerability!",
-    "message3": "The curse of vulnerability persists on %1...",
-    "message4": "The vulnerability curse on %1 is lifted."
+    "name": "취약",
+    "message1": "%1(이)가 취약 저주에 걸렸다!",
+    "message2": "%1(이)가 취약 저주에 걸렸다!",
+    "message3": "%1에게 취약 저주가 남아 있다...",
+    "message4": "%1의 취약 저주가 풀렸다."
   },
   "41": {
-    "name": "Nausea",
-    "message1": "%1 is nauseated!",
-    "message2": "%1 is nauseated!",
+    "name": "메스꺼움",
+    "message1": "%1(이)가 메스꺼움을 느낀다!",
+    "message2": "%1(이)가 메스꺼움을 느낀다!",
     "message3": "",
-    "message4": "%1 is no longer nauseated!"
+    "message4": "%1의 메스꺼움이 사라졌다!"
   },
   "42": {
-    "name": "Drunk",
-    "message1": "%1 is drunk!",
-    "message2": "%1 is drunk!",
+    "name": "취함",
+    "message1": "%1(이)가 취했다!",
+    "message2": "%1(이)가 취했다!",
     "message3": "",
-    "message4": "%1 has sobered up!"
+    "message4": "%1이 술에서 깼다!"
   },
   "43": {
-    "name": "Burned",
-    "message1": "%1 is burned!",
-    "message2": "%1 is burned!",
+    "name": "화상",
+    "message1": "%1(이)가 화상을 입었다!",
+    "message2": "%1(이)가 화상을 입었다!",
     "message3": "",
-    "message4": "%1 is no longer poisoned!"
+    "message4": "%1의 화상이 사라졌다!"
   },
   "44": {
-    "name": "Infected",
-    "message1": "%1 is infected!",
-    "message2": "%1 is infected!",
+    "name": "감염",
+    "message1": "%1(이)가 감염되었다!",
+    "message2": "%1(이)가 감염되었다!",
     "message3": "",
-    "message4": "%1 is no longer infected!"
+    "message4": "%1의 감염이 사라졌다!"
   },
   "45": {
-    "name": "Floating",
-    "message1": "%1 is floating!",
-    "message2": "%1 is floating!",
+    "name": "부유",
+    "message1": "%1이 공중에 떠 있다!",
+    "message2": "%1이 공중에 떠 있다!",
     "message3": "",
     "message4": ""
   },
   "46": {
-    "name": "Invisible",
-    "message1": "%1 is invisible!",
-    "message2": "%1 is invisible!",
+    "name": "투명",
+    "message1": "%1(이)가 투명해졌다!",
+    "message2": "%1(이)가 투명해졌다!",
     "message3": "",
-    "message4": "%1 is no longer invisible!"
+    "message4": "%1의 투명 상태가 해제되었다!"
   },
   "47": {
-    "name": "Oily",
-    "message1": "%1 is now covered in oil",
-    "message2": "%1 is now covered il oil",
+    "name": "기름",
+    "message1": "%1(이)가 기름에 덮였다!",
+    "message2": "%1(이)가 기름에 덮였다!",
     "message3": "",
     "message4": ""
   },
   "48": {
-    "name": "Bleeding",
-    "message1": "%1 is bleeding!",
-    "message2": "%1 is bleeding!",
+    "name": "출혈",
+    "message1": "%1(이)가 출혈 상태다!",
+    "message2": "%1(이)가 출혈 상태다!",
     "message3": "",
-    "message4": "%1 is no longer bleeding!"
+    "message4": "%1의 출혈이 멈췄다!"
   },
   "49": {
-    "name": "Dodge",
+    "name": "회피",
     "message1": "",
     "message2": "",
     "message3": "",
