@@ -1,19 +1,19 @@
 {
   "galaxy": {
     "milky_way": {
-      "name": "Milky Way"
+      "name": "은하수"
     },
     "andromeda_m31": {
-      "name": "Andromeda (M31)"
+      "name": "안드로메다 (M31)"
     },
     "triangulum_m33": {
-      "name": "Triangulum (M33)"
+      "name": "삼각형자리 (M33)"
     },
     "large_magellanic_cloud": {
-      "name": "Large Magellanic Cloud"
+      "name": "대마젤란 은하"
     },
     "small_magellanic_cloud": {
-      "name": "Small Magellanic Cloud"
+      "name": "소마젤란 은하"
     },
     "m32": {
       "name": "M32"
@@ -28,31 +28,31 @@
       "name": "IC 10"
     },
     "sagittarius_dwarf": {
-      "name": "Sagittarius Dwarf"
+      "name": "궁수자리 왜소은하"
     },
     "fornax_dwarf": {
-      "name": "Fornax Dwarf"
+      "name": "화로자리 왜소은하"
     },
     "sculptor_dwarf": {
-      "name": "Sculptor Dwarf"
+      "name": "조각가자리 왜소은하"
     },
     "leo_i": {
-      "name": "Leo I"
+      "name": "사자자리 I"
     },
     "leo_ii": {
-      "name": "Leo II"
+      "name": "사자자리 II"
     },
     "ursa_minor_dwarf": {
-      "name": "Ursa Minor Dwarf"
+      "name": "작은곰자리 왜소은하"
     },
     "draco_dwarf": {
-      "name": "Draco Dwarf"
+      "name": "용자리 왜소은하"
     },
     "carina_dwarf": {
-      "name": "Carina Dwarf"
+      "name": "용골자리 왜소은하"
     },
     "sextans_dwarf": {
-      "name": "Sextans Dwarf"
+      "name": "육분의자리 왜소은하"
     },
     "ic_1613": {
       "name": "IC 1613"
@@ -61,25 +61,25 @@
       "name": "WLM"
     },
     "phoenix_dwarf": {
-      "name": "Phoenix Dwarf"
+      "name": "불사조자리 왜소은하"
     },
     "ngc_3109": {
       "name": "NGC 3109"
     },
     "antlia_dwarf": {
-      "name": "Antlia Dwarf"
+      "name": "공기펌프자리 왜소은하"
     },
     "leo_a": {
-      "name": "Leo A"
+      "name": "사자자리 A"
     },
     "aquarius_dwarf": {
-      "name": "Aquarius Dwarf"
+      "name": "물병자리 왜소은하"
     },
     "tucana_dwarf": {
-      "name": "Tucana Dwarf"
+      "name": "큰부리새자리 왜소은하"
     },
     "pegasus_dwarf": {
-      "name": "Pegasus Dwarf"
+      "name": "페가수스자리 왜소은하"
     }
   }
 }

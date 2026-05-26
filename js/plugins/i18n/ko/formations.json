@@ -1,11 +1,11 @@
 {
-  "circle": "Circle",
-  "box": "Box",
-  "phalanx": "Phalanx",
-  "double": "Double",
-  "wedge": "Wedge",
-  "line": "Line",
-  "crescent": "Crescent",
-  "column": "Column",
-  "scattered": "Scattered"
+  "circle": "원형 진형",
+  "box": "상자형 진형",
+  "phalanx": "팔랑크스",
+  "double": "이중 진형",
+  "wedge": "쐐기 진형",
+  "line": "종대 진형",
+  "crescent": "초승달 진형",
+  "column": "열대 진형",
+  "scattered": "산개 진형"
 }

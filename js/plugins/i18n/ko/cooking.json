@@ -49,7 +49,7 @@
     "ui": {
       "selectFirstIngredient": "첫 번째 재료 선택",
       "selectSecondIngredient": "{name}와 함께 조리할 재료 선택",
-      "confirmCook": "{item1}과(와) {item2}을(를) 조리해 {result}을(를) 만들겠습니까?",
+      "confirmCook": "{item1}(과)와 {item2}(을)를 조리해 {result}(을)를 만들겠습니까?",
       "cookButton": "요리하기",
       "cancelButton": "취소",
       "menuLabel": "요리"

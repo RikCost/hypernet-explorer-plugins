@@ -1,16 +1,16 @@
 {
-  "arcane": "Arcane",
-  "substance": "Substance",
-  "stealth": "Stealth",
-  "intimidation": "Intimidation",
-  "scale": "ATK",
-  "str": "STR",
-  "dex": "DEX",
+  "arcane": "비전",
+  "substance": "물질",
+  "stealth": "은신",
+  "intimidation": "위협",
+  "scale": "공격력",
+  "str": "근력",
+  "dex": "민첩",
   "mix": "MIX",
   "psi": "PSI",
-  "int": "INT",
-  "con": "CON",
-  "wis": "WIS",
-  "random": "Random",
-  "clear": "Unequip."
+  "int": "지능",
+  "con": "건강",
+  "wis": "지혜",
+  "random": "무작위",
+  "clear": "해제."
 }
