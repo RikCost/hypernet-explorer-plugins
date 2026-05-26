@@ -1,344 +1,344 @@
 {
   "ui": {
-    "title": "Tarot Reading",
-    "past": "Past",
-    "present": "Present",
-    "future": "Future",
-    "instruction": "Click on a card to reveal its meaning",
-    "complete": "Your reading is complete. Press ESC to exit.",
-    "upright": "Upright",
-    "reversed": "Reversed",
-    "npcTitle": "Reading Tarot for %1"
+    "title": "타로 리딩",
+    "past": "과거",
+    "present": "현재",
+    "future": "미래",
+    "instruction": "카드를 클릭해 의미를 확인하세요",
+    "complete": "리딩이 완료되었습니다. ESC를 눌러 종료하세요.",
+    "upright": "정방향",
+    "reversed": "역방향",
+    "npcTitle": "%1의 타로를 읽는 중"
   },
   "cards": {
     "The Fool": {
-      "name": "The Fool",
+      "name": "광대",
       "upright": [
-        "New beginnings await you with childlike wonder and endless possibilities.",
-        "Take a leap of faith and trust in the journey ahead of you.",
-        "Embrace spontaneity and let your free spirit guide your path.",
-        "Adventure calls to you, urging you to step into the unknown."
+        "새로운 시작이 순수한 호기심과 무한한 가능성과 함께 찾아옵니다.",
+        "앞으로의 여정을 믿고 과감히 한 걸음을 내디뎌보세요.",
+        "즉흥성을 받아들이고 자유로운 영혼이 길을 이끌도록 하세요.",
+        "모험이 당신을 부르고 있으며 미지의 세계로 나아가라고 합니다."
       ],
       "reversed": [
-        "Recklessness clouds your judgment and leads to poor decisions.",
-        "Fear of taking necessary risks holds you back from growth.",
-        "Naivety may cause you to overlook important warning signs.",
-        "Chaos and lack of direction create unnecessary obstacles."
+        "무모함이 판단을 흐려 잘못된 선택으로 이어집니다.",
+        "필요한 위험을 두려워해 성장이 막히고 있습니다.",
+        "순진함이 중요한 경고 신호를 놓치게 만듭니다.",
+        "혼란과 방향성 부족이 불필요한 장애물을 만듭니다."
       ]
     },
     "The Magician": {
-      "name": "The Magician",
+      "name": "마법사",
       "upright": [
-        "You possess all the tools needed to manifest your desires.",
-        "Your willpower and determination create powerful transformations.",
-        "Focus your energy to turn dreams into tangible reality.",
-        "Mastery of your skills brings success within reach."
+        "당신은 원하는 것을 현실로 만들 모든 도구를 가지고 있습니다.",
+        "의지와 결단력이 강력한 변화를 만들어냅니다.",
+        "에너지를 집중해 꿈을 현실로 바꿔보세요.",
+        "능력의 숙달이 성공을 눈앞으로 끌어옵니다."
       ],
       "reversed": [
-        "Manipulation and deceit may be present in your surroundings.",
-        "Your talents remain untapped due to lack of confidence.",
-        "Illusions and trickery cloud the truth from your vision.",
-        "Poor planning prevents your goals from materializing."
+        "주변에 조작과 기만이 존재할 수 있습니다.",
+        "자신감 부족으로 잠재력이 발휘되지 못하고 있습니다.",
+        "환상과 속임수가 진실을 흐립니다.",
+        "부족한 계획이 목표 달성을 방해합니다."
       ]
     },
     "The High Priestess": {
-      "name": "The High Priestess",
+      "name": "여사제",
       "upright": [
-        "Trust your intuition as it guides you toward hidden truths.",
-        "Sacred knowledge reveals itself through quiet contemplation.",
-        "The subconscious mind holds answers to your deepest questions.",
-        "Mystery and feminine wisdom illuminate your spiritual path."
+        "직관을 믿으면 숨겨진 진실로 나아갈 수 있습니다.",
+        "고요한 성찰 속에서 신성한 지혜가 드러납니다.",
+        "잠재의식이 가장 깊은 질문의 답을 가지고 있습니다.",
+        "신비와 여성적 지혜가 영적 길을 밝혀줍니다."
       ],
       "reversed": [
-        "Disconnection from your inner voice creates confusion.",
-        "Secrets and hidden agendas may disrupt your peace.",
-        "Ignoring your intuition leads you away from truth.",
-        "Surface-level thinking prevents deeper understanding."
+        "내면의 목소리와 단절되어 혼란이 생깁니다.",
+        "비밀과 숨겨진 의도가 평화를 방해합니다.",
+        "직관을 무시하면 진실에서 멀어집니다.",
+        "표면적인 사고가 깊은 이해를 막습니다."
       ]
     },
     "The Empress": {
-      "name": "The Empress",
+      "name": "여황제",
       "upright": [
-        "Abundance flows naturally into all areas of your life.",
-        "Creative energy blossoms and brings new projects to fruition.",
-        "Nurturing relationships provide comfort and emotional fulfillment.",
-        "Natural beauty and sensuality enhance your personal magnetism."
+        "풍요가 삶의 모든 영역에 자연스럽게 흘러옵니다.",
+        "창의적 에너지가 꽃피며 새로운 일이 결실을 맺습니다.",
+        "돌봄과 관계가 안정과 정서적 만족을 제공합니다.",
+        "자연스러운 아름다움과 매력이 당신을 빛나게 합니다."
       ],
       "reversed": [
-        "Creative blocks stifle your self-expression and growth.",
-        "Neglecting self-care depletes your energy reserves.",
-        "Codependency creates imbalance in your relationships.",
-        "Material concerns overshadow emotional needs."
+        "창의적 막힘이 자기표현과 성장을 방해합니다.",
+        "자기 돌봄 부족이 에너지를 고갈시킵니다.",
+        "의존적인 관계가 균형을 무너뜨립니다.",
+        "물질적 걱정이 감정적 필요를 덮어버립니다."
       ]
     },
     "The Emperor": {
-      "name": "The Emperor",
+      "name": "황제",
       "upright": [
-        "Leadership and authority position you for greater success.",
-        "Structure and discipline create a solid foundation for growth.",
-        "Your protective nature shields loved ones from harm.",
-        "Strategic thinking leads to long-term achievements."
+        "리더십과 권위가 성공으로 이끕니다.",
+        "질서와 규율이 견고한 기반을 만듭니다.",
+        "보호적인 성향이 주변 사람을 지켜줍니다.",
+        "전략적 사고가 장기적인 성취를 가져옵니다."
       ],
       "reversed": [
-        "Tyrannical behavior damages important relationships.",
-        "Rigidity prevents adaptation to changing circumstances.",
-        "Abuse of power creates resistance and rebellion.",
-        "Lack of self-discipline undermines your authority."
+        "독단적인 행동이 중요한 관계를 해칩니다.",
+        "경직된 사고가 변화에 적응하지 못하게 합니다.",
+        "권력 남용이 반발을 초래합니다.",
+        "자기 통제 부족이 권위를 약화시킵니다."
       ]
     },
     "The Hierophant": {
-      "name": "The Hierophant",
+      "name": "교황",
       "upright": [
-        "Traditional wisdom provides guidance for current challenges.",
-        "Spiritual teachings deepen your understanding of life's purpose.",
-        "Conformity to established systems brings acceptance and belonging.",
-        "Mentorship accelerates your learning and personal development."
+        "전통적 지혜가 현재의 문제 해결을 돕습니다.",
+        "영적 가르침이 삶의 의미를 깊게 합니다.",
+        "기존 질서에 따름으로써 소속감을 얻습니다.",
+        "멘토의 조언이 성장을 가속화합니다."
       ],
       "reversed": [
-        "Rebellion against tradition opens new paths of understanding.",
-        "Dogmatic thinking limits your perspective and growth.",
-        "Question authority to discover your authentic truth.",
-        "Unconventional approaches yield surprising results."
+        "전통에 대한 반항이 새로운 이해를 열어줍니다.",
+        "교조적 사고가 성장을 제한합니다.",
+        "권위에 질문함으로써 진정한 답을 찾습니다.",
+        "비전통적인 접근이 의외의 결과를 만듭니다."
       ]
     },
     "The Lovers": {
-      "name": "The Lovers",
+      "name": "연인",
       "upright": [
-        "Deep connections and meaningful relationships enrich your life.",
-        "Important choices align with your values and desires.",
-        "Harmony between opposites creates perfect balance.",
-        "Love in all forms elevates your consciousness."
+        "깊은 연결과 관계가 삶을 풍요롭게 합니다.",
+        "중요한 선택이 가치와 일치합니다.",
+        "대립되는 요소의 조화가 균형을 만듭니다.",
+        "사랑이 의식을 성장시킵니다."
       ],
       "reversed": [
-        "Disharmony in relationships requires honest communication.",
-        "Inner conflicts prevent you from making clear decisions.",
-        "Temptation leads you away from your true path.",
-        "Imbalanced partnerships drain your emotional energy."
+        "관계의 불균형은 솔직한 대화를 필요로 합니다.",
+        "내적 갈등이 결정을 어렵게 만듭니다.",
+        "유혹이 올바른 길에서 벗어나게 합니다.",
+        "불균형한 관계가 감정 에너지를 소모시킵니다."
       ]
     },
     "The Chariot": {
-      "name": "The Chariot",
+      "name": "전차",
       "upright": [
-        "Determination and willpower drive you toward victory.",
-        "Opposing forces unite under your skilled direction.",
-        "Self-discipline propels you past any obstacle.",
-        "Triumphant progress rewards your focused efforts."
+        "의지와 결단력이 승리를 이끕니다.",
+        "상반된 힘들이 당신의 통제 아래 조화를 이룹니다.",
+        "자기 통제가 장애물을 넘어섭니다.",
+        "집중된 노력이 성공으로 이어집니다."
       ],
       "reversed": [
-        "Lack of direction scatters your energy ineffectively.",
-        "Aggression and force create unnecessary conflict.",
-        "Loss of control derails your carefully laid plans.",
-        "Opposition seems insurmountable without proper strategy."
+        "방향성 부족이 에너지를 분산시킵니다.",
+        "공격적인 태도가 갈등을 만듭니다.",
+        "통제력 상실이 계획을 무너뜨립니다.",
+        "저항이 전략 없이 극복하기 어렵습니다."
       ]
     },
     "Strength": {
-      "name": "Strength",
+      "name": "힘",
       "upright": [
-        "Inner strength and courage overcome external challenges.",
-        "Gentle persistence tames the wildest aspects of life.",
-        "Compassion transforms potential enemies into allies.",
-        "Patient endurance leads to eventual triumph."
+        "내면의 힘과 용기가 외부 문제를 극복합니다.",
+        "부드러운 인내가 어려움을 길들입니다.",
+        "연민이 적을 아군으로 바꿉니다.",
+        "꾸준함이 결국 승리를 가져옵니다."
       ],
       "reversed": [
-        "Self-doubt weakens your resolve and personal power.",
-        "Raw emotions overpower logical thinking and planning.",
-        "Insecurity manifests as either aggression or timidity.",
-        "Inner beasts require acknowledgment and integration."
+        "자기 의심이 힘을 약화시킵니다.",
+        "감정이 이성을 압도합니다.",
+        "불안이 공격성 또는 위축으로 나타납니다.",
+        "내면의 감정을 인정하고 통합해야 합니다."
       ]
     },
     "The Hermit": {
-      "name": "The Hermit",
+      "name": "은둔자",
       "upright": [
-        "Solitude brings profound insights and self-discovery.",
-        "Inner wisdom illuminates the path forward.",
-        "Spiritual searching leads to meaningful revelations.",
-        "Withdrawal from chaos allows deep contemplation."
+        "고독이 깊은 통찰과 자기 발견을 가져옵니다.",
+        "내면의 지혜가 앞길을 밝혀줍니다.",
+        "영적 탐색이 중요한 깨달음으로 이어집니다.",
+        "혼자 있는 시간이 깊은 성찰을 가능하게 합니다."
       ],
       "reversed": [
-        "Isolation becomes loneliness without purpose or growth.",
-        "Excessive withdrawal creates disconnection from reality.",
-        "Fear of examination prevents necessary self-reflection.",
-        "Stubborn reclusiveness blocks helpful connections."
+        "고립이 의미 없는 외로움으로 변합니다.",
+        "과도한 단절이 현실과의 연결을 끊습니다.",
+        "자기 성찰에 대한 두려움이 성장을 막습니다.",
+        "고집스러운 은둔이 관계를 차단합니다."
       ]
     },
     "Wheel of Fortune": {
-      "name": "Wheel of Fortune",
+      "name": "운명의 수레바퀴",
       "upright": [
-        "Destiny turns in your favor bringing unexpected opportunities.",
-        "Cycles of change usher in new phases of existence.",
-        "Good fortune smiles upon your current endeavors.",
-        "Universal forces align to support your highest good."
+        "운명이 당신에게 유리하게 움직입니다.",
+        "변화의 순환이 새로운 국면을 엽니다.",
+        "행운이 현재의 일을 돕습니다.",
+        "우주적 흐름이 당신을 지원합니다."
       ],
       "reversed": [
-        "Misfortune temporarily disrupts your planned trajectory.",
-        "Resistance to change prolongs difficult circumstances.",
-        "External forces seem to work against your desires.",
-        "Breaking negative cycles requires conscious effort."
+        "불운이 일시적으로 흐름을 방해합니다.",
+        "변화 저항이 어려움을 연장합니다.",
+        "외부 요인이 뜻대로 되지 않습니다.",
+        "악순환을 끊기 위해 의식적인 노력이 필요합니다."
       ]
     },
     "Justice": {
-      "name": "Justice",
+      "name": "정의",
       "upright": [
-        "Truth and fairness prevail in all matters at hand.",
-        "Karmic balance restores order to chaotic situations.",
-        "Legal matters resolve in alignment with highest justice.",
-        "Accountability for actions brings appropriate consequences."
+        "진실과 공정함이 모든 상황에 적용됩니다.",
+        "카르마의 균형이 질서를 회복합니다.",
+        "법적 문제는 올바른 방향으로 해결됩니다.",
+        "행동의 결과가 공정하게 돌아옵니다."
       ],
       "reversed": [
-        "Injustice and unfairness cloud current circumstances.",
-        "Dishonesty complicates legal or ethical matters.",
-        "Avoiding accountability delays inevitable reckoning.",
-        "Bias prevents clear and balanced judgment."
+        "불공정과 왜곡된 판단이 상황을 흐립니다.",
+        "기만이 문제를 복잡하게 만듭니다.",
+        "책임 회피가 결과를 지연시킵니다.",
+        "편견이 균형 잡힌 판단을 방해합니다."
       ]
     },
     "The Hanged Man": {
-      "name": "The Hanged Man",
+      "name": "매달린 남자",
       "upright": [
-        "Surrender and release bring unexpected enlightenment.",
-        "New perspectives emerge from letting go of control.",
-        "Sacrifice now leads to greater gains later.",
-        "Suspension of action allows wisdom to surface."
+        "놓아줌과 포기가 새로운 깨달음을 가져옵니다.",
+        "관점의 변화가 새로운 시야를 엽니다.",
+        "희생이 더 큰 보상으로 이어집니다.",
+        "멈춤이 지혜를 드러냅니다."
       ],
       "reversed": [
-        "Stubborn resistance prolongs unnecessary suffering.",
-        "Martyrdom without purpose drains vital energy.",
-        "Stagnation results from fear of necessary change.",
-        "Indecision paralyzes forward movement."
+        "고집이 불필요한 고통을 연장합니다.",
+        "무의미한 희생이 에너지를 소모합니다.",
+        "정체가 변화에 대한 두려움에서 비롯됩니다.",
+        "결정하지 못함이 전진을 막습니다."
       ]
     },
     "Death": {
-      "name": "Death",
+      "name": "죽음",
       "upright": [
-        "Transformation clears space for powerful rebirth.",
-        "Endings create opportunities for new beginnings.",
-        "Release of the old makes room for fresh growth.",
-        "Profound change reshapes your entire existence."
+        "변화가 새로운 시작을 위한 공간을 만듭니다.",
+        "끝은 새로운 시작을 의미합니다.",
+        "과거를 놓아야 성장이 가능합니다.",
+        "근본적인 변화가 삶을 재구성합니다."
       ],
       "reversed": [
-        "Resistance to endings prolongs decay and stagnation.",
-        "Fear of change keeps you trapped in limiting patterns.",
-        "Clinging to the past prevents forward evolution.",
-        "Incomplete transitions leave you between worlds."
+        "끝맺지 못한 집착이 정체를 만듭니다.",
+        "변화에 대한 두려움이 발목을 잡습니다.",
+        "과거에 머물러 발전이 막힙니다.",
+        "완전하지 않은 전환이 혼란을 남깁니다."
       ]
     },
     "Temperance": {
-      "name": "Temperance",
+      "name": "절제",
       "upright": [
-        "Perfect balance creates harmony in all life areas.",
-        "Patience and moderation lead to lasting success.",
-        "Blending opposites creates powerful alchemy.",
-        "Divine timing orchestrates perfect outcomes."
+        "균형이 모든 영역에서 조화를 이룹니다.",
+        "인내와 절제가 성공을 이끕니다.",
+        "대립 요소의 조화가 강력한 결과를 만듭니다.",
+        "적절한 시기가 완벽한 결과를 만듭니다."
       ],
       "reversed": [
-        "Imbalance and excess disrupt your equilibrium.",
-        "Impatience rushes processes requiring careful timing.",
-        "Conflicting desires create internal discord.",
-        "Lack of moderation leads to unfortunate extremes."
+        "불균형과 과잉이 혼란을 만듭니다.",
+        "성급함이 과정을 망칩니다.",
+        "상반된 욕구가 내적 갈등을 일으킵니다.",
+        "절제 부족이 극단으로 이어집니다."
       ]
     },
     "The Devil": {
-      "name": "The Devil",
+      "name": "악마",
       "upright": [
-        "Material desires and earthly pleasures demand examination.",
-        "Shadow aspects require acknowledgment and integration.",
-        "Bondage to unhealthy patterns becomes apparent.",
-        "Temptation tests your commitment to growth."
+        "물질적 욕망과 집착을 돌아봐야 합니다.",
+        "그림자적인 면을 인식하고 통합해야 합니다.",
+        "부정적인 패턴에 묶여 있음을 자각합니다.",
+        "유혹이 성장을 시험합니다."
       ],
       "reversed": [
-        "Liberation from limiting beliefs sets you free.",
-        "Breaking unhealthy patterns restores personal power.",
-        "Recognition of illusions dispels their influence.",
-        "Release from bondage opens new possibilities."
+        "속박에서 벗어나 자유를 되찾습니다.",
+        "나쁜 습관을 끊고 힘을 회복합니다.",
+        "환상을 깨고 현실을 직시합니다.",
+        "구속에서 벗어나 새로운 가능성이 열립니다."
       ]
     },
     "The Tower": {
-      "name": "The Tower",
+      "name": "탑",
       "upright": [
-        "Sudden upheaval destroys false foundations.",
-        "Breakthrough moments shatter limiting illusions.",
-        "Chaos precedes necessary reconstruction.",
-        "Divine intervention redirects your life path."
+        "갑작스러운 붕괴가 잘못된 기반을 무너뜨립니다.",
+        "깨달음이 기존의 믿음을 깨뜨립니다.",
+        "혼란 뒤에 재구성이 필요합니다.",
+        "급격한 변화가 삶을 재편합니다."
       ],
       "reversed": [
-        "Avoiding necessary destruction prolongs instability.",
-        "Fear of change maintains crumbling structures.",
-        "Gradual transformation replaces sudden upheaval.",
-        "Disaster narrowly avoided teaches important lessons."
+        "필요한 변화를 회피하면 더 큰 불안이 생깁니다.",
+        "붕괴를 늦추려는 시도가 문제를 키웁니다.",
+        "점진적인 변화가 갑작스러운 충격을 대체합니다.",
+        "위기를 피한 것이 교훈이 됩니다."
       ]
     },
     "The Star": {
-      "name": "The Star",
+      "name": "별",
       "upright": [
-        "Hope illuminates even the darkest moments.",
-        "Spiritual renewal restores faith and optimism.",
-        "Divine inspiration guides your creative expression.",
-        "Healing waters wash away past wounds."
+        "희망이 어두운 시기를 밝힙니다.",
+        "영적 회복이 믿음을 되찾게 합니다.",
+        "영감이 창의성을 이끕니다.",
+        "치유가 과거의 상처를 씻어냅니다."
       ],
       "reversed": [
-        "Despair clouds your vision of future possibilities.",
-        "Disconnection from faith creates spiritual emptiness.",
-        "Creative blocks stifle inspired expression.",
-        "Pessimism prevents recognition of blessings."
+        "절망이 미래의 가능성을 가립니다.",
+        "신념과 단절되어 공허함을 느낍니다.",
+        "창의적 막힘이 발생합니다.",
+        "비관주의가 기회를 보지 못하게 합니다."
       ]
     },
     "The Moon": {
-      "name": "The Moon",
+      "name": "달",
       "upright": [
-        "Illusions and deceptions require careful navigation.",
-        "Intuitive wisdom emerges from subconscious depths.",
-        "Dreams and visions carry important messages.",
-        "Hidden fears surface for healing and release."
+        "환상과 착각 속에서 신중한 판단이 필요합니다.",
+        "잠재의식의 지혜가 드러납니다.",
+        "꿈과 직감이 중요한 메시지를 전달합니다.",
+        "숨겨진 두려움이 드러나 치유됩니다."
       ],
       "reversed": [
-        "Confusion lifts as clarity returns to your vision.",
-        "Deceptions revealed allow truth to emerge.",
-        "Repressed emotions demand conscious attention.",
-        "Mental fog clears revealing the path ahead."
+        "혼란이 사라지고 명확함이 찾아옵니다.",
+        "숨겨진 진실이 드러납니다.",
+        "억눌린 감정이 표면으로 올라옵니다.",
+        "정신적 혼란이 해소됩니다."
       ]
     },
     "The Sun": {
-      "name": "The Sun",
+      "name": "태양",
       "upright": [
-        "Joy and vitality infuse every aspect of existence.",
-        "Success and recognition reward your authentic expression.",
-        "Childlike wonder reveals life's simple pleasures.",
-        "Radiant energy attracts abundance and blessings."
+        "기쁨과 활력이 삶을 가득 채웁니다.",
+        "성공과 인정이 보상으로 돌아옵니다.",
+        "순수한 즐거움이 삶을 풍요롭게 합니다.",
+        "빛나는 에너지가 풍요를 끌어옵니다."
       ],
       "reversed": [
-        "Temporary clouds obscure your inner radiance.",
-        "Ego inflation distorts genuine accomplishments.",
-        "Forced positivity masks underlying issues.",
-        "Delayed success tests your patience and faith."
+        "일시적인 구름이 빛을 가립니다.",
+        "자만심이 성취를 왜곡합니다.",
+        "억지 긍정이 문제를 덮습니다.",
+        "지연된 성공이 인내를 시험합니다."
       ]
     },
     "Judgement": {
-      "name": "Judgement",
+      "name": "심판",
       "upright": [
-        "Spiritual awakening transforms your entire being.",
-        "Past actions receive fair and final evaluation.",
-        "Rebirth follows honest self-assessment.",
-        "Higher calling demands courageous response."
+        "영적 각성이 삶을 변화시킵니다.",
+        "과거의 행동이 평가받습니다.",
+        "새로운 시작을 위한 부활이 일어납니다.",
+        "더 높은 부름에 응답해야 합니다."
       ],
       "reversed": [
-        "Self-judgment blocks forgiveness and growth.",
-        "Avoiding inner calling creates persistent dissatisfaction.",
-        "Past mistakes haunt present circumstances.",
-        "Fear of judgment paralyzes decisive action."
+        "자기 비판이 성장을 막습니다.",
+        "부름을 외면하여 불만이 지속됩니다.",
+        "과거의 실수가 현재를 괴롭힙니다.",
+        "두려움이 결정을 마비시킵니다."
       ]
     },
     "The World": {
-      "name": "The World",
+      "name": "세계",
       "upright": [
-        "Completion of major cycles brings deep satisfaction.",
-        "Wholeness and integration create perfect harmony.",
-        "Worldly success reflects inner accomplishment.",
-        "Universal consciousness expands your awareness."
+        "큰 순환의 완성이 만족을 가져옵니다.",
+        "완전성과 통합이 조화를 이룹니다.",
+        "성취가 내면의 성장을 반영합니다.",
+        "의식이 확장됩니다."
       ],
       "reversed": [
-        "Incomplete ventures require additional effort.",
-        "External success feels empty without inner fulfillment.",
-        "Shortcuts prevent genuine accomplishment.",
-        "Limited perspective restricts full potential."
+        "미완성된 일이 추가 노력을 요구합니다.",
+        "외적 성공이 내적 공허를 남깁니다.",
+        "지름길이 완전한 성취를 방해합니다.",
+        "제한된 시각이 가능성을 막습니다."
       ]
     }
   }
