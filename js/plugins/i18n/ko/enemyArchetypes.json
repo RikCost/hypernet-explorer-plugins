@@ -1,0 +1,2322 @@
+{
+  "enemyArchetypes": {
+    "humanoid": {
+      "name": "인간형",
+      "head": {
+        "name": "머리"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "brain": {
+        "name": "뇌",
+        "msg": "뇌진탕을 입었다!"
+      },
+      "left_eye": {
+        "name": "왼쪽 눈",
+        "msg": "왼쪽 눈이 부어올랐다!"
+      },
+      "right_eye": {
+        "name": "오른쪽 눈",
+        "msg": "오른쪽 눈이 부어올랐다!"
+      },
+      "nose": {
+        "name": "코",
+        "msg": "코가 부러졌다!"
+      },
+      "left_ear": {
+        "name": "왼쪽 귀",
+        "msg": "왼쪽 귀에 이명이 들린다!"
+      },
+      "right_ear": {
+        "name": "오른쪽 귀",
+        "msg": "오른쪽 귀에 이명이 들린다!"
+      },
+      "mouth": {
+        "name": "입",
+        "msg": "턱이 탈구됐다!"
+      },
+      "teeth": {
+        "name": "치아",
+        "msg": "치아가 부러져 나갔다!"
+      },
+      "genitals": {
+        "name": "성기",
+        "msg": "성기가 손상되었다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 손상되었다!"
+      },
+      "left_lung": {
+        "name": "왼쪽 폐",
+        "msg": "왼쪽 폐가 허탈되었다!"
+      },
+      "right_lung": {
+        "name": "오른쪽 폐",
+        "msg": "오른쪽 폐가 허탈되었다!"
+      },
+      "liver": {
+        "name": "간",
+        "msg": "간이 찢어졌다!"
+      },
+      "stomach": {
+        "name": "위",
+        "msg": "위가 파열됐다!"
+      },
+      "spleen": {
+        "name": "비장",
+        "msg": "비장이 파열됐다!"
+      },
+      "intestines": {
+        "name": "장",
+        "msg": "장이 천공됐다!"
+      },
+      "left_hand": {
+        "name": "왼손",
+        "msg": "왼손이 짓이겨졌다!"
+      },
+      "left_fingers": {
+        "name": "왼손가락",
+        "msg": "왼손가락이 부러졌다!"
+      },
+      "right_hand": {
+        "name": "오른손",
+        "msg": "오른손이 짓이겨졌다!"
+      },
+      "right_fingers": {
+        "name": "오른손가락",
+        "msg": "오른손가락이 부러졌다!"
+      },
+      "left_foot": {
+        "name": "왼발",
+        "msg": "왼발을 다쳤다!"
+      },
+      "left_toes": {
+        "name": "왼발가락",
+        "msg": "왼발가락이 으스러졌다!"
+      },
+      "right_foot": {
+        "name": "오른발",
+        "msg": "오른발을 다쳤다!"
+      },
+      "right_toes": {
+        "name": "오른발가락",
+        "msg": "오른발가락이 으스러졌다!"
+      }
+    },
+    "beast": {
+      "name": "짐승",
+      "head": {
+        "name": "머리"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      }
+    },
+    "insectoid": {
+      "head": {
+        "name": "머리"
+      },
+      "thorax": {
+        "name": "가슴부",
+        "msg": "가슴부가 관통됐다!"
+      },
+      "abdomen": {
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "middle_left_leg": {
+        "name": "왼쪽 가운데다리",
+        "msg": "왼쪽 가운데다리가 잘려나갔다!"
+      },
+      "middle_right_leg": {
+        "name": "오른쪽 가운데다리",
+        "msg": "오른쪽 가운데다리가 잘려나갔다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "mandibles": {
+        "name": "아래턱",
+        "msg": "아래턱이 박살났다!"
+      },
+      "name": "곤충"
+    },
+    "frog": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 갈라졌다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "tongue": {
+        "name": "혀",
+        "msg": "혀가 잘려나갔다!"
+      },
+      "vocal_sac": {
+        "name": "발성낭",
+        "msg": "발성낭이 파열됐다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "hind_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "hind_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "name": "개구리"
+    },
+    "dragon": {
+      "name": "드래곤",
+      "head": {
+        "name": "머리"
+      },
+      "fire_breath_organ": {
+        "name": "발화낭",
+        "msg": "발화낭이 사방으로 폭발했다!"
+      },
+      "neck": {
+        "name": "목",
+        "msg": "목이 꺾여 부러졌다!"
+      },
+      "body": {
+        "name": "몸통",
+        "msg": "몸통이 짓이겨졌다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      }
+    },
+    "skeleton": {
+      "name": "스켈레톤",
+      "head": {
+        "name": "머리",
+        "msg": "두개골이 산산이 조각났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "갈비뼈가 바스라져 먼지가 되었다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔 뼈가 부러져 떨어졌다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔 뼈가 부러져 떨어졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 바스라졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 바스라졌다!"
+      }
+    },
+    "fairy": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 갈라졌다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 산산이 부서져 반짝이는 가루가 되었다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢어졌다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "pixie_dust_sac": {
+        "name": "요정가루낭",
+        "msg": "가루낭이 파열되었다!"
+      },
+      "name": "요정"
+    },
+    "slime": {
+      "name": "슬라임",
+      "core": {
+        "name": "핵",
+        "msg": "핵이 완전히 파괴되었다!"
+      },
+      "upper_body": {
+        "name": "상반신",
+        "msg": "상반신이 짓이겨졌다!"
+      },
+      "lower_body": {
+        "name": "하반신",
+        "msg": "하반신이 짓이겨졌다!"
+      },
+      "pseudopod_1": {
+        "name": "위족 1",
+        "msg": "위족 1이 녹아내렸다!"
+      },
+      "pseudopod_2": {
+        "name": "위족 2",
+        "msg": "위족 2가 녹아내렸다!"
+      }
+    },
+    "undead": {
+      "skull": {
+        "name": "두개골",
+        "msg": "두개골이 산산이 조각났다!"
+      },
+      "ribcage": {
+        "name": "늑골",
+        "msg": "늑골이 산산이 조각났다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "name": "언데드"
+    },
+    "scorpion": {
+      "head": {
+        "name": "머리"
+      },
+      "두흉부": {
+        "name": "두흉부",
+        "msg": "두흉부가 산산히 조각났다!"
+      },
+      "abdomen": {
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "stinger": {
+        "name": "독침",
+        "msg": "독침이 부러졌다!"
+      },
+      "pincer_left": {
+        "name": "왼쪽 집게",
+        "msg": "왼쪽 집게가 으깨졌다!"
+      },
+      "pincer_right": {
+        "name": "오른족 집게",
+        "msg": "오른쪽 집게가 으깨졌다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "mid_left_leg": {
+        "name": "왼쪽 중간 앞다리",
+        "msg": "왼쪽 중간 앞다리가 잘려나갔다!"
+      },
+      "mid_right_leg": {
+        "name": "오른쪽 중간 앞다리",
+        "msg": "오른쪽 중간 앞다리가 잘려나갔다!"
+      },
+      "mid_rear_left_leg": {
+        "name": "왼쪽 중간 뒷다리",
+        "msg": "왼쪽 중간 뒷다리가 잘려나갔다!"
+      },
+      "mid_rear_right_leg": {
+        "name": "오른쪽 중간 뒷다리",
+        "msg": "오른쪽 중간 뒷다리가 잘려나갔다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "name": "전갈"
+    },
+    "spider": {
+      "head": {
+        "name": "머리"
+      },
+      "cephalothorax": {
+        "name": "두흉부",
+        "msg": "두흉부가 산산히 조각났다!"
+      },
+      "abdomen": {
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
+      },
+      "fangs": {
+        "name": "독니",
+        "msg": "독니가 산산이 부서졌다!"
+      },
+      "spinnerets": {
+        "name": "방적돌기",
+        "msg": "방적돌기가 잘려나갔다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "mid_left_leg": {
+        "name": "왼쪽 중간 앞다리",
+        "msg": "왼쪽 중간 앞다리가 잘려나갔다!"
+      },
+      "mid_right_leg": {
+        "name": "오른쪽 중간 앞다리",
+        "msg": "오른쪽 중간 앞다리가 잘려나갔다!"
+      },
+      "mid_rear_left_leg": {
+        "name": "왼쪽 중간 뒷다리",
+        "msg": "왼쪽 중간 뒷다리가 잘려나갔다!"
+      },
+      "mid_rear_right_leg": {
+        "name": "오른쪽 중간 뒷다리",
+        "msg": "오른쪽 중간 뒷다리가 잘려나갔다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "name": "거미"
+    },
+    "plant": {
+      "name": "식물",
+      "flower": {
+        "name": "꽃",
+        "msg": "꽃이 썩어 문들어졌다!"
+      },
+      "stem": {
+        "name": "줄기",
+        "msg": "줄기가 비틀려 부러졌다!"
+      },
+      "roots": {
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
+      },
+      "vine_1": {
+        "name": "덩굴 1",
+        "msg": "덩굴 1이 산산이 찢어졌다!"
+      },
+      "vine_2": {
+        "name": "덩굴 1",
+        "msg": "덩굴 2가 산산이 찢어졌다!"
+      }
+    },
+    "elemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 완전히 파괴되었다!"
+      },
+      "upper_form": {
+        "name": "상반신",
+        "msg": "상반신이 흐트러졌다!"
+      },
+      "lower_form": {
+        "name": "하반신",
+        "msg": "하반신이 흐트러졌다!"
+      },
+      "left_appendage": {
+        "name": "왼쪽 부속기관",
+        "msg": "왼쪽 부속기관이 충격으로 녹아내렸다!"
+      },
+      "right_appendage": {
+        "name": "오른쪽 부속기관",
+        "msg": "오른쪽 부속기관이 충격으로 녹아내렸다!"
+      },
+      "name": "정령"
+    },
+    "aquaticfish": {
+      "head": {
+        "name": "머리"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "tail_fin": {
+        "name": "꼬리 지느러미",
+        "msg": "꼬리 지느러미가 잘려나갔다!!"
+      },
+      "dorsal_fin": {
+        "name": "등지느러미",
+        "msg": "등지느러미가 뜯겨나갔다!"
+      },
+      "left_pectoral_fin": {
+        "name": "왼쪽 가슴지느러미",
+        "msg": "왼쪽 가슴지느러미가 갈기갈기 찢어졌다!"
+      },
+      "right_pectoral_fin": {
+        "name": "오른쪽 가슴지느러미",
+        "msg": "오른쪽 가슴지느러미가 갈기갈기 찢어졌다!"
+      },
+      "name": "어류"
+    },
+    "octopus": {
+      "head": {
+        "name": "머리"
+      },
+      "mantle": {
+        "name": "외투막",
+        "msg": "외투막이 으스러졌다!"
+      },
+      "tentacle_1": {
+        "name": "촉수 1",
+        "msg": "촉수 1이 뜯겨나갔다!"
+      },
+      "tentacle_2": {
+        "name": "촉수 2",
+        "msg": "촉수 2가 뜯겨나갔다!"
+      },
+      "tentacle_3": {
+        "name": "촉수 3",
+        "msg": "촉수 3이 뜯겨나갔다!"
+      },
+      "tentacle_4": {
+        "name": "촉수 4",
+        "msg": "촉수 4가 뜯겨나갔다!"
+      },
+      "name": "문어"
+    },
+    "robot": {
+      "head": {
+        "name": "머리"
+      },
+      "core": {
+        "name": "핵",
+        "msg": "핵이 완전히 파괴되었다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 떨어져 나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 떨어져 나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "name": "기계"
+    },
+    "bird": {
+      "name": "새",
+      "head": {
+        "name": "머리"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "beak": {
+        "name": "부리",
+        "msg": "부리가 산산조각났다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "talons": {
+        "name": "발톱",
+        "msg": "발톱이 뜯겨나갔다!"
+      }
+    },
+    "reptilian": {
+      "head": {
+        "name": "머리"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "name": "랩틸리언"
+    },
+    "mushroom": {
+      "cap": {
+        "name": "갓",
+        "msg": "갓이 산산이 찢겨졌다!"
+      },
+      "stalk": {
+        "name": "줄기",
+        "msg": "줄기가 비틀려 부러졌다!"
+      },
+      "roots": {
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
+      },
+      "spore_sacs": {
+        "name": "포자낭",
+        "msg": "포자낭이 터졌다!"
+      },
+      "name": "버섯"
+    },
+    "tree": {
+      "name": "나무",
+      "crown": {
+        "name": "수관",
+        "msg": "수관이 산산이 찢겨졌다!"
+      },
+      "trunk": {
+        "name": "줄기",
+        "msg": "줄기가 완전히 갈라졌다!"
+      },
+      "roots": {
+        "name": "뿌리",
+        "msg": "뿌리가 찢어졌다!"
+      },
+      "branch_1": {
+        "name": "가지 1",
+        "msg": "가지 1이 부러졌다!"
+      },
+      "branch_2": {
+        "name": "가지 2",
+        "msg": "가지 2가 부러졌다!"
+      }
+    },
+    "bacterial": {
+      "nucleus": {
+        "name": "핵",
+        "msg": "핵이 폭발했다!"
+      },
+      "membrane": {
+        "name": "세포막",
+        "msg": "세포막이 진흙처럼 녹아내렸다!"
+      },
+      "flagellum": {
+        "name": "편모",
+        "msg": "편모가 갈기갈기 찢어졌다!"
+      },
+      "toxin_sacs": {
+        "name": "독낭",
+        "msg": "독낭이 터졌다!"
+      },
+      "name": "박테리아"
+    },
+    "doubleheadedhumanoid": {
+      "head_left": {
+        "name": "왼쪽 머리",
+        "msg": "왼쪽 머리가 뜯겨나갔다!"
+      },
+      "head_right": {
+        "name": "오른쪽 머리",
+        "msg": "오른쪽 머리가 뜯겨나갔다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "name": "쌍두 인간형"
+    },
+    "serpent": {
+      "head": {
+        "name": "머리"
+      },
+      "fangs": {
+        "name": "독니",
+        "msg": "독니가 산산이 부서졌다!"
+      },
+      "body_segment_1": {
+        "name": "몸통 부위 1",
+        "msg": "몸통 부위 1이 파열됐다!"
+      },
+      "body_segment_2": {
+        "name": "몸통 부위 2",
+        "msg": "몸통 부위 2가 파열됐다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "name": "뱀"
+    },
+    "golem": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 갈라져 무너졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 바스라졌다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 바스라졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "골렘"
+    },
+    "demon": {
+      "name": "악마",
+      "head": {
+        "name": "머리"
+      },
+      "horns": {
+        "name": "뿔",
+        "msg": "뿔이 산산이 조각났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 갈기갈기 찢어졌다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      }
+    },
+    "ghost": {
+      "face": {
+        "name": "얼굴",
+        "msg": "얼굴이 흩어졌다!"
+      },
+      "core": {
+        "name": "정수 핵",
+        "msg": "정수 핵이 흐트러졌다!"
+      },
+      "left_wisp": {
+        "name": "왼쪽 영체",
+        "msg": "왼쪽 영체가 흩어졌다!"
+      },
+      "right_wisp": {
+        "name": "오른쪽 영체",
+        "msg": "오른쪽 영체가 흩어졌다!"
+      },
+      "name": "유령"
+    },
+    "drone": {
+      "sensor_array": {
+        "name": "센서 배열",
+        "msg": "센서 배열이 완전히 박살났다!"
+      },
+      "chassis": {
+        "name": "섀시",
+        "msg": "새시가 으스러졌다!"
+      },
+      "left_prop": {
+        "name": "왼쪽 프로펠러",
+        "msg": "왼쪽 프로펠러가 부서졌다!"
+      },
+      "right_prop": {
+        "name": "오른쪽 프로펠러",
+        "msg": "오른쪽 프로펠러가 부서졌다!"
+      },
+      "name": "드론"
+    },
+    "voidspawn": {
+      "abyssal_eye": {
+        "name": "심연의 눈",
+        "msg": "심연의 눈이 꿰뚫렸다!"
+      },
+      "maw": {
+        "name": "입",
+        "msg": "입이 갈라졌다!"
+      },
+      "void_tendril_1": {
+        "name": "공허 촉수 1",
+        "msg": "공허 촉수 1이 시들어버렸다!"
+      },
+      "void_tendril_2": {
+        "name": "공허 촉수 2",
+        "msg": "공허 촉수 2가 시들어버렸다!"
+      },
+      "core": {
+        "name": "핵",
+        "msg": "핵이 부서졌다!"
+      },
+      "name": "공허 태생체"
+    },
+    "mutant": {
+      "head": {
+        "name": "머리"
+      },
+      "mass": {
+        "name": "변이하는 덩어리",
+        "msg": "변이하는 덩어리가 해체되었다!"
+      },
+      "extra_limb_1": {
+        "name": "잉여 팔다리 1",
+        "msg": "잉여 팔다리 1이 떨어져 나갔다!"
+      },
+      "extra_limb_2": {
+        "name": "잉여 팔다리 2",
+        "msg": "잉여 팔다리 2가 떨어져 나갔다!"
+      },
+      "eye_cluster": {
+        "name": "눈 덩어리",
+        "msg": "눈 덩어리가 터졌다!"
+      },
+      "tail_spike": {
+        "name": "꼬리 가시",
+        "msg": "꼬리 가시가 비틀려 부서졌다!"
+      },
+      "name": "돌연변이"
+    },
+    "crystalentity": {
+      "core": {
+        "name": "수정 핵",
+        "msg": "수정 핵이 갈라졌다!"
+      },
+      "left_spire": {
+        "name": "왼쪽 돌출부",
+        "msg": "왼쪽 돌출부가 파괴되었다!"
+      },
+      "right_spire": {
+        "name": "오른쪽 돌출부",
+        "msg": "오른쪽 돌출부가 파괴되었다!"
+      },
+      "focus_gem": {
+        "name": "집중의 보석",
+        "msg": "집중의 보석이 꺼졌다!"
+      },
+      "shield_crystal": {
+        "name": "방어막 수정",
+        "msg": "방어막 수정이 산산이 조각났다!"
+      },
+      "name": "수정 생명체"
+    },
+    "amphibian": {
+      "head": {
+        "name": "머리"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "tongue": {
+        "name": "혀",
+        "msg": "혀가 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
+      },
+      "name": "양서류"
+    },
+    "constructedundead": {
+      "head": {
+        "name": "머리"
+      },
+      "torso": {
+        "name": "꿰매진 몸통",
+        "msg": "꿰매진 몸통이 가운데부터 찢어졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "power_stitch": {
+        "name": "동력 봉합선",
+        "msg": "동력 봉합선이 터져버렸다!"
+      },
+      "name": "조립된 언데드"
+    },
+    "minotaur": {
+      "head": {
+        "name": "머리"
+      },
+      "horns": {
+        "name": "뿔",
+        "msg": "뿔이 산산이 조각났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 으스러졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 다리",
+        "msg": "왼쪽 다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 다리",
+        "msg": "오른쪽 다리가 잘려나갔다!"
+      },
+      "name": "미노타우르스"
+    },
+    "goblin": {
+      "brain": {
+        "name": "뇌",
+        "msg": "뇌가 파괴되었다!"
+      },
+      "skull": {
+        "name": "두개골",
+        "msg": "두개골이 골절됐다!"
+      },
+      "cervical_vertebrae": {
+        "name": "경추",
+        "msg": "경추가 부러졌다!"
+      },
+      "thoracic_vertebrae": {
+        "name": "흉추",
+        "msg": "흉추가 갈라졌다!"
+      },
+      "lumbar_vertebrae": {
+        "name": "요추",
+        "msg": "요추가 무너졌다!"
+      },
+      "ribcage": {
+        "name": "늑골",
+        "msg": "늑골이 산산이 조각났다!"
+      },
+      "pelvis": {
+        "name": "골반",
+        "msg": "골반이 으스러졌다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 간통됐다!"
+      },
+      "lungs": {
+        "name": "폐",
+        "msg": "폐가 허탈되었다!"
+      },
+      "liver": {
+        "name": "간",
+        "msg": "간이 파열됐다!"
+      },
+      "kidneys": {
+        "name": "신장",
+        "msg": "신장이 파괴되었다!"
+      },
+      "stomach": {
+        "name": "위",
+        "msg": "위가 파열됐다!"
+      },
+      "small_intestine": {
+        "name": "소장",
+        "msg": "소장이 찢어졌다!"
+      },
+      "large_intestine": {
+        "name": "대장",
+        "msg": "대장이 터졌다!"
+      },
+      "pancreas": {
+        "name": "췌장",
+        "msg": "췌장이 파괴되었다!"
+      },
+      "spleen": {
+        "name": "비장",
+        "msg": "비장이 파열됐다!"
+      },
+      "eye_left": {
+        "name": "왼쪽 눈",
+        "msg": "왼쪽 눈이 뽑혀나갔다!"
+      },
+      "eye_right": {
+        "name": "오른쪽 눈",
+        "msg": "오른쪽 눈이 뽑혀나갔다!"
+      },
+      "ear_left": {
+        "name": "왼쪽 귀",
+        "msg": "왼쪽 귀가 뜯겨나갔다!"
+      },
+      "ear_right": {
+        "name": "오른쪽 귀",
+        "msg": "오른쪽 귀가 뜯겨나갔다!"
+      },
+      "tongue": {
+        "name": "혀",
+        "msg": "혀가 뽑혀나갔다!"
+      },
+      "left_upper_arm": {
+        "name": "왼쪽 상박",
+        "msg": "왼쪽 상박이 절단되었다!"
+      },
+      "left_forearm": {
+        "name": "왼쪽 전완",
+        "msg": "왼쪽 전완이 골절됐다!"
+      },
+      "left_hand": {
+        "name": "왼손",
+        "msg": "왼손이 절단되었다!"
+      },
+      "right_upper_arm": {
+        "name": "오른쪽 상박",
+        "msg": "오른쪽 상박이 절단되었다!"
+      },
+      "right_forearm": {
+        "name": "오른쪽 전완",
+        "msg": "오른쪽 전완이 골절됐다!"
+      },
+      "right_hand": {
+        "name": "오른손",
+        "msg": "오른손이 절단되었다!"
+      },
+      "left_thigh": {
+        "name": "왼쪽 허벅지",
+        "msg": "왼쪽 허벅지가 산산이 조각났다!"
+      },
+      "left_shin": {
+        "name": "왼쪽 정강이",
+        "msg": "왼쪽 정강이가 부러졌다!"
+      },
+      "left_foot": {
+        "name": "왼발",
+        "msg": "왼발이 떨어져 나갔다!"
+      },
+      "right_thigh": {
+        "name": "오른쪽 허벅지",
+        "msg": "오른쪽 허벅지가 산산이 조각났다!"
+      },
+      "right_shin": {
+        "name": "오른쪽 정강이",
+        "msg": "오른쪽 정강이가 부러졌다!"
+      },
+      "right_foot": {
+        "name": "오른발",
+        "msg": "오른발이 떨어져 나갔다!"
+      },
+      "name": "고블린"
+    },
+    "crustacean": {
+      "claw_left": {
+        "name": "왼쪽 집게발",
+        "msg": "왼쪽 집게발이 산산이 조각났다!"
+      },
+      "claw_right": {
+        "name": "오른쪽 집게발",
+        "msg": "오른쪽 집게발이 산산이 조각났다!"
+      },
+      "carapace": {
+        "name": "갑각",
+        "msg": "갑각이 갈라졌다!"
+      },
+      "abdomen": {
+        "name": "복부",
+        "msg": "복부가 파열됐다!"
+      },
+      "front_leg": {
+        "name": "앞다리",
+        "msg": "앞다리가 절단되었다!"
+      },
+      "rear_leg": {
+        "name": "뒷다리",
+        "msg": "뒷다리가 잘려나갔다!"
+      },
+      "antennae": {
+        "name": "더듬이",
+        "msg": "더듬이가 으스러졌다!"
+      },
+      "name": "갑각류"
+    },
+    "spherical": {
+      "core": {
+        "name": "핵",
+        "msg": "핵의 무결성이 붕괴되었다!"
+      },
+      "shell": {
+        "name": "외피",
+        "msg": "외피가 파손됐다!"
+      },
+      "sensor_array": {
+        "name": "센서 배열",
+        "msg": "센서 배열의 기능이 정지되었다!"
+      },
+      "spin_spines": {
+        "name": "회전 가시",
+        "msg": "회전 가시가 잘려나갔다!"
+      },
+      "aux_drives": {
+        "name": "보조 추진기",
+        "msg": "보조 추진기가 고장났다!"
+      },
+      "name": "구체"
+    },
+    "turtle": {
+      "shell": {
+        "name": "등딱지",
+        "msg": "등딱지가 쩍 갈라졌다!"
+      },
+      "head": {
+        "name": "머리",
+        "msg": "머리가 박살났다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 절단되었다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘렸다!"
+      },
+      "name": "거북"
+    },
+    "manticore": {
+      "brain": {
+        "name": "뇌",
+        "msg": "뇌가 파괴되었다!"
+      },
+      "skull": {
+        "name": "두개골",
+        "msg": "두개골이 갈라졌다!"
+      },
+      "spine": {
+        "name": "척추",
+        "msg": "척추가 절단되었다!"
+      },
+      "ribcage": {
+        "name": "늑골",
+        "msg": "늑골이 산산이 조각났다!"
+      },
+      "front_left_paw": {
+        "name": "왼쪽 앞발",
+        "msg": "왼쪽 앞발이 갈기갈기 찢겼다!"
+      },
+      "front_right_paw": {
+        "name": "오른쪽 앞발",
+        "msg": "오른쪽 앞발이 갈기갈기 찢겼다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 짓이겨졌다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 짓이겨졌다!"
+      },
+      "left_eye": {
+        "name": "왼쪽 눈",
+        "msg": "왼쪽 눈이 뽑혔다!"
+      },
+      "right_eye": {
+        "name": "오른쪽 눈",
+        "msg": "오른쪽 눈이 뽑혔다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 찢어졌다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 찢어졌다!"
+      },
+      "left_lung": {
+        "name": "왼쪽 폐",
+        "msg": "왼쪽 폐가 관통됐다!"
+      },
+      "right_lung": {
+        "name": "오른쪽 폐",
+        "msg": "오른쪽 폐가 관통됐다!"
+      },
+      "name": "만티코어"
+    },
+    "chestmimic": {
+      "core": {
+        "name": "물렁한 핵",
+        "msg": "핵이 파열됐다!"
+      },
+      "lid": {
+        "name": "상자 뚜껑",
+        "msg": "뚜껑이 비틀려 열렸다!"
+      },
+      "teeth": {
+        "name": "날카로운 이빨",
+        "msg": "이빨이 부러져 나갔다!"
+      },
+      "tongue": {
+        "name": "점액질 혀",
+        "msg": "혀가 절단되었다!"
+      },
+      "feet": {
+        "name": "뭉툭한 발",
+        "msg": "발이 박살났다!"
+      },
+      "name": "상자 미믹"
+    },
+    "phoenix": {
+      "core": {
+        "name": "잿빛 핵",
+        "msg": "잿빛 핵이 파괴되었다!"
+      },
+      "feathers": {
+        "name": "불타는 깃털",
+        "msg": "깃털이 불타버렸다!"
+      },
+      "beak": {
+        "name": "부리",
+        "msg": "부리가 갈라졌다!"
+      },
+      "talons": {
+        "name": "발톱",
+        "msg": "발톱이 산산이 조각났다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개의 불이 꺼졌다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개의 불이 꺼졌다!"
+      },
+      "left_eye": {
+        "name": "왼쪽 잉걸불 눈",
+        "msg": "왼쪽 눈의 빛이 흐려졌다!"
+      },
+      "right_eye": {
+        "name": "오른쪽 잉걸불 눈",
+        "msg": "오른쪽 눈의 빛이 흐려졌다!"
+      },
+      "name": "불사조"
+    },
+    "ogre": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 박살났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 짓이겨졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 부러졌다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 부러졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "오우거"
+    },
+    "scarecrow": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 박살났다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 찢어졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "허수아비"
+    },
+    "segmentworm": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 으스러졌다!"
+      },
+      "heart_segment": {
+        "name": "심장 마디",
+        "msg": "심장 마디가 파열됐다!"
+      },
+      "body_segment": {
+        "name": "몸통 마디",
+        "msg": "몸통 마디가 절단되었다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "name": "마디벌레"
+    },
+    "mineral": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 산산이 조각났다!"
+      },
+      "shell": {
+        "name": "외피",
+        "msg": "외피가 갈라졌다!"
+      },
+      "crystals": {
+        "name": "수정",
+        "msg": "수정이 산산이 부서졌다!"
+      },
+      "veins": {
+        "name": "광맥",
+        "msg": "광맥이 끊어졌다!"
+      },
+      "name": "광물"
+    },
+    "hydra": {
+      "head_one": {
+        "name": "왼쪽 머리",
+        "msg": "왼쪽 머리가 잘려나갔다!"
+      },
+      "head_two": {
+        "name": "가운데 머리",
+        "msg": "가운데 머리가 잘려나갔다!"
+      },
+      "head_three": {
+        "name": "오른쪽 머리",
+        "msg": "오른쪽 머리가 잘려나갔다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "name": "히드라"
+    },
+    "vampire": {
+      "head": {
+        "name": "머리",
+        "msg": "머리를 강타당했다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 꿰뚫렸다!"
+      },
+      "fangs": {
+        "name": "송곳니",
+        "msg": "송곳니가 산산이 부서졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 부러졌다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 부서졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "흡혈귀"
+    },
+    "bat": {
+      "head": {
+        "name": "머리",
+        "msg": "머리에 뇌진탕을 입었다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 찢어졌다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 갈기갈기 찢겼다!"
+      },
+      "fangs": {
+        "name": "독니",
+        "msg": "독니가 뭉툭해졌다!"
+      },
+      "name": "박쥐"
+    },
+    "rabbit": {
+      "head": {
+        "name": "머리",
+        "msg": "머리에 뇌진탕을 입었다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "ears": {
+        "name": "귀",
+        "msg": "귀가 찢어졌다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 부러졌다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 부러졌다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 부러졌다!"
+      },
+      "name": "토끼"
+    },
+    "armoredknight": {
+      "helmet": {
+        "name": "투구",
+        "msg": "투구가 벗겨졌다!"
+      },
+      "chestplate": {
+        "name": "흉갑",
+        "msg": "흉갑이 갈라졌다!"
+      },
+      "pauldron_left": {
+        "name": "왼쪽 견갑",
+        "msg": "왼쪽 견갑이 산산이 조각났다!"
+      },
+      "pauldron_right": {
+        "name": "오른쪽 견갑",
+        "msg": "오른쪽 견갑이 산산이 조각났다!"
+      },
+      "greaves_left": {
+        "name": "왼쪽 경갑",
+        "msg": "왼쪽 경갑이 찌그러졌다!"
+      },
+      "greaves_right": {
+        "name": "오른쪽 경갑",
+        "msg": "오른쪽 경갑이 찌그러졌다!"
+      },
+      "name": "갑옷 기사"
+    },
+    "centaur": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 함몰되었다!"
+      },
+      "torso": {
+        "name": "인간 몸통",
+        "msg": "인간 몸통이 으스러졌다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
+      },
+      "body": {
+        "name": "말의 몸통",
+        "msg": "말의 몸통이 주저앉았다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 잘려나갔다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 잘려나갔다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 잘려나갔다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 잘려나갔다!"
+      },
+      "name": "켄타우로스"
+    },
+    "insectswarm": {
+      "mandibles": {
+        "name": "아래턱 무리",
+        "msg": "아래턱 무리가 산산이 조각났다!"
+      },
+      "wings": {
+        "name": "날개 무리",
+        "msg": "날개 무리가 바스라졌다!"
+      },
+      "legs": {
+        "name": "다리 무리",
+        "msg": "다리 무리가 파괴되었다!"
+      },
+      "abdomen": {
+        "name": "복부 무리",
+        "msg": "복부 무리가 파괴되었다!"
+      },
+      "stingers": {
+        "name": "독침 무리",
+        "msg": "독침 무리가 파괴되었다!"
+      },
+      "name": "곤충 무리"
+    },
+    "roboticdefender": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 무력화되었다!"
+      },
+      "arm_cannon": {
+        "name": "팔 대포",
+        "msg": "팔 대포가 파괴되었다!"
+      },
+      "torso": {
+        "name": "몸통",
+        "msg": "몸통이 관통되었다!"
+      },
+      "leg_joints": {
+        "name": "다리 관절",
+        "msg": "다리 관절이 고장났다!"
+      },
+      "sensors": {
+        "name": "센서",
+        "msg": "센서가 작동을 멈췄다!"
+      },
+      "name": "기계 경비병"
+    },
+    "turret": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 비활성화되었다!"
+      },
+      "gun_barrel": {
+        "name": "포신",
+        "msg": "포신이 파괴되었다!"
+      },
+      "sensor_array": {
+        "name": "센서 배열",
+        "msg": "센서 배열이 작동을 멈췄다!"
+      },
+      "rotation_mech": {
+        "name": "회전 장치",
+        "msg": "회전 장치가 고장났다!"
+      },
+      "ammo_chamber": {
+        "name": "탄약고",
+        "msg": "탄약고가 폭발했다!"
+      },
+      "name": "포탑"
+    },
+    "gorgon": {
+      "name": "고르곤",
+      "eyes": {
+        "name": "눈",
+        "msg": "눈이 멀었다!"
+      },
+      "snake_hair": {
+        "name": "뱀 머리카락",
+        "msg": "뱀 머리카락이 잘려나갔다!"
+      },
+      "upper_body": {
+        "name": "상반신",
+        "msg": "상반신이 석화되었다!"
+      },
+      "lower_body": {
+        "name": "하반신",
+        "msg": "하반신이 산산이 조각났다!"
+      }
+    },
+    "abyssalleviathan": {
+      "eye": {
+        "name": "거대한 눈",
+        "msg": "거대한 눈이 멀었다!"
+      },
+      "maw": {
+        "name": "입",
+        "msg": "입이 으스러졌다!"
+      },
+      "dorsal_plates": {
+        "name": "등갑",
+        "msg": "등갑이 갈라졌다!"
+      },
+      "tentacles": {
+        "name": "촉수",
+        "msg": "촉수가 잘려나갔다!"
+      },
+      "heart_chamber": {
+        "name": "심방",
+        "msg": "심방이 파열됐다!"
+      },
+      "name": "심연 레비아탄"
+    },
+    "snail": {
+      "shell": {
+        "name": "껍데기",
+        "msg": "껍데기가 산산이 조각났다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "tentacle_1": {
+        "name": "촉수 1",
+        "msg": "촉수 1이 잘려나갔다!"
+      },
+      "tentacle_2": {
+        "name": "촉수 2",
+        "msg": "촉수 2가 잘려나갔다!"
+      },
+      "eye": {
+        "name": "눈",
+        "msg": "눈이 멀었다!"
+      },
+      "foot": {
+        "name": "발",
+        "msg": "발이 으스러졌다!"
+      },
+      "name": "달팽이"
+    },
+    "waterelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 증발하였다!"
+      },
+      "body": {
+        "name": "물의 몸",
+        "msg": "물의 몸이 흩어졌다!"
+      },
+      "water_arms": {
+        "name": "물의 팔",
+        "msg": "물의 팔이 갈라졌다!"
+      },
+      "left_water_leg": {
+        "name": "왼쪽 물 다리",
+        "msg": "왼쪽 물 다리가 증발했다!"
+      },
+      "right_water_leg": {
+        "name": "오른쪽 물 다리",
+        "msg": "오른쪽 물 다리가 증발했다!"
+      },
+      "name": "물의 정령"
+    },
+    "thunderelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 산산이 조각났다!"
+      },
+      "body": {
+        "name": "전기의 몸",
+        "msg": "전기의 몸이 파괴되었다!"
+      },
+      "left_electric_arm": {
+        "name": "왼쪽 전기 팔",
+        "msg": "왼쪽 전기 팔이 동력을 잃었다!"
+      },
+      "right_electric_arm": {
+        "name": "오른쪽 전기 팔",
+        "msg": "오른쪽 전기 팔이 동력을 잃었다!"
+      },
+      "left_electric_leg": {
+        "name": "왼쪽 전기 다리",
+        "msg": "왼쪽 전기 다리가 소멸했다!"
+      },
+      "right_electric_leg": {
+        "name": "오른쪽 전기 다리",
+        "msg": "오른쪽 전기 다리가 소멸했다!"
+      },
+      "name": "천둥의 정령"
+    },
+    "stormelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 돌풍에 흩어졌다!"
+      },
+      "body": {
+        "name": "바람의 몸",
+        "msg": "바람의 몸이 흩어졌다!"
+      },
+      "left_rain_arm": {
+        "name": "왼쪽 비의 팔",
+        "msg": "왼쪽 비의 팔이 쓸려나갔다!"
+      },
+      "right_rain_arm": {
+        "name": "오른쪽 비의 팔",
+        "msg": "오른쪽 비의 팔이 쓸려나갔다!"
+      },
+      "left_thunder_leg": {
+        "name": "왼쪽 천둥 다리",
+        "msg": "왼쪽 천둥 다리가 무너져 내렸다!"
+      },
+      "right_thunder_leg": {
+        "name": "오른쪽 천둥 다리",
+        "msg": "오른쪽 천둥 다리가 무너져 내렸다!"
+      },
+      "name": "폭풍의 정령"
+    },
+    "fireelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 불타버렸다!"
+      },
+      "body": {
+        "name": "불꽃의 몸",
+        "msg": "불꽃의 몸이 꺼졌다!"
+      },
+      "ember_arms": {
+        "name": "잉걸불 팔",
+        "msg": "잉걸불 팔이 식어버렸다!"
+      },
+      "ash_legs": {
+        "name": "잿빛 다리",
+        "msg": "잿빛 다리가 부서져 내렸다!"
+      },
+      "name": "불의 정령"
+    },
+    "metalelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 뒤틀려 버렸다!"
+      },
+      "plate_armor": {
+        "name": "판금 갑옷",
+        "msg": "판금 갑옷이 갈라졌다!"
+      },
+      "spike_arms": {
+        "name": "가시 팔",
+        "msg": "가시 팔이 닳아버렸다!"
+      },
+      "gear_legs": {
+        "name": "톱니바퀴 다리",
+        "msg": "톱니바퀴 다리가 고장났다!"
+      },
+      "name": "금속의 정령"
+    },
+    "darkelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 그림자에 집어삼켜졌다!"
+      },
+      "body": {
+        "name": "그림자의 몸",
+        "msg": "그림자의 몸이 시들어버렸다!"
+      },
+      "left_arm": {
+        "name": "왼쪽 망령 팔",
+        "msg": "왼쪽 망령 팔이 흐릿해졌다!"
+      },
+      "right_arm": {
+        "name": "오른쪽 망령 팔",
+        "msg": "오른쪽 망령 팔이 흐릿해졌다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 저주 다리",
+        "msg": "왼쪽 저주 다리가 무너졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 저주 다리",
+        "msg": "오른쪽 저주 다리가 무너졌다!"
+      },
+      "name": "어둠의 정령"
+    },
+    "sacredelemental": {
+      "core": {
+        "name": "핵",
+        "msg": "핵이 정화되어 사라졌다!"
+      },
+      "body": {
+        "name": "빛의 몸",
+        "msg": "빛의 몸이 타버려 사라졌다!"
+      },
+      "left_arm": {
+        "name": "왼쪽 찬란한 팔",
+        "msg": "왼쪽 찬란한 팔의 빛이 흐려졌다!"
+      },
+      "right_arm": {
+        "name": "오른쪽 찬란한 팔",
+        "msg": "오른쪽 찬란한 팔의 빛이 흐려졌다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 영체 다리",
+        "msg": "왼쪽 영체 다리가 형체를 잃었다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 영체 다리",
+        "msg": "오른쪽 영체 다리가 형체를 잃었다!"
+      },
+      "name": "신성한 정령"
+    },
+    "totem": {
+      "core": {
+        "name": "영혼의 핵",
+        "msg": "핵이 산산이 조각났다!"
+      },
+      "left_arm": {
+        "name": "왼팔",
+        "msg": "왼팔이 조각났다!"
+      },
+      "right_arm": {
+        "name": "오른팔",
+        "msg": "오른팔이 조각났다!"
+      },
+      "eyes": {
+        "name": "토템 눈",
+        "msg": "눈이 산산이 조각났다!"
+      },
+      "base": {
+        "name": "토대",
+        "msg": "토대가 갈라졌다!"
+      },
+      "name": "토템"
+    },
+    "ophanim": {
+      "wheel_one": {
+        "name": "바퀴 1",
+        "msg": "바퀴 1이 파괴되었다!"
+      },
+      "wheel_two": {
+        "name": "바퀴 2",
+        "msg": "바퀴 2가 파괴되었다!"
+      },
+      "wheel_three": {
+        "name": "바퀴 3",
+        "msg": "바퀴 3이 파괴되었다!"
+      },
+      "wheel_four": {
+        "name": "바퀴 4",
+        "msg": "바퀴 4가 파괴되었다!"
+      },
+      "eye_ring": {
+        "name": "눈 고리",
+        "msg": "눈 고리의 눈이 멀었다!"
+      },
+      "name": "오파님"
+    },
+    "angel": {
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 꺾였다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 꺾였다!"
+      },
+      "halo": {
+        "name": "광배",
+        "msg": "광배가 산산이 조각났다!"
+      },
+      "core": {
+        "name": "심장 핵",
+        "msg": "핵이 꿰뚫렸다!"
+      },
+      "robe": {
+        "name": "로브",
+        "msg": "로브가 찢어졌다!"
+      },
+      "left_foot": {
+        "name": "왼발",
+        "msg": "왼발이 부러졌다!"
+      },
+      "right_foot": {
+        "name": "오른발",
+        "msg": "오른발이 부러졌다!"
+      },
+      "name": "천사"
+    },
+    "elven": {
+      "head": {
+        "name": "머리",
+        "msg": "머리를 강타당했다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 파열됐다!"
+      },
+      "bow": {
+        "name": "활",
+        "msg": "활이 부러졌다!"
+      },
+      "robe": {
+        "name": "로브",
+        "msg": "로브가 찢어졌다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "엘프"
+    },
+    "gnome": {
+      "head": {
+        "name": "머리",
+        "msg": "머리를 부딪혔다!"
+      },
+      "beard": {
+        "name": "수염",
+        "msg": "수염이 뜯겨나갔다!"
+      },
+      "hat": {
+        "name": "모자",
+        "msg": "모자가 벗겨졌다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 꿰뚫렸다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 꺾였다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 꺾였다!"
+      },
+      "name": "노움"
+    },
+    "elephant": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 박살났다!"
+      },
+      "trunk": {
+        "name": "코",
+        "msg": "코가 절단되었다!"
+      },
+      "tusks": {
+        "name": "상아",
+        "msg": "상아가 부러졌다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 멍투성이가 되었다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "hind_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 부러졌다!"
+      },
+      "hind_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 부러졌다!"
+      },
+      "name": "코끼리"
+    },
+    "tentacledcreature": {
+      "eye": {
+        "name": "중앙 눈",
+        "msg": "눈이 산산이 조각났다!"
+      },
+      "tentacle_one": {
+        "name": "촉수 1",
+        "msg": "촉수 1이 잘려나갔다!"
+      },
+      "tentacle_two": {
+        "name": "촉수 2",
+        "msg": "촉수 2가 잘려나갔다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 짓이겨졌다!"
+      },
+      "name": "촉수 괴물"
+    },
+    "spiderhumanhybrid": {
+      "body": {
+        "name": "거미 몸통",
+        "msg": "거미 몸통이 파괴되었다!"
+      },
+      "torso": {
+        "name": "인간 몸통",
+        "msg": "인간형 몸통이 으스러졌다!"
+      },
+      "head": {
+        "name": "인간 머리",
+        "msg": "인간형 머리가 잘려나갔다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 분해되었다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 분해되었다!"
+      },
+      "middle_left_leg": {
+        "name": "왼쪽 가운데다리",
+        "msg": "왼쪽 가운데다리가 분해되었다!"
+      },
+      "middle_right_leg": {
+        "name": "오른쪽 가운데다리",
+        "msg": "오른쪽 가운데다리가 분해되었다!"
+      },
+      "rear_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 분해되었다!"
+      },
+      "rear_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 분해되었다!"
+      },
+      "name": "거미인간"
+    },
+    "spikymonster": {
+      "spikes": {
+        "name": "가시",
+        "msg": "가시가 산산이 조각났다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 마비되었다!"
+      },
+      "eyes": {
+        "name": "눈",
+        "msg": "눈이 멀었다!"
+      },
+      "left_leg": {
+        "name": "왼다리",
+        "msg": "왼다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른다리",
+        "msg": "오른다리가 부러졌다!"
+      },
+      "name": "가시 괴물"
+    },
+    "horse": {
+      "head": {
+        "name": "머리",
+        "msg": "머리에 뇌진탕을 입었다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 멍투성이가 되었다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "hind_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 부러졌다!"
+      },
+      "hind_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 부러졌다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 부러졌다!"
+      },
+      "name": "말"
+    },
+    "unicorn": {
+      "horn": {
+        "name": "뿔",
+        "msg": "뿔이 산산이 조각났다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸에 상처를 입었다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "hind_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 부러졌다!"
+      },
+      "hind_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 부러졌다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘렸다!"
+      },
+      "name": "유니콘"
+    },
+    "hellhound": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 까맣게 그을렸다!"
+      },
+      "collar": {
+        "name": "목줄",
+        "msg": "목줄이 부서졌다!"
+      },
+      "body": {
+        "name": "몸",
+        "msg": "몸이 불타버렸다!"
+      },
+      "left_leg": {
+        "name": "왼쪽 앞다리",
+        "msg": "왼쪽 앞다리가 부러졌다!"
+      },
+      "right_leg": {
+        "name": "오른쪽 앞다리",
+        "msg": "오른쪽 앞다리가 부러졌다!"
+      },
+      "hind_left_leg": {
+        "name": "왼쪽 뒷다리",
+        "msg": "왼쪽 뒷다리가 부러졌다!"
+      },
+      "hind_right_leg": {
+        "name": "오른쪽 뒷다리",
+        "msg": "오른쪽 뒷다리가 부러졌다!"
+      },
+      "name": "지옥견"
+    },
+    "wingeddemon": {
+      "head": {
+        "name": "머리",
+        "msg": "머리가 저주에 걸렸다!"
+      },
+      "left_wing": {
+        "name": "왼쪽 날개",
+        "msg": "왼쪽 날개가 그을렸다!"
+      },
+      "right_wing": {
+        "name": "오른쪽 날개",
+        "msg": "오른쪽 날개가 그을렸다!"
+      },
+      "tail": {
+        "name": "꼬리",
+        "msg": "꼬리가 잘려나갔다!"
+      },
+      "core": {
+        "name": "지옥불 핵",
+        "msg": "지옥불 핵이 꺼졌다!"
+      },
+      "claws": {
+        "name": "발톱",
+        "msg": "발톱이 산산이 조각났다!"
+      },
+      "name": "날개 달린 악마"
+    },
+    "trashcreature": {
+      "trash_pile": {
+        "name": "쓰레기 더미",
+        "msg": "쓰레기 더미가 흩어졌다!"
+      },
+      "limbs": {
+        "name": "사지",
+        "msg": "사지가 떨어져 나갔다!"
+      },
+      "eyes": {
+        "name": "눈",
+        "msg": "눈이 멀어버렸다!"
+      },
+      "heart": {
+        "name": "심장",
+        "msg": "심장이 으스러졌다!"
+      },
+      "name": "쓰레기 괴물"
+    }
+  }
+}

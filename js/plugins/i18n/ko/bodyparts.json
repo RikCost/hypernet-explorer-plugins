@@ -1,0 +1,124 @@
+{
+  "bodyparts": {
+    "head": {
+      "name": "머리",
+      "damage_msg": "두개골이 골절됐다"
+    },
+    "brain": {
+      "name": "뇌",
+      "damage_msg": "뇌진탕을 입었다"
+    },
+    "left_eye": {
+      "name": "왼쪽 눈",
+      "damage_msg": "왼쪽 눈이 부어올랐다"
+    },
+    "right_eye": {
+      "name": "오른쪽 눈",
+      "damage_msg": "오른쪽 눈이 부어올랐다"
+    },
+    "nose": {
+      "name": "코",
+      "damage_msg": "코가 박살났다"
+    },
+    "left_ear": {
+      "name": "왼쪽 귀",
+      "damage_msg": "왼쪽 귀에 이명이 들린다"
+    },
+    "right_ear": {
+      "name": "오른쪽 귀",
+      "damage_msg": "오른쪽 귀에 이명이 들린다"
+    },
+    "mouth": {
+      "name": "입",
+      "damage_msg": "턱이 탈구됐다"
+    },
+    "teeth": {
+      "name": "치아",
+      "damage_msg": "치아가 부러져 나갔다"
+    },
+    "genitals": {
+      "name": "성기",
+      "damage_msg": "성기가 손상되었다"
+    },
+    "torso": {
+      "name": "몸통",
+      "damage_msg": "갈비뼈가 부러졌다"
+    },
+    "heart": {
+      "name": "심장",
+      "damage_msg": "심장이 손상되었다"
+    },
+    "left_lung": {
+      "name": "왼쪽 폐",
+      "damage_msg": "왼쪽 폐가 허탈되었다"
+    },
+    "right_lung": {
+      "name": "오른쪽 폐",
+      "damage_msg": "오른쪽 폐가 허탈되었다"
+    },
+    "liver": {
+      "name": "간",
+      "damage_msg": "간이 찢어졌다"
+    },
+    "stomach": {
+      "name": "위",
+      "damage_msg": "위가 파열됐다"
+    },
+    "spleen": {
+      "name": "비장",
+      "damage_msg": "비장이 파열됐다"
+    },
+    "intestines": {
+      "name": "장",
+      "damage_msg": "장이 천공됐다"
+    },
+    "left_arm": {
+      "name": "왼팔",
+      "damage_msg": "왼팔을 다쳤다"
+    },
+    "left_hand": {
+      "name": "왼손",
+      "damage_msg": "왼손이 짓이겨졌다"
+    },
+    "left_fingers": {
+      "name": "왼손가락",
+      "damage_msg": "왼손가락이 부러졌다"
+    },
+    "right_arm": {
+      "name": "오른팔",
+      "damage_msg": "오른팔을 다쳤다"
+    },
+    "right_hand": {
+      "name": "오른손",
+      "damage_msg": "오른손이 짓이겨졌다"
+    },
+    "right_fingers": {
+      "name": "오른손가락",
+      "damage_msg": "오른손가락이 부러졌다"
+    },
+    "left_leg": {
+      "name": "왼다리",
+      "damage_msg": "왼다리를 다쳤다"
+    },
+    "left_foot": {
+      "name": "왼발",
+      "damage_msg": "왼발을 다쳤다"
+    },
+    "left_toes": {
+      "name": "왼발가락",
+      "damage_msg": "왼발가락이 으스러졌다"
+    },
+    "right_leg": {
+      "name": "오른다리",
+      "damage_msg": "오른다리를 다쳤다"
+    },
+    "right_foot": {
+      "name": "오른발",
+      "damage_msg": "오른발을 다쳤다"
+    },
+    "right_toes": {
+      "name": "오른발가락",
+      "damage_msg": "오른발가락이 으스러졌다"
+    }
+  }
+}
