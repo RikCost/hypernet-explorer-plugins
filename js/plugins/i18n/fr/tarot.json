@@ -1,0 +1,345 @@
+{
+  "ui": {
+    "title": "Tirage de tarot",
+    "past": "Passé",
+    "present": "Présent",
+    "future": "Futur",
+    "instruction": "Cliquez sur une carte pour révéler sa signification",
+    "complete": "Votre tirage est terminé. Appuyez sur Échap pour quitter.",
+    "upright": "À l'endroit",
+    "reversed": "À l'envers",
+    "npcTitle": "Tirage de tarot pour %1"
+  },
+  "cards": {
+    "The Fool": {
+      "name": "Le Mat",
+      "upright": [
+        "De nouveaux commencements vous attendent, portés par l'émerveillement et d'infinies possibilités.",
+        "Faites un acte de foi et ayez confiance dans le chemin qui s'ouvre devant vous.",
+        "Accueillez la spontanéité et laissez votre esprit libre guider vos pas.",
+        "L'aventure vous appelle et vous pousse à entrer dans l'inconnu."
+      ],
+      "reversed": [
+        "L'imprudence trouble votre jugement et mène à de mauvais choix.",
+        "La peur de prendre les risques nécessaires freine votre évolution.",
+        "La naïveté peut vous faire ignorer des signes d'alerte importants.",
+        "Le chaos et l'absence de direction créent des obstacles inutiles."
+      ]
+    },
+    "The Magician": {
+      "name": "Le Bateleur",
+      "upright": [
+        "Vous possédez tous les outils nécessaires pour manifester vos désirs.",
+        "Votre volonté et votre détermination provoquent de puissantes transformations.",
+        "Concentrez votre énergie pour changer vos rêves en réalité tangible.",
+        "La maîtrise de vos talents met le succès à votre portée."
+      ],
+      "reversed": [
+        "Manipulation et tromperie peuvent être présentes autour de vous.",
+        "Vos talents restent inexploités par manque de confiance.",
+        "Illusions et ruses voilent la vérité à votre regard.",
+        "Une mauvaise planification empêche vos objectifs de prendre forme."
+      ]
+    },
+    "The High Priestess": {
+      "name": "La Papesse",
+      "upright": [
+        "Fiez-vous à votre intuition, elle vous guide vers des vérités cachées.",
+        "Le savoir sacré se révèle dans la contemplation silencieuse.",
+        "L'inconscient détient les réponses à vos questions les plus profondes.",
+        "Le mystère et la sagesse féminine éclairent votre chemin spirituel."
+      ],
+      "reversed": [
+        "La rupture avec votre voix intérieure engendre la confusion.",
+        "Secrets et intentions cachées peuvent troubler votre paix.",
+        "Ignorer votre intuition vous éloigne de la vérité.",
+        "Une pensée superficielle empêche une compréhension plus profonde."
+      ]
+    },
+    "The Empress": {
+      "name": "L'Impératrice",
+      "upright": [
+        "L'abondance circule naturellement dans tous les domaines de votre vie.",
+        "L'énergie créatrice s'épanouit et mène de nouveaux projets à maturité.",
+        "Des relations nourrissantes apportent réconfort et accomplissement émotionnel.",
+        "La beauté naturelle et la sensualité renforcent votre magnétisme personnel."
+      ],
+      "reversed": [
+        "Des blocages créatifs étouffent votre expression et votre croissance.",
+        "Négliger votre bien-être épuise vos réserves d'énergie.",
+        "La codépendance crée un déséquilibre dans vos relations.",
+        "Les préoccupations matérielles éclipsent les besoins émotionnels."
+      ]
+    },
+    "The Emperor": {
+      "name": "L'Empereur",
+      "upright": [
+        "Le leadership et l'autorité vous placent sur la voie d'un plus grand succès.",
+        "La structure et la discipline créent une base solide pour grandir.",
+        "Votre nature protectrice préserve vos proches du danger.",
+        "La pensée stratégique mène à des réussites durables."
+      ],
+      "reversed": [
+        "Un comportement tyrannique abîme des relations importantes.",
+        "La rigidité empêche de s'adapter aux circonstances changeantes.",
+        "L'abus de pouvoir engendre résistance et rébellion.",
+        "Le manque d'autodiscipline mine votre autorité."
+      ]
+    },
+    "The Hierophant": {
+      "name": "Le Pape",
+      "upright": [
+        "La sagesse traditionnelle offre des repères face aux défis actuels.",
+        "Les enseignements spirituels approfondissent votre compréhension du sens de la vie.",
+        "Se conformer aux systèmes établis apporte acceptation et sentiment d'appartenance.",
+        "Le mentorat accélère votre apprentissage et votre développement personnel."
+      ],
+      "reversed": [
+        "La rébellion contre la tradition ouvre de nouvelles voies de compréhension.",
+        "La pensée dogmatique limite votre perspective et votre croissance.",
+        "Questionnez l'autorité pour découvrir votre vérité authentique.",
+        "Les approches non conventionnelles donnent des résultats surprenants."
+      ]
+    },
+    "The Lovers": {
+      "name": "L'Amoureux",
+      "upright": [
+        "Des liens profonds et des relations significatives enrichissent votre vie.",
+        "Des choix importants s'accordent avec vos valeurs et vos désirs.",
+        "L'harmonie entre les opposés crée un équilibre parfait.",
+        "L'amour sous toutes ses formes élève votre conscience."
+      ],
+      "reversed": [
+        "La disharmonie dans les relations exige une communication honnête.",
+        "Des conflits intérieurs vous empêchent de prendre des décisions claires.",
+        "La tentation vous éloigne de votre véritable chemin.",
+        "Des partenariats déséquilibrés épuisent votre énergie émotionnelle."
+      ]
+    },
+    "The Chariot": {
+      "name": "Le Chariot",
+      "upright": [
+        "La détermination et la volonté vous conduisent vers la victoire.",
+        "Des forces opposées s'unissent sous votre direction habile.",
+        "L'autodiscipline vous propulse au-delà de tout obstacle.",
+        "Une progression triomphante récompense vos efforts concentrés."
+      ],
+      "reversed": [
+        "Le manque de direction disperse votre énergie sans efficacité.",
+        "L'agression et la force créent des conflits inutiles.",
+        "La perte de contrôle fait dérailler vos plans soigneusement préparés.",
+        "L'opposition semble insurmontable sans stratégie adaptée."
+      ]
+    },
+    "Strength": {
+      "name": "La Force",
+      "upright": [
+        "La force intérieure et le courage surmontent les défis extérieurs.",
+        "Une douce persévérance apprivoise les aspects les plus sauvages de l'existence.",
+        "La compassion transforme de possibles ennemis en alliés.",
+        "L'endurance patiente mène finalement au triomphe."
+      ],
+      "reversed": [
+        "Le doute affaiblit votre résolution et votre pouvoir personnel.",
+        "Les émotions brutes dominent la logique et la planification.",
+        "L'insécurité se manifeste par l'agressivité ou la timidité.",
+        "Les bêtes intérieures demandent à être reconnues et intégrées."
+      ]
+    },
+    "The Hermit": {
+      "name": "L'Ermite",
+      "upright": [
+        "La solitude apporte des éclairages profonds et la découverte de soi.",
+        "La sagesse intérieure illumine la voie à suivre.",
+        "La quête spirituelle mène à des révélations significatives.",
+        "Se retirer du chaos permet une contemplation profonde."
+      ],
+      "reversed": [
+        "L'isolement devient solitude lorsqu'il n'a ni but ni croissance.",
+        "Un retrait excessif crée une déconnexion avec la réalité.",
+        "La peur de l'examen intérieur empêche la réflexion nécessaire.",
+        "Un repli obstiné bloque des liens qui pourraient vous aider."
+      ]
+    },
+    "Wheel of Fortune": {
+      "name": "La Roue de Fortune",
+      "upright": [
+        "Le destin tourne en votre faveur et apporte des occasions inattendues.",
+        "Les cycles du changement ouvrent de nouvelles phases d'existence.",
+        "La bonne fortune sourit à vos entreprises actuelles.",
+        "Les forces universelles s'alignent pour soutenir votre plus grand bien."
+      ],
+      "reversed": [
+        "La malchance perturbe temporairement la trajectoire prévue.",
+        "Résister au changement prolonge les circonstances difficiles.",
+        "Des forces extérieures semblent agir contre vos désirs.",
+        "Rompre les cycles négatifs exige un effort conscient."
+      ]
+    },
+    "Justice": {
+      "name": "La Justice",
+      "upright": [
+        "La vérité et l'équité prévalent dans les affaires présentes.",
+        "L'équilibre karmique restaure l'ordre dans les situations chaotiques.",
+        "Les questions juridiques se résolvent selon la justice la plus haute.",
+        "La responsabilité de vos actes entraîne des conséquences appropriées."
+      ],
+      "reversed": [
+        "L'injustice et l'iniquité obscurcissent les circonstances actuelles.",
+        "La malhonnêteté complique les affaires légales ou éthiques.",
+        "Fuir la responsabilité retarde l'inévitable règlement des comptes.",
+        "Les préjugés empêchent un jugement clair et équilibré."
+      ]
+    },
+    "The Hanged Man": {
+      "name": "Le Pendu",
+      "upright": [
+        "L'abandon et le lâcher-prise apportent une illumination inattendue.",
+        "De nouvelles perspectives naissent lorsque vous renoncez au contrôle.",
+        "Le sacrifice présent mène à de plus grands gains plus tard.",
+        "Suspendre l'action permet à la sagesse d'émerger."
+      ],
+      "reversed": [
+        "Une résistance obstinée prolonge une souffrance inutile.",
+        "Le martyre sans but épuise l'énergie vitale.",
+        "La stagnation vient de la peur d'un changement nécessaire.",
+        "L'indécision paralyse tout mouvement vers l'avant."
+      ]
+    },
+    "Death": {
+      "name": "La Mort",
+      "upright": [
+        "La transformation libère l'espace nécessaire à une puissante renaissance.",
+        "Les fins créent des occasions de nouveaux commencements.",
+        "L'abandon de l'ancien fait place à une croissance fraîche.",
+        "Un changement profond remodèle toute votre existence."
+      ],
+      "reversed": [
+        "Résister aux fins prolonge le déclin et la stagnation.",
+        "La peur du changement vous enferme dans des schémas limitants.",
+        "S'accrocher au passé empêche l'évolution vers l'avant.",
+        "Des transitions inachevées vous laissent entre deux mondes."
+      ]
+    },
+    "Temperance": {
+      "name": "Tempérance",
+      "upright": [
+        "L'équilibre parfait crée l'harmonie dans tous les domaines de la vie.",
+        "La patience et la modération mènent à un succès durable.",
+        "Mêler les opposés crée une alchimie puissante.",
+        "Le temps divin orchestre des issues parfaites."
+      ],
+      "reversed": [
+        "Le déséquilibre et l'excès troublent votre stabilité.",
+        "L'impatience précipite des processus qui demandent le bon moment.",
+        "Des désirs contradictoires créent une discorde intérieure.",
+        "Le manque de modération mène à des extrêmes regrettables."
+      ]
+    },
+    "The Devil": {
+      "name": "Le Diable",
+      "upright": [
+        "Les désirs matériels et les plaisirs terrestres demandent examen.",
+        "Les parts d'ombre exigent reconnaissance et intégration.",
+        "L'attachement à des schémas malsains devient apparent.",
+        "La tentation met à l'épreuve votre engagement envers la croissance."
+      ],
+      "reversed": [
+        "La libération de croyances limitantes vous rend votre liberté.",
+        "Rompre les schémas malsains restaure votre pouvoir personnel.",
+        "Reconnaître les illusions dissipe leur influence.",
+        "La délivrance des liens ouvre de nouvelles possibilités."
+      ]
+    },
+    "The Tower": {
+      "name": "La Maison Dieu",
+      "upright": [
+        "Un bouleversement soudain détruit les fausses fondations.",
+        "Des percées fracassent les illusions limitantes.",
+        "Le chaos précède une reconstruction nécessaire.",
+        "Une intervention divine redirige le cours de votre vie."
+      ],
+      "reversed": [
+        "Éviter une destruction nécessaire prolonge l'instabilité.",
+        "La peur du changement maintient des structures qui s'effondrent.",
+        "Une transformation graduelle remplace le bouleversement soudain.",
+        "Un désastre évité de justesse enseigne des leçons importantes."
+      ]
+    },
+    "The Star": {
+      "name": "L'Étoile",
+      "upright": [
+        "L'espoir illumine même les moments les plus sombres.",
+        "Le renouveau spirituel restaure la foi et l'optimisme.",
+        "L'inspiration divine guide votre expression créative.",
+        "Les eaux guérisseuses lavent les blessures du passé."
+      ],
+      "reversed": [
+        "Le désespoir obscurcit votre vision des possibilités futures.",
+        "La rupture avec la foi crée un vide spirituel.",
+        "Des blocages créatifs étouffent l'expression inspirée.",
+        "Le pessimisme empêche de reconnaître les bénédictions."
+      ]
+    },
+    "The Moon": {
+      "name": "La Lune",
+      "upright": [
+        "Les illusions et les tromperies exigent d’avancer avec prudence.",
+        "La sagesse intuitive remonte des profondeurs de l'inconscient.",
+        "Rêves et visions portent des messages importants.",
+        "Des peurs cachées remontent pour être guéries et libérées."
+      ],
+      "reversed": [
+        "La confusion se dissipe alors que la clarté revient à votre vision.",
+        "Les tromperies révélées permettent à la vérité d'émerger.",
+        "Des émotions refoulées demandent une attention consciente.",
+        "Le brouillard mental se lève et révèle le chemin devant vous."
+      ]
+    },
+    "The Sun": {
+      "name": "Le Soleil",
+      "upright": [
+        "La joie et la vitalité imprègnent chaque aspect de l'existence.",
+        "Le succès et la reconnaissance récompensent votre expression authentique.",
+        "L'émerveillement enfantin révèle les plaisirs simples de la vie.",
+        "Une énergie rayonnante attire abondance et bénédictions."
+      ],
+      "reversed": [
+        "Des nuages temporaires voilent votre rayonnement intérieur.",
+        "Un ego gonflé déforme les accomplissements réels.",
+        "Une positivité forcée masque des problèmes sous-jacents.",
+        "Un succès retardé éprouve votre patience et votre foi."
+      ]
+    },
+    "Judgement": {
+      "name": "Le Jugement",
+      "upright": [
+        "L'éveil spirituel transforme tout votre être.",
+        "Les actes passés reçoivent une évaluation juste et définitive.",
+        "La renaissance suit une autoévaluation honnête.",
+        "Un appel supérieur exige une réponse courageuse."
+      ],
+      "reversed": [
+        "L'auto-jugement bloque le pardon et la croissance.",
+        "Éviter l'appel intérieur crée une insatisfaction persistante.",
+        "Les erreurs passées hantent les circonstances présentes.",
+        "La peur du jugement paralyse l'action décisive."
+      ]
+    },
+    "The World": {
+      "name": "Le Monde",
+      "upright": [
+        "L'achèvement de grands cycles apporte une satisfaction profonde.",
+        "La plénitude et l'intégration créent une harmonie parfaite.",
+        "Le succès dans le monde reflète un accomplissement intérieur.",
+        "La conscience universelle élargit votre perception."
+      ],
+      "reversed": [
+        "Des entreprises inachevées exigent un effort supplémentaire.",
+        "Le succès extérieur paraît vide sans accomplissement intérieur.",
+        "Les raccourcis empêchent une réussite authentique.",
+        "Une perspective limitée restreint votre plein potentiel."
+      ]
+    }
+  }
+}

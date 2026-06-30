@@ -1,0 +1,253 @@
+{
+  "crime": {
+    "pettytheft": {
+      "name": "소액절도"
+    },
+    "pickpocketing": {
+      "name": "소매치기"
+    },
+    "shoplifting": {
+      "name": "점포내 절도"
+    },
+    "burglary": {
+      "name": "주거침입 절도"
+    },
+    "robbery": {
+      "name": "강도죄"
+    },
+    "armedrobbery": {
+      "name": "특수강도죄(무장강도)"
+    },
+    "bankrobbery": {
+      "name": "금융기관 강도죄"
+    },
+    "grandtheft": {
+      "name": "중대 절도"
+    },
+    "assault": {
+      "name": "폭행죄"
+    },
+    "battery": {
+      "name": "상해"
+    },
+    "aggravatedassault": {
+      "name": "중상해"
+    },
+    "murder": {
+      "name": "살인죄"
+    },
+    "manslaughter": {
+      "name": "과실치사"
+    },
+    "serialkilling": {
+      "name": "연쇄살인"
+    },
+    "vandalism": {
+      "name": "기물손괴"
+    },
+    "graffiti": {
+      "name": "낙서"
+    },
+    "arson": {
+      "name": "방화죄"
+    },
+    "propertydestruction": {
+      "name": "재물손괴"
+    },
+    "publicdisturbance": {
+      "name": "공공질서 위반"
+    },
+    "disorderlyconduct": {
+      "name": "난동"
+    },
+    "trespassing": {
+      "name": "주거침입"
+    },
+    "breakingandentering": {
+      "name": "주거침입 및 절도"
+    },
+    "unlawfulentry": {
+      "name": "불법침입"
+    },
+    "drugpossession": {
+      "name": "마약 소지"
+    },
+    "drugdealing": {
+      "name": "마약 거래"
+    },
+    "drugtrafficking": {
+      "name": "마약 밀매"
+    },
+    "smuggling": {
+      "name": "밀수죄"
+    },
+    "contraband": {
+      "name": "밀수품 소지"
+    },
+    "fraud": {
+      "name": "사기"
+    },
+    "embezzlement": {
+      "name": "횡령"
+    },
+    "bribery": {
+      "name": "뇌물수수"
+    },
+    "corruption": {
+      "name": "부패"
+    },
+    "taxevasion": {
+      "name": "탈세"
+    },
+    "moneylaundering": {
+      "name": "자금세탁"
+    },
+    "forgery": {
+      "name": "문서위조"
+    },
+    "counterfeiting": {
+      "name": "위조화폐 제조"
+    },
+    "identitytheft": {
+      "name": "신원도용"
+    },
+    "cybercrime": {
+      "name": "사이버범죄"
+    },
+    "hacking": {
+      "name": "해킹"
+    },
+    "datatheft": {
+      "name": "데이터 탈취"
+    },
+    "piracy": {
+      "name": "불법복제"
+    },
+    "extortion": {
+      "name": "공갈죄"
+    },
+    "blackmail": {
+      "name": "협박죄"
+    },
+    "kidnapping": {
+      "name": "납치"
+    },
+    "hostage": {
+      "name": "인질강요죄"
+    },
+    "humantrafficking": {
+      "name": "인신매매"
+    },
+    "slavery": {
+      "name": "노예화"
+    },
+    "poaching": {
+      "name": "밀렵"
+    },
+    "illegalhunting": {
+      "name": "불법수렵"
+    },
+    "animalcruelty": {
+      "name": "동물학대"
+    },
+    "environmentalcrime": {
+      "name": "환경범죄"
+    },
+    "pollutionviolation": {
+      "name": "환경오염"
+    },
+    "illegaldumping": {
+      "name": "불법폐기물 투기"
+    },
+    "speedingminor": {
+      "name": "경미한 과속"
+    },
+    "speedingmajor": {
+      "name": "중대 과속"
+    },
+    "recklessdriving": {
+      "name": "난폭운전"
+    },
+    "dui": {
+      "name": "음주운전"
+    },
+    "hitandrun": {
+      "name": "뺑소니"
+    },
+    "vehicletheft": {
+      "name": "차량절도"
+    },
+    "carjacking": {
+      "name": "차량강탈"
+    },
+    "illegalracing": {
+      "name": "불법 자동차 경주"
+    },
+    "publicintoxication": {
+      "name": "공공장소 만취"
+    },
+    "underagedrinking": {
+      "name": "미성년자 음주"
+    },
+    "disturbing": {
+      "name": "소란행위"
+    },
+    "loitering": {
+      "name": "배회"
+    },
+    "jaywalking": {
+      "name": "무단횡단"
+    },
+    "littering": {
+      "name": "무단투기"
+    },
+    "noisepollution": {
+      "name": "소음공해"
+    },
+    "perjury": {
+      "name": "위증죄"
+    },
+    "contemptofcourt": {
+      "name": "법정모독"
+    },
+    "obstructingjustice": {
+      "name": "사법방해"
+    },
+    "resistingarrest": {
+      "name": "체포 거부"
+    },
+    "escapingcustody": {
+      "name": "구금 탈출"
+    },
+    "prisonbreak": {
+      "name": "탈옥"
+    },
+    "weaponspossession": {
+      "name": "불법무기 소지"
+    },
+    "illegalweapons": {
+      "name": "불법무기 제작"
+    },
+    "weaponstrafficking": {
+      "name": "무기밀매"
+    },
+    "terrorism": {
+      "name": "테러"
+    },
+    "treason": {
+      "name": "반역죄"
+    },
+    "espionage": {
+      "name": "간첩행위"
+    },
+    "warcrimes": {
+      "name": "전쟁범죄"
+    },
+    "genocide": {
+      "name": "집단학살"
+    },
+    "crimesagainsthumanity": {
+      "name": "반인도적 범죄"
+    }
+  }
+}

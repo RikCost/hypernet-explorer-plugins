@@ -1,0 +1,11 @@
+{
+  "circle": "Cercle",
+  "box": "Carré",
+  "phalanx": "Phalange",
+  "double": "Double",
+  "wedge": "Formation en coin",
+  "line": "Ligne",
+  "crescent": "Croissant",
+  "column": "Colonne",
+  "scattered": "Dispersée"
+}

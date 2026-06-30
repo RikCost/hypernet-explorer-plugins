@@ -1,0 +1,253 @@
+{
+  "crime": {
+    "pettytheft": {
+      "name": "Petit vol"
+    },
+    "pickpocketing": {
+      "name": "Vol à la tire"
+    },
+    "shoplifting": {
+      "name": "Vol à l'étalage"
+    },
+    "burglary": {
+      "name": "Cambriolage"
+    },
+    "robbery": {
+      "name": "Vol avec violence"
+    },
+    "armedrobbery": {
+      "name": "Vol à main armée"
+    },
+    "bankrobbery": {
+      "name": "Braquage de banque"
+    },
+    "grandtheft": {
+      "name": "Vol qualifié"
+    },
+    "assault": {
+      "name": "Agression"
+    },
+    "battery": {
+      "name": "Coups et blessures"
+    },
+    "aggravatedassault": {
+      "name": "Agression aggravée"
+    },
+    "murder": {
+      "name": "Meurtre"
+    },
+    "manslaughter": {
+      "name": "Homicide involontaire"
+    },
+    "serialkilling": {
+      "name": "Meurtres en série"
+    },
+    "vandalism": {
+      "name": "Vandalisme"
+    },
+    "graffiti": {
+      "name": "Graffiti"
+    },
+    "arson": {
+      "name": "Incendie criminel"
+    },
+    "propertydestruction": {
+      "name": "Destruction de biens"
+    },
+    "publicdisturbance": {
+      "name": "Trouble à l'ordre public"
+    },
+    "disorderlyconduct": {
+      "name": "Conduite désordonnée"
+    },
+    "trespassing": {
+      "name": "Intrusion"
+    },
+    "breakingandentering": {
+      "name": "Effraction"
+    },
+    "unlawfulentry": {
+      "name": "Entrée illégale"
+    },
+    "drugpossession": {
+      "name": "Possession de drogues"
+    },
+    "drugdealing": {
+      "name": "Vente de drogues"
+    },
+    "drugtrafficking": {
+      "name": "Trafic de drogues"
+    },
+    "smuggling": {
+      "name": "Contrebande"
+    },
+    "contraband": {
+      "name": "Possession de contrebande"
+    },
+    "fraud": {
+      "name": "Fraude"
+    },
+    "embezzlement": {
+      "name": "Détournement de fonds"
+    },
+    "bribery": {
+      "name": "Corruption active"
+    },
+    "corruption": {
+      "name": "Corruption"
+    },
+    "taxevasion": {
+      "name": "Évasion fiscale"
+    },
+    "moneylaundering": {
+      "name": "Blanchiment d'argent"
+    },
+    "forgery": {
+      "name": "Faux"
+    },
+    "counterfeiting": {
+      "name": "Contrefaçon"
+    },
+    "identitytheft": {
+      "name": "Usurpation d'identité"
+    },
+    "cybercrime": {
+      "name": "Cybercriminalité"
+    },
+    "hacking": {
+      "name": "Piratage informatique"
+    },
+    "datatheft": {
+      "name": "Vol de données"
+    },
+    "piracy": {
+      "name": "Piratage numérique"
+    },
+    "extortion": {
+      "name": "Extorsion"
+    },
+    "blackmail": {
+      "name": "Chantage"
+    },
+    "kidnapping": {
+      "name": "Enlèvement"
+    },
+    "hostage": {
+      "name": "Prise d'otages"
+    },
+    "humantrafficking": {
+      "name": "Traite d'êtres humains"
+    },
+    "slavery": {
+      "name": "Esclavage"
+    },
+    "poaching": {
+      "name": "Braconnage"
+    },
+    "illegalhunting": {
+      "name": "Chasse illégale"
+    },
+    "animalcruelty": {
+      "name": "Cruauté envers les animaux"
+    },
+    "environmentalcrime": {
+      "name": "Crime environnemental"
+    },
+    "pollutionviolation": {
+      "name": "Infraction à la pollution"
+    },
+    "illegaldumping": {
+      "name": "Décharge sauvage"
+    },
+    "speedingminor": {
+      "name": "Petit excès de vitesse"
+    },
+    "speedingmajor": {
+      "name": "Grand excès de vitesse"
+    },
+    "recklessdriving": {
+      "name": "Conduite dangereuse"
+    },
+    "dui": {
+      "name": "Conduite sous influence"
+    },
+    "hitandrun": {
+      "name": "Délit de fuite"
+    },
+    "vehicletheft": {
+      "name": "Vol de véhicule"
+    },
+    "carjacking": {
+      "name": "Car-jacking"
+    },
+    "illegalracing": {
+      "name": "Course de rue illégale"
+    },
+    "publicintoxication": {
+      "name": "Ivresse publique"
+    },
+    "underagedrinking": {
+      "name": "Consommation d'alcool par mineur"
+    },
+    "disturbing": {
+      "name": "Tapage"
+    },
+    "loitering": {
+      "name": "Flânerie suspecte"
+    },
+    "jaywalking": {
+      "name": "Traversée hors passage piéton"
+    },
+    "littering": {
+      "name": "Dépôt de déchets"
+    },
+    "noisepollution": {
+      "name": "Pollution sonore"
+    },
+    "perjury": {
+      "name": "Parjure"
+    },
+    "contemptofcourt": {
+      "name": "Outrage au tribunal"
+    },
+    "obstructingjustice": {
+      "name": "Entrave à la justice"
+    },
+    "resistingarrest": {
+      "name": "Résistance à l'arrestation"
+    },
+    "escapingcustody": {
+      "name": "Évasion de garde à vue"
+    },
+    "prisonbreak": {
+      "name": "Évasion de prison"
+    },
+    "weaponspossession": {
+      "name": "Possession illégale d'armes"
+    },
+    "illegalweapons": {
+      "name": "Fabrication illégale d'armes"
+    },
+    "weaponstrafficking": {
+      "name": "Trafic d'armes"
+    },
+    "terrorism": {
+      "name": "Terrorisme"
+    },
+    "treason": {
+      "name": "Trahison"
+    },
+    "espionage": {
+      "name": "Espionnage"
+    },
+    "warcrimes": {
+      "name": "Crimes de guerre"
+    },
+    "genocide": {
+      "name": "Génocide"
+    },
+    "crimesagainsthumanity": {
+      "name": "Crimes contre l'humanité"
+    }
+  }
+}
