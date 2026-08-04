@@ -1,0 +1,1333 @@
+{
+  "factions": {
+    "magesguild": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "apprenticemage": {
+          "name": ""
+        },
+        "guildinitiate": {
+          "name": ""
+        },
+        "guildwarden": {
+          "name": ""
+        },
+        "certifiedmage": {
+          "name": ""
+        },
+        "battlemage": {
+          "name": ""
+        },
+        "guildenforcer": {
+          "name": ""
+        },
+        "mysticarcher": {
+          "name": ""
+        },
+        "seniormagister": {
+          "name": ""
+        },
+        "warwizard": {
+          "name": ""
+        },
+        "archmage": {
+          "name": ""
+        },
+        "spellsniper": {
+          "name": ""
+        },
+        "grandmasterwizard": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "archivefoundation": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "archiveclerk": {
+          "name": ""
+        },
+        "juniorarchivist": {
+          "name": ""
+        },
+        "archivesentinel": {
+          "name": ""
+        },
+        "knowledgekeeper": {
+          "name": ""
+        },
+        "crossbowarchivist": {
+          "name": ""
+        },
+        "archiveguardian": {
+          "name": ""
+        },
+        "seniorcurator": {
+          "name": ""
+        },
+        "vaultdefender": {
+          "name": ""
+        },
+        "knowledgesniper": {
+          "name": ""
+        },
+        "masterlibrarian": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "hypercapitalistcollective": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "contractworker": {
+          "name": ""
+        },
+        "corporatesecurity": {
+          "name": ""
+        },
+        "corporatemarksman": {
+          "name": ""
+        },
+        "hiredmercenary": {
+          "name": ""
+        },
+        "fieldmedic": {
+          "name": ""
+        },
+        "eliteenforcer": {
+          "name": ""
+        },
+        "corporatesniper": {
+          "name": ""
+        },
+        "executiveguard": {
+          "name": ""
+        },
+        "combatspecialist": {
+          "name": ""
+        },
+        "corporateassassin": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "loyalists": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "loyalacolyte": {
+          "name": ""
+        },
+        "decreeenforcer": {
+          "name": ""
+        },
+        "loyalbattlemage": {
+          "name": ""
+        },
+        "loyalsentinel": {
+          "name": ""
+        },
+        "grandmasterschampion": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "traditionalists": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "puristnovice": {
+          "name": ""
+        },
+        "hermeticmage": {
+          "name": ""
+        },
+        "traditionalistguard": {
+          "name": ""
+        },
+        "esotericmaster": {
+          "name": ""
+        },
+        "ancientsage": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "technomancers": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "techapprentice": {
+          "name": ""
+        },
+        "gearwright": {
+          "name": ""
+        },
+        "steamfistbrawler": {
+          "name": ""
+        },
+        "arcaneengineer": {
+          "name": ""
+        },
+        "gunmage": {
+          "name": ""
+        },
+        "magitekspecialist": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "92schoolsbranch": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "schoolscholar": {
+          "name": ""
+        },
+        "specializedcaster": {
+          "name": ""
+        },
+        "schooldefender": {
+          "name": ""
+        },
+        "schoolmaster": {
+          "name": ""
+        },
+        "polymathmage": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "eriscourt": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "chaoscultist": {
+          "name": ""
+        },
+        "chaosbrawler": {
+          "name": ""
+        },
+        "discordagent": {
+          "name": ""
+        },
+        "entropybringer": {
+          "name": ""
+        },
+        "chaosberserker": {
+          "name": ""
+        },
+        "avatarofdiscord": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "naguka": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "swampscavenger": {
+          "name": ""
+        },
+        "blowdarthunter": {
+          "name": ""
+        },
+        "toxicwarrior": {
+          "name": ""
+        },
+        "poisonslinger": {
+          "name": ""
+        },
+        "plaguebearer": {
+          "name": ""
+        },
+        "nagukashaman": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "verden": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "forestscout": {
+          "name": ""
+        },
+        "saplingdefender": {
+          "name": ""
+        },
+        "guerillafighter": {
+          "name": ""
+        },
+        "treeambusher": {
+          "name": ""
+        },
+        "natureswrath": {
+          "name": ""
+        },
+        "forestchampion": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "truckerssociety": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "rookietrucker": {
+          "name": ""
+        },
+        "highwaymarksman": {
+          "name": ""
+        },
+        "roadwarrior": {
+          "name": ""
+        },
+        "convoysniper": {
+          "name": ""
+        },
+        "veterandriver": {
+          "name": ""
+        },
+        "roadmedic": {
+          "name": ""
+        },
+        "roadmaster": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "esotericheavyindustries": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "factoryworker": {
+          "name": ""
+        },
+        "industrialforeman": {
+          "name": ""
+        },
+        "factorysharpshooter": {
+          "name": ""
+        },
+        "heavymachinist": {
+          "name": ""
+        },
+        "industrialengineer": {
+          "name": ""
+        },
+        "steelsentinel": {
+          "name": ""
+        },
+        "corporatetitan": {
+          "name": ""
+        },
+        "assemblylinesniper": {
+          "name": ""
+        },
+        "industrialoverlord": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "northpointarmy": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "recruit": {
+          "name": ""
+        },
+        "regularsoldier": {
+          "name": ""
+        },
+        "northernarcher": {
+          "name": ""
+        },
+        "frostranger": {
+          "name": ""
+        },
+        "battlecleric": {
+          "name": ""
+        },
+        "winterguard": {
+          "name": ""
+        },
+        "frostmarksman": {
+          "name": ""
+        },
+        "northernknight": {
+          "name": ""
+        },
+        "winterpriest": {
+          "name": ""
+        },
+        "marshalofthefrost": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "invertedcitadel": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "caveoutcast": {
+          "name": ""
+        },
+        "voidarcher": {
+          "name": ""
+        },
+        "darkacolyte": {
+          "name": ""
+        },
+        "abyssalblade": {
+          "name": ""
+        },
+        "shadowscholar": {
+          "name": ""
+        },
+        "darknesssniper": {
+          "name": ""
+        },
+        "umbralwarlock": {
+          "name": ""
+        },
+        "shadowreaver": {
+          "name": ""
+        },
+        "citadelmaster": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "petrodemons": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "oilimp": {
+          "name": ""
+        },
+        "flameslinger": {
+          "name": ""
+        },
+        "crudefiend": {
+          "name": ""
+        },
+        "petrohellion": {
+          "name": ""
+        },
+        "burningarcher": {
+          "name": ""
+        },
+        "infernalbaron": {
+          "name": ""
+        },
+        "tarknight": {
+          "name": ""
+        },
+        "hellfiremarksman": {
+          "name": ""
+        },
+        "archdevilofoil": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "petromanagers": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "juniormanager": {
+          "name": ""
+        },
+        "efficiencyanalyst": {
+          "name": ""
+        },
+        "seniorpetromanager": {
+          "name": ""
+        },
+        "infernalexecutive": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "speeddemons": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "speedfreak": {
+          "name": ""
+        },
+        "nitrocourier": {
+          "name": ""
+        },
+        "velocitycultist": {
+          "name": ""
+        },
+        "sonicdemon": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "sevensisters": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "familyenforcer": {
+          "name": ""
+        },
+        "oilbaronguard": {
+          "name": ""
+        },
+        "familychampion": {
+          "name": ""
+        },
+        "heiressassassin": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "thegods": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "divineherald": {
+          "name": ""
+        },
+        "heavenlyarcher": {
+          "name": ""
+        },
+        "celestialguardian": {
+          "name": ""
+        },
+        "divinetemplar": {
+          "name": ""
+        },
+        "seraphimwarrior": {
+          "name": ""
+        },
+        "angelicsniper": {
+          "name": ""
+        },
+        "highpriest": {
+          "name": ""
+        },
+        "demigodavatar": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "supremearchivistcouncil": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "councilscribe": {
+          "name": ""
+        },
+        "truthkeeper": {
+          "name": ""
+        },
+        "councilelder": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "dataacquisitiondepartment": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "fieldagent": {
+          "name": ""
+        },
+        "acquisitionspy": {
+          "name": ""
+        },
+        "eliteinfiltrator": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "knowledgepreservationdivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "silentlibrarian": {
+          "name": ""
+        },
+        "preservationguard": {
+          "name": ""
+        },
+        "masterconservator": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "publictransparencyunit": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "propagandist": {
+          "name": ""
+        },
+        "spindoctor": {
+          "name": ""
+        },
+        "misinformationmaster": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "internalcomplianceunit": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "complianceofficer": {
+          "name": ""
+        },
+        "secretenforcer": {
+          "name": ""
+        },
+        "internalinquisitor": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "libertariangods": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "freemarketangel": {
+          "name": ""
+        },
+        "contractenforcer": {
+          "name": ""
+        },
+        "sovereignspirit": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "goblincollectiveunconsciuous": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "psychicgoblin": {
+          "name": ""
+        },
+        "mindstriker": {
+          "name": ""
+        },
+        "hivemindwarrior": {
+          "name": ""
+        },
+        "psychicslinger": {
+          "name": ""
+        },
+        "collectiveconduit": {
+          "name": ""
+        },
+        "telepathicsniper": {
+          "name": ""
+        },
+        "ancestralecho": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "thetourists": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "observerdrone": {
+          "name": ""
+        },
+        "probescout": {
+          "name": ""
+        },
+        "alientourist": {
+          "name": ""
+        },
+        "beamsniper": {
+          "name": ""
+        },
+        "realitymanipulator": {
+          "name": ""
+        },
+        "enforcerconstruct": {
+          "name": ""
+        },
+        "plasmarifleman": {
+          "name": ""
+        },
+        "zetanoverseer": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "holyvaticanempire": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "altarserver": {
+          "name": ""
+        },
+        "vaticanguard": {
+          "name": ""
+        },
+        "holyarcher": {
+          "name": ""
+        },
+        "holyknight": {
+          "name": ""
+        },
+        "blessedmarksman": {
+          "name": ""
+        },
+        "papalchampion": {
+          "name": ""
+        },
+        "vaticanpriest": {
+          "name": ""
+        },
+        "divinesniper": {
+          "name": ""
+        },
+        "cardinaltemplar": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "cardinalscouncil": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "councildeacon": {
+          "name": ""
+        },
+        "cardinaladvisor": {
+          "name": ""
+        },
+        "princeofthechurch": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "ior": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "bankclerk": {
+          "name": ""
+        },
+        "financialanalyst": {
+          "name": ""
+        },
+        "iorenforcer": {
+          "name": ""
+        },
+        "holybanker": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "battlenuns": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "novicesister": {
+          "name": ""
+        },
+        "battlesister": {
+          "name": ""
+        },
+        "sistersuperior": {
+          "name": ""
+        },
+        "mothersuperior": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "hexorcistscorp": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "cyberacolyte": {
+          "name": ""
+        },
+        "techpriest": {
+          "name": ""
+        },
+        "digitalexorcist": {
+          "name": ""
+        },
+        "masterhexorcist": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "gaylobby": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "progressivepriest": {
+          "name": ""
+        },
+        "reformadvocate": {
+          "name": ""
+        },
+        "shadowdiplomat": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "opusdei": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "devotednumerary": {
+          "name": ""
+        },
+        "secularagent": {
+          "name": ""
+        },
+        "opusdeizealot": {
+          "name": ""
+        },
+        "supernumeraryelite": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "swissguards": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "swissrecruit": {
+          "name": ""
+        },
+        "halberdier": {
+          "name": ""
+        },
+        "plasmaguard": {
+          "name": ""
+        },
+        "swisscommander": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "ussr": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "redarmyrecruit": {
+          "name": ""
+        },
+        "sovietrifleman": {
+          "name": ""
+        },
+        "commissar": {
+          "name": ""
+        },
+        "redveteran": {
+          "name": ""
+        },
+        "sovietsniper": {
+          "name": ""
+        },
+        "redofficer": {
+          "name": ""
+        },
+        "elitesoldier": {
+          "name": ""
+        },
+        "sovietcommander": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "guardsdivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "guardsprivate": {
+          "name": ""
+        },
+        "guardssergeant": {
+          "name": ""
+        },
+        "guardsmarksman": {
+          "name": ""
+        },
+        "guardslieutenant": {
+          "name": ""
+        },
+        "guardscaptain": {
+          "name": ""
+        },
+        "guardsmajor": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "tankdivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "tankcrewman": {
+          "name": ""
+        },
+        "t34driver": {
+          "name": ""
+        },
+        "tankcommander": {
+          "name": ""
+        },
+        "heavytankoperator": {
+          "name": ""
+        },
+        "tankace": {
+          "name": ""
+        },
+        "armoredbrigadeleader": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "rifledivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "rifleman": {
+          "name": ""
+        },
+        "veteranrifleman": {
+          "name": ""
+        },
+        "riflesquadleader": {
+          "name": ""
+        },
+        "sharpshooter": {
+          "name": ""
+        },
+        "riflecompanycommander": {
+          "name": ""
+        },
+        "elitemarksman": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "airbornedivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "paratrooper": {
+          "name": ""
+        },
+        "airborneassault": {
+          "name": ""
+        },
+        "jumpmaster": {
+          "name": ""
+        },
+        "airbornesniper": {
+          "name": ""
+        },
+        "airbornecommander": {
+          "name": ""
+        },
+        "spetsnazparatrooper": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "artillerydivision": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "artillerygunner": {
+          "name": ""
+        },
+        "howitzercrew": {
+          "name": ""
+        },
+        "katyushaoperator": {
+          "name": ""
+        },
+        "artilleryspotter": {
+          "name": ""
+        },
+        "heavyartillerycommander": {
+          "name": ""
+        },
+        "rocketartillerymaster": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "ottomanempire": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "sipahicavalry": {
+          "name": ""
+        },
+        "janissarytrooper": {
+          "name": ""
+        },
+        "imperialengineer": {
+          "name": ""
+        },
+        "modernjanissary": {
+          "name": ""
+        },
+        "bashibazoukmercenary": {
+          "name": ""
+        },
+        "pashasadvisor": {
+          "name": ""
+        },
+        "ottomanguard": {
+          "name": ""
+        },
+        "grandvizierselite": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "tanzimatbureaucracy": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "registryclerk": {
+          "name": ""
+        },
+        "mfettiinspector": {
+          "name": ""
+        },
+        "viziersdiplomat": {
+          "name": ""
+        },
+        "emineffendihighofficial": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "imperialsubmarinefleet": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "submarinecadet": {
+          "name": ""
+        },
+        "sonartechnician": {
+          "name": ""
+        },
+        "torpedooperator": {
+          "name": ""
+        },
+        "submarinecommander": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "talonofthecaliph": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "informant": {
+          "name": ""
+        },
+        "shadowoperative": {
+          "name": ""
+        },
+        "assassinationspecialist": {
+          "name": ""
+        },
+        "grandintelligencer": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "janissaryguard": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "janissarynovice": {
+          "name": ""
+        },
+        "korumatrooper": {
+          "name": ""
+        },
+        "janissarycaptain": {
+          "name": ""
+        },
+        "aaofthekoruma": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "britannia": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "commonwealthtrooper": {
+          "name": ""
+        },
+        "royalmarinerifleman": {
+          "name": ""
+        },
+        "fieldmedic": {
+          "name": ""
+        },
+        "imperialgrenadier": {
+          "name": ""
+        },
+        "highlandermarksman": {
+          "name": ""
+        },
+        "staffofficer": {
+          "name": ""
+        },
+        "veteranfusilier": {
+          "name": ""
+        },
+        "guardcommander": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "royalnavytaskforce": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "seamanrecruit": {
+          "name": ""
+        },
+        "frigatecrewman": {
+          "name": ""
+        },
+        "radartechnician": {
+          "name": ""
+        },
+        "hydrofoilofficer": {
+          "name": ""
+        },
+        "fleetcommander": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "sassbscommandos": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "reconspecialist": {
+          "name": ""
+        },
+        "demolitionsexpert": {
+          "name": ""
+        },
+        "sbsfrogman": {
+          "name": ""
+        },
+        "sascounterterrorist": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "mi6blackarchive": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "analysthandler": {
+          "name": ""
+        },
+        "covertagent": {
+          "name": ""
+        },
+        "psychologicalwarfareexpert": {
+          "name": ""
+        },
+        "sectionchiefthecontroller": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    },
+    "sciencecommand": {
+      "name": "",
+      "description": "",
+      "troops": {
+        "labtechnician": {
+          "name": ""
+        },
+        "plasmaengineer": {
+          "name": ""
+        },
+        "powerarmortrooper": {
+          "name": ""
+        },
+        "chiefscientistkineticist": {
+          "name": ""
+        },
+        "scientist": {
+          "name": ""
+        }
+      }
+    }
+  }
+}

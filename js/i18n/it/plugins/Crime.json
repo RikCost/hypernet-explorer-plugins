@@ -1,0 +1,14 @@
+{
+  "text": {
+    "crimeRecord": "Registro Crimini",
+    "totalBounty": "Taglia Totale",
+    "noCrimes": "Nessun crimine commesso.",
+    "crimesCommitted": "Crimini Commessi:",
+    "bountyCleared": "Taglia cancellata!",
+    "allCrimesForgi": "Tutti i crimini sono stati perdonati.",
+    "availableCrimes": "Crimini Disponibili per Categoria",
+    "errorUnknown": "Errore: Tipo di crimine sconosciuto:",
+    "total": "Totale",
+    "selfPardon": "Ti sei auto-perdonato questo crimine"
+  }
+}

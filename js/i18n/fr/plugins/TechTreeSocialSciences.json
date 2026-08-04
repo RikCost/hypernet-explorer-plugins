@@ -1,0 +1,78 @@
+{
+  "name": "Sciences Sociales",
+  "blurb": "Les gens, les marchés et les foules comme objets mesurés : stratégies d'identification, tailles d'effet et l'échantillonnage qui les a produites. Les illusions favorites de l'époque sont classées ici aussi, avec les défauts de protocole qui les ont produites.",
+  "nodes": {
+    "soc_asymmetric": {
+      "name": "Marchés à Information Asymétrique",
+      "desc": "Trois modèles d'échange où une partie est mieux informée que l'autre. Sous sélection adverse, un prix uniforme est fixé à partir de la qualité moyenne, les vendeurs de biens au-dessus de la moyenne se retirent, la moyenne baisse et le marché se défait vers son plus mauvais segment. Sous signalement, la partie non informée infère la qualité d'une action observable qui coûte moins cher au type élevé : un titre sépare donc les types parce qu'il est coûteux, sans avoir à être productif. Sous filtrage, la partie informée est triée par le menu de contrats qu'on lui offre, comme avec une franchise. Aucun des trois équilibres séparateurs n'est efficace au sens de Pareto."
+    },
+    "soc_prospect": {
+      "name": "La Théorie des Perspectives en Économie",
+      "desc": "Le choix est modélisé sur des gains et des pertes à partir d'un point de référence plutôt que sur la richesse finale. La fonction de valeur est concave au-dessus du point de référence, convexe en dessous et plus raide en dessous d'un facteur voisin de 2,25 : une perspective identique est donc acceptée présentée comme un gain et refusée présentée comme une perte. Les probabilités entrent par une fonction de pondération qui surpondère les issues sous environ 0,35 et sous-pondère le reste, ce qui reproduit la demande simultanée d'assurance et de billets de loterie. Les paramètres sont estimés sur des données de choix et se répliquent d'une population à l'autre, et l'effet de cadrage survit aux incitations et à l'expertise."
+    },
+    "soc_social_graph": {
+      "name": "Le Graphe Social",
+      "desc": "L'affiliation est stockée comme un graphe à arêtes typées et vecteurs d'attributs sur les nœuds, et interrogée par parcours plutôt que par jointure : distribution des degrés, coefficient de regroupement, longueur des chemins et partition en communautés d'une population entière deviennent donc calculables en une seule passe. Mesurée sur un tel graphe, la géodésique moyenne entre deux membres vaut entre quatre et cinq, le degré est à queue lourde avec une coupure imposée par l'interface, et l'homophilie est assez forte pour que des attributs non déclarés se retrouvent à partir des seuls voisins. La même adjacence qui porte la requête porte l'inférence."
+    },
+    "soc_collective": {
+      "name": "Intelligence Collective",
+      "desc": "Une encyclopédie écrite en édition ouverte, avec historique complet des révisions, page de discussion par article et une annulation qui coûte un clic contre les quelques minutes que coûte une dégradation. Cette asymétrie de coût, jointe à des listes de suivi concentrées sur les pages à fort trafic, tient le délai médian d'annulation du vandalisme sous deux minutes. Une comparaison en aveugle de quarante-deux articles scientifiques face à une encyclopédie imprimée trouve quatre erreurs graves de chaque côté et environ trois erreurs mineures par article contre 2,9 pour l'imprimé. L'exactitude est inégalement répartie : elle suit le trafic, et la longue traîne des pages peu consultées n'est pas auditée."
+    },
+    "soc_microfinance": {
+      "name": "Microfinance",
+      "desc": "Des prêts sans garantie de quelques dizaines de dollars sont consentis à des emprunteurs sans historique de crédit, adossés à une responsabilité conjointe au sein de groupes de cinq, à des réunions de remboursement hebdomadaires et à la promesse d'un prêt plus important à l'échéance. La responsabilité de groupe transfère la sélection et l'exécution aux emprunteurs, qui connaissent mieux leurs perspectives mutuelles que le prêteur. Le recouvrement déclaré dépasse 95 pour cent à des taux bien inférieurs à ceux de l'usurier informel. Des évaluations randomisées trouveront plus tard des effets durables sur l'investissement des entreprises et sur le calendrier de la consommation, et aucun effet mesurable sur le revenu des ménages, la scolarisation ou la santé."
+    },
+    "soc_smartphone": {
+      "name": "L'Ère du Téléphone Intelligent",
+      "desc": "Une dalle capacitive multitouche, un système sur puce ARM, une radio de données en paquets attachée en permanence, un positionnement par satellite, un accéléromètre et une caméra dans un appareil porté contre le corps, avec au-dessus un canal d'applications signées. L'ensemble de capteurs signifie que position, orientation, mouvement et proximité sont journalisés en continu à la résolution du mètre et de la seconde ; la radio permanente signifie que le journal n'est pas local. L'attention devient une quantité comptée parce que l'appareil sait la mesurer, et la population échantillonnée est quiconque en porte un."
+    },
+    "soc_gfc": {
+      "name": "Le Risque Systémique à Nu",
+      "desc": "Des portefeuilles de créances hypothécaires sont découpés en tranches dont les notations senior reposent sur une corrélation de défaut supposée, calibrée sur une série de prix nationale qui ne contient aucune baisse à l'échelle du pays. L'exposition est ensuite assurée par des dérivés de crédit émis par une poignée de contreparties et logée hors bilan dans des véhicules financés au jour le jour. Quand la corrélation réalisée approche l'unité, le découpage n'offre plus aucune protection, le financement se renouvelle chaque jour contre un collatéral que l'on déprécie, et la perte se transmet par les contreparties au lieu de se disperser. La diversification était un artefact de la fenêtre d'estimation."
+    },
+    "soc_nudge": {
+      "name": "Le Coup de Pouce et l'Architecture du Choix",
+      "desc": "Valeurs par défaut, ordre, saillance et cadrage sont traités comme des paramètres de conception de l'environnement de choix, sur le constat qu'ils déplacent le comportement agrégé en laissant l'ensemble des options inchangé. Faire passer l'adhésion à un plan de retraite de l'inscription volontaire au retrait volontaire porte la participation d'environ 40 pour cent à plus de 90 dès la première année d'ancienneté ; le même basculement sur l'inscription au don d'organes explique l'essentiel de l'écart entre taux nationaux. Le mécanisme agit sur le coût de la délibération : l'effet est donc maximal là où l'attention est la plus rare, et il s'atténue là où la décision est répétée et lourde de conséquences."
+    },
+    "soc_commons": {
+      "name": "Gouverner les Communs",
+      "desc": "Des études de terrain sur des systèmes d'irrigation, des pêcheries côtières, des pâturages et des forêts documentent des ressources communes gouvernées durablement sans allocation étatique ni titre privé. Les cas qui perdurent partagent huit principes de conception : frontières et appartenance clairement définies, règles adaptées aux conditions locales, choix collectif de ces règles par les appropriateurs, surveillance exercée par les appropriateurs eux-mêmes, sanctions graduées selon la gravité de l'infraction, résolution des conflits locale et peu coûteuse, reconnaissance du droit de s'organiser, et emboîtement dans des unités plus larges. La tragédie des communs se trouve ainsi rétrogradée de théorème à une issue parmi plusieurs."
+    },
+    "soc_big_data": {
+      "name": "Données Massives et Soi Quantifié",
+      "desc": "Flux de clics, traces de localisation, relevés de transactions et journaux de capteurs sont joints sur des identifiants communs et ajustés par des modèles de régression et de classification. Des traces comportementales éparses prédisent les attributs individuels à des exactitudes que l'autodéclaration n'atteint pas, la trace étant continue et non sollicitée : quelques centaines d'approbations de pages suffisent à retrouver orientation politique, orientation sexuelle et usage de substances au-delà de 80 pour cent. La réidentification est le mode de défaillance permanent, car une poignée de points de localisation ou un bref historique de visionnage est unique dans une population de millions, et le consentement est recueilli une fois pour une finalité définie après coup."
+    },
+    "soc_networked_movement": {
+      "name": "Mouvements Sociaux en Réseau",
+      "desc": "La coordination passe des organisations permanentes à la messagerie mobile et aux fils publics. Le coût de convoquer une assemblée tombe presque à zéro, l'intervalle entre l'appel et le rassemblement passe de semaines à heures, et il n'existe aucun comité dont l'arrestation mettrait fin à la mobilisation. La même topologie porte des coûts qui apparaissent plus tard : aucun mécanisme n'existe pour agréger les revendications ni pour mandater un négociateur, si bien que le mouvement croît en nombre sans croître en capacité, et le graphe public qui le rassemble est aussi une liste d'adhérents lisible de l'extérieur."
+    },
+    "soc_mooc": {
+      "name": "Éducation en Ligne Ouverte",
+      "desc": "Un cours est empaqueté en vidéos enregistrées et découpées, en évaluations corrigées automatiquement et en révision par les pairs calibrée : le coût marginal d'un étudiant supplémentaire tend donc vers zéro et une seule inscription en atteint six chiffres. L'achèvement mesuré se situe entre quatre et dix pour cent, et la population inscrite penche vers ceux qui détiennent déjà un diplôme. La contrainte déterminante passe de la capacité de l'amphithéâtre au retour d'évaluation : la correction automatique couvre ce qu'une machine peut vérifier, la révision par les pairs couvre le reste à une fiabilité qu'il faut estimer et corriger."
+    },
+    "soc_the_secret": {
+      "name": "La Loi de l'Attraction",
+      "desc": "Un protocole de visualisation, d'affirmation et de gratitude, sur un mécanisme énoncé de résonance vibratoire par lequel la pensée attire une issue qui lui correspond. La proposition est construite pour qu'aucune observation ne puisse la toucher : un succès confirme le mécanisme, un échec est imputé à une pureté d'intention insuffisante ou à une pensée négative résiduelle, et l'on enjoint au pratiquant de ne pas prêter attention aux preuves contraires. La même règle d'attribution assigne la cause de la maladie, du deuil et de la pauvreté à la personne qui les porte, et cette assignation est le contenu opérant de la doctrine."
+    },
+    "soc_vaccine_panic": {
+      "name": "La Panique Vaccin-Autisme",
+      "desc": "Une série de douze cas rapporte des observations intestinales et une régression du développement, et propose un lien temporel avec un vaccin combiné. Le protocole ne comporte aucun groupe témoin et ne peut soutenir une affirmation causale à aucune taille d'échantillon. L'enquête établit que les sujets furent recrutés par un avocat préparant un contentieux, que l'auteur principal détenait un paiement non déclaré et un brevet concurrent, et que les dossiers cliniques ne concordent pas avec les chronologies publiées ; l'article est rétracté et la licence retirée. Des études de cohorte et cas-témoins portant sur plus de dix millions d'enfants ne trouvent aucune association, et la couverture perdue rétablit pour des années une transmission endémique de la rougeole."
+    },
+    "soc_precognition": {
+      "name": "Sentir l'Avenir",
+      "desc": "Neuf expériences inversent l'ordre de paradigmes classiques, testant si un stimulus présenté après une réponse peut l'affecter, et rapportent une amorce rétroactive et des effets d'entraînement inversés à une taille d'effet moyenne voisine de 0,2. Les analyses sont spécifiées après avoir vu les données, plusieurs mesures dépendantes sont recueillies et celle qui est rapportée est choisie, et la règle d'arrêt n'est pas fixée. Trois réplications directes indépendantes reviennent nulles. L'épisode fait sortir la préinscription, l'analyse de puissance a priori et la publication des résultats nuls de la dispute méthodologique pour les inscrire dans la pratique courante."
+    },
+    "soc_mobile_web": {
+      "name": "Le Web Mobile",
+      "desc": "Les pages sont refaites pour une liaison radio dont l'aller-retour dure plusieurs centaines de millisecondes et pour un pointeur large d'un centimètre. La charge utile est ramenée au kilooctet et les requêtes sont réduites, puisque la latence l'emporte sur la bande passante ; la mise en page se replie en une seule colonne fluide à la largeur de la fenêtre ; les cibles tactiles sont dimensionnées à environ neuf millimètres, un bout de doigt n'ayant ni état de survol ni précision au pixel. Les sessions deviennent courtes, fréquentes, interrompues et géolocalisées, ce qui change ce que mesurent les journaux de trafic autant que cela change la page."
+    },
+    "soc_cloud": {
+      "name": "Informatique en Nuage",
+      "desc": "Le calcul est vendu en machines virtuelles isolées par hyperviseur et en stockage objet, compté à l'heure et provisionné par une interface de programmation en quelques minutes. La capacité passe d'un projet d'investissement au cycle d'achat trimestriel à une dépense d'exploitation au cycle de quelques minutes, et elle se libère aussi vite qu'elle se prend. La conséquence mesurable porte sur la tentative ratée : un essai qui aurait exigé un bon de commande coûte désormais le prix d'un après-midi, si bien que le nombre de tentatives augmente et que le choix de ce qui se construit change avec lui."
+    },
+    "soc_video_platform": {
+      "name": "Diffusion Vidéo Omniprésente",
+      "desc": "Un fichier est transcodé une fois en une échelle de débits, découpé en segments de quelques secondes, mis en cache sur des nœuds de périphérie proches du spectateur et livré en HTTP ordinaire pour traverser n'importe quel pare-feu, le client changeant d'échelon à mesure que le débit mesuré varie. Le dépôt est ouvert : le catalogue n'est donc pas commandé. Le coût marginal d'un spectateur de plus tend vers zéro, et un cours, une émission, un extrait de vidéosurveillance et un enregistrement familial deviennent la même classe d'objet, indexée ensemble et classée par la même mesure d'attention retenue."
+    }
+  }
+}

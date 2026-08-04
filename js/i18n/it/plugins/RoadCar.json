@@ -1,0 +1,9 @@
+{
+  "unattendedCar": "Un'auto incustodita.",
+  "stealCar": "Ruba l'auto",
+  "cancel": "Annulla",
+  "usedSkeletonKey": "Hai usato il Passepartout!",
+  "needLockpick": "Ti serve un grimaldello per far partire un'auto a caldo.",
+  "lockStuck": "La serratura non si muove.",
+  "hotwired": "Fai partire l'auto a caldo e ti metti in tasca \\I[{icon}]{item}."
+}

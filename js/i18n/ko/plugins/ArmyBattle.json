@@ -1,0 +1,21 @@
+{
+  "zoom": "",
+  "controls": "",
+  "playerArmy": "",
+  "enemyArmy": "",
+  "rallyBanner": "",
+  "healBanner": "",
+  "inspireBanner": "",
+  "clickSquad": "",
+  "ability": {
+    "rally": "",
+    "heal": "",
+    "inspire": ""
+  },
+  "command": {
+    "hold": "",
+    "attack": "",
+    "defend": "",
+    "retreat": ""
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "climb": "Arrampica",
+  "cancel": "Annulla",
+  "tavern": "Taverna",
+  "tiles": "caselle",
+  "orderFood": "Ordina da mangiare",
+  "sit": "Siedi",
+  "changeSeat": "Cambia posto",
+  "stopSitting": "Alzati",
+  "dive": "Tuffa",
+  "drink": "Bevi",
+  "resurface": "Risalire",
+  "reemerge": "Risalire",
+  "fish": "Pesca",
+  "useBoat": "Usa la barca",
+  "swim": "Nuota",
+  "drinkSaltWater": "Bevi dell'acqua salata e ti senti subito nauseato!",
+  "drinkWater": "Bevi un po' d'acqua, placando leggermente la fame.",
+  "cannotSwimHere": "Qui non puoi nuotare."
+}

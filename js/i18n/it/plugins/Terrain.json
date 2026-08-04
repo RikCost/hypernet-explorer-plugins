@@ -1,0 +1,28 @@
+{
+  "verb": {
+    "fell": "Abbatti",
+    "mine": "Estrai",
+    "pick": "Raccogli",
+    "dismantle": "Smonta"
+  },
+  "needAxe": "Ti serve un'ascia per abbatterlo.",
+  "read": "Leggi",
+  "cancel": "Annulla",
+  "collect": "Raccogli",
+  "foolsGold": "Oro degli sciocchi: pirite, e sotto a malapena il valore di una moneta.",
+  "drink": "Bevi",
+  "pickUp": "Raccogli",
+  "breakIt": "Rompi",
+  "mpRefilled": "MP recuperati!",
+  "open": "Apri",
+  "blowOut": "Spegni",
+  "lightUp": "Accendi",
+  "bathe": "Fai il bagno",
+  "enter": "Entra",
+  "descend": "Scendi",
+  "ascend": "Sali",
+  "signShop": "Negozio",
+  "signInn": "Locanda",
+  "needPickaxe": "Ti serve un piccone o uno strumento pesante per romperlo.",
+  "statue": "Una statua che raffigura {subject}."
+}

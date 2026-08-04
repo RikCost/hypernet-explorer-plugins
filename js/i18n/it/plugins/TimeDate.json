@@ -1,0 +1,56 @@
+{
+  "needs": {
+    "hungry": "ha fame",
+    "starving": "sta morendo di fame!",
+    "noLongerHungry": "non ha più fame",
+    "sleepy": "ha sonno",
+    "exhausted": "è esausto!",
+    "noLongerSleepy": "non ha più sonno",
+    "hygieneLow": "si sta sporcando",
+    "hygieneCritical": "è sudicio!",
+    "socialLow": "si sente solo",
+    "socialCritical": "è disperatamente solo!",
+    "leisureLow": "è annoiato",
+    "leisureCritical": "è annoiato a morte!",
+    "hp": "HP",
+    "mp": "MP",
+    "mpRestored": "ha recuperato tutti gli MP",
+    "vomited": "{name} ha vomitato!",
+    "collapsed": "{name} è collassato per la fame!",
+    "outOfMp": "{name} ha esaurito i PM!"
+  },
+  "sleepMenu": {
+    "titleMain": "Riposo",
+    "titleSleep": "Per quanto tempo?",
+    "titlePostSleep": "Risveglio",
+    "titleCryo": "Risveglio in quale anno?",
+    "titleWait": "Aspetta quanto?",
+    "sleep": "Dormi",
+    "wait": "Aspetta",
+    "hoursWait": "%1 ore",
+    "hourWait": "1 ora",
+    "halfHour": "30 minuti",
+    "cryo": "Sonno criogenico",
+    "cryoYear": "%1",
+    "cryoFinalYear": "%1 (1 gen)",
+    "save": "Salva",
+    "respawn": "Imposta punto di rinascita",
+    "cancel": "Annulla",
+    "hours": "%1 ore",
+    "wakeup": "Svegliati",
+    "dream": "Sogna"
+  },
+  "hud": {
+    "food": "Cibo",
+    "temp": "Temp",
+    "noFood": "niente",
+    "weatherClear": "Sereno"
+  },
+  "needLabel": {
+    "hunger": "Fame",
+    "sleep": "Sonno",
+    "hygiene": "Igiene",
+    "social": "Socialita",
+    "leisure": "Svago"
+  }
+}

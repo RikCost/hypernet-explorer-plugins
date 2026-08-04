@@ -1,0 +1,92 @@
+{
+  "preferences": "",
+  "back": "",
+  "noSettingsHere": "",
+  "normal": "",
+  "active": "",
+  "inactive": "",
+  "pressOrOkToEdit": "",
+  "l1R1SwitchTabs": "",
+  "adjustTheFocusedValue": "",
+  "slider": "",
+  "selection": "",
+  "toggle": "",
+  "active2": "",
+  "inactive2": "",
+  "toAdjust": "",
+  "okOrToToggle": "",
+  "requiresRestartToApply": "",
+  "currentValue": "",
+  "controls": "",
+  "howItWorks": "",
+  "toBrowse": "",
+  "l1R1SwitchTabs2": "",
+  "label": {
+    "gameplay": "",
+    "video": "",
+    "audio": "",
+    "shader": "",
+    "experimental": "",
+    "uiVolume": "",
+    "voiceVolume": "",
+    "masterVolume": "",
+    "language": "",
+    "muteBgm": "",
+    "footstepsVolume": "",
+    "enemyBattlers": "",
+    "showFps": "",
+    "activeTheme": "",
+    "weaponSprites3d": "",
+    "cardCombat": "",
+    "mapBattle": "",
+    "retroShader": "",
+    "renderResolution": "",
+    "dithering": "",
+    "colorLevels": "",
+    "vertexSnap": "",
+    "uiScaling": "",
+    "fontScaling": "",
+    "titleBackground": "",
+    "enemySpawn": "",
+    "enemyDifficulty": "",
+    "cpuPartyMembers": "",
+    "sprite": "Sprite",
+    "sprites": "Sprites"
+  },
+  "warn": {
+    "language": "",
+    "cardCombat": "",
+    "mapBattleMode": ""
+  },
+  "titleBackground": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "enemySpawn": [
+    "",
+    ""
+  ],
+  "enemyBattler": [
+    "",
+    "",
+    ""
+  ],
+  "languageProgress": "",
+  "settingsInSection": "",
+  "desc": {
+    "enemySpawnMode": ""
+  },
+  "descState": {
+    "enemySpawnMode": [
+      "",
+      ""
+    ]
+  }
+}

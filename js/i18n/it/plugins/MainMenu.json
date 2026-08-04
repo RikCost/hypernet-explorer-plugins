@@ -1,0 +1,169 @@
+{
+  "cmd": {
+    "sandbox": "Sandbox",
+    "backpack": "Zaino",
+    "equip": "Equipaggiamento",
+    "skills": "Abilità",
+    "status": "Stato",
+    "specializations": "Specializzazioni",
+    "biologics": "Biologia",
+    "dynamics": "Dinamiche",
+    "thinker": "Assembla",
+    "pets": "Animali",
+    "workforce": "Manodopera",
+    "worldMap": "Mappa del Mondo",
+    "vehicles": "Veicoli",
+    "wait": "Attendi",
+    "cooking": "Cucina",
+    "build": "Costruisci",
+    "training": "Addestramento",
+    "research": "Ricerca",
+    "questLog": "Diario Missioni",
+    "bestiary": "Bestiario",
+    "archive": "Archivio",
+    "factions": "Fazioni",
+    "assets": "Beni",
+    "hypernet": "Hypernet",
+    "multiplayer": "Multigiocatore",
+    "save": "Salva",
+    "preferences": "Preferenze",
+    "tools": "Strumenti",
+    "resign": "Abbandona",
+    "returnToShip": "Torna alla Nave",
+    "teleportToShip": "Teletrasporto alla Nave",
+    "returnToWorldMap": "Torna alla mappa del mondo"
+  },
+  "dynamics": {
+    "roster": "Organico",
+    "rosterSub": "{count} in viaggio, metti a riposo o cambia capogruppo",
+    "wiki": "Wiki",
+    "wikiHint": "Voci del gruppo nell enciclopedia",
+    "history": "Cronologia",
+    "historyHint": "Chiunque abbia mai viaggiato con te",
+    "inactiveHint": "I membri inattivi lasciano la strada qui. Restano in panchina qui sotto per ogni salvataggio di questo mondo, e possono essere richiamati o giocati come personaggi nella creazione del personaggio. Il capogruppo resta: passa prima il comando per metterlo a riposo.",
+    "inactiveTitle": "Inattivi",
+    "inactiveEmpty": "Nessuno aspetta in panchina in questo mondo.",
+    "inactiveWorldHint": "Chiunque sia stato messo a riposo in questo mondo aspetta qui. Richiamarlo lo toglie dalla panchina per sempre, in ogni salvataggio.",
+    "inactiveFull": "Tre viaggiatori sono il massimo che la strada consenta: metti qualcuno a riposo prima di richiamare qualcun altro.",
+    "inactiveSince": "Inattivo dal {date}",
+    "rejoined": "{name} riprende la strada.",
+    "cannotRejoin": "{name} non può rientrare adesso.",
+    "lastMember": "L'ultimo membro rimasto non può essere messo a riposo.",
+    "partyEmpty": "Qualcuno deve continuare a viaggiare: il gruppo non può restare vuoto.",
+    "isLeader": "{name} guida il gruppo. Nomina prima un altro capogruppo.",
+    "cannotRetire": "{name} non può essere messo a riposo adesso.",
+    "nowInactive": "{name} è ora inattivo e può essere scelto come personaggio in questo mondo.",
+    "back": "Indietro",
+    "title": "Dinamiche del Gruppo",
+    "rosterTitle": "Organico",
+    "noMembers": "Nessun membro del gruppo trovato.",
+    "historyTitle": "Cronologia Organico",
+    "historySub": {
+      "one": "{count} ex membro registrato",
+      "other": "{count} ex membri registrati"
+    }
+  },
+  "roster": {
+    "travelling": "In viaggio",
+    "inactive": "Inattivo",
+    "departed": "Partito",
+    "dead": "Morto",
+    "joined": "Unito il {date}",
+    "died": "Morto il {date}",
+    "retired": "A riposo dal {date}",
+    "travellingWithYou": "In viaggio con te",
+    "dateUnrecorded": "Data non registrata",
+    "partyLeader": " · capogruppo",
+    "follower": "Seguace",
+    "pet": "Animale",
+    "classless": "Senza classe",
+    "none": "Nessuno",
+    "left": "Andato via il {date}",
+    "levelAbbr": "Liv.",
+    "thatMember": "Quel membro",
+    "following": "Al seguito",
+    "setActive": "Rendi attivo",
+    "repair": "Ripara",
+    "leader": "Capogruppo",
+    "makeLeader": "Rendi capogruppo",
+    "confirm": "Conferma",
+    "cancel": "Annulla",
+    "setInactive": "Metti a riposo",
+    "empathize": "Empatizza",
+    "noRecords": "Nessun registro del gruppo."
+  },
+  "need": {
+    "hunger": "Fame",
+    "sleep": "Sonno",
+    "hygiene": "Igiene",
+    "social": "Socialita",
+    "fun": "Svago"
+  },
+  "place": {
+    "unknownLand": "Terra Sconosciuta",
+    "worldWilderness": "Terre Selvagge",
+    "proceduralSector": "Settore Procedurale",
+    "localSector": "Settore Locale"
+  },
+  "reproduction": {
+    "none": "Nessuna",
+    "testicles": "Testicoli (Maschio)",
+    "uterus": "Utero (Femmina)",
+    "oviparous": "Oviparo (Uovo)",
+    "plant": "Pianta (Spore)",
+    "mitosis": "Mitosi (Asessuata)",
+    "unknown": "Sconosciuta"
+  },
+  "gender": {
+    "male": "Maschio",
+    "female": "Femmina",
+    "nonBinary": "Non binario",
+    "cocoon": "Bozzolo",
+    "fluid": "Fluido"
+  },
+  "weather": {
+    "clear": "Sereno"
+  },
+  "page": {
+    "tools": "Strumenti",
+    "pets": "Animali e Seguaci",
+    "vehicles": "Veicoli"
+  },
+  "vital": {
+    "hp": "PV",
+    "mp": "PM",
+    "ap": "PA"
+  },
+  "label": {
+    "location": "Posizione:",
+    "worldCoordinates": "Coordinate del mondo:",
+    "sector": "Settore:",
+    "timeDate": "Ora e data:",
+    "weather": "Meteo:",
+    "currentCash": "Denaro attuale:",
+    "currentBounty": "Taglia attuale:",
+    "armyUpkeep": "Mantenimento esercito:",
+    "rowColumn": "Riga {row}, Colonna {col}"
+  },
+  "travel": {
+    "goUp": "Vai in superficie",
+    "goDown": "Scendi nel sottosuolo",
+    "toggleMinimap": "Attiva/disattiva la minimappa",
+    "openMap": "Apri la mappa del mondo",
+    "resume": "Riprendi l'avventura",
+    "worldMapTitle": "Mappa del mondo"
+  },
+  "pets": {
+    "release": "Libera",
+    "none": "Nessun animale o seguace reclutato. Chiedi a un nemico di unirsi come animale o seguace durante una battaglia."
+  },
+  "vehicles": {
+    "spawn": "Evoca",
+    "noFuelNeeded": "Non richiede carburante",
+    "none": "Nessun veicolo posseduto. Procurati l'oggetto di richiamo di un veicolo per aggiungerlo qui."
+  },
+  "tools": {
+    "hexphone": "Hexphone",
+    "alchemistryKit": "Kit di alchimia"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "Mathématiques",
+  "blurb": "Démonstration et calcul, d'un test de primalité déterministe à la géométrisation des variétés de dimension trois, en passant par une inégalité dont la vérification ne s'est jamais refermée. Un résultat tient ou tombe ici sur un rapporteur, non sur un instrument.",
+  "nodes": {
+    "math_aks": {
+      "name": "Test de Primalité AKS",
+      "desc": "Pour un candidat n, on choisit le plus petit r dont l'ordre multiplicatif de n dépasse le carré du logarithme de n, et l'on teste si l'identité polynomiale (x + a) puissance n égale x puissance n plus a tient dans l'anneau des entiers modulo n avec x adjoint, modulo x puissance r moins un, pour tout a jusqu'à une borne de l'ordre de la racine de r fois le logarithme de n. La congruence tient pour tous ces a exactement quand n est premier. L'algorithme est déterministe, inconditionnel et polynomial en nombre de chiffres, d'abord à la puissance douze puis ramené à la sixième."
+    },
+    "math_poincare": {
+      "name": "Conjecture de Poincaré Démontrée",
+      "desc": "Le flot de Ricci déforme la métrique d'une variété fermée simplement connexe de dimension trois dans le sens opposé à sa courbure, et le flot la pousse vers une géométrie canonique tout en concentrant la courbure dans de minces cous. La démonstration maîtrise ces singularités : un théorème de voisinage canonique classe l'allure possible d'une région de forte courbure, le cou est excisé et obturé avant de se pincer, et une entropie monotone exclut l'effondrement qui ferait s'accumuler les chirurgies. Un nombre fini de chirurgies suffit sur tout intervalle, le flot s'éteint en temps fini, et la variété est la sphère de dimension trois. La géométrisation suit pour le cas général."
+    },
+    "math_green_tao": {
+      "name": "Théorème de Green-Tao",
+      "desc": "Les nombres premiers contiennent des progressions arithmétiques de longueur finie arbitraire. Le théorème de Szemerédi ne vaut que pour les ensembles de densité positive et les premiers sont de densité nulle : la démonstration construit donc une mesure pseudo-aléatoire qui majore les premiers et prouve un principe de transfert, à savoir que tout sous-ensemble de densité relative positive dans une telle mesure hérite de la conclusion de Szemerédi. L'argument de comptage scinde l'indicatrice en une partie structurée bornée, traitée par le théorème classique, et une partie de petite norme d'uniformité de Gowers, dont la contribution s'annule. L'argument n'est pas constructif et ne donne explicitement aucune progression."
+    },
+    "math_gimps_mersenne": {
+      "name": "Un Nombre Premier de Dix Millions de Chiffres",
+      "desc": "Des machines de volontaires criblent les exposants candidats par factorisation d'essai et par le p moins un de Pollard, puis lancent le test de Lucas-Lehmer : itérer s au carré moins deux modulo deux puissance p moins un, p moins deux fois, le nombre étant premier exactement quand le résidu est nul. Chaque élévation au carré s'exécute comme une convolution unique par transformée pondérée discrète en base irrationnelle, qui replie la réduction modulaire dans la transformée et tient l'erreur d'arrondi sous le quart d'une unité. Le quarante-cinquième premier de Mersenne compte 12 978 189 chiffres et se confirme par des relances indépendantes sur d'autres matériels et d'autres longueurs de transformée."
+    },
+    "math_e8": {
+      "name": "Cartographie de E8",
+      "desc": "La collaboration Atlas calcule la table de caractères complète de la forme réelle déployée de E8, groupe de Lie de dimension 248 et de rang 8 : une matrice de 453 060 lignes et colonnes dont les entrées sont des polynômes de Kazhdan-Lusztig-Vogan, un par couple de représentations admissibles. Le calcul est exact et non numérique, mené modulo plusieurs premiers puis relevé par le théorème des restes chinois, et occupe une soixantaine de gigaoctets, plus que l'Encyclopaedia Britannica imprimée. La sortie est la donnée de branchement dont se lit toute représentation unitaire du groupe."
+    },
+    "math_polymath": {
+      "name": "Le Projet Polymath",
+      "desc": "Un problème de recherche est posé sur un blogue et attaqué dans le fil de commentaires, sous un protocole où toute idée partielle est publiée aussitôt, aucun brouillon n'est gardé pour soi, et chaque contribution est horodatée et attribuée. Une démonstration combinatoire du théorème de Hales-Jewett en densité, évitant la machinerie ergodique de l'originale, s'achève en quelque sept semaines à travers un millier de commentaires d'une quarantaine de participants. Elle paraît sous un pseudonyme collectif, et toute la dérivation, branches abandonnées comprises, demeure dans l'archive."
+    },
+    "math_pnp_claim": {
+      "name": "Une Séparation Proposée de P et NP",
+      "desc": "Un manuscrit d'une centaine de pages prétend séparer P de NP en envoyant l'espace des solutions du k-SAT aléatoire près du seuil de satisfaisabilité sur la structure d'indépendance conditionnelle d'un modèle graphique, et en soutenant qu'un algorithme en temps polynomial ne peut exprimer que des distributions à dépendance conditionnelle bornée, ce que l'espace de solutions en amas à ce seuil n'est pas. Deux objections surgissent en quelques jours sur un wiki public : la paramétrisation servant à caractériser le temps polynomial exclut aussi XOR-SAT, que résout l'élimination de Gauss, et le résultat d'agrégation invoqué vaut pour une plage de densités qui ne contient pas celle dont l'argument a besoin."
+    },
+    "math_fundamental_lemma": {
+      "name": "Démonstration du Lemme Fondamental",
+      "desc": "Le transfert de Langlands des formes automorphes entre un groupe et ses groupes endoscopiques exige une identité entre intégrales orbitales pondérées des deux côtés, conjecturée pendant des décennies et vérifiée seulement en petit rang. La démonstration lit ces intégrales comme des comptages de points sur les fibres de la fibration de Hitchin pour l'espace de modules de fibrés de Higgs associé : l'identité devient donc un énoncé sur la cohomologie d'un unique objet géométrique, où le théorème de support de cette fibration force les deux côtés à coïncider."
+    },
+    "math_abc": {
+      "name": "Démonstration Inter-Universelle de abc",
+      "desc": "Pour des entiers positifs premiers entre eux avec a plus b égal c, la conjecture borne c par le radical de leur produit élevé à n'importe quel exposant supérieur à un, à un nombre fini d'exceptions près. La démonstration soumise court sur quelque cinq cents pages et tire cette borne d'estimations sur la déformation des fibrés en droites arithmétiques entre théâtres de données arithmétiques posés dans des copies mutuellement étrangères de la théorie des schémas, reliées par des isomorphismes indéterminés. La vérification se concentre sur un corollaire du troisième article, où deux experts tiennent qu'un couple d'identifications est employé de façon incohérente ; l'auteur soutient que l'objection méjuge le dispositif, et le différend reste non tranché dix ans plus tard."
+    },
+    "math_time_cube": {
+      "name": "Time Cube",
+      "desc": "Le système partage une rotation de la Terre en quatre journées d'angle simultanées, chacune avec son lever de soleil, et tient le décompte linéaire d'un seul jour pour une erreur propagée par l'école. Les quatre quadrants sont une rotation comptée quatre fois : aucune assignation cohérente d'une coordonnée temporelle à un événement n'existe donc, puisque le même instant doit porter quatre étiquettes de jour différentes alors que ces étiquettes sont aussi affirmées être des jours distincts. La construction n'émet aucune prédiction et ne définit aucune opération dans ses propres termes."
+    },
+    "math_bible_code": {
+      "name": "Le Code de la Bible",
+      "desc": "Séquences de lettres équidistantes : le texte consonantique est lu à un saut fixe et fouillé pour y trouver des mots cibles, la signification étant jugée contre des textes témoins permutés. L'espace de recherche est le produit de la plage de sauts, de tous les décalages de départ, des deux sens de lecture, des variantes orthographiques admises et de la taille de la liste de cibles, laquelle est d'ordinaire fixée après la recherche ; les occurrences s'accumulent donc au rythme que prédit le hasard. Appliquer le protocole identique à une traduction hébraïque de Guerre et Paix, puis à Moby Dick, rend des occurrences comparables, dont des assassinats correctement appariés à leurs victimes."
+    },
+    "math_sacred_geometry": {
+      "name": "Le Nombre d'Or Partout",
+      "desc": "Un programme de mesure qui ajuste le rapport 1,618 à des façades, des coquilles, des visages et des séries de prix. Le procédé laisse l'analyste libre de choisir quelles deux dimensions mesurer, où un élément commence et finit, et une tolérance d'ordinaire de dix pour cent ou plus ; sous ces degrés de liberté, le rapport se récupère de presque n'importe quel jeu de proportions, et un couple de longueurs tirées uniformément au hasard tombe dans cette tolérance assez souvent pour rendre compte du taux d'occurrences rapporté. Les mesures du Parthénon dépendent de l'endroit où l'on prend la base de l'entablement, et la constante de croissance de la spirale du nautile vaut environ 1,33."
+    },
+    "math_atlas_software": {
+      "name": "Le Projet Logiciel Atlas",
+      "desc": "Avant de pouvoir compter une représentation d'un groupe de dimension 248, il faut pouvoir l'adresser. Le logiciel encode données de racines, involutions des formes réelles, blocs de représentations et leurs polynômes de Kazhdan-Lusztig-Vogan en arithmétique entière exacte, et met chaque objet sous forme canonique afin que deux descriptions d'une même représentation se comparent égales. Sans cette normalisation, la structure en blocs ne peut être énumérée sans doublons, et la table de caractères est un problème de tenue de comptes avant d'être un calcul."
+    },
+    "math_terabyte_linear_algebra": {
+      "name": "Algèbre Linéaire au Téraoctet",
+      "desc": "L'étape finale est une unique matrice de polynômes de plus de quatre cent mille lignes, dont les coefficients exacts dépassent toute mémoire disponible. Elle est réduite modulo quatre nombres premiers assez petits pour que chaque entrée tienne dans un mot machine, résolue par blocs diffusés depuis le disque, et réassemblée par le théorème des restes chinois. Une borne a priori démontrée sur la taille des vrais coefficients confirme qu'aucune entrée n'a débordé sans qu'on le voie, et le calcul est repris avec un autre jeu de premiers en guise de contrôle. Le travail prend environ soixante-dix-sept heures sur 200 gigaoctets de mémoire."
+    },
+    "math_iut_foundations": {
+      "name": "Fondements de la Géométrie Inter-Universelle",
+      "desc": "L'inégalité ne peut être énoncée avant que son cadre n'existe. La construction fournit les frobenioïdes, catégories qui abstraient les fibrés en droites arithmétiques d'un corps de nombres ; la reconstruction anabélienne, qui retrouve une courbe hyperbolique à partir de son seul groupe fondamental étale ; et les théâtres de Hodge, assemblages de données arithmétiques placés dans des copies mutuellement étrangères de la théorie des schémas et comparés par des isomorphismes indéterminés, les indéterminations qui en résultent étant suivies explicitement. Plusieurs centaines de pages de définitions précèdent la première estimation, et presque aucun terme du vocabulaire n'est partagé avec la littérature existante."
+    }
+  }
+}

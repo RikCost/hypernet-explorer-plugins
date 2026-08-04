@@ -1,0 +1,6 @@
+{
+  "hud": {
+    "wave": "{venue}   WAVE {wave}/{total}",
+    "stats": "SCORE {score}   SPD {speed}   MARGIN {margin}M"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "back": "Indietro",
+  "forbiddenDraw": "{percent}% di pescata proibita",
+  "forbiddenTitle": "Grimorio proibito",
+  "skillBookTitle": "Manuale di {school}",
+  "forgottenTitle": "Grimorio dimenticato",
+  "schoolTitle": "Grimorio di {school}",
+  "thisReader": "Questo lettore",
+  "noSpells": "{reader} non riesce a cogliere nessuna magia qui.<br>(nessuna alla portata dei PM, o le conosce già tutte)",
+  "ui": {
+    "blurb": "Scegli un lettore, poi reclama un incantesimo fra i cinque che le pagine rivelano. Compaiono solo gli incantesimi alla portata dei suoi PM.",
+    "partyReader": "Lettore del gruppo",
+    "psychicDiagnostics": "Diagnostica psichica",
+    "medianPsi": "PSI mediano (Fortuna)",
+    "forbiddenSurfacing": "Affioramento proibito",
+    "forbidden": "✦ Proibito",
+    "whisperedSpells": "Destini Sussurrati"
+  }
+}

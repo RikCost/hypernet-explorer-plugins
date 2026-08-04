@@ -107,6 +107,12 @@
     "category": "Property",
     "name_int": "crime.propertydestruction.name"
   },
+  "illegalConstruction": {
+    "name": "Illegal Construction",
+    "bounty": 250,
+    "category": "Property",
+    "name_int": "crime.illegalconstruction.name"
+  },
   "publicDisturbance": {
     "name": "Public Disturbance",
     "bounty": 25,

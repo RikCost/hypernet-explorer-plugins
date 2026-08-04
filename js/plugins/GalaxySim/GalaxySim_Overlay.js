@@ -1,0 +1,1735 @@
+/*:
+ * @target MZ
+ * @plugindesc GalaxySim 3D Overlay - Themed DOM/HTML UI layered over the 3D star map
+ * @author Omni-Lex + Nocoldiz
+ * @url
+ * @help
+ * ============================================================================
+ * GalaxySim 3D Overlay Module
+ * ============================================================================
+ * Builds and owns the HTML UI drawn over the WebGL canvas: scale indicator,
+ * mode hint, the selection info panel (star / planet / moon + Travel & Land
+ * actions), and the hover tooltip. Styling is driven by the active theme's CSS
+ * custom properties (css/vars.css) so the HUD matches the rest of the game, and
+ * interactive elements follow the HypernetOS .focusable nav convention so the
+ * panel works with mouse, keyboard, and controller.
+ *
+ * Selection / hover is fed from Scene3D's raycaster. Action buttons invoke the
+ * callbacks registered via setCallbacks() (Scene3D routes them to the
+ * DataManager travel / land logic).
+ *
+ * LOAD ORDER: after GalaxySim_Math.js, before GalaxySim_Scene3D.js.
+ */
+
+(() => {
+  "use strict";
+
+  if (!window.GalaxySim) window.GalaxySim = {};
+
+  const STYLE_ID = "galaxysim-overlay-style";
+
+  const CSS = `
+/* Explicit width/height as well as the four offsets: with only the inset
+   shorthand (or offsets alone) this layer collapsed to shrink-to-fit on the
+   engine's Chromium, which piled the whole HUD into the top-left corner and
+   left the panels below the button rail with no height to draw in. */
+#gx-ui { position:absolute; top:0; right:0; bottom:0; left:0;
+  width:100%; height:100%; pointer-events:none;
+  font-family:'Segoe UI',Arial,sans-serif; color:var(--text-pure-white,#fff);
+  user-select:none; font-size:13px; }
+#gx-ui .gx-panel {
+  position:absolute; pointer-events:auto;
+  background:var(--bg-dark-panel,rgba(20,24,33,0.96));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  border-radius:6px; padding:12px 14px; min-width:240px; max-width:300px;
+  box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55));
+  line-height:1.5; }
+#gx-ui .gx-title {
+  color:var(--accent-amber-glow,#ffe9a8); font-weight:bold; font-size:18px;
+  letter-spacing:0.5px; margin-bottom:6px;
+  text-shadow:0 1px 3px var(--shadow-black-translucent-75,rgba(0,0,0,0.75)); }
+#gx-ui .gx-title.gx-hard { color:var(--accent-gold-pure,#ffd700); }
+#gx-ui .gx-loc-star { color:var(--accent-gold-pure,#ffd700);
+  text-shadow:0 0 6px var(--shadow-gold-amber-50,rgba(212,160,80,0.8)); }
+#gx-ui .gx-sub { color:var(--accent-amber-light,#e9c46a); font-size:12px;
+  margin:-4px 0 6px; text-transform:capitalize; }
+#gx-ui .gx-divider { height:1px; margin:6px 0;
+  background:var(--border-gold-amber-30,rgba(212,160,80,0.3)); }
+#gx-ui .gx-row { display:flex; justify-content:space-between; gap:10px; }
+#gx-ui .gx-k { color:var(--text-text-alt-12,#aaa); }
+#gx-ui .gx-v { color:var(--text-pure-white,#fff); text-align:right; }
+#gx-ui .gx-muted { color:var(--text-text-alt-12,#aaa); }
+/* The left column: scale readout, the stacked button rail, the selection panel
+   and the engine readout, laid out top to bottom in one flow so a rail that
+   grows (Return to Earth unfolding its two extra buttons) pushes the panels
+   down instead of sitting on top of them. The right column is the catalog
+   (top) and the fuel gauges (bottom). */
+#gx-left { position:absolute; left:14px; top:14px; bottom:14px; width:330px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+  pointer-events:none; }
+/* Beats the .gx-panel absolute rule above, so the column really flows. */
+#gx-ui #gx-left > * { position:relative; top:auto; left:auto; right:auto;
+  bottom:auto; flex:0 0 auto; max-width:100%; }
+#gx-ui #gx-scale { pointer-events:auto; }
+#gx-ui #gx-info { display:none; pointer-events:auto;
+  flex:0 1 auto; min-height:0; overflow-y:auto; }
+#gx-ui #gx-speed { display:none; pointer-events:auto; min-width:220px;
+  margin-top:auto; }
+/* Always-on fuel gauges, bottom right (above the mode hint line). */
+#gx-fuel { bottom:40px; right:26px;
+  min-width:340px; max-width:380px; padding:10px 14px; }
+#gx-fuel .gx-fuel-head { display:flex; align-items:baseline; gap:8px;
+  margin-bottom:2px; }
+#gx-fuel .gx-fuel-head .gx-title { flex:0 0 auto; margin:0; font-size:15px; }
+#gx-fuel .gx-fuel-head .gx-muted { flex:1 1 auto; min-width:0; font-size:11px;
+  line-height:1.3; }
+#gx-fuel .gx-fuel-pct { margin-left:auto; font-weight:bold; font-size:15px;
+  color:#7ad0ff; }
+#gx-fuel .gx-fuel-pct.gx-low { color:var(--accent-red-3,#ff5252); }
+#gx-fuel .gx-fuel-row { display:flex; align-items:center; gap:8px; margin:5px 0; }
+#gx-fuel .gx-fuel-name { flex:0 0 78px; font-size:11px; letter-spacing:0.5px;
+  color:var(--text-text-alt-12,#aaa); text-transform:uppercase; }
+#gx-fuel .gx-fuel-bar { flex:1 1 auto; height:9px; border-radius:5px;
+  background:rgba(13,16,23,0.9);
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.4));
+  overflow:hidden; }
+#gx-fuel .gx-fuel-fill { height:100%; width:0%; border-radius:4px;
+  transition:width 0.2s linear; }
+#gx-fuel .gx-fuel-fill.hyperflux {
+  background:linear-gradient(to right,#2b6cff,#7ad0ff); }
+#gx-fuel .gx-fuel-fill.hyperflux.gx-low {
+  background:linear-gradient(to right,#8a1f1f,#ff6b6b); }
+#gx-fuel .gx-fuel-fill.mapfuel {
+  background:linear-gradient(to right,#c98a2b,#ffd27a); }
+#gx-fuel .gx-fuel-val { flex:0 0 auto; font-size:11px; min-width:132px;
+  text-align:right; color:var(--text-pure-white,#fff); }
+/* Refuel row: the button plus where the Hyperflux is coming from. */
+#gx-fuel .gx-refuel-row { display:flex; align-items:center; gap:8px;
+  margin-top:6px; padding-top:6px;
+  border-top:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3)); }
+#gx-fuel .gx-refuel-row .gx-btn { margin:0; flex:0 0 auto; }
+#gx-fuel .gx-btn.gx-refuel.gx-on {
+  background:rgba(122,208,255,0.18); border-color:#7ad0ff; color:#bfe8ff; }
+#gx-fuel .gx-btn.gx-refuel.gx-disabled { opacity:0.4; cursor:not-allowed; }
+#gx-fuel .gx-refuel-hint { flex:1 1 auto; font-size:11px; line-height:1.3;
+  text-align:right; color:var(--text-text-alt-12,#aaa); }
+#gx-fuel .gx-sb-pips { flex:1 1 auto; display:flex; flex-wrap:wrap; gap:2px; }
+#gx-fuel .gx-sb-pip { width:6px; height:9px; border-radius:2px;
+  background:rgba(150,120,220,0.25); }
+#gx-fuel .gx-sb-pip.on { background:#c39bff; box-shadow:0 0 4px #a56bff; }
+/* Warp-speed slider inside the engine panel. */
+#gx-ui .gx-slider-row { display:flex; align-items:center; gap:8px; margin-top:8px; }
+#gx-ui .gx-slider { -webkit-appearance:none; appearance:none; pointer-events:auto;
+  flex:1 1 auto; height:5px; border-radius:3px; cursor:pointer;
+  background:linear-gradient(to right,
+    var(--shadow-gold-amber-50,rgba(212,160,80,0.6)), #7ad0ff); }
+#gx-ui .gx-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none;
+  width:14px; height:14px; border-radius:50%; cursor:pointer;
+  background:var(--accent-amber-glow,#ffe9a8);
+  box-shadow:0 0 6px var(--shadow-gold-amber-50,rgba(212,160,80,0.9)); }
+#gx-ui .gx-slider::-moz-range-thumb { width:14px; height:14px; border:none;
+  border-radius:50%; cursor:pointer; background:var(--accent-amber-glow,#ffe9a8); }
+#gx-ui .gx-btn.gx-ship { border-color:#7ad0ff; color:#7ad0ff; }
+#gx-ui .gx-btn.gx-bio { border-color:#6fe3a0; color:#6fe3a0; }
+#gx-ui .gx-btn.gx-sb { border-color:#a56bff; color:#c39bff; }
+#gx-ui .gx-btn.gx-sb.gx-disabled { opacity:0.4; cursor:not-allowed; }
+#gx-ui .gx-btn.gx-land.gx-disabled { opacity:0.4; cursor:not-allowed; }
+#gx-ui .gx-btn.gx-bookmark { border-color:#ffe066; color:#ffe066; }
+#gx-ui .gx-btn.gx-bookmark.gx-on {
+  background:rgba(255,224,102,0.2); box-shadow:0 0 8px rgba(255,224,102,0.6); }
+/* Full-screen SB-Bridge warp animation. */
+#gx-warp { position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none; display:none;
+  z-index:20; overflow:hidden; }
+#gx-warp .gx-warp-flash { position:absolute; top:0; right:0; bottom:0; left:0;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(200,235,255,0.95) 0%, rgba(120,150,255,0.6) 30%, rgba(0,5,16,0) 70%);
+  opacity:0; }
+#gx-warp .gx-warp-core { position:absolute; left:50%; top:50%; width:12px;
+  height:12px; margin:-6px 0 0 -6px; border-radius:50%;
+  background:#eaf6ff; box-shadow:0 0 40px 20px rgba(180,220,255,0.9); opacity:0; }
+@keyframes gx-warp-flash-kf {
+  0% { opacity:0; } 18% { opacity:1; } 55% { opacity:1; } 100% { opacity:0; } }
+@keyframes gx-warp-core-kf {
+  0% { opacity:0; transform:scale(0.2); }
+  30% { opacity:1; transform:scale(1); }
+  60% { opacity:1; transform:scale(60); }
+  100% { opacity:0; transform:scale(180); } }
+/* Box-shaped Einstein-Rosen "door" that opens between the two locations: a
+   rectangular frame that unfolds open (the jump happens at full-open), then
+   folds shut again, with a scrolling violet/white gradient standing in for
+   the wormhole throat. */
+#gx-warp .gx-warp-box { position:absolute; left:50%; top:50%;
+  width:60vmin; height:34vmin; margin-left:-30vmin; margin-top:-17vmin;
+  border-radius:6px; overflow:hidden; opacity:0;
+  border:2px solid rgba(197,155,255,0.9);
+  box-shadow:0 0 40px 10px rgba(165,107,255,0.55),
+    inset 0 0 60px 14px rgba(120,80,255,0.35);
+  background:linear-gradient(115deg,
+    rgba(20,8,45,0.95) 0%, rgba(90,40,160,0.65) 32%,
+    rgba(210,238,255,0.95) 50%, rgba(90,40,160,0.65) 68%, rgba(20,8,45,0.95) 100%);
+  background-size:240% 100%; }
+@keyframes gx-warp-box-kf {
+  0%   { transform:scaleY(0.02) scaleX(0.55); opacity:0; }
+  16%  { opacity:1; }
+  42%  { transform:scaleY(1) scaleX(1); opacity:1; }
+  68%  { transform:scaleY(1) scaleX(1); opacity:1; }
+  100% { transform:scaleY(0.02) scaleX(0.55); opacity:0; } }
+@keyframes gx-warp-box-bg-kf {
+  0% { background-position:0% 0; } 100% { background-position:220% 0; } }
+#gx-mode { bottom:14px; right:26px; font-size:12px;
+  color:var(--text-text-alt-12,#aaa); pointer-events:none; }
+#gx-mode b { color:var(--accent-amber-light,#e9c46a); }
+/* Controller button chips (Xbox layout), written into hint text as [A], [LB],
+   [LS]... and expanded by padGlyphs(). The face buttons keep their pad colours
+   so they read at a glance; shoulders/triggers/sticks are plain keycaps. */
+#gx-ui .gx-pad { display:inline-block; min-width:15px; padding:0 4px;
+  margin:0 1px; border-radius:9px; font-size:10px; font-weight:bold;
+  line-height:15px; text-align:center; vertical-align:baseline;
+  color:var(--text-pure-black,#0b0e14);
+  background:var(--text-text-alt-12,#aaa); }
+#gx-ui .gx-pad-a { background:#79c05a; }
+#gx-ui .gx-pad-b { background:#e05a4f; }
+#gx-ui .gx-pad-x { background:#4b8fd4; }
+#gx-ui .gx-pad-y { background:#e5b83c; }
+#gx-ui .gx-pad-wide { border-radius:4px; letter-spacing:0.5px;
+  background:var(--text-pure-white,#e8e8e8); }
+/* Full-height zoom rail down the right edge: the slider IS the scale ladder,
+   so it spans the whole viewport rather than a stub in the middle. */
+#gx-zoom { position:absolute; right:10px; top:10px; bottom:10px;
+  width:8px; height:auto; border-radius:4px; pointer-events:none;
+  background:rgba(13,16,23,0.85);
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.55)); }
+#gx-zoom .gx-zoom-fill { position:absolute; left:0; right:0; bottom:0;
+  border-radius:0 0 3px 3px; height:0;
+  background:linear-gradient(to top,
+    var(--shadow-gold-amber-50,rgba(212,160,80,0.55)), rgba(212,160,80,0.08)); }
+#gx-zoom .gx-zoom-knob { position:absolute; left:-4px; width:12px; height:12px;
+  margin-top:-6px; border-radius:50%;
+  background:var(--accent-amber-glow,#ffe9a8);
+  box-shadow:0 0 8px var(--shadow-gold-amber-50,rgba(212,160,80,0.9)); }
+/* Catalog: every hardcoded object in the sim (plus logged biosignatures), split
+   into tabs and collapsible drawers. Its button and the panel it opens own the
+   top-right corner; the list scrolls independently of the page. */
+/* The button rail is one button per line: a wrapped row reflowed every time a
+   label changed length, so a button was never where it had just been. */
+#gx-catalog-toggle { pointer-events:auto; width:100%;
+  display:flex; flex-direction:column; align-items:stretch; gap:6px; }
+#gx-catalog-toggle .gx-btn { margin:0; text-align:center; }
+/* Catalog button and the panel it opens: both pinned to the top-right corner,
+   clear of the zoom rail on the right edge. */
+#gx-catalog-btn { position:absolute; top:14px; right:26px; pointer-events:auto;
+  display:flex; justify-content:flex-end; z-index:3; }
+#gx-catalog-btn .gx-btn { margin:0; }
+#gx-catalog { position:absolute; top:56px; right:26px; left:auto; bottom:auto;
+  display:none; min-width:290px; max-width:330px; z-index:3;
+  max-height:calc(100vh - 290px); overflow-y:auto; overscroll-behavior:contain; }
+#gx-catalog .gx-cat-tabs { display:flex; flex-wrap:wrap; margin-bottom:4px; }
+#gx-catalog .gx-cat-tab { padding:3px 9px; font-size:11px; }
+#gx-catalog .gx-cat-tab.gx-on {
+  background:var(--bg-tertiary-focus-translucent-45,rgba(255,204,102,0.18));
+  color:var(--accent-amber-glow,#ffe9a8); }
+#gx-catalog .gx-cat-group { display:flex; align-items:center; gap:6px;
+  margin:10px 0 4px; font-size:11px; font-weight:bold;
+  letter-spacing:1px; text-transform:uppercase;
+  color:var(--accent-amber-light,#e9c46a);
+  border-bottom:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  padding-bottom:3px; }
+#gx-catalog .gx-cat-group:first-of-type { margin-top:4px; }
+#gx-catalog .gx-cat-count { margin-left:auto; font-weight:normal; letter-spacing:0;
+  color:var(--text-text-alt-12,#aaa); }
+#gx-catalog .gx-cat-life .gx-cat-name { color:var(--accent-green-3,#60b345); }
+#gx-catalog .gx-cat-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
+#gx-catalog .gx-cat-label { flex:1 1 auto; min-width:0; line-height:1.25; }
+#gx-catalog .gx-cat-name { display:block; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+#gx-catalog .gx-cat-type { display:block; font-size:11px;
+  color:var(--text-text-alt-12,#aaa); overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; }
+#gx-catalog .gx-btn { margin:0; padding:3px 8px; font-size:11px; flex:0 0 auto; }
+#gx-catalog .gx-cat-empty { color:var(--text-text-alt-12,#aaa); font-size:12px; }
+#gx-tooltip { position:absolute; pointer-events:none; display:none;
+  background:var(--bg-darker-panel,rgba(13,16,23,0.97));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  border-radius:4px; padding:4px 8px; font-size:12px; white-space:nowrap;
+  color:var(--text-pure-white,#fff); transform:translate(12px,12px); z-index:5; }
+#gx-tooltip .gx-tt-type { color:var(--text-text-alt-12,#aaa);
+  text-transform:capitalize; }
+#gx-ui .gx-actions { margin-top:10px; }
+#gx-ui .gx-btn {
+  pointer-events:auto; display:inline-block; cursor:pointer;
+  background:var(--bg-panel,#0a0a0a);
+  border:1px solid var(--border-focus-hover,#ffcc66);
+  color:var(--text-primary-hover,#ffcc66);
+  border-radius:4px; padding:6px 12px; margin:4px 6px 0 0;
+  font-weight:bold; font-size:12px; }
+#gx-ui .gx-btn.gx-land { border-color:var(--accent-green-3,#60b345);
+  color:var(--accent-green-3,#60b345); }
+#gx-ui .gx-btn.gx-stop { border-color:var(--accent-red-3,#ff5252);
+  color:var(--accent-red-3,#ff5252); }
+#gx-ui .gx-btn.gx-step { min-width:28px; text-align:center; }
+#gx-ui .gx-btn:hover, #gx-ui .gx-btn.focused {
+  background:var(--bg-tertiary-focus-translucent-45,rgba(255,204,102,0.18));
+  color:var(--accent-amber-glow,#ffe9a8);
+  box-shadow:0 0 8px var(--shadow-gold-amber-50,rgba(212,160,80,0.5)); }
+#gx-ui .gx-btn.focused { outline:1px solid var(--accent-amber-glow,#ffe9a8); }
+/* Landing-site picker: full-viewport modal showing the planet's unwrapped
+   surface texture divided into a clickable grid of squares. */
+#gx-landing-grid { position:absolute; top:0; right:0; bottom:0; left:0; z-index:25; display:none;
+  align-items:center; justify-content:center; pointer-events:auto;
+  background:rgba(6,8,14,0.72); }
+#gx-landing-grid .gx-lg-card { position:relative; pointer-events:auto;
+  background:var(--bg-dark-panel,rgba(20,24,33,0.96));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  border-radius:6px; padding:16px 20px; text-align:center;
+  box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
+#gx-landing-grid .gx-lg-canvas { display:block; margin:10px auto 4px; cursor:pointer;
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.4)); border-radius:4px; }
+/* A body's hand-written note: the one paragraph of prose on the panel. */
+#gx-ui .gx-note { margin:8px 0 2px; font-size:12px; line-height:1.45;
+  color:var(--accent-amber-light,#e9c46a); font-style:italic; }
+/* Servicing bay: the Hubble parts list, as a full-screen modal. */
+#gx-service { position:absolute; top:0; right:0; bottom:0; left:0; z-index:25; display:none;
+  align-items:center; justify-content:center; pointer-events:auto;
+  background:rgba(6,8,14,0.72); }
+#gx-service .gx-svc-card { position:relative; pointer-events:auto;
+  width:min(760px,92vw); max-height:86vh; display:flex; flex-direction:column;
+  background:var(--bg-dark-panel,rgba(20,24,33,0.97));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  border-radius:6px; padding:14px 18px;
+  box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
+#gx-service .gx-svc-list { overflow-y:auto; overscroll-behavior:contain;
+  margin:8px -4px 0; padding:0 4px; }
+#gx-service .gx-svc-part { display:flex; align-items:center; gap:10px;
+  padding:7px 8px; border-radius:4px;
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.18));
+  margin-bottom:6px; }
+#gx-service .gx-svc-part.gx-crit { border-color:rgba(255,82,82,0.45); }
+#gx-service .gx-svc-part.gx-ok { opacity:0.6; }
+#gx-service .gx-svc-main { flex:1 1 auto; min-width:0; }
+#gx-service .gx-svc-name { font-weight:bold; font-size:13px; }
+#gx-service .gx-svc-note { font-size:11px; color:var(--text-text-alt-12,#aaa);
+  line-height:1.35; }
+#gx-service .gx-svc-cost { font-size:11px; margin-top:2px;
+  color:var(--accent-amber-light,#e9c46a); }
+#gx-service .gx-svc-cost .gx-short { color:var(--accent-red-3,#ff5252); }
+#gx-service .gx-svc-bar { flex:0 0 110px; height:9px; border-radius:5px;
+  background:rgba(13,16,23,0.9);
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.4));
+  overflow:hidden; }
+#gx-service .gx-svc-fill { height:100%; border-radius:4px;
+  background:linear-gradient(to right,#2b6cff,#7ad0ff); }
+#gx-service .gx-svc-fill.gx-warn { background:linear-gradient(to right,#c98a2b,#ffd27a); }
+#gx-service .gx-svc-fill.gx-bad { background:linear-gradient(to right,#8a1f1f,#ff6b6b); }
+#gx-service .gx-svc-pct { flex:0 0 40px; text-align:right; font-size:11px; }
+#gx-service .gx-btn { margin:0; flex:0 0 auto; }
+#gx-service .gx-btn.gx-disabled { opacity:0.35; cursor:not-allowed; }
+/* Anomaly log: the branching encounter, as a message window over the map. */
+#gx-anomaly { position:absolute; top:0; right:0; bottom:0; left:0; z-index:26; display:none;
+  align-items:center; justify-content:center; pointer-events:auto;
+  background:rgba(4,6,12,0.78); }
+#gx-anomaly .gx-anom-card { position:relative; pointer-events:auto;
+  width:min(720px,92vw); max-height:88vh; display:flex; flex-direction:column;
+  background:var(--bg-dark-panel,rgba(20,24,33,0.98));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.35));
+  border-radius:6px; padding:16px 20px;
+  box-shadow:0 6px 24px var(--shadow-black-translucent-55,rgba(0,0,0,0.6)); }
+#gx-anomaly .gx-anom-where { font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--text-text-alt-12,#9aa4b4); }
+#gx-anomaly .gx-anom-body { overflow-y:auto; overscroll-behavior:contain;
+  margin:10px -4px 0; padding:0 4px; font-size:13px; line-height:1.62; }
+#gx-anomaly .gx-anom-body p { margin:0 0 10px; }
+#gx-anomaly .gx-anom-rewards { margin-top:8px; padding-top:8px;
+  border-top:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.2));
+  font-size:12px; color:var(--accent-amber-light,#e9c46a); }
+#gx-anomaly .gx-anom-rewards div { margin:2px 0; }
+#gx-anomaly .gx-anom-choices { display:flex; flex-direction:column; gap:6px; margin-top:12px; }
+#gx-anomaly .gx-anom-choice { display:block; text-align:left; padding:8px 12px;
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.28));
+  border-radius:4px; cursor:pointer; font-size:13px; line-height:1.4;
+  background:rgba(13,16,23,0.6); }
+#gx-anomaly .gx-anom-choice:hover, #gx-anomaly .gx-anom-choice.focused {
+  border-color:var(--accent-amber-light,#e9c46a);
+  background:rgba(212,160,80,0.14); }
+#gx-anomaly .gx-anom-choice .gx-anom-num { color:var(--accent-amber-light,#e9c46a);
+  margin-right:8px; font-weight:bold; }
+/* Strip-mining console: progress, clock, and the ore as it comes in. */
+#gx-mining { position:absolute; left:50%; bottom:64px; transform:translateX(-50%);
+  display:none; pointer-events:auto; width:min(520px,86vw);
+  background:var(--bg-dark-panel,rgba(20,24,33,0.96));
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.3));
+  border-radius:6px; padding:12px 16px; z-index:20;
+  box-shadow:0 6px 20px var(--shadow-black-translucent-55,rgba(0,0,0,0.55)); }
+#gx-mining .gx-mine-head { display:flex; align-items:baseline; gap:10px; }
+#gx-mining .gx-mine-head .gx-title { margin:0; font-size:15px; }
+#gx-mining .gx-mine-clock { margin-left:auto; font-size:13px;
+  font-family:'Consolas',monospace; color:#7ad0ff; }
+#gx-mining .gx-mine-bar { height:12px; border-radius:6px; margin:8px 0 6px;
+  background:rgba(13,16,23,0.9);
+  border:1px solid var(--border-gold-amber-30,rgba(212,160,80,0.4));
+  overflow:hidden; }
+#gx-mining .gx-mine-fill { height:100%; width:0%; border-radius:5px;
+  background:linear-gradient(to right,#c98a2b,#ff6b3d,#ffd27a);
+  transition:width 0.25s linear; }
+#gx-mining .gx-mine-log { font-size:11px; line-height:1.45; min-height:34px;
+  color:var(--text-text-alt-12,#aaa); }
+#gx-mining .gx-mine-log b { color:var(--accent-amber-glow,#ffe9a8); }
+#gx-mining .gx-mine-log .gx-rare { color:#c39bff; }
+`;
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const s = document.createElement("style");
+    s.id = STYLE_ID;
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
+
+  // Every selection panel offers "Zoom To" so flying to the target never
+  // depends on the Space shortcut being routed to the scene.
+  const ZOOM_BTN =
+    `<span class="gx-btn focusable" tabindex="0" data-action="zoom-target">${T('Galaxy.hud.zoomTo')}</span>`;
+
+  // Bookmark toggle, offered on any body a panel can meaningfully bookmark.
+  const bookmarkBtn = (on) =>
+    `<span class="gx-btn gx-bookmark${on ? " gx-on" : ""} focusable" tabindex="0" ` +
+    `data-action="bookmark-toggle" title="${on ? "Remove bookmark" : "Bookmark this"}">` +
+    `${on ? "★ Bookmarked" : "☆ Bookmark"}</span>`;
+
+  const num = (v, d) => (typeof v === "number" && isFinite(v) ? v.toFixed(d) : null);
+  // Formats a Schrödingerite harvest cooldown (in-game minutes remaining) as
+  // "Xd Yh" / "Yh Zm" / "Zm" - whichever units are actually left.
+  const formatCooldown = (min) => {
+    const total = Math.max(0, Math.ceil(min || 0));
+    const d = Math.floor(total / 1440);
+    const h = Math.floor((total % 1440) / 60);
+    const m = total % 60;
+    if (d > 0) return `${d}d ${h}h`;
+    if (h > 0) return `${h}h ${m}m`;
+    return `${m}m`;
+  };
+  const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+
+  // Controller hints are written with bracketed button ids - "[A] zoom to
+  // target", "[LT]/[RT] zoom" - and expanded into chips here, so the strings
+  // stay translatable text and the Xbox layout lives in exactly one place.
+  // Anything unrecognised is left alone rather than swallowed.
+  // i18n-ignore-start: physical controller button ids
+  const PAD_FACE = { A: "gx-pad-a", B: "gx-pad-b", X: "gx-pad-x", Y: "gx-pad-y" };
+  const PAD_WIDE = ["LB", "RB", "LT", "RT", "LS", "RS", "L3", "R3", "D-PAD", "START", "BACK"];
+  const padGlyphs = (text) => String(text).replace(/\[([A-Z0-9-]{1,5})\]/g, (m, id) => {
+    if (PAD_FACE[id]) return `<span class="gx-pad ${PAD_FACE[id]}">${id}</span>`;
+    if (PAD_WIDE.includes(id)) return `<span class="gx-pad gx-pad-wide">${id}</span>`;
+    return m;
+  });
+  // i18n-ignore-end
+
+  // A body's `type` is written in English on the catalogue record in
+  // Scene3D_Cosmos, where it doubles as data; this is the one place it is shown,
+  // so the label is resolved here. An unlisted type reads as itself.
+  const bodyTypeLabel = (type) => {
+    if (!type) return "?";
+    const key = 'Galaxy.bodyType.' + String(type);
+    return T.has(key) ? T(key) : String(type);
+  };
+
+  class GalaxyOverlay {
+    constructor(parentEl) {
+      this.parent = parentEl;
+      this.root = null;
+      this.els = {};
+      this.callbacks = {};
+      this._selection = null; // { kind, data, system, planet }
+      this._focusEl = null;
+      this._ttName = null; // last tooltip (name,type) to skip redundant innerHTML
+      this._ttType = null;
+      this._speedShown = false; // last speed panel state to skip redundant DOM writes
+      this._speedText = null;
+      this._focusables = null; // memoized focusable list (see _getFocusables)
+      this._landingGrid = null; // { planet, w, h, cursor:{gx,gy}, textureCanvas }
+      this._landingGridCallbacks = null; // { onPick, onCancel }
+      this._service = null; // { title, subtitle, parts, footer } while the bay is open
+      this._mineLog = null; // last few ore lines shown on the mining console
+    }
+
+    _invalidateFocusables() { this._focusables = null; }
+
+    setCallbacks(cb) { this.callbacks = cb || {}; }
+
+    create() {
+      ensureStyle();
+      const root = document.createElement("div");
+      root.id = "gx-ui";
+
+      const scale = document.createElement("div");
+      scale.id = "gx-scale";
+      scale.className = "gx-panel";
+      scale.innerHTML =
+        `<div class="gx-title" data-role="scale-name">${T('Galaxy.hud.starSystem')}</div>
+         <div class="gx-muted" data-role="scale-sub"></div>`;
+
+      // The catalog button lives apart from the left rail: it opens the catalog
+      // panel, and both sit in the top-right corner.
+      const catBtn = document.createElement("div");
+      catBtn.id = "gx-catalog-btn";
+      catBtn.innerHTML =
+        `<span class="gx-btn focusable" tabindex="0" data-action="catalog">${T('Galaxy.hud.catalog')}</span>`;
+
+      const catToggle = document.createElement("div");
+      catToggle.id = "gx-catalog-toggle";
+      catToggle.innerHTML =
+        `<span class="gx-btn gx-ship focusable" tabindex="0" data-action="ship" ` +
+        `data-role="ship-btn" title="${T('Galaxy.hud.centreTheViewOnYour')}">` +
+        `${T('Galaxy.hud.ship')}</span>` +
+        `<span class="gx-btn gx-bio focusable" tabindex="0" data-action="bioscan" ` +
+        `data-role="bioscan-btn" title="${T('Galaxy.hud.sweepEverySystemWithin500')}">` +
+        `${T('Galaxy.hud.scanForBiosignatures')}</span>` +
+        `<span class="gx-btn gx-land focusable" tabindex="0" data-action="home" ` +
+        `data-role="home-btn">${T('Galaxy.hud.home')}</span>` +
+        `<span class="gx-btn gx-sb gx-disabled focusable" tabindex="0" data-action="sb-bridge" ` +
+        `data-role="sb-btn" title="${T('Galaxy.hud.quantumBridgeToTheSelected')}">` +
+        `${T('Galaxy.hud.sbBridge')}</span>` +
+        `<span class="gx-btn focusable" tabindex="0" data-action="return-earth-toggle" ` +
+        `data-role="return-earth-btn">${T('Galaxy.hud.returnToEarth')}</span>` +
+        `<span class="gx-btn gx-land focusable" tabindex="0" data-action="return-earth-course" ` +
+        `data-role="return-earth-course-btn" style="display:none" ` +
+        `title="${T('Galaxy.hud.plotACourseHomeMilky')}">` +
+        `${T('Galaxy.hud.setCourse')}</span>` +
+        `<span class="gx-btn gx-sb focusable" tabindex="0" data-action="return-earth-eb" ` +
+        `data-role="return-earth-eb-btn" style="display:none" ` +
+        `title="${T('Galaxy.hud.quantumBridgeStraightHomeCosts')}">${T('Galaxy.hud.ebBridge')}</span>`;
+
+      const catalog = document.createElement("div");
+      catalog.id = "gx-catalog";
+      catalog.className = "gx-panel";
+
+      const info = document.createElement("div");
+      info.id = "gx-info";
+      info.className = "gx-panel";
+
+      const speed = document.createElement("div");
+      speed.id = "gx-speed";
+      speed.className = "gx-panel";
+      speed.innerHTML =
+        `<div class="gx-title">${T('Galaxy.hud.engines')}</div><div class="gx-divider"></div>` +
+        `<div class="gx-row"><span class="gx-k">${T('Galaxy.hud.warpSpeed')}</span>` +
+        `<span class="gx-v" data-role="speed-val">×1</span></div>` +
+        `<div class="gx-slider-row">` +
+        `<input type="range" class="gx-slider" data-role="speed-slider" ` +
+        `min="1" max="20" step="1" value="1" aria-label="${T('Galaxy.hud.warpSpeed')}">` +
+        `</div>` +
+        `<div class="gx-row"><span class="gx-k gx-muted">${T('Galaxy.hud.hyperfluxBurn')}</span>` +
+        `<span class="gx-v gx-muted" data-role="burn-val">0.01/s</span></div>` +
+        `<div class="gx-actions">` +
+        `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-down">−</span>` +
+        `<span class="gx-btn gx-step focusable" tabindex="0" data-action="speed-up">+</span>` +
+        `<span class="gx-btn gx-stop focusable" tabindex="0" data-action="stop">${T('Galaxy.hud.stop')}</span>` +
+        `</div>`;
+
+      // Always-on fuel gauges.
+      const fuel = document.createElement("div");
+      fuel.id = "gx-fuel";
+      fuel.className = "gx-panel";
+      fuel.innerHTML =
+        `<div class="gx-fuel-head"><span class="gx-title">${T('Galaxy.hud.fuel')}</span>` +
+        `<span class="gx-muted" data-role="fuel-sub">${T('Galaxy.hud.hyperfluxReserve')}</span>` +
+        `<span class="gx-fuel-pct" data-role="hf-pct">—</span></div>` +
+        `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.hyperflux')}</span>` +
+        `<span class="gx-fuel-bar"><span class="gx-fuel-fill hyperflux" data-role="hf-fill"></span></span>` +
+        `<span class="gx-fuel-val" data-role="hf-val">—</span></div>` +
+        `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.schrD')}</span>` +
+        `<span class="gx-sb-pips" data-role="sb-pips"></span>` +
+        `<span class="gx-fuel-val" data-role="sb-val">—</span></div>` +
+        `<div class="gx-fuel-row"><span class="gx-fuel-name">${T('Galaxy.hud.mapFuel')}</span>` +
+        `<span class="gx-fuel-bar"><span class="gx-fuel-fill mapfuel" data-role="mf-fill"></span></span>` +
+        `<span class="gx-fuel-val" data-role="mf-val">—</span></div>` +
+        `<div class="gx-refuel-row">` +
+        `<span class="gx-btn gx-refuel focusable" tabindex="0" data-action="refuel-auto" ` +
+        `data-role="refuel-btn" title="${T('Galaxy.hud.refuelTooltip')}">${T('Galaxy.hud.refuel')}</span>` +
+        `<span class="gx-refuel-hint" data-role="refuel-hint"></span></div>`;
+
+      const mode = document.createElement("div");
+      mode.id = "gx-mode";
+      mode.innerHTML = `<b>${T('Galaxy.hud.orbit')}</b> &nbsp;·&nbsp; ${T('Galaxy.hud.orbitHint')}`;
+
+      // Zoom position within the current scale's distance range: the "slider"
+      // the wheel travels along, so the player can see how much range is left
+      // before the view steps to the next scale.
+      const zoom = document.createElement("div");
+      zoom.id = "gx-zoom";
+      zoom.innerHTML =
+        `<div class="gx-zoom-fill" data-role="zoom-fill"></div>` +
+        `<div class="gx-zoom-knob" data-role="zoom-knob"></div>`;
+
+      const tooltip = document.createElement("div");
+      tooltip.id = "gx-tooltip";
+
+      // SB-Bridge warp animation plate (hidden until a jump fires).
+      const warp = document.createElement("div");
+      warp.id = "gx-warp";
+      warp.innerHTML =
+        `<div class="gx-warp-flash" data-role="warp-flash"></div>` +
+        `<div class="gx-warp-box" data-role="warp-box"></div>` +
+        `<div class="gx-warp-core" data-role="warp-core"></div>`;
+
+      // Landing-site picker: unwrapped planet texture as a clickable grid.
+      const landingGrid = document.createElement("div");
+      landingGrid.id = "gx-landing-grid";
+      landingGrid.innerHTML =
+        `<div class="gx-lg-card">` +
+        `<div class="gx-title" data-role="lg-title">${T('Galaxy.hud.chooseLandingSite')}</div>` +
+        `<div class="gx-muted">${T('Galaxy.hud.landingGridHelp')}</div>` +
+        `<canvas class="gx-lg-canvas" data-role="lg-canvas" width="640" height="360"></canvas>` +
+        `<div class="gx-actions">` +
+        `<span class="gx-btn focusable" tabindex="0" data-action="landing-grid-cancel">${T('Galaxy.hud.cancel')}</span>` +
+        `</div></div>`;
+
+      // Servicing bay (Hubble): part-by-part repair against crafting materials.
+      const service = document.createElement("div");
+      service.id = "gx-service";
+      service.innerHTML =
+        `<div class="gx-svc-card">` +
+        `<div class="gx-title" data-role="svc-title">${T('Galaxy.hud.servicingBay')}</div>` +
+        `<div class="gx-muted" data-role="svc-sub"></div>` +
+        `<div class="gx-divider"></div>` +
+        `<div class="gx-svc-list" data-role="svc-list"></div>` +
+        `<div class="gx-actions" data-role="svc-actions"></div>` +
+        `</div>`;
+
+      // Anomaly log: the branching encounter on the world that was signalling.
+      const anomaly = document.createElement("div");
+      anomaly.id = "gx-anomaly";
+      anomaly.innerHTML =
+        `<div class="gx-anom-card">` +
+        `<div class="gx-anom-where" data-role="anom-where"></div>` +
+        `<div class="gx-title" data-role="anom-title"></div>` +
+        `<div class="gx-divider"></div>` +
+        `<div class="gx-anom-body" data-role="anom-body"></div>` +
+        `<div class="gx-anom-choices" data-role="anom-choices"></div>` +
+        `</div>`;
+
+      // Strip-mining console: progress, clock and the ore as it comes aboard.
+      const mining = document.createElement("div");
+      mining.id = "gx-mining";
+      mining.innerHTML =
+        `<div class="gx-mine-head"><span class="gx-title" data-role="mine-title">${T('Galaxy.hud.stripMining')}</span>` +
+        `<span class="gx-mine-clock" data-role="mine-clock">0:00</span></div>` +
+        `<div class="gx-mine-bar"><div class="gx-mine-fill" data-role="mine-fill"></div></div>` +
+        `<div class="gx-row"><span class="gx-k gx-muted" data-role="mine-stat">—</span>` +
+        `<span class="gx-v gx-muted" data-role="mine-fuel">—</span></div>` +
+        `<div class="gx-mine-log" data-role="mine-log"></div>` +
+        `<div class="gx-actions">` +
+        `<span class="gx-btn gx-stop focusable" tabindex="0" data-action="mine-stop">${T('Galaxy.hud.cutLasers')}</span>` +
+        `</div>`;
+
+      // Left column, top to bottom: scale, button rail, selection, engine.
+      const left = document.createElement("div");
+      left.id = "gx-left";
+      left.appendChild(scale);
+      left.appendChild(catToggle);
+      left.appendChild(info);
+      left.appendChild(speed);
+
+      root.appendChild(left);
+      root.appendChild(catBtn);
+      root.appendChild(catalog);
+      root.appendChild(fuel);
+      root.appendChild(mode);
+      root.appendChild(zoom);
+      root.appendChild(tooltip);
+      root.appendChild(warp);
+      root.appendChild(landingGrid);
+      root.appendChild(service);
+      root.appendChild(anomaly);
+      root.appendChild(mining);
+      this.parent.appendChild(root);
+
+      this.root = root;
+      this.els.scaleName = scale.querySelector('[data-role="scale-name"]');
+      this.els.scaleSub = scale.querySelector('[data-role="scale-sub"]');
+      this.els.info = info;
+      this.els.speed = speed;
+      this.els.speedVal = speed.querySelector('[data-role="speed-val"]');
+      this.els.burnVal = speed.querySelector('[data-role="burn-val"]');
+      this.els.speedSlider = speed.querySelector('[data-role="speed-slider"]');
+      this.els.fuel = fuel;
+      this.els.hfFill = fuel.querySelector('[data-role="hf-fill"]');
+      this.els.hfVal = fuel.querySelector('[data-role="hf-val"]');
+      this.els.hfPct = fuel.querySelector('[data-role="hf-pct"]');
+      this.els.fuelSub = fuel.querySelector('[data-role="fuel-sub"]');
+      this.els.refuelBtn = fuel.querySelector('[data-role="refuel-btn"]');
+      this.els.refuelHint = fuel.querySelector('[data-role="refuel-hint"]');
+      this.els.sbPips = fuel.querySelector('[data-role="sb-pips"]');
+      this.els.sbVal = fuel.querySelector('[data-role="sb-val"]');
+      this.els.mfFill = fuel.querySelector('[data-role="mf-fill"]');
+      this.els.mfVal = fuel.querySelector('[data-role="mf-val"]');
+      this.els.mode = mode;
+      this.els.zoom = zoom;
+      this.els.zoomKnob = zoom.querySelector('[data-role="zoom-knob"]');
+      this.els.zoomFill = zoom.querySelector('[data-role="zoom-fill"]');
+      this.els.tooltip = tooltip;
+      this.els.catalog = catalog;
+      this.els.catToggle = catToggle;
+      this.els.homeBtn = catToggle.querySelector('[data-role="home-btn"]');
+      this.els.sbBtn = catToggle.querySelector('[data-role="sb-btn"]');
+      this.els.returnEarthBtn = catToggle.querySelector('[data-role="return-earth-btn"]');
+      this.els.returnEarthCourseBtn = catToggle.querySelector('[data-role="return-earth-course-btn"]');
+      this.els.returnEarthEbBtn = catToggle.querySelector('[data-role="return-earth-eb-btn"]');
+      this.els.warp = warp;
+      this.els.warpFlash = warp.querySelector('[data-role="warp-flash"]');
+      this.els.warpBox = warp.querySelector('[data-role="warp-box"]');
+      this.els.warpCore = warp.querySelector('[data-role="warp-core"]');
+      this.els.service = service;
+      this.els.svcTitle = service.querySelector('[data-role="svc-title"]');
+      this.els.svcSub = service.querySelector('[data-role="svc-sub"]');
+      this.els.svcList = service.querySelector('[data-role="svc-list"]');
+      this.els.svcActions = service.querySelector('[data-role="svc-actions"]');
+      this.els.anomaly = anomaly;
+      this.els.anomWhere = anomaly.querySelector('[data-role="anom-where"]');
+      this.els.anomTitle = anomaly.querySelector('[data-role="anom-title"]');
+      this.els.anomBody = anomaly.querySelector('[data-role="anom-body"]');
+      this.els.anomChoices = anomaly.querySelector('[data-role="anom-choices"]');
+      this.els.mining = mining;
+      this.els.mineTitle = mining.querySelector('[data-role="mine-title"]');
+      this.els.mineClock = mining.querySelector('[data-role="mine-clock"]');
+      this.els.mineFill = mining.querySelector('[data-role="mine-fill"]');
+      this.els.mineStat = mining.querySelector('[data-role="mine-stat"]');
+      this.els.mineFuel = mining.querySelector('[data-role="mine-fuel"]');
+      this.els.mineLog = mining.querySelector('[data-role="mine-log"]');
+      this._wire(mining);
+      // The parts list owns the wheel while the pointer is over it.
+      this.els.svcList.addEventListener("wheel", (e) => {
+        e.stopPropagation();
+        const max = this.els.svcList.scrollHeight - this.els.svcList.clientHeight;
+        if (max <= 0) return;
+        e.preventDefault();
+        this.els.svcList.scrollTop = Math.max(0, Math.min(max, this.els.svcList.scrollTop + e.deltaY));
+      }, { passive: false });
+      // The encounter's prose owns the wheel while the pointer is over it.
+      this.els.anomBody.addEventListener("wheel", (e) => {
+        e.stopPropagation();
+        const max = this.els.anomBody.scrollHeight - this.els.anomBody.clientHeight;
+        if (max <= 0) return;
+        e.preventDefault();
+        this.els.anomBody.scrollTop = Math.max(0, Math.min(max, this.els.anomBody.scrollTop + e.deltaY));
+      }, { passive: false });
+      this.els.landingGrid = landingGrid;
+      this.els.landingGridTitle = landingGrid.querySelector('[data-role="lg-title"]');
+      this.els.landingGridCanvas = landingGrid.querySelector('[data-role="lg-canvas"]');
+      this.els.landingGridCanvas.addEventListener("click", (e) => {
+        const lg = this._landingGrid;
+        if (!lg) return;
+        const canvas = this.els.landingGridCanvas;
+        const rect = canvas.getBoundingClientRect();
+        const px = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const py = (e.clientY - rect.top) * (canvas.height / rect.height);
+        const gx = Math.max(0, Math.min(lg.w - 1, Math.floor(px / (canvas.width / lg.w))));
+        const gy = Math.max(0, Math.min(lg.h - 1, Math.floor(py / (canvas.height / lg.h))));
+        lg.cursor.gx = gx;
+        lg.cursor.gy = gy;
+        this._confirmLandingGrid();
+      });
+      this._wire(landingGrid);
+      // The warp-speed slider drives var 94 live as it is dragged.
+      if (this.els.speedSlider) {
+        this.els.speedSlider.addEventListener("input", (e) => {
+          const v = parseInt(e.target.value, 10) || 1;
+          if (this.callbacks && this.callbacks.onSpeedSet) this.callbacks.onSpeedSet(v);
+        });
+      }
+      // The catalog owns the wheel while the pointer is over it: scroll the
+      // list instead of letting the gesture fall through to the camera zoom.
+      catalog.addEventListener("wheel", (e) => {
+        e.stopPropagation();
+        const max = catalog.scrollHeight - catalog.clientHeight;
+        if (max <= 0) return;
+        e.preventDefault();
+        catalog.scrollTop = Math.max(0, Math.min(max, catalog.scrollTop + e.deltaY));
+      }, { passive: false });
+
+      this._wire(speed);
+      this._wire(catBtn);
+      this._wire(catToggle);
+      this._wire(fuel);
+      this._invalidateFocusables();
+      // Park the knob mid-rail so the slider reads as present before the first
+      // frame writes a real fraction.
+      this.setZoomFraction(0.5);
+    }
+
+    /** Label the home button with the system the ship is actually in. */
+    setHomeSystem(name) {
+      if (!this.els.homeBtn || name === this._homeName) return;
+      this._homeName = name;
+      this.els.homeBtn.textContent = name || "Home";
+      this.els.homeBtn.style.display = name ? "" : "none";
+      this._invalidateFocusables();
+    }
+
+    // ---- Catalog ----------------------------------------------------------
+    /**
+     * @param {{id:string,title:string,empty:string,
+     *          groups:{title:string,life:boolean,
+     *            items:{id:string,name:string,sub:string,course:boolean}[]}[]
+     *         }[]} tabs
+     * @param {string} [activeId] tab to show (defaults to the current one)
+     * @param {boolean} [expandFirst] open the active tab's first drawer
+     */
+    setCatalog(tabs, activeId, expandFirst) {
+      if (!this.els.catalog) return;
+      this._catTabs = (tabs || []).map((t) => ({
+        id: t.id,
+        title: t.title,
+        empty: t.empty,
+        groups: (t.groups || []).filter((g) => g.items && g.items.length),
+      }));
+      if (activeId && this._catTabs.some((t) => t.id === activeId)) this._catTab = activeId;
+      if (!this._catTabs.some((t) => t.id === this._catTab)) {
+        this._catTab = this._catTabs.length ? this._catTabs[0].id : null;
+      }
+      // `expandFirst` is vestigial: groups no longer collapse.
+      void expandFirst;
+      this._renderCatalog();
+    }
+
+    _renderCatalog() {
+      const cat = this.els.catalog;
+      if (!cat) return;
+      const tabs = this._catTabs || [];
+      const active = tabs.find((t) => t.id === this._catTab);
+      const tabsHtml = tabs.length > 1
+        ? `<div class="gx-cat-tabs">` + tabs.map((t) =>
+          `<span class="gx-btn gx-cat-tab focusable${t.id === this._catTab ? " gx-on" : ""}" ` +
+          `tabindex="0" data-action="cat-tab" data-target="${esc(t.id)}">${esc(t.title)}</span>`
+        ).join("") + `</div>`
+        : "";
+      // Groups are headings, not drawers: every list is always open. Collapsing
+      // them hid the contents behind an extra click for no gain - the panel
+      // scrolls, and a heading you have to open is a heading you can miss.
+      const groups = (active && active.groups) || [];
+      const body = groups.map((g) => {
+        const rows = g.items.map((it) =>
+          `<div class="gx-cat-row${g.life ? " gx-cat-life" : ""}"><span class="gx-cat-label">` +
+          `<span class="gx-cat-name">${esc(it.name)}</span>` +
+          (it.sub ? `<span class="gx-cat-type">${esc(it.sub)}</span>` : "") +
+          `</span>` +
+          `<span class="gx-btn focusable" tabindex="0" data-action="cat-zoom" ` +
+          `data-target="${esc(it.id)}">${T('Galaxy.hud.zoom')}</span>` +
+          (it.course
+            ? `<span class="gx-btn gx-land focusable" tabindex="0" data-action="cat-course" ` +
+              `data-target="${esc(it.id)}" title="${T('Galaxy.hud.plotACourseToThis')}">` +
+              `${T('Galaxy.hud.setCourse')}</span>`
+            : "") +
+          `</div>`).join("");
+        return `<div class="gx-cat-group">` +
+          `<span>${esc(g.title)}</span>` +
+          `<span class="gx-cat-count">${g.items.length}</span></div>` +
+          `<div class="gx-cat-body">${rows}</div>`;
+      }).join("");
+      const scrollTop = cat.scrollTop;
+      cat.innerHTML =
+        `<div class="gx-title">${T('Galaxy.hud.catalog')}</div>` + tabsHtml +
+        (body || `<div class="gx-cat-empty">${
+          esc((active && active.empty) || "${T('Galaxy.hud.nothingCatalogued')}")}</div>`);
+      cat.scrollTop = scrollTop;
+      this._wire(cat);
+      this._invalidateFocusables();
+    }
+
+    _setCatalogTab(id) {
+      if (!id || id === this._catTab) return;
+      this._catTab = id;
+      this._focusEl = null;
+      if (this.els.catalog) this.els.catalog.scrollTop = 0;
+      this._renderCatalog();
+      this._refocusCatalog(`[data-action="cat-tab"][data-target="${id}"]`);
+    }
+
+    // Keep the focus ring on the row the player just acted on, so keyboard and
+    // controller navigation survives the re-render.
+    _refocusCatalog(selector) {
+      const el = this.els.catalog && this.els.catalog.querySelector(selector);
+      if (!el) return;
+      this._focusEl = el;
+      this._applyFocusClass();
+    }
+
+    isCatalogOpen() {
+      return !!(this.els.catalog && this.els.catalog.style.display === "block");
+    }
+
+    setCatalogOpen(open) {
+      if (!this.els.catalog) return;
+      this.els.catalog.style.display = open ? "block" : "none";
+      if (open) {
+        this.els.catalog.scrollTop = 0;
+        this._renderCatalog();
+      }
+      this._focusEl = null;
+      this._applyFocusClass();
+      this._invalidateFocusables();
+    }
+
+    // ---- Speed / engine panel (shown while travelling) --------------------
+    showSpeed(speed) {
+      const s = speed || 1;
+      const text = "×" + s;
+      if (this.els.speedVal && text !== this._speedText) {
+        this._speedText = text;
+        this.els.speedVal.textContent = text;
+        // Quadratic Hyperflux burn, mirrored from DataManager.updateShipPosition.
+        if (this.els.burnVal) {
+          this.els.burnVal.textContent = (s * s * 0.01).toFixed(2) + "/s";
+        }
+      }
+      // Keep the slider in step unless the player is actively dragging it.
+      if (this.els.speedSlider && document.activeElement !== this.els.speedSlider &&
+          String(s) !== this.els.speedSlider.value) {
+        this.els.speedSlider.value = String(s);
+      }
+      if (this.els.speed && !this._speedShown) {
+        this._speedShown = true;
+        this.els.speed.style.display = "block";
+        this._invalidateFocusables();
+      }
+    }
+    hideSpeed() {
+      if (this.els.speed && this._speedShown) {
+        this._speedShown = false;
+        this.els.speed.style.display = "none";
+        this._invalidateFocusables();
+      }
+    }
+    isSpeedShown() { return this.els.speed && this.els.speed.style.display === "block"; }
+
+    // ---- Fuel gauges ------------------------------------------------------
+    /**
+     * @param {object} f { hyperflux, hyperfluxMax, schrodingerite,
+     *   schrodingeriteMax, mapFuel, mapFuelMax }
+     */
+    setFuels(f) {
+      f = f || {};
+      const key = [f.hyperflux, f.schrodingerite, f.mapFuel].map((v) =>
+        Math.round(Number(v) || 0)).join("|");
+      if (key === this._fuelKey) return; // skip redundant DOM writes
+      this._fuelKey = key;
+
+      // Hyperflux is the fuel that matters for travel, so it gets the headline
+      // percentage as well as the litres-of-capacity readout, and both go red
+      // once the reserve is low enough that the next hop is in question.
+      const hfMax = f.hyperfluxMax || 92000;
+      const hf = Math.max(0, Math.min(hfMax, f.hyperflux || 0));
+      const hfFrac = hfMax > 0 ? hf / hfMax : 0;
+      const low = hfFrac < 0.2;
+      if (this.els.hfFill) {
+        this.els.hfFill.style.width = (hfFrac * 100).toFixed(1) + "%";
+        this.els.hfFill.classList.toggle("gx-low", low);
+      }
+      if (this.els.hfVal) {
+        this.els.hfVal.textContent = Math.round(hf).toLocaleString() + " / " +
+          Math.round(hfMax).toLocaleString() + " L";
+      }
+      if (this.els.hfPct) {
+        this.els.hfPct.textContent = (hfFrac * 100).toFixed(hfFrac < 0.1 ? 1 : 0) + "%";
+        this.els.hfPct.classList.toggle("gx-low", low);
+      }
+
+      const sbMax = f.schrodingeriteMax || 92;
+      const sb = Math.max(0, Math.min(sbMax, Math.floor(f.schrodingerite || 0)));
+      if (this.els.sbVal) this.els.sbVal.textContent = sb + " / " + sbMax;
+      if (this.els.sbPips) {
+        // A compact pip strip (capped at 46 pips so it never overflows the row);
+        // each pip is worth ceil(max/shown) charges when the cap is hit.
+        const shown = Math.min(sbMax, 46);
+        const per = sbMax / shown;
+        let html = "";
+        for (let i = 0; i < shown; i++) {
+          const on = sb >= Math.ceil((i + 1) * per);
+          html += `<span class="gx-sb-pip${on ? " on" : ""}"></span>`;
+        }
+        if (html !== this._sbPipHtml) { this._sbPipHtml = html; this.els.sbPips.innerHTML = html; }
+      }
+
+      const mfMax = f.mapFuelMax || 10000;
+      const mf = Math.max(0, f.mapFuel || 0);
+      if (this.els.mfFill) {
+        this.els.mfFill.style.width = (Math.min(1, mf / mfMax) * 100).toFixed(1) + "%";
+      }
+      if (this.els.mfVal) {
+        this.els.mfVal.textContent = Math.round(mf).toLocaleString() + " / " +
+          Math.round(mfMax).toLocaleString() + " L";
+      }
+    }
+
+    // ---- Refuel button / status ------------------------------------------
+    /**
+     * @param {object} s { label, hint, sub, enabled, active }
+     *   label   button caption ("Refuel" / "Stop Refuel")
+     *   hint    where the Hyperflux is coming from, shown beside the button
+     *   sub     one-line status under the panel title
+     *   enabled false greys the button out
+     *   active  true while the pumps are running (highlighted button)
+     */
+    setRefuel(s) {
+      s = s || {};
+      const key = [s.label, s.hint, s.sub, s.enabled ? 1 : 0, s.active ? 1 : 0].join("|");
+      if (key === this._refuelKey) return; // skip redundant DOM writes
+      this._refuelKey = key;
+      const btn = this.els.refuelBtn;
+      if (btn) {
+        const label = s.label || T('Galaxy.hud.refuel');
+        if (btn.textContent !== label) btn.textContent = label;
+        btn.classList.toggle("gx-disabled", !s.enabled);
+        btn.classList.toggle("gx-on", !!s.active);
+      }
+      if (this.els.refuelHint) this.els.refuelHint.textContent = s.hint || "";
+      if (this.els.fuelSub) this.els.fuelSub.textContent = s.sub || T('Galaxy.hud.hyperfluxReserve');
+    }
+
+    // ---- SB-Bridge button state ------------------------------------------
+    /** @param {boolean} enabled  @param {string} [label] destination name */
+    setSbBridge(enabled, label) {
+      const btn = this.els.sbBtn;
+      if (!btn) return;
+      const on = !!enabled;
+      if (on !== this._sbEnabled) {
+        this._sbEnabled = on;
+        btn.classList.toggle("gx-disabled", !on);
+      }
+      const text = T('Galaxy.hud.sbBridge') + (label ? " → " + label : "");
+      if (text !== this._sbLabel) { this._sbLabel = text; btn.textContent = text; }
+    }
+
+    // ---- Return to Earth: toggling the button reveals its two sub-actions --
+    isReturnEarthOpen() { return !!this._returnEarthOpen; }
+
+    setReturnEarthOpen(open) {
+      this._returnEarthOpen = !!open;
+      const show = this._returnEarthOpen ? "" : "none";
+      if (this.els.returnEarthCourseBtn) this.els.returnEarthCourseBtn.style.display = show;
+      if (this.els.returnEarthEbBtn) this.els.returnEarthEbBtn.style.display = show;
+      this._invalidateFocusables();
+    }
+
+    /** @param {boolean} canCourse @param {boolean} canEb */
+    setReturnEarthOptions(canCourse, canEb) {
+      if (this.els.returnEarthCourseBtn) {
+        this.els.returnEarthCourseBtn.classList.toggle("gx-disabled", !canCourse);
+      }
+      if (this.els.returnEarthEbBtn) {
+        this.els.returnEarthEbBtn.classList.toggle("gx-disabled", !canEb);
+      }
+    }
+
+    // ---- SB-Bridge warp animation ----------------------------------------
+    // A box-shaped wormhole door opens between the two locations; `mid` fires
+    // once it's fully open (do the teleport there so the scene swap is hidden
+    // behind the door), `done` once it has folded shut again.
+    playWarp(mid, done) {
+      const w = this.els.warp;
+      if (!w) { if (mid) mid(); if (done) done(); return; }
+      const flash = this.els.warpFlash;
+      const core = this.els.warpCore;
+      const box = this.els.warpBox;
+      w.style.display = "block";
+      // Restart the CSS animations by clearing and reassigning on the next frame.
+      flash.style.animation = "none";
+      core.style.animation = "none";
+      if (box) box.style.animation = "none";
+      // eslint-disable-next-line no-unused-expressions
+      void w.offsetWidth;
+      const DUR = 1200;
+      flash.style.animation = `gx-warp-flash-kf ${DUR}ms ease-in-out forwards`;
+      core.style.animation = `gx-warp-core-kf ${DUR}ms ease-in forwards`;
+      if (box) {
+        box.style.animation =
+          `gx-warp-box-kf ${DUR}ms ease-in-out forwards, ` +
+          `gx-warp-box-bg-kf ${DUR}ms linear forwards`;
+      }
+      if (this._warpMidTimer) clearTimeout(this._warpMidTimer);
+      if (this._warpEndTimer) clearTimeout(this._warpEndTimer);
+      // Fires once the door is fully open (the kf plateau starts at 42%).
+      this._warpMidTimer = setTimeout(() => { if (mid) mid(); }, DUR * 0.42);
+      this._warpEndTimer = setTimeout(() => {
+        w.style.display = "none";
+        flash.style.animation = "none";
+        core.style.animation = "none";
+        if (box) box.style.animation = "none";
+        if (done) done();
+      }, DUR);
+    }
+
+    /** @param {number} f 0 = fully zoomed out, 1 = fully zoomed in. */
+    setZoomFraction(f) {
+      if (!this.els.zoomKnob) return;
+      const pct = Math.round((1 - Math.max(0, Math.min(1, f || 0))) * 1000) / 10;
+      if (pct === this._zoomPct) return; // skip redundant style writes
+      this._zoomPct = pct;
+      this.els.zoomKnob.style.top = pct + "%";
+      if (this.els.zoomFill) this.els.zoomFill.style.height = (100 - pct) + "%";
+    }
+
+    setScale(name, sub) {
+      if (this.els.scaleName) this.els.scaleName.textContent = name || "";
+      if (this.els.scaleSub) this.els.scaleSub.textContent = sub || "";
+    }
+    setModeHint(html) {
+      if (this.els.mode) {
+        this.els.mode.innerHTML = padGlyphs(html);
+        this._invalidateFocusables();
+      }
+    }
+
+    // ---- Tooltip ----------------------------------------------------------
+    showTooltip(name, type, x, y) {
+      const t = this.els.tooltip;
+      if (!t) return;
+      if (name !== this._ttName || type !== this._ttType) {
+        this._ttName = name;
+        this._ttType = type;
+        t.innerHTML = `${esc(name)}` +
+          (type ? `<div class="gx-tt-type">${esc(String(type).replace(/_/g, " "))}</div>` : "");
+      }
+      t.style.left = x + "px";
+      t.style.top = y + "px";
+      if (t.style.display !== "block") t.style.display = "block";
+    }
+    hideTooltip() { if (this.els.tooltip) this.els.tooltip.style.display = "none"; }
+
+    // ---- Selection panel --------------------------------------------------
+    hasSelection() { return !!this._selection; }
+    hasFocusables() { return this._getFocusables().length > 0; }
+
+    _rows(pairs) {
+      return pairs
+        .filter((p) => p[1] != null)
+        .map((p) => `<div class="gx-row"><span class="gx-k">${esc(p[0])}</span>` +
+          `<span class="gx-v">${esc(p[1])}</span></div>`)
+        .join("");
+    }
+
+    showSystem(system, opts) {
+      opts = opts || {};
+      this._selection = { kind: "star", data: system, system };
+      // Companion/donor stars of an N-ary system carry no position of their
+      // own (they ride an orbit inside the system that owns them).
+      const p = system.position;
+      const dist = p
+        ? Math.sqrt((p.x || 0) ** 2 + (p.y || 0) ** 2 + (p.z || 0) ** 2)
+        : null;
+      const rows = this._rows([
+        [T('Galaxy.row.starType'), T('Galaxy.row.starClass',
+          { type: String(system.type || "?").replace(/_/g, " ") })],
+        [T('Galaxy.row.mass'), num(system.mass, 2) != null ? num(system.mass, 2) + " M☉" : null],
+        [T('Galaxy.row.radius'), num(system.radius, 2) != null ? num(system.radius, 2) + " R☉" : null],
+        [T('Galaxy.row.temperature'), num(system.temperature, 0) != null ? Math.floor(system.temperature) + " K" : null],
+        [T('Galaxy.row.distance'), dist != null ? num(dist, 2) + " ly" : null],
+        [T('Galaxy.row.planets'), system.planets ? system.planets.length : null],
+        [T('Galaxy.row.memberOf'), system._companionOf || null],
+        [T('Galaxy.row.companions'), (system.companions && system.companions.length) || null],
+        [T('Galaxy.row.feedingOn'), (system.feeding && system.feeding.donor && system.feeding.donor.name) || null],
+        // Patron systems (PatreonRewards) name the person the world is for.
+        [T('Galaxy.row.chartedFor'), (system.patron && system.patron.name) || null],
+        [T('Galaxy.row.megastructure'), system.dyson
+          ? (system.dyson === "abandoned" ? T('Galaxy.row.dysonAbandoned')
+                                          : T('Galaxy.row.dyson')) : null],
+      ]);
+      let actions = ZOOM_BTN + bookmarkBtn(!!opts.isBookmarked);
+      if (opts.canEnter) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="enter-system" ` +
+          `data-target="${esc(system.name)}">${T('Galaxy.hud.enterSystem')}</span>`;
+      }
+      if (opts.canTravel) {
+        actions += `<span class="gx-btn focusable" tabindex="0" data-action="travel-system" ` +
+          `data-target="${esc(system.name)}">${T('Galaxy.hud.travelHere')}</span>`;
+      } else if (opts.isCurrent && !opts.canEnter) {
+        actions += `<span class="gx-muted">${T('Galaxy.hud.currentLocation')}</span>`;
+      }
+      // Park in orbit of the star/black hole itself - free while already in
+      // this system (the star-scale equivalent of "Land Here").
+      if (opts.canPark) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="park-orbit">` +
+          `${T('Galaxy.hud.parkInOrbit')}</span>`;
+      } else if (opts.isParked) {
+        actions += `<span class="gx-muted">${T('Galaxy.hud.parkedInOrbit')}</span>`;
+      }
+      // Refuel: only offered while parked in orbit of a main-sequence star
+      // (see DataManager.isMainSequenceStar / canRefuel) - black holes and
+      // exotic remnants (white dwarfs, neutron stars) can't refuel the ship.
+      if (opts.canRefuel && !opts.isRefueling) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="refuel-start">` +
+          `${T('Galaxy.hud.refuel')}</span>`;
+      } else if (opts.isRefueling) {
+        actions += `<span class="gx-btn focusable" tabindex="0" data-action="refuel-stop">` +
+          `${T('Galaxy.hud.stopRefuel')}</span>`;
+      }
+      // Harvest Schrödingerite: only at a black hole's orbit, gated by a
+      // once-per-game-week-per-hole cooldown (see DataManager.canHarvestSchrodingerite).
+      if (opts.canHarvest) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="harvest-schrodingerite">` +
+          `${T('Galaxy.hud.harvestSchrDingerite')}</span>`;
+      } else if (opts.harvestCooldownMin > 0) {
+        actions += `<span class="gx-muted">${T('Galaxy.hud.rechargesIn')} ${esc(formatCooldown(opts.harvestCooldownMin))}</span>`;
+      }
+      // Schrödinger-Bohr bridge to a star: instant park in its orbit for 1
+      // Schrödingerite, from anywhere.
+      if (opts.canBohrBridge) {
+        actions += `<span class="gx-btn gx-sb focusable" tabindex="0" data-action="sb-bohr" ` +
+          `title="${T('Galaxy.hud.quantumBridgeStraightIntoOrbit')}">${T('Galaxy.hud.openSchrDingerBohrBridge')}</span>`;
+      }
+      const titleCls = (system.hardcoded || system.patron) ? "gx-title gx-hard" : "gx-title";
+      // `label` is the readable name of a system whose key is a catalog id
+      // (patron systems live under a "GX.<seed>.*" key like every other body of
+      // a procedural galaxy, but are shown by name).
+      this.els.info.innerHTML =
+        `<div class="${titleCls}">${esc(system.label || system.name)}</div>` +
+        `<div class="gx-divider"></div>${rows}` +
+        (actions ? `<div class="gx-actions">${actions}</div>` : "");
+      this._openInfo();
+    }
+
+    showBody(body, system, opts) {
+      opts = opts || {};
+      const locs = (body.landingLocations && body.landingLocations.length)
+        ? body.landingLocations : null;
+      this._selection = {
+        kind: opts.kind || "planet", data: body, system,
+        planet: opts.parentPlanet, landingLocations: locs,
+      };
+      const periodYr = typeof body.period === "number" ? body.period / 365 : null;
+      const rows = this._rows([
+        [T('Galaxy.row.type'), bodyTypeLabel(String(body.type || "?").replace(/_/g, " "))],
+        [T('Galaxy.row.radius'), num(body.radius, 2) != null ? num(body.radius, 2) + " R⊕" : null],
+        [T('Galaxy.row.mass'), num(body.mass, 3) != null ? num(body.mass, 3) + " M⊕" : null],
+        [T('Galaxy.row.orbit'), num(body.orbitRadius, 3) != null ? num(body.orbitRadius, 3) + " AU" : null],
+        [T('Galaxy.row.period'), num(periodYr, 2) != null ? num(periodYr, 2) + " yr" : null],
+        [T('Galaxy.row.atmosphere'), body.atmosphere ? T('Galaxy.row.yes') : T('Galaxy.row.no')],
+        // Breathable atmosphere comes from the planet type definition (passed in
+        // via opts); "Has Life" is only shown when the planet actually has life.
+        [T('Galaxy.row.breathableAir'), opts.breathable != null
+          ? (opts.breathable ? T('Galaxy.row.yes') : T('Galaxy.row.no')) : null],
+        [T('Galaxy.row.life'), opts.hasLife ? T('Galaxy.row.detected') : null],
+        [T('Anomaly.ui.signalRow'), opts.canInvestigate ? T('Anomaly.ui.signalUnread') : null],
+        [T('Galaxy.row.moons'), body.moons ? body.moons.length : null],
+        // Anything the ship's lasers have already taken off this body.
+        [T('Galaxy.row.oreBody'), opts.mining
+          ? T('Galaxy.row.units', { remaining: opts.mining.remaining,
+                                    capacity: opts.mining.capacity }) : null],
+        [T('Galaxy.row.condition'), opts.hubbleCondition != null ? opts.hubbleCondition + "%" : null],
+      ]);
+      let actions = ZOOM_BTN + bookmarkBtn(!!opts.isBookmarked);
+      if (opts.canTravelTo) {
+        actions += `<span class="gx-btn focusable" tabindex="0" data-action="travel-planet">${T('Galaxy.hud.flyHere')}</span>`;
+      }
+      if (opts.canLand) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="land">${T('Galaxy.hud.landHere')}</span>`;
+      }
+      // The world that was signalling: offered in its orbit, once per world.
+      if (opts.canInvestigate) {
+        actions += `<span class="gx-btn gx-bio focusable" tabindex="0" data-action="investigate" ` +
+          `title="${T('Anomaly.ui.investigateHint')}">` +
+          `${opts.investigateResume ? T('Anomaly.ui.resume') : T('Anomaly.ui.investigate')}</span>`;
+      }
+      // Schrödinger-Bohr bridge: instant jump into this planet's orbit for 1
+      // Schrödingerite. Offered on any planet view while charges remain.
+      if (opts.canBohrBridge) {
+        actions += `<span class="gx-btn gx-sb focusable" tabindex="0" data-action="sb-bohr" ` +
+          `title="${T('Galaxy.hud.quantumBridgeStraightIntoOrbit')}">${T('Galaxy.hud.openSchrDingerBohrBridge')}</span>`;
+      }
+      // Hand-authored landing sites: shown alongside Land while the ship is in
+      // orbit. Each teleports the party (not the ship) to its map/coords.
+      if (locs && opts.canUseLocations) {
+        actions += locs.map((loc, i) =>
+          `<span class="gx-btn gx-land focusable" tabindex="0" data-action="teleport-location" ` +
+          `data-loc="${i}">${esc(loc.name)}</span>`).join("");
+      }
+      // Strip mining: offered while in orbit of a rock that still holds ore.
+      if (opts.canStripMine) {
+        actions += `<span class="gx-btn focusable" tabindex="0" data-action="strip-mine" ` +
+          `title="${T('Galaxy.hud.cutTheBodyApartWith')}">${T('Galaxy.hud.stripMine')}</span>`;
+      }
+      // Servicing: the Hubble, and anything else carrying its own repair state.
+      if (opts.canService) {
+        actions += `<span class="gx-btn gx-land focusable" tabindex="0" data-action="service" ` +
+          `title="${T('Galaxy.hud.openTheServicingBay')}">${T('Galaxy.hud.serviceTelescope')}</span>`;
+      }
+      // A star marks any body that has hand-authored landing sites.
+      const star = locs ? ` <span class="gx-loc-star">★</span>` : "";
+      const note = body.note ? `<div class="gx-note">${esc(body.note)}</div>` : "";
+      this.els.info.innerHTML =
+        `<div class="gx-title">${esc(body.name)}${star}</div>` +
+        `<div class="gx-sub">${esc(system ? (system.label || system.name) : "")}</div>` +
+        `<div class="gx-divider"></div>${rows}${note}` +
+        (actions ? `<div class="gx-actions">${actions}</div>` : "");
+      this._openInfo();
+    }
+
+    // A far-scale object (galaxy, cluster, anomaly): descriptive only, since no
+    // ship action reaches across intergalactic distances.
+    showObject(obj, opts) {
+      opts = opts || {};
+      this._selection = { kind: obj.kind || "galaxy", data: obj };
+      const rows = this._rows([
+        [T('Galaxy.row.type'), bodyTypeLabel(obj.type)],
+        [T('Galaxy.row.diameter'), obj.diameter],
+        [obj.members ? T('Galaxy.row.members') : T('Galaxy.row.stars'),
+         obj.members || obj.stars],
+        [T('Galaxy.row.distance'), obj.distance],
+      ]);
+      const actions = ZOOM_BTN + (opts.canBookmark ? bookmarkBtn(!!opts.isBookmarked) : "");
+      this.els.info.innerHTML =
+        `<div class="gx-title${obj.home ? " gx-hard" : ""}">${esc(obj.name)}</div>` +
+        (obj.home ? `<div class="gx-sub">${T('Galaxy.row.currentLocation')}</div>` : "") +
+        `<div class="gx-divider"></div>${rows}` +
+        `<div class="gx-actions">${actions}</div>`;
+      this._openInfo();
+    }
+
+    _openInfo() {
+      this.els.info.style.display = "block";
+      this._wire(this.els.info);
+      this._focusEl = null;
+      this._invalidateFocusables();
+    }
+
+    deselect() {
+      this._selection = null;
+      this._focusEl = null;
+      this._applyFocusClass();
+      if (this.els.info) this.els.info.style.display = "none";
+      this._invalidateFocusables();
+    }
+
+    // ---- Landing-site picker (unwrapped planet texture, clickable grid) ---
+    // Shows the planet's equirectangular surface texture (see
+    // Renderer3D.getPlanetTextureCanvas) sliced into a planetGridSize() grid.
+    // Callbacks: onPick(gx, gy) when a square is confirmed, onCancel() when
+    // the panel is dismissed without picking.
+    showLandingGrid(planet, opts) {
+      opts = opts || {};
+      const R3D = window.GalaxySim.Renderer3D;
+      const GS = window.GalaxySim;
+      if (!this.els.landingGrid || !R3D || !GS || !GS.planetGridSize) {
+        if (opts.onCancel) opts.onCancel();
+        return;
+      }
+      const { w, h } = GS.planetGridSize(planet);
+      const seed = R3D._seedFor(planet);
+      const textureCanvas = R3D.getPlanetTextureCanvas(planet, seed);
+      this._landingGrid = {
+        planet, w, h,
+        cursor: { gx: Math.floor(w / 2), gy: Math.floor(h / 2) },
+        textureCanvas,
+      };
+      this._landingGridCallbacks = { onPick: opts.onPick, onCancel: opts.onCancel };
+      this.els.landingGridTitle.textContent = `${T('Galaxy.hud.chooseLandingSite')} · ${planet.name || "Planet"}`;
+      this.els.landingGrid.style.display = "flex";
+      this._focusEl = null;
+      this._invalidateFocusables();
+      this._redrawLandingGrid();
+    }
+
+    isLandingGridOpen() {
+      return !!(this.els.landingGrid && this.els.landingGrid.style.display !== "none");
+    }
+
+    // Dismiss without picking (Esc / Cancel button).
+    hideLandingGrid() {
+      if (!this.isLandingGridOpen()) return;
+      const cb = this._landingGridCallbacks;
+      this.els.landingGrid.style.display = "none";
+      this._landingGrid = null;
+      this._landingGridCallbacks = null;
+      this._invalidateFocusables();
+      if (cb && cb.onCancel) cb.onCancel();
+    }
+
+    moveLandingGridCursor(dx, dy) {
+      const lg = this._landingGrid;
+      if (!lg) return;
+      lg.cursor.gx = ((lg.cursor.gx + dx) % lg.w + lg.w) % lg.w;
+      lg.cursor.gy = ((lg.cursor.gy + dy) % lg.h + lg.h) % lg.h;
+      this._redrawLandingGrid();
+    }
+
+    confirmLandingGridCursor() {
+      this._confirmLandingGrid();
+    }
+
+    _confirmLandingGrid() {
+      const lg = this._landingGrid;
+      const cb = this._landingGridCallbacks;
+      if (!lg || !cb) return;
+      const { gx, gy } = lg.cursor;
+      this.els.landingGrid.style.display = "none";
+      this._landingGrid = null;
+      this._landingGridCallbacks = null;
+      this._invalidateFocusables();
+      if (cb.onPick) cb.onPick(gx, gy);
+    }
+
+    _redrawLandingGrid() {
+      const lg = this._landingGrid;
+      const canvas = this.els.landingGridCanvas;
+      if (!lg || !canvas) return;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const R3D = window.GalaxySim.Renderer3D;
+      if (lg.textureCanvas && R3D && R3D.drawPlanetGrid) {
+        R3D.drawPlanetGrid(ctx, {
+          textureCanvas: lg.textureCanvas,
+          destW: canvas.width, destH: canvas.height,
+          gridW: lg.w, gridH: lg.h,
+          highlightCell: lg.cursor,
+        });
+      }
+    }
+
+    // ---- Servicing bay (Hubble) -------------------------------------------
+    // Every assembly with its condition, what it would take to put right, and
+    // a button that spends the materials. Rebuilt in place after each repair so
+    // the costs and affordability stay honest.
+    showService(opts) {
+      opts = opts || {};
+      if (!this.els.service) return;
+      this._service = {
+        title: opts.title || "${T('Galaxy.hud.servicingBay')}",
+        subtitle: opts.subtitle || "",
+        parts: opts.parts || [],
+        footer: opts.footer || "",
+      };
+      this.els.service.style.display = "flex";
+      this._focusEl = null;
+      this.renderService(opts.parts, opts.subtitle, opts.footer);
+    }
+
+    isServiceOpen() {
+      return !!(this.els.service && this.els.service.style.display !== "none");
+    }
+
+    hideService() {
+      if (!this.isServiceOpen()) return;
+      this.els.service.style.display = "none";
+      this._service = null;
+      this._invalidateFocusables();
+    }
+
+    renderService(parts, subtitle, footer) {
+      if (!this.els.service || !this._service) return;
+      if (parts) this._service.parts = parts;
+      if (subtitle != null) this._service.subtitle = subtitle;
+      if (footer != null) this._service.footer = footer;
+      const S = this._service;
+      const focusKey = this._focusEl ? this._focusEl.getAttribute("data-part") : null;
+      this.els.svcTitle.textContent = S.title;
+      this.els.svcSub.innerHTML = S.subtitle;
+      this.els.svcList.innerHTML = S.parts.map((p) => {
+        const pct = Math.max(0, Math.min(100, Math.round(p.health)));
+        const cls = pct >= 70 ? "" : (pct >= 35 ? " gx-warn" : " gx-bad");
+        const costTxt = Object.keys(p.cost || {}).length
+          ? Object.keys(p.cost).map((id) => {
+            const need = p.cost[id];
+            const have = (window.GalaxySim.matOwned && window.GalaxySim.matOwned(Number(id))) || 0;
+            const short = have < need ? " gx-short" : "";
+            return `<span class="${short}">${esc(window.GalaxySim.matName(Number(id)))} ` +
+              `${have}/${need}</span>`;
+          }).join(" · ")
+          : "${T('Galaxy.hud.nominal')}";
+        const done = pct >= 100;
+        const btn = done
+          ? `<span class="gx-btn gx-disabled">${T('Galaxy.hud.serviced')}</span>`
+          : `<span class="gx-btn${p.canAfford ? " gx-land" : " gx-disabled"} focusable" ` +
+            `tabindex="0" data-action="service-part" data-part="${esc(p.name)}">${T('Galaxy.hud.repair')}</span>`;
+        return `<div class="gx-svc-part${p.critical ? " gx-crit" : ""}${done ? " gx-ok" : ""}">` +
+          `<div class="gx-svc-main"><div class="gx-svc-name">${esc(p.label || p.name)}` +
+          `${p.critical ? ` <span class="gx-short" style="color:#ff5252">${T('Galaxy.hud.critical')}</span>` : ""}</div>` +
+          `<div class="gx-svc-note">${esc(p.note || "")}</div>` +
+          `<div class="gx-svc-cost">${costTxt}</div></div>` +
+          `<div class="gx-svc-bar"><div class="gx-svc-fill${cls}" style="width:${pct}%"></div></div>` +
+          `<div class="gx-svc-pct">${pct}%</div>${btn}</div>`;
+      }).join("");
+      this.els.svcActions.innerHTML =
+        (S.footer ? `<div class="gx-muted" style="margin-bottom:6px">${S.footer}</div>` : "") +
+        `<span class="gx-btn gx-land focusable" tabindex="0" data-action="service-all">` +
+        `${T('Galaxy.hud.serviceEverythingAffordable')}</span>` +
+        `<span class="gx-btn focusable" tabindex="0" data-action="service-close">${T('Galaxy.hud.close')}</span>`;
+      this._wire(this.els.service);
+      this._invalidateFocusables();
+      // Keep the ring on the same part's button across a re-render.
+      if (focusKey) {
+        const again = this.els.service.querySelector(`[data-part="${focusKey}"]`);
+        if (again) { this._focusEl = again; this._applyFocusClass(); }
+      }
+    }
+
+    // ---- Strip-mining console ---------------------------------------------
+    showMining(state) {
+      if (!this.els.mining) return;
+      this.els.mining.style.display = "block";
+      this._mineLog = [];
+      this.updateMining(state);
+      this._invalidateFocusables();
+    }
+
+    isMiningOpen() {
+      return !!(this.els.mining && this.els.mining.style.display !== "none");
+    }
+
+    hideMining() {
+      if (!this.isMiningOpen()) return;
+      this.els.mining.style.display = "none";
+      this._mineLog = null;
+      this._invalidateFocusables();
+    }
+
+    // state = { name, mined, capacity, elapsed, eta, fuel, fuelPerSec }
+    updateMining(state) {
+      if (!this.isMiningOpen() || !state) return;
+      const cap = Math.max(1, state.capacity || 1);
+      const pct = Math.max(0, Math.min(100, (state.mined / cap) * 100));
+      this.els.mineTitle.textContent = `${T('Galaxy.hud.stripMining')} · ${state.name || "Body"}`;
+      const secs = Math.max(0, Math.round(state.elapsed || 0));
+      this.els.mineClock.textContent =
+        `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+      this.els.mineFill.style.width = pct.toFixed(1) + "%";
+      this.els.mineStat.textContent =
+        T('Galaxy.hud.mineProgress', { mined: Math.round(state.mined), capacity: cap, eta: state.eta || 0 });
+      this.els.mineFuel.textContent =
+        `${T('Galaxy.hud.hyperflux')} ${Math.round(state.fuel || 0).toLocaleString()} (−${state.fuelPerSec}/s)`;
+    }
+
+    // One line of ore per tick, newest last, capped to what the box shows.
+    pushMiningLog(html) {
+      if (!this.isMiningOpen()) return;
+      this._mineLog = this._mineLog || [];
+      this._mineLog.push(html);
+      if (this._mineLog.length > 3) this._mineLog.shift();
+      this.els.mineLog.innerHTML = this._mineLog.join("<br>");
+    }
+
+    // ---- Anomaly log (the branching encounter) ----------------------------
+    // The scene owns the encounter (GalaxySim.Anomaly); this only draws the view
+    // it is handed and reports which choice was clicked.
+    showAnomaly(view, opts) {
+      if (!this.els.anomaly) return;
+      this._anomaly = Object.assign({ where: "" }, opts || {});
+      this.els.anomaly.style.display = "flex";
+      this.renderAnomaly(view);
+    }
+
+    isAnomalyOpen() {
+      return !!(this.els.anomaly && this.els.anomaly.style.display !== "none");
+    }
+
+    hideAnomaly() {
+      if (!this.isAnomalyOpen()) return;
+      this.els.anomaly.style.display = "none";
+      this._anomaly = null;
+      this._focusEl = null;
+      this._invalidateFocusables();
+    }
+
+    renderAnomaly(view) {
+      if (!this.els.anomaly || !view) return;
+      const where = (this._anomaly && this._anomaly.where) || "";
+      this.els.anomWhere.textContent = where;
+      this.els.anomTitle.textContent = view.title || "";
+      const paras = String(view.text || "").split(/\n+/).filter((p) => p.trim());
+      const rewards = (view.rewards || []).map((r) => `<div>${esc(r)}</div>`).join("");
+      this.els.anomBody.innerHTML =
+        paras.map((p) => `<p>${esc(p)}</p>`).join("") +
+        (rewards ? `<div class="gx-anom-rewards">${rewards}</div>` : "");
+      this.els.anomBody.scrollTop = 0;
+      if (view.done) {
+        this.els.anomChoices.innerHTML =
+          `<span class="gx-btn gx-land focusable" tabindex="0" data-action="anom-close">` +
+          `${T('Anomaly.ui.close')}</span>`;
+      } else {
+        this.els.anomChoices.innerHTML = (view.choices || []).map((c, i) =>
+          `<span class="gx-anom-choice focusable" tabindex="0" data-action="anom-choice" ` +
+          `data-index="${i}"><span class="gx-anom-num">${i + 1}</span>${esc(c.text)}</span>`
+        ).join("");
+      }
+      this._wire(this.els.anomaly);
+      this._focusEl = null;
+      this._invalidateFocusables();
+    }
+
+    _wire(container) {
+      if (!container) return;
+      container.querySelectorAll("[data-action]").forEach((b) => {
+        b.onclick = () => this._invoke(b);
+      });
+    }
+
+    _invoke(btn) {
+      const action = btn.getAttribute("data-action");
+      const cb = this.callbacks;
+      // Catalog tabs and drawers are panel-local: they never reach the scene.
+      if (action === "cat-tab") { this._setCatalogTab(btn.getAttribute("data-target")); return; }
+      if (action === "enter-system" && cb.onEnterSystem) {
+        cb.onEnterSystem(btn.getAttribute("data-target"));
+      } else if (action === "travel-system" && cb.onTravelSystem) {
+        cb.onTravelSystem(btn.getAttribute("data-target"));
+      } else if (action === "travel-planet" && cb.onTravelPlanet) {
+        cb.onTravelPlanet(this._selection);
+      } else if (action === "land" && cb.onLand) {
+        cb.onLand(this._selection);
+      } else if (action === "landing-grid-cancel") {
+        this.hideLandingGrid();
+      } else if (action === "strip-mine" && cb.onStripMine) {
+        cb.onStripMine(this._selection);
+      } else if (action === "mine-stop" && cb.onStripMineStop) {
+        cb.onStripMineStop();
+      } else if (action === "service" && cb.onService) {
+        cb.onService(this._selection);
+      } else if (action === "service-part" && cb.onServicePart) {
+        cb.onServicePart(btn.getAttribute("data-part"));
+      } else if (action === "service-all" && cb.onServiceAll) {
+        cb.onServiceAll();
+      } else if (action === "service-close") {
+        this.hideService();
+      } else if (action === "investigate" && cb.onInvestigate) {
+        cb.onInvestigate(this._selection);
+      } else if (action === "anom-choice" && cb.onAnomalyChoice) {
+        cb.onAnomalyChoice(parseInt(btn.getAttribute("data-index"), 10) || 0);
+      } else if (action === "anom-close" && cb.onAnomalyClose) {
+        cb.onAnomalyClose();
+      } else if (action === "teleport-location" && cb.onTeleportLocation) {
+        const i = parseInt(btn.getAttribute("data-loc"), 10);
+        const locs = this._selection && this._selection.landingLocations;
+        if (locs && locs[i]) cb.onTeleportLocation(locs[i]);
+      } else if (action === "sb-bohr" && cb.onBohrBridge) {
+        cb.onBohrBridge(this._selection);
+      } else if (action === "park-orbit" && cb.onParkOrbit) {
+        cb.onParkOrbit(this._selection);
+      } else if (action === "refuel-start" && cb.onRefuelStart) {
+        cb.onRefuelStart(this._selection);
+      } else if (action === "refuel-stop" && cb.onRefuelStop) {
+        cb.onRefuelStop(this._selection);
+      } else if (action === "refuel-auto" && cb.onRefuelAuto) {
+        cb.onRefuelAuto();
+      } else if (action === "harvest-schrodingerite" && cb.onHarvestSchrodingerite) {
+        cb.onHarvestSchrodingerite(this._selection);
+      } else if (action === "bookmark-toggle" && cb.onBookmarkToggle) {
+        cb.onBookmarkToggle(this._selection);
+      } else if (action === "speed-up" && cb.onSpeedUp) {
+        cb.onSpeedUp();
+      } else if (action === "speed-down" && cb.onSpeedDown) {
+        cb.onSpeedDown();
+      } else if (action === "stop" && cb.onStop) {
+        cb.onStop();
+      } else if (action === "zoom-target" && cb.onZoomTarget) {
+        cb.onZoomTarget();
+      } else if (action === "home" && cb.onGoHome) {
+        cb.onGoHome();
+      } else if (action === "ship" && cb.onGoToShip) {
+        cb.onGoToShip();
+      } else if (action === "bioscan" && cb.onBioScan) {
+        cb.onBioScan();
+      } else if (action === "sb-bridge" && cb.onSbBridge) {
+        cb.onSbBridge();
+      } else if (action === "return-earth-toggle" && cb.onReturnEarthToggle) {
+        cb.onReturnEarthToggle();
+      } else if (action === "return-earth-course" && cb.onReturnEarthCourse) {
+        cb.onReturnEarthCourse();
+      } else if (action === "return-earth-eb" && cb.onReturnEarthEb) {
+        cb.onReturnEarthEb();
+      } else if (action === "catalog" && cb.onCatalogToggle) {
+        cb.onCatalogToggle();
+      } else if (action === "cat-zoom" && cb.onCatalogZoom) {
+        cb.onCatalogZoom(btn.getAttribute("data-target"));
+      } else if (action === "cat-course" && cb.onCatalogCourse) {
+        cb.onCatalogCourse(btn.getAttribute("data-target"));
+      }
+    }
+
+    // ---- Focusable nav (HypernetOS convention; spans all visible panels) --
+    _getFocusables() {
+      if (!this.root) return [];
+      if (this._focusables) return this._focusables;
+      this._focusables = Array.prototype.filter.call(
+        this.root.querySelectorAll(".focusable,[tabindex]:not([tabindex='-1'])"),
+        (el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        }
+      );
+      return this._focusables;
+    }
+
+    _applyFocusClass() {
+      this.root.querySelectorAll(".focused").forEach((e) => e.classList.remove("focused"));
+      if (this._focusEl) this._focusEl.classList.add("focused");
+    }
+
+    moveFocus(dir) {
+      const list = this._getFocusables();
+      if (!list.length) return false;
+      if (!this._focusEl || list.indexOf(this._focusEl) === -1) {
+        this._focusEl = list[0];
+        this._applyFocusClass();
+        return true;
+      }
+      const cur = this._focusEl.getBoundingClientRect();
+      const cx = cur.left + cur.width / 2;
+      const cy = cur.top + cur.height / 2;
+      let best = null, bestScore = Infinity;
+      for (const el of list) {
+        if (el === this._focusEl) continue;
+        const r = el.getBoundingClientRect();
+        const dx = r.left + r.width / 2 - cx;
+        const dy = r.top + r.height / 2 - cy;
+        let primary, cross;
+        if (dir === "left") { if (dx >= -1) continue; primary = -dx; cross = Math.abs(dy); }
+        else if (dir === "right") { if (dx <= 1) continue; primary = dx; cross = Math.abs(dy); }
+        else if (dir === "up") { if (dy >= -1) continue; primary = -dy; cross = Math.abs(dx); }
+        else { if (dy <= 1) continue; primary = dy; cross = Math.abs(dx); }
+        const score = primary + cross * 2;
+        if (score < bestScore) { bestScore = score; best = el; }
+      }
+      if (best) { this._focusEl = best; this._applyFocusClass(); }
+      return true;
+    }
+
+    cycleFocus(step) {
+      const list = this._getFocusables();
+      if (!list.length) return false;
+      let idx = this._focusEl ? list.indexOf(this._focusEl) : -1;
+      idx = (idx + step + list.length) % list.length;
+      this._focusEl = list[idx];
+      this._applyFocusClass();
+      return true;
+    }
+
+    activateFocus() {
+      if (this._focusEl) { this._invoke(this._focusEl); return true; }
+      // No explicit focus yet: activate the first available button.
+      const list = this._getFocusables();
+      if (list.length) { this._invoke(list[0]); return true; }
+      return false;
+    }
+
+    update() {
+      // Keep the focus ring valid if the panel rebuilt.
+      if (this._focusEl && !this._focusEl.isConnected) {
+        this._focusEl = null;
+        this._applyFocusClass();
+      }
+    }
+
+    dispose() {
+      if (this._warpMidTimer) clearTimeout(this._warpMidTimer);
+      if (this._warpEndTimer) clearTimeout(this._warpEndTimer);
+      if (this.root && this.root.parentNode) this.root.parentNode.removeChild(this.root);
+      this.root = null;
+      this.els = {};
+      this._selection = null;
+      this._focusEl = null;
+      this._focusables = null;
+      const s = document.getElementById(STYLE_ID);
+      if (s && s.parentNode) s.parentNode.removeChild(s);
+    }
+  }
+
+  window.GalaxySim.Overlay = { GalaxyOverlay, padGlyphs };
+})();

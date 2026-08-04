@@ -1,0 +1,13 @@
+{
+  "noThree": "THREE.JS IS NOT LOADED - BOWLING UNAVAILABLE",
+  "player1": "Player 1",
+  "cpuThinking": "CPU STUDIES THE PIN DECK...",
+  "victory": "VICTORY!",
+  "defeat": "DEFEAT",
+  "draw": "DRAW",
+  "finalScore": "Player 1: {player}   {opponent}: {opponentScore}",
+  "frame": "FRAME {frame}/10  {bowler}",
+  "aimPrompt": "{bowler}: L/R MOVE  U/D ANGLE  OK",
+  "powerPrompt": "{bowler}: OK TO LOCK POWER",
+  "hookPrompt": "{bowler}: OK TO SET HOOK"
+}

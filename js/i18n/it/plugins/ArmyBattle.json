@@ -1,0 +1,21 @@
+{
+  "zoom": "Zoom: {pct}%",
+  "controls": "Zoom: rotella | Panoramica: trascina/frecce | Q/W/E: abilità | TAB: mostra/nascondi barra",
+  "playerArmy": "Esercito del giocatore: {count}",
+  "enemyArmy": "Esercito nemico: {count}",
+  "rallyBanner": "RADUNO! +20 morale ({count} soldati radunati)",
+  "healBanner": "CURA! +25% PV a {count} soldati",
+  "inspireBanner": "ISPIRAZIONE! +50% attacco e morale al massimo!",
+  "clickSquad": "Clicca una squadra\nper darle ordini",
+  "ability": {
+    "rally": "Raduna le truppe",
+    "heal": "Cura la squadra",
+    "inspire": "Ispira"
+  },
+  "command": {
+    "hold": "Tieni la posizione",
+    "attack": "Attacca",
+    "defend": "Difendi",
+    "retreat": "Ritirata"
+  }
+}

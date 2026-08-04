@@ -1,0 +1,382 @@
+/*:
+ * @plugindesc v2.1 Random Loot System - Loot quality scales with Party Median Level + Variable.
+ * @author Omni-Lex (Modified)
+ * @target MZ MV
+ * @filename RandomLootSystem.js
+ * @orderAfter PluginManager
+ *
+ * @command getItem
+ * @text Get Random Item
+ * @desc Adds a random item to the player's inventory.
+ *
+ * @command getArmor
+ * @text Get Random Armor
+ * @desc Adds a random armor to the player's inventory.
+ *
+ * @command getWeapon
+ * @text Get Random Weapon
+ * @desc Adds a random weapon to the player's inventory.
+ *
+ * @help
+ * This plugin adds commands to randomly generate loot with rarity tiers.
+ * * Plugin Commands (MV Style):
+ * getItem                # Get a random item
+ * getArmor               # Get a random armor
+ * getWeapon              # Get a random weapon
+ * * --- HOW RARITY IS CALCULATED ---
+ * The plugin calculates a "Rarity Score" (0-100).
+ * Formula: (Game Variable 2) + (Party Median Level)
+ * * 1. Party Median Level:
+ * As your party levels up, loot automatically improves.
+ * * 2. Game Variable 2 (Modifier):
+ * Use this variable to add "Map Difficulty" or "Luck".
+ * - Set to 0: Loot is based purely on party level.
+ * - Set to 20: Loot is equivalent to a party 20 levels higher.
+ * - Set to -20: Loot is worse (good for low-level areas).
+ * * Score Benchmarks:
+ * - 0-20: Almost all Common items
+ * - 25-45: Mix of Common and Uncommon
+ * - 50: Balanced distribution
+ * - 75: More Epic and Legendary items
+ * - 100: Almost all Legendary items
+ * * Rarity Tiers (based on item price):
+ * - Common (White): 8000-19999 gold
+ * - Uncommon (Green): 20000-59999 gold
+ * - Rare (Blue): 60000-99999 gold
+ * - Epic (Purple): 100000-999999 gold
+ * - Legendary (Orange): 1000000+ gold
+ */
+
+(function() {
+    
+    // Define rarity tiers and their colors
+    // i18n-ignore-start: tier ids; the heading is named through Loot.tier.<id>
+    let RARITY_TIERS = [
+        { name: "Common", colorCode: "#FFFFFF", minPrice: 8000, maxPrice: 19999 },
+        { name: "Uncommon", colorCode: "#1AFF1A", minPrice: 20000, maxPrice: 59999 },
+        { name: "Rare", colorCode: "#0080FF", minPrice: 60000, maxPrice: 99999 },
+        { name: "Epic", colorCode: "#8000FF", minPrice: 100000, maxPrice: 999999 },
+        { name: "Legendary", colorCode: "#FF8000", minPrice: 1000000, maxPrice: Infinity }
+    ];
+    // i18n-ignore-end
+
+    fetch('js/db/Items/Rarity.json')
+        .then(response => response.json())
+        .then(data => {
+            RARITY_TIERS = data;
+        })
+        .catch(err => {
+            console.warn("Failed to load Rarity.json, using fallback tiers:", err);
+        });
+    
+    // Section-header / divider rows (e.g. "<-- Light -->") and nameless
+    // placeholder entries exist only to group shop lists. Never loot them.
+    function isSelectableLootItem(item) {
+        if (!item) return false;
+        const name = (item.name || '').trim();
+        if (name === '') return false;
+        if (/^<--.*-->$/.test(name)) return false;
+        return true;
+    }
+
+    // Variable 2 = DungeonFloorSystem "Maximum floor reached" (deeper = rarer loot)
+    const MAX_FLOOR_VARIABLE_ID = 2;
+
+    // --- Seeded RNG (mulberry32) keyed by world seed + location + level bracket ---
+    function getWorldSeed() {
+        let historySeed = 19002001;
+        if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+            historySeed = window.HistoryManager.getSeed();
+        } else if (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._historySeed !== undefined) {
+            historySeed = $gameSystem._historySeed;
+        }
+        return historySeed >>> 0;
+    }
+
+    function mulberry32(seed) {
+        let a = seed >>> 0;
+        return function () {
+            a |= 0; a = (a + 0x6D2B79F5) | 0;
+            let t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+    }
+
+    // Maximum dungeon floor reached (also feeds the rarity equation)
+    function getMaxDungeonFloor() {
+        return (typeof $gameVariables !== 'undefined' && $gameVariables)
+            ? ($gameVariables.value(MAX_FLOOR_VARIABLE_ID) || 0)
+            : 0;
+    }
+
+    // 10-level brackets: Lv 1-10 -> 0, 11-20 -> 1, ... Higher brackets unlock rarer tiers
+    // AND reshuffle the loot pool, so the same spot yields a different/rarer item per bracket.
+    function getLevelBracket() {
+        return Math.floor(getPartyMedianLevel() / 10);
+    }
+
+    // Build an RNG seeded from world seed + current location + level bracket.
+    // salt distinguishes item/armor/weapon rolls at the same tile so they don't collide.
+    function makeLootRNG(salt) {
+        const mapId = (typeof $gameMap !== 'undefined' && $gameMap) ? $gameMap.mapId() : 0;
+        let x = 0, y = 0;
+        const interp = (typeof $gameMap !== 'undefined' && $gameMap) ? $gameMap._interpreter : null;
+        const event = interp && interp.eventId() > 0 ? $gameMap.event(interp.eventId()) : null;
+        if (event) {
+            x = event.x; y = event.y;
+        } else if (typeof $gamePlayer !== 'undefined' && $gamePlayer) {
+            x = $gamePlayer.x; y = $gamePlayer.y;
+        }
+        const bracket = getLevelBracket();
+        let seed = (mapId * 73856093) ^ (x * 19349663) ^ (y * 83492791) ^ getWorldSeed()
+            ^ Math.imul(bracket + 1, 40503)
+            ^ Math.imul((salt || 0) + 1, 2654435761);
+        seed = seed >>> 0;
+        return mulberry32(seed);
+    }
+    
+    // Calculate the rarity tier based on item price
+    function getItemRarityTier(price) {
+        for (let tier of RARITY_TIERS) {
+            if (price >= tier.minPrice && (tier.maxPrice === null || tier.maxPrice === undefined || price <= tier.maxPrice)) {
+                return tier;
+            }
+        }
+        return RARITY_TIERS[0]; // Default to Common if something goes wrong
+    }
+
+    // --- NEW: Calculate Party Median Level ---
+    function getPartyMedianLevel() {
+        // Get battle members
+        const members = $gameParty.battleMembers();
+        if (members.length === 0) return 1;
+
+        // Extract levels and sort numerically
+        const levels = members.map(actor => actor.level).sort((a, b) => a - b);
+        
+        const mid = Math.floor(levels.length / 2);
+
+        // Calculate median
+        if (levels.length % 2 !== 0) {
+            // Odd number of members, pick middle
+            return levels[mid];
+        } else {
+            // Even number of members, average the two middle ones
+            return Math.floor((levels[mid - 1] + levels[mid]) / 2);
+        }
+    }
+    
+    // WEIGHT CALCULATION
+    function calculateItemWeight(itemPrice, rarityInfluence) {
+        // Determine which tier this item belongs to
+        let tierIndex = 0;
+        for (let i = 0; i < RARITY_TIERS.length; i++) {
+            if (itemPrice >= RARITY_TIERS[i].minPrice && (RARITY_TIERS[i].maxPrice === null || RARITY_TIERS[i].maxPrice === undefined || itemPrice <= RARITY_TIERS[i].maxPrice)) {
+                tierIndex = i;
+                break;
+            }
+        }
+        
+        // Normalize influence to 0-1 range
+        const influence = rarityInfluence / 100;
+        
+        // Calculate tier position (0 = Common, 1 = Legendary)
+        const tierPower = tierIndex / (RARITY_TIERS.length - 1);
+        
+        // Use smooth power curve for weight calculation
+        let weight = Math.pow(influence, tierPower * 3) * Math.pow(1 - influence, (1 - tierPower) * 3) * 1000;
+        
+        // Boost Uncommon items by 50% to make them more common
+        if (tierIndex === 1) {
+            weight *= 1.5;
+        }
+        
+        return Math.max(1, weight);
+    }
+    
+    // Get random item based on rarity influence
+    function getRandomItem(itemList, salt) {
+        if (!itemList || itemList.length === 0) return null;
+
+        const rand = makeLootRNG(salt);
+
+        // Allow optional whitespace inside the tag (e.g. "<category: BodyPart >")
+        // so spaced notes cannot bypass the exclusion.
+        const EXCLUDED = [/<category:\s*BodyPart\s*>/i, /<category:\s*Alchemistry\s*>/i, /<category:\s*Crafting\s*>/i];
+        const validItems = itemList.filter(item =>
+            item &&
+            isSelectableLootItem(item) &&
+            !(item.note && EXCLUDED.some(re => re.test(item.note))));
+        if (validItems.length === 0) return null;
+
+        // --- RARITY SCALING ---
+        // Discrete level brackets (every 10 levels) plus the deepest dungeon floor reached.
+        // Higher brackets/floors push the weighting toward rarer tiers.
+        const levelBracket = getLevelBracket();
+        const maxFloor = getMaxDungeonFloor();
+        // Cave chests are rare but carry rare loot: the procedural chest placer
+        // sets $gameSystem._lootRarityBonus and it applies only on the proc map.
+        const onProcMap = typeof $gameMap !== 'undefined' && $gameMap && $gameMap.mapId() === 636;
+        const procBonus = (onProcMap && typeof $gameSystem !== 'undefined' && $gameSystem._lootRarityBonus) || 0;
+        // A patron's treasure room is behind one hatch in one world square and
+        // pays like it (PatreonRewards.lootRarityBonus).
+        const patronBonus = (window.PatreonRewards && typeof window.PatreonRewards.lootRarityBonus === 'function')
+            ? window.PatreonRewards.lootRarityBonus() : 0;
+        const lootBonus = Math.max(procBonus, patronBonus);
+        // Somebody who can tell junk from worth picks the good thing out of the
+        // pile rather than the first thing (Appraising, specialization 496).
+        const appraisal = window.SpecializationXP
+            ? (window.SpecializationXP.partyLevel('Appraising') - 1) * 4 : 0;
+        let rarityInfluence = levelBracket * 10 + maxFloor + lootBonus + appraisal;
+        rarityInfluence = Math.max(0, Math.min(100, rarityInfluence));
+        
+        // Calculate weighted probability for each item
+        let weightedItems = [];
+        let totalWeight = 0;
+        
+        for (let item of validItems) {
+            // Skip items with price of 0 (usually key items)
+            if (item.price === 0) continue;
+            
+            // Calculate weight using new algorithm
+            let weight = calculateItemWeight(item.price, rarityInfluence);
+
+            // Add extreme rarity for artifacts
+            if (item.id >= 1500 || (item.note && item.note.toLowerCase().includes('<category: artifact>'))) {
+                if (typeof $gameParty !== 'undefined' && $gameParty.hasItem(item, true)) continue;
+                weight *= 0.005; // 0.5% of standard weight
+            }
+            
+            weightedItems.push({
+                item: item,
+                weight: weight
+            });
+            
+            totalWeight += weight;
+        }
+        
+        // If no valid weighted items, return random item
+        if (weightedItems.length === 0 || totalWeight === 0) {
+            return validItems[Math.floor(rand() * validItems.length)];
+        }
+
+        // Select random item based on weight
+        let random = rand() * totalWeight;
+        let currentWeight = 0;
+
+        for (let weightedItem of weightedItems) {
+            currentWeight += weightedItem.weight;
+            if (random <= currentWeight) {
+                return weightedItem.item;
+            }
+        }
+
+        // Fallback
+        return validItems[Math.floor(rand() * validItems.length)];
+    }
+    
+    // Finding loot is a reward like any other, so it goes through the shared
+    // popup (ParchmentToast.reward) instead of stopping the player with a
+    // message box. The rarity tier becomes the popup's heading.
+    // The tier id names itself through the namespace; an id with no entry reads
+    // as written, which is what a modded tier wants.
+    function tierLabel(id) {
+        const key = 'Loot.tier.' + String(id || '').toLowerCase();
+        return T.has(key) ? T(key) : String(id || '');
+    }
+
+    function showLootMessage(item) {
+        if (!item) return;
+        const tier = getItemRarityTier(item.price);
+        const tierName = tier && tier.name ? tierLabel(tier.name) : '';
+        if (window.ParchmentToast) {
+            window.ParchmentToast.reward({
+                title: tierName
+                    ? T('Loot.foundWithTier', { tier: tierName })
+                    : T('Loot.found'),
+                entries: [{ obj: item, qty: 1 }]
+            });
+            return;
+        }
+        const message = T('Loot.foundMessage', {
+            color: colorToCode(tier.colorCode),
+            item: window.translateText ? window.translateText(item.name) : item.name,
+        });
+        window.skipLocalization = true
+        $gameMessage.add(message);
+        window.skipLocalization = false
+    }
+    
+    // Convert hex color to RPG Maker color code
+    function colorToCode(hexColor) {
+        const colorMap = {
+            "#FFFFFF": 0, // White
+            "#1AFF1A": 3, // Green
+            "#0080FF": 4, // Blue
+            "#8000FF": 10, // Purple
+            "#FF8000": 6  // Orange
+        };
+        
+        return colorMap[hexColor] || 0;
+    }
+    
+    // Extend the plugin command interpreter for MV
+    const _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
+    Game_Interpreter.prototype.pluginCommand = function(command, args) {
+        _Game_Interpreter_pluginCommand.call(this, command, args);
+        
+        switch (command.toLowerCase()) {
+            case 'getitem':
+                const randomItem = getRandomItem($dataItems, 1);
+                if (randomItem) {
+                    $gameParty.gainItem(randomItem, 1);
+                    showLootMessage(randomItem);
+                }
+                break;
+                
+            case 'getarmor':
+                const randomArmor = getRandomItem($dataArmors, 2);
+                if (randomArmor) {
+                    $gameParty.gainItem(randomArmor, 1);
+                    showLootMessage(randomArmor);
+                }
+                break;
+                
+            case 'getweapon':
+                const randomWeapon = getRandomItem($dataWeapons, 3);
+                if (randomWeapon) {
+                    $gameParty.gainItem(randomWeapon, 1);
+                    showLootMessage(randomWeapon);
+                }
+                break;
+        }
+    };
+    
+    // Register plugin commands for MZ
+    if (Utils.RPGMAKER_NAME === "MZ") {
+        PluginManager.registerCommand("RandomLootSystem", "getItem", args => {
+            const randomItem = getRandomItem($dataItems, 1);
+            if (randomItem) {
+                $gameParty.gainItem(randomItem, 1);
+                showLootMessage(randomItem);
+            }
+        });
+        
+        PluginManager.registerCommand("RandomLootSystem", "getArmor", args => {
+            const randomArmor = getRandomItem($dataArmors, 2);
+            if (randomArmor) {
+                $gameParty.gainItem(randomArmor, 1);
+                showLootMessage(randomArmor);
+            }
+        });
+        
+        PluginManager.registerCommand("RandomLootSystem", "getWeapon", args => {
+            const randomWeapon = getRandomItem($dataWeapons, 3);
+            if (randomWeapon) {
+                $gameParty.gainItem(randomWeapon, 1);
+                showLootMessage(randomWeapon);
+            }
+        });
+    }
+})();

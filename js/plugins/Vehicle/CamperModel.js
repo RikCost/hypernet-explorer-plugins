@@ -1,0 +1,605 @@
+//=============================================================================
+// CamperModel.js
+// Loads the original Camper.glb as the camper body, then attaches the
+// procedural, animated upgrade hardware around it: rolling/retractable wheels
+// and the bolt-on modules (flight rotors, water pontoons, submarine propeller +
+// periscope). No custom interior. Exposes window.HypernetCamper.CamperModel.
+// Load BEFORE Vehicle/CamperDrivingSystem.
+//=============================================================================
+
+/*:
+ * @target MZ
+ * @plugindesc Modular Camper v2.1.0 (Camper.glb body + cockpit dash, animated steering wheel, wheels & upgrade modules)
+ * @author Omni-Lex
+ *
+ * @help
+ * The body is the original models/Camper.glb (scaled to fit and double-sided so
+ * the cabin is not see-through). The wheels and the air/water/underwater upgrade
+ * modules are generated procedurally and animated, so they show and move on top
+ * of the GLB. Forward is +Z, up is +Y, ground at y = 0.
+ *
+ * API (window.HypernetCamper.CamperModel):
+ *   m.group / m.applyMotion(spd,steer,dt,roll,pitch,bounce) / m.setEnv(env)
+ *   m.update(dt) / m.seats (empty) / m.getInteractables() (empty) / m.dispose()
+ */
+
+(() => {
+    'use strict';
+
+    const HW = 4.5;   // half width  (wheel track / module placement)
+    const HL = 13;    // half length
+    const BH = 6;     // fallback body height
+    const BY = 6;     // fallback body centre Y
+    const REAR  = -HL + 1.5;
+    const TARGET_LEN = 2 * HL;   // GLB scaled so its longest horizontal axis = this
+
+    // Selectable exterior paintjobs applied to the GLB's body panels (the light,
+    // exterior shell materials; interior/tyres/glass are left alone). Each carries
+    // a physically-plausible metalness/roughness so painted panels catch the light.
+    const PAINTS = {
+        classic: { color: 0xece9e1, metalness: 0.15, roughness: 0.55 },
+        crimson: { color: 0x922327, metalness: 0.35, roughness: 0.35 },
+        forest:  { color: 0x28492f, metalness: 0.30, roughness: 0.40 },
+        ocean:   { color: 0x21406b, metalness: 0.40, roughness: 0.33 },
+        sunset:  { color: 0xc65a17, metalness: 0.35, roughness: 0.38 },
+        slate:   { color: 0x34383d, metalness: 0.45, roughness: 0.30 },
+        sand:    { color: 0xb89a63, metalness: 0.20, roughness: 0.50 }
+    };
+
+    // Cached, tiled, sRGB-correct texture loader (matches the scene's loader).
+    const _texCache = new Map();
+    function loadTex(name, repeat) {
+        if (typeof THREE === 'undefined' || typeof THREE.TextureLoader === 'undefined') return null;
+        let t = _texCache.get(name);
+        if (t) return t;
+        t = new THREE.TextureLoader().load('img/textures/' + name);
+        t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        if (repeat) t.repeat.set(repeat, repeat);
+        if (THREE.SRGBColorSpace !== undefined) t.colorSpace = THREE.SRGBColorSpace;
+        else if (THREE.sRGBEncoding !== undefined) t.encoding = THREE.sRGBEncoding;
+        _texCache.set(name, t);
+        return t;
+    }
+
+    class CamperModel {
+        constructor(scene) {
+            this._scene = scene;
+            this.group  = new THREE.Group();
+            this._body  = new THREE.Group();   // body shell; gets roll / pitch / bounce
+            this.group.add(this._body);
+            scene.add(this.group);
+
+            this._mats        = [];
+            this._geos        = [];
+            this._wheels      = [];
+            this._steerGroups = [];
+            this._wheelPivots = [];
+            this._rotors      = [];
+            this._props       = [];
+            this._wheelRadius = 2.3;
+            this._steerCur    = 0;
+            this._lastSteer   = 0;
+            this._wheelDeploy = 1;
+            this._wheelTarget = 1;
+            this._env         = 'road';
+            this._bodyMats    = [];           // GLB exterior panels eligible for a paintjob
+            this._glassMats   = [];           // window panes turned transparent
+            this._paint       = (window.HypernetCamper && PAINTS[window.HypernetCamper.paint])
+                ? window.HypernetCamper.paint : 'classic';
+            this.seats = [];                  // no custom interior -> no seats
+
+            // Register as the live camper so window.HypernetCamper.setPaint can
+            // repaint it on the fly (cleared in dispose()).
+            window.HypernetCamper = window.HypernetCamper || {};
+            window.HypernetCamper._active = this;
+
+            this._buildBody();
+            this._buildWheels();
+            this._buildCockpit();
+            this._buildFlightModule();
+            this._buildWaterModule();
+            this._buildSubModule();
+            this.setEnv('road');
+        }
+
+        // ---- helpers ----------------------------------------------------------
+        _mat(hex, opts) {
+            const m = new THREE.MeshLambertMaterial(Object.assign({ color: hex }, opts || {}));
+            this._mats.push(m);
+            return m;
+        }
+        _add(geo, material, x, y, z, parent) {
+            this._geos.push(geo);
+            const mesh = new THREE.Mesh(geo, material);
+            mesh.position.set(x || 0, y || 0, z || 0);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            (parent || this._body).add(mesh);
+            return mesh;
+        }
+        _box(w, h, d, material, x, y, z, parent) {
+            return this._add(new THREE.BoxGeometry(w, h, d), material, x, y, z, parent);
+        }
+
+        // ---- body: the original Camper.glb -----------------------------------
+        _buildBody() {
+            const loader = (typeof THREE.GLTFLoader !== 'undefined') ? new THREE.GLTFLoader() : null;
+            if (!loader) { this._buildBodyFallback(); return; }
+            loader.load(
+                'models/Camper.glb',
+                (gltf) => {
+                    const model = gltf.scene;
+                    // Orient the imported GLB. Camper.glb is authored Y-up (verified
+                    // from its geometry: seats/mirrors split along Z, seats rise
+                    // along +Y), so it arrives upright and must NOT be rolled. It
+                    // only needs its nose (+X) turned to the camper's forward (+Z).
+                    model.rotation.set(0, 0, 0);
+                    model.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);   // nose +X -> +Z
+                    model.updateMatrixWorld(true);
+
+                    // Scale so the longest horizontal axis spans the camper length.
+                    let box = new THREE.Box3().setFromObject(model);
+                    let size = box.getSize(new THREE.Vector3());
+                    const horiz = Math.max(size.x, size.z) || 1;
+                    model.scale.setScalar(TARGET_LEN / horiz);
+                    model.updateMatrixWorld(true);
+
+                    // Centre it on the rig and rest it just above the wheels. The
+                    // body is centred over the wheelbase (not slid back) so the
+                    // procedural wheels sit squarely beneath it once aligned.
+                    box = new THREE.Box3().setFromObject(model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    size = box.getSize(new THREE.Vector3());
+                    model.position.x = -center.x;
+                    model.position.y = -box.min.y + 1.5;
+                    model.position.z = -center.z;
+
+                    // Double-sided so the cabin reads solid from inside (no
+                    // see-through), then sort each material: window panes turn
+                    // transparent, light exterior panels are queued for a paintjob.
+                    model.traverse((n) => {
+                        if (!n.isMesh) return;
+                        n.castShadow = true;
+                        n.receiveShadow = true;
+                        const mats = Array.isArray(n.material)
+                            ? n.material : (n.material ? [n.material] : []);
+                        for (const mm of mats) {
+                            mm.side = THREE.DoubleSide;
+                            const nm = ((n.name || '') + ' ' + (mm.name || '')).toLowerCase();
+                            if (/glass|window|windshield|windscreen|glazing|glaze|plexi|screen/.test(nm)) {
+                                this._makeGlass(mm);
+                                this._glassMats.push(mm);
+                            } else if (this._isPaintable(mm, nm)) {
+                                this._bodyMats.push(mm);
+                            } else if (!mm.map) {
+                                // Interior / trim panels: dress bare surfaces with an
+                                // upholstery/leather texture so the cabin isn't flat.
+                                mm.map = loadTex('brown_leather_stone.jpg', 3);
+                                mm.needsUpdate = true;
+                            }
+                        }
+                    });
+                    this._model = model;
+                    this._body.add(model);
+                    this.applyPaint(this._paint);   // skin the exterior panels
+                    this._alignWheelsToBody();   // re-seat wheels under the real body
+                },
+                undefined,
+                (err) => { console.error('[CamperModel] Camper.glb load failed:', err); this._buildBodyFallback(); }
+            );
+        }
+
+        // Plain box if the GLB is unavailable, so wheels/modules still demo.
+        _buildBodyFallback() {
+            const shell = this._mat(0xeeebe3, { side: THREE.DoubleSide, map: loadTex('beige_sandstone.jpg', 2) });
+            this._box(2 * HW, BH, 2 * HL - 3, shell, 0, BY, -0.5);
+            this._box(2 * HW - 2, 2, 2 * HL - 12, shell, 0, 9, -1.5);
+            this._bodyMats.push(shell);
+            this.applyPaint(this._paint);
+        }
+
+        // Turn a GLB material into a clean glass pane: see-through, faintly tinted,
+        // low roughness, and no depth write so the cabin behind it stays visible.
+        _makeGlass(mm) {
+            mm.transparent = true;
+            mm.opacity = 0.26;
+            mm.depthWrite = false;
+            if (mm.color) mm.color.setHex(0xafd0e0);
+            if (mm.map) mm.map = null;                 // drop any opaque decal
+            if (mm.metalness !== undefined) mm.metalness = 0.0;
+            if (mm.roughness !== undefined) mm.roughness = 0.08;
+            mm.needsUpdate = true;
+        }
+
+        // A material is a paintable exterior panel if it isn't obviously trim /
+        // rubber / glass / interior and its base colour is light (campers ship in
+        // a pale shell), which is exactly the surface a repaint should recolour.
+        _isPaintable(mm, nm) {
+            if (/tire|tyre|rubber|wheel|rim|chrome|glass|window|light|lamp|black|trim|seat|interior|engine|grille|grill|bumper|plastic|dash|steer/.test(nm)) return false;
+            if (!mm.color) return false;
+            const c = mm.color;
+            const lum = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b;
+            return lum > 0.45;
+        }
+
+        // Repaint every exterior panel in the chosen colour, adding a subtle
+        // brushed-panel detail map. Safe to call on the live model at any time.
+        applyPaint(name) {
+            const p = PAINTS[name] || PAINTS.classic;
+            this._paint = PAINTS[name] ? name : 'classic';
+            if (!this._paintTex) this._paintTex = loadTex('grey_concrete.jpg', 3);
+            for (const mm of this._bodyMats) {
+                if (!mm) continue;
+                if (mm.color) mm.color.setHex(p.color);
+                if (mm.metalness !== undefined) mm.metalness = p.metalness;
+                if (mm.roughness !== undefined) mm.roughness = p.roughness;
+                if (this._paintTex && !mm.map) mm.map = this._paintTex;
+                if (mm.emissive) mm.emissive.setHex(0x000000);
+                mm.needsUpdate = true;
+            }
+            return this._paint;
+        }
+
+        // ---- wheels (retractable / steerable / rolling) -----------------------
+        _buildWheels() {
+            const r = 1.6;              // smaller tyres that tuck under the body
+            this._wheelRadius = r;
+            const halfTrk = HW + 0.3;
+            const halfLen = HL - 4;
+            const axleY = r;
+            const tireMat = this._mat(0x18181c);
+            const hubMat  = this._mat(0x9a9aa2);
+            const tireGeo = new THREE.CylinderGeometry(r, r, 1.3, 14).rotateZ(Math.PI / 2);
+            const hubGeo  = new THREE.CylinderGeometry(r * 0.45, r * 0.45, 1.4, 8).rotateZ(Math.PI / 2);
+            this._geos.push(tireGeo, hubGeo);
+
+            const make = (x, z, steer) => {
+                const sg = new THREE.Group();
+                sg.position.set(x, axleY, z);
+                const spin = new THREE.Group();
+                const tire = new THREE.Mesh(tireGeo, tireMat); tire.castShadow = true;
+                spin.add(tire); spin.add(new THREE.Mesh(hubGeo, hubMat));
+                sg.add(spin);
+                this.group.add(sg);
+                this._wheels.push(spin);
+                this._wheelPivots.push({ group: sg, downY: axleY, upY: axleY + 5 });
+                if (steer) this._steerGroups.push(sg);
+            };
+            // Single steering front axle, plus a tandem (dual) rear axle so the
+            // camper rolls on six wheels like the reference chassis. These are
+            // placeholder positions; _alignWheelsToBody() re-seats them under the
+            // GLB once it has loaded and its real footprint is known.
+            const rearGap = r * 1.4;   // spacing between the two rear axles
+            make( halfTrk,  halfLen, true);
+            make(-halfTrk,  halfLen, true);
+            make( halfTrk, -halfLen + rearGap, false);
+            make(-halfTrk, -halfLen + rearGap, false);
+            make( halfTrk, -halfLen - rearGap, false);
+            make(-halfTrk, -halfLen - rearGap, false);
+        }
+
+        // Re-seat the wheels under the loaded GLB body using its real bounding box:
+        // a single steering front axle near the nose and a tandem rear axle near
+        // the tail, tracked just inside the body sides and resting on the ground.
+        _alignWheelsToBody() {
+            if (!this._model || !this._wheelPivots.length) return;
+            // setFromObject yields a WORLD-space box, but the wheel pivots live in
+            // this.group's local frame (the group is moved/rotated out to the van's
+            // world position). Convert the box back into group-local space first.
+            this.group.updateMatrixWorld(true);
+            const box = new THREE.Box3().setFromObject(this._model);
+            box.applyMatrix4(new THREE.Matrix4().copy(this.group.matrixWorld).invert());
+            const r = this._wheelRadius;
+            const halfTrk = Math.max(2, (box.max.x - box.min.x) / 2 - r * 0.4);
+            const frontZ  = box.max.z - r * 2.4;       // front axle just behind the nose
+            const rearMid = box.min.z + r * 3.2;       // rear tandem centre near the tail
+            const gap     = r * 1.4;
+            const axleY   = r;                         // tyres sit on the ground (y=0)
+            const layout = [
+                [ halfTrk, frontZ], [-halfTrk, frontZ],
+                [ halfTrk, rearMid + gap], [-halfTrk, rearMid + gap],
+                [ halfTrk, rearMid - gap], [-halfTrk, rearMid - gap]
+            ];
+            for (let i = 0; i < this._wheelPivots.length && i < layout.length; i++) {
+                const p = this._wheelPivots[i];
+                p.group.position.set(layout[i][0], axleY, layout[i][1]);
+                p.downY = axleY;
+                p.upY = axleY + 5;
+            }
+        }
+
+        // ---- cockpit: dash, backlit gauges, animated steering wheel ------------
+        // Built to line up with the driving scene's DRIVER_SEAT (x +1.2 left seat,
+        // eye y 8.3, z 8.0 looking toward +Z): the wheel sits just ahead of and
+        // below the eye, the gauge cluster peeks over its top edge. Keep these X
+        // offsets in step with DRIVER_SEAT.x (CamperDrivingSystem) if the seat
+        // moves again (+X is the driver's LEFT).
+        _buildCockpit() {
+            const c = new THREE.Group();
+            this._body.add(c);
+            this._cockpit = c;
+
+            // Dash slab across the cab, just under the windshield.
+            const dashMat = this._mat(0x2b2320, { map: loadTex('brown_grey_slate.jpg', 2) });
+            const dash = this._box(2 * HW - 1.0, 1.7, 2.0, dashMat, 0, 4.9, HL - 1.9, c);
+            dash.rotation.x = -0.14;
+            this._box(2 * HW - 1.0, 0.5, 2.6, dashMat, 0, 3.9, HL - 2.2, c);
+
+            // Gauge cluster: canvas dial face (always readable, reads as backlit
+            // at night thanks to MeshBasicMaterial) + 3D needles.
+            const gaugeTex = new THREE.CanvasTexture(this._makeGaugeCanvas());
+            this._gaugeTex = gaugeTex;
+            const gaugeMat = new THREE.MeshBasicMaterial({ map: gaugeTex });
+            this._mats.push(gaugeMat);
+            // Compact cluster tucked in front of the left driver seat rather than
+            // the wide slab that used to float toward the cab centre. The whole
+            // group is scaled down so it reads as an instrument binnacle peeking
+            // over the wheel instead of filling the lower half of the view.
+            const gGeo = new THREE.PlaneGeometry(2.2, 1.1);
+            this._geos.push(gGeo);
+            const cluster = new THREE.Group();
+            // Mirrored to the left (+X) seat, lowered, and shrunk. Tilted up so it
+            // faces the raised driver eye.
+            cluster.position.set(0.9, 5.85, HL - 2.6);
+            cluster.rotation.y = Math.PI;      // face the driver (looking +Z)
+            cluster.rotation.x = -0.30;
+            cluster.scale.setScalar(0.45);
+            c.add(cluster);
+            cluster.add(new THREE.Mesh(gGeo, gaugeMat));
+
+            // Needles pivot at each dial centre; dial sweep is 270 degrees from
+            // lower-left (value 0) through the top to lower-right (full scale).
+            // Scaled down to match the smaller dial faces.
+            const needleGeo = new THREE.BoxGeometry(0.04, 0.38, 0.02).translate(0, 0.15, 0);
+            const smallGeo  = new THREE.BoxGeometry(0.035, 0.18, 0.02).translate(0, 0.06, 0);
+            this._geos.push(needleGeo, smallGeo);
+            const needleMat = this._mat(0xd94f30);
+            this._speedNeedle = new THREE.Mesh(needleGeo, needleMat);
+            this._speedNeedle.position.set(-0.55, 0.045, 0.03);
+            cluster.add(this._speedNeedle);
+            this._rpmNeedle = new THREE.Mesh(needleGeo, needleMat);
+            this._rpmNeedle.position.set(0.55, 0.045, 0.03);
+            cluster.add(this._rpmNeedle);
+            this._fuelNeedle = new THREE.Mesh(smallGeo, needleMat);
+            this._fuelNeedle.position.set(0, -0.27, 0.03);
+            cluster.add(this._fuelNeedle);
+
+            // Steering column + wheel. The wheel is built flat (axis +Y) inside
+            // a pivot tilted so the column points up toward the driver; the spin
+            // group turns around the local axis with the live steering input.
+            const pivot = new THREE.Group();
+            pivot.position.set(1.75, 5.35, HL - 3.35);
+            pivot.rotation.x = -1.02;
+            c.add(pivot);
+            const colGeo = new THREE.CylinderGeometry(0.11, 0.11, 1.5, 8);
+            this._geos.push(colGeo);
+            const col = new THREE.Mesh(colGeo, this._mat(0x1c1c22));
+            col.position.y = -0.8;
+            pivot.add(col);
+            const spin = new THREE.Group();
+            pivot.add(spin);
+            this._steerWheel = spin;
+            // Smaller wheel: a compact rim that sits neatly in front of the driver.
+            const rimGeo   = new THREE.TorusGeometry(0.78, 0.08, 8, 22).rotateX(Math.PI / 2);
+            const hubGeo   = new THREE.CylinderGeometry(0.16, 0.19, 0.14, 10);
+            const spokeGeo = new THREE.BoxGeometry(0.11, 0.06, 0.76).translate(0, 0, 0.38);
+            this._geos.push(rimGeo, hubGeo, spokeGeo);
+            const wheelMat = this._mat(0x24242c);
+            spin.add(new THREE.Mesh(rimGeo, wheelMat));
+            spin.add(new THREE.Mesh(hubGeo, wheelMat));
+            for (const a of [0.52, 2.62, 4.71]) {   // classic three-spoke layout
+                const sp = new THREE.Mesh(spokeGeo, wheelMat);
+                sp.rotation.y = a;
+                spin.add(sp);
+            }
+
+            // Tail brake lights, lit while braking (see updateDash).
+            this._brakeMat = new THREE.MeshLambertMaterial({
+                color: 0x5a1010, emissive: 0xff2211, emissiveIntensity: 0.15
+            });
+            this._mats.push(this._brakeMat);
+            const blGeo = new THREE.BoxGeometry(1.6, 0.9, 0.3);
+            this._geos.push(blGeo);
+            for (const sx of [-(HW - 1.0), HW - 1.0]) {
+                const bl = new THREE.Mesh(blGeo, this._brakeMat);
+                bl.position.set(sx, 4.6, -HL - 0.05);
+                this._body.add(bl);
+            }
+        }
+
+        // Dial faces for the cluster: speedo (left), tacho (right), fuel (small,
+        // centre-bottom). The 512x256 canvas maps 1:1 onto the 3.6x1.8 plane.
+        _makeGaugeCanvas() {
+            const cv = document.createElement('canvas');
+            cv.width = 512; cv.height = 256;
+            const ctx = cv.getContext('2d');
+            ctx.fillStyle = '#14120f';
+            ctx.fillRect(0, 0, 512, 256);
+            ctx.strokeStyle = '#3a332a';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(3, 3, 506, 250);
+
+            const dial = (cx, cy, r, ticks, labelStep, max, label) => {
+                ctx.strokeStyle = '#4a4238';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+                ctx.textAlign = 'center';
+                for (let i = 0; i <= ticks; i++) {
+                    const frac = i / ticks;
+                    const a = (135 + frac * 270) * Math.PI / 180;   // through the top
+                    const c1 = Math.cos(a), s1 = Math.sin(a);
+                    ctx.strokeStyle = '#cbbf9e';
+                    ctx.lineWidth = i % 2 === 0 ? 3 : 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + c1 * (r - 10), cy + s1 * (r - 10));
+                    ctx.lineTo(cx + c1 * r, cy + s1 * r);
+                    ctx.stroke();
+                    if (i % labelStep === 0) {
+                        ctx.fillStyle = '#e8dcc0';
+                        ctx.font = 'bold 16px monospace';
+                        ctx.fillText(String(Math.round(max * frac)), cx + c1 * (r - 26), cy + s1 * (r - 26) + 5);
+                    }
+                }
+                ctx.fillStyle = '#a1680d';
+                ctx.font = 'bold 13px monospace';
+                ctx.fillText(label, cx, cy + r * 0.55);
+            };
+            dial(128, 118, 96, 16, 4, 160, T('Camper.speedDial'));
+            dial(384, 118, 96, 8, 2, 8, T('Camper.rpmDial'));
+
+            // Small fuel dial: just E and F.
+            const fx = 256, fy = 190, fr = 46;
+            ctx.strokeStyle = '#4a4238';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(fx, fy, fr, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = '#e8dcc0';
+            ctx.font = 'bold 15px monospace';
+            for (const [frac, t] of [[0, 'E'], [1, 'F']]) {
+                const a = (135 + frac * 270) * Math.PI / 180;
+                ctx.fillText(t, fx + Math.cos(a) * (fr - 16), fy + Math.sin(a) * (fr - 16) + 5);
+            }
+            ctx.fillStyle = '#a1680d';
+            ctx.font = 'bold 12px monospace';
+            ctx.fillText('FUEL', fx, fy + fr + 16);
+            return cv;
+        }
+
+        // Live dash: needle sweep is 270 degrees, rotation.z from +135 deg
+        // (value 0, lower-left) down to -135 deg (full scale, lower-right).
+        updateDash(kmh, rpm01, fuel01, brakeOn) {
+            const ang = (f) => 2.356 - Math.max(0, Math.min(1, f)) * 4.712;
+            if (this._speedNeedle) this._speedNeedle.rotation.z = ang((kmh || 0) / 160);
+            if (this._rpmNeedle)   this._rpmNeedle.rotation.z   = ang(rpm01 || 0);
+            if (this._fuelNeedle)  this._fuelNeedle.rotation.z  = ang(fuel01 || 0);
+            if (this._brakeMat)    this._brakeMat.emissiveIntensity = brakeOn ? 1.5 : 0.15;
+        }
+
+        // ---- upgrade modules --------------------------------------------------
+        _buildRotor(parent, x, z) {
+            this._box(1.4, 1, 5, this._mat(0x33333a), x, 11, z, parent);
+            const g = new THREE.Group();
+            g.position.set(x * 1.25, 13, z * 1.05);
+            const hub = new THREE.CylinderGeometry(0.7, 0.7, 1, 8); this._geos.push(hub);
+            g.add(new THREE.Mesh(hub, this._mat(0x111114)));
+            const blade = this._mat(0x8a8a92, { map: loadTex('brown_grey_slate.jpg', 1) });
+            const b1 = new THREE.BoxGeometry(9, 0.3, 1.3); const b2 = new THREE.BoxGeometry(1.3, 0.3, 9);
+            this._geos.push(b1, b2);
+            g.add(new THREE.Mesh(b1, blade)); g.add(new THREE.Mesh(b2, blade));
+            parent.add(g);
+            this._rotors.push(g);
+        }
+        _buildFlightModule() {
+            this._modFlight = new THREE.Group();
+            this._body.add(this._modFlight);
+            this._buildRotor(this._modFlight,  HW - 0.5,  8);
+            this._buildRotor(this._modFlight, -HW + 0.5,  8);
+            this._buildRotor(this._modFlight,  HW - 0.5, -8);
+            this._buildRotor(this._modFlight, -HW + 0.5, -8);
+            this._modFlight.visible = false;
+        }
+        _buildWaterModule() {
+            this._modWater = new THREE.Group();
+            this._body.add(this._modWater);
+            const pMat = this._mat(0x9a8a6a, { map: loadTex('brown_green_marble.jpg', 2) });
+            for (const sx of [-(HW + 1.2), HW + 1.2]) {
+                const geo = new THREE.BoxGeometry(2.4, 2.4, 2 * HL); this._geos.push(geo);
+                const p = new THREE.Mesh(geo, pMat); p.position.set(sx, 2, 0); p.castShadow = true;
+                this._modWater.add(p);
+            }
+            this._modWater.visible = false;
+        }
+        _buildSubModule() {
+            this._modSub = new THREE.Group();
+            this._body.add(this._modSub);
+            const g = new THREE.Group();
+            g.position.set(0, 5, REAR - 1);
+            const hub = new THREE.CylinderGeometry(0.6, 0.6, 1.4, 6).rotateX(Math.PI / 2); this._geos.push(hub);
+            g.add(new THREE.Mesh(hub, this._mat(0x111114)));
+            const bMat = this._mat(0xb9b9c2, { map: loadTex('brown_grey_slate.jpg', 1) });
+            for (let i = 0; i < 3; i++) {
+                const bg = new THREE.BoxGeometry(0.7, 4, 0.4); this._geos.push(bg);
+                const blade = new THREE.Mesh(bg, bMat);
+                blade.rotation.z = (i / 3) * Math.PI * 2;
+                g.add(blade);
+            }
+            this._modSub.add(g);
+            this._props.push(g);
+            this._box(0.9, 6, 0.9, this._mat(0x2a2a30), 2.5, 12.5, -3, this._modSub);
+            this._box(2, 0.9, 1, this._mat(0x2a2a30), 3.3, 16, -3, this._modSub);
+            this._modSub.visible = false;
+        }
+
+        // ---- environment ------------------------------------------------------
+        setEnv(env) {
+            this._env = env;
+            this._wheelTarget       = env === 'road' ? 1 : 0;
+            this._modFlight.visible = env === 'air';
+            this._modWater.visible  = env === 'water' || env === 'underwater';
+            this._modSub.visible    = env === 'underwater';
+        }
+        getEnv() { return this._env; }
+
+        getInteractables() { return []; }   // no custom interior
+        toggleDoor() {}
+        setDoor() {}
+
+        // ---- per-frame --------------------------------------------------------
+        applyMotion(speedUnits, steer, delta, roll, pitch, bounce) {
+            this._lastSteer = steer || 0;
+            if (this._wheels.length && this._wheelDeploy > 0.02) {
+                const spin = (speedUnits * delta) / Math.max(0.001, this._wheelRadius);
+                for (const w of this._wheels) w.rotation.x += spin;
+            }
+            const targetSteer = (steer || 0) * 0.5;
+            this._steerCur += (targetSteer - this._steerCur) * Math.min(1, delta * 10);
+            for (const sg of this._steerGroups) sg.rotation.y = this._steerCur;
+            // The cockpit steering wheel turns with the same eased input, geared
+            // up so full lock reads as roughly 160 degrees of wheel.
+            if (this._steerWheel) this._steerWheel.rotation.y = this._steerCur * 5.6;
+            if (this._body) {
+                const k = Math.min(1, delta * 8);
+                this._body.rotation.z += ((roll  || 0) - this._body.rotation.z) * k;
+                this._body.rotation.x += ((pitch || 0) - this._body.rotation.x) * k;
+                this._body.position.y += ((bounce || 0) - this._body.position.y) * Math.min(1, delta * 12);
+            }
+            this._speedAbs = Math.abs(speedUnits);
+        }
+
+        update(delta) {
+            this._wheelDeploy += (this._wheelTarget - this._wheelDeploy) * Math.min(1, delta * 4);
+            for (const p of this._wheelPivots) {
+                p.group.position.y = p.upY + (p.downY - p.upY) * this._wheelDeploy;
+                p.group.visible = this._wheelDeploy > 0.05;
+            }
+            const spd = this._speedAbs || 0;
+            if (this._modFlight.visible) { const w = (28 + spd * 0.4) * delta; for (const r of this._rotors) r.rotation.y += w; }
+            if (this._modSub.visible)    { const w = (6 + spd * 0.3) * delta;  for (const p of this._props)  p.rotation.z += w; }
+        }
+
+        dispose() {
+            this.group.traverse(o => { if (o.geometry) o.geometry.dispose(); });
+            for (const g of this._geos) g.dispose();
+            for (const m of this._mats) m.dispose();
+            this._geos.length = 0; this._mats.length = 0;
+            this._bodyMats.length = 0; this._glassMats.length = 0;
+            if (this._gaugeTex) this._gaugeTex.dispose();
+            if (window.HypernetCamper && window.HypernetCamper._active === this) {
+                window.HypernetCamper._active = null;
+            }
+            if (this._scene) this._scene.remove(this.group);
+        }
+    }
+
+    window.HypernetCamper = window.HypernetCamper || {};
+    window.HypernetCamper.CamperModel = CamperModel;
+    window.HypernetCamper.PAINTS = PAINTS;
+    // Repaint the live camper (if one is built) or remember the choice for the
+    // next spawn. Returns the applied paint name. e.g. HypernetCamper.setPaint('ocean')
+    window.HypernetCamper.setPaint = function (name) {
+        window.HypernetCamper.paint = PAINTS[name] ? name : 'classic';
+        if (window.HypernetCamper._active) {
+            return window.HypernetCamper._active.applyPaint(window.HypernetCamper.paint);
+        }
+        return window.HypernetCamper.paint;
+    };
+})();

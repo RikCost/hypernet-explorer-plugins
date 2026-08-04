@@ -1,0 +1,20 @@
+{
+  "noWinTryAgain": "Non hai vinto. Riprova!",
+  "pressOkOrEscTo": "Premi OK o ESC per continuare",
+  "title": {
+    "esoteric": "Gratta & Maledici",
+    "corporate": "Gratta & Profitto",
+    "vacation": "Gratta & Relax",
+    "hypercapitalist": "Gratta & Domina"
+  },
+  "cellsRemaining": "Caselle rimaste: {remaining}",
+  "needMoney": "Servono €{cost} per giocare. Premi OK per uscire.",
+  "youWon": "HAI VINTO €{amount}!",
+  "matchThree": "TROVA TRE SIMBOLI UGUALI E VINCI",
+  "stake": "PUNTATA €{cost}",
+  "topPrize": "PREMIO MASSIMO €{amount}",
+  "serial": "SERIALE {serial}",
+  "controlsMouse": "Trascina per girare il biglietto  ·  Sfrega o clicca una casella per grattarla  ·  ESC gratta il resto",
+  "controlsPad": "Frecce per scegliere  ·  OK per grattare  ·  Levetta destra per girare  ·  L2/R2 zoom  ·  SHIFT raddrizza",
+  "noRenderer": "Renderer 3D non disponibile"
+}

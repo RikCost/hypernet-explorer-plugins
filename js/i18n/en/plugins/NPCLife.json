@@ -1,0 +1,86 @@
+{
+  "partsUnknown": "parts unknown",
+  "jobFallback": "Job {id}",
+  "moveReason": {
+    "bornHere": "born here",
+    "lookingForWork": "looking for work",
+    "followingFamily": "following family",
+    "chasingLove": "chasing a love affair",
+    "fleeingTrouble": "fleeing trouble",
+    "freshStart": "seeking a fresh start",
+    "cheapHousing": "drawn by cheap housing",
+    "fallingOut": "after a falling-out",
+    "changeOfAir": "for a change of air"
+  },
+  "marital": {
+    "married": "Married",
+    "dating": "Dating",
+    "divorced": "Divorced",
+    "widowed": "Widowed",
+    "single": "Single"
+  },
+  "outcome": {
+    "broke up": "broke up",
+    "divorced": "divorced",
+    "abandoned": "abandoned",
+    "wasAbandoned": "was abandoned",
+    "widowed": "widowed"
+  },
+  "event": {
+    "moved": "moved to {place}, {reason}",
+    "convictedSentenced": "convicted of {crime} and sentenced to {days} days",
+    "convicted": "convicted of {crime}, sentenced to {days} days",
+    "arrestedNotConvicted": "arrested for {crime} but never convicted",
+    "arrestedReleased": "arrested for {crime} but released without conviction",
+    "caughtCommitting": "caught committing {crime}",
+    "caughtRedHanded": "caught red-handed: {what}",
+    "releasedFromPrison": "released from prison after serving the sentence",
+    "servedAndReleased": "served the sentence and was released",
+    "retired": "retired at {age} after a life of work",
+    "changedJob": "left their old job to work as {job}",
+    "foundWork": "found work as {job}",
+    "lostJob": "lost their job as {job} over the conviction",
+    "married": "married {name}",
+    "divorced": "divorced {name}",
+    "brokeUpWith": "broke up with {name}",
+    "wasAbandonedBy": "was abandoned by {name}",
+    "abandonedPartner": "abandoned {name} and never looked back",
+    "startedSeeing": "started seeing {name}",
+    "bought": "bought {item}",
+    "worldviewShifted": "their worldview shifted"
+  },
+  "bio": {
+    "noLife": "{name}: no recorded life.",
+    "header": "{name}, {age}, born {date} in {place}.",
+    "hasLivedIn": "Has lived in: {path}.",
+    "settledIn": "Settled in {place} {year}, {reason}.",
+    "neverLeft": "Has never left {place}.",
+    "inPrison": "Currently in prison (release: {date}).",
+    "retired": {
+      "one": "Retired after a career of one job.",
+      "other": "Retired after a career of {n} jobs."
+    },
+    "worksAs": "Works as {job} (since {year}).",
+    "betweenJobs": "Currently between jobs.",
+    "pastWork": "Past work: {jobs}.",
+    "pastJob": "{job} ({from}–{to})",
+    "marriedTo": "Married to {name}.",
+    "seeing": "Seeing {name}.",
+    "formerPartner": "Former partner: {name} ({from}–{to}, {outcome}).",
+    "cleanRecord": "Clean criminal record.",
+    "criminalRecord": "Criminal record: {convictions} ({served} served), latest: {crime} ({year}).",
+    "convictionCount": {
+      "one": "1 conviction",
+      "other": "{n} convictions"
+    },
+    "sentenceCount": {
+      "one": "1 sentence",
+      "other": "{n} sentences"
+    },
+    "unsolved": {
+      "one": "Suspected in 1 unsolved case.",
+      "other": "Suspected in {n} unsolved cases."
+    },
+    "standing": "Social standing: {value}/100."
+  }
+}

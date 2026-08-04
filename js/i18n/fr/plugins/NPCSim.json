@@ -1,0 +1,49 @@
+{
+  "anItem": "",
+  "mapFallback": "",
+  "homePool": {
+    "huts": "",
+    "houses": "",
+    "villas": "",
+    "skyscrapers": ""
+  },
+  "log": {
+    "work": "",
+    "harvested": "",
+    "animalProduce": "",
+    "stole": "",
+    "caughtStealing": "",
+    "bought": "",
+    "cooked": "",
+    "foundInContainer": "",
+    "rentedRoom": "",
+    "soldHoney": "",
+    "tookLoan": "",
+    "deposited": "",
+    "rentalIncome": "",
+    "stocksGain": "",
+    "stocksLoss": "",
+    "movedHome": "",
+    "reachedLevel": "",
+    "met": ""
+  },
+  "narrative": {
+    "noHistory": "",
+    "workShifts": "",
+    "tendsCrops": "",
+    "hasMet": "",
+    "acquainted": "",
+    "and": "",
+    "cooksRegularly": "",
+    "rentsSometimes": "",
+    "keepsBees": "",
+    "livesOffRent": "",
+    "dabblesStocks": "",
+    "wasCaught": "",
+    "familiarFace": "",
+    "spokenBefore": "",
+    "summary": "",
+    "quiet": ""
+  },
+  "unknownDate": ""
+}

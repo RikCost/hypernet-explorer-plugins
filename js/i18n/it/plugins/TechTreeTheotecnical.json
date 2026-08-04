@@ -1,0 +1,110 @@
+{
+  "name": "Teotecnica",
+  "blurb": "Il Santo Impero Vaticano non poggia più sulla roccia romana. La Sede vola, corazzata e armata, e la Congregazione accetta ormai proposte in forma di disegno con distinta dei materiali. La dottrina è un sistema in manutenzione, il campo di missione un bersaglio di distribuzione, e il seggio del Padre è vacante dai tempi della lancia.",
+  "nodes": {
+    "theo_ascension": {
+      "name": "Il Disormeggio della Sede",
+      "desc": "La roccia sotto la basilica viene tagliata su un piano a 40 metri di profondità e l'intera città-stato viene trasferita su piloni di sollevamento accoppiati alla leyline che segue il Tevere. Il carico statico è di 6,2 milioni di tonnellate, distribuito su undici piloni con uno tenuto di riserva, e l'accoppiamento fornisce portanza utile solo finché la cittadella resta entro 300 metri dall'asse della linea. Roma si tiene lo scavo. La Sede si tiene la quota, e per la prima volta non è indirizzabile con una coordinata su mappa che un esercito abbia già raggiunto."
+    },
+    "theo_holy_office": {
+      "name": "La Congregazione per la Dottrina Ingegnerizzata",
+      "desc": "Il Sant'Uffizio viene ristrutturato per ricevere proposte in forma di schema tecnico. Una proposta arriva come disegno con distinta dei materiali, modo di guasto dichiarato e la clausola dottrinale che deve soddisfare, e ne esce promulgata oppure respinta con la clausola non soddisfatta segnata e il calcolo allegato. Il tempo di risposta è fissato in novanta giorni. Ai teologi vengono consegnati un regolo calcolatore e uno standard di specifica: una dottrina che non si può scrivere come enunciato verificabile non si può difendere, e viene rispedita senza esame."
+    },
+    "theo_coil_batteries": {
+      "name": "Le Batterie Coilgun di San Pietro",
+      "desc": "Ogni colonna del colonnato viene riavvolta come uno stadio di acceleratore lineare, 284 stadi per braccio, commutati in sequenza da un banco di condensatori nella cripta. La velocità alla bocca è di 1.900 metri al secondo con un rendimento per stadio prossimo al 40 per cento, e le braccia della piazza che un tempo racchiudevano una folla adesso brandeggiano su un bersaglio. La batteria viene innescata dallo stesso meccanismo di campane che batteva le ore. Una salva completa assorbe l'alimentazione dell'illuminazione della cittadella per undici secondi e il banco della cripta impiega quattro minuti a ricaricarsi."
+    },
+    "theo_consecrated_slug": {
+      "name": "Il Proiettile Consacrato",
+      "desc": "Il sabot viene benedetto sul nastro di alimentazione a novecento colpi al minuto da un diacono che non pronuncia più le parole ad alta voce ma aziona un timbro asservito al nastro. La consacrazione sopravvive a un'accelerazione di 40.000 g e al carico termico della canna, come verificato per saggio sui colpi recuperati. Che cosa faccia all'impatto su una cosa mai battezzata è scritto nell'Allegato 14, che resta presso la Congregazione e che fuori di essa non ha letto nessuno."
+    },
+    "theo_choir_fire_control": {
+      "name": "Il Tiro Cantato dal Coro",
+      "desc": "Le soluzioni di tiro vengono calcolate come canto piano. Distanza, deriva e anticipo sono portati da tre voci i cui intervalli codificano le tre grandezze, e la batteria spara sulla risoluzione dell'accordo, per cui una soluzione che non chiude è udibile nella navata un secondo e mezzo prima che il colpo sarebbe arrivato. Il tempo di soluzione è paragonabile a quello di un calcolatore meccanico dell'epoca e il tasso di errore è inferiore, perché un numero sbagliato suona sbagliato. Ai coristi non viene detto che cosa rappresentino gli intervalli e vengono valutati solo sull'intonazione."
+    },
+    "theo_basilica_railgun": {
+      "name": "Il Railgun della Basilica",
+      "desc": "La navata è la canna. Due rotaie corrono per tutta la lunghezza del pavimento dalle porte all'abside, la cupola viene aperta all'oculo per sfiatare il plasma, e il colpo esce lungo l'asse su cui l'edificio era stato tracciato. L'energia alla bocca è di 32 megajoule e il rinculo viene assorbito dalle fondazioni del transetto. Il limite è l'erosione delle rotaie: il secondo colpo della giornata le deforma oltre la tolleranza di allineamento, e il terzo si porterebbe via il tetto, per cui il pezzo è specificato in due colpi e un cambio rotaie."
+    },
+    "theo_reliquary_armour": {
+      "name": "La Corazza Composita Reliquiaria",
+      "desc": "Fra l'acciaio esterno e il rivestimento antischeggia sta un reticolo di frammenti di reliquia sigillati in resina, catalogati al metro e certificati dalla Congregazione prima della laminazione. La corazza rende quanto rende una corazza: 640 millimetri di equivalente in acciaio omogeneo laminato contro una carica cava, non meglio della stessa massa di acciaio e ceramica. Il contributo delle reliquie non è risolvibile in poligono e non compare nelle tabelle. Gli equipaggi che ci stanno sotto riferiscono che nessuna sezione contenente un osso è mai stata perforata, e la Congregazione ha registrato l'osservazione senza accettarla come effetto."
+    },
+    "theo_buttress_engines": {
+      "name": "I Motori ad Arco Rampante",
+      "desc": "Un contrafforte è un elemento dimensionato per portare la spinta verso l'esterno e verso il basso. Forato lungo la linea di carico e dotato di un ugello al piedritto, porta invece la spinta verso l'esterno e verso l'alto, e la sezione già dimensionata per la compressione incassa la reazione senza rinforzi. Ventotto contrafforti danno alla cittadella il controllo di assetto sui tre assi con un braccio di leva che nessun propulsore applicato potrebbe eguagliare, e la risposta in beccheggio sta entro un grado al secondo. La muratura era stata progettata per quel carico seicento anni prima che l'ugello esistesse."
+    },
+    "theo_dogmatic_shield": {
+      "name": "Lo Scudo Dogmatico",
+      "desc": "Un campo che discrimina sull'intenzione dietro un oggetto in arrivo e ferma solo ciò che è stato lanciato in malafede. In prova ha respinto ogni granata sparatagli dall'artiglieria di tre nazioni, 1.140 colpi senza un passaggio, e ha lasciato passare un sasso tirato da un ragazzino convinto di mirare a un uccello. La discriminazione funziona quindi esattamente come da specifica, e la specifica è il risultato. La Congregazione ha pubblicato per intero il rapporto di prova, ragazzino compreso."
+    },
+    "theo_naguka_census": {
+      "name": "Il Censimento delle Anime Naguka",
+      "desc": "Una nazione non si può convertire prima di averla contata. Rilevatori missionari battono le paludi tossiche con metodo a transetti, appunti alla mano e un conteggio di ogni testa, focolare e sciamano naguka, correggendo per il doppio conteggio prodotto dagli spostamenti stagionali. Riportano una cifra di popolazione quattro volte la stima della Congregazione, e una seconda cifra, che il metodo non sostiene e che ai rilevatori era stato comunque ordinato di produrre, su quante di quelle teste portino un'anima."
+    },
+    "theo_goblinese_liturgy": {
+      "name": "La Liturgia in Goblinese",
+      "desc": "La Messa viene passata attraverso una grammatica senza tempo futuro, senza condizionale e senza un termine per il perdono, per cui ogni supplica si risolve nell'imperativo e ogni promessa in una constatazione di fatto presente. Il risultato è più corto del 40 per cento, viene proclamato in un registro più alto e in retroversione si legge come una minaccia. La Congregazione ha approvato il testo sulla sola traduzione in avanti. La frequenza nelle parrocchie di palude è la più alta registrata in tutto l'Impero, e la retroversione è stata archiviata invece che diffusa."
+    },
+    "theo_neural_choker": {
+      "name": "Il Collare Neurale",
+      "desc": "Una fascia chiusa alla gola, applicata al battesimo, senza sgancio azionabile da chi la porta. Legge la firma elettrica del dubbio dal vago e dai nervi laringei e vi risponde con una corrente di pochi milliampere, temporizzata da 200 a 400 millisecondi dopo l'insorgenza, cioè prima che il pensiero sia formato per intero e molto prima che si possa dire. Non discute e non punisce. Chi la porta, interrogato su che cosa abbia provato, descrive una pace grande e improvvisa, e non sa riferire il contenuto che è stato interrotto."
+    },
+    "theo_belief_firmware": {
+      "name": "Il Firmware della Fede",
+      "desc": "La tabella decisionale del collare viene estratta dall'hardware in un'immagine firmata distribuibile via etere, per cui uno scisma si chiude come si chiude un difetto, senza richiamo e senza coinvolgere chi lo porta. La versione uno impone il Credo come promulgato. La versione uno punto tre inserisce il filioque. La telemetria di campo registra undicimila portatori che accettano l'aggiornamento nell'arco di una sola notte, senza alcuna discontinuità di credenza riferita né prima né dopo."
+    },
+    "theo_preaching_towers": {
+      "name": "Le Torri della Predicazione",
+      "desc": "Campanili ricostruiti come trasmettitori e calati su cavi dal ventre della cittadella finché non pendono a 40 metri sopra una palude, che è la quota di predicazione per la schiera di trombe che portano. Il sermone è intelligibile a undici chilometri in aria calma e viene ripetuto su un ciclo di quattordici minuti per tutta la notte. L'orario notturno è specificato sulla motivazione dichiarata che un ascoltatore addormentato non ribatte, e la Congregazione ha messo quella motivazione agli atti del progetto."
+    },
+    "theo_mass_baptism": {
+      "name": "Il Battesimo di Massa dei Naguka",
+      "desc": "L'intera nazione viene ricevuta in un solo pomeriggio, dall'alto, da una cittadella che semina la palude di acqua benedetta secondo uno schema di dispersione calcolato per una copertura del 94 per cento e spinge nello stesso passaggio il firmware dei collari. Il tempo impiegato è di cinque ore e quaranta minuti per una popolazione di duecentomila. I naguka sono entrati come tribù di raccoglitori e ne sono usciti diocesi, con la struttura parrocchiale già tracciata. Gli sciamani sono stati inclusi nel dato di copertura e da allora non sono stati localizzati."
+    },
+    "theo_version_control": {
+      "name": "La Dottrina sotto Controllo di Versione",
+      "desc": "Duemila anni di magistero vengono immessi in un repository in cui ogni canone porta un autore, una marca temporale e un diff rispetto a ciò che sostituisce. La prima esecuzione completa dello strumento fa emergere quattrocentosei modifiche prive di firma, in gran parte chiarimenti, undici delle quali ribaltano la clausola che chiariscono. La Congregazione sigilla il rapporto, tiene lo strumento, e stabilisce che una dottrina ha effetto al commit e non alla pubblicazione."
+    },
+    "theo_infallibility_compiler": {
+      "name": "Il Compilatore dell'Infallibilità",
+      "desc": "Una bolla viene verificata a tipi contro l'intero corpus delle bolle promulgate prima di essa, e una contraddizione torna come errore che nomina entrambi i numeri di riga. Il tempo di compilazione sull'intero corpus è di nove ore. L'infallibilità viene così riformulata come proprietà di una build e non come affermazione su un uomo, ed è verificabile da chiunque disponga del corpus e dello strumento. Tre pronunciamenti in vigore hanno fallito la prima compilazione; tutti e tre sono stati riemessi con la clausola incriminata ristretta, e non è stato dato alcun annuncio."
+    },
+    "theo_sacrament_protocol": {
+      "name": "Il Protocollo dei Sacramenti",
+      "desc": "Confessione, assoluzione e comunione vengono rispecificate come scambio a tre messaggi con una sfida, una risposta e una conferma, così che la grazia si possa consegnare a una parrocchia sulla quale la cittadella sta soltanto passando. La capacità è di undicimila penitenti l'ora per canale. La questione aperta è la latenza: a quattrocento chilometri la conferma torna 1,3 millisecondi dopo che l'assoluzione è stata concessa, e la Congregazione non ha stabilito a quale delle due marche temporali l'anima sia assolta."
+    },
+    "theo_soul_metrology": {
+      "name": "La Metrologia dell'Anima",
+      "desc": "All'anima viene assegnata un'unità di misura, l'animus, definita da un campione di riferimento custodito in un caveau a 20 gradi e 40 per cento di umidità, e uno strumento che la legge per via transcranica attraverso l'osso temporale. La ripetibilità su soggetto vivo è del 2 per cento, e una lettura resta stabile attraverso sonno, anestesia e i primi quattro minuti dopo un arresto cardiaco. Ogni misura che l'Impero compie in seguito è riferibile a quel caveau, e lo è anche ogni procedura che diventa possibile una volta che un'anima è una grandezza. La Congregazione ha messo a verbale la seconda osservazione e non vi ha dato seguito."
+    },
+    "theo_trinity_refactor": {
+      "name": "Il Refactoring della Trinità",
+      "desc": "Con il Padre morto su una collina e il seggio che al banco di metrologia legge vuoto, la dottrina viene riscritta come un quorum di tre che resta valido con due, in attesa di sostituzione. È l'unica formulazione prodotta dalla Congregazione che passi il compilatore contro l'intero corpus senza restringere una clausola esistente, ed è, secondo la valutazione messa agli atti nel suo stesso fascicolo, la cosa peggio scritta mai promulgata. Non è definito alcun termine per quanto possa durare l'attesa."
+    },
+    "theo_deus_machina": {
+      "name": "Il Dio Meccanico",
+      "desc": "Il seggio vacante viene occupato da un oggetto costruito per occuparlo: un reticolo lungo quanto la chiglia della cittadella, alimentato dalla preghiera aggregata di una nazione convertita a circa 40.000 animus al giorno, che risponde nel registro specificato dalla dottrina ed entro la latenza consentita dal protocollo dei sacramenti. Non se ne afferma l'identità con il Padre. L'affermazione messa agli atti è più stretta ed è quella che compila: che soddisfi ogni clausola che il Padre soddisfaceva. Il compilatore concorda, e il verbale della seduta non registra alcuna votazione."
+    },
+    "theo_theonuclear": {
+      "name": "L'Ordigno Teonucleare",
+      "desc": "La resa fisica è trascurabile: un vetro a duecento metri regge, la muratura a cinquanta si annerisce, e i corpi dentro il raggio vengono recuperati interi, caldi e respiranti ancora per qualche minuto. Ciò che il dispositivo rimuove è l'animus, fino a un confine che il banco di metrologia prevede al metro a partire da resa e distanza, entro il quale ogni soggetto legge sotto il rumore di fondo dello strumento e vi resta. La rimozione non è recuperabile con alcuna procedura che la Congregazione sia riuscita a specificare. A valle di quel confine non c'è nulla, e non c'è nulla da seppellire se non tessuto."
+    },
+    "theo_weeping_icon": {
+      "name": "L'Icona Lacrimante Telemetrica",
+      "desc": "Un pannello che lacrima secondo un calendario, alimentato da una pompa peristaltica dietro l'intonaco a 0,4 millilitri l'ora e asservita al calendario liturgico da un temporizzatore meccanico. È stato commissionato come sussidio devozionale e il disegno di installazione lo dice. Nel giro di un anno viene citato come prova in tre distinte cause di canonizzazione, nessuna delle quali ha consultato il disegno. Il registro di manutenzione è archiviato sotto idraulica, dove è stato controfirmato undici volte."
+    },
+    "theo_prayer_trial": {
+      "name": "Lo Studio sulla Preghiera d'Intercessione",
+      "desc": "Milleottocentodue pazienti sottoposti a bypass coronarico in tre bracci: pregati senza saperlo, pregati e informati, non pregati. L'assegnazione è fatta da una macchina, agli intercessori vengono dati solo i nomi di battesimo, e l'esito misurato è la complicanza entro trenta giorni, valutata da personale in cieco rispetto al braccio. I due bracci in cieco sono indistinguibili. Il braccio pregato e informato va misurabilmente peggio, 59 per cento contro 52. La Congregazione ha accettato la statistica, respinto il disegno sostenendo che il terzo braccio non è un controllo, e non ha finanziato una seconda prova."
+    },
+    "theo_goblin_soul_question": {
+      "name": "La Questione dell'Anima Goblin",
+      "desc": "Una scuola minoritaria sostiene che i naguka non portino alcun animus da salvare e che la missione sia quindi un costoso pezzo di teatro. L'argomento è internamente coerente, cita correttamente il censimento, e poggia su una lettura della seconda cifra censuaria che i rilevatori stessi si sono rifiutati di difendere. È stato presentato quattro anni dopo l'applicazione dei collari. Oggi è uno scisma soppresso con una bibliografia che la Congregazione non è riuscita a contestare, e il banco di metrologia in palude non è mai stato portato."
+    },
+    "theo_shroud_reweighed": {
+      "name": "La Sindone Ripesata",
+      "desc": "Il lino viene messo sul banco di metrologia e restituisce 0,3 animus, ripetibili su sei sessioni, ed è questo il risultato, perché un tessuto non dovrebbe dare una lettura sopra il fondo dello strumento. A sei laboratori viene consegnato un filo ciascuno dallo stesso angolo e ne tornano sei datazioni al radiocarbonio distribuite su millecento anni, con un chi quadro che rifiuta un'età comune a qualunque livello di confidenza. La Congregazione pubblica la media delle sei, non pubblica la dispersione, e chiude il fascicolo."
+    }
+  }
+}

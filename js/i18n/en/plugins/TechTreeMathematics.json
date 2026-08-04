@@ -1,0 +1,66 @@
+{
+  "name": "Mathematics",
+  "blurb": "Proof and computation, from a deterministic primality test through the geometrisation of three-manifolds to an inequality whose verification never closed. A result here stands or falls on a referee, not on an instrument.",
+  "nodes": {
+    "math_aks": {
+      "name": "AKS Primality Test",
+      "desc": "For a candidate n, choose the smallest r whose multiplicative order of n exceeds the square of the logarithm of n, and test whether the polynomial identity (x + a) to the n equals x to the n plus a holds in the ring of integers mod n adjoined x, modulo x to the r minus one, for every a up to a bound of order the square root of r times the logarithm of n. The congruence holds for all such a exactly when n is prime. The algorithm is deterministic, unconditional, and polynomial in the number of digits, originally at the twelfth power and later reduced to the sixth."
+    },
+    "math_poincare": {
+      "name": "Poincare Conjecture Proved",
+      "desc": "Ricci flow deforms the metric of a closed simply connected three-manifold in the direction opposite to its curvature, and the flow drives it toward a canonical geometry while concentrating curvature in thin necks. The proof controls those singularities: a canonical neighbourhood theorem classifies what a high-curvature region can look like, the neck is excised and capped before it pinches, and a monotone entropy rules out the collapse that would make the surgeries accumulate. Finitely many surgeries are needed on any interval, the flow becomes extinct in finite time, and the manifold is the three-sphere. Geometrisation follows for the general case."
+    },
+    "math_green_tao": {
+      "name": "Green-Tao Theorem",
+      "desc": "The primes contain arithmetic progressions of arbitrary finite length. Szemeredi's theorem applies only to sets of positive density and the primes have density zero, so the proof constructs a pseudorandom measure that majorises the primes and proves a transference principle: any subset of positive relative density in such a measure inherits the Szemeredi conclusion. The counting argument splits the indicator into a bounded structured part, handled by the classical theorem, and a part with small Gowers uniformity norm, whose contribution vanishes. The argument is non-constructive and gives no progression explicitly."
+    },
+    "math_gimps_mersenne": {
+      "name": "A Ten-Million-Digit Prime",
+      "desc": "Volunteer machines sieve candidate exponents by trial factoring and Pollard's p minus one, then run the Lucas-Lehmer test: iterate s squared minus two modulo two to the p minus one, p minus two times, and the number is prime exactly when the residue is zero. Each squaring is performed as one convolution by an irrational-base discrete weighted transform, which folds the modular reduction into the transform and holds the rounding error under a quarter of one unit. The forty-fifth Mersenne prime runs to 12,978,189 digits and is confirmed by independent reruns on different hardware and different transform lengths."
+    },
+    "math_e8": {
+      "name": "Mapping of E8",
+      "desc": "The Atlas collaboration computes the full character table of the split real form of E8, a Lie group of dimension 248 and rank 8: a matrix of 453,060 rows and columns whose entries are Kazhdan-Lusztig-Vogan polynomials, one for each pair of admissible representations. The computation is exact rather than numerical, is carried out modulo several primes and lifted by the Chinese remainder theorem, and occupies about sixty gigabytes, more than the printed Encyclopaedia Britannica. The output is the branching data every unitary representation of the group is read off from."
+    },
+    "math_polymath": {
+      "name": "The Polymath Project",
+      "desc": "A research problem is stated on a weblog and attacked in the comment thread, under a protocol in which every partial idea is posted immediately, no draft is held privately, and each contribution is timestamped and attributed. A combinatorial proof of the density Hales-Jewett theorem, avoiding the ergodic machinery of the original, is completed in some seven weeks across roughly a thousand comments from about forty participants. It is published under a collective pseudonym, and the entire derivation, including the abandoned branches, remains in the archive."
+    },
+    "math_pnp_claim": {
+      "name": "A Proposed P vs NP Separation",
+      "desc": "A hundred-page manuscript claims to separate P from NP by mapping the solution space of random k-SAT near the satisfiability threshold onto the conditional independence structure of a graphical model, and arguing that a polynomial-time algorithm can express only distributions of bounded conditional dependence, which the clustered solution space at that threshold is not. Two objections surface within days on a public wiki: the parameterisation used to characterise polynomial time also excludes XOR-SAT, which is solvable by Gaussian elimination, and the clustering result invoked holds for a density range that does not include the one the argument needs."
+    },
+    "math_fundamental_lemma": {
+      "name": "Proof of the Fundamental Lemma",
+      "desc": "The Langlands transfer of automorphic forms between a group and its endoscopic groups requires an identity between weighted orbital integrals on the two sides, conjectured for decades and verified only in low rank. The proof reads those integrals as counting points on the fibres of the Hitchin fibration for the associated moduli space of Higgs bundles, so the identity becomes a statement about the cohomology of a single geometric object, where the support theorem for that fibration forces the two sides to agree."
+    },
+    "math_abc": {
+      "name": "Inter-Universal Proof of abc",
+      "desc": "For coprime positive integers with a plus b equal to c, the conjecture bounds c by the radical of their product raised to any exponent above one, with finitely many exceptions. The submitted proof runs to some five hundred pages and derives that bound from estimates on how arithmetic line bundles deform between theatres of arithmetic data set in mutually alien copies of scheme theory, related by indeterminate isomorphisms. Verification concentrates on one corollary in the third paper, where two experts hold that a pair of identifications is used inconsistently; the author maintains the objection misreads the setup, and the dispute is unresolved a decade later."
+    },
+    "math_time_cube": {
+      "name": "Time Cube",
+      "desc": "The scheme partitions one rotation of the Earth into four simultaneous corner days, each with its own sunrise, and treats the single linear day count as an error propagated by schooling. The four quadrants are one rotation counted four times over, so no consistent assignment of a time coordinate to an event exists: the same instant is required to carry four different day labels while the labels are also asserted to be distinct days. The construction issues no prediction and defines no operation on its own terms."
+    },
+    "math_bible_code": {
+      "name": "The Bible Code",
+      "desc": "Equidistant letter sequences: the consonantal text is read at a fixed skip and searched for target words, with significance assessed against permuted control texts. The search space is the product of the skip range, every start offset, both reading directions, the spelling variants admitted and the size of the target list, which is typically fixed after the search; hits therefore accumulate at the rate chance predicts. Applying the identical protocol to a Hebrew translation of War and Peace, and to Moby Dick, returns comparable hits, including assassinations correctly paired with their victims."
+    },
+    "math_sacred_geometry": {
+      "name": "The Golden Ratio Everywhere",
+      "desc": "A measurement programme that fits the ratio 1.618 to facades, shells, faces and price series. The procedure leaves the analyst free to choose which two dimensions to measure, where a feature begins and ends, and a tolerance usually of ten percent or more, and under those degrees of freedom the ratio is recoverable from nearly any set of proportions; a uniform random pair of lengths lands within that tolerance often enough to account for the reported hit rate. The Parthenon measurements depend on where the base of the entablature is taken, and the growth constant of the nautilus spiral is about 1.33."
+    },
+    "math_atlas_software": {
+      "name": "The Atlas Software Project",
+      "desc": "Before a representation of a 248-dimensional group can be counted it has to be addressable. The software encodes root data, the involutions of the real forms, blocks of representations and their Kazhdan-Lusztig-Vogan polynomials in exact integer arithmetic, and puts every object in a canonical form so that two descriptions of the same representation compare equal. Without that normalisation the block structure cannot be enumerated without duplication, and the character table is a bookkeeping problem before it is a computation."
+    },
+    "math_terabyte_linear_algebra": {
+      "name": "Terabyte Linear Algebra",
+      "desc": "The final step is a single matrix of polynomials with more than four hundred thousand rows, whose exact coefficients exceed any available memory. It is reduced modulo four primes small enough that every entry fits a machine word, solved in blocks that stream from disk, and reassembled by the Chinese remainder theorem. A proved a priori bound on the size of the true coefficients confirms that no entry wrapped around unnoticed, and the run is repeated with a different prime set as a check. The job takes about seventy-seven hours on 200 gigabytes of memory."
+    },
+    "math_iut_foundations": {
+      "name": "Foundations of Inter-Universal Geometry",
+      "desc": "The inequality cannot be stated before its framework exists. The construction supplies Frobenioids, categories that abstract the arithmetic line bundles of a number field; anabelian reconstruction, which recovers a hyperbolic curve from its etale fundamental group alone; and Hodge theatres, assemblies of arithmetic data placed in mutually alien copies of scheme theory and compared through indeterminate isomorphisms with the resulting indeterminacies tracked explicitly. Several hundred pages of definitions precede the first estimate, and almost none of the vocabulary is shared with existing literature."
+    }
+  }
+}

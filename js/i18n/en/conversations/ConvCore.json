@@ -1,0 +1,177 @@
+{
+  "Nervous": [
+    "What was that noise?",
+    "I have a bad feeling about this.",
+    "Did I forget something important?",
+    "My heart is pounding...",
+    "I just want this to be over."
+  ],
+  "Calm": [
+    "One step at a time.",
+    "Keep breathing. Everything is fine.",
+    "This, too, shall pass.",
+    "Worrying solves nothing.",
+    "Maintain focus."
+  ],
+  "Aggressive": [
+    "Don't test me.",
+    "I'm ready for a fight.",
+    "What are you looking at?",
+    "Patience is running thin.",
+    "Move, or be moved."
+  ],
+  "Melancholic": [
+    "Is this all there is?",
+    "I remember when things were better.",
+    "A heavy feeling...",
+    "Solitude feels right.",
+    "Everything seems grey."
+  ],
+  "Sanguine": [
+    "What a wonderful day!",
+    "I should talk to someone.",
+    "What's next? Something fun, I hope!",
+    "I feel great!",
+    "The future is bright."
+  ],
+  "Cautious": [
+    "Let's think this through.",
+    "What are the risks?",
+    "A hasty decision is a bad decision.",
+    "Better to be safe than sorry.",
+    "Analyze the situation first."
+  ],
+  "Impulsive": [
+    "Just do it!",
+    "Why wait?",
+    "This seems like a good idea!",
+    "Worry about consequences later.",
+    "Act now, think later."
+  ],
+  "Stoic": [
+    "This is just a thing. It will pass.",
+    "Pain is temporary.",
+    "Complaining changes nothing.",
+    "Control what you can, accept what you can't.",
+    "I will endure."
+  ],
+  "Paranoid": [
+    "They're watching me.",
+    "Who can I trust? No one.",
+    "What do they really want?",
+    "It's a conspiracy.",
+    "I need to be careful."
+  ],
+  "Empathetic": [
+    "I feel what you're going through.",
+    "Are they okay? They seem sad.",
+    "I can sense the tension in the room.",
+    "How can I help?",
+    "Their joy is my joy."
+  ],
+  "Authoritative": [
+    "Follow my lead.",
+    "This is the plan. Stick to it.",
+    "I will make the decision.",
+    "Discipline is key.",
+    "We must succeed."
+  ],
+  "Scholarly": [
+    "I wonder why that is...",
+    "That reminds me of a book I read.",
+    "The data is inconclusive.",
+    "Knowledge is the true power.",
+    "I need to learn more."
+  ],
+  "Artistic": [
+    "The light here is beautiful.",
+    "What a strange, wonderful sound.",
+    "I feel this so deeply.",
+    "Inspiration... I must remember this feeling.",
+    "The world is a canvas."
+  ],
+  "Adventurous": [
+    "I wonder what's over that hill.",
+    "This is boring. Let's do something!",
+    "A little danger makes life interesting.",
+    "On to the next adventure!",
+    "I've never been there? Let's go!"
+  ],
+  "Nurturing": [
+    "Are you alright?",
+    "You look cold. Take my cloak.",
+    "Everyone needs to be cared for.",
+    "I must protect them.",
+    "Let me help with that."
+  ],
+  "Mischievous": [
+    "This would be so much funnier if...",
+    "Let's stir things up a bit.",
+    "They'll never see this coming.",
+    "I wonder what this button does?",
+    "A little prank never hurt anyone... much."
+  ],
+  "Cynical": [
+    "Everyone's in it for themselves.",
+    "What's the catch?",
+    "That's just what they want me to think.",
+    "Sure, 'altruism'. Right.",
+    "This will all end badly."
+  ],
+  "Disciplined": [
+    "First, the task. Then, the rest.",
+    "Feelings are secondary to duty.",
+    "Stick to the regimen.",
+    "Control is strength.",
+    "No shortcuts."
+  ],
+  "Fatalistic": [
+    "Whatever happens, happens.",
+    "It was meant to be.",
+    "There's no point fighting it.",
+    "My path is already written.",
+    "What's the use?"
+  ],
+  "Grumpy": [
+    "Ugh, what now?",
+    "This is all so stupid.",
+    "Leave me alone.",
+    "Of course this would happen.",
+    "I hate this."
+  ],
+  "Loyal": [
+    "I will not abandon them.",
+    "For my friends, anything.",
+    "I must keep my promise.",
+    "Together, no matter what.",
+    "My loyalty is my bond."
+  ],
+  "Brave": [
+    "Someone has to do it.",
+    "This is scary, but I must act.",
+    "Fear is just a feeling.",
+    "I will not back down.",
+    "Forward!"
+  ],
+  "Timid": [
+    "Oh, dear. This looks bad.",
+    "I'd rather not...",
+    "Maybe someone else can handle this?",
+    "I want to go home.",
+    "Please don't notice me."
+  ],
+  "Hedonistic": [
+    "If it feels good, do it.",
+    "Life is short, enjoy it now.",
+    "I need more wine. And cheese.",
+    "This is the life!",
+    "Work? Ugh. Later."
+  ],
+  "Apathetic": [
+    "Meh.",
+    "I don't really care.",
+    "Whatever.",
+    "Is it over yet?",
+    "It doesn't matter."
+  ]
+}

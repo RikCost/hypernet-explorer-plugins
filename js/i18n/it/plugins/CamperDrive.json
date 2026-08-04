@@ -1,0 +1,45 @@
+{
+  "stopLiminal": "Interrompi la guida liminale",
+  "stopDriving": "Smetti di guidare",
+  "climbBackIn": "Risali a bordo",
+  "stepOutside": "Scendi (a piedi)",
+  "refuelAtStation": "Fai rifornimento alla stazione",
+  "continue": "Continua",
+  "splashdown": "Il camper finisce in acqua e viene sospinto a riva!",
+  "wedged": "Camper incastrato",
+  "flipped": "Camper ribaltato",
+  "destination": "Destinazione",
+  "freeDrive": "Guida libera",
+  "autopilot": "Pilota automatico",
+  "hud": {
+    "fuel": "CARBURANTE",
+    "map": "MAPPA",
+    "destination": "Destinazione",
+    "time": "ORA",
+    "distance": "DISTANZA",
+    "view": "VISTA:",
+    "mode": "MODO:",
+    "controls": "TAB: guida in soggettiva &harr; telecamera d'inseguimento<br/>W accelera &middot; S frena / retromarcia &middot; Shift turbo &middot; A/D sterza<br/>Spazio freno a mano &middot; da fermo Spazio apre le opzioni del veicolo<br/>F vola &middot; C immergiti &middot; M vista mappa &middot; Mouse/rotella/levetta destra per guardare e zoomare<br/>E portiera: scendi / sali &middot; R riposizionati se sei bloccato<br/>a piedi: Shift corri, Spazio/A salta &middot; ESC/Back esci dalla guida",
+    "controllerHint": "Controller: L2/R2 zoom indietro/avanti &middot; Y cambia vista",
+    "fly": "VOLO",
+    "float": "GALLEGGIA",
+    "dive": "IMMERSIONE",
+    "cond": "COND",
+    "trip": "VIAGGIO",
+    "camperStuck": "Camper bloccato",
+    "pressRToRespawn": "Premi {key} per riposizionarti"
+  },
+  "viewMode": {
+    "fpdrive": "GUIDA IN SOGGETTIVA",
+    "fp": "PRIMA PERSONA",
+    "car": "AUTO",
+    "free": "CAMERA LIBERA",
+    "foot": "A PIEDI"
+  },
+  "envMode": {
+    "road": "STRADA",
+    "air": "IN VOLO",
+    "water": "A GALLA",
+    "underwater": "IN IMMERSIONE"
+  }
+}

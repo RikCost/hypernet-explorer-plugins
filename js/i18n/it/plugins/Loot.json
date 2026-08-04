@@ -1,0 +1,12 @@
+{
+  "found": "Hai trovato",
+  "foundWithTier": "Hai trovato ({tier})",
+  "foundMessage": "\\c[0]Hai trovato \\c[{color}]{item}",
+  "tier": {
+    "common": "Comune",
+    "uncommon": "Non Comune",
+    "rare": "Raro",
+    "epic": "Epico",
+    "legendary": "Leggendario"
+  }
+}

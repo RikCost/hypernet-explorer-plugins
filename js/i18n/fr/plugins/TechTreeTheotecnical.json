@@ -1,0 +1,110 @@
+{
+  "name": "Théotechnique",
+  "blurb": "Le Saint Empire du Vatican ne repose plus sur le socle romain. Le Siège vole, blindé et armé, et la Congrégation accepte désormais les soumissions sous forme de plans accompagnés d'une nomenclature. La doctrine est un système en maintenance, le champ de mission une cible de déploiement, et le siège du Père est vacant depuis la lance.",
+  "nodes": {
+    "theo_ascension": {
+      "name": "Le Démarrage du Siège",
+      "desc": "Le socle rocheux sous la basilique est tranché sur un plan à 40 mètres de fond et l'État-cité tout entier est transféré sur des pylônes de sustentation couplés à la leyline que suit le Tibre. La charge statique est de 6,2 millions de tonnes, répartie sur onze pylônes dont un tenu en réserve, et le couplage ne fournit une portance utile que tant que la citadelle reste à moins de 300 mètres de l'axe de la ligne. Rome garde l'excavation. Le Siège garde l'altitude, et pour la première fois il n'est plus adressable par une coordonnée de carte qu'une armée a déjà atteinte."
+    },
+    "theo_holy_office": {
+      "name": "La Congrégation pour la Doctrine d'Ingénierie",
+      "desc": "Le Saint-Office est restructuré pour recevoir les soumissions sous forme de schémas. Une proposition arrive sous forme de plan avec nomenclature, mode de défaillance énoncé et clause doctrinale qu'elle doit satisfaire, et repart soit promulguée, soit refusée avec la clause en défaut marquée et le calcul joint. Le délai est fixé à quatre-vingt-dix jours. Les théologiens reçoivent des règles à calcul et une norme de spécification : une doctrine qui ne peut s'écrire comme un énoncé testable ne peut être défendue, et se voit retournée sans examen."
+    },
+    "theo_coil_batteries": {
+      "name": "Les Batteries à Bobines de Saint-Pierre",
+      "desc": "Chaque colonne de la colonnade est rebobinée en un étage d'accélérateur linéaire, 284 étages par aile, commutés en séquence depuis un banc de condensateurs dans la crypte. La vitesse initiale est de 1 900 mètres par seconde à un rendement d'étage voisin de 40 pour cent, et les bras de la place qui enfermaient jadis une foule pointent désormais sur une cible. La batterie est déclenchée par le mécanisme de cloche qui sonnait autrefois l'heure. Une salve complète tire onze secondes durant sur l'alimentation d'éclairage de la citadelle, et le banc de la crypte met quatre minutes à se recharger."
+    },
+    "theo_consecrated_slug": {
+      "name": "Le Projectile Consacré",
+      "desc": "Le sabot est béni sur la bande d'alimentation à neuf cents coups par minute par un diacre qui ne prononce plus les paroles à voix haute mais actionne un tampon asservi à l'alimentation. La consécration survit à une accélération de 40 000 g et à la charge thermique du canon, ce que vérifie l'analyse des projectiles récupérés. Ce qu'elle fait à l'impact à une chose qui n'a jamais été baptisée est consigné à l'annexe 14, laquelle est détenue à la Congrégation et n'a été lue hors de ses murs par personne."
+    },
+    "theo_choir_fire_control": {
+      "name": "Conduite de Tir Chantée par le Chœur",
+      "desc": "Les solutions de tir sont calculées en plain-chant. Distance, dérive et correction d'avance sont portées par trois voix dont les intervalles encodent les trois grandeurs, et la batterie tire à la résolution de l'accord : une solution qui ne se referme pas s'entend donc dans la nef une seconde et demie avant que l'obus ne fût tombé. Le temps de solution est comparable à celui d'un calculateur mécanique de la même époque et le taux d'erreur est plus bas, puisqu'un mauvais chiffre sonne faux. On ne dit pas aux choristes ce que représentent les intervalles, et ils ne sont notés que sur l'intonation."
+    },
+    "theo_basilica_railgun": {
+      "name": "Le Canon Électrique de la Basilique",
+      "desc": "La nef est le tube. Deux rails courent sur toute la longueur du sol, des portes à l'abside, la coupole est ouverte à l'oculus pour évacuer le plasma, et le coup part le long de l'axe sur lequel l'édifice fut tracé. L'énergie initiale est de 32 mégajoules et le recul est repris par les fondations du transept. L'érosion des rails est la limite : le deuxième coup d'une journée déforme les rails au-delà de la tolérance d'alignement, et le troisième emporterait la toiture avec lui, si bien que la pièce est spécifiée à deux coups et un changement de rails."
+    },
+    "theo_reliquary_armour": {
+      "name": "Blindage Composite à Reliques",
+      "desc": "Entre l'acier extérieur et la doublure anti-éclats se trouve un réseau de fragments de reliques scellés dans la résine, catalogués au mètre et certifiés par la Congrégation avant la stratification. La plaque se comporte comme se comporte la plaque : 640 millimètres d'équivalent acier laminé homogène contre une charge creuse, pas mieux que la même masse d'acier et de céramique. La contribution des reliques n'est pas résoluble sur un champ de tir et n'apparaît pas dans les tables. Les équipages qu'elle abrite rapportent qu'aucune section ayant contenu un os n'a été percée, et la Congrégation a enregistré l'observation sans l'accepter comme un effet."
+    },
+    "theo_buttress_engines": {
+      "name": "Moteurs d'Arcs-Boutants",
+      "desc": "Un arc-boutant est un élément dimensionné pour porter la poussée vers l'extérieur et vers le bas. Foré dans le sens de la ligne de charge et muni d'une tuyère à la culée, il porte la poussée vers l'extérieur et vers le haut, et la section déjà dimensionnée pour la compression reprend la réaction sans renfort. Vingt-huit arcs-boutants donnent à la citadelle un contrôle d'attitude sur trois axes à un bras de levier qu'aucun propulseur rapporté ne saurait égaler, et la réponse en tangage est sous le degré par seconde. La maçonnerie fut dessinée pour cette charge six cents ans avant que la tuyère n'existe."
+    },
+    "theo_dogmatic_shield": {
+      "name": "Le Bouclier Dogmatique",
+      "desc": "Un champ qui discrimine sur l'intention derrière un objet entrant et n'arrête que ce qui fut lâché de mauvaise foi. À l'essai, il a dévié chaque obus que lui ont tiré les artilleries de trois nations, 1 140 coups sans une fuite, et a laissé passer une pierre lancée par un garçon qui croyait viser un oiseau. La discrimination fonctionne donc exactement comme spécifié, et la spécification est le constat. La Congrégation a publié le rapport d'essai dans son intégralité, le garçon compris."
+    },
+    "theo_naguka_census": {
+      "name": "Le Recensement Naguka des Âmes",
+      "desc": "Une nation ne peut être convertie avant d'être comptée. Des géomètres missionnaires arpentent les marais toxiques par transects, planchette à la main, dénombrant chaque tête, chaque foyer et chaque chamane naguka, avec correction du double comptage qu'engendrent les déplacements saisonniers. Ils rapportent un chiffre de population quatre fois supérieur à l'estimation de la Congrégation, et un second chiffre, que la méthode ne soutient pas et qu'on leur avait néanmoins ordonné de produire, sur le nombre de ces têtes qui portent une âme."
+    },
+    "theo_goblinese_liturgy": {
+      "name": "La Liturgie en Gobelin",
+      "desc": "La messe est passée dans une grammaire sans temps futur, sans conditionnel et sans terme lexical pour le pardon : chaque demande se résout donc à l'impératif et chaque promesse à un constat de fait présent. Le résultat est 40 pour cent plus court, se profère dans un registre plus haut, et se lit comme une menace en rétrotraduction. La Congrégation a approuvé le texte sur la seule traduction aller. La fréquentation des paroisses des marais est la plus élevée jamais enregistrée dans l'Empire, et la rétrotraduction a été classée plutôt que diffusée."
+    },
+    "theo_neural_choker": {
+      "name": "Le Carcan Neural",
+      "desc": "Un anneau fermé à la gorge, posé au baptême, sans aucun déclencheur que le porteur puisse actionner. Il lit la signature électrique du doute sur le nerf vague et les nerfs laryngés et y répond par un courant de quelques milliampères, calé 200 à 400 millisecondes après le début, c'est-à-dire avant que la pensée soit pleinement formée et bien avant qu'elle puisse être dite. Il n'argumente pas et il ne punit pas. Interrogés sur ce qu'ils ont ressenti, les porteurs décrivent une paix grande et soudaine, et ne peuvent rapporter le contenu qui fut interrompu."
+    },
+    "theo_belief_firmware": {
+      "name": "Micrologiciel de Croyance",
+      "desc": "La table de décision du carcan est sortie du matériel pour devenir une image signée que l'on peut pousser par voie hertzienne : un schisme se referme donc comme se referme un défaut, sans rappel et sans participation du porteur. La version un impose le Credo tel que promulgué. La version un point trois insère le filioque. La télémétrie de terrain enregistre onze mille porteurs acceptant la mise à jour en une seule nuit, sans aucune discontinuité de croyance rapportée de part et d'autre."
+    },
+    "theo_preaching_towers": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_mass_baptism": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_version_control": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_infallibility_compiler": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_sacrament_protocol": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_soul_metrology": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_trinity_refactor": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_deus_machina": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_theonuclear": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_weeping_icon": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_prayer_trial": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_goblin_soul_question": {
+      "name": "",
+      "desc": ""
+    },
+    "theo_shroud_reweighed": {
+      "name": "",
+      "desc": ""
+    }
+  }
+}

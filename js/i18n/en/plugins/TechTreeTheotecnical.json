@@ -1,0 +1,110 @@
+{
+  "name": "Theotecnical",
+  "blurb": "The Holy Vatican Empire no longer stands on Roman bedrock. The See flies, armoured and gunned, and the Congregation now accepts submissions as drawings with a bill of materials. Doctrine is a system under maintenance, the mission field is a deployment target, and the seat of the Father has been vacant since the spear.",
+  "nodes": {
+    "theo_ascension": {
+      "name": "The Unmooring of the See",
+      "desc": "The bedrock under the basilica is cut through on a plane 40 metres down and the whole city-state is transferred onto lift pylons that couple to the leyline the Tiber follows. Static load is 6.2 million tonnes, distributed across eleven pylons with one held in reserve, and the coupling delivers useful lift only while the citadel stays within 300 metres of the line's axis. Rome keeps the excavation. The See keeps the altitude, and for the first time it is not addressable by a map coordinate an army has already reached."
+    },
+    "theo_holy_office": {
+      "name": "The Congregation for Engineered Doctrine",
+      "desc": "The Holy Office is restructured to receive submissions in schematic form. A proposal arrives as a drawing with a bill of materials, a stated failure mode and a doctrinal clause it is to satisfy, and leaves either promulgated or refused with the failing clause marked and the calculation attached. Turnaround is set at ninety days. Theologians are issued slide rules and a standard of specification: a doctrine that cannot be written as a testable statement cannot be defended, and is returned unexamined."
+    },
+    "theo_coil_batteries": {
+      "name": "The Coilgun Batteries of Saint Peter",
+      "desc": "Each column of the colonnade is rewound as one stage of a linear accelerator, 284 stages to a wing, switched in sequence from a capacitor bank in the crypt. Muzzle velocity is 1,900 metres per second at a stage efficiency near 40 percent, and the arms of the square that used to enclose a crowd now traverse onto a target. The battery is triggered by the same bell mechanism that used to strike the hour. A full salvo draws the citadel's lighting supply for eleven seconds and the crypt bank needs four minutes to recharge."
+    },
+    "theo_consecrated_slug": {
+      "name": "The Consecrated Slug",
+      "desc": "The sabot is blessed on the belt feed at nine hundred rounds a minute by a deacon who no longer says the words aloud but works a stamp keyed to the feed. The consecration survives an acceleration of 40,000 g and the thermal load of the barrel, verified by assay on recovered rounds. What it does on impact to a thing that was never baptised is written up in Annex 14, which is held at the Congregation and has been read outside it by nobody."
+    },
+    "theo_choir_fire_control": {
+      "name": "Choir-Sung Fire Control",
+      "desc": "Firing solutions are computed as plainchant. Range, drift and lead are carried by three voices whose intervals encode the three quantities, and the battery fires on the resolution of the chord, so a solution that does not close is audible in the nave a second and a half before the round would have landed. Solution time is comparable to a mechanical computer of the same era and the error rate is lower, since a wrong number sounds wrong. The choristers are not told what the intervals represent and are graded on intonation alone."
+    },
+    "theo_basilica_railgun": {
+      "name": "The Basilica Railgun",
+      "desc": "The nave is the barrel. Two rails run the length of the floor from the doors to the apse, the dome is opened at the oculus to vent the plasma, and the shot leaves along the axis on which the building was set out. Muzzle energy is 32 megajoules and the recoil is taken by the foundations of the transept. Rail erosion is the limit: the second shot of a day deforms the rails past the alignment tolerance, and the third would take the roof with it, so the piece is specified at two shots and a rail change."
+    },
+    "theo_reliquary_armour": {
+      "name": "Reliquary Composite Armour",
+      "desc": "Between the outer steel and the spall liner sits a lattice of relic fragments sealed in resin, catalogued by the metre and certified by the Congregation before lay-up. The plate performs as the plate performs: 640 millimetres of rolled homogeneous equivalent against a shaped charge, no better than the same mass of steel and ceramic. The contribution of the relics is not resolvable on a firing range and does not appear in the tables. Crews under it report that no section which held a bone has been penetrated, and the Congregation has recorded the observation without accepting it as an effect."
+    },
+    "theo_buttress_engines": {
+      "name": "Flying Buttress Engines",
+      "desc": "A flying buttress is a member sized to carry thrust outward and down. Bored through along the load path and fitted with a nozzle at the pier, it carries thrust outward and up instead, and the section that was already dimensioned for the compression takes the reaction with no reinforcement. Twenty-eight buttresses give the citadel three-axis attitude control at a moment arm no bolted-on thruster could match, and the pitch response is inside a degree a second. The masonry was designed for the load six hundred years before the nozzle existed."
+    },
+    "theo_dogmatic_shield": {
+      "name": "The Dogmatic Shield",
+      "desc": "A field that discriminates on the intent behind an incoming object and stops only what was released in bad faith. Under trial it turned every shell fired at it by the artillery of three nations, 1,140 rounds without a leaker, and passed a stone thrown by a boy who believed he was aiming at a bird. The discrimination is therefore working exactly as specified, and the specification is the finding. The Congregation has published the trial report in full, including the boy."
+    },
+    "theo_naguka_census": {
+      "name": "The Naguka Census of Souls",
+      "desc": "A nation cannot be converted before it is counted. Missionary surveyors work the toxin swamps on a transect method with clipboards and a tally of every Naguka head, hearth and shaman, correcting for the double-counting the seasonal moves produce. They return a population figure four times the Congregation's estimate, and a second figure, which the method does not support and which the surveyors were nonetheless instructed to produce, for how many of those heads carry a soul at all."
+    },
+    "theo_goblinese_liturgy": {
+      "name": "The Liturgy in Goblinese",
+      "desc": "The Mass is put through a grammar with no future tense, no conditional and no lexical item for forgiveness, so every petition resolves to the imperative and every promise to a statement of present fact. The result is 40 percent shorter, is delivered at a higher register, and reads as a threat in back-translation. The Congregation approved the text on the forward translation alone. Attendance in the swamp parishes is the highest recorded anywhere in the Empire, and the back-translation has been filed rather than circulated."
+    },
+    "theo_neural_choker": {
+      "name": "The Neural Choker",
+      "desc": "A closed band at the throat, fitted at baptism, with no release the wearer can operate. It reads the electrical signature of doubt from the vagus and the laryngeal nerves and answers it with a current of a few milliamperes, timed 200 to 400 milliseconds after onset, which is before the thought has been fully formed and well before it can be spoken. It does not argue and it does not punish. Wearers, asked what they felt, describe a great and sudden peace, and cannot report the content that was interrupted."
+    },
+    "theo_belief_firmware": {
+      "name": "Belief Firmware",
+      "desc": "The choker's decision table is factored out of the hardware into a signed image that can be pushed over the air, so a schism is closed the way a defect is closed, without recall and without the wearer's involvement. Version one enforces the Creed as promulgated. Version one point three inserts the filioque. Field telemetry records eleven thousand wearers accepting the update inside a single night, with no reported discontinuity of belief on either side of it."
+    },
+    "theo_preaching_towers": {
+      "name": "The Preaching Towers",
+      "desc": "Bell towers rebuilt as transmitters and lowered on cables from the underside of the citadel until they hang at 40 metres over a marsh, which is preaching height for the horn array they carry. The sermon is intelligible at eleven kilometres in still air and is repeated on a fourteen minute cycle through the night. The night schedule is specified on the stated reasoning that a sleeping listener does not counter-argue, and the Congregation has recorded that reasoning in the design file."
+    },
+    "theo_mass_baptism": {
+      "name": "The Mass Baptism of the Naguka",
+      "desc": "The whole nation is received in a single afternoon, from the air, by a citadel that seeds the marsh with blessed water on a dispersal pattern computed for 94 percent coverage and pushes the choker firmware in the same pass. Elapsed time is five hours and forty minutes for a population of two hundred thousand. The Naguka went in as a tribe of scavengers and came out a diocese with a parish structure already drawn. The shamans were included in the coverage figure and have not been located since."
+    },
+    "theo_version_control": {
+      "name": "Doctrine Under Version Control",
+      "desc": "Two thousand years of teaching are entered into a repository in which every canon carries an author, a timestamp and a diff against what it replaced. The first full run of the tool surfaces four hundred and six edits with no signature attached, most of them clarifications, eleven of them reversals of the clause they clarify. The Congregation seals the report, retains the tool, and rules that a doctrine takes effect on commit and not on publication."
+    },
+    "theo_infallibility_compiler": {
+      "name": "The Infallibility Compiler",
+      "desc": "A bull is typechecked against the full corpus of bulls promulgated before it, and a contradiction is returned as an error naming both line numbers. Compile time on the full corpus is nine hours. Infallibility is thereby restated as a property of a build rather than a claim about a man, and is verifiable by anyone with the corpus and the tool. Three living pronouncements failed the first compile; all three were reissued with the offending clause narrowed, and no announcement was made."
+    },
+    "theo_sacrament_protocol": {
+      "name": "The Sacrament Protocol",
+      "desc": "Confession, absolution and communion are respecified as a three-message exchange with a challenge, a response and an acknowledgement, so grace can be delivered to a parish the citadel is merely passing over. Throughput is eleven thousand penitents an hour per channel. The open question is latency: at four hundred kilometres the acknowledgement returns 1.3 milliseconds after the absolution is granted, and the Congregation has not ruled on which of the two timestamps the soul is absolved at."
+    },
+    "theo_soul_metrology": {
+      "name": "Soul Metrology",
+      "desc": "The soul is given a unit of measure, the animus, defined by a reference standard held in a vault at 20 degrees and 40 percent humidity, and an instrument that reads it transcranially through the temporal bone. Repeatability on a living subject is 2 percent, and a reading is stable across sleep, anaesthesia and the first four minutes after cardiac arrest. Every measurement the Empire makes afterwards is traceable to that vault, and so is every procedure that becomes possible once a soul is a quantity. The Congregation entered the second observation in the minutes and took no action on it."
+    },
+    "theo_trinity_refactor": {
+      "name": "Refactoring the Trinity",
+      "desc": "With the Father dead on a hillside and the seat reading empty on the metrology bench, the doctrine is rewritten as a quorum of three that remains valid with two, pending replacement. It is the only formulation the Congregation has produced that passes the compiler against the full corpus without narrowing an existing clause, and it is, by the assessment recorded in its own file, the worst-written thing ever promulgated. No term is defined for how long pending may run."
+    },
+    "theo_deus_machina": {
+      "name": "The Mechanical God",
+      "desc": "The vacant seat is filled by an object built to occupy it: a lattice running the length of the citadel's keel, fed by the aggregated prayer of a converted nation at some 40,000 animus a day, answering in the register the doctrine specifies and within the latency the sacrament protocol allows. It is not claimed to be the Father. The claim entered in the file is narrower and is the one that compiles: that it satisfies every clause the Father satisfied. The compiler agrees, and the minutes of the session record no vote."
+    },
+    "theo_theonuclear": {
+      "name": "The Theonuclear Device",
+      "desc": "Physical yield is negligible: glass at two hundred metres survives, masonry at fifty is scorched, and bodies inside the radius are recovered whole, warm and breathing for some minutes afterwards. What the device removes is the animus, out to a boundary the metrology bench predicts to within a metre from yield and standoff, inside which every subject reads below the instrument's noise floor and stays there. The removal is not recoverable by any procedure the Congregation has been able to specify. There is nothing downstream of the boundary, and nothing to bury but tissue."
+    },
+    "theo_weeping_icon": {
+      "name": "The Telemetric Weeping Icon",
+      "desc": "A panel that weeps on a schedule, fed by a peristaltic pump behind the plaster at 0.4 millilitres an hour and gated to the liturgical calendar by a mechanical timer. It was commissioned as a devotional aid and the installation drawing says so. Within a year it is cited as evidence in three separate causes for canonisation, none of which consulted the drawing. The maintenance record is filed under plumbing, where it has been signed off eleven times."
+    },
+    "theo_prayer_trial": {
+      "name": "The Intercessory Prayer Trial",
+      "desc": "Eighteen hundred and two cardiac bypass patients in three arms: prayed for and not told, prayed for and told, not prayed for. Assignment is by machine, the intercessors receive first names only, and the endpoint is complication within thirty days, scored by staff blind to the arm. The two blinded arms are indistinguishable. The arm that was prayed for and informed of it does measurably worse, at 59 percent against 52. The Congregation accepted the statistics, rejected the design on the grounds that the third arm is not a control, and has funded no second trial."
+    },
+    "theo_goblin_soul_question": {
+      "name": "The Question of the Goblin Soul",
+      "desc": "A minority school holds that the Naguka carry no animus to save and that the mission is therefore an expensive piece of theatre. The argument is internally consistent, cites the census correctly, and rests on a reading of the second census figure the surveyors themselves refused to defend. It was submitted four years after the chokers were fitted. It is now a suppressed schism with a bibliography the Congregation has been unable to fault, and the metrology bench has not been taken into the swamp."
+    },
+    "theo_shroud_reweighed": {
+      "name": "The Shroud Reweighed",
+      "desc": "The linen is put on the metrology bench and returns 0.3 animus, repeatable across six sessions, which is the finding, since cloth is not supposed to return a reading above the instrument's floor at all. Six laboratories are each given a thread from the same corner and return six radiocarbon dates spanning eleven hundred years, with a chi-squared that rejects a common age at any confidence. The Congregation publishes the mean of the six, does not publish the spread, and closes the file."
+    }
+  }
+}

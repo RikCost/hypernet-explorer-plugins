@@ -1,0 +1,707 @@
+{
+  "id": "Theotecnical",
+  "icon": 221,
+  "accent": "#b5892b",
+  "real": false,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "theo_ascension",
+      "phase": "Ascension",
+      "requires": [],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 110
+        },
+        {
+          "id": 866,
+          "qty": 90
+        }
+      ],
+      "buffs": {
+        "def": 2,
+        "mhp": 15
+      }
+    },
+    {
+      "id": "theo_holy_office",
+      "phase": "Ascension",
+      "requires": [
+        "theo_ascension"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 170
+        },
+        {
+          "id": 861,
+          "qty": 130
+        },
+        {
+          "id": 867,
+          "qty": 110
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "theo_coil_batteries",
+      "phase": "Ordnance",
+      "requires": [
+        "theo_ascension"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 240
+        },
+        {
+          "id": 864,
+          "qty": 170
+        },
+        {
+          "id": 854,
+          "qty": 190
+        }
+      ],
+      "buffs": {
+        "atk": 3
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 516,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_consecrated_slug",
+      "phase": "Ordnance",
+      "requires": [
+        "theo_coil_batteries"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 210
+        },
+        {
+          "id": 849,
+          "qty": 130
+        },
+        {
+          "id": 866,
+          "qty": 110
+        }
+      ],
+      "buffs": {
+        "atk": 2,
+        "mat": 1
+      }
+    },
+    {
+      "id": "theo_choir_fire_control",
+      "phase": "Ordnance",
+      "requires": [
+        "theo_coil_batteries"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 200
+        },
+        {
+          "id": 852,
+          "qty": 180
+        },
+        {
+          "id": 867,
+          "qty": 130
+        }
+      ],
+      "buffs": {
+        "agi": 2,
+        "luk": 1
+      }
+    },
+    {
+      "id": "theo_basilica_railgun",
+      "phase": "Ordnance",
+      "requires": [
+        "theo_consecrated_slug",
+        "theo_choir_fire_control"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 320
+        },
+        {
+          "id": 851,
+          "qty": 230
+        },
+        {
+          "id": 854,
+          "qty": 270
+        }
+      ],
+      "buffs": {
+        "atk": 4,
+        "mmp": 15
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 518,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_reliquary_armour",
+      "phase": "Bulwark",
+      "requires": [
+        "theo_ascension"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 250
+        },
+        {
+          "id": 860,
+          "qty": 170
+        },
+        {
+          "id": 856,
+          "qty": 150
+        }
+      ],
+      "buffs": {
+        "def": 3,
+        "mhp": 20
+      },
+      "reward": {
+        "kind": "armor",
+        "id": 703,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_buttress_engines",
+      "phase": "Bulwark",
+      "requires": [
+        "theo_reliquary_armour"
+      ],
+      "materials": [
+        {
+          "id": 865,
+          "qty": 230
+        },
+        {
+          "id": 851,
+          "qty": 190
+        },
+        {
+          "id": 854,
+          "qty": 210
+        }
+      ],
+      "buffs": {
+        "agi": 2,
+        "def": 2
+      }
+    },
+    {
+      "id": "theo_dogmatic_shield",
+      "phase": "Bulwark",
+      "requires": [
+        "theo_reliquary_armour",
+        "theo_holy_office"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 230
+        },
+        {
+          "id": 850,
+          "qty": 170
+        },
+        {
+          "id": 856,
+          "qty": 190
+        }
+      ],
+      "buffs": {
+        "mdf": 3,
+        "def": 2
+      },
+      "reward": {
+        "kind": "armor",
+        "id": 773,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_naguka_census",
+      "phase": "Mission",
+      "requires": [
+        "theo_holy_office"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 180
+        },
+        {
+          "id": 861,
+          "qty": 150
+        },
+        {
+          "id": 858,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "luk": 2,
+        "mdf": 1
+      }
+    },
+    {
+      "id": "theo_goblinese_liturgy",
+      "phase": "Mission",
+      "requires": [
+        "theo_naguka_census"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 200
+        },
+        {
+          "id": 859,
+          "qty": 180
+        },
+        {
+          "id": 869,
+          "qty": 130
+        }
+      ],
+      "buffs": {
+        "mdf": 2,
+        "luk": 1
+      }
+    },
+    {
+      "id": "theo_neural_choker",
+      "phase": "Mission",
+      "requires": [
+        "theo_naguka_census"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 260
+        },
+        {
+          "id": 857,
+          "qty": 190
+        },
+        {
+          "id": 865,
+          "qty": 170
+        }
+      ],
+      "buffs": {
+        "mat": 2,
+        "mdf": 1
+      },
+      "reward": {
+        "kind": "item",
+        "id": 1311,
+        "qty": 3
+      }
+    },
+    {
+      "id": "theo_belief_firmware",
+      "phase": "Mission",
+      "requires": [
+        "theo_neural_choker"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 270
+        },
+        {
+          "id": 853,
+          "qty": 250
+        },
+        {
+          "id": 849,
+          "qty": 170
+        }
+      ],
+      "buffs": {
+        "mat": 3,
+        "mmp": 15
+      }
+    },
+    {
+      "id": "theo_preaching_towers",
+      "phase": "Mission",
+      "requires": [
+        "theo_goblinese_liturgy"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 260
+        },
+        {
+          "id": 852,
+          "qty": 230
+        },
+        {
+          "id": 854,
+          "qty": 210
+        }
+      ],
+      "buffs": {
+        "mdf": 2,
+        "mhp": 15
+      }
+    },
+    {
+      "id": "theo_mass_baptism",
+      "phase": "Mission",
+      "requires": [
+        "theo_belief_firmware",
+        "theo_preaching_towers"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 330
+        },
+        {
+          "id": 869,
+          "qty": 250
+        },
+        {
+          "id": 866,
+          "qty": 210
+        }
+      ],
+      "buffs": {
+        "mdf": 3,
+        "luk": 3,
+        "mhp": 20
+      },
+      "reward": {
+        "kind": "item",
+        "id": 45,
+        "qty": 5
+      }
+    },
+    {
+      "id": "theo_version_control",
+      "phase": "Doctrine",
+      "requires": [
+        "theo_holy_office"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 200
+        },
+        {
+          "id": 853,
+          "qty": 170
+        },
+        {
+          "id": 867,
+          "qty": 150
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "theo_infallibility_compiler",
+      "phase": "Doctrine",
+      "requires": [
+        "theo_version_control"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 250
+        },
+        {
+          "id": 853,
+          "qty": 230
+        },
+        {
+          "id": 849,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 3,
+        "mdf": 1
+      }
+    },
+    {
+      "id": "theo_sacrament_protocol",
+      "phase": "Doctrine",
+      "requires": [
+        "theo_version_control"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 240
+        },
+        {
+          "id": 850,
+          "qty": 170
+        },
+        {
+          "id": 866,
+          "qty": 190
+        }
+      ],
+      "buffs": {
+        "mmp": 20,
+        "mat": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 1401,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_soul_metrology",
+      "phase": "Doctrine",
+      "requires": [
+        "theo_infallibility_compiler",
+        "theo_sacrament_protocol"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 310
+        },
+        {
+          "id": 849,
+          "qty": 250
+        },
+        {
+          "id": 851,
+          "qty": 270
+        }
+      ],
+      "buffs": {
+        "mat": 3,
+        "mdf": 2,
+        "mmp": 20
+      }
+    },
+    {
+      "id": "theo_trinity_refactor",
+      "phase": "Doctrine",
+      "requires": [
+        "theo_soul_metrology"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 310
+        },
+        {
+          "id": 850,
+          "qty": 270
+        },
+        {
+          "id": 851,
+          "qty": 290
+        }
+      ],
+      "buffs": {
+        "mdf": 3,
+        "mmp": 20
+      }
+    },
+    {
+      "id": "theo_deus_machina",
+      "phase": "Apotheosis",
+      "requires": [
+        "theo_trinity_refactor",
+        "theo_mass_baptism",
+        "theo_buttress_engines"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 600
+        },
+        {
+          "id": 866,
+          "qty": 520
+        },
+        {
+          "id": 849,
+          "qty": 460
+        },
+        {
+          "id": 864,
+          "qty": 500
+        }
+      ],
+      "buffs": {
+        "mhp": 60,
+        "mmp": 60,
+        "mat": 6,
+        "mdf": 6,
+        "def": 4,
+        "luk": 4
+      },
+      "reward": {
+        "kind": "armor",
+        "id": 519,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_theonuclear",
+      "phase": "Apotheosis",
+      "requires": [
+        "theo_trinity_refactor",
+        "theo_basilica_railgun",
+        "theo_dogmatic_shield"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 600
+        },
+        {
+          "id": 850,
+          "qty": 520
+        },
+        {
+          "id": 865,
+          "qty": 500
+        },
+        {
+          "id": 871,
+          "qty": 420
+        }
+      ],
+      "buffs": {
+        "atk": 6,
+        "mat": 6,
+        "mmp": 40
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 527,
+        "qty": 1
+      }
+    },
+    {
+      "id": "theo_weeping_icon",
+      "phase": "Apostasy",
+      "requires": [
+        "theo_ascension"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 867,
+          "qty": 130
+        },
+        {
+          "id": 870,
+          "qty": 110
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "theo_prayer_trial",
+      "phase": "Apostasy",
+      "requires": [
+        "theo_naguka_census"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 852,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 110
+        }
+      ],
+      "buffs": {
+        "mdf": 1,
+        "luk": 1
+      }
+    },
+    {
+      "id": "theo_goblin_soul_question",
+      "phase": "Apostasy",
+      "requires": [
+        "theo_goblinese_liturgy"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 860,
+          "qty": 150
+        },
+        {
+          "id": 858,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "theo_shroud_reweighed",
+      "phase": "Apostasy",
+      "requires": [
+        "theo_version_control"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 170
+        },
+        {
+          "id": 871,
+          "qty": 130
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    }
+  ]
+}

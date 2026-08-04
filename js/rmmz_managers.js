@@ -591,27 +591,9 @@ StorageManager.saveObject = function(saveName, object) {
 };
 
 StorageManager.loadObject = function(saveName) {
-    console.log("StorageManager.loadObject - Loading:", saveName);
-
     return this.loadZip(saveName)
-        .then(zip => {
-            console.log("✓ loadZip completed - Zip data:", zip ? `${zip.length} bytes` : "NULL");
-            return this.zipToJson(zip);
-        })
-        .then(json => {
-            console.log("✓ zipToJson completed - JSON length:", json ? json.length : "NULL");
-            return this.jsonToObject(json);
-        })
-        .then(object => {
-            console.log("✓ jsonToObject completed - Object keys:", object ? Object.keys(object).join(", ") : "NULL");
-            return object;
-        })
-        .catch(error => {
-            console.error("StorageManager.loadObject FAILED at some step");
-            console.error("Error:", error.message);
-            console.error("Stack:", error.stack);
-            throw error;
-        });
+        .then(zip => this.zipToJson(zip))
+        .then(json => this.jsonToObject(json));
 };
 
 StorageManager.objectToJson = function(object) {
@@ -628,27 +610,9 @@ StorageManager.objectToJson = function(object) {
 StorageManager.jsonToObject = function(json) {
     return new Promise((resolve, reject) => {
         try {
-            console.log("jsonToObject - Parsing JSON...");
-            console.log("JSON input length:", json ? json.length : "NULL");
-            console.log("JSON preview (first 100 chars):", json ? json.substring(0, 100) : "NULL");
-
             const object = JsonEx.parse(json);
-
-            console.log("✓ JSON parsing successful");
-            console.log("Parsed object type:", typeof object);
-            console.log("Parsed object keys:", object ? Object.keys(object).length : "NULL");
-
             resolve(object);
         } catch (e) {
-            console.error("jsonToObject JSON PARSING FAILED");
-            console.error("Error message:", e.message);
-            console.error("Error name:", e.name);
-            console.error("JSON type:", typeof json);
-            console.error("JSON length:", json ? json.length : "NULL");
-            if (json && json.length < 500) {
-                console.error("Full JSON content:", json);
-            }
-            console.error("Full error:", e);
             reject(e);
         }
     });
@@ -671,23 +635,12 @@ StorageManager.jsonToZip = function(json) {
 StorageManager.zipToJson = function(zip) {
     return new Promise((resolve, reject) => {
         try {
-            console.log("zipToJson - Decompressing zip data...");
             if (zip) {
-                console.log("Zip input type:", typeof zip);
-                console.log("Zip is array?", Array.isArray(zip));
-                const json = pako.inflate(zip, { to: "string" });
-                console.log("✓ Decompression successful");
-                resolve(json);
+                resolve(pako.inflate(zip, { to: "string" }));
             } else {
-                console.warn("zipToJson - No zip data provided, returning 'null'");
                 resolve("null");
             }
         } catch (e) {
-            console.error("zipToJson DECOMPRESSION FAILED");
-            console.error("Error message:", e.message);
-            console.error("Error name:", e.name);
-            console.error("Zip data type:", typeof zip);
-            console.error("Full error:", e);
             reject(e);
         }
     });
@@ -702,25 +655,10 @@ StorageManager.saveZip = function(saveName, zip) {
 };
 
 StorageManager.loadZip = function(saveName) {
-    console.log("loadZip - Save name:", saveName);
-    console.log("loadZip - Mode:", this.isLocalMode() ? "Local file" : "Browser storage (Forage)");
-
     if (this.isLocalMode()) {
-        return this.loadFromLocalFile(saveName).then(data => {
-            console.log("✓ loadFromLocalFile completed - Data size:", data ? data.length : "NULL");
-            return data;
-        }).catch(error => {
-            console.error("loadFromLocalFile FAILED:", error.message);
-            throw error;
-        });
+        return this.loadFromLocalFile(saveName);
     } else {
-        return this.loadFromForage(saveName).then(data => {
-            console.log("✓ loadFromForage completed - Data size:", data ? data.length : "NULL");
-            return data;
-        }).catch(error => {
-            console.error("loadFromForage FAILED:", error.message);
-            throw error;
-        });
+        return this.loadFromForage(saveName);
     }
 };
 
@@ -766,24 +704,15 @@ StorageManager.saveToLocalFile = function(saveName, zip) {
 
 StorageManager.loadFromLocalFile = function(saveName) {
     const filePath = this.filePath(saveName);
-    console.log("loadFromLocalFile - File path:", filePath);
-
     return new Promise((resolve, reject) => {
         try {
-            console.log("Attempting to read file...");
             const data = this.fsReadFile(filePath);
-            console.log("fsReadFile returned:", data ? `Data (${data.length} bytes)` : "NULL/UNDEFINED");
-
             if (data) {
-                console.log("✓ File read successful");
                 resolve(data);
             } else {
-                console.error("File read returned no data");
                 reject(new Error("Savefile not found"));
             }
         } catch (error) {
-            console.error("Exception during file read:", error.message);
-            console.error("Error stack:", error.stack);
             reject(error);
         }
     });
@@ -1001,7 +930,7 @@ ImageManager.loadCharacter = function(filename) {
 };
 
 ImageManager.loadFace = function(filename) {
-    return this.loadBitmap("img/faces/", filename);
+    return this.loadBitmap("img/busts/", filename);
 };
 
 ImageManager.loadParallax = function(filename) {

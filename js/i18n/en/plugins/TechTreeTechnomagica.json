@@ -1,0 +1,70 @@
+{
+  "name": "Technomagica",
+  "blurb": "Esoteric Heavy Industries treats a working as an artefact with a build, a test suite and a signature. Every node here is specified against the dead-flats calibration, because that is the only bench where the numbers repeat.",
+  "nodes": {
+    "tm_leyline_tap": {
+      "name": "The Leyline Tap",
+      "desc": "A grounded rod driven three metres into a surveyed line, with the induced current taken off a copper coil of some four hundred turns. The output is the first arcane supply with a number on it: it can be metered, logged against time of day and compared between sites. It is also unregulated, arcs across the terminals at anything above a quarter of rated draw, and varies by a factor of three over the tidal cycle. Every later stage in the chain exists to put a specification between this rod and a wand."
+    },
+    "tm_sanctified_microchip": {
+      "name": "The Sanctified Microchip",
+      "desc": "The binding sigil is drawn as a mask layer and etched in the same lithography pass as the logic, so the geometry that holds the working is defined to the same tolerance as a gate and inherits the same yield statistics. A sigil written this way retains its charge as stably as a memory cell, is addressed on the same bus, and can be read back and verified without being cast. The orthographic law that governs a spoken name governs the layout: a break in the traced line is a seam, and a seam is a fault at wafer scale."
+    },
+    "tm_compiler": {
+      "name": "The Incantation Compiler",
+      "desc": "The compiler takes one fused CamelCase name as its source and emits a flashable image for a wand. The front end checks the orthographic law statically, so a seam that would have discharged into the speaker is now a diagnostic with an offset into the token; the middle end resolves components against the inventory and rejects a build whose reservoir stage is unspecified; the back end lays out the sigil geometry and emits the mask. A working that will not compile has never been cast, and the stage exists for that reason alone."
+    },
+    "tm_regression": {
+      "name": "Dead-Magic-Zone Regression",
+      "desc": "Every build is cast in the dead flats, where radius, duration and target are linear in the mana spent and residuals stay under two percent, and the measured output is diffed against the envelope the compiler declared. A build that leaves the envelope on any of the three axes is failed and does not reach a wand. The suite catches the class of defect that only appears at scale: a working correct on a single cast and divergent on the thousandth, which no operator would find by casting it."
+    },
+    "tm_aether_battery": {
+      "name": "The Aether Battery",
+      "desc": "An ethereal shard clamped between electrodes and sealed, specified by capacity, peak draw and self-discharge. The cell holds its charge with a half-life of four to seven months, sustains a working draw without the arcing the tap shows, and can be swapped in the field. It decouples the wand from geography: range was previously the distance at which the ambient field fell below threshold, and is now the capacity divided by the draw."
+    },
+    "tm_thaumic_processor": {
+      "name": "The Thaumic Processor",
+      "desc": "Some thousands of sanctified cores on one die, sharing a mana bus and a scheduler that assigns workings to cores the way threads are assigned to processors. Throughput scales with core count until the bus saturates, at which point the limit is the supply and not the silicon. Casting acquires the vocabulary and the failure modes of any concurrent system: queue depth, contention on the shared bus, priority inversion when a long rite holds a core, and a class of defect that only appears when two workings resolve on the same target in the same cycle."
+    },
+    "tm_spell_forge": {
+      "name": "The Spell Forge",
+      "desc": "The whole toolchain behind one interface: compile the name, run the dead-flats suites, sign the artefact, package it with its envelope and push it to a hundred thousand wands over the air. The measured effect is on the interval between a change and its arrival, which falls from the length of a career to the length of a night. Everything downstream of that interval, the recall procedure, the rollback, the staged rollout, exists because the interval is now shorter than the time it takes to notice a defect."
+    },
+    "tm_dead_repo_fork": {
+      "name": "Forking the Ninety-Two",
+      "desc": "The ninety-two dimensions lost in the Squishing are treated as unmaintained repositories. Their surviving workings are extracted, stripped of dependencies that resolve to nothing in this dimension, and ported onto live leyline primitives, with the call sites rewritten one at a time and the behaviour diffed against whatever documentation came out with the code. Provenance cannot be established for any of it: there is no authenticated signature, no test suite and no author to ask. The imports pass the dead-flats suite and are shipped."
+    },
+    "tm_wired_grimoire": {
+      "name": "The Wired Grimoire",
+      "desc": "A codex with a fetch loop. Overnight it pulls forked workings from the ninety-two repositories, merges them into its own index and rewrites its pages in place, keeping a revision history that is itself a working. The merges run unattended and the conflict resolution is automatic, so a small fraction of pages each night hold a working that is in neither parent. Those pages compile, pass the suite and carry no author, and the index lists them under the date of the merge."
+    },
+    "tm_forbidden_codex": {
+      "name": "The EHI Forbidden Codex",
+      "desc": "The archive of builds that pass every suite and are unsafe regardless: workings that fork themselves and so have unbounded cost, effects that stay inside the envelope in the flats and diverge on a line, bindings whose stop instruction is not idempotent and so cannot be issued twice. The common property is that the defect is outside what the suite measures, since the suite measures radius, duration and target. EHI seals the compilation, marks it unshippable and keeps it, because the failures are the only record of what the suite does not cover."
+    },
+    "tm_emf_ghost": {
+      "name": "The EMF Ghost Detector",
+      "desc": "A single-axis milligauss meter with an unshielded ferrite probe, no notch filter at mains frequency, no differential input and an audible tone wired straight to the gain stage. Logged against a calibrated reference, the great majority of readings are the fifty hertz field of building wiring, the switching transient of a compressor motor, or the amplifier's own noise floor rising as the gain is turned up. On a strong line the probe does answer a real field, at an amplitude inside the range the artefacts occupy, and the instrument carries nothing that could separate the two."
+    },
+    "tm_orgone": {
+      "name": "The Orgone Accumulator",
+      "desc": "Alternating layers of steel wool and organic insulation in a cabinet, on a stated mechanism of accumulating a life force for which no instrument has ever returned a reading. Loaded with real ethereal shards the cabinet does hold a measurable field, proportional to the charge put in and decaying with the shards' own half-life; removed, the field goes with them and the cabinet reads ambient. The reported therapeutic effect is the same in both configurations, and the same again in a cabinet built with the layer order reversed."
+    },
+    "tm_radionics": {
+      "name": "The Radionics Box",
+      "desc": "A cabinet of calibrated dials, a rub plate and a sample well, tuned to rates the operator derives during the session by stroking the plate until it drags. The dials terminate in wiring that is not connected to anything: there is no signal path from the well to the patient, no transducer and no supply, and the schematic supplied with the instrument shows this. The design treats the absence of a path as the operating principle, which places the whole instrument outside the class of things a bench can test."
+    },
+    "tm_signing_authority": {
+      "name": "The Sigil Signing Authority",
+      "desc": "Every working is hashed with its envelope and signed by a sealed authority whose private half never leaves the vault, and every wand verifies that signature against a root key burned into it at manufacture before it will flash anything. A forked or tampered build fails verification at the wand, so trust is enforced at the point of casting and not at the point of distribution. The failure mode of the scheme is the authority itself: the vault has one key, and nothing in the design covers its loss."
+    },
+    "tm_ci_pipeline": {
+      "name": "The Continuous Casting Pipeline",
+      "desc": "Compile, regression-cast in the flats, sign, package, deploy: each stage triggers the next on a pass and halts the chain on a failure, with no manual gate at any point. Median wall time from commit to wand is under nine hours, almost all of it the suite, and a name committed in the evening is live by morning. Removing the manual gate removes the last stage at which anyone read the working, which the incident reports afterwards all note."
+    },
+    "tm_containment": {
+      "name": "Spell Containment Sandboxing",
+      "desc": "A self-rewriting working is run inside a vault sunk in the dead flats: ambient field under the detection threshold, no surveyed line within a day's walk, one metered mana feed that can be cut from outside, and no conductive path crossing the enclosure. The working executes and is observed through the feed and through instruments that are themselves inside, since anything crossing the wall is a channel. It cannot propagate, which is the condition the Codex archive is opened under."
+    }
+  }
+}

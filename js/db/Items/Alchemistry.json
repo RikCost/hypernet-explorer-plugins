@@ -1,0 +1,613 @@
+[
+  {
+    "id": "guncotton_synthesis",
+    "name": "Guncotton",
+    "description": "Produce high explosive nitrocellulose from cotton and acids.",
+    "mundane": true,
+    "target_item_id": 0,
+    "required_ingredients": [
+      {
+        "item_id": 915,
+        "quantity": 1
+      },
+      {
+        "item_id": 903,
+        "quantity": 2
+      },
+      {
+        "item_id": 885,
+        "quantity": 1
+      },
+      {
+        "item_id": 884,
+        "quantity": 2
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 915,
+            "quantity": 1
+          },
+          {
+            "item_id": 903,
+            "quantity": 2
+          }
+        ],
+        "target_vessel": "flask_250ml",
+        "duration": 5,
+        "temperature": 25,
+        "visual_effect": "bubbling_yellow",
+        "success_message": "The acids mix and heat up.",
+        "failure_message": "The mixture boiled over!",
+        "failure_thresholds": {
+          "max_temperature": 50
+        }
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 885,
+            "quantity": 1
+          }
+        ],
+        "duration": 30,
+        "temperature": 20,
+        "visual_effect": "texture_change",
+        "success_message": "The cellulose reacts with the acid.",
+        "failure_message": "It caught fire!"
+      },
+      {
+        "step_number": 3,
+        "action": "WASH",
+        "inputs": [
+          "step_2_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 2
+          }
+        ],
+        "duration": 10,
+        "visual_effect": "liquid_clear",
+        "success_message": "The product is washed clean of acid."
+      },
+      {
+        "step_number": 4,
+        "action": "DRY",
+        "inputs": [
+          "step_3_result"
+        ],
+        "duration": 60,
+        "temperature": 40,
+        "visual_effect": "fluffy_texture",
+        "success_message": "The guncotton is dry and ready.",
+        "output_item_id": 0
+      }
+    ]
+  },
+  {
+    "id": "nitroglycerin_synthesis",
+    "name": "Nitroglycerin",
+    "description": "Produce powerful but unstable explosive from glycerol and acids.",
+    "mundane": true,
+    "target_item_id": 957,
+    "required_ingredients": [
+      {
+        "item_id": 915,
+        "quantity": 1
+      },
+      {
+        "item_id": 903,
+        "quantity": 1
+      },
+      {
+        "item_id": 905,
+        "quantity": 1
+      },
+      {
+        "item_id": 884,
+        "quantity": 2
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 915,
+            "quantity": 1
+          },
+          {
+            "item_id": 903,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "temperature": 10,
+        "visual_effect": "clear_liquid",
+        "success_message": "The nitrating mixture is ready.",
+        "failure_thresholds": {
+          "max_temperature": 20
+        }
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 905,
+            "quantity": 1
+          }
+        ],
+        "duration": 20,
+        "temperature": 15,
+        "visual_effect": "oily_droplets",
+        "success_message": "Glycerol reacts to form nitroglycerin.",
+        "failure_message": "Detonation occurred!"
+      },
+      {
+        "step_number": 3,
+        "action": "WASH",
+        "inputs": [
+          "step_2_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 2
+          }
+        ],
+        "duration": 10,
+        "visual_effect": "separation",
+        "success_message": "The nitroglycerin is washed.",
+        "output_item_id": 957
+      }
+    ]
+  },
+  {
+    "id": "aqua_regia_preparation",
+    "name": "Aqua Regia",
+    "description": "Mix acids to create a solution that can dissolve gold.",
+    "mundane": true,
+    "target_item_id": 951,
+    "required_ingredients": [
+      {
+        "item_id": 915,
+        "quantity": 1
+      },
+      {
+        "item_id": 897,
+        "quantity": 3
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 915,
+            "quantity": 1
+          },
+          {
+            "item_id": 897,
+            "quantity": 3
+          }
+        ],
+        "duration": 2,
+        "temperature": 25,
+        "visual_effect": "fuming_orange",
+        "success_message": "Aqua Regia is ready. It fumes orange.",
+        "output_item_id": 951
+      }
+    ]
+  },
+  {
+    "id": "frost_bomb_synthesis",
+    "name": "Frost Bomb",
+    "description": "Produce Ammonium Nitrate for use as an endothermic explosive.",
+    "mundane": true,
+    "target_item_id": 655,
+    "required_ingredients": [
+      {
+        "item_id": 889,
+        "quantity": 1
+      },
+      {
+        "item_id": 915,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 889,
+            "quantity": 1
+          },
+          {
+            "item_id": 915,
+            "quantity": 1
+          }
+        ],
+        "duration": 10,
+        "temperature": 25,
+        "visual_effect": "clear_liquid",
+        "success_message": "Ammonium nitrate solution formed."
+      },
+      {
+        "step_number": 2,
+        "action": "DRY",
+        "inputs": [
+          "step_1_result"
+        ],
+        "duration": 30,
+        "temperature": 80,
+        "visual_effect": "white_crystals",
+        "success_message": "Frost Bomb material is ready.",
+        "output_item_id": 655
+      }
+    ]
+  },
+  {
+    "id": "hand_sanitizer_synthesis",
+    "name": "Hand Sanitizer",
+    "description": "Produce hand sanitizer from ethanol, glycerol, and water.",
+    "mundane": true,
+    "target_item_id": 1,
+    "required_ingredients": [
+      {
+        "item_id": 898,
+        "quantity": 1
+      },
+      {
+        "item_id": 905,
+        "quantity": 1
+      },
+      {
+        "item_id": 884,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 898,
+            "quantity": 1
+          },
+          {
+            "item_id": 905,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "Ethanol and Glycerol are mixed."
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "Water is added to create the sanitizer gel.",
+        "output_item_id": 1
+      }
+    ]
+  },
+  {
+    "id": "fulminate_of_mercury_synthesis",
+    "name": "Fulminate of Mercury",
+    "description": "Produce primary explosive from mercury, nitric acid, and ethanol.",
+    "mundane": true,
+    "target_item_id": 956,
+    "required_ingredients": [
+      {
+        "item_id": 934,
+        "quantity": 1
+      },
+      {
+        "item_id": 915,
+        "quantity": 1
+      },
+      {
+        "item_id": 898,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 934,
+            "quantity": 1
+          },
+          {
+            "item_id": 915,
+            "quantity": 1
+          }
+        ],
+        "duration": 10,
+        "success_message": "Mercury dissolves in the acid."
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 898,
+            "quantity": 1
+          }
+        ],
+        "duration": 15,
+        "success_message": "Fulminate of Mercury crystals precipitate."
+      },
+      {
+        "step_number": 3,
+        "action": "WASH",
+        "inputs": [
+          "step_2_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "The crystals are washed clean.",
+        "output_item_id": 956
+      }
+    ]
+  },
+  {
+    "id": "smelling_salts_synthesis",
+    "name": "Smelling Salts",
+    "description": "Produce ammonium acetate as smelling salts from ammonia and acetic acid.",
+    "mundane": true,
+    "target_item_id": 38,
+    "required_ingredients": [
+      {
+        "item_id": 889,
+        "quantity": 1
+      },
+      {
+        "item_id": 886,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 889,
+            "quantity": 1
+          },
+          {
+            "item_id": 886,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "The reaction produces smelling salts.",
+        "output_item_id": 38
+      }
+    ]
+  },
+  {
+    "id": "health_potion_synthesis",
+    "name": "Health Potion",
+    "description": "Synthesize a health potion from herbs and arcane essence.",
+    "mundane": true,
+    "target_item_id": 648,
+    "required_ingredients": [
+      {
+        "item_id": 900,
+        "quantity": 2
+      },
+      {
+        "item_id": 947,
+        "quantity": 1
+      },
+      {
+        "item_id": 884,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 900,
+            "quantity": 2
+          },
+          {
+            "item_id": 947,
+            "quantity": 1
+          }
+        ],
+        "duration": 10,
+        "success_message": "The herbs and essence fuse."
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "The potion is ready.",
+        "output_item_id": 648
+      }
+    ]
+  },
+  {
+    "id": "hydrochloric_acid_synthesis",
+    "name": "Hydrochloric Acid",
+    "description": "Produce hydrochloric acid from salt and sulfuric acid.",
+    "mundane": true,
+    "target_item_id": 897,
+    "required_ingredients": [
+      {
+        "item_id": 883,
+        "quantity": 1
+      },
+      {
+        "item_id": 903,
+        "quantity": 1
+      },
+      {
+        "item_id": 884,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 883,
+            "quantity": 1
+          },
+          {
+            "item_id": 903,
+            "quantity": 1
+          }
+        ],
+        "duration": 10,
+        "success_message": "Hydrogen chloride gas is generated."
+      },
+      {
+        "step_number": 2,
+        "action": "COMBINE",
+        "inputs": [
+          "step_1_result"
+        ],
+        "ingredients": [
+          {
+            "item_id": 884,
+            "quantity": 1
+          }
+        ],
+        "duration": 5,
+        "success_message": "The gas dissolves to form Hydrochloric Acid.",
+        "output_item_id": 897
+      }
+    ]
+  },
+  {
+    "id": "nitric_acid_synthesis",
+    "name": "Nitric Acid",
+    "description": "Produce nitric acid from saltpeter and sulfuric acid.",
+    "mundane": true,
+    "target_item_id": 915,
+    "required_ingredients": [
+      {
+        "item_id": 904,
+        "quantity": 1
+      },
+      {
+        "item_id": 903,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 904,
+            "quantity": 1
+          },
+          {
+            "item_id": 903,
+            "quantity": 1
+          }
+        ],
+        "duration": 15,
+        "temperature": 100,
+        "success_message": "Nitric acid vapors condense.",
+        "output_item_id": 915
+      }
+    ]
+  },
+  {
+    "id": "diethyl_ether_synthesis",
+    "name": "Diethyl Ether",
+    "description": "Produce diethyl ether from ethanol and sulfuric acid.",
+    "mundane": true,
+    "target_item_id": 919,
+    "required_ingredients": [
+      {
+        "item_id": 898,
+        "quantity": 2
+      },
+      {
+        "item_id": 903,
+        "quantity": 1
+      }
+    ],
+    "steps": [
+      {
+        "step_number": 1,
+        "action": "COMBINE",
+        "ingredients": [
+          {
+            "item_id": 898,
+            "quantity": 2
+          },
+          {
+            "item_id": 903,
+            "quantity": 1
+          }
+        ],
+        "duration": 20,
+        "temperature": 140,
+        "success_message": "Ether vapors are collected and condensed.",
+        "output_item_id": 919
+      }
+    ]
+  }
+]

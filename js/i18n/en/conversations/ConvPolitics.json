@@ -1,0 +1,185 @@
+{
+  "stance": {
+    "support": [
+      "Say what you like about {head}, the {power} has never run smoother.",
+      "The {party} understands people like me. I'd vote for them twice if I could.",
+      "{head} is the only {title} in living memory worth the chair.",
+      "Things are finally moving in the right direction under the {party}.",
+      "My grandparents would be proud of what the {power} is becoming.",
+      "I put a {party} pin on my coat and I wear it everywhere.",
+      "Whatever the grumblers say, {head} inherited a mess and is cleaning it up.",
+      "Strong leadership, steady hands. That's all I ask, and that's what we have."
+    ],
+    "oppose": [
+      "Don't get me started on {head}. Worst {title} the {power} has ever suffered.",
+      "The {party} bought this government and now we're all paying the interest.",
+      "Every promise {head} made has quietly evaporated. Typical.",
+      "The {power} deserves better than this circus they call a government.",
+      "One more term of the {party} and there'll be nothing left to govern.",
+      "I didn't vote for this, and I know plenty who say the same.",
+      "They call it order. I call it a boot on our necks.",
+      "Someone ought to ask {head} where all the money actually went."
+    ],
+    "apathetic": [
+      "Politics? I have enough trouble keeping bread on the table.",
+      "{title} this, {election} that... none of it changes my rent.",
+      "They're all the same once they're in the chair, if you ask me.",
+      "I stopped reading the proclamations years ago. Better for the digestion.",
+      "Whoever wins, I'll still be up at dawn doing the same work.",
+      "My neighbor won't shut up about the {party}. I just nod and think about lunch."
+    ],
+    "radical": [
+      "Talk changes nothing. The {power} needs fire, not another {election}.",
+      "When the time comes, everyone will have to pick a side. I've picked mine.",
+      "The {party} is the only thing standing between us and the abyss, history will vindicate us.",
+      "They laughed at us in the squares. They won't laugh forever.",
+      "Every empire looks eternal the week before it falls.",
+      "I keep a list of everyone who said it couldn't be done."
+    ]
+  },
+  "election": {
+    "upcoming": [
+      "Only {days} days until the {election}. You can feel it in the streets.",
+      "The {election} is {days} days off and the candidates are already at each other's throats.",
+      "{days} days left. I haven't decided, and don't you dare try to convince me.",
+      "They've started painting slogans on the walls again, {election} season.",
+      "Everyone smiles more before a {election}. It never lasts.",
+      "I'm told the {election} is in {days} days. The bunting is already up."
+    ],
+    "won": [
+      "My side actually won the last {election}. I'm still not used to it.",
+      "I voted for {winner} and for once it counted for something.",
+      "We won! Now let's see if they remember us little people.",
+      "There was dancing in our street the night {winner} took it.",
+      "I keep the victory broadsheet folded in my coat pocket."
+    ],
+    "lost": [
+      "{winner} won. I still can't believe people fell for it.",
+      "My vote went straight into the gutter, as usual.",
+      "The {election} was decided before a single vote, mark my words.",
+      "We'll be back. Losing one {election} isn't losing the argument.",
+      "I don't talk politics with my cousin anymore. Not since {winner} won."
+    ]
+  },
+  "rumor": [
+    "They say {rumorSubject} is mixed up in some {rumorKind}. I heard it from three people.",
+    "Have you heard about {rumorSubject}? Something about a {rumorKind}. Hush-hush.",
+    "Everyone at the market is whispering about {rumorSubject} and that {rumorKind} business.",
+    "I don't spread gossip... but {rumorSubject}? A {rumorKind}? Where there's smoke...",
+    "My barber swears the {rumorSubject} {rumorKind} story is true. Barbers know things.",
+    "If even half of what they say about {rumorSubject} is true, heads will roll."
+  ],
+  "grumble": [
+    "Between you and me, {gripe} is bleeding us dry.",
+    "I could live with everything else if it weren't for {gripe}.",
+    "They expect us to smile and thank them for {gripe}. Unbelievable.",
+    "My father never had to put up with anything like {gripe}.",
+    "First it was temporary, now {gripe} is just... life.",
+    "Someone in the capital got promoted for inventing {gripe}, I guarantee it."
+  ],
+  "officeHolder": [
+    "Being {office} of {group} is mostly paperwork and complaints. Mostly complaints.",
+    "They call me {office} now. My mother finally tells the neighbors about me.",
+    "Everyone wants a favor from the {office}. Few remember the {office} at festival time.",
+    "I never wanted to be {office}, but somebody competent had to do it."
+  ],
+  "debate": [
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Did you follow the last election? A disgrace."
+        ],
+        [
+          1,
+          "You say that every time your side loses."
+        ],
+        [
+          0,
+          "My side? I vote on principle, not habit!"
+        ],
+        [
+          1,
+          "Funny how your principles always pick the same color."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Taxes again. The capital eats and we starve."
+        ],
+        [
+          1,
+          "Roads, guards, festivals, you think those are free?"
+        ],
+        [
+          0,
+          "I've seen our road. I want my money back."
+        ],
+        [
+          1,
+          "Then run for office and fix it yourself!"
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "The hyperpowers carve up the map like a roast."
+        ],
+        [
+          1,
+          "Better a strong patron than chaos on the border."
+        ],
+        [
+          0,
+          "Until the patron decides your town is the price."
+        ],
+        [
+          1,
+          "That's why you pick the winning patron."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Whoever wins these elections, the bread costs more."
+        ],
+        [
+          1,
+          "Politicians change. The queue at the bakery is forever."
+        ],
+        [
+          0,
+          "Maybe the baker should run things for a while."
+        ],
+        [
+          1,
+          "She'd have my vote. At least she rises early."
+        ]
+      ]
+    }
+  ],
+  "fallback": {
+    "party": "the party",
+    "head": "the boss",
+    "title": "ruler",
+    "power": "the realm",
+    "election": "election",
+    "gripe": "the taxes",
+    "rumorSubject": "someone high up",
+    "rumorKind": "scandal",
+    "winner": "the winners",
+    "office": "officeholder",
+    "group": "town"
+  }
+}

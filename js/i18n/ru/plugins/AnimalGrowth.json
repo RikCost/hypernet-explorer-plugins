@@ -1,0 +1,20 @@
+{
+  "stage": {
+    "baby": "",
+    "adult": ""
+  },
+  "collected": "",
+  "mapNumbered": "",
+  "itemNumbered": "",
+  "petNote": "",
+  "cannotKeep": "",
+  "noAnimalToSell": "",
+  "sold": "",
+  "nothingToCollect": "",
+  "youngAnimal": {
+    "one": "",
+    "other": ""
+  },
+  "pleased": "",
+  "nothingReady": ""
+}

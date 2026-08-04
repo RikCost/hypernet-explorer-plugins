@@ -1,0 +1,2372 @@
+{
+  "positive": [
+    [
+      [
+        0,
+        "Hey {b}, want to share this food I found?"
+      ],
+      [
+        1,
+        "That's really kind of you, {a}! Thanks!"
+      ],
+      [
+        0,
+        "Got to look out for each other!"
+      ]
+    ],
+    [
+      [
+        0,
+        "*tells a silly joke*"
+      ],
+      [
+        1,
+        "*laughs* That's terrible! But I needed that laugh."
+      ],
+      [
+        0,
+        "Sometimes you need to find humor in the chaos!"
+      ]
+    ],
+    [
+      [
+        0,
+        "{b}, let me help bandage that wound."
+      ],
+      [
+        1,
+        "I... thank you. I didn't want to ask."
+      ],
+      [
+        0,
+        "You don't need to ask. We look after each other."
+      ],
+      [
+        1,
+        "I'm lucky to have you around."
+      ]
+    ],
+    [
+      [
+        0,
+        "Remember when we first met? I never thought we'd come this far."
+      ],
+      [
+        1,
+        "Ha! You tried to pick a fight with me back then!"
+      ],
+      [
+        0,
+        "And now I'd trust you with my life. Funny how things change."
+      ],
+      [
+        1,
+        "Same here, friend. Same here."
+      ]
+    ],
+    [
+      [
+        0,
+        "I found this in town. Thought you might like it."
+      ],
+      [
+        1,
+        "You got this... for me? {a}, I don't know what to say."
+      ],
+      [
+        0,
+        "Just saw it and thought of you. No big deal."
+      ],
+      [
+        1,
+        "It is to me. Thank you, truly."
+      ]
+    ],
+    [
+      [
+        0,
+        "I noticed you reading that book about ancient magic."
+      ],
+      [
+        1,
+        "You're interested in magical theory too?"
+      ],
+      [
+        0,
+        "Always have been! Maybe we could study together sometime?"
+      ],
+      [
+        1,
+        "I'd really like that!"
+      ]
+    ],
+    [
+      [
+        0,
+        "Couldn't sleep either?"
+      ],
+      [
+        1,
+        "Bad dreams again. This life... it gets to you."
+      ],
+      [
+        0,
+        "Want to talk about it? I'm here."
+      ],
+      [
+        1,
+        "Thanks. Just having you here helps."
+      ]
+    ],
+    [
+      [
+        0,
+        "You seem down today. Everything okay?"
+      ],
+      [
+        1,
+        "Just... questioning if I'm strong enough for this."
+      ],
+      [
+        0,
+        "Are you kidding? You're one of the strongest people I know."
+      ],
+      [
+        1,
+        "You really mean that? Thank you..."
+      ]
+    ],
+    [
+      [
+        0,
+        "My waterskin is empty..."
+      ],
+      [
+        1,
+        "Here, take mine. I filled it at the last stream."
+      ],
+      [
+        0,
+        "But what about you?"
+      ],
+      [
+        1,
+        "We'll find more water. You need it now."
+      ]
+    ],
+    [
+      [
+        0,
+        "I never told you why I came to this town..."
+      ],
+      [
+        1,
+        "You don't have to if it's too personal."
+      ],
+      [
+        0,
+        "No, I want you to know. I trust you."
+      ],
+      [
+        1,
+        "I'm honored. I'm here to listen."
+      ]
+    ],
+    [
+      [
+        0,
+        "How do you always know which herbs are safe?"
+      ],
+      [
+        1,
+        "My grandmother taught me. Want me to show you?"
+      ],
+      [
+        0,
+        "I'd love to learn from you!"
+      ]
+    ],
+    [
+      [
+        0,
+        "You covered for me back there. I owe you one."
+      ],
+      [
+        1,
+        "You'd have done the same. Don't mention it."
+      ],
+      [
+        0,
+        "Still. It meant something."
+      ],
+      [
+        1,
+        "Then call it even when the time comes."
+      ]
+    ],
+    [
+      [
+        0,
+        "I brought extra rations. Figured we could eat together tonight."
+      ],
+      [
+        1,
+        "You didn't have to do that."
+      ],
+      [
+        0,
+        "I wanted to. You looked like you needed a good meal."
+      ],
+      [
+        1,
+        "I really did. Thank you, {a}."
+      ]
+    ],
+    [
+      [
+        0,
+        "I've been meaning to say, you inspire me. The way you keep going."
+      ],
+      [
+        1,
+        "That might be the kindest thing anyone's said to me in months."
+      ],
+      [
+        0,
+        "It's true."
+      ],
+      [
+        1,
+        "Then I'll keep going. For both of us."
+      ]
+    ],
+    [
+      [
+        0,
+        "Can I show you something I made?"
+      ],
+      [
+        1,
+        "Of course! Let me see."
+      ],
+      [
+        0,
+        "It's not finished yet. But I wanted your opinion."
+      ],
+      [
+        1,
+        "{a}, this is wonderful. Don't change a thing."
+      ]
+    ],
+    [
+      [
+        0,
+        "I saved you a seat. I know you like this spot."
+      ],
+      [
+        1,
+        "You remembered?"
+      ],
+      [
+        0,
+        "Of course I did."
+      ],
+      [
+        1,
+        "Nobody ever does that for me. Thank you."
+      ]
+    ],
+    [
+      [
+        0,
+        "I wrote something. I thought of you when I finished it."
+      ],
+      [
+        1,
+        "Can I read it?"
+      ],
+      [
+        0,
+        "Only if you promise not to go easy on me."
+      ],
+      [
+        1,
+        "I never do. Hand it over."
+      ]
+    ],
+    [
+      [
+        0,
+        "You make it look easy, {b}."
+      ],
+      [
+        1,
+        "Ha. I just hide the struggling better than most."
+      ],
+      [
+        0,
+        "That's almost reassuring."
+      ],
+      [
+        1,
+        "Good. It was meant to be."
+      ]
+    ],
+    [
+      [
+        0,
+        "I was going to give up today."
+      ],
+      [
+        1,
+        "What changed your mind?"
+      ],
+      [
+        0,
+        "You, honestly. Watching you keep going."
+      ],
+      [
+        1,
+        "I didn't know. I'm glad you told me."
+      ]
+    ],
+    [
+      [
+        0,
+        "Happy birthday, {b}. I didn't forget."
+      ],
+      [
+        1,
+        "You remembered. I can't believe you remembered."
+      ],
+      [
+        0,
+        "Of course I did. Come on, I found somewhere good to eat."
+      ],
+      [
+        1,
+        "Lead the way."
+      ]
+    ],
+    [
+      [
+        0,
+        "I was worried about you. You went quiet for days."
+      ],
+      [
+        1,
+        "I needed time to think. But I'm okay."
+      ],
+      [
+        0,
+        "You can always tell me when you need space."
+      ],
+      [
+        1,
+        "I know. That's why it's easy to come back."
+      ]
+    ],
+    [
+      [
+        0,
+        "We made it. I actually didn't think we would."
+      ],
+      [
+        1,
+        "Neither did I, if I'm honest."
+      ],
+      [
+        0,
+        "Then why did you keep pushing?"
+      ],
+      [
+        1,
+        "Because you were still moving."
+      ]
+    ],
+    [
+      [
+        0,
+        "I used to think people like you only existed in stories."
+      ],
+      [
+        1,
+        "People like me?"
+      ],
+      [
+        0,
+        "Ones who actually keep their word."
+      ],
+      [
+        1,
+        "I just do what I say. It should be ordinary."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you ever get lonely out here?"
+      ],
+      [
+        1,
+        "Sometimes. Less than I used to."
+      ],
+      [
+        0,
+        "Because of the others?"
+      ],
+      [
+        1,
+        "Because of you, mostly."
+      ]
+    ],
+    [
+      [
+        0,
+        "I found your old cloak. The one you lost in the forest."
+      ],
+      [
+        1,
+        "That was six months ago! How?"
+      ],
+      [
+        0,
+        "I went looking. Figured it mattered to you."
+      ],
+      [
+        1,
+        "It did. More than I said."
+      ]
+    ],
+    [
+      [
+        0,
+        "You never gave up on me, even when I deserved it."
+      ],
+      [
+        1,
+        "That's not how it works. Not for me."
+      ],
+      [
+        0,
+        "Why?"
+      ],
+      [
+        1,
+        "Because I've needed someone not to give up on me too."
+      ]
+    ]
+  ],
+  "negative": [
+    [
+      [
+        0,
+        "You've been slowing us down lately."
+      ],
+      [
+        1,
+        "Not everyone can be perfect like you think you are."
+      ],
+      [
+        0,
+        "I'm just saying we need to stay focused..."
+      ]
+    ],
+    [
+      [
+        0,
+        "You went through my pack?!"
+      ],
+      [
+        1,
+        "I was looking for healing items. Relax."
+      ],
+      [
+        0,
+        "That's my private stuff! You had no right!"
+      ],
+      [
+        1,
+        "Fine. Next time I'll let you bleed out."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you ever stop talking?"
+      ],
+      [
+        1,
+        "Do you ever stop brooding?"
+      ],
+      [
+        0,
+        "At least I think before I speak."
+      ],
+      [
+        1,
+        "Yeah, you overthink everything."
+      ]
+    ],
+    [
+      [
+        0,
+        "This is just like that time in the caves."
+      ],
+      [
+        1,
+        "Are you seriously bringing that up again?"
+      ],
+      [
+        0,
+        "You never apologized!"
+      ],
+      [
+        1,
+        "Because it wasn't my fault!"
+      ]
+    ],
+    [
+      [
+        0,
+        "You spent HOW much at the tavern?!"
+      ],
+      [
+        1,
+        "I needed information. It was necessary."
+      ],
+      [
+        0,
+        "You needed ale is what you needed!"
+      ],
+      [
+        1,
+        "Don't lecture me about money."
+      ]
+    ],
+    [
+      [
+        0,
+        "That was MY portion of the rations!"
+      ],
+      [
+        1,
+        "You had yours this morning."
+      ],
+      [
+        0,
+        "That was yesterday! Are you even paying attention?"
+      ],
+      [
+        1,
+        "Don't take that tone with me."
+      ]
+    ],
+    [
+      [
+        0,
+        "Your snoring kept me up all night!"
+      ],
+      [
+        1,
+        "I don't snore!"
+      ],
+      [
+        0,
+        "You sound like a dragon with a cold!"
+      ],
+      [
+        1,
+        "Well, your tossing and turning kept ME awake!"
+      ]
+    ],
+    [
+      [
+        0,
+        "When's the last time you bathed?"
+      ],
+      [
+        1,
+        "I've been busy, alright?"
+      ],
+      [
+        0,
+        "That's no excuse to smell like a troll!"
+      ],
+      [
+        1,
+        "You're one to talk!"
+      ]
+    ],
+    [
+      [
+        0,
+        "Why did you take the better weapon?"
+      ],
+      [
+        1,
+        "I found it. Finders keepers."
+      ],
+      [
+        0,
+        "We're supposed to share equally!"
+      ],
+      [
+        1,
+        "Then find your own next time."
+      ]
+    ],
+    [
+      [
+        0,
+        "Whose side are you really on?"
+      ],
+      [
+        1,
+        "What's that supposed to mean?"
+      ],
+      [
+        0,
+        "You've been acting strange lately."
+      ],
+      [
+        1,
+        "Maybe because you're paranoid about everything!"
+      ]
+    ],
+    [
+      [
+        0,
+        "You never said thank you. Not once."
+      ],
+      [
+        1,
+        "I didn't ask for your help in the first place."
+      ],
+      [
+        0,
+        "And yet here I am, still cleaning up your messes."
+      ],
+      [
+        1,
+        "Then stop! Nobody's forcing you!"
+      ]
+    ],
+    [
+      [
+        0,
+        "You told them what I said?!"
+      ],
+      [
+        1,
+        "I thought it was common knowledge."
+      ],
+      [
+        0,
+        "That was private. I trusted you."
+      ],
+      [
+        1,
+        "I didn't think it was a big deal."
+      ],
+      [
+        0,
+        "Of course you didn't."
+      ]
+    ],
+    [
+      [
+        0,
+        "You always disappear right when things get hard."
+      ],
+      [
+        1,
+        "I was handling my own problems!"
+      ],
+      [
+        0,
+        "We're supposed to be in this together."
+      ],
+      [
+        1,
+        "Are we? Because lately it feels very one-sided."
+      ]
+    ],
+    [
+      [
+        0,
+        "Stop making promises you don't keep."
+      ],
+      [
+        1,
+        "Circumstances change, {a}. Things come up."
+      ],
+      [
+        0,
+        "Things always come up. That's the point."
+      ],
+      [
+        1,
+        "Fine. Don't count on me then. Easier for both of us."
+      ]
+    ],
+    [
+      [
+        0,
+        "Did you take credit for what I did?"
+      ],
+      [
+        1,
+        "I may have framed it a certain way."
+      ],
+      [
+        0,
+        "That is a very elegant way of saying you lied."
+      ],
+      [
+        1,
+        "I prefer to call it positioning."
+      ]
+    ],
+    [
+      [
+        0,
+        "I cannot stand how you eat."
+      ],
+      [
+        1,
+        "I cannot stand how you breathe, so we are even."
+      ],
+      [
+        0,
+        "That does not even make sense."
+      ],
+      [
+        1,
+        "Neither does complaining about someone eating."
+      ]
+    ],
+    [
+      [
+        0,
+        "You left me waiting for an hour."
+      ],
+      [
+        1,
+        "I lost track of time."
+      ],
+      [
+        0,
+        "You always lose track of time. Every single time."
+      ],
+      [
+        1,
+        "Then stop being surprised by it."
+      ]
+    ],
+    [
+      [
+        0,
+        "Everything is a joke to you, is it not?"
+      ],
+      [
+        1,
+        "Most things, yes. Laughing is easier than the alternative."
+      ],
+      [
+        0,
+        "Some things deserve to be taken seriously."
+      ],
+      [
+        1,
+        "And some things deserve to be laughed off before they break you."
+      ]
+    ],
+    [
+      [
+        0,
+        "You had no right to make that call without me."
+      ],
+      [
+        1,
+        "You were not there. Someone had to decide."
+      ],
+      [
+        0,
+        "So you decided for both of us."
+      ],
+      [
+        1,
+        "I decided for the situation. You were a luxury I did not have."
+      ]
+    ],
+    [
+      [
+        0,
+        "Stop interrupting me when I speak."
+      ],
+      [
+        1,
+        "I only do it when you are wrong."
+      ],
+      [
+        0,
+        "Which apparently is constantly."
+      ],
+      [
+        1,
+        "You said it, not me."
+      ]
+    ],
+    [
+      [
+        0,
+        "You have been avoiding me."
+      ],
+      [
+        1,
+        "I have been busy."
+      ],
+      [
+        0,
+        "You are always busy when things get uncomfortable."
+      ],
+      [
+        1,
+        "And you always push when I need space. We have our patterns."
+      ]
+    ],
+    [
+      [
+        0,
+        "That was mine and you knew it."
+      ],
+      [
+        1,
+        "It was not labeled."
+      ],
+      [
+        0,
+        "Not everything needs a label, {b}."
+      ],
+      [
+        1,
+        "Then how was I supposed to know?"
+      ],
+      [
+        0,
+        "You were supposed to ask."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you ever listen to anyone other than yourself?"
+      ],
+      [
+        1,
+        "I listen. I just disagree."
+      ],
+      [
+        0,
+        "There is a difference between disagreeing and not hearing."
+      ],
+      [
+        1,
+        "Fine. I am listening now. Are you going to say something worth hearing?"
+      ]
+    ]
+  ],
+  "neutral": [
+    [
+      [
+        0,
+        "The weather's been strange lately, hasn't it?"
+      ],
+      [
+        1,
+        "Yeah, I've noticed that too. Hope it doesn't last."
+      ],
+      [
+        0,
+        "We'll manage either way, I suppose."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you ever wonder why we're really doing this?"
+      ],
+      [
+        1,
+        "Sometimes. But dwelling on it won't change anything."
+      ],
+      [
+        0,
+        "I suppose you're right. Just thinking out loud."
+      ]
+    ],
+    [
+      [
+        0,
+        "It's your turn to cook tonight."
+      ],
+      [
+        1,
+        "Already? Feels like I just cooked yesterday."
+      ],
+      [
+        0,
+        "That was three days ago."
+      ],
+      [
+        1,
+        "Time really blurs, doesn't it?"
+      ]
+    ],
+    [
+      [
+        0,
+        "Clear night. The stars are bright."
+      ],
+      [
+        1,
+        "My village has different constellations."
+      ],
+      [
+        0,
+        "Really? That's interesting."
+      ],
+      [
+        1,
+        "Makes you realize how big the world is."
+      ]
+    ],
+    [
+      [
+        0,
+        "You're up early."
+      ],
+      [
+        1,
+        "Couldn't sleep. Might as well get ready."
+      ]
+    ],
+    [
+      [
+        0,
+        "This town reminds me of home."
+      ],
+      [
+        1,
+        "How so?"
+      ],
+      [
+        0,
+        "The smell of bread baking. Same anywhere you go."
+      ],
+      [
+        1,
+        "Some things are universal, I guess."
+      ]
+    ],
+    [
+      [
+        0,
+        "Had the strangest dream last night."
+      ],
+      [
+        1,
+        "About what?"
+      ],
+      [
+        0,
+        "Can't quite remember. Just felt... important somehow."
+      ],
+      [
+        1,
+        "Dreams can be like that."
+      ]
+    ],
+    [
+      [
+        0,
+        "In my homeland, we have a saying..."
+      ],
+      [
+        1,
+        "What's that?"
+      ],
+      [
+        0,
+        "'The mountain remembers every footstep.'"
+      ],
+      [
+        1,
+        "Meaning we leave our mark wherever we go?"
+      ],
+      [
+        0,
+        "Something like that."
+      ]
+    ],
+    [
+      [
+        0,
+        "Is that you humming?"
+      ],
+      [
+        1,
+        "Oh, sorry. Old habit."
+      ],
+      [
+        0,
+        "No, it's nice. What song is it?"
+      ],
+      [
+        1,
+        "Something my mother used to sing."
+      ]
+    ],
+    [
+      [
+        0,
+        "Black cat just crossed my path earlier."
+      ],
+      [
+        1,
+        "You're not superstitious, are you?"
+      ],
+      [
+        0,
+        "Not really. But my grandmother was."
+      ],
+      [
+        1,
+        "Mine too. Always had a charm for everything."
+      ]
+    ],
+    [
+      [
+        0,
+        "That merchant seemed shady."
+      ],
+      [
+        1,
+        "Most of them are, in my experience."
+      ],
+      [
+        0,
+        "Still, might have useful information."
+      ],
+      [
+        1,
+        "If you can afford it."
+      ]
+    ],
+    [
+      [
+        0,
+        "Look, deer tracks."
+      ],
+      [
+        1,
+        "Fresh ones too."
+      ],
+      [
+        0,
+        "Means water's probably nearby."
+      ],
+      [
+        1,
+        "Good observation."
+      ]
+    ],
+    [
+      [
+        0,
+        "These ruins must be ancient."
+      ],
+      [
+        1,
+        "Wonder what happened to the people who built them."
+      ],
+      [
+        0,
+        "Same thing that happens to all civilizations, I suppose."
+      ],
+      [
+        1,
+        "Time conquers everything eventually."
+      ]
+    ],
+    [
+      [
+        0,
+        "Fog's rolling in."
+      ],
+      [
+        1,
+        "Makes it harder to see trouble coming."
+      ],
+      [
+        0,
+        "Also makes it harder for trouble to see us."
+      ],
+      [
+        1,
+        "Fair point."
+      ]
+    ],
+    [
+      [
+        0,
+        "You come here often?"
+      ],
+      [
+        1,
+        "Often enough. You?"
+      ],
+      [
+        0,
+        "First time. Seems quiet."
+      ],
+      [
+        1,
+        "Mostly."
+      ]
+    ],
+    [
+      [
+        0,
+        "Did you catch the fight outside the tavern last night?"
+      ],
+      [
+        1,
+        "Hard to miss it. The whole street was watching."
+      ],
+      [
+        0,
+        "Wonder what started it."
+      ],
+      [
+        1,
+        "Does it ever need a reason around here?"
+      ]
+    ],
+    [
+      [
+        0,
+        "I keep hearing strange sounds from the old mill."
+      ],
+      [
+        1,
+        "Rats, probably."
+      ],
+      [
+        0,
+        "Big rats."
+      ],
+      [
+        1,
+        "Don't think about it too long."
+      ]
+    ],
+    [
+      [
+        0,
+        "Long shift today."
+      ],
+      [
+        1,
+        "Same as yesterday."
+      ],
+      [
+        0,
+        "And tomorrow, I expect."
+      ],
+      [
+        1,
+        "At least there's pay at the end of it."
+      ]
+    ],
+    [
+      [
+        0,
+        "You grew up around here?"
+      ],
+      [
+        1,
+        "No, I came later. You?"
+      ],
+      [
+        0,
+        "Born here. Never quite managed to leave."
+      ],
+      [
+        1,
+        "There are worse places to be stuck."
+      ]
+    ],
+    [
+      [
+        0,
+        "Someone left bread on my doorstep this morning."
+      ],
+      [
+        1,
+        "Any idea who?"
+      ],
+      [
+        0,
+        "None. But it was still warm."
+      ],
+      [
+        1,
+        "Somebody likes you."
+      ]
+    ],
+    [
+      [
+        0,
+        "You have family nearby?"
+      ],
+      [
+        1,
+        "A sister, a few days' walk."
+      ],
+      [
+        0,
+        "Do you see her much?"
+      ],
+      [
+        1,
+        "Not as much as I should."
+      ]
+    ],
+    [
+      [
+        0,
+        "That building has been empty for years."
+      ],
+      [
+        1,
+        "Used to be a bakery, I think."
+      ],
+      [
+        0,
+        "What happened?"
+      ],
+      [
+        1,
+        "Nobody seems to agree on that."
+      ]
+    ],
+    [
+      [
+        0,
+        "You speak any other languages?"
+      ],
+      [
+        1,
+        "A little. Enough to offend people in two tongues."
+      ],
+      [
+        0,
+        "Useful skill."
+      ]
+    ],
+    [
+      [
+        0,
+        "What do you do when you cannot sleep?"
+      ],
+      [
+        1,
+        "Walk, mostly. Or sit somewhere quiet."
+      ],
+      [
+        0,
+        "Does it help?"
+      ],
+      [
+        1,
+        "Not really. But it passes the time."
+      ]
+    ],
+    [
+      [
+        0,
+        "You trust that new magistrate?"
+      ],
+      [
+        1,
+        "Too early to say."
+      ],
+      [
+        0,
+        "Last one was no good."
+      ],
+      [
+        1,
+        "That is why I said too early."
+      ]
+    ],
+    [
+      [
+        0,
+        "I dropped something in the canal."
+      ],
+      [
+        1,
+        "What was it?"
+      ],
+      [
+        0,
+        "My dignity, mostly."
+      ],
+      [
+        1,
+        "Those float. You'll get it back."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you believe in luck?"
+      ],
+      [
+        1,
+        "I believe in preparation and timing."
+      ],
+      [
+        0,
+        "So yes, then."
+      ],
+      [
+        1,
+        "That is not what I said."
+      ]
+    ],
+    [
+      [
+        0,
+        "The market closes early on festival days."
+      ],
+      [
+        1,
+        "Since when?"
+      ],
+      [
+        0,
+        "Since last year, apparently."
+      ],
+      [
+        1,
+        "Nobody tells me anything."
+      ]
+    ],
+    [
+      [
+        0,
+        "You have any hobbies?"
+      ],
+      [
+        1,
+        "Surviving, mostly."
+      ],
+      [
+        0,
+        "What did you do before all this?"
+      ],
+      [
+        1,
+        "Surviving, mostly. Just with less urgency."
+      ]
+    ],
+    [
+      [
+        0,
+        "I found a coin from a country I have never heard of."
+      ],
+      [
+        1,
+        "How old is it?"
+      ],
+      [
+        0,
+        "No idea. The face on it is worn down to nothing."
+      ],
+      [
+        1,
+        "Could be worth something. Or nothing."
+      ]
+    ],
+    [
+      [
+        0,
+        "Do you think this town has always been this way?"
+      ],
+      [
+        1,
+        "Probably not. Towns change slowly, like people."
+      ],
+      [
+        0,
+        "Reassuring or depressing?"
+      ],
+      [
+        1,
+        "Depends on the town."
+      ]
+    ],
+    [
+      [
+        0,
+        "I have been thinking about something you said weeks ago."
+      ],
+      [
+        1,
+        "What did I say?"
+      ],
+      [
+        0,
+        "That is the thing. I cannot remember exactly."
+      ],
+      [
+        1,
+        "And you have been thinking about it since?"
+      ],
+      [
+        0,
+        "It felt important at the time."
+      ]
+    ],
+    [
+      [
+        0,
+        "You ever work somewhere else before here?"
+      ],
+      [
+        1,
+        "Two other places. Neither lasted."
+      ],
+      [
+        0,
+        "By choice or circumstance?"
+      ],
+      [
+        1,
+        "Little of both."
+      ]
+    ],
+    [
+      [
+        0,
+        "What is the furthest you have ever travelled?"
+      ],
+      [
+        1,
+        "Further than I planned to, that is certain."
+      ],
+      [
+        0,
+        "Was it worth it?"
+      ],
+      [
+        1,
+        "Ask me again in a year."
+      ]
+    ]
+  ],
+  "debate": [
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "The kingdom needs a strong ruler. Democracy is chaos."
+        ],
+        [
+          1,
+          "One person shouldn't have all that power. People deserve a voice!"
+        ],
+        [
+          0,
+          "The masses are easily swayed. They need guidance."
+        ],
+        [
+          1,
+          "That's exactly what tyrants say to justify oppression!"
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "The system is broken. We need complete revolution!"
+        ],
+        [
+          1,
+          "Change from within is safer. Revolution brings bloodshed."
+        ],
+        [
+          0,
+          "Sometimes blood is the price of freedom!"
+        ],
+        [
+          1,
+          "Spoken like someone who's never seen war..."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Why should nobles live in luxury while peasants starve?"
+        ],
+        [
+          1,
+          "They provide protection and governance. It's earned."
+        ],
+        [
+          0,
+          "Earned? They were born into it!"
+        ],
+        [
+          1,
+          "And carry the burden of responsibility from birth."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Do we truly have free will, or is everything predetermined?"
+        ],
+        [
+          1,
+          "We make choices every day. Of course we have free will!"
+        ],
+        [
+          0,
+          "But those choices might be illusions, predetermined by causality."
+        ],
+        [
+          1,
+          "That's a depressing way to view existence."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "I believe people are inherently good."
+        ],
+        [
+          1,
+          "Then why is there so much evil in the world?"
+        ],
+        [
+          0,
+          "Circumstances corrupt. Given the chance, people choose good."
+        ],
+        [
+          1,
+          "I've seen too much to believe that fairy tale."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "What's the point of all this? Why do we struggle?"
+        ],
+        [
+          1,
+          "To grow, to love, to leave the world better."
+        ],
+        [
+          0,
+          "But we all die. Everything we do turns to dust."
+        ],
+        [
+          1,
+          "The journey matters more than the destination."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Is it ever right to do evil for the greater good?"
+        ],
+        [
+          1,
+          "Absolutely. Sometimes hard choices must be made."
+        ],
+        [
+          0,
+          "But who decides what the 'greater good' is?"
+        ],
+        [
+          1,
+          "Those with the courage to act when others won't."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Should we always put duty before personal happiness?"
+        ],
+        [
+          1,
+          "Duty gives life meaning. Selfish pursuits are empty."
+        ],
+        [
+          0,
+          "But a life without joy is no life at all!"
+        ],
+        [
+          1,
+          "Joy comes from fulfilling one's purpose."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Is it better to live safely or to live fully?"
+        ],
+        [
+          1,
+          "Fully. A long and empty life is just a slow disappearance."
+        ],
+        [
+          0,
+          "But people get hurt chasing fullness."
+        ],
+        [
+          1,
+          "They get hurt either way. At least one version has a good story."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Should the law be followed even when it is unjust?"
+        ],
+        [
+          1,
+          "Yes. Society cannot function if everyone picks their own laws."
+        ],
+        [
+          0,
+          "Then who protects people from the law itself?"
+        ],
+        [
+          1,
+          "That is what reform is for. Not rebellion."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Is wealth earned, or is it mostly luck and circumstance?"
+        ],
+        [
+          1,
+          "Earned. Hard work always creates opportunity."
+        ],
+        [
+          0,
+          "Tell that to someone born with nothing, in the wrong town."
+        ],
+        [
+          1,
+          "Plenty of people rise from nothing."
+        ],
+        [
+          0,
+          "And many more do not. That is the point."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Does it matter what we do if nobody remembers us?"
+        ],
+        [
+          1,
+          "Of course it matters. The people around us remember, even if history doesn't."
+        ],
+        [
+          0,
+          "A small audience is still an audience."
+        ],
+        [
+          1,
+          "Sometimes it's the only one that counts."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Is it ever right to lie to protect someone from the truth?"
+        ],
+        [
+          1,
+          "Yes. Sometimes the truth does more harm than good."
+        ],
+        [
+          0,
+          "But who decides what harm looks like? The liar?"
+        ],
+        [
+          1,
+          "Someone has to. The truth is not always kind."
+        ],
+        [
+          0,
+          "Kindness built on lies is not kindness. It is control."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Animals should have the same rights as people."
+        ],
+        [
+          1,
+          "Rights require responsibilities. Animals cannot hold them."
+        ],
+        [
+          0,
+          "Neither can infants, and we protect them."
+        ],
+        [
+          1,
+          "Infants grow into responsibility. That's a different case."
+        ],
+        [
+          0,
+          "Is it? We draw the line where it is convenient."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Is it possible to truly know another person?"
+        ],
+        [
+          1,
+          "No. Even the people closest to us are partly strangers."
+        ],
+        [
+          0,
+          "That sounds bleak."
+        ],
+        [
+          1,
+          "I think it is beautiful. There is always more to discover."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Art and music are luxuries. In hard times, we should focus on survival."
+        ],
+        [
+          1,
+          "Art is how people survive hard times. It always has been."
+        ],
+        [
+          0,
+          "You cannot eat a painting."
+        ],
+        [
+          1,
+          "You cannot live without something worth living for, either."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "The ends always justify the means if the outcome is good enough."
+        ],
+        [
+          1,
+          "There is no guarantee the outcome will be good. You are gambling with other people's suffering."
+        ],
+        [
+          0,
+          "Doing nothing is also a gamble."
+        ],
+        [
+          1,
+          "But inaction does not make you the instrument of harm."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Do you think history repeats, or do we just make the same mistakes in new clothes?"
+        ],
+        [
+          1,
+          "New clothes, mostly. The vanity is original. The mistake is old."
+        ],
+        [
+          0,
+          "So what do we do?"
+        ],
+        [
+          1,
+          "Learn to recognize the costume, I suppose. Small help, but something."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Tradition is the wisdom of the dead weighing down the living."
+        ],
+        [
+          1,
+          "Tradition is the only proof that anything worked long enough to pass on."
+        ],
+        [
+          0,
+          "And plenty of terrible things got passed on."
+        ],
+        [
+          1,
+          "Which is why we examine them, not discard them all."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "If you could know when you were going to die, would you want to?"
+        ],
+        [
+          1,
+          "Yes. I would plan better."
+        ],
+        [
+          0,
+          "Or you would live smaller. Knowing the end makes every risk feel pointless."
+        ],
+        [
+          1,
+          "Knowing the end would make every day feel intentional."
+        ],
+        [
+          0,
+          "Or paralyzed. You are assuming you would be brave about it."
+        ]
+      ]
+    }
+  ],
+  "ambient": [
+    [
+      [
+        0,
+        "Busy day?"
+      ],
+      [
+        1,
+        "Same as always."
+      ]
+    ],
+    [
+      [
+        0,
+        "How's the family?"
+      ],
+      [
+        1,
+        "Loud. Yours?"
+      ]
+    ],
+    [
+      [
+        0,
+        "Did you hear the news?"
+      ],
+      [
+        1,
+        "Nothing good, I bet."
+      ]
+    ],
+    [
+      [
+        0,
+        "This work never ends."
+      ],
+      [
+        1,
+        "Tell me about it."
+      ]
+    ],
+    [
+      [
+        0,
+        "Lunch later?"
+      ],
+      [
+        1,
+        "If I ever finish here."
+      ]
+    ],
+    [
+      [
+        0,
+        "Prices keep going up."
+      ],
+      [
+        1,
+        "Everything but my pay."
+      ]
+    ],
+    [
+      [
+        0,
+        "You look tired."
+      ],
+      [
+        1,
+        "I'll sleep when I'm dead."
+      ]
+    ],
+    [
+      [
+        0,
+        "Nice weather for once."
+      ],
+      [
+        1,
+        "Give it an hour."
+      ]
+    ],
+    [
+      [
+        0,
+        "Seen anything strange lately?"
+      ],
+      [
+        1,
+        "Around here? Always."
+      ]
+    ],
+    [
+      [
+        0,
+        "Still owe me that drink."
+      ],
+      [
+        1,
+        "Put it on my tab."
+      ]
+    ],
+    [
+      [
+        0,
+        "Cold today."
+      ],
+      [
+        1,
+        "Getting colder."
+      ]
+    ],
+    [
+      [
+        0,
+        "Heard anything good lately?"
+      ],
+      [
+        1,
+        "Nothing I'd repeat."
+      ]
+    ],
+    [
+      [
+        0,
+        "You ever just want to leave?"
+      ],
+      [
+        1,
+        "Every other Tuesday."
+      ]
+    ],
+    [
+      [
+        0,
+        "Watch your step back there."
+      ],
+      [
+        1,
+        "Something spilled?"
+      ]
+    ],
+    [
+      [
+        0,
+        "Long night?"
+      ],
+      [
+        1,
+        "Longer morning."
+      ]
+    ],
+    [
+      [
+        0,
+        "You look better today."
+      ],
+      [
+        1,
+        "Low bar, but I'll take it."
+      ]
+    ],
+    [
+      [
+        0,
+        "Good crowd today."
+      ],
+      [
+        1,
+        "Too good."
+      ]
+    ],
+    [
+      [
+        0,
+        "Someone quit again."
+      ],
+      [
+        1,
+        "Wasn't the first. Won't be the last."
+      ]
+    ],
+    [
+      [
+        0,
+        "You eating that?"
+      ],
+      [
+        1,
+        "Now I am."
+      ]
+    ],
+    [
+      [
+        0,
+        "Where did the day go?"
+      ],
+      [
+        1,
+        "Same place they always go."
+      ]
+    ],
+    [
+      [
+        0,
+        "You need a hand?"
+      ],
+      [
+        1,
+        "I need two, but thanks."
+      ]
+    ],
+    [
+      [
+        0,
+        "Quiet today."
+      ],
+      [
+        1,
+        "Too quiet."
+      ]
+    ],
+    [
+      [
+        0,
+        "Any plans after?"
+      ],
+      [
+        1,
+        "Sleep, mostly."
+      ]
+    ],
+    [
+      [
+        0,
+        "Seen the new arrivals?"
+      ],
+      [
+        1,
+        "Hard to miss them."
+      ]
+    ],
+    [
+      [
+        0,
+        "You trust anyone around here?"
+      ],
+      [
+        1,
+        "One or two. Maybe."
+      ]
+    ],
+    [
+      [
+        0,
+        "That job still open?"
+      ],
+      [
+        1,
+        "Probably not anymore."
+      ]
+    ],
+    [
+      [
+        0,
+        "Things getting worse or is it just me?"
+      ],
+      [
+        1,
+        "It's not just you."
+      ]
+    ],
+    [
+      [
+        0,
+        "Something smells good."
+      ],
+      [
+        1,
+        "Don't get excited. It's not for us."
+      ]
+    ],
+    [
+      [
+        0,
+        "You look like you have something to say."
+      ],
+      [
+        1,
+        "I do. And I won't."
+      ]
+    ],
+    [
+      [
+        0,
+        "Rough week?"
+      ],
+      [
+        1,
+        "Rough year."
+      ]
+    ],
+    [
+      [
+        0,
+        "The boss in today?"
+      ],
+      [
+        1,
+        "Afraid so."
+      ]
+    ],
+    [
+      [
+        0,
+        "Running low on supplies."
+      ],
+      [
+        1,
+        "Same. We will manage."
+      ]
+    ],
+    [
+      [
+        0,
+        "You ever just sit and do nothing?"
+      ],
+      [
+        1,
+        "I call it thinking."
+      ]
+    ],
+    [
+      [
+        0,
+        "Market was crowded today."
+      ],
+      [
+        1,
+        "Festival season. Endure it."
+      ]
+    ],
+    [
+      [
+        0,
+        "New faces in town."
+      ],
+      [
+        1,
+        "More every week."
+      ]
+    ],
+    [
+      [
+        0,
+        "You heard from the others?"
+      ],
+      [
+        1,
+        "Not lately."
+      ]
+    ],
+    [
+      [
+        0,
+        "Keep forgetting to eat."
+      ],
+      [
+        1,
+        "Your body will remind you."
+      ]
+    ],
+    [
+      [
+        0,
+        "I hate this part of the job."
+      ],
+      [
+        1,
+        "Which part?"
+      ]
+    ],
+    [
+      [
+        0,
+        "This part."
+      ],
+      [
+        1,
+        "Yeah. Me too."
+      ]
+    ],
+    [
+      [
+        0,
+        "Still here?"
+      ],
+      [
+        1,
+        "Still here."
+      ]
+    ],
+    [
+      [
+        0,
+        "You look distracted."
+      ],
+      [
+        1,
+        "I am. Go on."
+      ]
+    ],
+    [
+      [
+        0,
+        "Thought you went home already."
+      ],
+      [
+        1,
+        "Thought I did too."
+      ]
+    ],
+    [
+      [
+        0,
+        "Good morning."
+      ],
+      [
+        1,
+        "Debatable."
+      ]
+    ],
+    [
+      [
+        0,
+        "You bring food today?"
+      ],
+      [
+        1,
+        "I thought you were bringing food."
+      ]
+    ],
+    [
+      [
+        0,
+        "Did something change or do I seem different?"
+      ],
+      [
+        1,
+        "Yes. Not sure which."
+      ]
+    ]
+  ]
+}

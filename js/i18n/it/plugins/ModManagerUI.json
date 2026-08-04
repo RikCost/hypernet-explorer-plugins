@@ -1,0 +1,16 @@
+{
+  "title": "Gestore Mod",
+  "back": "Indietro",
+  "noMods": "Nessuna mod trovata nella cartella mods/.",
+  "source": "Fonte",
+  "path": "Percorso",
+  "toggle": "Attiva / Disattiva",
+  "moveUp": "Sposta Su ↑ (Priorità Alta)",
+  "moveDown": "Sposta Giù ↓ (Priorità Bassa)",
+  "local": "Locale",
+  "workshop": "Steam Workshop",
+  "priority": "Priorità",
+  "active": "Attivo",
+  "inactive": "Inattivo",
+  "hint": "L1 / R1, riordina  ·  ← →, pannello  ·  OK, attiva"
+}

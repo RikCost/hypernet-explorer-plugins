@@ -1,0 +1,14 @@
+{
+  "trackNone": "",
+  "trackMap": "",
+  "battleMusic": "",
+  "noMusic": "",
+  "continueMap": "",
+  "playingAsBattle": "",
+  "composer": "",
+  "currentSelection": "",
+  "hint": "",
+  "ui": {
+    "pressOkHint": ""
+  }
+}

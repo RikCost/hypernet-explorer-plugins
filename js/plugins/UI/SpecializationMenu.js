@@ -1,0 +1,971 @@
+/*:
+ * @target MZ
+ * @plugindesc Specializations menu: browses js/db/Skills/Specialization.json, 5-level tiers seeded by class and trait [Claude].
+ * @author Esoteric Heavy Industries
+ * @url https://nocoldiz.itch.io/hypernet-explorer
+ *
+ * @command addSpecializationExp
+ * @text Add Specialization EXP
+ * @desc Adds experience points to one specialization. Type its name or its id;
+ *       there are 800+ of them, so they are deliberately not listed.
+ *
+ * @arg spec
+ * @text Specialization
+ * @type string
+ * @default
+ * @desc Exact name (Haggling, Beekeeping, Playing Piano) or numeric id (127).
+ *
+ * @arg amount
+ * @text Points
+ * @type number
+ * @min 1
+ * @max 9999
+ * @default 1
+ * @desc Points to add. A tier costs 3, then 20, 45 and 90.
+ *
+ * @arg actorId
+ * @text Actor
+ * @type actor
+ * @default 0
+ * @desc Who earns it. Leave at 0 for the party leader, with the usual share to everyone watching.
+ *
+ * @arg soloist
+ * @text Only that actor
+ * @type boolean
+ * @default false
+ * @desc ON to give the points to that member alone, with no share to the rest of the party.
+ *
+ * @arg silent
+ * @text Silent
+ * @type boolean
+ * @default false
+ * @desc ON to bank the points without raising the level-up toast.
+ *
+ * @help SpecializationMenu.js
+ *
+ * Loads js/db/Skills/Specialization.json (800 real-life specializations, each
+ * tagged with a governing stat) and renders a parchment book-spread scene:
+ *   - Left page: a character switcher (like the Equip menu) plus the active
+ *     member's specialization list. Specializations above Untrained are
+ *     listed first, alphabetically; Untrained ones follow, also alphabetical.
+ *     The filter row opens on "Trained", which hides the Untrained section
+ *     entirely; "All" and the per-category tabs show the full list.
+ *   - Right page: detail for the selected specialization - its tier name,
+ *     a 5-pip level bar, and which classes/traits grant it a head start.
+ *
+ * A specialization's level is the highest of:
+ *   - trained level  (Game_Actor._specLevels[id], earned through play)
+ *   - class bonus    (Specialization.json "classStart"[actor's class name])
+ *   - trait bonus    (Specialization.json "traitStart"[selected trait slug])
+ * so switching class or picking a trait immediately reflects in the sheet
+ * without needing a one-time seeding step at character creation.
+ *
+ * The "Weapons" category holds one specialization per in-game weapon type,
+ * tagged with a "wtypeId". Those are the proficiencies ItemSystemEquipment.js
+ * reads to scale a weapon's stats, and they train through use: every battle
+ * won feeds experience into the specialization of each equipped weapon
+ * (Game_Actor#gainSpecializationExp), so an untrained weapon carried long
+ * enough eventually becomes as effective as a class-issued one.
+ *
+ * Exposes window.Specializations (data access) and Game_Actor#specialization*
+ * accessors for other plugins to read/train specializations.
+ */
+
+(() => {
+    'use strict';
+
+    // i18n-ignore-start  must stay identical to js/db/Skills/Specialization.json
+    // "levels", which is what the menu actually reads and displays
+    const LEVEL_NAMES_FALLBACK = ["Untrained", "Beginner", "Intermediate", "Advanced", "Master"];
+    // i18n-ignore-end
+
+    // Experience needed to climb out of each level, indexed by current level.
+    //
+    // Weapons train through combat and stay deliberately slow: roughly one point
+    // per battle won, so an untrained weapon reaches Intermediate (no stat
+    // penalty) after 28 fights carrying it.
+    const EXP_TO_NEXT_WEAPON = [0, 8, 20, 45, 90];
+    // Everything else trains through doing the thing (see window.Specializations
+    // .XP). The first tier is deliberately cheap - three goes at an activity and
+    // it shows up on the sheet as Beginner - and the later ones are not.
+    const EXP_TO_NEXT = [0, 3, 20, 45, 90];
+
+    // =========================================================================
+    // Data loader - window.Specializations
+    // =========================================================================
+    window.Specializations = {
+        levels: LEVEL_NAMES_FALLBACK,
+        categories: [],
+        list: [],
+        byId: new Map(),
+        byName: new Map(),
+        byWtype: new Map(),
+        ready: false,
+
+        async load() {
+            try {
+                const response = await fetch('js/db/Skills/Specialization.json');
+                const json = await response.json();
+                this.levels = json.levels || LEVEL_NAMES_FALLBACK;
+                this.categories = json.categories || [];
+                this.list = json.specializations || [];
+                this.byId.clear();
+                this.byName.clear();
+                this.byWtype.clear();
+                this.list.forEach(spec => {
+                    this.byId.set(spec.id, spec);
+                    this.byName.set(spec.name, spec);
+                    if (spec.wtypeId) this.byWtype.set(spec.wtypeId, spec);
+                });
+                this.ready = true;
+            } catch (e) {
+                console.error('SpecializationMenu: failed to load Specialization.json', e);
+            }
+        },
+
+        levelName(level) {
+            return this.levels[Math.max(0, Math.min(this.levels.length - 1, level - 1))] || this.levels[0];
+        },
+
+        // Weapon-type proficiency for a weapon type id, or null when the data
+        // has not finished loading yet.
+        forWtype(wtypeId) {
+            return this.byWtype.get(wtypeId) || null;
+        },
+
+        // Points needed to leave `level`. A weapon proficiency uses the slow
+        // combat table; passing the specialization (or its id/name) picks the
+        // right one, and omitting it keeps the old activity-paced default.
+        expToNext(level, spec) {
+            const def = typeof spec === 'object' && spec ? spec
+                : (spec != null ? (this.byId.get(spec) || this.byName.get(spec)) : null);
+            const table = (def && def.wtypeId) ? EXP_TO_NEXT_WEAPON : EXP_TO_NEXT;
+            return table[level] || 0;
+        },
+
+        // Neutral one-line definition, straight from the data file.
+        describe(spec) {
+            const def = typeof spec === 'object' && spec ? spec
+                : (this.byId.get(spec) || this.byName.get(spec));
+            return (def && def.description) || '';
+        }
+    };
+    window.Specializations.load();
+
+    // =========================================================================
+    // Game_Actor accessors
+    // =========================================================================
+
+    // Trained level: only levels above Untrained (2-5) are ever stored, so a
+    // fresh actor with no entry simply reads as Untrained (1).
+    Game_Actor.prototype.specializationTrainedLevel = function (id) {
+        if (!this._specLevels) this._specLevels = {};
+        return this._specLevels[id] || 1;
+    };
+
+    Game_Actor.prototype.setSpecializationTrainedLevel = function (id, level) {
+        if (!this._specLevels) this._specLevels = {};
+        const clamped = Math.max(1, Math.min(5, level));
+        if (clamped <= 1) {
+            delete this._specLevels[id];
+        } else {
+            this._specLevels[id] = clamped;
+        }
+    };
+
+    Game_Actor.prototype.specializationClassBonus = function (id) {
+        const cls = this.currentClass();
+        const spec = window.Specializations.byId.get(id);
+        if (!cls || !spec || !spec.classStart) return 1;
+        return spec.classStart[cls.name] || 1;
+    };
+
+    // actor._selectedTraits (TraitSelector.js) holds the raw Traits.json
+    // objects, whose "name" field is the i18n key "traits.<slug>.name".
+    Game_Actor.prototype.specializationTraitBonus = function (id) {
+        const spec = window.Specializations.byId.get(id);
+        if (!spec || !spec.traitStart || !this._selectedTraits) return 1;
+        let best = 1;
+        this._selectedTraits.forEach(trait => {
+            const slug = trait && trait.name ? trait.name.split('.')[1] : null;
+            const lvl = slug ? spec.traitStart[slug] : null;
+            if (lvl && lvl > best) best = lvl;
+        });
+        return best;
+    };
+
+    Game_Actor.prototype.specializationLevel = function (id) {
+        return Math.max(
+            this.specializationTrainedLevel(id),
+            this.specializationClassBonus(id),
+            this.specializationTraitBonus(id)
+        );
+    };
+
+    Game_Actor.prototype.specializationLevelName = function (id) {
+        return window.Specializations.levelName(this.specializationLevel(id));
+    };
+
+    // Progress towards the next level, counted from the *effective* level so a
+    // class-granted head start is never re-earned point by point.
+    Game_Actor.prototype.specializationExp = function (id) {
+        if (!this._specExp) this._specExp = {};
+        return this._specExp[id] || 0;
+    };
+
+    Game_Actor.prototype.specializationExpToNext = function (id) {
+        return window.Specializations.expToNext(this.specializationLevel(id), id);
+    };
+
+    // Returns the new level when the specialization advanced, 0 otherwise.
+    Game_Actor.prototype.gainSpecializationExp = function (id, amount) {
+        if (!id || !(amount > 0)) return 0;
+        const level = this.specializationLevel(id);
+        const needed = window.Specializations.expToNext(level, id);
+        if (!needed) return 0; // already at Master
+        if (!this._specExp) this._specExp = {};
+        const total = this.specializationExp(id) + amount;
+        if (total < needed) {
+            this._specExp[id] = total;
+            return 0;
+        }
+        this._specExp[id] = 0;
+        this.setSpecializationTrainedLevel(id, level + 1);
+        this.refresh();
+        return level + 1;
+    };
+
+    // =========================================================================
+    // window.SpecializationXP - the activity listener
+    // -------------------------------------------------------------------------
+    // The single entry point every other plugin uses to say "the party just did
+    // this". Points go to the whole party, weighted: whoever is leading the
+    // activity (the party leader by default) earns the full amount and everyone
+    // else learns by watching, at a fraction of it. A tier gained raises a
+    // top-left toast naming the member and the new tier.
+    //
+    //   window.SpecializationXP.award('Astronomy', 1);
+    //   window.SpecializationXP.award('Mining', 2, { actor: someActor });
+    //   const lvl = window.SpecializationXP.partyLevel('Farming'); // 1..5
+    //   yield *= window.SpecializationXP.multiplier('Farming');    // 1.00..1.32
+    //
+    // Activities that run continuously (time spent in a menu, a long drive)
+    // should call tick(), which only pays out once its interval has elapsed.
+    // =========================================================================
+    const ONLOOKER_SHARE = 0.35;     // what a party member picks up by watching
+    const DEFAULT_PER_LEVEL = 0.08;  // bonus per tier above Untrained
+
+    // Value-scaled awards (awardForValue). VALUE_BASE is the gold value of a
+    // "notable" transaction, the one worth about a point. The curve is
+    // logarithmic so a deal ten times larger teaches roughly one point more
+    // rather than ten times as much, which is what stops a player learning
+    // Haggling by buying and re-selling the same stack all afternoon.
+    const VALUE_BASE = 500;          // 5.00 EUR
+    // And a hard ceiling per specialization per in-game day on top of that, for
+    // the same reason: doing a thing all day is not how anybody gets good.
+    const DAILY_POINT_CAP = 6;
+    const MINUTES_PER_DAY = 1440;    // Variable 114 is the world clock in minutes
+
+    const SpecializationXP = {
+        // Resolve a name / id / spec object to the data record.
+        resolve(spec) {
+            if (!spec) return null;
+            if (typeof spec === 'object') return spec;
+            const S = window.Specializations;
+            return S.byId.get(spec) || S.byName.get(spec) || null;
+        },
+
+        // Give points for an activity. `opts.actor` names the member doing it
+        // (defaults to the party leader); `opts.soloist` limits the award to
+        // that member alone; `opts.silent` skips the toast and hands the gained
+        // tiers back, for callers that want to group the level up with their
+        // own notification (see MinigameFun). Returns the list of tiers gained.
+        award(spec, points, opts) {
+            opts = opts || {};
+            const def = this.resolve(spec);
+            if (!def || !(points > 0) || typeof $gameParty === 'undefined' || !$gameParty) return [];
+            const members = $gameParty.members ? $gameParty.members() : [];
+            if (!members.length) return [];
+            const lead = opts.actor || $gameParty.leader();
+            const gained = [];
+            members.forEach(actor => {
+                if (!actor) return;
+                const isLead = actor === lead;
+                if (!isLead && opts.soloist) return;
+                const share = isLead ? points : points * ONLOOKER_SHARE;
+                const newLevel = actor.gainSpecializationExp(def.id, share);
+                // `name` rides along on the record rather than on announce(),
+                // so a caller that defers the toast (see CookingSystem) still
+                // gets the label it asked for.
+                if (newLevel) gained.push({ actor, spec: def, level: newLevel, name: opts.name || null });
+            });
+            if (!opts.silent) gained.forEach(g => this.announce(g));
+            return gained;
+        },
+
+        // A continuous activity: pays `points` at most once every `seconds` of
+        // real time, keyed so two different activities never share a clock.
+        tick(spec, points, seconds, opts) {
+            const def = this.resolve(spec);
+            if (!def) return [];
+            const key = def.id + '|' + ((opts && opts.key) || 'default');
+            const now = Date.now();
+            const last = this._clocks[key] || 0;
+            if (now - last < (seconds || 30) * 1000) return [];
+            this._clocks[key] = now;
+            return this.award(def, points, opts);
+        },
+        _clocks: {},
+
+        // The best effective level anyone in the party has, 1..5. This is what
+        // an activity checks when it wants to know if the party is any good at
+        // something ("choosing the highest one").
+        partyLevel(spec) {
+            const def = this.resolve(spec);
+            if (!def || typeof $gameParty === 'undefined' || !$gameParty) return 1;
+            const members = $gameParty.members ? $gameParty.members() : [];
+            return members.reduce(
+                (best, a) => Math.max(best, a ? a.specializationLevel(def.id) : 1), 1);
+        },
+
+        // Which member is the party's best at it (for "who leads this job").
+        bestMember(spec) {
+            const def = this.resolve(spec);
+            if (!def || typeof $gameParty === 'undefined' || !$gameParty) return null;
+            let best = null;
+            let bestLvl = 0;
+            ($gameParty.members ? $gameParty.members() : []).forEach(a => {
+                const lvl = a ? a.specializationLevel(def.id) : 0;
+                if (lvl > bestLvl) { bestLvl = lvl; best = a; }
+            });
+            return best;
+        },
+
+        // 1.00 at Untrained up to 1.32 at Master (with the default 8% a tier):
+        // the standard way an activity pays the party back for being trained.
+        multiplier(spec, perLevel) {
+            const step = perLevel != null ? perLevel : DEFAULT_PER_LEVEL;
+            return 1 + step * (this.partyLevel(spec) - 1);
+        },
+
+        // The mirror of multiplier(), for costs rather than payouts: 1.00 at
+        // Untrained down to 0.68 at Master with the default 8% a tier. A price,
+        // a penalty and a difficulty are all things training should push down,
+        // and `floor` is there so none of them can ever reach zero.
+        discount(spec, perLevel, floor) {
+            const step = perLevel != null ? perLevel : DEFAULT_PER_LEVEL;
+            const min = floor != null ? floor : 0.5;
+            return Math.max(min, 1 - step * (this.partyLevel(spec) - 1));
+        },
+
+        // Points earned from the gold value of a transaction: a bigger deal
+        // teaches more, on the logarithmic curve described at VALUE_BASE. Goes
+        // through the daily cap, because this is the award most worth farming.
+        awardForValue(spec, goldAmount, opts) {
+            const def = this.resolve(spec);
+            if (!def || !(goldAmount > 0)) return [];
+            const points = Math.max(0.25, Math.log10(1 + goldAmount / VALUE_BASE) + 0.25);
+            return this.awardCapped(def, points, opts);
+        },
+
+        // award() with a ceiling on how much one specialization can be taught in
+        // a single in-game day. The ledger is keyed off the monotonic world
+        // clock (Variable 114) and lives on $gameSystem, so it survives a save
+        // and resets when the day turns rather than when the session does.
+        awardCapped(spec, points, opts) {
+            const def = this.resolve(spec);
+            if (!def || !(points > 0)) return [];
+            if (typeof $gameSystem === 'undefined' || !$gameSystem) return [];
+            const minutes = (typeof $gameVariables !== 'undefined' && $gameVariables)
+                ? $gameVariables.value(114) : 0;
+            const day = Math.floor(minutes / MINUTES_PER_DAY);
+            if (!$gameSystem._specDailyLedger) $gameSystem._specDailyLedger = { day: -1, used: {} };
+            const ledger = $gameSystem._specDailyLedger;
+            if (ledger.day !== day) { ledger.day = day; ledger.used = {}; }
+            const used = ledger.used[def.id] || 0;
+            const grant = Math.min(points, Math.max(0, DAILY_POINT_CAP - used));
+            if (grant <= 0) return [];
+            ledger.used[def.id] = used + grant;
+            return this.award(def, grant, opts);
+        },
+
+        // True once anyone in the party has left Untrained.
+        trained(spec) { return this.partyLevel(spec) > 1; },
+
+        // Every level up in the game is announced here, through the shared
+        // notification service, so a weapon proficiency, a courtroom hour and a
+        // night at the arcade all read the same way.
+        announce(g) {
+            if (!g || !g.actor || !g.spec) return;
+            if (window.ParchmentToast && window.ParchmentToast.specUp) {
+                window.ParchmentToast.specUp(g.actor, g.spec, g.level, { duration: 200, name: g.name || undefined });
+            } else if (typeof $gameMessage !== 'undefined' && $gameMessage && !$gameMessage.isBusy()) {
+                const name = (g.actor.name && g.actor.name()) || T('SpecializationMenu.someone');
+                const label = g.name || g.spec.name;
+                $gameMessage.add(`${name}: ${label} - ${window.Specializations.levelName(g.level)}`);
+            }
+            if (window.SoundManager && SoundManager.playLevelUp) SoundManager.playLevelUp();
+        }
+    };
+    window.SpecializationXP = SpecializationXP;
+    window.Specializations.XP = SpecializationXP;
+
+    // =========================================================================
+    // Plugin command - Add Specialization EXP
+    // -------------------------------------------------------------------------
+    // For events that want to teach something directly: a tutor, a book, a
+    // story beat. The specialization is typed in as a name or an id rather than
+    // picked from a list, because there are 800+ of them.
+    // =========================================================================
+    const addSpecializationExp = args => {
+        const raw = String(args.spec ?? '').trim();
+        if (!raw) return;
+        // Specialization.json loads asynchronously, so an event firing early
+        // would otherwise find an empty index. Wait for it rather than fail.
+        if (!window.Specializations.ready) {
+            setTimeout(() => addSpecializationExp(args), 100);
+            return;
+        }
+        // A bare number is an id, anything else is a name. byId is keyed by
+        // number, so the lookup has to be done in that order.
+        const asId = Number(raw);
+        const def = (Number.isFinite(asId) && String(asId) === raw)
+            ? window.Specializations.byId.get(asId)
+            : window.Specializations.byName.get(raw);
+        if (!def) {
+            console.warn(`SpecializationMenu: no specialization named or numbered "${raw}".`);
+            return;
+        }
+        const amount = Number(args.amount) || 0;
+        if (amount <= 0) return;
+        const actorId = Number(args.actorId) || 0;
+        const actor = actorId > 0 && $gameActors ? $gameActors.actor(actorId) : null;
+        SpecializationXP.award(def, amount, {
+            actor: actor || undefined,
+            soloist: String(args.soloist) === 'true',
+            silent: String(args.silent) === 'true'
+        });
+    };
+
+    // The plugin sits in a subfolder, so its registered name carries the path.
+    // Both keys are bound so an event authored either way keeps working.
+    PluginManager.registerCommand('UI/SpecializationMenu', 'addSpecializationExp', addSpecializationExp);
+    PluginManager.registerCommand('SpecializationMenu', 'addSpecializationExp', addSpecializationExp);
+
+    // =========================================================================
+    // Shared character-switcher hint helper (idempotent across plugins)
+    // =========================================================================
+    if (!window.CharSwitcher) {
+        window.CharSwitcher = {
+            isControllerConnected() {
+                const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+                for (let i = 0; i < pads.length; i++) {
+                    if (pads[i] && pads[i].connected) return true;
+                }
+                return false;
+            },
+            injectStyles() {
+                if (document.getElementById('char-switch-hint-styles')) return;
+                const style = document.createElement('style');
+                style.id = 'char-switch-hint-styles';
+                style.textContent = `
+                    .companion-switcher { display:flex; align-items:center; gap:6px; }
+                    .char-switch-hint {
+                        font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+                        line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
+                        border:1.5px solid var(--text-primary-hover); border-radius:3px;
+                        padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
+                        text-transform:uppercase; flex-shrink:0;
+                    }
+                `;
+                document.head.appendChild(style);
+            },
+            parts(memberCount) {
+                this.injectStyles();
+                if (!memberCount || memberCount <= 1) return { left: '', right: '' };
+                if (this.isControllerConnected()) {
+                    return {
+                        left: '<span class="char-switch-hint">L</span>',
+                        right: '<span class="char-switch-hint">R</span>'
+                    };
+                }
+                return { left: '', right: '<span class="char-switch-hint">TAB</span>' };
+            },
+            inner(tabsRowHTML, memberCount) {
+                const p = this.parts(memberCount);
+                return p.left + tabsRowHTML + p.right;
+            },
+            wrap(tabsRowHTML, memberCount) {
+                return `<div class="companion-switcher">${this.inner(tabsRowHTML, memberCount)}</div>`;
+            },
+            installTabKey(scene, onCycle) {
+                if (scene._charSwitchTabListener) return;
+                scene._charSwitchTabListener = (e) => {
+                    if (e.key !== 'Tab') return;
+                    e.preventDefault();
+                    if (this.isControllerConnected()) return;
+                    onCycle(e.shiftKey ? -1 : 1);
+                };
+                window.addEventListener('keydown', scene._charSwitchTabListener);
+            },
+            removeTabKey(scene) {
+                if (scene._charSwitchTabListener) {
+                    window.removeEventListener('keydown', scene._charSwitchTabListener);
+                    scene._charSwitchTabListener = null;
+                }
+            }
+        };
+    }
+
+    function escapeHtml(str) {
+        return String(str ?? "").replace(/[&<>"']/g, c => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[c]);
+    }
+
+    // =========================================================================
+    // Scene_Specializations
+    // =========================================================================
+    class Scene_Specializations extends Scene_MenuBase {
+        create() {
+            super.create();
+
+            const members = $gameParty.members();
+            this._currentActorIndex = Math.max(0, members.indexOf($gameParty.menuActor()));
+            this._actor = members[this._currentActorIndex] || members[0];
+            this._listOrder = [];
+            this._selectedIndex = 0;
+            this._categoryTabs = ['Trained', 'All', ...window.Specializations.categories];  // i18n-ignore  category ids
+            this._categoryIndex = 0;
+            this._activeArea = 'categories'; // 'categories' | 'list'
+
+            window.CharSwitcher.installTabKey(this, (dir) => {
+                if (dir > 0) this.switchToNextCharacter();
+                else this.switchToPreviousCharacter();
+            });
+
+            this.initSpecDOM();
+        }
+
+        update() {
+            super.update();
+            if (!window.Specializations.ready) {
+                if (this._pendingRefresh) return;
+                this._pendingRefresh = true;
+                const wait = () => {
+                    if (window.Specializations.ready) {
+                        this._pendingRefresh = false;
+                        this.refreshSpecDOM();
+                    } else {
+                        setTimeout(wait, 50);
+                    }
+                };
+                wait();
+                return;
+            }
+            this.updateSpecInput();
+        }
+
+        terminate() {
+            window.CharSwitcher.removeTabKey(this);
+            const container = document.getElementById('specialization-container');
+            if (container) container.remove();
+            super.terminate();
+        }
+
+        switchToPreviousCharacter() {
+            const party = $gameParty.members();
+            if (party.length <= 1) return;
+            this._currentActorIndex = (this._currentActorIndex - 1 + party.length) % party.length;
+            this._actor = party[this._currentActorIndex];
+            this._selectedIndex = 0;
+            SoundManager.playCursor();
+            this.refreshSpecDOM();
+        }
+
+        switchToNextCharacter() {
+            const party = $gameParty.members();
+            if (party.length <= 1) return;
+            this._currentActorIndex = (this._currentActorIndex + 1) % party.length;
+            this._actor = party[this._currentActorIndex];
+            this._selectedIndex = 0;
+            SoundManager.playCursor();
+            this.refreshSpecDOM();
+        }
+
+        initSpecDOM() {
+            this._dndContainer = document.createElement('div');
+            this._dndContainer.id = 'specialization-container';
+            this._dndContainer.style.position = 'absolute';
+            this._dndContainer.style.top = '0';
+            this._dndContainer.style.left = '0';
+            this._dndContainer.style.width = '100%';
+            this._dndContainer.style.height = '100%';
+            this._dndContainer.style.zIndex = '1000';
+            this._dndContainer.style.background = 'radial-gradient(circle, var(--accent-bronze-translucent-78) 0%, var(--shadow-heavy) 100%)';
+            this._dndContainer.style.display = 'flex';
+            this._dndContainer.style.justifyContent = 'center';
+            this._dndContainer.style.alignItems = 'center';
+            this._dndContainer.style.fontFamily = "'Lora', serif";
+            this._dndContainer.style.boxSizing = 'border-box';
+            this._dndContainer.style.opacity = '0';
+            this._dndContainer.style.transition = 'opacity 0.22s ease-out';
+
+            this._dndContainer.innerHTML = `
+                <div class="book-spread">
+                    <div class="left-page" style="position:relative;">
+                        <div class="page-header-bar">
+                            <div class="back-button focusable">${T('SpecMenu.ui.back')}</div>
+                            <h2 class="title">${T('SpecMenu.ui.specializations')}</h2>
+                        </div>
+                        <div id="spec-category-row" style="display:flex; flex-wrap:wrap; gap:5px; padding:6px 0 10px;"></div>
+                        <div id="spec-list-content" style="display:flex; flex-direction:column; height:100%; overflow-y:auto;"></div>
+                    </div>
+                    <div class="right-page" style="position:relative;">
+                        <div class="companion-switcher" id="spec-companion-row" style="flex:0 0 auto; justify-content:flex-end; min-height:26px; margin-bottom:8px;"></div>
+                        <div id="spec-detail-content" style="display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow-y:auto;"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(this._dndContainer);
+
+            this._dndContainer.querySelector('.back-button').addEventListener('click', (e) => {
+                e.stopPropagation();
+                SoundManager.playCancel();
+                this.popScene();
+            });
+
+            const listBox = document.getElementById('spec-list-content');
+            if (listBox) {
+                listBox.addEventListener('wheel', (e) => { e.stopPropagation(); }, { passive: true });
+            }
+
+            this.refreshSpecDOM();
+
+            setTimeout(() => {
+                if (this._dndContainer) this._dndContainer.style.opacity = '1';
+            }, 16);
+        }
+
+        buildListOrder(actor) {
+            const category = this._categoryTabs[this._categoryIndex] || 'Trained';  // i18n-ignore  category id
+            const trainedOnly = category === 'Trained';  // i18n-ignore  category id
+            const trained = [];
+            const untrained = [];
+            window.Specializations.list.forEach(spec => {
+                if (category !== 'All' && !trainedOnly && spec.category !== category) return;  // i18n-ignore  category id
+                if (actor.specializationLevel(spec.id) > 1) trained.push(spec);
+                else if (!trainedOnly) untrained.push(spec);
+            });
+            trained.sort((a, b) => a.name.localeCompare(b.name));
+            untrained.sort((a, b) => a.name.localeCompare(b.name));
+            return { trained, untrained, order: [...trained, ...untrained] };
+        }
+
+        levelPipsHTML(level) {
+            let html = '<div class="spec-pips" style="display:flex; gap:3px;">';
+            for (let i = 1; i <= 5; i++) {
+                const filled = i <= level;
+                html += `<span style="width:9px; height:9px; border-radius:50%; display:inline-block; background:${filled ? 'var(--text-secondary-active)' : 'transparent'}; border:1.5px solid var(--text-secondary-active);"></span>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        refreshSpecDOM() {
+            if (!this._dndContainer || !window.Specializations.ready) return;
+            const actor = this._actor;
+            if (!actor) return;
+
+            // Category tabs may only become known once Specialization.json
+            // finishes loading, so recompute every refresh rather than once.
+            this._categoryTabs = ['Trained', 'All', ...window.Specializations.categories];  // i18n-ignore  category ids
+            if (this._categoryIndex >= this._categoryTabs.length) this._categoryIndex = 0;
+
+            const categoryRow = document.getElementById('spec-category-row');
+            if (categoryRow) {
+                let tabsHTML = '';
+                this._categoryTabs.forEach((cat, idx) => {
+                    const isSel = idx === this._categoryIndex;
+                    const isFocused = isSel && this._activeArea === 'categories';
+                    tabsHTML += `
+                        <div class="spec-category-tab" data-cat-idx="${idx}" style="
+                            font-family:'Lora',serif; font-size:0.78rem; padding:4px 10px; border-radius:12px; cursor:pointer;
+                            background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'var(--bg-card-translucent-5)'};
+                            border:1.5px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'};
+                            color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};
+                        ">${escapeHtml(cat)}</div>`;
+                });
+                categoryRow.innerHTML = tabsHTML;
+                categoryRow.querySelectorAll('.spec-category-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const idx = parseInt(tab.getAttribute('data-cat-idx'), 10);
+                        if (idx !== this._categoryIndex) {
+                            this._categoryIndex = idx;
+                            this._selectedIndex = 0;
+                        }
+                        this._activeArea = 'categories';
+                        SoundManager.playCursor();
+                        this.refreshSpecDOM();
+                    });
+                });
+            }
+
+            // Companion switcher
+            const compRow = document.getElementById('spec-companion-row');
+            if (compRow) {
+                const members = $gameParty.members();
+                if (members.length <= 1) {
+                    compRow.style.display = 'none';
+                    compRow.innerHTML = '';
+                } else {
+                    compRow.style.display = 'flex';
+                    let tabs = '';
+                    members.forEach((m, idx) => {
+                        const sel = idx === this._currentActorIndex ? 'selected' : '';
+                        tabs += `<div class="companion-tab ${sel}" data-actor-idx="${idx}">${escapeHtml(m.name())}</div>`;
+                    });
+                    compRow.innerHTML = window.CharSwitcher.inner(
+                        `<div class="companion-tabs-row">${tabs}</div>`, members.length
+                    );
+                    compRow.querySelectorAll('.companion-tab').forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            const idx = parseInt(tab.getAttribute('data-actor-idx'), 10);
+                            if (idx !== this._currentActorIndex) {
+                                this._currentActorIndex = idx;
+                                this._actor = $gameParty.members()[idx];
+                                this._selectedIndex = 0;
+                                SoundManager.playCursor();
+                                this.refreshSpecDOM();
+                            }
+                        });
+                    });
+                }
+            }
+
+            const { trained, untrained, order } = this.buildListOrder(actor);
+            this._listOrder = order;
+            if (this._selectedIndex >= order.length) this._selectedIndex = Math.max(0, order.length - 1);
+
+            const rowHTML = (spec, idx) => {
+                const level = actor.specializationLevel(spec.id);
+                const isSel = idx === this._selectedIndex;
+                const isFocused = isSel && this._activeArea === 'list';
+                return `
+                    <div class="spec-row ${isFocused ? 'focused' : ''}" data-idx="${idx}" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 10px; cursor:pointer; border-radius:5px; background:${isSel ? 'var(--bg-tertiary-focus-translucent-45)' : 'transparent'};">
+                        <span style="font-family:'Lora',serif; color:${isSel ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'};">${escapeHtml(spec.name)}</span>
+                        <span style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                            <span style="font-size:0.7rem; opacity:0.7;">${spec.stat}</span>
+                            ${this.levelPipsHTML(level)}
+                        </span>
+                    </div>`;
+            };
+
+            let listHTML = '';
+            listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-secondary-active); padding:8px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15);">${T('SpecMenu.ui.trained')}</div>`;
+            if (trained.length === 0) {
+                listHTML += `<div style="opacity:0.6; font-style:italic; padding:8px 10px; font-family:'Lora',serif;">${T('SpecMenu.ui.noneTrained')}</div>`;
+            } else {
+                trained.forEach((spec, i) => { listHTML += rowHTML(spec, i); });
+            }
+            if (untrained.length > 0) {
+                listHTML += `<div class="spec-section-header" style="font-family:'Lora',serif; font-weight:bold; color:var(--text-card-medium); padding:10px 10px 4px; border-bottom:1px dashed var(--border-secondary-hover-translucent-15);">${T('SpecMenu.ui.untrained')}</div>`;
+                untrained.forEach((spec, i) => { listHTML += rowHTML(spec, trained.length + i); });
+            }
+
+            const listBox = document.getElementById('spec-list-content');
+            if (listBox) {
+                const savedScroll = listBox.scrollTop;
+                listBox.innerHTML = listHTML;
+                listBox.scrollTop = savedScroll;
+                listBox.querySelectorAll('.spec-row').forEach(row => {
+                    row.addEventListener('click', () => {
+                        this._selectedIndex = parseInt(row.getAttribute('data-idx'), 10);
+                        this._activeArea = 'list';
+                        SoundManager.playCursor();
+                        this.refreshSpecDOM();
+                    });
+                });
+            }
+
+            document.getElementById('spec-detail-content').innerHTML = this.buildDetailHTML(actor, this._listOrder[this._selectedIndex]);
+        }
+
+        buildDetailHTML(actor, spec) {
+            if (!spec) return `<div style="opacity:0.6; font-style:italic; margin:20px;">${T('SpecMenu.ui.noneSelected')}</div>`;
+
+            const level = actor.specializationLevel(spec.id);
+            const levelName = window.Specializations.levelName(level);
+            const currentClassName = actor.currentClass() ? actor.currentClass().name : null;
+            const actorTraitSlugs = (actor._selectedTraits || [])
+                .map(t => t && t.name ? t.name.split('.')[1] : null)
+                .filter(Boolean);
+
+            // Training progress towards the next tier (weapon proficiencies
+            // train through battle, the rest through play).
+            let progressHTML = '';
+            const needed = window.Specializations.expToNext(level, spec);
+            if (needed) {
+                // Onlooker shares are fractional (see SpecializationXP.award),
+                // so the counter is rounded for reading.
+                const have = Math.floor(actor.specializationExp(spec.id) * 10) / 10;
+                const pct = Math.max(0, Math.min(100, Math.round((have / needed) * 100)));
+                progressHTML = `
+                    <div style="margin-top:10px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; opacity:0.8;">
+                            <span>${T('SpecMenu.ui.towards', { level: escapeHtml(window.Specializations.levelName(level + 1)) })}</span>
+                            <span>${have} / ${needed}</span>
+                        </div>
+                        <div style="height:6px; border-radius:3px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); overflow:hidden;">
+                            <div style="height:100%; width:${pct}%; background:var(--text-secondary-active);"></div>
+                        </div>
+                    </div>`;
+            }
+
+            // Weapon proficiencies drive the equip-screen stat scaling, so spell
+            // out what the current tier is worth in the field.
+            let weaponHTML = '';
+            if (spec.wtypeId) {
+                const prof = window.WeaponProficiency;
+                const mult = prof ? prof.multiplierForLevel(level) : 1;
+                const pct = Math.round(mult * 100);
+                const note = level < 3
+                    ? T('SpecializationMenu.weapon.cut', { weapon: escapeHtml(spec.name), pct: pct })
+                    : (level > 3
+                        ? T('SpecializationMenu.weapon.raised', { weapon: escapeHtml(spec.name), pct: pct })
+                        : T('SpecializationMenu.weapon.full', { weapon: escapeHtml(spec.name) }));
+                weaponHTML = `
+                    <div style="margin-top:14px; padding:8px 10px; border-radius:5px; background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15);">
+                        <div style="font-weight:bold; margin-bottom:2px;">${T('SpecializationMenu.weapon.title')}</div>
+                        <div style="opacity:0.85;">${note}</div>
+                        <div style="opacity:0.7; font-size:0.75rem; margin-top:4px;">${T('SpecializationMenu.weapon.trains')}</div>
+                    </div>`;
+            }
+
+            let classesHTML = '';
+            if (spec.wtypeId && spec.classStart) {
+                // Every listed class grants the same head start here, so a wrapped
+                // name list reads better than 30-odd identical rows.
+                const names = Object.keys(spec.classStart);
+                classesHTML = `<div style="display:flex; flex-wrap:wrap; gap:4px;">` + names.map(cls => {
+                    const active = cls === currentClassName;
+                    return `<span style="padding:1px 6px; border-radius:9px; font-size:0.72rem; border:1px solid var(--border-secondary-hover-translucent-15); ${active ? 'color:var(--text-secondary-active); font-weight:bold; background:var(--bg-tertiary-focus-translucent-45);' : ''}">${escapeHtml(cls)}</span>`;
+                }).join('') + `</div>`;
+            } else if (spec.classStart) {
+                const rows = Object.entries(spec.classStart).map(([cls, lvl]) => {
+                    const active = cls === currentClassName;
+                    return `<div style="display:flex; justify-content:space-between; padding:2px 0; ${active ? 'color:var(--text-secondary-active); font-weight:bold;' : ''}">
+                        <span>${escapeHtml(cls)}</span><span>${escapeHtml(window.Specializations.levelName(lvl))}</span>
+                    </div>`;
+                });
+                classesHTML = rows.join('');
+            }
+
+            let traitsHTML = '';
+            if (spec.traitStart) {
+                const rows = Object.entries(spec.traitStart).map(([slug, lvl]) => {
+                    const active = actorTraitSlugs.includes(slug);
+                    const label = slug.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    return `<div style="display:flex; justify-content:space-between; padding:2px 0; ${active ? 'color:var(--text-secondary-active); font-weight:bold;' : ''}">
+                        <span>${escapeHtml(label)}</span><span>${escapeHtml(window.Specializations.levelName(lvl))}</span>
+                    </div>`;
+                });
+                traitsHTML = rows.join('');
+            }
+
+            return `
+                <div style="padding:24px; font-family:'Lora',serif;">
+                    <h2 style="color:var(--text-secondary-active); margin:0 0 4px;">${escapeHtml(spec.name)}</h2>
+                    <div style="opacity:0.7; margin-bottom:2px;">${T('SpecMenu.ui.governingStat', { stat: spec.stat })}${spec.category ? ` &middot; ${escapeHtml(spec.category)}` : ''}</div>
+                    ${spec.description ? `<div style="margin:8px 0 0; line-height:1.5; opacity:0.9;">${escapeHtml(spec.description)}</div>` : ''}
+                    <div style="display:flex; align-items:center; gap:10px; margin:16px 0 0;">
+                        <span style="font-weight:bold;">${escapeHtml(levelName)}</span>
+                        ${this.levelPipsHTML(level)}
+                    </div>
+                    ${progressHTML}
+                    ${weaponHTML}
+                    ${classesHTML ? `<div style="margin-top:18px;"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('SpecMenu.ui.classes')}</div>${classesHTML}</div>` : ''}
+                    ${traitsHTML ? `<div style="margin-top:18px;"><div style="font-weight:bold; border-bottom:1px dashed var(--border-secondary-hover-translucent-15); margin-bottom:4px;">${T('SpecMenu.ui.traits')}</div>${traitsHTML}</div>` : ''}
+                </div>
+            `;
+        }
+
+        updateSpecInput() {
+            if (Input.isTriggered('pageup')) { this.switchToPreviousCharacter(); return; }
+            if (Input.isTriggered('pagedown')) { this.switchToNextCharacter(); return; }
+
+            const isCancel = Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled();
+
+            if (this._activeArea === 'categories') {
+                if (Input.isTriggered('right') || Input.isRepeated('right')) {
+                    if (this._categoryIndex < this._categoryTabs.length - 1) {
+                        this._categoryIndex++;
+                        this._selectedIndex = 0;
+                        SoundManager.playCursor();
+                        this.refreshSpecDOM();
+                    }
+                } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
+                    if (this._categoryIndex > 0) {
+                        this._categoryIndex--;
+                        this._selectedIndex = 0;
+                        SoundManager.playCursor();
+                        this.refreshSpecDOM();
+                    }
+                } else if (Input.isTriggered('down') || Input.isRepeated('down')) {
+                    if (this._listOrder.length) {
+                        this._activeArea = 'list';
+                        SoundManager.playCursor();
+                        this.refreshSpecDOM();
+                    }
+                } else if (Input.isTriggered('ok')) {
+                    SoundManager.playOk();
+                } else if (isCancel) {
+                    SoundManager.playCancel();
+                    this.popScene();
+                }
+                return;
+            }
+
+            // 'list' area
+            if (!this._listOrder.length) {
+                if (isCancel) {
+                    this._activeArea = 'categories';
+                    SoundManager.playCancel();
+                    this.refreshSpecDOM();
+                }
+                return;
+            }
+
+            if (Input.isTriggered('down') || Input.isRepeated('down')) {
+                if (this._selectedIndex < this._listOrder.length - 1) {
+                    this._selectedIndex++;
+                    SoundManager.playCursor();
+                    this.refreshSpecDOM();
+                    this.scrollSelectedIntoView();
+                }
+            } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
+                if (this._selectedIndex > 0) {
+                    this._selectedIndex--;
+                    SoundManager.playCursor();
+                    this.refreshSpecDOM();
+                    this.scrollSelectedIntoView();
+                } else {
+                    this._activeArea = 'categories';
+                    SoundManager.playCursor();
+                    this.refreshSpecDOM();
+                }
+            } else if (isCancel) {
+                this._activeArea = 'categories';
+                SoundManager.playCancel();
+                this.refreshSpecDOM();
+            }
+        }
+
+        scrollSelectedIntoView() {
+            const focused = document.querySelector('#spec-list-content .spec-row.focused');
+            if (focused) focused.scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    window.Scene_Specializations = Scene_Specializations;
+})();

@@ -1,0 +1,104 @@
+{
+  "personality": {
+    "nervous": {
+      "name": "Nervoso",
+      "description": "Incline all'ansia e a forte stress."
+    },
+    "calm": {
+      "name": "Calmo",
+      "description": "Resistente allo stress, ragiona con lucidità."
+    },
+    "aggressive": {
+      "name": "Aggressivo",
+      "description": "Si adira in fretta, forte impulso fisico."
+    },
+    "melancholic": {
+      "name": "Melanconico",
+      "description": "Incline alla tristezza e all'introspezione."
+    },
+    "sanguine": {
+      "name": "Sanguigno",
+      "description": "Energico, ottimista e socievole."
+    },
+    "cautious": {
+      "name": "Cauto",
+      "description": "Riflette prima di agire, valuta i rischi."
+    },
+    "impulsive": {
+      "name": "Impulsivo",
+      "description": "Agisce d'istinto, scarso autocontrollo."
+    },
+    "stoic": {
+      "name": "Stoico",
+      "description": "Sopporta le avversità senza lamentarsi."
+    },
+    "paranoid": {
+      "name": "Paranoico",
+      "description": "Diffidente e sospettoso verso gli altri."
+    },
+    "empathetic": {
+      "name": "Empatico",
+      "description": "Molto sensibile alle emozioni altrui."
+    },
+    "authoritative": {
+      "name": "Autoritario",
+      "description": "Leader nato, deciso e autorevole."
+    },
+    "scholarly": {
+      "name": "Erudito",
+      "description": "Guidato dall'intelletto, curioso e analitico."
+    },
+    "artistic": {
+      "name": "Artistico",
+      "description": "Sensibile, creativo e perspicace."
+    },
+    "adventurous": {
+      "name": "Avventuroso",
+      "description": "Cerca novità ed emozioni forti, ad alto rischio."
+    },
+    "nurturing": {
+      "name": "Protettivo",
+      "description": "Premuroso, protettivo e compassionevole."
+    },
+    "mischievous": {
+      "name": "Malizioso",
+      "description": "Giocoso, astuto e amante del caos."
+    },
+    "cynical": {
+      "name": "Cinico",
+      "description": "Diffida della sincerità e dell'integrità umana."
+    },
+    "disciplined": {
+      "name": "Disciplinato",
+      "description": "Grande autocontrollo, segue un codice rigido."
+    },
+    "fatalistic": {
+      "name": "Fatalista",
+      "description": "Crede che ogni evento sia predeterminato."
+    },
+    "grumpy": {
+      "name": "Scontroso",
+      "description": "Cronicamente irritabile e di cattivo umore."
+    },
+    "loyal": {
+      "name": "Leale",
+      "description": "Saldo e devoto ai propri alleati."
+    },
+    "brave": {
+      "name": "Coraggioso",
+      "description": "Affronta il pericolo con poca paura."
+    },
+    "timid": {
+      "name": "Timido",
+      "description": "Si spaventa facilmente, evita i conflitti."
+    },
+    "hedonistic": {
+      "name": "Edonista",
+      "description": "Crede che la ricerca del piacere sia il bene supremo."
+    },
+    "apathetic": {
+      "name": "Apatico",
+      "description": "Privo di interesse, entusiasmo o preoccupazione."
+    }
+  }
+}

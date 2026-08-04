@@ -1,0 +1,2114 @@
+{
+  "courtVenues": [
+    "a marble hall that keeps forgetting which century it was built in",
+    "a courtroom the size of a stadium, furnished with exactly one chair",
+    "a cramped office with a filing cabinet where the jury should be",
+    "an amphitheatre carved into the inside of an hourglass",
+    "a waiting room that has been redecorated as a court, badly",
+    "a courtroom balanced on the very tip of the Omega Tower",
+    "a flooded basilica where everyone stands ankle-deep",
+    "a courtroom built entirely of doors, none of which open",
+    "the back room of a bank on Route 666, still smelling of smoke",
+    "what is clearly somebody's kitchen with a gavel left on the counter",
+    "a tram carriage that has not moved since 1992",
+    "a courtroom that is a perfect copy of the one next door, and the one after that"
+  ],
+  "courtGallery": [
+    "a jury of twelve identical clerks, all asleep",
+    "a gallery of judicial ghosts who never blink",
+    "a jury consisting of one extremely serious pigeon",
+    "no jury at all, only a mirror facing the bench",
+    "a gallery packed with people who are, on inspection, all Eris",
+    "a jury of retired gods, none of whom remember their own names",
+    "a gallery of empty coats hung on empty chairs",
+    "a jury of hourglasses, each running at a different speed",
+    "seventy witnesses, every one of them subpoenaed by mistake",
+    "a jury of stray cats, deliberating loudly",
+    "a single defence lawyer who has been dead for some time",
+    "a gallery of your own future selves, taking notes"
+  ],
+  "courtStaff": [
+    "A bailiff with no face reads the case number out twice.",
+    "A clerk stamps every surface within reach, including the defendant.",
+    "A judicial ghost drifts in a straight line through one wall and out the other.",
+    "Someone in a wig takes notes in a language with no vowels.",
+    "The stenographer is a typewriter with nobody behind it.",
+    "A bored angel hands Eris a folder and leaves without a word.",
+    "The bailiff announces the case, gets the name wrong, and does not correct it.",
+    "A pigeon with a USB stick tied to its leg lands on the bench and waits.",
+    "Two clerks argue quietly about whose turn it was to bring the law books."
+  ],
+  "courtAmbience": [
+    "The gavel is a hammer with a smiley face painted on it.",
+    "Behind the wall, a billion other trials are running at the same time.",
+    "The clock has three hands and none of them agree.",
+    "The scales of justice have been replaced by a pair of dice.",
+    "A wilting golden apple sits where the law books should be.",
+    "The room smells faintly of engine oil and cheap diner coffee.",
+    "Every so often the whole room rewinds one second and repeats itself.",
+    "The flag of no nation hangs behind the bench, upside down.",
+    "Someone has drawn a smiling face in the dust on the witness stand.",
+    "The light comes from nowhere in particular and slightly too much of it."
+  ],
+  "precedentParties": [
+    "the State of Varlenia",
+    "a Man Named Later",
+    "the Estate of a Dead Pigeon",
+    "the Ministry of Small Weather",
+    "Nobody in Particular",
+    "the Second-Best Witness",
+    "a Crowd of One",
+    "the Widow of Tuesday",
+    "the Archive Foundation",
+    "the Concept of Wednesday",
+    "an Unregistered Camper",
+    "the Ghost of a Bank Teller",
+    "the Sleeping God of Antwerp",
+    "a Very Tall Ladder",
+    "the Municipality of Ghent",
+    "Three Identical Brothers",
+    "the Last Honest Notary"
+  ],
+  "precedentRulings": [
+    "The ruling was unanimous and completely wrong.",
+    "Nobody attended. The verdict stands anyway.",
+    "It was decided by coin toss. I still have the coin.",
+    "The judge in that one is a toad now.",
+    "The transcript is missing. I remember it fondly.",
+    "It established that intent is optional.",
+    "It set the precedent that I may do whatever I like.",
+    "Both parties were found guilty of each other.",
+    "The appeal is still pending. It always will be.",
+    "That is where the phrase 'close enough' entered case law."
+  ],
+  "exhibitItems": [
+    "a bent spoon",
+    "a receipt for one (1) sin",
+    "a photograph of you taken tomorrow",
+    "a jar of somebody's confidence",
+    "a map with your house circled twice",
+    "a lock of hair belonging to nobody",
+    "half a train ticket",
+    "a pigeon feather with a serial number",
+    "a ledger with your handwriting in it",
+    "a knife that has never once been used",
+    "a broken hourglass",
+    "a letter you never wrote",
+    "a key that fits no lock in this dimension"
+  ],
+  "exhibitPlaces": [
+    "the scene, obviously",
+    "a drawer in a house you have never entered",
+    "the bottom of the Omega Tower",
+    "your own coat pocket",
+    "somewhere that does not exist yet",
+    "the evidence room, which is also my kitchen",
+    "underneath a sleeping god",
+    "a time loop three towns over",
+    "the lost property office of a station that burned down"
+  ],
+  "trialInterruptions": [
+    "Hold on. {Someone is knocking|A ghost is at the door|A pigeon has landed on the bench}. ...Ignore it.",
+    "One moment. I am also judging {four hundred|nine thousand|a billion} other people right now, and one of them just {confessed|fainted|proposed to me}.",
+    "Sorry, where was I? The {gallery|jury|stenographer} was distracting me.",
+    "*a gavel falls somewhere else in the building*",
+    "Objection! ...I am objecting to myself. Overruled.",
+    "Let the record show that I {sighed|rolled my eyes|looked out of the window} at this point.",
+    "Do not look at the {clock|door|ceiling}. It encourages it.",
+    "The court will take a recess of {one second|no time at all|however long I want}. ...Recess over.",
+    "Somebody in dimension {seven|forty|ninety-one} just committed the exact same crime. Rude of you both.",
+    "You are the {ninth|four-hundredth|nine-thousandth} defendant today and the only one with that face."
+  ],
+  "bubbaTrialOpenings": [
+    [
+      "Next case. Bring in the...",
+      "...",
+      "\\C[2]Oh.\\C[0]",
+      "Oh, you have got to be {joking|kidding me|out of your minds}.",
+      "Who filed this? WHO FILED THIS?"
+    ],
+    [
+      "Approach the be...",
+      "*the gavel goes somewhere under the bench and stays there*",
+      "Don't. Don't pick it up. Leave it.",
+      "Bubba.",
+      "You are, of all the people in ninety-two dimensions, standing in {my|the} court."
+    ],
+    [
+      "*she is halfway through a sentence when she stops*",
+      "...",
+      "*the whole room waits*",
+      "Everyone out. No, not you. EVERYONE ELSE out.",
+      "Right. Fine. Wonderful. This is fine."
+    ],
+    [
+      "State your name for the recor...",
+      "I know your name.",
+      "Obviously I know your name.",
+      "Strike that. Strike the whole line. Strike the {morning|week|century}.",
+      "Why are you {here|in my courtroom|standing there like that}?"
+    ],
+    [
+      "*the clerk hands her the file, and she reads the name twice*",
+      "This is a mistake.",
+      "This is an administrative mistake and somebody is going to be {rain|a frog|a footnote} for it.",
+      "Hello, Bubba.",
+      "You look well. You look... that was not a question. Sit down. Don't sit down. Stand there."
+    ]
+  ],
+  "bubbaTrialFluster": [
+    "*she reorders the same three papers four times*",
+    "*a stenographer is very quietly asked to stop typing*",
+    "*somewhere behind her, a chandelier decides to be a swarm of moths and then thinks better of it*",
+    "*the court's clock loses eleven minutes and nobody mentions it*",
+    "*she starts a sentence in a language that has not been spoken since the bronze age and abandons it*",
+    "*the gallery is replaced, mid-blink, with an empty gallery*",
+    "*she pours water for herself, then for him, then takes his back*",
+    "*the charge sheet catches fire at one corner. She does not put it out.*",
+    "*for a moment the bench is a diner counter on Route 666, and then it is a bench again*",
+    "*she says something under her breath that the record refuses to hold*"
+  ],
+  "bubbaTrialCharges": [
+    "The charge is... it says here... it doesn't matter what it says here.",
+    "You are accused of {a great deal|several things|an entire page of things}. I have read none of it.",
+    "The prosecution has prepared eleven counts. The prosecution has been {dismissed|reassigned|turned into a filing cabinet}.",
+    "It says {reckless driving|unlicensed engineering|conspiracy to compress the road}. Of course it does. That is just you existing.",
+    "There is a witness list. I am not reading a witness list to you."
+  ],
+  "bubbaTrialPardons": [
+    [
+      "Dismissed.",
+      "All of it. Every count. Struck from the record.",
+      "The record is also struck.",
+      "\\C[3]The court finds nothing here worth its time.\\C[0]"
+    ],
+    [
+      "No. No, we are not doing this.",
+      "Charges dropped. Bounty cleared. Whatever it was, it wasn't.",
+      "\\C[3]You are free to go, and you are going to go now.\\C[0]"
+    ],
+    [
+      "On review, the court finds a {procedural|jurisdictional|clerical} irregularity.",
+      "The irregularity is that you are standing there.",
+      "\\C[3]Acquitted. Fully. Loudly. In writing.\\C[0]"
+    ],
+    [
+      "I am going to say this once and the record will show I said it {calmly|professionally|in an ordinary voice}.",
+      "Innocent.",
+      "\\C[3]Innocent, cleared, expunged, forget the whole thing.\\C[0]"
+    ],
+    [
+      "Do you know how many trials I am running right now? Four billion.",
+      "This one is over. This one was over before you came through the door.",
+      "\\C[3]Not guilty. Get that number off him.\\C[0]"
+    ]
+  ],
+  "bubbaTrialDismissals": [
+    "Go. Please go. The door is {behind you|already open|that way}.",
+    "Don't say it. Whatever it is, don't say it in front of a stenographer.",
+    "Tell the witch nothing about this. Tell her I was {terrifying|impartial|unbearable}.",
+    "If you say my name in that voice I will hold you in contempt of {court|myself}.",
+    "The camper's parked {badly|across two bays|on a leyline}, by the way. It always is.",
+    "Next case. NEXT CASE.",
+    "And Bubba...no. Nothing. Go on.",
+    "Drive under eighty. I know you won't. Drive under eighty anyway."
+  ],
+  "bubbaTrialSlips": [
+    "*very quietly* I did not leave because of you.",
+    "*not for the record* The coffee here is terrible. You'd hate it.",
+    "*to the empty gallery* He kept the compass. Of course he kept the compass.",
+    "*almost inaudible* Ninety-two dimensions and you keep ending up in my paperwork.",
+    "*she looks at the door for a while after he has gone*"
+  ],
+  "emTrialOpenings": [
+    [
+      "Oh.",
+      "It's you.",
+      "The witch.",
+      "Sit down, Em. The court has been waiting for you {all morning|for eleven years|since 1992}.",
+      "No, don't look at the door. It only opens for people I like."
+    ],
+    [
+      "Em.",
+      "Do you know how many names cross this bench in a day?",
+      "Billions. I forget every single one of them.",
+      "And yet. Here you are, filed at the front, in my own handwriting.",
+      "Isn't that {flattering|unlucky|interesting}?"
+    ],
+    [
+      "The court recognises the defendant.",
+      "The court has always recognised the defendant.",
+      "The court would recognise you in a crowd of {ninety-two|a million|identical} witches.",
+      "Sit. Down."
+    ],
+    [
+      "*the gavel comes down before you have said a word*",
+      "Sorry. Reflex.",
+      "You bring it out in me, Em. Something about the {hat|posture|smell of engine oil}.",
+      "Engine oil. Yes. That would be it."
+    ]
+  ],
+  "emTrialJabs": [
+    "How is the camper running these days? {Still rattling|Still burning oil|Still smelling of him}?",
+    "He taught you to drive it, didn't he. He taught me first.",
+    "Don't misunderstand me. He feels nothing for you. I checked. {Twice|Repeatedly|Every night}.",
+    "You have been {lucky|unlucky} an improbable number of times lately. Improbable is my department.",
+    "Every door that stuck. Every coin that landed wrong. Every train you just missed. Hello.",
+    "I bent the odds on you again last {Tuesday|month|winter}. Did you notice? I hope you noticed.",
+    "It isn't jealousy. It is {jurisdiction|policy|housekeeping}. ...It is jealousy.",
+    "You sleep three metres from the only thing I ever wanted. And you snore.",
+    "I could make you {guilty|innocent|a toad} without touching the evidence. I want you to know that.",
+    "Do you ever wonder why your life is like this? Look up. Wave."
+  ],
+  "emCapitalBuildup": [
+    [
+      "This court has one sentence left in it that fits you.",
+      "I have not used it in {a century|eleven years|a very long time}.",
+      "I am going to use it now."
+    ],
+    [
+      "The lesser punishments are for lesser defendants.",
+      "You are not a lesser defendant, Em.",
+      "You are the reason I keep the old sentences on the books."
+    ],
+    [
+      "Everyone in this room already knows what I am about to say.",
+      "Even the ghosts have stopped pretending to write.",
+      "Say it with me."
+    ]
+  ],
+  "emCommuteReasons": [
+    [
+      "...No.",
+      "No, put the {blade|rope|paperwork} down.",
+      "Not today. Today it is prison.",
+      "Don't ask me why. I am not sure I know."
+    ],
+    [
+      "*the sentence hangs in the air for a long moment*",
+      "Commuted.",
+      "Prison. Same as everyone else.",
+      "Do not thank me. It ruins it."
+    ],
+    [
+      "...",
+      "He would never forgive me.",
+      "Prison. Get out of my court before I remember why I wanted this."
+    ],
+    [
+      "Actually, no.",
+      "Killing you would end it, and I am not finished.",
+      "Prison. I like knowing where you are."
+    ],
+    [
+      "Wait.",
+      "If you die here, he stops looking for you, and then he has nowhere to be.",
+      "Prison. He can visit. He won't. But he can."
+    ]
+  ],
+  "emPardonLines": [
+    [
+      "The charges are...",
+      "*she looks at the file, then at you, then at the file*",
+      "...withdrawn.",
+      "By me. Against me. Whatever the form says."
+    ],
+    [
+      "Dismissed.",
+      "Don't. Don't make the face.",
+      "I said dismissed. Go, before the paperwork catches up."
+    ],
+    [
+      "I have read the evidence twice and found it {boring|unconvincing|beneath me}.",
+      "Innocent.",
+      "This changes nothing between us. Obviously."
+    ],
+    [
+      "Not guilty.",
+      "The court is aware that this is the {third|fourth|sixth} time.",
+      "The court has told itself to stop counting."
+    ],
+    [
+      "Go home, Em.",
+      "Not to a cell. Home. The one with the {engine|bad suspension|radio that only gets one station}.",
+      "...Tell him nothing about this."
+    ]
+  ],
+  "emRelapseLines": [
+    "...No. No, I remembered something. Guilty.",
+    "I was going to let this go. Then you {breathed|blinked|stood there} and I changed my mind.",
+    "Do not mistake last time for a pattern. Guilty.",
+    "I am allowed to be two things at once. Today I am the other one."
+  ],
+  "erisWarmthLines": [
+    "*she reads the name on the file, and reads it again more slowly*",
+    "Oh. It's you.",
+    "The court notes that it {knows|has met|has had dinner with} the defendant. The court is not going to elaborate.",
+    "Strike that from the record. Strike the way I said it, particularly.",
+    "Everyone is going to pretend they did not notice that. Everyone.",
+    "I am {perfectly|entirely|professionally} impartial. Ask anyone. Do not ask anyone.",
+    "You are not going to use this against me. You are, aren't you.",
+    "*for the length of one heartbeat she is not a judge at all*"
+  ],
+  "erisClemencyLines": [
+    [
+      "I have read enough.",
+      "Dismissed.",
+      "\\C[3]All charges. Bounty cleared. Go.\\C[0]",
+      "Do not thank me in front of the stenographer."
+    ],
+    [
+      "The court finds a {procedural|evidentiary|clerical} defect in the file.",
+      "The defect is that I do not want to do this today.",
+      "\\C[3]Not guilty. Get out before the paperwork notices.\\C[0]"
+    ],
+    [
+      "*the gavel does not come down*",
+      "*she puts it back on the bench, carefully, the right way up*",
+      "\\C[3]Acquitted.\\C[0]",
+      "That is twice now. Do not make it a habit. Make it a habit."
+    ],
+    [
+      "Four billion trials this morning and I am {distracted|slow|unforgivably soft} in exactly one of them.",
+      "\\C[3]Charges withdrawn.\\C[0]",
+      "Say nothing. Say absolutely nothing."
+    ],
+    [
+      "I could convict you standing on my head.",
+      "\\C[3]I am not going to.\\C[0]",
+      "Go home. Take the long way. I like watching."
+    ]
+  ],
+  "erisColdSnapLines": [
+    "Do not look at me like that. It does not work in here.",
+    "Whatever you think last time bought you, it did not buy you this.",
+    "I am the bench first and everything else a very long way second. Guilty.",
+    "One dinner. One. And you thought that was a key."
+  ],
+  "lawyerGreetings": {
+    "benevolent": [
+      "An advocate! How {quaint|charming|touchingly optimistic}. Sit at the little table.",
+      "You brought counsel. Nobody brings counsel. I have had that table dusted specially.",
+      "Very well. Speak when it helps them and not once when it does not."
+    ],
+    "neutral": [
+      "Counsel for the defence. Noted. Do not make me regret noting it.",
+      "The court recognises the advocate. Provisionally.",
+      "You may address the bench. Address it briefly."
+    ],
+    "irritated": [
+      "A lawyer. Wonderful. This will take {twice|four times|an eternity} as long.",
+      "I have read your submissions. I read them in the corridor. I read them badly.",
+      "Say something useful in the next sentence or sit down."
+    ],
+    "chaotic": [
+      "A LAWYER! I have not had one of those in {years|centuries|this dimension}!",
+      "Argue at me! Go on! I have no idea what I will do with it!",
+      "Rules of evidence? In here? Oh, this is going to be fun for one of us."
+    ],
+    "vindictive": [
+      "So you brought a professional. You think I can be argued out of it.",
+      "Counsel. Look at me. Now look at your client. One of you is leaving happy.",
+      "I have eaten better advocates than you for {breakfast|procedural reasons|no reason at all}."
+    ],
+    "whimsical": [
+      "Ooh, a proper lawyer! With the little folder and everything!",
+      "Do the thing! The 'objection' thing! I want to hear it done properly!",
+      "I shall pretend to be persuadable. It is a wonderful game."
+    ],
+    "bored": [
+      "Counsel. Fine. At least somebody in this room has prepared.",
+      "Talk. Genuinely, please talk. Anything is better than the silence.",
+      "A lawyer. The one thing that makes these longer AND more interesting."
+    ],
+    "dramatic": [
+      "AN ADVOCATE STANDS BEFORE THE BENCH! THE OLD FORMS ARE OBSERVED!",
+      "SPEAK, CHAMPION OF THE ACCUSED! LET THE RECORD RING WITH IT!",
+      "How MAGNIFICENT. How doomed. Proceed."
+    ]
+  },
+  "lawyerPartyGreetings": [
+    "Your {friend|companion|travelling associate} is going to argue for you. In my court. Out loud.",
+    "No bar admission. No robe. No shame. Very well, speak.",
+    "I see. The defence is somebody who already likes you. How rigorous.",
+    "You could have hired a professional. You brought {a friend|company|the person who carries your bags}."
+  ],
+  "lawyerAbsentLines": [
+    "No counsel. Good. Fewer people to interrupt me.",
+    "You are defending yourself. Bold. Statistically {catastrophic|unwise|very brief}.",
+    "The chair for the defence is empty. It usually is. It suits the room.",
+    "Nobody speaks for you today. Nobody ever really does."
+  ],
+  "lawyerBanLines": [
+    [
+      "Stop.",
+      "Counsel is {excused|disbarred|removed}.",
+      "Not for anything said. For the face that was going to say it.",
+      "*the little table is no longer there*"
+    ],
+    [
+      "No.",
+      "I have decided I do not want to be argued with today.",
+      "The defence is struck. The defendant may {continue alone|stand there quietly|reflect}."
+    ],
+    [
+      "Objection.",
+      "Mine. To you.",
+      "Sustained. Get out of my court.",
+      "*somewhere, a filing cabinet acquires a new lawyer*"
+    ],
+    [
+      "Are you reading me case law?",
+      "In here? To me?",
+      "\\C[2]Removed.\\C[0] I wrote the case law. Badly, on purpose."
+    ],
+    [
+      "I am told you are very good.",
+      "That is precisely the problem.",
+      "Escort counsel out. Gently. Gently-ish."
+    ],
+    [
+      "*she looks at the advocate for a long, unblinking moment*",
+      "You have a {clever|honest|expensive} face and I am not in the mood for any of the three.",
+      "Dismissed. Not the case. You."
+    ]
+  ],
+  "lawyerObjections": [
+    "\"Objection. The exhibit was recovered from a place that does not exist.\"",
+    "\"My client has no memory of the events, which the prosecution has not disputed, because there is no prosecution.\"",
+    "\"With respect, the court cited a case it decided by coin toss.\"",
+    "\"The charge sheet is dated {tomorrow|the wrong century|in pencil}.\"",
+    "\"I would ask the bench to note that my client has been sitting quietly for the entire hearing.\"",
+    "\"There is no complainant. There is no witness. There is a pigeon.\"",
+    "\"The bounty was calculated by a system the court itself has called insane.\"",
+    "\"My client pleads context, Your Honour. Enormous amounts of context.\"",
+    "\"Every element of this offence requires intent. My client rarely has any.\"",
+    "\"I have prepared eleven authorities. I will read {one|two|none} of them, out of mercy.\""
+  ],
+  "lawyerErisReplies": [
+    "...That is annoyingly reasonable.",
+    "Overruled. {Beautifully argued|Nicely done|Good try} and overruled.",
+    "Sustained. Do not look so pleased.",
+    "I am writing that down. I am not going to read it back.",
+    "The court will pretend it did not hear that, and will remember it forever.",
+    "You are {good|expensive|wasted here}. It will not be enough. It might be enough.",
+    "Noted, and irritating.",
+    "*she does not answer for slightly too long*"
+  ],
+  "reverseMoodLabels": {
+    "benevolent": "Benevolent",
+    "neutral": "Neutral",
+    "irritated": "Irritated",
+    "chaotic": "Chaotic",
+    "vindictive": "Vindictive",
+    "whimsical": "Whimsical",
+    "bored": "Bored",
+    "dramatic": "Dramatic"
+  },
+  "reverseMoodFlavor": {
+    "benevolent": {
+      "open": "I shall try to be... understanding. Try.",
+      "guilty": "Even in all my mercy, I cannot ignore this.",
+      "innocent": "Go on then. I choose kindness today."
+    },
+    "neutral": {
+      "open": "Let's keep this simple and fair.",
+      "guilty": "The facts leave me no choice.",
+      "innocent": "The facts do not support guilt."
+    },
+    "irritated": {
+      "open": "This had better be quick.",
+      "guilty": "Guilty. And I'm still annoyed.",
+      "innocent": "Fine, innocent. Just get out of my sight."
+    },
+    "chaotic": {
+      "open": "Let's see where the dice of fate roll today!",
+      "guilty": "GUILTY! Because chaos demanded it!",
+      "innocent": "Innocent! Or is it?! Who can say!"
+    },
+    "vindictive": {
+      "open": "Finally, someone else sits where I usually judge from.",
+      "guilty": "Of course they're guilty. Everyone is.",
+      "innocent": "...Fine. Innocent. This time."
+    },
+    "whimsical": {
+      "open": "Ooh, my turn to play judge! This will be fun!",
+      "guilty": "Guilty! Like a plot twist in a bad play!",
+      "innocent": "Innocent! Twist ending!"
+    },
+    "bored": {
+      "open": "*yawn* Let's get this over with.",
+      "guilty": "Guilty. Whatever. Next.",
+      "innocent": "Innocent, I guess. Can I go now?"
+    },
+    "dramatic": {
+      "open": "BEHOLD! A NEW HAND WIELDS THE GAVEL OF FATE!",
+      "guilty": "GUILTY! LET THE HEAVENS TREMBLE!",
+      "innocent": "INNOCENT! FATE HAS SPOKEN THROUGH ME!"
+    }
+  },
+  "trialSentences": [
+    "One night in a cell. Think about it.",
+    "Three days. One for each time you looked at me like that.",
+    "A week. Round numbers comfort me.",
+    "Two weeks. I flipped a coin twice.",
+    "A month. Long enough to be boring, short enough to survive.",
+    "A season. You will come out with a different opinion of weather.",
+    "You stay until the debt is paid. Not a minute less.",
+    "Your bounty is your sentence. Work it off."
+  ],
+  "lawyerRanks": [
+    "King's Counsel",
+    "Senior Advocate",
+    "Advocate",
+    "Junior Counsel",
+    "Duty Solicitor"
+  ],
+  "reverseJailOptions": [
+    "A week in a cell",
+    "A month in prison",
+    "A full year",
+    "A decade behind bars",
+    "Life imprisonment"
+  ],
+  "reverseCapitalOptions": [
+    "Guillotine",
+    "Firing Squad",
+    "Hanging",
+    "Electric Chair",
+    "Beheading by Sword",
+    "Lethal Injection",
+    "Turned to Stone",
+    "Disintegrated into Ash",
+    "Banished to the Void",
+    "Soul Devoured by Eris",
+    "Transmuted into a Toad",
+    "Struck by Chaos Lightning"
+  ],
+  "reverseOpeningLines": [
+    "Court is in session. Try not to bore me.",
+    "Stand up straight. I judge posture too.",
+    "I have read your file. I was not impressed.",
+    "Before we begin, is anyone bringing me wine?",
+    "You may speak when spoken to. Rarely, then.",
+    "Let the record show that I did not want to be here.",
+    "I am the law today. Feel free to panic.",
+    "Nice courtroom. I might keep it.",
+    "No lawyers. No appeals. Just me.",
+    "Smile for the gavel. It likes to be greeted."
+  ],
+  "reverseOpeningReplies": [
+    "Your Honor... this is all a misunderstanding.",
+    "I did not ask for a divine judge.",
+    "Can we please just get this over with?",
+    "*swallows hard* Yes, Your Honor.",
+    "You are not even a real magistrate.",
+    "I have rights, you know. I think.",
+    "Everyone said you would be worse.",
+    "I am innocent. Obviously."
+  ],
+  "reversePressApproaches": [
+    "Explain yourself. Slowly.",
+    "Where, exactly, is the evidence?",
+    "Ha. And you thought nobody would notice?",
+    "Lie to me and you will lose the tongue.",
+    "...Just tell me why.",
+    "Skip ahead. I have plans tonight.",
+    "I could simply read your soul, you know."
+  ],
+  "reverseClosingLines": [
+    "I have heard enough. The court will decide.",
+    "Last words. Make them interesting.",
+    "You have been almost convincing. Almost.",
+    "My patience has a floor, and we have reached it.",
+    "None of this will matter in a hundred years.",
+    "I judge you as I would want to be judged. Frightening, is it not?",
+    "The truth is such a small thing. Let us see if I care.",
+    "Silence now. The gavel speaks next."
+  ],
+  "reverseFinalPleas": [
+    "Whatever you decide, I will remember your face.",
+    "Please. I have people waiting for me.",
+    "Do what you want. You always do.",
+    "I am ready, Your Honor.",
+    "This is not justice. It is theatre.",
+    "May the gods judge you as you judge me."
+  ],
+  "reversePartingLines": [
+    "Court adjourned. Someone clean the floor.",
+    "Next case. And bring me that wine.",
+    "I hope you understand this was nothing personal.",
+    "That was personal, actually. Very personal.",
+    "Justice is exhausting. How does anyone do this daily?",
+    "Write it in the ledger. Under 'inevitable'.",
+    "I will think about this one tonight. Briefly.",
+    "Do not thank me. It ruins the mood."
+  ],
+  "bank": {
+    "showReleaseMessage": {
+      "messages": [
+        "You are free to go!\nBut I'm {watching you|counting your steps|keeping the file open}...",
+        "Your time is up!\nLeave before I {change my mind|get bored|reopen the file}!",
+        "Freedom! For now...\nDon't let me see you here again!",
+        "Hmm, you've paid your debt.\nNow scram!",
+        "Well well, you survived!\nOut of my sight!",
+        "Time's up!\nYou're free... technically.",
+        "Congratulations!\nYou've served your sentence!\n...How boring.",
+        "FINALLY!\nI thought you'd never leave!",
+        "Freedom earned!\nBut remember: I'm watching!",
+        "Get out!\nAnd don't come back with more crimes!"
+      ]
+    },
+    "getRandomCrimeAccusation": {
+      "accusations": [
+        "stealing clouds from the sky",
+        "disturbing the sleep of ants",
+        "thinking illegal thoughts",
+        "walking too loudly",
+        "giving a statue dirty looks",
+        "breathing suspiciously",
+        "existing without permission",
+        "dreaming of crimes",
+        "sniffing public air",
+        "occupying space in the universe"
+      ]
+    },
+    "zeroBountyRant": {
+      "rants": [
+        "WHAT?! ZERO?!\nYou have NO bounty?!\n...Why are you even here?!",
+        "Wait wait wait...\nZERO euros bounty?!\nWho sent you here?!",
+        "...\nAre you serious?\nNO bounty?\nLeave! OUT!",
+        "ARE YOU MOCKING ME?!\nYou did NOTHING wrong?!\nWhat kind of criminal are you?!",
+        "Zero bounty...\nZERO!\nYou made me waste my time!\nOUT!",
+        "I DON'T HAVE TIME FOR INNOCENTS!\nGo! Go! GO!\nAnd next time bring at least\nsome decent crimes!",
+        "How did I... wait...\nDid I get the wrong person?!\nNo no no, this is embarrassing...",
+        "I... the great Eris...\nsummoned someone with zero bounty?\nThis is humiliating!",
+        "The SYSTEM sent me\nsomeone INNOCENT?!\nWhat a waste of divine power!",
+        "Who runs this court?!\nOh right, I do...\nWell, this is awkward.",
+        "The guards brought me\nthe WRONG PERSON!\nMorons!\n...Wait, I don't have guards.",
+        "Zero? ZERO?!\nBut then... why...\nYou know what? Whatever! Go away!",
+        "Hmm... no bounty...\nMaybe YOU'RE the innocent one!\nOr maybe I'M the guilty one!\nOr maybe... leave, you confuse me!",
+        "AHAHAHA! Zero bounty!\nIt's so ridiculous it's almost perfect!\n...No wait, it's just ridiculous. Leave.",
+        "No bounty...\nYou're either the most innocent being I've ever seen...\nOr the greatest criminal never caught.\nI don't want to find out. Go!"
+      ],
+      "additionalRants": [
+        "And don't waste my time again!",
+        "This has never happened before...",
+        "My prestige... ruined...",
+        "They'll tell this story for centuries...",
+        "Forget it. Forget all of this.",
+        "Don't tell ANYONE about this!"
+      ]
+    },
+    "showOpening": {
+      "openings": [
+        [
+          "Oh! A visitor!",
+          "What a pleasant surprise... or so it seems.",
+          "You know, not many have the courage to appear before me willingly.",
+          "Or perhaps you were... convinced? Ah, the details!"
+        ],
+        [
+          "Welcome, welcome!",
+          "Today I feel particularly... how should I put it...",
+          "Magnanimous? Generous? Almost human?",
+          "Well, let's not exaggerate. But it could be worse for you!"
+        ],
+        [
+          "Ah, there you are.",
+          "You see, I used to be a goddess of discord...",
+          "But now I'm the Goddess of Justice!",
+          "Ironic, isn't it? Still makes me laugh."
+        ]
+      ],
+      "openings2": [
+        [
+          "YOU!",
+          "You DARE appear before ME?!",
+          "Before the GREAT ERIS?!",
+          "The audacity... the arrogance...",
+          "It almost makes me want to respect you.",
+          "Almost."
+        ],
+        [
+          "Another criminal...",
+          "Another pathetic mortal who thinks they can get away with it...",
+          "You know what amuses me about you people?",
+          "NOTHING! Absolutely nothing!",
+          "You're all the same. Boring. Guilty."
+        ],
+        [
+          "Ah, look who we have here.",
+          "Did you really think you could escape me?",
+          "Did you think your crimes would go unnoticed?",
+          "I see EVERYTHING.",
+          "And I NEVER forget."
+        ]
+      ],
+      "openings3": [
+        [
+          "AHAHAHA!",
+          "A trial! A glorious, wonderful TRIAL!",
+          "Or wait... is it a birthday party?",
+          "No no, it's definitely a trial.",
+          "...I think."
+        ],
+        [
+          "Welcome! Or should I say... goodbye?",
+          "Words are so confusing sometimes!",
+          "Justice, injustice, pizza...",
+          "They're all the same if you think about it enough!",
+          "Or not enough! Who knows!"
+        ],
+        [
+          "YOU! YES, YOU!",
+          "You're here for... for...",
+          "Why are you here again?",
+          "Oh yes! JUDGMENT!",
+          "Or was it a game? Let's play anyway!"
+        ]
+      ],
+      "openings4": [
+        [
+          "Ooh, how cute!",
+          "A new toy... uhm, defendant!",
+          "You know what? I like you already!",
+          "That face... that posture...",
+          "So full of... guilt? Hope? Fear?",
+          "Delicious confusion!"
+        ],
+        [
+          "Hey! Hi!",
+          "Want to know a secret?",
+          "I have NO idea what I'm doing!",
+          "But don't tell anyone, okay?",
+          "It would ruin my whole divine image!",
+          "*giggles*"
+        ],
+        [
+          "Welcome to my personal playground!",
+          "Today we're playing 'Court'!",
+          "It's like monopoly, but with more arbitrary verdicts!",
+          "And less property!",
+          "Although... I might keep your property anyway..."
+        ]
+      ],
+      "openings5": [
+        [
+          "*yawn*",
+          "Another trial...",
+          "Do you know how many of these I've done today?",
+          "Neither do I.",
+          "I stopped counting after... three? Maybe two?",
+          "The point is: I'm BORED."
+        ],
+        [
+          "Ugh.",
+          "Do I really have to do this?",
+          "Can't I just... I don't know... read your mind?",
+          "Oh wait, I can!",
+          "But it would be as boring as talking to you.",
+          "Fine, let's get this over with."
+        ],
+        [
+          "Hi.",
+          "Yes, hi to you too.",
+          "I'm the Goddess of Justice.",
+          "Applause, et cetera et cetera.",
+          "You can skip the introductions, I already know you.",
+          "Bore me as little as possible, please."
+        ]
+      ],
+      "openings6": [
+        [
+          "SILENCE!",
+          "THE COURT OF DIVINE ERIS IS OFFICIALLY IN SESSION!",
+          "*dramatic thunder in the distance*",
+          "Oh, that's me.",
+          "I love special effects.",
+          "NOW! Where were we... Oh yes!",
+          "THIS TRIAL WILL CHANGE THE COURSE OF HISTORY!"
+        ],
+        [
+          "Welcome, mortal!",
+          "On this fateful day...",
+          "In this dark hour...",
+          "Beneath these stormy skies...",
+          "...okay, the skies aren't stormy, but it sounds good...",
+          "Your fate shall be DECIDED!",
+          "By ME! The magnificent, terrible, DIVINE ERIS!"
+        ],
+        [
+          "BEHOLD! THE DEFENDANT ARRIVES!",
+          "The very stars predicted this moment!",
+          "The ancient gods tremble!",
+          "Fate itself holds its breath!",
+          "...or maybe that's just gas. Not sure.",
+          "ANYWAY! You are here to be JUDGED!"
+        ]
+      ],
+      "openings7": [
+        [
+          "Tch.",
+          "Look at you.",
+          "You've already ruined my day and you haven't even opened your mouth.",
+          "Impressive, in a negative way.",
+          "Let's be clear: I don't like you already."
+        ],
+        [
+          "Perfect. Just perfect.",
+          "I was having a WONDERFUL day.",
+          "I was about to relax, maybe cause some chaos...",
+          "And then YOU show up.",
+          "With your stupid crimes and your annoying face.",
+          "Fantastic."
+        ],
+        [
+          "You've already annoyed me.",
+          "I don't even know what you did, but I'm already tired of you.",
+          "It's a talent, really.",
+          "Being this irritating without even trying.",
+          "Fine. Let's start so I can get rid of you sooner."
+        ]
+      ],
+      "openings8": [
+        [
+          "Well.",
+          "You're here.",
+          "I'm here.",
+          "We need to do this trial.",
+          "Simple, efficient, to the point."
+        ],
+        [
+          "Welcome to court.",
+          "I'm Eris.",
+          "I used to be the goddess of discord, now I'm the Goddess of Justice.",
+          "It's a long story.",
+          "I won't tell you."
+        ],
+        [
+          "Let's proceed.",
+          "You have crimes, I have a court.",
+          "It's a natural combination.",
+          "Let's begin without unnecessary drama."
+        ]
+      ],
+      "bountyAnnouncements": [
+        "Your bounty amounts to {bounty}.",
+        "Interesting... {bounty} bounty.",
+        "I see here you owe {bounty}...",
+        "{bounty}! Not bad!",
+        "Ah yes, {bounty} debt to society."
+      ]
+    },
+    "showEmOpening": {
+      "softer": [
+        "...",
+        "That was unnecessary. All of it was unnecessary.",
+        "Let's get on with it."
+      ],
+      "announcements": [
+        "Your bounty is {bounty}. I rounded it {up|to taste}.",
+        "{bounty}. You do know I put part of that number there myself?",
+        "It says {bounty} here. It says a great many other things about you here too."
+      ]
+    },
+    "immediateVerdict": {
+      "immediate": [
+        "You know what?\nGUILTY! Get out!",
+        "No, wait... INNOCENT!\nActually, GUILTY!",
+        "You looked at me wrong.\nPRISON!",
+        "Hmm... I don't like your face.\nGUILTY!"
+      ]
+    },
+    "askPlea": {
+      "introductions": [
+        [
+          "Now...",
+          "The important part.",
+          "Or at least it should be.",
+          "Depends on how I feel.",
+          "Which is not very predictable!"
+        ],
+        [
+          "It's time...",
+          "Time for YOU to speak!",
+          "Yes, you!",
+          "Finally!",
+          "I've talked enough, haven't I?"
+        ],
+        [
+          "Well well well...",
+          "Let's hear your version.",
+          "Even though it's probably full of lies.",
+          "But hey, I'll enjoy it anyway!"
+        ]
+      ],
+      "pleaQuestions": [
+        [
+          "So...",
+          "How do you plead?",
+          "Guilty or innocent?",
+          "Or something else?",
+          "Surprise me!"
+        ],
+        [
+          "The classic question:",
+          "Guilty?",
+          "Or innocent?",
+          "Choose wisely!",
+          "...Or stupidly, I'll enjoy it either way."
+        ],
+        [
+          "Moment of truth!",
+          "How do you plead before me?",
+          "Before the DIVINE ERIS?",
+          "Well?",
+          "ANSWER!"
+        ]
+      ],
+      "choices": [
+        "Guilty{|, yes|. Very guilty}",
+        "Not guilty{|. Not at all|, and you know it}",
+        "It's complicated...",
+        "You're guilty!",
+        "Challenge Eris"
+      ]
+    },
+    "benevolentTrial": {
+      "intro": [
+        "Let's see...",
+        "Today I feel... understanding.",
+        "Rare for me, I know.",
+        "Let's take advantage while it lasts!"
+      ],
+      "questions": [
+        [
+          "Tell me something...",
+          "Have you ever helped anyone?",
+          "And I mean TRULY helped.",
+          "Not just to look good."
+        ],
+        [
+          "Do you regret your actions?",
+          "And don't tell me what you think I want to hear.",
+          "I can see through lies.",
+          "...Most of the time."
+        ],
+        [
+          "Let's make a deal.",
+          "Promise me you'll be good.",
+          "Or at least... less bad?",
+          "That's all I ask. Today."
+        ]
+      ],
+      "choices": [
+        "Yes",
+        "No",
+        "Maybe",
+        "I don't know"
+      ],
+      "musings": [
+        [
+          "You know...",
+          "I wasn't always like this.",
+          "I used to be... different.",
+          "More chaotic. Less just.",
+          "Or maybe the opposite?"
+        ],
+        [
+          "I see something in you...",
+          "I don't know what it is.",
+          "Maybe goodness? Potential?",
+          "Or maybe I just see what I want to see."
+        ],
+        [
+          "Justice is strange.",
+          "Sometimes mercy is more just than justice.",
+          "Sometimes justice is pure cruelty.",
+          "Divine philosophy. What a headache!"
+        ]
+      ],
+      "responses": {
+        "0": [
+          "Yes?",
+          "Hmm... I like this answer.",
+          "Honest. Direct.",
+          "Or at least I hope it is."
+        ],
+        "1": [
+          "No?",
+          "Well... I appreciate the honesty.",
+          "Even if it's depressing.",
+          "At least you didn't lie!"
+        ],
+        "2": [
+          "Maybe...",
+          "The coward's answer!",
+          "Or the wise one's?",
+          "Not sure which you are."
+        ],
+        "3": [
+          "You don't know?",
+          "At least you're honest about your confusion.",
+          "It's... refreshing?",
+          "In a weird way."
+        ]
+      }
+    },
+    "vindictiveTrial": {
+      "intro": [
+        "Well well well...",
+        "Let me look at you closely.",
+        "Yes... I see guilt written all over your face.",
+        "It's practically glowing!",
+        "How could I NOT see it?"
+      ],
+      "futureCrimes": [
+        "And you know what?",
+        "You've probably already planned other crimes!",
+        "I can see it in your eyes!",
+        "That 'I will commit crimes in the future' look!",
+        "I know you!"
+      ],
+      "rants": [
+        [
+          "You know what your problem is?",
+          "And the problem of ALL criminals?",
+          "You think you're clever!",
+          "You think you can get away with it!",
+          "BUT I SEE EVERYTHING!"
+        ],
+        [
+          "I'm tired.",
+          "So tired of people like you.",
+          "Always breaking the rules...",
+          "Always causing problems...",
+          "And then you expect mercy!",
+          "RIDICULOUS!"
+        ],
+        [
+          "I want you to know something.",
+          "Every single criminal I've judged...",
+          "Had the same expression you have now.",
+          "And you know where they ended up?",
+          "Well, you'll find out soon!"
+        ]
+      ],
+      "additional": [
+        "And furthermore!",
+        "{crime}!",
+        "Don't think I forgot about that!",
+        "I NEVER forget!"
+      ],
+      "accusations": [
+        [
+          "You are accused of {crime}!",
+          "And don't deny it!",
+          "I have the evidence right here!",
+          "...Somewhere."
+        ],
+        [
+          "{crime}!",
+          "Yes! That one!",
+          "Did you think you'd escape?",
+          "Did you think I was stupid?!",
+          "Well, I'm many things, but stupid is NOT one!"
+        ],
+        [
+          "The crime: {crime}.",
+          "Horrible, right?",
+          "Disgusting.",
+          "Unforgivable!",
+          "...Probably."
+        ]
+      ]
+    },
+    "playfulTrial": {
+      "intro": [
+        "Okay okay okay!",
+        "I'm BORED of normal trials.",
+        "Let's do something FUN!",
+        "Like... a game!",
+        "You like games, right? RIGHT?!"
+      ],
+      "games": [
+        [
+          "Let's play guess the number!",
+          "I'm thinking of a number between 1 and 1000!",
+          "If you guess it, you're innocent!",
+          "If you're wrong... well...",
+          "Come on, try!"
+        ],
+        [
+          "Let's do this:",
+          "If you can make me laugh...",
+          "Really truly laugh...",
+          "I'll let you go!",
+          "Actually no, maybe I'll send you to prison!",
+          "Or maybe I'll free you!",
+          "Who knows! That's the fun part!"
+        ],
+        [
+          "Ooh, I have an idea!",
+          "Let's sing a song together!",
+          "I'll sing the first part, you sing the second!",
+          "And if I like the song...",
+          "I'll decide your fate based on the notes!",
+          "Perfect, right?"
+        ]
+      ],
+      "choices": [
+        "I'll try!",
+        "No thanks",
+        "This is ridiculous",
+        "42!"
+      ],
+      "extra": [
+        "You know what?",
+        "I like you!",
+        "I don't know why, but I do!",
+        "Maybe it's your face.",
+        "Or maybe I'm just in a good mood.",
+        "Who can say!"
+      ],
+      "lines": [
+        "OH! Such enthusiasm!",
+        "I love it! I love it so much!",
+        "So energetic!",
+        "So... alive!",
+        "Fantastic!"
+      ],
+      "lines2": [
+        "No?",
+        "You DON'T want to play?",
+        "But... but...",
+        "This wasn't in the script!",
+        "You're boring! BORING!"
+      ],
+      "lines3": [
+        "RIDICULOUS?!",
+        "You dare call my game RIDICULOUS?!",
+        "...You're right, it's totally ridiculous.",
+        "BUT IT'S FUN!",
+        "And that's what matters!"
+      ],
+      "3": [
+        "42?!",
+        "THE ANSWER TO THE UNIVERSE!",
+        "Oh my god, you got the reference!",
+        "You're PERFECT!",
+        "Or maybe just a nerd.",
+        "Both are acceptable!"
+      ]
+    },
+    "boredTrial": {
+      "intro": [
+        "*yawn*",
+        "God, another trial...",
+        "I can't take it anymore.",
+        "Really, I just can't.",
+        "But fine, let's do this."
+      ],
+      "bored": [
+        [
+          "So...",
+          "Do you have anything to say in your defense?",
+          "Something interesting?",
+          "No, who am I kidding.",
+          "Nothing is interesting."
+        ],
+        [
+          "Look, let's make this quick.",
+          "I have better things to do.",
+          "Like... I don't know...",
+          "Staring at the ceiling.",
+          "Counting dust particles.",
+          "Anything but this."
+        ],
+        [
+          "*yawn again*",
+          "Are you guilty or innocent?",
+          "Decide quickly.",
+          "I don't have all day.",
+          "Actually, technically I do, I'm immortal.",
+          "But I prefer not to waste my time."
+        ]
+      ],
+      "choices": [
+        "I'm innocent!",
+        "I have a long story...",
+        "Can I go?",
+        "..."
+      ],
+      "complaint": [
+        "You know what I miss?",
+        "When I was the goddess of discord.",
+        "That was fun.",
+        "This? This is work.",
+        "Boring work."
+      ],
+      "lines": [
+        "A long story?",
+        "OH NO.",
+        "Absolutely NOT.",
+        "Do not tell long stories.",
+        "Summarize in three words or be silent."
+      ],
+      "lines2": [
+        "Can you go?",
+        "Ah! Finally someone who understands!",
+        "I like this question!",
+        "Unfortunately the answer is no.",
+        "I still have to judge you.",
+        "*sigh*"
+      ],
+      "0": [
+        "Innocent.",
+        "Of course you are.",
+        "Everyone says they're innocent.",
+        "It's so... predictable."
+      ],
+      "3": [
+        "...",
+        "You're silent too?",
+        "Good.",
+        "I appreciate silence.",
+        "It's so rare these days."
+      ]
+    },
+    "dramaticTrial": {
+      "intro": [
+        "SILENCE!",
+        "*dramatic echo*",
+        "THE COURT OF DIVINE ERIS...",
+        "IS OFFICIALLY...",
+        "IN SESSION!",
+        "*thunder in the distance*"
+      ],
+      "dramatic": [
+        [
+          "Oh, that's me with the thunder.",
+          "Divine special effects!",
+          "Cost a fortune but worth it!",
+          "MAXIMUM DRAMA!"
+        ],
+        [
+          "Welcome, mortal!",
+          "On this day that shall be remembered...",
+          "For centuries and centuries...",
+          "For all eternity...",
+          "Or at least until tomorrow."
+        ],
+        [
+          "THE VERY STARS TREMBLE!",
+          "FATE ITSELF WAITS!",
+          "THE ANCIENT GODS WATCH!",
+          "...Probably.",
+          "I haven't checked."
+        ]
+      ],
+      "proclamation": [
+        "THIS...",
+        "IS NOT A SIMPLE TRIAL!",
+        "This is...",
+        "AN EPIC MOMENT!",
+        "A CLASH BETWEEN JUSTICE AND CRIME!",
+        "A BATTLE FOR YOUR SOUL!",
+        "...Or maybe not, but it sounds good!"
+      ],
+      "question": [
+        "AND NOW...",
+        "Before I pronounce...",
+        "THE VERDICT THAT SHALL ECHO THROUGH ETERNITY...",
+        "THAT SHALL SHAKE THE FOUNDATIONS OF THE UNIVERSE...",
+        "What say you?!"
+      ],
+      "choices": [
+        "Mercy!",
+        "Justice!",
+        "I don't care",
+        "You're insane!"
+      ],
+      "finale": [
+        "AND NOW...",
+        "The moment you've all been waiting for...",
+        "The climax of this epic trial...",
+        "THE FINAL DECISION!",
+        "...After this dramatic pause."
+      ],
+      "lines": [
+        "JUSTICE!",
+        "YES! JUSTICE!",
+        "YOU CALL FOR IT!",
+        "YOU INVOKE IT!",
+        "AND I SHALL BRING IT!",
+        "...Maybe!"
+      ],
+      "lines2": [
+        "YOU DON'T CARE?!",
+        "YOU HAVE THE AUDACITY...",
+        "THE BRAZENNESS...",
+        "THE IMPUDENCE...",
+        "To not fear me?!",
+        "MAGNIFICENT!"
+      ],
+      "0": [
+        "MERCY?!",
+        "YOU BEG FOR MERCY?!",
+        "How... how...",
+        "DRAMATIC!",
+        "I LOVE IT!"
+      ],
+      "3": [
+        "INSANE?!",
+        "YOU CALL ME INSANE?!",
+        "ME?!",
+        "The DIVINE ERIS?!",
+        "...You're right, but that's beside the point!",
+        "HOW DARE YOU?!"
+      ]
+    },
+    "chaoticTrial": {
+      "intro": [
+        "Okay! So!",
+        "What are we doing?",
+        "Trial? Party? Both?",
+        "I don't know! You won't know either!",
+        "PERFECT!"
+      ],
+      "random": [
+        [
+          "You know what?",
+          "Let's talk about the weather instead!",
+          "It's nice today, right?",
+          "Or maybe it's raining?",
+          "I never look outside.",
+          "Wait, are we outside?"
+        ],
+        [
+          "I like butterflies.",
+          "Do you?",
+          "They're so colorful!",
+          "And they fly!",
+          "Just like... wait, what were we doing?"
+        ],
+        [
+          "Have you ever seen a dragon cry?",
+          "I have.",
+          "It's beautiful.",
+          "And sad.",
+          "But mostly wet.",
+          "Dragons produce A LOT of tears."
+        ]
+      ],
+      "forget": [
+        "Wait...",
+        "Why are you here?",
+        "No really, why?",
+        "Oh right! The trial!",
+        "Or was it a party?",
+        "I'm confused.",
+        "This happens often."
+      ],
+      "argue": [
+        "They're guilty!",
+        "NO, wait!",
+        "They're innocent!",
+        "What am I saying?!",
+        "I'M the guilty one!",
+        "No wait, that doesn't make sense!",
+        "Or does it?",
+        "WHO KNOWS!"
+      ],
+      "chaos": [
+        "EVERYTHING IS CHAOS!",
+        "Chaos is order!",
+        "Order is chaos!",
+        "You are me!",
+        "I am you!",
+        "We are... pizza?",
+        "No wait, that doesn't work.",
+        "OR DOES IT!"
+      ],
+      "extra": [
+        "Anyway...",
+        "Where were we?",
+        "Oh right, nowhere!",
+        "As always!",
+        "That's what matters!"
+      ],
+      "accusation": [
+        "You're clearly guilty of {crime}!",
+        "It's OBVIOUS!",
+        "How can you deny it?!",
+        "Oh wait, you weren't denying anything.",
+        "Well, too late now!"
+      ]
+    },
+    "announceVerdict": {
+      "drumrolls": [
+        [
+          "Well then...",
+          "The moment has arrived...",
+          "The moment we've been waiting for...",
+          "Or at least that I've been waiting for...",
+          "You were probably dreading it."
+        ],
+        [
+          "After careful consideration...",
+          "And deep reflection...",
+          "And consultation with the ancient gods...",
+          "...I'm lying, I didn't consult anyone.",
+          "Let's pretend I did."
+        ],
+        [
+          "The verdict...",
+          "The fateful verdict...",
+          "That will change your life...",
+          "Or at least your day...",
+          "Is about to be pronounced!"
+        ]
+      ],
+      "guiltyVerdicts": [
+        [
+          "GUILTY!",
+          "Yes, you heard right!",
+          "GUIL-TY!",
+          "All the letters!",
+          "To prison with you!"
+        ],
+        [
+          "The verdict is...",
+          "...",
+          "GUILTY!",
+          "Surprised?",
+          "I'm not!",
+          "Seemed obvious from the start!"
+        ],
+        [
+          "Guilty as sin!",
+          "Guilty as...",
+          "As... something very guilty!",
+          "I have no more similes!",
+          "But the point is: GUILTY!"
+        ],
+        [
+          "DEFINITELY GUILTY!",
+          "There was no doubt!",
+          "Well, maybe one or two...",
+          "But I ignored them!",
+          "PRISON!"
+        ],
+        [
+          "The court finds you...",
+          "*dramatic pause*",
+          "*another pause*",
+          "*okay enough pauses*",
+          "SUPER MEGA ULTRA GUILTY!",
+          "Goodbye!"
+        ]
+      ],
+      "extras": [
+        [
+          "And you know what?",
+          "You probably deserve it!",
+          "Or maybe not.",
+          "But it's too late to change my mind!"
+        ],
+        [
+          "Next time...",
+          "Think before...",
+          "Before doing whatever you did!",
+          "Or didn't do!",
+          "Whatever!"
+        ],
+        [
+          "To prison!",
+          "And don't come back!",
+          "Well, you'll come back when your sentence is done.",
+          "But then don't come back again!"
+        ],
+        [
+          "This will teach you!",
+          "To do... things!",
+          "Bad things!",
+          "Probably!",
+          "ANYWAY PRISON!"
+        ]
+      ],
+      "innocentVerdicts": [
+        [
+          "Innocent!",
+          "Yes, you heard right!",
+          "IN-NO-CENT!",
+          "Surprising!",
+          "Even for me!"
+        ],
+        [
+          "Not guilty!",
+          "This time.",
+          "You're free!",
+          "Leave before I change my mind!",
+          "QUICKLY!"
+        ],
+        [
+          "Innocent... for now!",
+          "I don't know how it happened.",
+          "But here we are.",
+          "Enjoy your freedom!",
+          "While it lasts!"
+        ],
+        [
+          "The court finds you...",
+          "Surprisingly...",
+          "Incredibly...",
+          "Miraculously...",
+          "INNOCENT!",
+          "Now disappear!"
+        ],
+        [
+          "Go! You're free!",
+          "I don't know why!",
+          "But don't ask questions!",
+          "Accept it and go!",
+          "BEFORE I CHANGE MY MIND!"
+        ]
+      ],
+      "extras2": [
+        [
+          "But I'm watching you!",
+          "Always!",
+          "ALWAYS!",
+          "Don't think you can escape me!"
+        ],
+        [
+          "Don't come back here!",
+          "Never again!",
+          "Well, unless you commit more crimes.",
+          "Which you will.",
+          "I know it."
+        ],
+        [
+          "This is your chance!",
+          "Don't waste it!",
+          "Because there won't be others!",
+          "Well, maybe one or two.",
+          "But not many!"
+        ],
+        [
+          "You're lucky today!",
+          "Very lucky!",
+          "It doesn't happen often!",
+          "Enjoy this moment!",
+          "It might not repeat!"
+        ]
+      ]
+    },
+    "announceEmVerdict": {
+      "guilty": [
+        "Guilty.",
+        "Obviously guilty.",
+        "There was never a moment in which you were not."
+      ]
+    },
+    "_chooseVerdict": {
+      "choices": [
+        "Guilty",
+        "Innocent"
+      ]
+    },
+    "_choosePunishment": {
+      "typeChoices": [
+        "Prison time",
+        "Capital punishment"
+      ]
+    },
+    "onTurnEnd": {
+      "lines": [
+        "Now now, you can't die THIS early!\nThere, all better. Let's try again!",
+        "Oh dear, were you getting hurt?\nNot on MY watch. *snaps fingers*",
+        "Good as new!\nI intend to savor every second of this.",
+        "Heal! Everyone heal!\nIt's no fun if it ends quickly, is it?",
+        "You'd be dead already without me.\nThank me. Go on, thank me!"
+      ],
+      "lines2": [
+        "Flail away. What adorable futility.",
+        "Hit me! Oh wait, you can't.",
+        "I'm bored. Make yourselves interesting!",
+        "Still alive? Such pathetic tenacity."
+      ],
+      "lines3": [
+        "Right. I've had my fun.\nNOW we get serious. No more safety net!",
+        "The show's over.\nFrom here on, you CAN die. And you will.",
+        "Enough games. I heal MYSELF now...\nand you? You're on your own."
+      ]
+    },
+    "respondToPlea": {
+      "lines": [
+        "Hmm... interesting answer."
+      ],
+      "lines2": [
+        "FINALLY!",
+        "Someone who admits their crimes!",
+        "I thought it would never happen!",
+        "Usually you all lie!",
+        "ALL OF YOU!",
+        "But you... you're different.",
+        "Guilty different, but different!"
+      ],
+      "lines3": [
+        "Guilty?",
+        "GUILTY?!",
+        "But I wanted you innocent!",
+        "I already prepared the speech!",
+        "And the fireworks!",
+        "...I hadn't prepared anything.",
+        "But I'm disappointed anyway!"
+      ],
+      "lines4": [
+        "Ooh! Guilty!",
+        "How honest!",
+        "I like honest people!",
+        "Even if they're criminals!",
+        "It's so... refreshing!",
+        "Like a summer breeze!",
+        "Or ice cream!",
+        "Mmm, ice cream..."
+      ],
+      "lines5": [
+        "Guilty.",
+        "Okay.",
+        "Thanks for not wasting my time.",
+        "At least that.",
+        "Can I skip the evidence part?",
+        "Perfect."
+      ],
+      "lines6": [
+        "LIES!",
+        "Everyone lies!",
+        "ALWAYS!",
+        "It's so frustrating!",
+        "Can't you be honest ONCE?!",
+        "ONE SINGLE TIME?!",
+        "No, obviously not!",
+        "GUILTY!"
+      ],
+      "lines7": [
+        "Not guilty?",
+        "Perfect!",
+        "I declare you...",
+        "GUILTY!",
+        "Wait no...",
+        "INNOCENT!",
+        "Actually...",
+        "Meh, I'll decide later!"
+      ],
+      "lines8": [
+        "Not guilty!",
+        "I like it!",
+        "It's like a game!",
+        "You say one thing!",
+        "I say another!",
+        "And in the end...",
+        "We see who wins!",
+        "Spoiler: I always win!"
+      ],
+      "lines9": [
+        "Not guilty.",
+        "Sure.",
+        "Of course.",
+        "Everyone's innocent.",
+        "Nobody ever does anything wrong.",
+        "And I'm the Queen of England.",
+        "*sigh*"
+      ],
+      "lines10": [
+        "COMPLICATED?!",
+        "I don't have time for complications!",
+        "Things are simple!",
+        "Guilty or innocent!",
+        "Black or white!",
+        "...Or purple.",
+        "I like purple.",
+        "BUT THAT'S NOT THE POINT!"
+      ],
+      "lines11": [
+        "Complicated!",
+        "OOH I LIKE COMPLICATED!",
+        "Complicated is my middle name!",
+        "Actually no, it's 'Chaos'.",
+        "Or was it 'Discord'?",
+        "Wait, I have too many names!",
+        "THIS IS COMPLICATED!"
+      ],
+      "lines12": [
+        "Complicated...",
+        "I like complicated things!",
+        "They're like puzzles!",
+        "Or mazes!",
+        "Or... uhm...",
+        "What were we saying?",
+        "Oh yes, complications!",
+        "Fun!"
+      ],
+      "lines13": [
+        "Complicated.",
+        "Fantastic.",
+        "Just what I wanted.",
+        "More complications.",
+        "As if my life wasn't complicated enough already.",
+        "Fine, shoot."
+      ],
+      "lines14": [
+        "HOW DARE YOU?!",
+        "YOU DARE ACCUSE ME?!",
+        "ME?!",
+        "THE DIVINE ERIS?!",
+        "You know what?",
+        "DOUBLE GUILTY!",
+        "TRIPLE GUILTY!",
+        "INFINITELY GUILTY!"
+      ],
+      "lines15": [
+        "ME GUILTY?!",
+        "AHAHAHA!",
+        "I LIKE YOUR STYLE!",
+        "You're right!",
+        "I'm super guilty!",
+        "Of everything!",
+        "You're innocent!",
+        "Wait no, you're guilty!",
+        "Or was it the other way?"
+      ],
+      "lines16": [
+        "Me guilty?",
+        "Yes!",
+        "Absolutely!",
+        "I'm guilty of being adorable!",
+        "And powerful!",
+        "And a bit crazy!",
+        "But that's irrelevant!",
+        "Let's talk about YOU!"
+      ],
+      "lines17": [
+        "Yes, I'm guilty.",
+        "So what?",
+        "Doesn't change anything.",
+        "I'm the judge.",
+        "You're the defendant.",
+        "Simple math.",
+        "Can we continue now?"
+      ],
+      "dramatic": [
+        "GUILTY!",
+        "YOU ADMIT IT!",
+        "BEFORE THE GODS!",
+        "BEFORE FATE!",
+        "BEFORE... me!",
+        "What... what courage!",
+        "What audacity!",
+        "What... well, stupidity!"
+      ],
+      "benevolent": [
+        "Not guilty...",
+        "Hmm.",
+        "Everyone says that.",
+        "But there's something about you...",
+        "I don't know what.",
+        "Maybe sincerity?",
+        "Or maybe you're just a good liar."
+      ],
+      "dramatic2": [
+        "NOT GUILTY?!",
+        "YOU DARE PROCLAIM YOUR INNOCENCE?!",
+        "BEFORE ME?!",
+        "The DIVINE ERIS?!",
+        "What... what audacity!",
+        "What brazenness!",
+        "I like it!",
+        "But you're still in serious trouble!"
+      ],
+      "benevolent2": [
+        "It's complicated?",
+        "Ah...",
+        "Life is always complicated.",
+        "I understand.",
+        "Or at least... I think I understand.",
+        "I was never good with nuances.",
+        "But I try!"
+      ],
+      "dramatic3": [
+        "COMPLICATED!",
+        "LIKE ALL GREAT STORIES!",
+        "GREEK TRAGEDIES!",
+        "EPIC BATTLES!",
+        "The... the... the...",
+        "Okay I ran out of similes.",
+        "But you get the point!"
+      ],
+      "benevolent3": [
+        "Me?",
+        "GUILTY?",
+        "Well...",
+        "Technically... yes.",
+        "I'm guilty of many things.",
+        "But that won't help you!",
+        "...Or will it?",
+        "Hmm..."
+      ],
+      "dramatic4": [
+        "ME?!",
+        "GUILTY?!",
+        "AHAHAHA!",
+        "WHAT AN ACCUSATION!",
+        "WHAT MAGNIFICENT AUDACITY!",
+        "You're right!",
+        "I'm guilty of EVERYTHING!",
+        "But that makes your trial...",
+        "EVEN MORE EPIC!"
+      ]
+    },
+    "challengeEris": {
+      "dialogues": {
+        "benevolent": [
+          "You... you're challenging me?",
+          "Oh, sweet mortal.",
+          "I admire the courage.\nI'll remember it as I break you.",
+          "Very well! Show me what you've got!"
+        ],
+        "vindictive": [
+          "YOU?! Challenge ME?!",
+          "Finally! An excuse to stop holding back!",
+          "You'll BEG to be back in your cell!",
+          "COME ON, THEN!"
+        ],
+        "chaotic": [
+          "A DUEL?! YES! A THOUSAND TIMES YES!",
+          "I have NO idea who'll win!",
+          "And that's EXACTLY why it's perfect!",
+          "LET'S FIGHT!"
+        ],
+        "whimsical": [
+          "Ooh! You want to play FIGHT?!",
+          "I love this game!",
+          "Warning: I always cheat.",
+          "But it'll be SO much fun! Come on!"
+        ],
+        "bored": [
+          "A challenge. Really.",
+          "I suppose it'll at least break the boredom.",
+          "Fine. Let's make it quick.",
+          "Surprise me. I accept."
+        ],
+        "dramatic": [
+          "A CHALLENGE!",
+          "BEFORE THE GODS AND FATE ITSELF!",
+          "THIS DAY SHALL BE SUNG FOR AGES!",
+          "EN GARDE, MORTAL!"
+        ],
+        "irritated": [
+          "You want to fight? Fine.",
+          "You were already giving me a headache.",
+          "At least this'll shut you up.",
+          "Come on, let's get it over with."
+        ],
+        "neutral": [
+          "A formal challenge.",
+          "Unusual. But accepted.",
+          "Let's see if your actions match your words.",
+          "Prepare yourself."
+        ]
+      }
+    }
+  },
+  "reverseCapitalLines": [
+    "The blade falls, swift and merciless.",
+    "A volley of shots rings out.",
+    "The rope does its grim work.",
+    "Ten thousand volts settle the matter.",
+    "One clean stroke ends it.",
+    "A quiet, clinical end.",
+    "Eris's glare turns flesh to marble.",
+    "A snap of divine fingers, and nothing remains.",
+    "Reality folds them away, forever.",
+    "She swallows their soul whole. Delicious.",
+    "A flash of chaotic light, and a toad hops away. Forever.",
+    "The sky itself answers Eris's judgment."
+  ],
+  "reversePressReplies": {
+    "explain": {
+      "guilty": [
+        "I... was somewhere else. Probably. That night is blurry.",
+        "It is not what the report says. Not exactly. Not entirely.",
+        "Anyone would have done the same in my position."
+      ],
+      "innocent": [
+        "I was working. Twelve people saw me. Ask any of them.",
+        "I have told the same story four times. It has not changed.",
+        "I do not even know the person who accused me."
+      ]
+    },
+    "evidence": {
+      "guilty": [
+        "There is none! Nothing they could have kept, anyway.",
+        "You would need a witness. There were no witnesses. None left.",
+        "Burned. I mean, lost. The paperwork was lost."
+      ],
+      "innocent": [
+        "That is my question too, Your Honor.",
+        "There is a ledger with my name in it, at the far end of town.",
+        "Nothing. Because nothing happened."
+      ]
+    },
+    "mock": {
+      "guilty": [
+        "I thought... no. I said nothing. I said NOTHING.",
+        "Laugh all you want. You were not there.",
+        "Fine! It is funny. Is that what you want?"
+      ],
+      "innocent": [
+        "Notice what? There is nothing to notice.",
+        "You are enjoying this far too much.",
+        "Mock me if it helps. It will not make me guilty."
+      ]
+    },
+    "threaten": {
+      "guilty": [
+        "*sweating* I would never lie to a goddess.",
+        "Then I will say nothing at all. Safer.",
+        "Wait. Wait. If I confess, does the tongue stay?"
+      ],
+      "innocent": [
+        "Take it. It has only ever told the truth.",
+        "*trembling* I am telling the truth, I swear it!",
+        "Threats do not change facts, Your Honor."
+      ]
+    },
+    "sympathy": {
+      "guilty": [
+        "Because I was hungry. And then it became easy.",
+        "You would not understand. You have never needed anything.",
+        "Does it matter now? It is done."
+      ],
+      "innocent": [
+        "There is no why. I did not do it.",
+        "I have asked myself that since they took me.",
+        "Someone needed a name, and mine was nearby."
+      ]
+    },
+    "bored": {
+      "guilty": [
+        "...Then perhaps you should not be judging me.",
+        "By all means. Do not let justice inconvenience you."
+      ],
+      "innocent": [
+        "My life is the thing being skipped, Your Honor.",
+        "Of course. Why would this matter to you."
+      ]
+    },
+    "divine": {
+      "guilty": [
+        "Then do it! ...Actually, no. Do not.",
+        "Souls are private. Even in court."
+      ],
+      "innocent": [
+        "Please do. Read every corner of it.",
+        "If that ends this faster, look."
+      ]
+    }
+  },
+  "line": {
+    "crimes": "Crimes:",
+    "noneYet": "None (yet)",
+    "bounty": "Bounty:",
+    "eris": "Eris: ",
+    "theCourtIsEmpty": "The court is empty...",
+    "en": "en",
+    "noCrimesOnRecord": "No crimes on record",
+    "you": "You",
+    "theTrial": "The Trial",
+    "charges": "Charges",
+    "totalBounty": "Total Bounty",
+    "chaosLevel": "Chaos Level",
+    "todaySCourt": "Today's Court",
+    "venue": "Venue",
+    "gallery": "Gallery",
+    "guilty": "GUILTY",
+    "innocent": "INNOCENT",
+    "partyMember": "Party member",
+    "noLawyer": "No lawyer",
+    "defendYourself": "Defend yourself",
+    "devoted": "Devoted",
+    "warm": "Warm",
+    "favourable": "Favourable",
+    "indifferent": "Indifferent",
+    "cold": "Cold",
+    "hostile": "Hostile",
+    "law": "Law",
+    "nobodySpeaksForYouOnly": "Nobody speaks for you. Only what you know of the law.",
+    "level": "Level",
+    "disposition": "Disposition",
+    "fee": "Fee",
+    "none": "None",
+    "thrownOutOfCourt": "Thrown out of court",
+    "projectedOutcome": "Projected Outcome",
+    "acquitted": "Acquitted",
+    "shortSentence": "Short sentence",
+    "longSentence": "Long sentence",
+    "youCannotAffordThis": "You cannot afford this.",
+    "free": "free",
+    "theDefence": "The Defence",
+    "erisSCourtHasNever": "Eris's court has never had a defence bench. There is one anyway, and today you can put somebody at it.",
+    "funds": "Funds",
+    "youVePreparedAloneOut": "...You've prepared. {Alone|Out of books|Badly, but genuinely}. That's new.",
+    "impartialJudge": "Impartial Judge",
+    "fairMostly": "Fair, Mostly",
+    "questionableJustice": "Questionable Justice",
+    "wildlyBiased": "Wildly Biased",
+    "utterTyrant": "Utter Tyrant",
+    "waitIVeChangedMy": "Wait! I've changed my mind!",
+    "noCharges": "No charges",
+    "pending": "Pending...",
+    "erisSCourt": "Eris's Court",
+    "defendant": "Defendant",
+    "caseSeverity": "Case Severity",
+    "demeanor": "Demeanor",
+    "youEris": "You (Eris)",
+    "pressEnterToContinue": "Press Enter to continue",
+    "unread": "Unread",
+    "evasive": "Evasive",
+    "composed": "Composed",
+    "unreadable": "Unreadable",
+    "beforeITakeTheBench": "Before I take the bench... what mood should I judge with today?",
+    "howDoIRuleOn": "How do I rule on this case?",
+    "andTheSentenceShallBe": "And the sentence shall be...",
+    "noNpcsFoundInThe": "No NPCs found in the global pool yet (explore the world a bit first).",
+    "onlyAvailableInSandboxMode": "Only available in sandbox mode.",
+    "courtDescription": "Today's court is held in {venue}, before {gallery}.\n{staff}\n{ambience}",
+    "citePrecedent": "I refer the court to {a} versus {b}, {year}. {ruling}",
+    "presentExhibit": "Exhibit {letter}: {item}, recovered from {place}.",
+    "lawyerTakesBench": "{name} takes the defence bench.",
+    "lawyerEscortedOut": "{name} is escorted out. The defence bench is empty again.",
+    "bubbaBountyWaived": "There is a bounty of {bounty} on you here. {It isn't any more.|Not any more there isn't.|I have just {lost|mislaid|filed} it.}",
+    "impartialityScore": "Eris impartiality score: {score}/100, {rank}",
+    "emDeathSentence": "This court sentences Em to death. {sentence}."
+  },
+  "log": {
+    "acquittal": "won an acquittal before Eris",
+    "thrownOut": "was thrown out of Eris's court",
+    "lostCase": "lost a case before Eris"
+  },
+  "lawSpecName": "Law",
+  "reverse": {
+    "bringIn": "Bring in {name}.",
+    "ledBeforeBench": "({name} is led before the bench.)",
+    "accusedOf": "Accused of {charge}.",
+    "defendantSeems": "({name} seems... {personality}.)",
+    "chargeOf": "(Charge {index} of {total}. How do you press?)",
+    "takeThemAway": "{sentence}. Take them away.",
+    "truth": "In truth, {name} was {verdict} all along.",
+    "guilty": "guilty",
+    "innocent": "innocent"
+  }
+}

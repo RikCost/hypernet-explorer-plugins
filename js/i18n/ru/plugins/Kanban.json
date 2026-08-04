@@ -1,0 +1,40 @@
+{
+  "resolved": "",
+  "failed": "",
+  "urgent": "",
+  "reward": "",
+  "readyToCollect": "",
+  "objectives": "",
+  "anyOrder": "",
+  "inOrder": "",
+  "progress": "",
+  "postedBy": "",
+  "objectives2": "",
+  "terms": "",
+  "log": "",
+  "close": "",
+  "toDo": "",
+  "inProgress": "",
+  "done": "",
+  "noQuests": "",
+  "colShiftMoveCardOk": "",
+  "back": "",
+  "questLog": "",
+  "appName": "",
+  "questCompleted": "",
+  "questFailed": "",
+  "columnTitles": [
+    "",
+    "",
+    "",
+    ""
+  ],
+  "showOnMapAt": "",
+  "notify": {
+    "newQuest": "",
+    "newQuestUnknown": "",
+    "questUpdated": "",
+    "questComplete": "",
+    "questFailed": ""
+  }
+}

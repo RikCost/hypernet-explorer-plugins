@@ -1,0 +1,26 @@
+{
+  "tokenExchange": "Token Exchange",
+  "availableTokens": "Available Tokens:",
+  "buyTokens": "Buy Tokens",
+  "sellTokens": "Sell Tokens",
+  "exit": "Exit",
+  "amount": "Amount:",
+  "cost": "Cost:",
+  "earnings": "Earnings:",
+  "yes": "Yes",
+  "no": "No",
+  "insufficientGold": "Insufficient gold!",
+  "insufficientTokens": "Insufficient tokens!",
+  "msg": {
+    "notConfigured": "Token Converter is not configured correctly.",
+    "error": "Token Converter Error. Check Console.",
+    "rate": "Price: 1 token = €{price}",
+    "max": "(Max: {max})",
+    "bought": "Bought {amount} token(s) for €{total}!",
+    "sold": "Sold {amount} token(s) for €{total}!"
+  },
+  "confirm": {
+    "buy": "Buy {amount} token(s) for €{total}?",
+    "sell": "Sell {amount} token(s) for €{total}?"
+  }
+}

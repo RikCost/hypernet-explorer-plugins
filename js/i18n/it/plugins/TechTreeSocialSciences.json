@@ -1,0 +1,78 @@
+{
+  "name": "Scienze Sociali",
+  "blurb": "Persone, mercati e folle come oggetti di misura: strategie di identificazione, dimensioni dell'effetto e il campionamento che le ha prodotte. Qui sono archiviate anche le illusioni predilette dell'epoca, con i difetti di disegno che le hanno prodotte.",
+  "nodes": {
+    "soc_asymmetric": {
+      "name": "Mercati a Informazione Asimmetrica",
+      "desc": "Tre modelli di scambio in cui una parte è meglio informata dell'altra. Con la selezione avversa si fissa un prezzo unico a partire dalla qualità media, i venditori dei beni sopra la media si ritirano, la media scende e il mercato si sfilaccia verso il suo segmento peggiore. Con la segnalazione la parte non informata deduce la qualità da un'azione osservabile che costa meno al tipo alto, per cui un titolo separa i tipi proprio in quanto costoso e non deve essere produttivo. Con lo screening la parte informata viene ordinata dal menù di contratti che le si offre, come con una franchigia. Nessuno dei tre equilibri separatori è Pareto efficiente."
+    },
+    "soc_prospect": {
+      "name": "Teoria del Prospetto in Economia",
+      "desc": "La scelta viene modellata su guadagni e perdite rispetto a un punto di riferimento invece che sulla ricchezza finale. La funzione di valore è concava sopra il punto di riferimento, convessa sotto e più ripida sotto di un fattore vicino a 2,25, per cui una stessa prospettiva viene accettata se presentata come guadagno e rifiutata se presentata come perdita. Le probabilità entrano tramite una funzione di ponderazione che sovrappesa gli esiti sotto circa 0,35 e sottopesa gli altri, il che riproduce la domanda simultanea di assicurazioni e di biglietti della lotteria. I parametri sono stimati da dati di scelta e si replicano fra popolazioni, e l'effetto di inquadramento sopravvive agli incentivi e all'esperienza."
+    },
+    "soc_social_graph": {
+      "name": "Il Grafo Sociale",
+      "desc": "L'affiliazione viene memorizzata come grafo con archi tipizzati e vettori di attributi sui nodi, e interrogata per traversamento invece che per join, per cui distribuzione dei gradi, coefficiente di clustering, lunghezza dei cammini e partizione in comunità di un'intera popolazione diventano calcolabili in un solo passaggio. Misurata su un grafo simile, la geodetica media fra due iscritti sta fra quattro e cinque, il grado ha coda pesante con un taglio imposto dall'interfaccia, e l'omofilia è tanto forte che gli attributi non dichiarati sono ricostruibili dai soli vicini. La stessa adiacenza che regge l'interrogazione regge l'inferenza."
+    },
+    "soc_collective": {
+      "name": "Intelligenza Collettiva",
+      "desc": "Un'enciclopedia scritta in redazione aperta, con cronologia completa delle revisioni, una pagina di discussione per voce e un annullamento che costa un clic contro i diversi minuti che costa un atto vandalico. Quell'asimmetria di costo, insieme agli osservati speciali concentrati sulle pagine ad alto traffico, tiene il tempo mediano di ripristino sotto i due minuti. Un confronto in cieco di quarantadue voci scientifiche contro un'enciclopedia a stampa trova quattro errori gravi per parte e circa tre errori minori per voce contro i 2,9 della stampa. L'accuratezza è distribuita in modo diseguale: segue il traffico, e la coda lunga delle pagine poco visitate non è controllata da nessuno."
+    },
+    "soc_microfinance": {
+      "name": "Microfinanza",
+      "desc": "Prestiti non garantiti di poche decine di dollari vengono concessi a debitori senza storia creditizia, sostenuti dalla responsabilità solidale entro gruppi di cinque, da riunioni settimanali di rimborso e dalla promessa di un prestito maggiore al completamento. La responsabilità di gruppo trasferisce selezione e riscossione ai debitori, che conoscono le prospettive l'uno dell'altro meglio di quanto le conosca chi presta. I recuperi dichiarati superano il 95 per cento a tassi molto inferiori a quelli dell'usuraio informale. Le valutazioni randomizzate successive trovano effetti duraturi sull'investimento d'impresa e sui tempi del consumo, e nessun effetto misurabile su reddito familiare, istruzione o salute."
+    },
+    "soc_smartphone": {
+      "name": "L'Era dello Smartphone",
+      "desc": "Un pannello capacitivo multitocco, un system on chip ARM, una radio dati a pacchetto tenuta sempre agganciata, il posizionamento satellitare, un accelerometro e una fotocamera in un apparecchio portato addosso, con sopra un canale applicativo firmato. Il corredo di sensori fa sì che posizione, orientamento, moto e prossimità vengano registrati di continuo con risoluzione al metro e al secondo; la radio permanente fa sì che il registro non resti locale. L'attenzione diventa una grandezza contabilizzata perché il dispositivo la sa misurare, e la popolazione campionata è chiunque ne tenga uno."
+    },
+    "soc_gfc": {
+      "name": "Il Rischio Sistemico allo Scoperto",
+      "desc": "Portafogli di mutui vengono suddivisi in tranche i cui rating senior poggiano su una correlazione di default assunta, calibrata su una serie nazionale dei prezzi che non contiene alcun calo su scala nazionale. L'esposizione viene poi assicurata con credit default swap emessi da una manciata di controparti e tenuta fuori bilancio in veicoli finanziati giorno per giorno. Quando la correlazione realizzata si avvicina a uno la suddivisione in tranche non protegge, il finanziamento va rinnovato ogni giorno contro garanzie che si stanno svalutando, e la perdita viene trasmessa attraverso le controparti invece di disperdersi. La diversificazione era un artefatto della finestra di stima."
+    },
+    "soc_nudge": {
+      "name": "La Spinta e l'Architettura della Scelta",
+      "desc": "Impostazioni predefinite, ordine di presentazione, salienza e inquadramento vengono trattati come parametri di progetto dell'ambiente di scelta, sulla base del fatto che spostano il comportamento aggregato lasciando invariato l'insieme delle opzioni. Passare l'adesione previdenziale da opt-in a opt-out porta la partecipazione da circa il 40 per cento a oltre il 90 nel primo anno di impiego; lo stesso passaggio sul registro dei donatori di organi spiega gran parte della differenza fra i tassi nazionali. Il meccanismo agisce sul costo del ragionamento, quindi l'effetto è massimo dove l'attenzione è più scarsa, e si attenua dove la decisione è ripetuta e importante."
+    },
+    "soc_commons": {
+      "name": "Governare i Beni Comuni",
+      "desc": "Studi sul campo di sistemi irrigui, pesca costiera, pascoli e foreste documentano risorse comuni governate stabilmente senza allocazione statale né titolo privato. I casi che durano condividono otto principi di progetto: confini e appartenenza definiti con chiarezza, regole adatte alle condizioni locali, scelta collettiva di quelle regole da parte degli utilizzatori, controllo esercitato dagli utilizzatori stessi, sanzioni graduate secondo la gravità dell'infrazione, risoluzione dei conflitti locale ed economica, riconoscimento del diritto di organizzarsi, e inserimento in unità più ampie. La tragedia dei beni comuni viene così declassata da teorema a uno fra i diversi esiti possibili."
+    },
+    "soc_big_data": {
+      "name": "Big Data e il Sé Quantificato",
+      "desc": "Flussi di clic, tracce di posizione, registri di transazione e log di sensori vengono uniti su identificatori condivisi e dati in pasto a modelli di regressione e classificazione. Tracce comportamentali rade prevedono attributi individuali con accuratezze che l'autodichiarazione non raggiunge, perché la traccia è continua e non sollecitata: poche centinaia di apprezzamenti a pagine bastano a ricostruire orientamento politico, orientamento sessuale e uso di sostanze oltre l'80 per cento. La reidentificazione è il modo di guasto permanente, perché una manciata di punti di posizione o una breve cronologia di visione è unica in una popolazione di milioni, e il consenso viene raccolto una volta sola per una finalità definita in seguito."
+    },
+    "soc_networked_movement": {
+      "name": "Movimenti Sociali in Rete",
+      "desc": "Il coordinamento si sposta dalle organizzazioni stabili alla messaggistica mobile e ai feed pubblici. Il costo di convocare un'assemblea scende quasi a zero, l'intervallo fra convocazione e raduno cala da settimane a ore, e non esiste un comitato il cui arresto chiuda la mobilitazione. La stessa topologia porta costi che emergono dopo: non esiste un meccanismo per aggregare le richieste o autorizzare un negoziatore, per cui il movimento cresce nei numeri ma non nella capacità, e il grafo pubblico che lo raduna è anche un elenco di aderenti leggibile dall'esterno."
+    },
+    "soc_mooc": {
+      "name": "Istruzione Online Aperta",
+      "desc": "Un corso viene confezionato come video registrato e segmentato, valutazione a correzione automatica e revisione fra pari calibrata, per cui il costo marginale di uno studente in più tende a zero e una singola iscrizione raggiunge le sei cifre. Il completamento misurato sta fra il quattro e il dieci per cento, e la popolazione iscritta pende verso chi un titolo di studio ce l'ha già. Il vincolo stringente si sposta dalla capienza dell'aula al riscontro: la correzione automatica copre ciò che una macchina può verificare, la revisione fra pari copre il resto con un'affidabilità che va stimata e corretta."
+    },
+    "soc_the_secret": {
+      "name": "La Legge di Attrazione",
+      "desc": "Un protocollo di visualizzazione, affermazione e gratitudine, con un meccanismo dichiarato di risonanza vibrazionale per cui il pensiero attrae un esito corrispondente. La proposizione è costruita in modo che nessuna osservazione possa toccarla: un successo conferma il meccanismo, un fallimento viene attribuito a insufficiente purezza di intenzione o a pensiero negativo residuo, e al praticante si prescrive di non dare attenzione alle prove contrarie. La stessa regola di attribuzione assegna la causa di malattia, lutto e povertà a chi li porta, e quella attribuzione è il contenuto operativo della dottrina."
+    },
+    "soc_vaccine_panic": {
+      "name": "Il Panico Vaccini-Autismo",
+      "desc": "Una serie di casi di dodici bambini riporta reperti intestinali e regressione dello sviluppo, e propone un legame temporale con un vaccino combinato. Il disegno non prevede alcun gruppo di controllo e non può sostenere una pretesa causale a nessuna numerosità campionaria. L'inchiesta accerta che i soggetti erano stati reclutati tramite un legale che preparava una causa, che l'autore principale percepiva un compenso non dichiarato e deteneva un brevetto concorrente, e che le cartelle cliniche non corrispondono alle cronologie pubblicate; l'articolo viene ritirato e l'abilitazione revocata. Studi di coorte e caso-controllo su più di dieci milioni di bambini non trovano alcuna associazione, e la copertura perduta ristabilisce per anni la trasmissione endemica del morbillo."
+    },
+    "soc_precognition": {
+      "name": "Sentire il Futuro",
+      "desc": "Nove esperimenti invertono l'ordine di paradigmi consolidati, verificando se uno stimolo presentato dopo una risposta possa influenzarla, e riportano priming retroattivo ed effetti di pratica invertiti con una dimensione media dell'effetto vicina a 0,2. Le analisi vengono specificate dopo aver visto i dati, si raccolgono diverse misure dipendenti e si riporta quella scelta a posteriori, e la regola di arresto non è fissata. Tre repliche dirette indipendenti danno esito nullo. È questo episodio a portare preregistrazione, analisi di potenza a priori e pubblicazione dei risultati nulli dal dibattito metodologico alla pratica corrente."
+    },
+    "soc_mobile_web": {
+      "name": "Il Web Mobile",
+      "desc": "Le pagine vengono ricostruite per un collegamento radio con tempo di andata e ritorno di alcune centinaia di millisecondi e per un puntatore largo un centimetro. Il carico utile viene ridotto a pochi kilobyte e le richieste vengono tagliate, perché la latenza pesa più della banda; l'impaginazione si riversa in una sola colonna fluida alla larghezza della finestra; i bersagli tattili vengono dimensionati sui nove millimetri, perché un polpastrello non ha stato di passaggio né precisione al pixel. Le sessioni diventano brevi, frequenti, interrotte e geograficamente localizzate, il che cambia quello che i log di traffico misurano tanto quanto cambia la pagina."
+    },
+    "soc_cloud": {
+      "name": "Il Cloud",
+      "desc": "Il calcolo viene venduto come macchine virtuali isolate da hypervisor e archiviazione a oggetti, contabilizzato a ore e messo a disposizione via API nel giro di minuti. La capacità passa da progetto di investimento con un ciclo di approvvigionamento di trimestri a spesa corrente con un ciclo di minuti, e si rilascia con la stessa rapidità con cui si prende. La conseguenza misurabile riguarda il tentativo fallito: una prova che avrebbe richiesto un ordine di acquisto ora costa il prezzo di un pomeriggio, per cui il numero di tentativi cresce e con esso cambia la selezione di ciò che viene costruito."
+    },
+    "soc_video_platform": {
+      "name": "Streaming Video Ovunque",
+      "desc": "Un file viene transcodificato una volta sola in una scala di bitrate, tagliato in segmenti di pochi secondi, messo in cache su nodi di bordo vicini a chi guarda e distribuito su HTTP ordinario in modo che attraversi qualunque firewall, con il client che cambia gradino al variare della banda misurata. Il caricamento è aperto, quindi il catalogo non è commissionato. Il costo marginale di uno spettatore in più tende a zero e una lezione, una trasmissione, una clip di sorveglianza e una registrazione casalinga diventano la stessa classe di oggetti, indicizzati insieme e ordinati con la stessa misura di attenzione trattenuta."
+    }
+  }
+}

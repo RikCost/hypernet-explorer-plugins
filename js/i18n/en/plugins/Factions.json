@@ -1,0 +1,48 @@
+{
+  "menuCommand": "Factions",
+  "title": "Factions",
+  "back": "Back",
+  "repLevel": {
+    "exalted": "Exalted",
+    "revered": "Revered",
+    "honored": "Honored",
+    "friendly": "Friendly",
+    "neutral": "Neutral",
+    "unfriendly": "Unfriendly",
+    "hostile": "Hostile",
+    "hated": "Hated",
+    "nemesis": "Nemesis"
+  },
+  "relation": {
+    "allied": "Allied",
+    "friendly": "Friendly",
+    "neutral": "Neutral",
+    "unfriendly": "Unfriendly",
+    "hostile": "Hostile",
+    "unknown": "Unknown"
+  },
+  "perk": {
+    "basicServices": "Basic services and goods available",
+    "discount10": "10% discount on faction goods",
+    "uncommonItems": "Access to uncommon items",
+    "discount25": "25% discount on faction goods",
+    "rareItems": "Access to rare items",
+    "battleSupport": "Faction members will assist in battle",
+    "discount40": "40% discount on faction goods",
+    "exclusiveItems": "Access to exclusive items",
+    "specialQuests": "Faction special quests available",
+    "safeHouses": "Faction safe houses accessible",
+    "servicesUnavailable": "Most faction services unavailable",
+    "refuseInteract": "Faction members may refuse to interact",
+    "suspiciousGuards": "Guards will be suspicious of you",
+    "dangerousTerritory": "Faction territory is dangerous to enter",
+    "attackOnSight": "Faction members may attack on sight",
+    "bountyHunters": "Faction sends bounty hunters after you",
+    "alliesTurn": "Allied factions may become hostile"
+  },
+  "selectTitle": "Select Faction",
+  "selectHint": "Select a faction from the list on the left to view its ideology, leadership, and relationship alignments.",
+  "councilLeaders": "Council Leaders:",
+  "independent": "Independent.",
+  "diplomaticAgreements": "Diplomatic Agreements"
+}

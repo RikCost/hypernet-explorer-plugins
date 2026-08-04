@@ -1,0 +1,29 @@
+{
+  "vehicleRefuel": "",
+  "exitStation": "",
+  "liters": "",
+  "fillTank": "",
+  "back": "",
+  "selectVehicle": "",
+  "vehicleTitle": "",
+  "genericVehicle": "",
+  "genericVehicleLower": "",
+  "confirmHeader": "",
+  "confirmBody": "",
+  "confirm": "",
+  "cancel": "",
+  "completeHeader": "",
+  "added": "",
+  "insufficientFunds": "",
+  "ui": {
+    "fuelStation": "",
+    "hint": "",
+    "noVehicles": "",
+    "fuelOverview": "",
+    "vehicleFuel": "",
+    "cost": "",
+    "level": "",
+    "pricePerLitre": "",
+    "wallet": ""
+  }
+}

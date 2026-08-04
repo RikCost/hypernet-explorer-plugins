@@ -1,0 +1,324 @@
+{
+  "idle": {
+    "aquaticfish": [
+      "",
+      ""
+    ],
+    "abyssalleviathan": [
+      "",
+      ""
+    ],
+    "amphibian": [
+      "",
+      ""
+    ],
+    "frog": [
+      "",
+      ""
+    ],
+    "octopus": [
+      "",
+      ""
+    ],
+    "crustacean": [
+      "",
+      ""
+    ],
+    "snail": [
+      "",
+      ""
+    ],
+    "turtle": [
+      "",
+      ""
+    ],
+    "serpent": [
+      "",
+      ""
+    ],
+    "reptilian": [
+      "",
+      ""
+    ],
+    "insectoid": [
+      "",
+      ""
+    ],
+    "insectswarm": [
+      "",
+      ""
+    ],
+    "spider": [
+      "",
+      ""
+    ],
+    "spiderhumanhybrid": [
+      "",
+      ""
+    ],
+    "scorpion": [
+      "",
+      ""
+    ],
+    "segmentworm": [
+      "",
+      ""
+    ],
+    "bird": [
+      "",
+      ""
+    ],
+    "bat": [
+      "",
+      ""
+    ],
+    "bacterial": [
+      "",
+      ""
+    ],
+    "beast": [
+      "",
+      ""
+    ],
+    "rabbit": [
+      "",
+      ""
+    ],
+    "horse": [
+      "",
+      ""
+    ],
+    "elephant": [
+      "",
+      ""
+    ],
+    "hellhound": [
+      "",
+      ""
+    ],
+    "bird_of_prey": [
+      "",
+      ""
+    ],
+    "plant": [
+      "",
+      ""
+    ],
+    "tree": [
+      "",
+      ""
+    ],
+    "mushroom": [
+      "",
+      ""
+    ],
+    "scarecrow": [
+      "",
+      ""
+    ],
+    "slime": [
+      "",
+      ""
+    ],
+    "spherical": [
+      "",
+      ""
+    ],
+    "ghost": [
+      "",
+      ""
+    ],
+    "undead": [
+      "",
+      ""
+    ],
+    "skeleton": [
+      "",
+      ""
+    ],
+    "constructedundead": [
+      "",
+      ""
+    ],
+    "vampire": [
+      "",
+      ""
+    ],
+    "voidspawn": [
+      "",
+      ""
+    ],
+    "demon": [
+      "",
+      ""
+    ],
+    "wingeddemon": [
+      "",
+      ""
+    ],
+    "angel": [
+      "",
+      ""
+    ],
+    "ophanim": [
+      "",
+      ""
+    ],
+    "fairy": [
+      "",
+      ""
+    ],
+    "elemental": [
+      "",
+      ""
+    ],
+    "fireelemental": [
+      "",
+      ""
+    ],
+    "waterelemental": [
+      "",
+      ""
+    ],
+    "thunderelemental": [
+      "",
+      ""
+    ],
+    "stormelemental": [
+      "",
+      ""
+    ],
+    "darkelemental": [
+      "",
+      ""
+    ],
+    "sacredelemental": [
+      "",
+      ""
+    ],
+    "metalelemental": [
+      "",
+      ""
+    ],
+    "crystalentity": [
+      "",
+      ""
+    ],
+    "golem": [
+      "",
+      ""
+    ],
+    "robot": [
+      "",
+      ""
+    ],
+    "drone": [
+      "",
+      ""
+    ],
+    "roboticdefender": [
+      "",
+      ""
+    ],
+    "turret": [
+      "",
+      ""
+    ],
+    "mineral": [
+      "",
+      ""
+    ],
+    "chestmimic": [
+      "",
+      ""
+    ],
+    "trashcreature": [
+      "",
+      ""
+    ],
+    "dragon": [
+      "",
+      ""
+    ],
+    "hydra": [
+      "",
+      ""
+    ],
+    "phoenix": [
+      "",
+      ""
+    ],
+    "unicorn": [
+      "",
+      ""
+    ],
+    "manticore": [
+      "",
+      ""
+    ],
+    "minotaur": [
+      "",
+      ""
+    ],
+    "centaur": [
+      "",
+      ""
+    ],
+    "gorgon": [
+      "",
+      ""
+    ],
+    "goblin": [
+      "",
+      ""
+    ],
+    "gnome": [
+      "",
+      ""
+    ],
+    "elven": [
+      "",
+      ""
+    ],
+    "ogre": [
+      "",
+      ""
+    ],
+    "armoredknight": [
+      "",
+      ""
+    ],
+    "humanoid": [
+      "",
+      ""
+    ],
+    "doubleheadedhumanoid": [
+      "",
+      ""
+    ],
+    "mutant": [
+      "",
+      ""
+    ],
+    "totem": [
+      "",
+      ""
+    ],
+    "tentacledcreature": [
+      "",
+      ""
+    ],
+    "spikymonster": [
+      "",
+      ""
+    ],
+    "default": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "cmd": {
+    "talk": ""
+  }
+}

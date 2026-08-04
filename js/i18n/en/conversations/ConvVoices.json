@@ -1,0 +1,302 @@
+{
+  "Nervous": {
+    "openers": [
+      "Oh no...",
+      "Um...",
+      "W-wait..."
+    ],
+    "closers": [
+      "...right?",
+      "I-I hope.",
+      "Don't quote me on that."
+    ]
+  },
+  "Calm": {
+    "openers": [
+      "Mm.",
+      "Steady now.",
+      "As I see it,"
+    ],
+    "closers": [
+      "No need to rush.",
+      "All in good time.",
+      "Breathe."
+    ]
+  },
+  "Aggressive": {
+    "openers": [
+      "Listen up.",
+      "Tch.",
+      "I'll say this once:"
+    ],
+    "closers": [
+      "Got a problem with that?",
+      "Deal with it.",
+      "End of story."
+    ]
+  },
+  "Melancholic": {
+    "openers": [
+      "*sighs*",
+      "If it matters...",
+      "For what little it's worth,"
+    ],
+    "closers": [
+      "Not that anyone listens.",
+      "It all fades anyway.",
+      "...like everything else."
+    ]
+  },
+  "Sanguine": {
+    "openers": [
+      "Oh, lovely,",
+      "You know what?",
+      "Ha!"
+    ],
+    "closers": [
+      "Isn't that great?",
+      "What a day!",
+      "Things are looking up!"
+    ]
+  },
+  "Cautious": {
+    "openers": [
+      "Let's not be hasty,",
+      "Careful, now.",
+      "Before anything else:"
+    ],
+    "closers": [
+      "Best to be sure.",
+      "Measure twice.",
+      "One can't be too careful."
+    ]
+  },
+  "Impulsive": {
+    "openers": [
+      "Okay okay okay,",
+      "Right, new plan:",
+      "Forget it,"
+    ],
+    "closers": [
+      "Let's just do it!",
+      "No time to waste!",
+      "Decided!"
+    ]
+  },
+  "Stoic": {
+    "openers": [
+      "So be it.",
+      "Noted.",
+      "It is simple:"
+    ],
+    "closers": [
+      "Nothing more to say.",
+      "It changes nothing.",
+      "We endure."
+    ]
+  },
+  "Paranoid": {
+    "openers": [
+      "Keep your voice down,",
+      "Don't look now, but",
+      "Between us:"
+    ],
+    "closers": [
+      "You didn't hear it from me.",
+      "Someone's listening. Always.",
+      "Trust no one."
+    ]
+  },
+  "Empathetic": {
+    "openers": [
+      "Oh, dear heart,",
+      "I feel it too,",
+      "Tell me honestly:"
+    ],
+    "closers": [
+      "Are you holding up alright?",
+      "I'm here, you know.",
+      "We'll get through it together."
+    ]
+  },
+  "Authoritative": {
+    "openers": [
+      "Pay attention.",
+      "Mark my words:",
+      "As I've said before:"
+    ],
+    "closers": [
+      "That's an order.",
+      "See it done.",
+      "No arguments."
+    ]
+  },
+  "Scholarly": {
+    "openers": [
+      "Fascinating,",
+      "Consider this:",
+      "If my reading is right,"
+    ],
+    "closers": [
+      "Worth a footnote, at least.",
+      "The evidence speaks.",
+      "I should write this down."
+    ]
+  },
+  "Artistic": {
+    "openers": [
+      "Oh, but look,",
+      "There's a poem in this:",
+      "Picture it:"
+    ],
+    "closers": [
+      "Almost beautiful, isn't it?",
+      "The muse works in strange ways.",
+      "I must sketch this later."
+    ]
+  },
+  "Adventurous": {
+    "openers": [
+      "Now we're talking!",
+      "Picture the open road,",
+      "Word from the road:"
+    ],
+    "closers": [
+      "What's life without a little risk?",
+      "Onward!",
+      "Beats sitting still!"
+    ]
+  },
+  "Nurturing": {
+    "openers": [
+      "Come here, listen,",
+      "Bless you,",
+      "Now, sweetheart,"
+    ],
+    "closers": [
+      "Have you eaten today?",
+      "Wrap up warm, won't you?",
+      "Let me know if you need anything."
+    ]
+  },
+  "Mischievous": {
+    "openers": [
+      "Heh.",
+      "Promise you won't tell?",
+      "Oh, this is good,"
+    ],
+    "closers": [
+      "*grins*",
+      "Don't ask how I know.",
+      "This'll be fun."
+    ]
+  },
+  "Cynical": {
+    "openers": [
+      "Oh, sure.",
+      "Let me guess,",
+      "Shocking, truly:"
+    ],
+    "closers": [
+      "What did you expect?",
+      "Same old story.",
+      "Color me surprised."
+    ]
+  },
+  "Disciplined": {
+    "openers": [
+      "Status:",
+      "On schedule:",
+      "Item one:"
+    ],
+    "closers": [
+      "Back to work.",
+      "No exceptions.",
+      "As per the routine."
+    ]
+  },
+  "Fatalistic": {
+    "openers": [
+      "It was written:",
+      "As fate would have it,",
+      "Inevitably,"
+    ],
+    "closers": [
+      "It was always going to end this way.",
+      "The thread is already spun.",
+      "What will be, will be."
+    ]
+  },
+  "Grumpy": {
+    "openers": [
+      "Ugh.",
+      "Oh, wonderful.",
+      "You want my opinion?"
+    ],
+    "closers": [
+      "Now leave me be.",
+      "Typical.",
+      "Bah."
+    ]
+  },
+  "Loyal": {
+    "openers": [
+      "On my honor,",
+      "Friend,",
+      "You can count on this:"
+    ],
+    "closers": [
+      "I keep my word.",
+      "For my friends, always.",
+      "You have my word on it."
+    ]
+  },
+  "Brave": {
+    "openers": [
+      "Fear not,",
+      "Here's the truth:",
+      "Chin up,"
+    ],
+    "closers": [
+      "We face it head-on.",
+      "No retreat.",
+      "Courage, friend."
+    ]
+  },
+  "Timid": {
+    "openers": [
+      "S-sorry, but...",
+      "If it's okay to say...",
+      "Please don't mind me, but"
+    ],
+    "closers": [
+      "...if that's alright.",
+      "Sorry. Sorry.",
+      "I'll be quiet now."
+    ]
+  },
+  "Hedonistic": {
+    "openers": [
+      "Mmm, you know,",
+      "Life's short,",
+      "Pour me another and listen:"
+    ],
+    "closers": [
+      "Now, where's the fun gone?",
+      "Cheers to that.",
+      "Back to my comforts."
+    ]
+  },
+  "Apathetic": {
+    "openers": [
+      "Eh.",
+      "If you say so.",
+      "Not that it matters, but"
+    ],
+    "closers": [
+      "Or whatever.",
+      "Who cares.",
+      "Anyway."
+    ]
+  }
+}

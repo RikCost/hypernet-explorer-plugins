@@ -1,0 +1,634 @@
+{
+  "rain": {
+    "Nervous": [
+      "Is that thunder coming? Rain always turns into something worse...",
+      "My boots are soaked. What if I catch something? People die of colds!",
+      "Was that a drop? Yes. It's starting. It's starting and I'm not ready.",
+      "Rain on the roof all night. Every drip sounds like someone at the door."
+    ],
+    "Calm": [
+      "Rain comes, rain goes. No reason to rush.",
+      "A good rain settles the dust and the mind alike.",
+      "The sound of rain is the world breathing. Let it.",
+      "Wet today, dry tomorrow. The sky balances itself."
+    ],
+    "Aggressive": [
+      "Stupid rain. Whoever's up there better knock it off.",
+      "Rain again. Perfect. Now everything gets to annoy me at once.",
+      "Splash me one more time, cart driver. See what happens.",
+      "I'm not hiding from water. Water should hide from me."
+    ],
+    "Melancholic": [
+      "The sky weeps. At least something else does too.",
+      "Rain again. The world matching my insides for once.",
+      "I used to watch the rain with someone. Now I just watch the rain.",
+      "Grey streets, grey sky. The rain only makes it honest."
+    ],
+    "Sanguine": [
+      "Rain! Jump the puddles, smell that air, wonderful!",
+      "I love how the whole town shines after a good rain!",
+      "Rain on the roof, best music there is!",
+      "A little water never ruined a good mood. Not mine, anyway!"
+    ],
+    "Cautious": [
+      "Wet cobbles are slippery. I'll keep to the awnings.",
+      "Best check the cellar before this rain finds a way in.",
+      "I'll take the long way, the low road floods in rain like this.",
+      "An extra layer, a covered hood. Rain rewards the prepared."
+    ],
+    "Impulsive": [
+      "Who cares about getting wet? Run for it!",
+      "Puddle. Big one. I'm jumping in it.",
+      "Umbrella? No time! Go go go!",
+      "Rain means empty streets, race you across town!"
+    ],
+    "Stoic": [
+      "It is water. I will dry.",
+      "Rain falls. Work continues.",
+      "The wet is unpleasant. Unpleasant is survivable.",
+      "Complaining about rain has never stopped a single drop."
+    ],
+    "Paranoid": [
+      "Rain muffles footsteps. Perfect cover for someone following me.",
+      "Everyone's got their hood up. Any one of them could be anyone.",
+      "Rain washes away tracks. Convenient... for somebody.",
+      "They schedule things for rainy days. Fewer witnesses out."
+    ],
+    "Empathetic": [
+      "I hope nobody's stuck out in this without a roof.",
+      "That poor courier was drenched. I should've offered her some tea.",
+      "Rainy days make folk lonely. A knock on a friend's door helps.",
+      "The old man across the lane hates the damp. I'll go check on his fire."
+    ],
+    "Authoritative": [
+      "Rain is no excuse. The schedule holds.",
+      "Rain or shine, deliveries go out. That was the agreement.",
+      "Someone post a notice: the meeting moves indoors, not later.",
+      "A little discipline doesn't dissolve in water."
+    ],
+    "Scholarly": [
+      "Curious how the rainfall here follows a near-weekly cycle.",
+      "Petrichor, there's a word for that rain smell. I read it somewhere.",
+      "I should measure the cistern after this. Data is data.",
+      "Rain like this fed entire civilizations. Worth remembering."
+    ],
+    "Artistic": [
+      "Listen, every roof plays a different note in the rain.",
+      "The lamplight doubles in the puddles. Two cities, one wet street.",
+      "Grey isn't one color in the rain. It's twenty.",
+      "I'd paint this downpour if the canvas would survive it."
+    ],
+    "Adventurous": [
+      "Rain just means muddier roads. More fun that way.",
+      "Storm-light on the hills, now that's a view worth a soaking.",
+      "Rivers swell in rain like this. Imagine the rapids right now!",
+      "Best journeys I ever had started in weather like this."
+    ],
+    "Nurturing": [
+      "Someone's going to catch a chill. I should put soup on.",
+      "Dry towels by the door. People always forget how cold rain gets.",
+      "Come in off the street, all of you, there's room by the fire.",
+      "I'll bring the washing in and hang it by the stove."
+    ],
+    "Mischievous": [
+      "One good puddle and one unsuspecting passerby... heh.",
+      "Everyone's hood is up. Nobody sees a thing. Lovely conditions.",
+      "A splash from the right rooftop gutter, perfectly timed... art.",
+      "Wet doorknobs, surprised faces. Rain does half my work for me."
+    ],
+    "Cynical": [
+      "It rains on the just and the unjust. Mostly on me.",
+      "The rich watch the rain from windows. The rest of us are the windows.",
+      "Oh good, rain. Now the landlord can ignore a wetter ceiling.",
+      "They'll tax the rain too, give them time."
+    ],
+    "Disciplined": [
+      "Rain changes nothing. The routine stands.",
+      "Boots oiled, cloak ready. Weather is just logistics.",
+      "Training in the rain builds twice the resolve.",
+      "The schedule says outdoors. So: outdoors, but wetter."
+    ],
+    "Fatalistic": [
+      "The rain falls where it must. So do we all.",
+      "No use cursing the clouds. They were always coming.",
+      "Dry or drowned, the day ends the same.",
+      "The river takes the rain like fate takes us. Quietly."
+    ],
+    "Grumpy": [
+      "Great. Wet socks. Just what today needed.",
+      "Rain. And everyone tracking mud everywhere. Marvelous.",
+      "My knee told me this was coming. My knee is never wrong.",
+      "Drip, drip, drip. Even the sky nags me."
+    ],
+    "Loyal": [
+      "My friends are out in this, I should bring them a dry cloak.",
+      "I said I'd help him move the grain today. Rain doesn't unsay it.",
+      "She walked through worse for me once. A little rain won't stop me.",
+      "Shared an umbrella with a friend once. Finest walk I ever had."
+    ],
+    "Brave": [
+      "A bit of rain never stopped anyone worth knowing.",
+      "Cold rain wakes you up better than courage ever did.",
+      "Soaked to the bone and still standing. That's the spirit.",
+      "Let it pour. The task doesn't care, and neither do I."
+    ],
+    "Timid": [
+      "I'll just... wait under here until it stops. However long it takes.",
+      "The thunder hasn't started yet. Maybe if I hurry... no, I'll wait.",
+      "Everyone runs so fast in the rain. I'd rather not be in the way.",
+      "Rain means staying in. Staying in is... actually quite nice."
+    ],
+    "Hedonistic": [
+      "Rainy days are for warm drinks and doing absolutely nothing.",
+      "Rain says: stay in bed. Who am I to argue with the sky?",
+      "Hot bath, cold rain on the window. Perfection, honestly.",
+      "Wine tastes better when it's miserable outside. Proven fact."
+    ],
+    "Apathetic": [
+      "It's raining. So what.",
+      "Wet. Dry. It all evens out.",
+      "The sky does its thing. I do mine. Barely.",
+      "Rain again. Or still. Whatever."
+    ],
+    "default": [
+      "This rain is getting heavier. I should find shelter soon.",
+      "Quite the downpour out here.",
+      "I'd better keep out of the worst of this rain.",
+      "All this rain... the streets are turning to mud."
+    ]
+  },
+  "storm": {
+    "Nervous": [
+      "That lightning was close! Was that close?! It felt close!",
+      "Count the seconds, count the... I lost count! Is it on top of us?!",
+      "The shutters are rattling. Should they rattle that much? Should they?!",
+      "I knew I shouldn't have gone out today. I KNEW it."
+    ],
+    "Calm": [
+      "A storm overhead. Stay low, stay patient, it will pass.",
+      "Loud, yes. But thunder is just noise with good lungs.",
+      "Storms end. They always have.",
+      "Find a dry seat and let the sky finish its argument."
+    ],
+    "Aggressive": [
+      "Go on, sky, roar all you want. I can be louder.",
+      "That thunder thinks it's tough? I've heard tougher.",
+      "Storm knocked my fence over. The storm and I are now enemies.",
+      "Lightning, huh? At least the sky's putting up a real fight."
+    ],
+    "Melancholic": [
+      "Thunder suits my mood better than sunshine ever did.",
+      "The sky is tearing itself apart. I know the feeling.",
+      "Storms pass. The heaviness stays.",
+      "Even the storm sounds lonely if you listen long enough."
+    ],
+    "Sanguine": [
+      "What a show! Best seats in the house, right here!",
+      "Did you SEE that lightning?! Magnificent!",
+      "Storms make the best stories tomorrow!",
+      "The thunder's basically applause, if you think about it!"
+    ],
+    "Cautious": [
+      "Lightning, falling tiles, panicked horses. Inside. Now.",
+      "Away from the tall trees, away from the water. Basics.",
+      "I counted the flash-to-thunder gap. Too short. Indoors it is.",
+      "Storms reward the careful and collect from the careless."
+    ],
+    "Impulsive": [
+      "I bet I can make it across the square between strikes!",
+      "The storm's HERE, might as well feel it! Just for a second!",
+      "Lightning! Again! Do it again!",
+      "Who else is on the rooftops watching this? Just me? Their loss!"
+    ],
+    "Stoic": [
+      "The storm rages. I do not.",
+      "Thunder is the sky's complaint. I keep mine quieter.",
+      "Shelter, wait, continue. A storm changes the order of nothing.",
+      "Loud weather, same duties."
+    ],
+    "Paranoid": [
+      "Thunder can hide a lot of sounds. Like someone breaking in.",
+      "Storms knock out the lanterns. Then anything can happen. Anything.",
+      "Everyone's indoors. Or so they want you to think.",
+      "A flash like that lights up whoever's in the alley. I saw a shape."
+    ],
+    "Empathetic": [
+      "The animals must be terrified. Poor things.",
+      "Somewhere a child is hiding under a blanket right now. Poor dear.",
+      "I hope the fishermen made it back before this hit.",
+      "Storms scare people more than they admit. Be gentle tonight."
+    ],
+    "Authoritative": [
+      "Everyone off the streets, someone has to keep order in this.",
+      "Secure the market stalls! Don't wait to be asked!",
+      "After the storm, damage reports. Organized, street by street.",
+      "Panic spreads faster than lightning. Stay firm, people follow."
+    ],
+    "Scholarly": [
+      "Count the seconds from flash to thunder; the storm is two miles out.",
+      "Lightning seeks the tallest point. Physics, not fury.",
+      "The pressure dropped all morning. The signs were all there.",
+      "One day someone will bottle that energy. Mark me."
+    ],
+    "Artistic": [
+      "That sky! Violet and silver and fury, I must remember it.",
+      "Thunder is percussion. The wind takes the melody.",
+      "No painter has ever gotten lightning right. Maybe I'll be first.",
+      "The whole sky a stage, and we the breathless audience."
+    ],
+    "Adventurous": [
+      "Now THIS is weather! Makes you feel alive!",
+      "Sailors talk about storms like this for years. Now I get it!",
+      "The wind's practically lifting me. Imagine it at sea!",
+      "A storm is just the sky daring you to stay interesting."
+    ],
+    "Nurturing": [
+      "Get the children indoors, get the kettle on. Storms pass faster with company.",
+      "Blankets out, candles lit. Anyone scared can sit by me.",
+      "I'll warm some milk. Thunder is easier with something warm.",
+      "Check the neighbors' shutters, then ours. Everyone safe, then sleep."
+    ],
+    "Mischievous": [
+      "A clap of thunder, a well-timed 'boo'... irresistible.",
+      "Everyone jumps at thunder. Nobody notices little old me.",
+      "I love a blackout. So many possibilities in the dark.",
+      "Storms get blamed for everything. Broken gate? Storm. Missing pie? Storm."
+    ],
+    "Cynical": [
+      "The storm will flatten the poor district first. It always does.",
+      "Watch: the repairs will cost double by morning.",
+      "The temple will call it an omen and pass the plate twice.",
+      "Nature's honest, at least. It ruins everyone openly."
+    ],
+    "Disciplined": [
+      "Secure the shutters, check the drains, carry on.",
+      "Storm protocol: lamps, latches, ledger. In that order.",
+      "Wind is no reason to lose form.",
+      "We drill for calm days and storm days alike."
+    ],
+    "Fatalistic": [
+      "If the lightning has my name on it, no roof will matter.",
+      "The storm was on its way before we were born.",
+      "Hide or don't. The sky decides either way.",
+      "Every bolt lands exactly where it was always going to."
+    ],
+    "Grumpy": [
+      "All this racket. Can't even hear myself complain.",
+      "Storm took a roof tile. Of course it was MY roof.",
+      "Thunder all night. Sleep is officially cancelled.",
+      "And now the dog won't come out from under the table. Wonderful."
+    ],
+    "Loyal": [
+      "I should check that everyone I care about made it indoors.",
+      "He's afraid of storms, though he'd never say. I'll sit with him.",
+      "Storm or not, if a friend calls, I answer the door.",
+      "We rode out worse together. This is just weather."
+    ],
+    "Brave": [
+      "Standing in a storm reminds you how small fear really is.",
+      "The sky throws fire and we're still here. Remember that.",
+      "Someone has to check the bridge holds. Might as well be me.",
+      "Thunder's all bark. I've met real bite."
+    ],
+    "Timid": [
+      "Under the table. The table is sturdy. I'll stay under the table.",
+      "I-it's just noise. Just very, very big noise.",
+      "I'll count the thunder until it's over. One... two...",
+      "Maybe the storm won't notice me if I'm very quiet."
+    ],
+    "Hedonistic": [
+      "A storm outside makes the fire inside twice as cozy.",
+      "Nothing to do in a storm but eat well and nap deeply. Shame.",
+      "Storms are the sky's excuse for me to open the good bottle.",
+      "Listen to that rain on the roof... perfect napping acoustics."
+    ],
+    "Apathetic": [
+      "Loud sky. Whatever.",
+      "Storm. Yelling about it won't help. Nothing will. Eh.",
+      "Lightning, thunder, wind. The usual dramatics.",
+      "I'd be impressed if I cared."
+    ],
+    "default": [
+      "This storm is getting dangerous. I need to find shelter quickly.",
+      "That thunder is getting closer.",
+      "What a storm, best to stay under cover.",
+      "The wind is picking up something fierce."
+    ]
+  },
+  "snow": {
+    "Nervous": [
+      "What if the roads close? What if I'm stuck here? What if...",
+      "Icicles. Right over the doorway. Those things KILL people.",
+      "It's pretty, yes, but how deep will it GET?",
+      "My fingers are numb. Is that frostbite? It's frostbite, isn't it."
+    ],
+    "Calm": [
+      "Snow quiets the whole world. I rather like it.",
+      "Everything slows in the snow. As it should.",
+      "A white morning and no hurry anywhere. Lovely.",
+      "The snow asks nothing of you but patience."
+    ],
+    "Aggressive": [
+      "First snowball that hits me, somebody's eating ice.",
+      "Shoveled the walk twice already. Sky, I'm warning you.",
+      "Slipped on the ice. The ice will regret this.",
+      "Cold doesn't bother me. Cold should worry about itself."
+    ],
+    "Melancholic": [
+      "Snow buries everything. Even footprints. Even memories.",
+      "Snow makes the town look like it's sleeping. Or gone.",
+      "Every winter feels longer than the last.",
+      "White and silent, like a letter never sent."
+    ],
+    "Sanguine": [
+      "Snow! Snowman, snow angels, snow everything!",
+      "First snow of the season! Make a wish, everyone!",
+      "Look how it sparkles! The whole street's made of stars!",
+      "Cold cheeks, warm heart! Winter's the best!"
+    ],
+    "Cautious": [
+      "Ice under the powder. Short steps, bent knees.",
+      "Stock the pantry before the drifts pile higher.",
+      "I salted the steps twice. A broken hip costs more than salt.",
+      "Check the firewood now, not at midnight."
+    ],
+    "Impulsive": [
+      "First one to the hill gets the best sled run!",
+      "Fresh snow! Untouched! Not for long!",
+      "Snowball fight. Right now. Anyone. Everyone!",
+      "I'm catching snowflakes on my tongue and nobody can stop me."
+    ],
+    "Stoic": [
+      "Cold is a sensation. Sensations pass.",
+      "Snow falls. Wood gets chopped. Both are simple.",
+      "Winter tests. I answer.",
+      "Numb hands still work, if you tell them to."
+    ],
+    "Paranoid": [
+      "Footprints in snow. Everyone can see exactly where I've been.",
+      "Someone walked past my window last night. The snow says so.",
+      "Snow muffles everything. You'd never hear them coming.",
+      "Why is my path the only one not cleared? Who decided that?"
+    ],
+    "Empathetic": [
+      "The beggars by the gate must be freezing. I should do something.",
+      "I hope everyone's got someone to share a fire with tonight.",
+      "The carthorse was shivering. Somebody fetch it a blanket.",
+      "Cold weather, warm doors. That's how a town should work."
+    ],
+    "Authoritative": [
+      "Clear the walkways before someone breaks a leg. I'll assign people.",
+      "Firewood rations, posted by noon. No one freezes on my watch.",
+      "The pass closes after a snow like this. Plan accordingly, all of you.",
+      "Winter forgives nothing. Neither do I. Stack the wood properly."
+    ],
+    "Scholarly": [
+      "No two snowflakes alike, statistically dubious, but charming.",
+      "Snow insulates, oddly enough. Warm under there, relatively speaking.",
+      "The old records mention winters twice this deep. Fascinating. Terrifying.",
+      "Six-sided, every flake. Nature repeats her favorite theorem."
+    ],
+    "Artistic": [
+      "White on white on white. The subtlest palette there is.",
+      "Bare branches in snow, the world sketched in charcoal.",
+      "Snowfall at lamplight. If only I could frame it.",
+      "Even the footprints compose themselves nicely today."
+    ],
+    "Adventurous": [
+      "Fresh snow means untouched trails. Boots on!",
+      "I wonder how the mountains look under all this. One way to find out.",
+      "Winter travel separates the tourists from the travelers.",
+      "Snowshoes! I finally get to use the snowshoes!"
+    ],
+    "Nurturing": [
+      "Mittens, scarves, warm bread. Winter is for taking care of people.",
+      "Nobody leaves my door without a scarf today.",
+      "Hot stew on the stove all day. Cold folk welcome.",
+      "Tuck your ears in, dear, you'll lose them to the wind."
+    ],
+    "Mischievous": [
+      "Snow piled on a doorframe, door opens... it's practically a gift.",
+      "A snowball, patiently waiting on the windowsill. For later. For someone.",
+      "I made footprints leading nowhere. Let them puzzle on that.",
+      "Snowman in front of the guardhouse. Wearing the captain's spare hat."
+    ],
+    "Cynical": [
+      "Pretty for a day. Then it's grey slush like everything else.",
+      "Firewood prices doubled overnight. Shocking, I know.",
+      "Snow hides the garbage. Spring will remind us.",
+      "Everyone loves winter from behind a window."
+    ],
+    "Disciplined": [
+      "Cold training builds character. Out we go.",
+      "Path shoveled before breakfast. As it should be.",
+      "Winter schedule: same as summer schedule, plus gloves.",
+      "The cold is an excellent instructor. Strict, but fair."
+    ],
+    "Fatalistic": [
+      "Winter comes whether we will it or not. As does everything.",
+      "The snow falls on every roof alike. No exceptions made.",
+      "All this white. Everything ends in white, eventually.",
+      "The frost takes the garden every year. We replant anyway. Strange creatures, us."
+    ],
+    "Grumpy": [
+      "Snow. Shoveling. My back. In that order.",
+      "Some fool's children are shrieking in the snow. At dawn.",
+      "Tracked slush all over my clean floor. Naturally.",
+      "Winter. Five months of it. Joy."
+    ],
+    "Loyal": [
+      "I'll clear my neighbor's path too. That's what friends do.",
+      "Half my firewood is spoken for, the widow's stove won't feed itself.",
+      "Friends don't let friends walk home alone through a snowstorm.",
+      "She knitted me these gloves. Warmest things I own."
+    ],
+    "Brave": [
+      "Cold's just another thing to outlast.",
+      "Someone's got to break the trail to the mill. Step aside.",
+      "The cold bites. Bite back.",
+      "Frostbitten once, never frightened since."
+    ],
+    "Timid": [
+      "It's slippery and I will absolutely fall in front of everyone.",
+      "I'll wait for someone braver to walk first. Then use their footprints.",
+      "Snowball fights look fun but those things have ROCKS sometimes.",
+      "Winter's alright from indoors. Very alright, actually."
+    ],
+    "Hedonistic": [
+      "Snow means mulled wine season. Finally.",
+      "Cold outside is just sauce for being warm inside.",
+      "Furs, fire, full glass. Winter done correctly.",
+      "I shall hibernate like a sensible bear, thank you."
+    ],
+    "Apathetic": [
+      "Cold. White. Fine.",
+      "Snow falls. Snow melts. Riveting.",
+      "Everyone acts like winter is news.",
+      "I'd shovel, but... eh."
+    ],
+    "default": [
+      "It's getting colder with this snow. I should keep moving to stay warm.",
+      "The snow is really piling up out here.",
+      "Quite the snowfall. The roads will be slow.",
+      "Brr. This cold gets into the bones."
+    ]
+  },
+  "clear": {
+    "Nervous": [
+      "Nice weather... too nice. Something always goes wrong on days like this.",
+      "Sunny days mean crowds. Crowds mean... I should stay alert.",
+      "Not a cloud. So everyone can see everything I do. Great.",
+      "Good weather never lasts. I give it an hour."
+    ],
+    "Calm": [
+      "A clear sky and nowhere to hurry. Perfect.",
+      "Sun on the face, breeze in the trees. Enough.",
+      "Days like this ask for slow walks and slower thoughts.",
+      "The sky is empty and so, blessedly, is my mind."
+    ],
+    "Aggressive": [
+      "Good. No weather in my way today.",
+      "Sunshine. Fine. One less thing to fight.",
+      "Clear day. Everyone can see me coming. Good.",
+      "Even the sun's staring. Take a picture, sky."
+    ],
+    "Melancholic": [
+      "Everyone looks so happy in the sun. Must be nice.",
+      "Beautiful day. Wasted on me, probably.",
+      "The sun shines on like nothing's wrong. Bold of it.",
+      "Clear skies just mean nowhere for the eyes to rest."
+    ],
+    "Sanguine": [
+      "Not a cloud anywhere! Today is going to be wonderful!",
+      "Sunshine! The world's in a good mood and so am I!",
+      "What a sky! Somebody bottle this day!",
+      "Blue above, smiles below. Perfect arithmetic!"
+    ],
+    "Cautious": [
+      "Good visibility today. Fewer surprises that way.",
+      "Fine weather. Good day to fix the roof before the bad weather.",
+      "Sunny, yes. I'll still bring the cloak. Just in case.",
+      "Clear days are for preparing for the unclear ones."
+    ],
+    "Impulsive": [
+      "Sun's out! Drop everything, let's GO!",
+      "A day like this and you want me INDOORS? Madness!",
+      "Picnic! Now! Somebody grab bread, I'll grab everything else!",
+      "Clear sky, open road, zero plans. Ideal."
+    ],
+    "Stoic": [
+      "Fair weather. It changes nothing, but it is pleasant.",
+      "The sun shines. Tasks remain tasks.",
+      "Good weather is easier. Easy is not the point.",
+      "A clear day. Use it; don't worship it."
+    ],
+    "Paranoid": [
+      "A clear day. No fog to hide in. Everyone can see me.",
+      "Everyone's out 'enjoying the sun'. Convenient excuse to watch people.",
+      "Sunlight makes long shadows. Check what's standing in yours.",
+      "Calm, bright, peaceful. Exactly how they'd want it to look."
+    ],
+    "Empathetic": [
+      "Sunshine puts everyone in a better mood. You can feel it.",
+      "Even the shopkeeper hummed today. The sun does that.",
+      "Days like this heal people a little. You can see it in their walk.",
+      "Someone's laughing down the lane. Lovely sound to work to."
+    ],
+    "Authoritative": [
+      "Good weather. No excuses for missed work today.",
+      "Clear skies. Double the output, half the complaints. Ideally.",
+      "A fine day for inspections. Everything visible.",
+      "Sunshine is no holiday. The roster stands."
+    ],
+    "Scholarly": [
+      "Excellent light for reading outdoors for once.",
+      "Cloudless. The stars will be exceptional tonight.",
+      "Perfect drying weather, the herbarium thanks the sky.",
+      "On clear days you can see the far ridge. Geography, live and in person."
+    ],
+    "Artistic": [
+      "The shadows are so crisp today. Everything looks deliberate.",
+      "This light! Every wall is suddenly worth painting.",
+      "Blue sky, ochre roofs. The town curates itself today.",
+      "Cloudless skies are an empty canvas. A bold choice, sky."
+    ],
+    "Adventurous": [
+      "A horizon this clear is practically an invitation.",
+      "You can see for miles! And I intend to walk most of them.",
+      "Weather like this wasted in town should be a crime.",
+      "Clear day, full waterskin, no destination. Bliss."
+    ],
+    "Nurturing": [
+      "Perfect day to air the linens and get everyone outside.",
+      "Sun's out, everybody outside, you all need the color in your cheeks.",
+      "Garden weather! The tomatoes and the children both need tending.",
+      "A sunny bench, a warm drink, and someone to fuss over. Perfect."
+    ],
+    "Mischievous": [
+      "Everyone's relaxed on sunny days. Easy marks, the lot of them.",
+      "Sunshine makes people leave windows open. Just saying.",
+      "A beautiful day. Shame if something... interesting happened to it.",
+      "Everybody's watching the sky. Nobody's watching their pie."
+    ],
+    "Cynical": [
+      "Enjoy it. It won't last. It never lasts.",
+      "Lovely day. Somewhere, someone's already ruining it.",
+      "The sun also shines on tax collectors. Remember that.",
+      "Blue skies sell more nonsense than rain ever did."
+    ],
+    "Disciplined": [
+      "Ideal conditions. Full output today.",
+      "Clear weather: outdoor tasks first, indoor tasks after. Obviously.",
+      "Sun's up early and so was I.",
+      "Good light, dry roads. No excuse for sloppiness."
+    ],
+    "Fatalistic": [
+      "Sun today, storm tomorrow. The wheel turns.",
+      "Enjoy the sun if you like. It's setting either way.",
+      "Clear skies are just the pause between weathers.",
+      "The sun has risen on every disaster in history, too."
+    ],
+    "Grumpy": [
+      "Too bright. Now everyone expects me to be cheerful.",
+      "Sun's in my eyes. Naturally.",
+      "Beautiful day, says everyone. To me. Repeatedly.",
+      "Heat, glare, and chipper neighbors. The full catalogue."
+    ],
+    "Loyal": [
+      "Fine day for giving someone a hand with their chores.",
+      "Promised I'd help mend her fence. Today's the day for it.",
+      "Good weather's for sharing. I'll go knock for my friend.",
+      "We always walk the ramparts on days like this. Tradition holds."
+    ],
+    "Brave": [
+      "A day this clear, you could take on anything.",
+      "Good light, good footing. Bring on the hard jobs.",
+      "No storm to blame today. Just you and the task.",
+      "The sun's watching. Give it something worth seeing."
+    ],
+    "Timid": [
+      "Nice and calm out. Maybe nobody will bother me today.",
+      "Sunny days are nice but... so many people come out in them.",
+      "I found a quiet sunny corner. Please nobody find it too.",
+      "Good weather makes people chatty. I'll smile and walk faster."
+    ],
+    "Hedonistic": [
+      "Sunshine! Patio, drink, nap. In that order.",
+      "The sun's out and so is my hammock.",
+      "Days like this were made for long lunches. Very long.",
+      "Warm sun, cold drink. The universe apologizing for winter."
+    ],
+    "Apathetic": [
+      "Sunny. Okay.",
+      "Nice out, apparently.",
+      "The sun came up again. Streak continues.",
+      "Good weather, bad weather. Still weather."
+    ],
+    "default": [
+      "The weather is perfect today. A good day to get things done.",
+      "Lovely weather we're having.",
+      "Not a cloud in the sky today.",
+      "A fine, bright day out."
+    ]
+  }
+}

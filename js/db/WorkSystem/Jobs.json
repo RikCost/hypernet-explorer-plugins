@@ -5,14 +5,19 @@
     "name_int": "jobs.1.name",
     "name_it": "Operaio di Magazzino",
     "category": "Labor",
+    "spec": "Packing",
     "description": "Load and unload cargo in the warehouse district.",
     "description_it": "Carica e scarica merci nel distretto dei magazzini.",
     "duration": 8,
     "basePay": 120,
     "locations": [
-      "Dock District",
-      "Industrial Zone",
-      "Trade Quarter"
+      26,
+      37,
+      147,
+      341,
+      685,
+      705,
+      706
     ],
     "requirements": {
       "ATK": 20,
@@ -89,14 +94,14 @@
     "name_int": "jobs.2.name",
     "name_it": "Bracciante Agricolo",
     "category": "Labor",
+    "spec": "Farming",
     "description": "Work the fields, tend to crops and livestock.",
     "description_it": "Lavora nei campi, cura i raccolti e il bestiame.",
     "duration": 10,
     "basePay": 100,
     "locations": [
-      "Rural Farms",
-      "Agricultural District",
-      "Countryside"
+      1035,
+      1037
     ],
     "requirements": {
       "ATK": 15,
@@ -177,14 +182,20 @@
     "name_int": "jobs.3.name",
     "name_it": "Barista",
     "category": "Social",
+    "spec": "Bartending",
     "description": "Serve drinks and manage patrons at the tavern.",
     "description_it": "Servi bevande e gestisci clienti alla taverna.",
     "duration": 8,
     "basePay": 90,
     "locations": [
-      "Tavern District",
-      "Red Light District",
-      "Entertainment Quarter"
+      302,
+      367,
+      686,
+      695,
+      711,
+      712,
+      1017,
+      1416
     ],
     "requirements": {
       "AGI": 20,
@@ -261,14 +272,15 @@
     "name_int": "jobs.4.name",
     "name_it": "Artista di Strada",
     "category": "Social",
+    "spec": "Acting",
     "description": "Entertain crowds with performances for tips.",
     "description_it": "Intrattieni la folla con spettacoli per mance.",
     "duration": 6,
     "basePay": 60,
     "locations": [
-      "Town Square",
-      "Market District",
-      "Festival Grounds"
+      446,
+      533,
+      820
     ],
     "requirements": {
       "LUK": 25,
@@ -335,6 +347,7 @@
     "name_int": "jobs.5.name",
     "name_it": "Assistente Fabbro",
     "category": "Technical",
+    "spec": "Blacksmithing",
     "description": "Help the blacksmith forge weapons and tools.",
     "description_it": "Aiuta il fabbro a forgiare armi e attrezzi.",
     "duration": 9,
@@ -423,14 +436,14 @@
     "name_int": "jobs.6.name",
     "name_it": "Raccoglitore di Componenti",
     "category": "Magical",
+    "spec": "Foraging",
     "description": "Collect rare magical ingredients in dangerous areas.",
     "description_it": "Raccogli ingredienti magici rari in zone pericolose.",
     "duration": 7,
     "basePay": 150,
     "locations": [
-      "Mystic Forest",
-      "Arcane Wasteland",
-      "Magic District"
+      450,
+      1039
     ],
     "requirements": {
       "MAT": 20,
@@ -510,14 +523,14 @@
     "name_int": "jobs.7.name",
     "name_it": "Assistente Alchimista",
     "category": "Magical",
+    "spec": "Alchemy",
     "description": "Mix potions and manage the alchemist's laboratory.",
     "description_it": "Mescola pozioni e gestisci il laboratorio dell'alchimista.",
     "duration": 8,
     "basePay": 140,
     "locations": [
-      "Potion Shop",
-      "Alchemy Quarter",
-      "Magic Academy"
+      320,
+      531
     ],
     "requirements": {
       "MAT": 25,
@@ -602,6 +615,7 @@
     "name_int": "jobs.8.name",
     "name_it": "Restauratore di Artefatti",
     "category": "Magical",
+    "spec": "Antique Restoration",
     "description": "Repair and restore damaged magical items.",
     "description_it": "Ripara e restaura oggetti magici danneggiati.",
     "duration": 6,
@@ -689,6 +703,7 @@
     "name_int": "jobs.9.name",
     "name_it": "Guardia Carovaniera",
     "category": "Combat",
+    "spec": "Crowd Control",
     "description": "Protect merchant caravans from bandits and monsters.",
     "description_it": "Proteggi le carovane mercantili da banditi e mostri.",
     "duration": 12,
@@ -775,11 +790,15 @@
     "name_int": "jobs.10.name",
     "name_it": "Combattente d'Arena",
     "category": "Combat",
+    "spec": "Boxing",
     "description": "Fight in the arena for prize money and glory.",
     "description_it": "Combatti nell'arena per denaro e gloria.",
     "duration": 4,
     "basePay": 150,
-    "locations": [],
+    "locations": [
+      503,
+      525
+    ],
     "requirements": {
       "ATK": 35,
       "DEF": 30,
@@ -858,6 +877,7 @@
     "name_int": "jobs.11.name",
     "name_it": "Sterminatore di Mostri",
     "category": "Combat",
+    "spec": "Hunting",
     "description": "Clear out monster infestations from civilian areas.",
     "description_it": "Elimina infestazioni di mostri dalle aree civili.",
     "duration": 8,
@@ -944,11 +964,16 @@
     "name_int": "jobs.12.name",
     "name_it": "Borseggio",
     "category": "Criminal",
+    "spec": "Pickpocketing",
     "description": "Steal from unsuspecting marks in crowded areas.",
     "description_it": "Ruba da vittime ignare in aree affollate.",
     "duration": 5,
     "basePay": 100,
-    "locations": [],
+    "locations": [
+      446,
+      533,
+      820
+    ],
     "requirements": {
       "AGI": 30,
       "Stealth": 35,
@@ -1021,6 +1046,7 @@
     "name_int": "jobs.13.name",
     "name_it": "Contrabbando",
     "category": "Criminal",
+    "spec": "Streetwise",
     "description": "Transport illegal goods across checkpoints.",
     "description_it": "Trasporta merci illegali attraverso i posti di blocco.",
     "duration": 10,
@@ -1102,11 +1128,14 @@
     "name_int": "jobs.14.name",
     "name_it": "Furto con Scasso",
     "category": "Criminal",
+    "spec": "Lockpicking",
     "description": "Break into a building and steal valuables.",
     "description_it": "Entra con scasso in un edificio e ruba oggetti di valore.",
     "duration": 6,
     "basePay": 300,
-    "locations": [],
+    "locations": [
+      1076
+    ],
     "requirements": {
       "Stealth": 40,
       "AGI": 30,
@@ -1184,11 +1213,17 @@
     "name_int": "jobs.15.name",
     "name_it": "Meccanico",
     "category": "Technical",
+    "spec": "Mechanics",
     "description": "Repair vehicles and machinery.",
     "description_it": "Ripara veicoli e macchinari.",
     "duration": 8,
     "basePay": 140,
-    "locations": [],
+    "locations": [
+      403,
+      630,
+      702,
+      987
+    ],
     "requirements": {
       "Substance": 30,
       "AGI": 20,
@@ -1264,6 +1299,7 @@
     "name_int": "jobs.16.name",
     "name_it": "Fabbro di Serrature",
     "category": "Technical",
+    "spec": "Lockpicking",
     "description": "Create and repair locks for clients.",
     "description_it": "Crea e ripara serrature per i clienti.",
     "duration": 6,
@@ -1338,11 +1374,15 @@
     "name_int": "jobs.17.name",
     "name_it": "Orologiaio",
     "category": "Technical",
+    "spec": "Clock and Watchmaking",
     "description": "Craft and repair intricate timepieces.",
     "description_it": "Crea e ripara orologi complessi.",
     "duration": 7,
     "basePay": 160,
-    "locations": [],
+    "locations": [
+      29,
+      723
+    ],
     "requirements": {
       "Substance": 35,
       "AGI": 30,
@@ -1412,11 +1452,14 @@
     "name_int": "jobs.18.name",
     "name_it": "Diplomatico",
     "category": "Social",
+    "spec": "Diplomacy",
     "description": "Negotiate deals and resolve disputes.",
     "description_it": "Negozia accordi e risolvi dispute.",
     "duration": 6,
     "basePay": 180,
-    "locations": [],
+    "locations": [
+      1000
+    ],
     "requirements": {
       "Intimidation": 25,
       "LUK": 30,
@@ -1489,11 +1532,14 @@
     "name_int": "jobs.19.name",
     "name_it": "Indovino",
     "category": "Social",
+    "spec": "Divination",
     "description": "Read fortunes for paying customers.",
     "description_it": "Leggi il futuro per clienti paganti.",
     "duration": 5,
     "basePay": 80,
-    "locations": [],
+    "locations": [
+      450
+    ],
     "requirements": {
       "LUK": 30,
       "MAT": 25,
@@ -1559,6 +1605,7 @@
     "name_int": "jobs.20.name",
     "name_it": "Corriere",
     "category": "General",
+    "spec": "Direction Sense",
     "description": "Deliver packages and messages across the city.",
     "description_it": "Consegna pacchi e messaggi in città.",
     "duration": 7,
@@ -1639,12 +1686,15 @@
     "name_int": "jobs.100.name",
     "name_it": "Ispettore Permessi",
     "category": "Faction",
+    "spec": "Auditing",
     "factionId": 0,
     "description": "Inspect magical practitioners for proper permits and licensing.",
     "description_it": "Ispeziona praticanti magici per permessi e licenze appropriate.",
     "duration": 8,
     "basePay": 140,
-    "locations": [],
+    "locations": [
+      1050
+    ],
     "requirements": {
       "MAT": 20,
       "Arcane": 25,
@@ -1718,6 +1768,7 @@
     "name_int": "jobs.101.name",
     "name_it": "Supervisore Rituali",
     "category": "Faction",
+    "spec": "Divination",
     "factionId": 3,
     "description": "Ensure magical rituals follow Guild protocols exactly.",
     "description_it": "Assicura che i rituali magici seguano esattamente i protocolli della Gilda.",
@@ -1801,6 +1852,7 @@
     "name_int": "jobs.102.name",
     "name_it": "Applicatore Anti-Tecnologia",
     "category": "Faction",
+    "spec": "Intimidation",
     "factionId": 4,
     "description": "Seek out and destroy illegal techno-magical fusion devices.",
     "description_it": "Cerca e distruggi dispositivi illegali di fusione tecno-magica.",
@@ -1891,12 +1943,16 @@
     "name_int": "jobs.103.name",
     "name_it": "Ingegnere Magitech",
     "category": "Faction",
+    "spec": "Cybernetics",
     "factionId": 5,
     "description": "Develop experimental fusion of magic and machinery.",
     "description_it": "Sviluppa fusioni sperimentali di magia e macchinari.",
     "duration": 9,
     "basePay": 200,
-    "locations": [],
+    "locations": [
+      320,
+      531
+    ],
     "requirements": {
       "MAT": 35,
       "Arcane": 35,
@@ -1983,6 +2039,7 @@
     "name_int": "jobs.104.name",
     "name_it": "Impiegato Categorizzazione Incantesimi",
     "category": "Faction",
+    "spec": "Data Analysis",
     "factionId": 6,
     "description": "Meticulously categorize spells into the 92 distinct schools.",
     "description_it": "Categorizza meticolosamente gli incantesimi nelle 92 scuole distinte.",
@@ -2064,6 +2121,7 @@
     "name_int": "jobs.105.name",
     "name_it": "Oscuratore di Documenti",
     "category": "Faction",
+    "spec": "Copywriting",
     "factionId": 1,
     "description": "Remove dangerous knowledge from historical texts.",
     "description_it": "Rimuovi conoscenza pericolosa dai testi storici.",
@@ -2143,6 +2201,7 @@
     "name_int": "jobs.106.name",
     "name_it": "Ladro di Artefatti",
     "category": "Faction",
+    "spec": "Sleight of Hand",
     "factionId": 20,
     "description": "Steal historical artifacts for the Foundation's collection.",
     "description_it": "Ruba artefatti storici per la collezione della Fondazione.",
@@ -2230,12 +2289,17 @@
     "name_int": "jobs.107.name",
     "name_it": "Bibliotecario Silenzioso",
     "category": "Faction",
+    "spec": "Stealth Movement",
     "factionId": 21,
     "description": "Maintain the archives and permanently silence noisy patrons.",
     "description_it": "Mantieni gli archivi e zittisci permanentemente i visitatori rumorosi.",
     "duration": 8,
     "basePay": 140,
-    "locations": [],
+    "locations": [
+      7,
+      43,
+      1015
+    ],
     "requirements": {
       "Stealth": 30,
       "Intimidation": 35,
@@ -2315,6 +2379,7 @@
     "name_int": "jobs.108.name",
     "name_it": "Scrittore di Propaganda",
     "category": "Faction",
+    "spec": "Copywriting",
     "factionId": 22,
     "description": "Craft convincing misinformation for public consumption.",
     "description_it": "Crea disinformazione convincente per il consumo pubblico.",
@@ -2386,12 +2451,15 @@
     "name_int": "jobs.109.name",
     "name_it": "Investigatore Interno",
     "category": "Faction",
+    "spec": "Criminology",
     "factionId": 23,
     "description": "Root out information leaks within the Foundation.",
     "description_it": "Scova perdite di informazioni all'interno della Fondazione.",
     "duration": 9,
     "basePay": 180,
-    "locations": [],
+    "locations": [
+      1050
+    ],
     "requirements": {
       "Stealth": 35,
       "Intimidation": 35,
@@ -2466,6 +2534,7 @@
     "name_int": "jobs.110.name",
     "name_it": "Manipolatore di Mercato",
     "category": "Faction",
+    "spec": "Stock Trading",
     "factionId": 2,
     "description": "Manipulate markets for profit through any means necessary.",
     "description_it": "Manipola i mercati per profitto con qualsiasi mezzo necessario.",
@@ -2542,6 +2611,7 @@
     "name_int": "jobs.111.name",
     "name_it": "Supervisore Estrazione Petrolio",
     "category": "Faction",
+    "spec": "Project Management",
     "factionId": 15,
     "description": "Maximize oil extraction efficiency through infernal optimization.",
     "description_it": "Massimizza l'efficienza dell'estrazione petrolifera attraverso ottimizzazione infernale.",
@@ -2629,6 +2699,7 @@
     "name_int": "jobs.112.name",
     "name_it": "Corriere ad Alta Velocità",
     "category": "Faction",
+    "spec": "Car Driving",
     "factionId": 16,
     "description": "Deliver packages at breakneck speeds, worshipping velocity.",
     "description_it": "Consegna pacchi a velocità folle, adorando la velocità.",
@@ -2712,6 +2783,7 @@
     "name_int": "jobs.113.name",
     "name_it": "Applicatore Monopolio Carburante",
     "category": "Faction",
+    "spec": "Intimidation",
     "factionId": 17,
     "description": "Ensure the Seven Sisters maintain total fuel market control.",
     "description_it": "Assicura che le Sette Sorelle mantengano il controllo totale del mercato carburante.",
@@ -2799,6 +2871,7 @@
     "name_int": "jobs.114.name",
     "name_it": "Agente del Caos Divino",
     "category": "Faction",
+    "spec": "Deception",
     "factionId": 7,
     "description": "Spread discord and disruption in the name of the Goddess of Chaos.",
     "description_it": "Diffondi discordia e disordine nel nome della Dea del Caos.",
@@ -2871,12 +2944,19 @@
     "name_int": "jobs.124.name",
     "name_it": "Scriba Vaticano",
     "category": "Faction",
+    "spec": "Calligraphy",
     "factionId": 27,
     "description": "Transcribe and maintain sacred texts and church documents.",
     "description_it": "Trascrivi e mantieni testi sacri e documenti della chiesa.",
     "duration": 8,
     "basePay": 130,
-    "locations": [],
+    "locations": [
+      727,
+      1000,
+      1014,
+      1015,
+      1071
+    ],
     "requirements": {
       "MAT": 30,
       "Arcane": 25,
@@ -2942,12 +3022,15 @@
     "name_int": "jobs.127.name",
     "name_it": "Allieva Suora da Battaglia",
     "category": "Faction",
+    "spec": "Athletics",
     "factionId": 30,
     "description": "Train in both scripture and combat as a Vatican special forces operative.",
     "description_it": "Addestrati sia nelle scritture che nel combattimento come operativa delle forze speciali vaticane.",
     "duration": 10,
     "basePay": 170,
-    "locations": [],
+    "locations": [
+      727
+    ],
     "requirements": {
       "ATK": 35,
       "DEF": 30,
@@ -3025,6 +3108,7 @@
     "name_int": "jobs.128.name",
     "name_it": "Guardiano Notturno",
     "category": "General",
+    "spec": "Crowd Reading",
     "description": "Guard property through the dangerous night hours.",
     "description_it": "Sorveglia proprietà durante le pericolose ore notturne.",
     "duration": 10,
@@ -3105,11 +3189,14 @@
     "name_int": "jobs.129.name",
     "name_it": "Pescatore",
     "category": "Labor",
+    "spec": "Fishing",
     "description": "Catch fish for sale at the market.",
     "description_it": "Pesca pesce per venderlo al mercato.",
     "duration": 8,
     "basePay": 95,
-    "locations": [],
+    "locations": [
+      570
+    ],
     "requirements": {
       "AGI": 20,
       "LUK": 30,
@@ -3176,11 +3263,17 @@
     "name_int": "jobs.130.name",
     "name_it": "Spazzino",
     "category": "Labor",
+    "spec": "Street Sweeping",
     "description": "Clean the filthy city streets.",
     "description_it": "Pulisci le sporche strade cittadine.",
     "duration": 8,
     "basePay": 80,
-    "locations": [],
+    "locations": [
+      704,
+      689,
+      1036,
+      397
+    ],
     "requirements": {
       "ATK": 15,
       "DEF": 20
@@ -3249,5 +3342,759 @@
     },
     "description_int": "jobs.130.description",
     "category_int": "jobs.category.labor"
+  },
+  {
+    "id": 131,
+    "name": "Manager",
+    "name_int": "jobs.131.name",
+    "name_it": "Direttore",
+    "category": "Social",
+    "spec": "Project Management",
+    "description": "Oversee daily operations and keep staff in line.",
+    "description_it": "Supervisiona le operazioni quotidiane e il personale.",
+    "duration": 8,
+    "basePay": 150,
+    "locations": [
+      706,
+      1007
+    ],
+    "requirements": {
+      "Intimidation": 15,
+      "LUK": 15,
+      "MAT": 10
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Everything runs like clockwork under your watch.",
+          "Staff and customers alike are pleased.",
+          "You smooth over a tricky situation with ease.",
+          "The books balance perfectly tonight.",
+          "A well-managed shift from start to finish."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.131.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A staffing mix-up keeps you running all shift.",
+          "You manage, but it's a near thing.",
+          "Customers grumble about the wait.",
+          "You patch things up well enough.",
+          "An exhausting but workable shift."
+        ],
+        "payMultiplier": 0.7,
+        "damage": {
+          "mp": 10
+        },
+        "messages_int": "jobs.131.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "Nothing goes according to plan today.",
+          "An argument breaks out among the staff.",
+          "Customers walk out unhappy.",
+          "You lose track of the shift entirely.",
+          "Today was a disaster for business."
+        ],
+        "payMultiplier": 0.25,
+        "damage": {
+          "hp": 5,
+          "mp": 15
+        },
+        "status": [
+          "Nausea"
+        ],
+        "messages_int": "jobs.131.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A furious customer trashes the place!",
+          "The till comes up massively short!",
+          "Staff walk out mid-shift!",
+          "An inspection catches you off guard!",
+          "Your reputation as a manager takes a hit!"
+        ],
+        "payMultiplier": -0.8,
+        "damage": {
+          "hp": 15,
+          "mp": 20
+        },
+        "status": [
+          "Stun"
+        ]
+      }
+    },
+    "description_int": "jobs.131.description",
+    "category_int": "jobs.category.social"
+  },
+  {
+    "id": 132,
+    "name": "Waiter",
+    "name_int": "jobs.132.name",
+    "name_it": "Cameriere",
+    "category": "Social",
+    "spec": "Customer Service",
+    "description": "Take orders and serve food and drinks to customers.",
+    "description_it": "Prendi ordinazioni e servi cibo e bevande ai clienti.",
+    "duration": 8,
+    "basePay": 90,
+    "locations": [
+      1054,
+      463,
+      500,
+      1416,
+      1017,
+      302,
+      711,
+      563
+    ],
+    "requirements": {
+      "AGI": 15,
+      "LUK": 10,
+      "DEF": 10
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Every order comes out right and on time.",
+          "Customers leave generous tips.",
+          "You juggle a full dining room with ease.",
+          "Not a single complaint all shift.",
+          "A smooth, busy shift well handled."
+        ],
+        "payMultiplier": 1.2,
+        "messages_int": "jobs.132.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "You mix up a couple of orders.",
+          "Your feet ache by the end of the shift.",
+          "Tips are lighter than usual.",
+          "You keep up, just barely.",
+          "A long, tiring shift."
+        ],
+        "payMultiplier": 0.7,
+        "damage": {
+          "hp": 5
+        },
+        "messages_int": "jobs.132.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "You drop a full tray in front of everyone.",
+          "Customers complain about slow service.",
+          "You forget several orders entirely.",
+          "The kitchen falls behind because of you.",
+          "A rough, embarrassing shift."
+        ],
+        "payMultiplier": 0.2,
+        "damage": {
+          "hp": 10
+        },
+        "status": [
+          "Nausea"
+        ],
+        "messages_int": "jobs.132.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "You spill a scalding dish on a customer!",
+          "A tray of glasses shatters across the floor!",
+          "An angry customer demands a refund and a scene!",
+          "You're sent home for the rest of the night!",
+          "The manager docks your pay for the mess!"
+        ],
+        "payMultiplier": -0.6,
+        "damage": {
+          "hp": 20
+        },
+        "status": [
+          "Burned",
+          "Bleeding"
+        ]
+      }
+    },
+    "description_int": "jobs.132.description",
+    "category_int": "jobs.category.social"
+  },
+  {
+    "id": 133,
+    "name": "Cook",
+    "name_int": "jobs.133.name",
+    "name_it": "Cuoco",
+    "category": "Labor",
+    "spec": "Cooking",
+    "description": "Prepare meals in a busy kitchen.",
+    "description_it": "Prepara pasti in una cucina indaffarata.",
+    "duration": 8,
+    "basePay": 110,
+    "locations": [
+      713,
+      1061,
+      1054,
+      563
+    ],
+    "requirements": {
+      "ATK": 10,
+      "DEF": 15,
+      "AGI": 15
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Every dish leaves the kitchen perfect.",
+          "The line moves like clockwork.",
+          "Customers rave about tonight's specials.",
+          "You handle the rush without breaking a sweat.",
+          "A flawless night in the kitchen."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.133.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A few dishes come out late.",
+          "You burn yourself on a hot pan.",
+          "The kitchen falls slightly behind during the rush.",
+          "Most plates are solid, a few aren't.",
+          "A hectic but manageable shift."
+        ],
+        "payMultiplier": 0.7,
+        "damage": {
+          "hp": 10
+        },
+        "status": [
+          "Burned"
+        ],
+        "messages_int": "jobs.133.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "Orders pile up faster than you can cook.",
+          "You ruin several dishes in a row.",
+          "The kitchen descends into chaos.",
+          "Waiters are furious with the delays.",
+          "A miserable shift all around."
+        ],
+        "payMultiplier": 0.25,
+        "damage": {
+          "hp": 15
+        },
+        "status": [
+          "Burned",
+          "Nausea"
+        ],
+        "messages_int": "jobs.133.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A grease fire breaks out!",
+          "You're badly burned by a spilled pot!",
+          "The kitchen has to be shut down for the night!",
+          "Food poisoning sends customers to the clinic!",
+          "The restaurant's reputation takes a serious hit!"
+        ],
+        "payMultiplier": -1.0,
+        "damage": {
+          "hp": 35
+        },
+        "status": [
+          "Burned",
+          "Poison"
+        ]
+      }
+    },
+    "description_int": "jobs.133.description",
+    "category_int": "jobs.category.labor"
+  },
+  {
+    "id": 134,
+    "name": "Museum Curator",
+    "name_int": "jobs.134.name",
+    "name_it": "Curatore di Museo",
+    "category": "Social",
+    "spec": "Art History",
+    "description": "Catalog exhibits and guide visitors through the museum.",
+    "description_it": "Cataloga le esposizioni e guida i visitatori nel museo.",
+    "duration": 7,
+    "basePay": 130,
+    "locations": [
+      307,
+      714
+    ],
+    "requirements": {
+      "MAT": 25,
+      "LUK": 15,
+      "Substance": 10
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Visitors are captivated by your knowledge.",
+          "The new exhibit is a triumph.",
+          "You catalog every artifact flawlessly.",
+          "A wealthy donor is impressed by your tour.",
+          "Another day of cultural enrichment well done."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.134.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A few exhibit labels need correcting.",
+          "You lose your place during a tour.",
+          "An unruly group of visitors tests your patience.",
+          "The cataloging takes longer than planned.",
+          "An adequate if unremarkable day."
+        ],
+        "payMultiplier": 0.7,
+        "damage": {
+          "mp": 10
+        },
+        "messages_int": "jobs.134.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "You misplace an important record.",
+          "A tour group wanders off and gets lost.",
+          "Visitors complain about your presentation.",
+          "You can't answer basic questions about the collection.",
+          "The director is unimpressed with your work."
+        ],
+        "payMultiplier": 0.25,
+        "damage": {
+          "mp": 15
+        },
+        "messages_int": "jobs.134.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "You accidentally damage a priceless artifact!",
+          "A display case shatters under your care!",
+          "An exhibit is mislabeled and offends a donor!",
+          "The museum demands compensation for the damage!",
+          "Your reputation as a curator is ruined!"
+        ],
+        "payMultiplier": -1.5,
+        "damage": {
+          "mp": 25
+        },
+        "status": [
+          "Confusion"
+        ]
+      }
+    },
+    "description_int": "jobs.134.description",
+    "category_int": "jobs.category.social"
+  },
+  {
+    "id": 135,
+    "name": "Personal Trainer",
+    "name_int": "jobs.135.name",
+    "name_it": "Personal Trainer",
+    "category": "Social",
+    "spec": "Bodybuilding",
+    "description": "Guide clients through workouts and fitness routines.",
+    "description_it": "Guida i clienti attraverso allenamenti e programmi di fitness.",
+    "duration": 6,
+    "basePay": 120,
+    "locations": [
+      304,
+      541,
+      721
+    ],
+    "requirements": {
+      "ATK": 20,
+      "DEF": 15,
+      "AGI": 15
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Your clients see real results today.",
+          "You motivate everyone to push past their limits.",
+          "A client tips generously for your expertise.",
+          "Every session runs perfectly on schedule.",
+          "Another excellent day of training."
+        ],
+        "payMultiplier": 1.1,
+        "messages_int": "jobs.135.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A client struggles to keep up with the routine.",
+          "You're worn out from demonstrating exercises.",
+          "Some sessions run a bit short.",
+          "Most clients leave satisfied, a few don't.",
+          "A tiring but workable day."
+        ],
+        "payMultiplier": 0.7,
+        "damage": {
+          "hp": 8
+        },
+        "messages_int": "jobs.135.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "A client gives up halfway through.",
+          "You strain a muscle demonstrating a routine.",
+          "Clients leave unhappy with their progress.",
+          "You can't keep the energy up today.",
+          "A disappointing day at the gym."
+        ],
+        "payMultiplier": 0.3,
+        "damage": {
+          "hp": 15
+        },
+        "messages_int": "jobs.135.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A client gets seriously injured during your session!",
+          "You collapse from overexertion!",
+          "Equipment fails and causes an accident!",
+          "The gym threatens to revoke your contract!",
+          "You're blamed for the injury and lose pay!"
+        ],
+        "payMultiplier": -1.0,
+        "damage": {
+          "hp": 35
+        },
+        "status": [
+          "Bleeding"
+        ]
+      }
+    },
+    "description_int": "jobs.135.description",
+    "category_int": "jobs.category.social"
+  },
+  {
+    "id": 136,
+    "name": "Doorman",
+    "name_int": "jobs.136.name",
+    "name_it": "Portiere",
+    "category": "General",
+    "spec": "Customer Service",
+    "description": "Greet guests and control entry at the venue's front door.",
+    "description_it": "Accogli gli ospiti e controlla l'ingresso del locale.",
+    "duration": 9,
+    "basePay": 100,
+    "locations": [
+      725
+    ],
+    "requirements": {
+      "DEF": 15,
+      "Intimidation": 20,
+      "LUK": 10
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Every guest is greeted with a smile.",
+          "You keep the line moving smoothly all night.",
+          "Troublemakers think twice before approaching you.",
+          "Generous tips fill your pocket.",
+          "A pleasant, uneventful shift."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.136.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A long line tests your patience.",
+          "You have to turn away a few rude guests.",
+          "Your feet ache from standing all night.",
+          "Most of the night goes smoothly.",
+          "A tiring but ordinary shift."
+        ],
+        "payMultiplier": 0.75,
+        "damage": {
+          "hp": 5
+        },
+        "messages_int": "jobs.136.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "You let in a guest who causes trouble.",
+          "An argument at the door gets out of hand.",
+          "You lose track of the guest list.",
+          "The manager scolds you for the chaos.",
+          "A frustrating night at the door."
+        ],
+        "payMultiplier": 0.25,
+        "damage": {
+          "hp": 10
+        },
+        "status": [
+          "Stun"
+        ],
+        "messages_int": "jobs.136.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A violent guest knocks you down at the entrance!",
+          "You let in a group that trashes the venue!",
+          "A bribe attempt turns into a confrontation!",
+          "The venue holds you responsible for the chaos!",
+          "You're fired on the spot!"
+        ],
+        "payMultiplier": -1.0,
+        "damage": {
+          "hp": 40
+        },
+        "status": [
+          "Bleeding",
+          "Stun"
+        ]
+      }
+    },
+    "description_int": "jobs.136.description",
+    "category_int": "jobs.category.general"
+  },
+  {
+    "id": 137,
+    "name": "Bouncer",
+    "name_int": "jobs.137.name",
+    "name_it": "Buttafuori",
+    "category": "Combat",
+    "spec": "Crowd Control",
+    "description": "Keep order and remove troublemakers from the venue.",
+    "description_it": "Mantieni l'ordine e allontana i facinorosi dal locale.",
+    "duration": 8,
+    "basePay": 130,
+    "locations": [
+      726
+    ],
+    "requirements": {
+      "ATK": 25,
+      "DEF": 20,
+      "Intimidation": 25
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "Your presence keeps everyone in line.",
+          "You eject a troublemaker without a scene.",
+          "The night passes without incident.",
+          "Patrons behave themselves under your watchful eye.",
+          "A calm, well-controlled venue tonight."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.137.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "A scuffle breaks out but you handle it.",
+          "You take a few hits separating a fight.",
+          "A drunk patron gives you trouble.",
+          "You manage to keep things under control, barely.",
+          "A rough but manageable night."
+        ],
+        "payMultiplier": 0.75,
+        "damage": {
+          "hp": 20
+        },
+        "status": [
+          "Bleeding"
+        ],
+        "messages_int": "jobs.137.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "A brawl gets out of hand despite your efforts.",
+          "You're overwhelmed by a group of patrons.",
+          "Furniture is broken in the chaos.",
+          "The manager is furious about the damage.",
+          "A bad night for venue security."
+        ],
+        "payMultiplier": 0.3,
+        "damage": {
+          "hp": 35
+        },
+        "status": [
+          "Bleeding",
+          "Stun"
+        ],
+        "messages_int": "jobs.137.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A massive brawl leaves you knocked out cold!",
+          "The venue is wrecked beyond your control!",
+          "You're ganged up on by a mob of patrons!",
+          "The owner blames you for the destruction!",
+          "You're banned from working venue security again!"
+        ],
+        "payMultiplier": -1.2,
+        "damage": {
+          "hp": 65
+        },
+        "status": [
+          "Bleeding",
+          "Stun",
+          "Confusion"
+        ]
+      }
+    },
+    "description_int": "jobs.137.description",
+    "category_int": "jobs.category.combat"
+  },
+  {
+    "id": 138,
+    "name": "Lifeguard",
+    "name_int": "jobs.138.name",
+    "name_it": "Bagnino",
+    "category": "General",
+    "spec": "Swimming",
+    "description": "Watch over swimmers and respond to emergencies in the water.",
+    "description_it": "Sorveglia i bagnanti e intervieni in caso di emergenza in acqua.",
+    "duration": 8,
+    "basePay": 110,
+    "locations": [
+      1130,
+      1160
+    ],
+    "requirements": {
+      "AGI": 25,
+      "DEF": 15,
+      "HP": 100
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "You spot trouble early and prevent any accidents.",
+          "A swimmer thanks you for your quick eyes.",
+          "The waters stay calm and safe all day.",
+          "Your vigilance keeps everyone secure.",
+          "A perfect day on the watchtower."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.138.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "You wade in to help a struggling swimmer.",
+          "The sun leaves you exhausted by the end of the shift.",
+          "A close call keeps you on edge.",
+          "Most of the day passes without major issues.",
+          "A tiring but uneventful shift."
+        ],
+        "payMultiplier": 0.75,
+        "damage": {
+          "hp": 10
+        },
+        "messages_int": "jobs.138.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "You miss a swimmer in distress until it's almost too late.",
+          "A strong current catches you off guard.",
+          "You're too slow to respond to a call for help.",
+          "Your supervisor questions your attentiveness.",
+          "A stressful, draining shift."
+        ],
+        "payMultiplier": 0.25,
+        "damage": {
+          "hp": 20
+        },
+        "status": [
+          "Cold"
+        ],
+        "messages_int": "jobs.138.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "A swimmer nearly drowns on your watch!",
+          "You're pulled under while attempting a rescue!",
+          "Panic spreads as the emergency unfolds!",
+          "An investigation is launched into the incident!",
+          "You're suspended pending review!"
+        ],
+        "payMultiplier": -1.5,
+        "damage": {
+          "hp": 50
+        },
+        "status": [
+          "Cold",
+          "Stun"
+        ]
+      }
+    },
+    "description_int": "jobs.138.description",
+    "category_int": "jobs.category.general"
+  },
+  {
+    "id": 139,
+    "name": "Defence Lawyer",
+    "name_int": "jobs.139.name",
+    "name_it": "Avvocato Difensore",
+    "category": "Social",
+    "spec": "Law",
+    "description": "Argue for the accused before the Goddess of Justice, who does not recognise a defence bar.",
+    "description_it": "Difendi gli imputati davanti alla Dea della Giustizia, che non riconosce alcun ordine forense.",
+    "duration": 8,
+    "basePay": 900,
+    "locations": [
+      1102
+    ],
+    "requirements": {
+      "MAT": 30,
+      "MDF": 30,
+      "LUK": 10
+    },
+    "outcomes": {
+      "success": {
+        "messages": [
+          "You talked a bounty down to nothing and Eris let you.",
+          "The bench overruled you eleven times and acquitted anyway.",
+          "Your client walked. Nobody is sure which argument did it.",
+          "You cited a precedent Eris invented and she was too flattered to object.",
+          "A clean acquittal. The stenographer applauded, briefly, then apologised."
+        ],
+        "payMultiplier": 1.0,
+        "messages_int": "jobs.139.success_msgs"
+      },
+      "partial": {
+        "messages": [
+          "You argued the sentence down from a season to a fortnight.",
+          "Half the counts were struck. The other half doubled.",
+          "Eris listened, which is not the same as agreeing.",
+          "You lost, politely, and were thanked for the effort.",
+          "Your client is in a cell, but a nicer one."
+        ],
+        "payMultiplier": 0.6,
+        "messages_int": "jobs.139.partial_msgs"
+      },
+      "failure": {
+        "messages": [
+          "You were removed from the courtroom before opening.",
+          "Eris held you in contempt of herself.",
+          "Your submissions were read aloud, mockingly, then burned.",
+          "The court found your client guilty and you tiresome.",
+          "You spent the whole hearing standing very still."
+        ],
+        "payMultiplier": 0.2,
+        "messages_int": "jobs.139.failure_msgs"
+      },
+      "disaster": {
+        "messages": [
+          "You argued so well that Eris convicted your client out of spite.",
+          "The bench turned your briefcase into a pigeon and the pigeon left.",
+          "You were briefly declared a co-defendant.",
+          "Your name is now in the file, underlined, twice.",
+          "The fee was confiscated as evidence of something."
+        ],
+        "payMultiplier": -0.5,
+        "damage": {
+          "hp": 15
+        },
+        "status": [
+          "Stun"
+        ]
+      }
+    },
+    "description_int": "jobs.139.description",
+    "category_int": "jobs.category.social"
   }
 ]

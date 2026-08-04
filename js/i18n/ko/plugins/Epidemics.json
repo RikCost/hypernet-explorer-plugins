@@ -1,0 +1,24 @@
+{
+  "name": {
+    "hysteria": "",
+    "medical": ""
+  },
+  "log": {
+    "firstCases": "",
+    "reaches": "",
+    "declaredOver": ""
+  },
+  "news": {
+    "hysteria": "",
+    "medical": ""
+  },
+  "caught": "",
+  "caughtFrom": "",
+  "undated": "",
+  "begins": "",
+  "bulletin": {
+    "header": "",
+    "totals": "",
+    "line": ""
+  }
+}

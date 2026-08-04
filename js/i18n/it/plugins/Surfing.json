@@ -1,0 +1,6 @@
+{
+  "hud": {
+    "wave": "{venue}   ONDA {wave}/{total}",
+    "stats": "PUNTI {score}   VEL {speed}   MARGINE {margin}M"
+  }
+}

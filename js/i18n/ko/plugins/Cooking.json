@@ -1,0 +1,83 @@
+{
+  "adjectives": {
+    "positive": [
+      "잘 조리된",
+      "맛있는",
+      "미식의",
+      "장인의",
+      "신비한",
+      "신성한",
+      "완벽한",
+      "풍미 가득한",
+      "비범한",
+      "마법 같은"
+    ],
+    "neutral": [
+      "담백한",
+      "간단한",
+      "평범한",
+      "기본적인",
+      "표준",
+      "일반적인",
+      "흔한",
+      "수수한",
+      "무난한",
+      "일상적인"
+    ],
+    "negative": [
+      "까맣게 그을린",
+      "망쳐버린",
+      "너무 익힌",
+      "탄",
+      "상한",
+      "의문스러운",
+      "수상한",
+      "수상쩍은",
+      "실패한",
+      "파멸적인"
+    ]
+  },
+  "messages": {
+    "prepared": "당신은 {name}을(를) 만들었다.",
+    "sameItemPositive": "\n훌륭한 요리가 완성되었다!",
+    "sameItemNeutral": "\n특별하지 않지만 먹을만 하다.",
+    "sameItemNegative": "\n이런건 시도하지 말았어야 했을지도 모른다...",
+    "recoveredHunger": "\n파티원들의 허기가 각각 {percent}% 만큼 회복되었다",
+    "splitAmong": " ({count}명의 파티원이 나누어 먹음)",
+    "ate": "당신은 {name}을(를) 날것으로 먹었다."
+  },
+  "ui": {
+    "selectFirstIngredient": "첫 번째 재료 선택",
+    "selectSecondIngredient": "{name}와 함께 조리할 재료 선택",
+    "confirmCook": "{item1}(과)와 {item2}(을)를 조리해 {result}(을)를 만들겠습니까?",
+    "cookButton": "요리하기",
+    "cancelButton": "취소",
+    "eatButton": "날것으로 먹기",
+    "menuLabel": "요리",
+    "selectIngredients": "",
+    "cookTheseItems": ""
+  },
+  "back": "",
+  "ingredients": "",
+  "cooking": "",
+  "nutritionalBase": "",
+  "aromaticBinder": "",
+  "yourBackpackContainsNoEdible": "",
+  "selectBase": "",
+  "selectBinder": "",
+  "extraordinaryEffect50": "",
+  "minorEffect25": "",
+  "disastrousEffect75": "",
+  "calories": "",
+  "protein": "",
+  "fat": "",
+  "satietyPerMember": "",
+  "split": "",
+  "combineANutritionalBaseAnd": "",
+  "clearSelection": "",
+  "nutrition": {
+    "calories": "",
+    "protein": "",
+    "fat": ""
+  }
+}

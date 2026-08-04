@@ -1,0 +1,7 @@
+{
+  "windowTitle": "Hypernet Explorer -  Dispatcher",
+  "appName": "Hypernet Explorer",
+  "linkLost": "Transmission link lost. The requested Hypernet page could not be loaded.",
+  "linkStable": "TRANSMISSION LINK STABLE",
+  "secureSsl": "SECURE SSL: MAXIMUM"
+}

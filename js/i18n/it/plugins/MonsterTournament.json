@@ -1,0 +1,27 @@
+{
+  "stat": "Statistica",
+  "fighter": "Sfidante",
+  "uses": "{user} usa {skill}!",
+  "no3d": "Sistema 3D non disponibile: impossibile aprire il torneo",
+  "chooseFighter": "Torneo dei Mostri - Scegli il tuo sfidante",
+  "fighterOf": "Sfidante {index} / {total}",
+  "doubleBet": "Raddoppia la puntata (+{bet})",
+  "noTokens": "Nessun gettone disponibile!",
+  "placeBet": "{name} - Punta",
+  "wins": "{name} VINCE!",
+  "defeated": "{name} è stato sconfitto...",
+  "eliminated": "{name} è stato eliminato",
+  "youLost": "Hai perso {tokens} gettoni",
+  "champion": "CAMPIONE: {name}!",
+  "youWon": "Hai vinto {tokens} gettoni!",
+  "skillAttack": "Attacco",
+  "skillFinish": "Colpo finale",
+  "ui": {
+    "hintCycle": "&#9664; &#9654;  Scorri&nbsp;&nbsp;&nbsp;Invio  Scegli&nbsp;&nbsp;&nbsp;Esc  Esci",
+    "bet": "Puntata:",
+    "hintBet": "&#9664; &#9654;  &plusmn;1&nbsp;&nbsp;&nbsp;&#9650; &#9660;  &plusmn;10",
+    "hintConfirm": "Invio  Conferma&nbsp;&nbsp;&nbsp;Esc  Annulla",
+    "keepCurrentBet": "Mantieni la puntata attuale",
+    "hintChoose": "&#9650; &#9660;  Scegli&nbsp;&nbsp;&nbsp;Invio  Conferma"
+  }
+}

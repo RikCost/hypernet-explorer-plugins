@@ -1,0 +1,553 @@
+{
+  "pastLife": "",
+  "warrior": "",
+  "disciplinedFrontLineFighters": "",
+  "brawler": "",
+  "unarmedAndMartialSpecialists": "",
+  "mage": "",
+  "wieldersOfArcanePower": "",
+  "occultist": "",
+  "darkAndForbiddenArts": "",
+  "devout": "",
+  "healersAndTheFaithful": "",
+  "scholar": "",
+  "mindsOfScienceAndStudy": "",
+  "survivor": "",
+  "huntersRangersAndLaborers": "",
+  "outsider": "",
+  "misfitsAndTheUnclassifiable": "",
+  "initialSettings": "",
+  "confirm": "",
+  "selectDifficulty": "",
+  "selectCombatMode": "",
+  "chooseCreationMode": "",
+  "chooseYourHometown": "",
+  "worldHistory": "",
+  "chooseCharacterType": "",
+  "howIsYourCharacterPortrayed": "",
+  "selectYourGender": "",
+  "male": "",
+  "female": "",
+  "nonBinary": "",
+  "cocoon": "",
+  "chooseYourSkills": "",
+  "chooseAnArchetype": "",
+  "chooseYourClass": "",
+  "selectYourTraits": "",
+  "chooseYourBirthDate": "",
+  "addAnotherPartyMember": "",
+  "chooseYourOrigin": "",
+  "noDefiningTraits": "",
+  "noSkillsLearned": "",
+  "noSpecializations": "",
+  "emptyBackpack": "",
+  "hometown": "",
+  "nationOfBirth": "",
+  "dateOfBirth": "",
+  "currentAge": "",
+  "origin": "",
+  "background": "",
+  "personalDossier": "",
+  "identityProfile": "",
+  "vocation": "",
+  "startingWealth": "",
+  "traits": "",
+  "skills": "",
+  "specializations": "",
+  "equipment": "",
+  "presetCharacters": "",
+  "back": "",
+  "pendingSense": "",
+  "none": "",
+  "none2": "",
+  "nonBinary2": "",
+  "registering": "",
+  "finalized": "",
+  "unnamedAlly": "",
+  "traits2": "",
+  "gear": "",
+  "yourParty": "",
+  "classesOfThisArchetype": "",
+  "light": "",
+  "sword": "",
+  "heavy": "",
+  "axe": "",
+  "whip": "",
+  "staff": "",
+  "bow": "",
+  "projectile": "",
+  "gun": "",
+  "claw": "",
+  "glove": "",
+  "spear": "",
+  "noStartingSkills": "",
+  "startingItems": "",
+  "skillRoadmap": "",
+  "equipmentProficiencies": "",
+  "startingSkills": "",
+  "head": "",
+  "torso": "",
+  "leftArm": "",
+  "rightArm": "",
+  "leftLeg": "",
+  "rightLeg": "",
+  "human": "",
+  "goblinHead": "",
+  "elf": "",
+  "rounded": "",
+  "narrow": "",
+  "squareJaw": "",
+  "youthful": "",
+  "elder": "",
+  "bigEars": "",
+  "orcish": "",
+  "tusked": "",
+  "fanged": "",
+  "beastkin": "",
+  "longFace": "",
+  "flatFace": "",
+  "horned": "",
+  "cyclops": "",
+  "default": "",
+  "randomizeAll": "",
+  "structure": "",
+  "body": "",
+  "variation": "",
+  "surface": "",
+  "height": "",
+  "weight": "",
+  "headSize": "",
+  "ears": "",
+  "nose": "",
+  "skinHue": "",
+  "saturation": "",
+  "lightness": "",
+  "hair": "",
+  "hairColour": "",
+  "fangs": "",
+  "none3": "",
+  "small": "",
+  "large": "",
+  "horns": "",
+  "tail": "",
+  "no": "",
+  "yes": "",
+  "wings": "",
+  "halo": "",
+  "3dModel": "",
+  "mixPartsFromAnyCreatureDragToRotateWheelToZo": "",
+  "customize": "",
+  "search": "",
+  "close": "",
+  "noMatches": "",
+  "skillRoadmap2": "",
+  "attributeBreakdown": "",
+  "skillsSpecialties": "",
+  "confirmClass": "",
+  "skillRoadmap3": "",
+  "initialSpecialSkillsAndProgressionUnlockedAl": "",
+  "noProgressionSkillsDefined": "",
+  "attributeBreakdown2": "",
+  "increasesPhysicalStrikePower": "",
+  "decreasesPhysicalDamageTaken": "",
+  "increasesSpellDamageAndAlchemicalPower": "",
+  "decreasesMagicalDamageTaken": "",
+  "increasesHitRateDodgeAndActionSpeed": "",
+  "increasesCriticalHitsAndAlchemicalAnomaliesC": "",
+  "masteries": "",
+  "primaryMastery": "",
+  "secondaryMastery": "",
+  "details": "",
+  "onlyWhatYourArchetypesSupport": "",
+  "classes": "",
+  "startingWeaponProficiencies": "",
+  "startingSpecialSkills": "",
+  "continue": "",
+  "creatureCreation": "",
+  "chooseATypeOfCreation": "",
+  "baselineCreature": "",
+  "hybridMonstrosity": "",
+  "archetipes": "",
+  "cancel": "",
+  "baseSkills": "",
+  "anatomy": "",
+  "preview": "",
+  "selectArchetypes": "",
+  "primary": "",
+  "secondary": "",
+  "archetypeS": "",
+  "selectOneArchetypeTemplateForABaselineCreatu": "",
+  "biology": "",
+  "noAnatomicalOrgansDefined": "",
+  "confirmBlueprint": "",
+  "custom3dModel": "",
+  "sculptAUniqueCreatureFromMixedPartsSeededFro": "",
+  "dragToRotateWheelToZoomMiddleDragToPan": "",
+  "loadingBattlerAsset": "",
+  "profileImage": "",
+  "profileImageSelection": "",
+  "chooseAProfileImage": "",
+  "sprites": "Sprites",
+  "selectedSprite": "",
+  "creatureSynthesisComplete": "",
+  "selectSprite": "",
+  "continue2": "",
+  "presets": "",
+  "presets2": "",
+  "humanoidSpecies": "",
+  "searchSpecies": "",
+  "choice": {
+    "originDeserter": {
+      "name": "",
+      "desc": ""
+    },
+    "originFactionLeader": {
+      "name": "",
+      "desc": ""
+    },
+    "originWarlord": {
+      "name": "",
+      "desc": ""
+    },
+    "originCrash": {
+      "name": "",
+      "desc": ""
+    },
+    "originArtifact": {
+      "name": "",
+      "desc": ""
+    },
+    "originCeo": {
+      "name": "",
+      "desc": ""
+    },
+    "originBunker": {
+      "name": "",
+      "desc": ""
+    },
+    "originStranded": {
+      "name": "",
+      "desc": ""
+    },
+    "originCriminal": {
+      "name": "",
+      "desc": ""
+    },
+    "originMayor": {
+      "name": "",
+      "desc": ""
+    },
+    "originDungeon": {
+      "name": "",
+      "desc": ""
+    },
+    "originLot": {
+      "name": "",
+      "desc": ""
+    },
+    "originBike": {
+      "name": "",
+      "desc": ""
+    },
+    "originCar": {
+      "name": "",
+      "desc": ""
+    },
+    "originCamper": {
+      "name": "",
+      "desc": ""
+    },
+    "originSpace": {
+      "name": "",
+      "desc": ""
+    },
+    "originTrain": {
+      "name": "",
+      "desc": ""
+    },
+    "rerollCharacter": {
+      "name": "",
+      "desc": ""
+    },
+    "noMoreMembers": {
+      "name": "",
+      "desc": ""
+    },
+    "addMember": {
+      "name": "",
+      "desc": ""
+    },
+    "ageRandom": {
+      "name": "",
+      "desc": ""
+    },
+    "ageElder": {
+      "name": "",
+      "desc": ""
+    },
+    "ageMiddle": {
+      "name": "",
+      "desc": ""
+    },
+    "ageAdult": {
+      "name": "",
+      "desc": ""
+    },
+    "ageYoung": {
+      "name": "",
+      "desc": ""
+    },
+    "randomTraits": {
+      "name": "",
+      "desc": ""
+    },
+    "pickTraits": {
+      "name": "",
+      "desc": ""
+    },
+    "randomClass": {
+      "name": "",
+      "desc": ""
+    },
+    "selectClass": {
+      "name": "",
+      "desc": ""
+    },
+    "portraitModel": {
+      "name": "",
+      "desc": ""
+    },
+    "portraitBust": {
+      "name": "",
+      "desc": ""
+    },
+    "randomizeAllParty": {
+      "name": "",
+      "desc": ""
+    },
+    "totalRandom": {
+      "name": "",
+      "desc": ""
+    },
+    "createCreature": {
+      "name": "",
+      "desc": ""
+    },
+    "newCharacter": {
+      "name": "",
+      "desc": ""
+    },
+    "createCreature2": {
+      "name": "",
+      "desc": ""
+    },
+    "newCharacter2": {
+      "name": "",
+      "desc": ""
+    },
+    "hometownRandom": {
+      "name": "",
+      "desc": ""
+    },
+    "hometownPick": {
+      "name": "",
+      "desc": ""
+    },
+    "existingCharacter": {
+      "name": "",
+      "desc": ""
+    },
+    "modeFull": {
+      "name": "",
+      "desc": ""
+    },
+    "modeQuick": {
+      "name": "",
+      "desc": ""
+    },
+    "combatMonsters": {
+      "name": "",
+      "desc": ""
+    },
+    "combatCards": {
+      "name": "",
+      "desc": ""
+    },
+    "combatMap": {
+      "name": "",
+      "desc": ""
+    },
+    "combatRpg": {
+      "name": "",
+      "desc": ""
+    },
+    "peaceful": {
+      "name": "",
+      "desc": ""
+    },
+    "bloodAndOil": {
+      "name": "",
+      "desc": ""
+    },
+    "permadeath": {
+      "name": "",
+      "desc": ""
+    },
+    "roguelite": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "hairStyle": {
+    "short": "",
+    "crop": "",
+    "bob": "",
+    "long": "",
+    "ponytail": "",
+    "topknot": "",
+    "braids": "",
+    "mohawk": "",
+    "afro": "",
+    "dreads": "",
+    "spiky": "",
+    "bald": "",
+    "helmet": ""
+  },
+  "hairColor": {
+    "black": "",
+    "darkbrown": "",
+    "brown": "",
+    "chestnut": "",
+    "auburn": "",
+    "ginger": "",
+    "blond": "",
+    "sandy": "",
+    "platinum": "",
+    "ash": "",
+    "grey": "",
+    "white": "",
+    "moss": "",
+    "ink": "",
+    "wine": "",
+    "teal": ""
+  },
+  "confirmBust": "",
+  "startAsClass": "",
+  "slotVacant": "",
+  "heightMetres": "",
+  "selectCharacterSprite": "",
+  "selectBustImage": "",
+  "pressOkToOpenCategory": "",
+  "selectedBust": "",
+  "bustCategory": {
+    "Human": "",
+    "Goblin": "",
+    "Orc": "",
+    "Dwarven": "",
+    "Rabbit": "",
+    "Cyclop": "",
+    "Gnome": "",
+    "Elven": "",
+    "Bot": "",
+    "Undead": "",
+    "Devil": "",
+    "Dog": "",
+    "Android": "",
+    "Avian": "",
+    "Cat": "",
+    "Elephant": "",
+    "Goat": "",
+    "Kobold": "",
+    "Alien": "",
+    "Exotic": "",
+    "Insectoid": ""
+  },
+  "selectABust": "",
+  "goldPilesInCellar": "",
+  "cashAmount": "",
+  "startingInventory": "",
+  "nothingYet": "",
+  "wornBy": "",
+  "entries": "",
+  "start": "",
+  "trainPickADestination": "",
+  "deepSpace": "",
+  "yourCamperParkedInACity": "",
+  "yourCarParkedInACity": "",
+  "aRandomOverlandBiome": "",
+  "aRandomWorldMapTile": "",
+  "theTowerGate": "",
+  "aCityOfYourChoice": "",
+  "bounty": "",
+  "10000OnYourHead": "",
+  "aRandomRemoteWorldMapSpot": "",
+  "aLootCellarUnderARandomBiome": "",
+  "hoards": "",
+  "wayBack": "",
+  "aPermanentHatchOnTheSurface": "",
+  "lemoncorpHeadquarters": "",
+  "assets": "",
+  "80OfLemoncorpShares": "",
+  "inheritance": "",
+  "1AncientArtifactDrawnAtRandom": "",
+  "aRandomPlanetInAnUnchartedGalaxy": "",
+  "troops": "",
+  "40FromRandomFactions": "",
+  "upkeep": "",
+  "2WeeksOfTheirWagesInCash": "",
+  "40FromTheFactionYouPick": "",
+  "40FromTheFactionYouDeserted": "",
+  "cash": "",
+  "startingOut": "",
+  "language": "",
+  "gameLanguageAnyMissingTranslationFallsBackTo": "",
+  "fogOfWar": "",
+  "revealsTheMapGraduallyAsYouExploreUnvisitedA": "",
+  "theEntireMapIsFullyRevealedNoHiddenAreas": "",
+  "exploreTileByTileDarknessVeilsTheUnknown": "",
+  "cpuPartyMembers": "",
+  "everyPartyMemberExceptTheLeaderActsAutomatic": "",
+  "youManuallyControlEveryPartyMemberSActions": "",
+  "onlyTheLeaderIsControlledByYouTheRestFightOn": "",
+  "enemyBattlers": "",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "",
+  "classic2dBattlerImages": "",
+  "3dRendersProceduralModelsSpritesUsesTheEnemy": "",
+  "globalLighting": "",
+  "masterSwitchForTheDynamicLightingSystemStree": "",
+  "allDynamicLightsAreDisabledBestPerformance": "",
+  "streetlightsAndAmbientLightingReactToTheTime": "",
+  "battleMusic": "",
+  "musicTrackPlayedDuringCombatPressToPreviewTr": "",
+  "uiTheme": "",
+  "visualThemeAppliedToMenusAndHudPressToSwitch": "",
+  "skillCategorization": "",
+  "howSkillsAndMagicAreGroupedInBattleAndMenusR": "",
+  "plainUngroupedSkillList": "",
+  "roleGroupsByPurposeOffensiveHealingSupportSc": "",
+  "school": "",
+  "off": "",
+  "role": "",
+  "toCycleTracksPreviewPlaysAutomatically": "",
+  "toCycleThemesRequiresRestartToApply": "",
+  "settingsPreview": "",
+  "navigateChangeValueEnterConfirm": "",
+  "musicTrack": {
+    "Battle": "",
+    "shortcuts": "",
+    "MelodicTechno": ""
+  },
+  "selectCharacter": "",
+  "abbrev": {
+    "hp": "",
+    "mp": "",
+    "str": "",
+    "con": "",
+    "dex": "",
+    "int": "",
+    "wis": "",
+    "psi": ""
+  },
+  "previewOff": "",
+  "previewOn": ""
+}

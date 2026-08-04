@@ -1,0 +1,14 @@
+{
+  "needDivingSuit": "Ti serve una muta da sub",
+  "returnToWorldMap": "Torna alla mappa del mondo",
+  "goToSurface": "Sali in superficie",
+  "goUnderground": "Scendi sottoterra",
+  "toggleWorldMap": "Mostra o nascondi la mappa",
+  "openWorldMap": "Apri la mappa del mondo",
+  "cancel": "Annulla",
+  "visit": "Visita {place}",
+  "makeCamp": "Monta il campo",
+  "icebushBlocked": "I campi intorno a Icebush sono infestati da Petrodemoni e Neuronebbia, perché non prendi l'Ipermetro come qualsiasi essere umano sano di mente",
+  "stop": "Fermati",
+  "worldMapMenu": "Mappa del mondo"
+}

@@ -1,0 +1,22 @@
+{
+  "titleTraits": "TRAITS",
+  "confirm": "Confirm",
+  "noBonusesYet": "No bonuses yet",
+  "confirmTraits": "Confirm these traits?",
+  "yes": "Yes",
+  "no": "No",
+  "headerText": "Select 4 traits that will define your character.",
+  "selectedTraitsLabel": "SELECTED TRAITS",
+  "emptySlot": "[Empty]",
+  "totalBonuses": "Total Bonuses:",
+  "benefits": "Benefits:",
+  "drawbacks": "Drawbacks:",
+  "startingItems": "Starts with:",
+  "grantsSkills": "Grants skills:",
+  "finalSkills": "Granted Skills",
+  "noSkills": "No skills granted",
+  "tabGenetic": "Genetic",
+  "tabPhysical": "Physical",
+  "tabMental": "Mental",
+  "tabMagical": "Magical"
+}

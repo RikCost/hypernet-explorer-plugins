@@ -1,0 +1,59 @@
+{
+  "helpText": "Corsa di Cavalli - Seleziona un cavallo su cui scommettere!",
+  "raceStarted": "Via! La corsa è iniziata!",
+  "selectHorseFirst": "Seleziona prima un cavallo!",
+  "noTokens": "Non hai gettoni.",
+  "notEnoughTokens": "{tokenName} insufficienti! Ne hai {current}, servono {needed}",
+  "selectHorse": "↑/↓: Seleziona Cavallo",
+  "changeBet1": "←/→: Cambia Scommessa (±1)",
+  "changeBet10": "Shift+←/→: (±10)",
+  "confirmSelection": "Invio: Conferma e Inizia",
+  "startRace": "Spazio: Inizia Corsa!",
+  "exitGame": "Esc: Esci",
+  "newRace": "Invio: Nuova Corsa",
+  "playerFallback": "Giocatore",
+  "tokens": "Gettoni",
+  "bet": "Scommessa",
+  "selected": "Selezionato",
+  "potentialWin": "Vincita Potenziale",
+  "odds": "Quote",
+  "raceInProgress": "CORSA IN CORSO",
+  "raceResults": "RISULTATI CORSA",
+  "winner": "Vincitore",
+  "youWon": "HAI VINTO!",
+  "youLost": "Hai Perso",
+  "profit": "Profitto",
+  "lost": "Perso",
+  "won": "Vinto",
+  "winMessage": "\\I[87] {horseName} vince! Hai vinto {amount} gettoni!",
+  "loseMessage": "{horseName} vince! Ritenta la prossima volta!",
+  "continuePrompt": " Premi Invio per una nuova corsa o Esc per uscire.",
+  "title": "CORSA DI CAVALLI",
+  "freePlay": "PARTITA LIBERA",
+  "restake": "Gettoni del banco ricaricati: {amount}.",
+  "statSpeed": "VEL",
+  "statGrit": "GRN",
+  "placeBet": "PUNTA",
+  "exit": "ESCI",
+  "field": "IL CAMPO",
+  "normalPrefixes": [
+    "Tuono", "Fulmine", "Tempesta", "Mezzanotte", "Ombra", "Spirito", "Fiammata", "Lampo",
+    "Stella", "Diamante", "Rubino", "Zaffiro", "Oro", "Argento", "Campione", "Vittoria",
+    "Fenice", "Aquila", "Falco", "Freccia", "Proiettile", "Razzo", "Cometa", "Meteora",
+    "Vento", "Fuoco", "Ghiaccio", "Acciaio", "Cremisi", "Azzurro", "Smeraldo", "Onice"
+  ],
+  "normalSuffixes": [
+    "Corridore", "Cavaliere", "Scatto", "Dardo", "Colpo", "Ala", "Cuore", "Anima",
+    "Tempesta", "Fiamma", "Lampo", "Stella", "Luna", "Sole", "Vento", "Fuoco"
+  ],
+  "weirdPrefixes": [
+    "Sir Sguazzo", "Capitan Sbuffo", "Professor Trotto", "Dottor Nitrito", "Mister Galoppo",
+    "Lady Zoccoli", "Barone Zoccolìo", "Duca Nitrito", "Conte Criniera", "Principessa Code",
+    "Ammiraglio Masticone", "Generale Rimbalzo", "Colonnello Inciampo", "Maggiore Oscillante", "Sergente Risatina"
+  ],
+  "weirdSuffixes": [
+    "il Magnifico", "il Confuso", "il Sonnolento", "il Drammatico", "il Misterioso",
+    "l'Affamato", "il Danzante", "il Canterino", "l'Indietreggiante", "il Trasversale",
+    "lo Stordito", "il Rimbalzante", "il Soffice", "lo Scintillante", "l'Oscillante"
+  ]
+}

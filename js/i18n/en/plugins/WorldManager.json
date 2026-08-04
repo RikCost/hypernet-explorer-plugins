@@ -1,0 +1,62 @@
+{
+  "randomName": {
+    "adjectives": [
+      "Shattered",
+      "Verdant",
+      "Crimson",
+      "Hollow",
+      "Gilded",
+      "Frozen",
+      "Drowned",
+      "Ashen",
+      "Eternal",
+      "Forsaken",
+      "Silent",
+      "Radiant",
+      "Sunken",
+      "Twilight",
+      "Iron",
+      "Obsidian",
+      "Emerald",
+      "Whispering",
+      "Forgotten",
+      "Wandering",
+      "Broken",
+      "Ancient",
+      "Lost",
+      "Veiled"
+    ],
+    "nouns": [
+      "Expanse",
+      "Reaches",
+      "Frontier",
+      "Dominion",
+      "Wastes",
+      "Sanctum",
+      "Hollows",
+      "Marches",
+      "Vale",
+      "Spire",
+      "Reach",
+      "Hinterland",
+      "Concord",
+      "Verge",
+      "Threshold",
+      "Meridian",
+      "Bastion",
+      "Hollow",
+      "Drift",
+      "Horizon",
+      "Reverie",
+      "Echo",
+      "Nexus",
+      "Wilds"
+    ],
+    "fallback": "New World {n}"
+  },
+  "ui": {
+    "artifactBadge": "ARTIFACT",
+    "military": "military",
+    "economy": "economy"
+  }
+}

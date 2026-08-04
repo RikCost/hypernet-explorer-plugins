@@ -1,0 +1,14 @@
+{
+  "trackNone": "Nessuna",
+  "trackMap": "Continua la musica della mappa",
+  "battleMusic": "Musica di battaglia",
+  "noMusic": "Nessuna musica durante le battaglie.",
+  "continueMap": "Continua a suonare la BGM della mappa attuale.",
+  "playingAsBattle": "In riproduzione come musica di sottofondo delle battaglie.",
+  "composer": "Compositore",
+  "currentSelection": "✓ Selezione attuale",
+  "hint": "↑↓ anteprima · OK conferma · Esc annulla",
+  "ui": {
+    "pressOkHint": "Premi OK per impostarla come musica di battaglia"
+  }
+}

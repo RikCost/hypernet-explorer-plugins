@@ -1,0 +1,15 @@
+{
+  "noThree": "three.js is not loaded, basketball is unavailable.",
+  "player": "Player",
+  "cpu": "CPU",
+  "cpuLiningUp": "CPU is lining up...",
+  "aimPrompt": "Player: Left/Right to line up, OK",
+  "powerPrompt": "Set power and press OK",
+  "setTouch": "Set your touch and press OK",
+  "itsGood": "IT'S GOOD!",
+  "swish": "SWISH!",
+  "score": "SCORE!",
+  "miss": "MISS",
+  "finalScore": "Player: {player}  CPU: {cpu}",
+  "pressOkExit": "Press OK to exit"
+}

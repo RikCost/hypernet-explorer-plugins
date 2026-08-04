@@ -1,0 +1,29 @@
+{
+  "commands": "",
+  "keyboard": "",
+  "gamepad": "",
+  "pressKey": "",
+  "pressButton": "",
+  "selectCommand": "",
+  "selectCommandGamepad": "",
+  "resetToDefault": "",
+  "keysReset": "",
+  "gamepadReset": "",
+  "commandNames": {
+    "ok": "",
+    "cancel": "",
+    "shift": "",
+    "menu": "",
+    "pageup": "",
+    "pagedown": "",
+    "up": "",
+    "down": "",
+    "left": "",
+    "right": "",
+    "zoomIn": "",
+    "zoomOut": "",
+    "kick": "",
+    "run": ""
+  },
+  "unassigned": ""
+}

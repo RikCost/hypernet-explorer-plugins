@@ -1,0 +1,2962 @@
+{
+  "1": {
+    "name": "Lunettes Détox",
+    "description": "Tissu de rue tissé de microfibres antitoxines."
+  },
+  "2": {
+    "name": "Bouclier ClearBlood",
+    "description": "Bouclier sous-cutané qui purge votre circulation sanguine."
+  },
+  "3": {
+    "name": "Puce Brouille-Destin",
+    "description": "Implant qui plie les probabilités et réécrit la malchance."
+  },
+  "4": {
+    "name": "Prise de Lucidité",
+    "description": "Prise neurale qui filtre le brouillard et les parasites mentaux."
+  },
+  "5": {
+    "name": "Nul Brise-Volonté",
+    "description": "Wetware d'opérations secrètes qui fait de votre esprit une forteresse."
+  },
+  "6": {
+    "name": "Prophète de Béton",
+    "description": "Augmentation de sixième sens qui lit le rythme de la ville."
+  },
+  "7": {
+    "name": "Murmure de Fortune",
+    "description": "Intuition accrue qui vous guide vers les bonnes occasions."
+  },
+  "8": {
+    "name": "Trame de Menace",
+    "description": "Veste truffée de capteurs de proximité."
+  },
+  "9": {
+    "name": "Batterie d'Écho",
+    "description": "Unité de stockage cinétique portée contre la colonne vertébrale."
+  },
+  "10": {
+    "name": "Catalyseur d'Élan",
+    "description": "Modificateur glandulaire qui suralimente votre système surrénalien."
+  },
+  "11": {
+    "name": "Noyau Siphon de Sorts",
+    "description": "Recycleur arcanique qui capte l'énergie magique gaspillée."
+  },
+  "12": {
+    "name": "Coque Caméléon",
+    "description": "Tissu intelligent qui déchiffre les menaces environnantes."
+  },
+  "13": {
+    "name": "Monocle Coup Fatal",
+    "description": "Ordinateur de visée à la mode, pour un seul œil."
+  },
+  "14": {
+    "name": "Voile Symbiote",
+    "description": "Vêtement vivant qui se nourrit des dégâts."
+  },
+  "15": {
+    "name": "Veste Métier à Tempête",
+    "description": "Manteau à fils quantiques qui crépite de potentiel."
+  },
+  "16": {
+    "name": "Drapé Fantôme",
+    "description": "Combinaison tactique qui courbe les photons et déforme la lumière."
+  },
+  "17": {
+    "name": "Châssis Titan des Rues",
+    "description": "Armure motorisée déguisée en vêtement de créateur."
+  },
+  "18": {
+    "name": "Couronne Accélératrice de Pensée",
+    "description": "Processeur quantique tissé dans une coiffe."
+  },
+  "19": {
+    "name": "Heaume du Tyran des Vents",
+    "description": "Casque qui commande la pression atmosphérique locale."
+  },
+  "20": {
+    "name": "Cavalier du Tronc Cérébral",
+    "description": "Interface neurale directe intégrée à un casque renforcé."
+  },
+  "21": {
+    "name": "Ceinture à Poche du Vide",
+    "description": "Rangement dimensionnel enroulé autour de votre taille."
+  },
+  "22": {
+    "name": "Champ Inverseur de Chance",
+    "description": "Manipulateur de probabilités monté au poignet."
+  },
+  "23": {
+    "name": "Égide de Décalage Fantôme",
+    "description": "Bouclier qui existe en partie dans une autre dimension."
+  },
+  "24": {
+    "name": "Vautour Statique",
+    "description": "Récupérateur d'énergie porté à l'épaule."
+  },
+  "25": {
+    "name": "Étoffe d'Essaim",
+    "description": "Sweat à capuche infusé de drones réparateurs microscopiques."
+  },
+  "26": {
+    "name": "Manteau à Coque Réactive",
+    "description": "Armure en cristaux liquides qui se cristallise à l'impact."
+  },
+  "27": {
+    "name": "Combinaison de Contrecoup Psychique",
+    "description": "Tissu bioréactif qui renvoie les attaques mentales."
+  },
+  "28": {
+    "name": "T-shirt Gris Usé",
+    "description": "Chemise de coton basique, à trois lavages de la ruine."
+  },
+  "29": {
+    "name": "Coque en Jean Délavé",
+    "description": "Veste classique qui a connu de meilleures décennies."
+  },
+  "30": {
+    "name": "Panoplie du Traceur",
+    "description": "Équipement d'exploration urbaine souple à genoux renforcés."
+  },
+  "31": {
+    "name": "Cuir du Guerrier de la Route",
+    "description": "Blouson de moto rembourré contre les chocs, avec du caractère."
+  },
+  "32": {
+    "name": "Harnais de Patrouille",
+    "description": "Gilet tactique plaqué kevlar, noir sécurité."
+  },
+  "33": {
+    "name": "Armure Hypebeast",
+    "description": "Streetwear de créateur à panneaux balistiques dissimulés."
+  },
+  "34": {
+    "name": "Combinaison Flex Performance",
+    "description": "Tenue de sport respirante à fils de fibre de carbone."
+  },
+  "35": {
+    "name": "Seconde Peau du Rebelle",
+    "description": "Blouson de cuir vieilli aux coutures de qualité militaire."
+  },
+  "36": {
+    "name": "Blazer du Trompeur",
+    "description": "Veste d'allure corporate entièrement doublée de kevlar."
+  },
+  "37": {
+    "name": "Coque Adrénaline",
+    "description": "Équipement de sport extrême homologué pour les impacts sur béton."
+  },
+  "38": {
+    "name": "Bomber en Tissage de Carbone",
+    "description": "Veste en fibre aérospatiale qui ne pèse rien."
+  },
+  "39": {
+    "name": "Attirail du Gardien de l'Asphalte",
+    "description": "Combinaison de combat urbain haut de gamme à plaques balistiques."
+  },
+  "40": {
+    "name": "Armure Brise-Siège",
+    "description": "Équipement tactique lourdement renforcé pour les zones hostiles."
+  },
+  "41": {
+    "name": "Spécial Vigile de Location",
+    "description": "Uniforme de sécurité standard à rembourrage sommaire."
+  },
+  "42": {
+    "name": "Gilet Broie-Foule",
+    "description": "Tenue anti-émeute multicouche conçue pour maîtriser le chaos."
+  },
+  "43": {
+    "name": "Coque de Guerre Composite",
+    "description": "Gilet pare-balles avancé en alliage céramique-titane."
+  },
+  "44": {
+    "name": "Combinaison Protocole Forteresse",
+    "description": "Armure de combat intégrale à plaques anti-traumatisme."
+  },
+  "45": {
+    "name": "Attirail Utilitaire du Netrunner",
+    "description": "Harnais multipoche pour spécialistes de la technique."
+  },
+  "46": {
+    "name": "Capuche Confort du Codeur",
+    "description": "Sweat moelleux à passage de câbles intégré."
+  },
+  "47": {
+    "name": "Veste Signal Fantôme",
+    "description": "Manteau blindé contre les champs électromagnétiques, à compartiments cachés."
+  },
+  "48": {
+    "name": "Manteau du Chuchoteur de Données",
+    "description": "Trench d'analyste à fils d'interface en réalité augmentée."
+  },
+  "49": {
+    "name": "Combinaison d'Intégration Chrome",
+    "description": "Vêtement compatible cybernétique à refroidissement actif."
+  },
+  "50": {
+    "name": "Vêtement du Technomancien",
+    "description": "Costume prêt pour l'holographie, à cœurs informatiques intégrés."
+  },
+  "51": {
+    "name": "Plaques de Ferraille",
+    "description": "Armure d'acier grossière boulonnée sur ce que vous portez."
+  },
+  "52": {
+    "name": "Kit de Barricade de Rue",
+    "description": "Équipement défensif dépareillé récupéré dans les conflits urbains."
+  },
+  "53": {
+    "name": "Barrière de Corps à Corps",
+    "description": "Bouclier pliable compact pour les espaces exigus."
+  },
+  "54": {
+    "name": "Rempart Plume",
+    "description": "Bouclier anti-émeute en fibre de carbone qui ne pèse presque rien."
+  },
+  "55": {
+    "name": "Dissuasion à Haute Tension",
+    "description": "Bouclier doté d'une fonction taser intégrée."
+  },
+  "56": {
+    "name": "Diffuseur Cinétique",
+    "description": "Bouclier en matériau intelligent qui répartit la force de l'impact."
+  },
+  "57": {
+    "name": "Gardien de Contre-Attaque",
+    "description": "Système de défense active qui anticipe les attaques."
+  },
+  "58": {
+    "name": "Standard Vigile de Centre Commercial",
+    "description": "Bouclier basique en polycarbonate pour environnements peu risqués."
+  },
+  "59": {
+    "name": "Défenseur de Parking",
+    "description": "Bouclier de sécurité d'entrée de gamme à rembourrage en mousse."
+  },
+  "60": {
+    "name": "Barrière de Contrôle des Masses",
+    "description": "Bouclier de gestion de foule à résistance industrielle."
+  },
+  "61": {
+    "name": "Meurtrière Balistique",
+    "description": "Bouclier pare-balles à fenêtre d'observation renforcée."
+  },
+  "62": {
+    "name": "Bouclier Cérébral Tactique",
+    "description": "Barrière assistée par ordinateur avec évaluation des menaces."
+  },
+  "63": {
+    "name": "Bastion Adaptatif",
+    "description": "Blindage réactif qui durcit sous le feu."
+  },
+  "64": {
+    "name": "Accessoires Pare-Feu",
+    "description": "Suite de protection numérique pour l'urbain paranoïaque."
+  },
+  "65": {
+    "name": "Bloqueur Anti-Script Kiddie",
+    "description": "Accessoire d'entrée de gamme qui repousse les logiciels malveillants basiques."
+  },
+  "66": {
+    "name": "Bracelet de Confidentialité",
+    "description": "Dispositif de chiffrement porté au poignet."
+  },
+  "67": {
+    "name": "Unité ICE Personnelle",
+    "description": "Pare-feu actif porté comme une montre."
+  },
+  "68": {
+    "name": "Générateur de Bulle Numérique",
+    "description": "Crée une zone de protection électromagnétique."
+  },
+  "69": {
+    "name": "Protocole Fantôme Quantique",
+    "description": "Chiffrement de qualité militaire fondé sur l'intrication quantique."
+  },
+  "70": {
+    "name": "Collection Couronne des Rues",
+    "description": "Protection crânienne moderne qui ne hurle pas « amateur »."
+  },
+  "71": {
+    "name": "Dôme de l'Exécutif",
+    "description": "Chapeau melon classique pour ceux qui profitent du chaos."
+  },
+  "72": {
+    "name": "Piège à Sueur",
+    "description": "Simple bandeau de tissu qui absorbe tout."
+  },
+  "73": {
+    "name": "Bandeau Filtre-Poussière",
+    "description": "Bandana qui vous donne du style dans la pollution."
+  },
+  "74": {
+    "name": "Bouclier à Visière",
+    "description": "Casquette élégante à rembourrage anti-choc dissimulé."
+  },
+  "75": {
+    "name": "Bonnet Confort Kevlar",
+    "description": "Bonnet de laine tissé de fils d'armure."
+  },
+  "76": {
+    "name": "Casque de Podium",
+    "description": "Couvre-chef de créateur dissimulant des dispositifs de sécurité."
+  },
+  "77": {
+    "name": "Chapeau de Défense Cinétique",
+    "description": "Équipement de protection léger pour les modes de vie actifs."
+  },
+  "78": {
+    "name": "Coque du Navetteur",
+    "description": "Casque de vélo standard, jaune réglementaire."
+  },
+  "79": {
+    "name": "Embrasse-Béton",
+    "description": "Casque homologué aux impacts, adoré des adeptes de rampe."
+  },
+  "80": {
+    "name": "Capsule de Protection Extrême",
+    "description": "Casque de sport multi-impacts pour loisirs dangereux."
+  },
+  "81": {
+    "name": "Commandant de la Route",
+    "description": "Casque de moto haut de gamme à communications intégrées."
+  },
+  "82": {
+    "name": "Calotte Aérospatiale",
+    "description": "Coque en fibre de carbone plus légère que votre téléphone."
+  },
+  "83": {
+    "name": "Heaume Forteresse Urbaine",
+    "description": "Protection maximale à couches dissipatrices de chocs."
+  },
+  "84": {
+    "name": "Casque de Niveau Bunker",
+    "description": "Protection industrielle pour environnements à menace extrême."
+  },
+  "85": {
+    "name": "Standard de Chantier",
+    "description": "Casque de sécurité basique aux normes, orange fluo."
+  },
+  "86": {
+    "name": "Dôme de Garde",
+    "description": "Casque tactique renforcé, noir autorité."
+  },
+  "87": {
+    "name": "Couronne Anti-Émeute",
+    "description": "Casque à écran facial conçu pour les troubles civils."
+  },
+  "88": {
+    "name": "Coque de Commandement de l'Opérateur",
+    "description": "Couvre-chef tactique à communications intégrées."
+  },
+  "89": {
+    "name": "Sentinelle de Zone de Guerre",
+    "description": "Casque balistique militaire à rembourrage anti-traumatisme."
+  },
+  "90": {
+    "name": "Série Couronne Numérique",
+    "description": "Couvre-chef amélioré par la technique, pour les guerriers de l'information."
+  },
+  "91": {
+    "name": "Visière de Surcouche du Réel",
+    "description": "Casque de réalité augmentée à surcouches tactiques."
+  },
+  "92": {
+    "name": "Bandeau Synaptique",
+    "description": "Serre-tête assisté par ordinateur qui pense avec vous."
+  },
+  "93": {
+    "name": "Couronne d'Information",
+    "description": "Casque calculateur pour analystes et stratèges."
+  },
+  "94": {
+    "name": "Interface RA d'Élite",
+    "description": "Réalité augmentée haut de gamme à IA prédictive."
+  },
+  "95": {
+    "name": "Centre de Commandement Holographique",
+    "description": "Système d'interface holographique assisté par IA."
+  },
+  "96": {
+    "name": "Cercle de Transcendance",
+    "description": "Couronne d'interface neurale qui fond l'esprit dans la machine."
+  },
+  "97": {
+    "name": "Téléphone Poing-Américain",
+    "description": "Coque renforcée qui fait aussi office de poing américain."
+  },
+  "98": {
+    "name": "Trousse du Survivant",
+    "description": "Accessoires indispensables pour naviguer dans le chaos urbain."
+  },
+  "99": {
+    "name": "Bouclier d'Appareil Anti-Choc",
+    "description": "Protection de téléphone qui vous protège aussi."
+  },
+  "100": {
+    "name": "Boucle de Vigilance",
+    "description": "Bague intelligente qui vibre à l'approche d'une menace."
+  },
+  "101": {
+    "name": "Bracelet Poigne du Titan",
+    "description": "Bracelet servo-assisté qui décuple votre force."
+  },
+  "102": {
+    "name": "Anneau de Mémoire Musculaire",
+    "description": "Amplificateur biométrique qui optimise le rendement des fibres."
+  },
+  "103": {
+    "name": "Optimiseur de Réflexes",
+    "description": "Accélérateur neural porté au poignet."
+  },
+  "104": {
+    "name": "Baskets Vélocité",
+    "description": "Chaussures à assistance cinétique et micropropulsion."
+  },
+  "105": {
+    "name": "Patte de Lapin 2.0",
+    "description": "Porte-bonheur numérique qui fait légèrement pencher les probabilités."
+  },
+  "106": {
+    "name": "Algorithme de la Fortune",
+    "description": "Prédicteur quantique qui calcule les issues favorables."
+  },
+  "107": {
+    "name": "Accélérateur Synaptique",
+    "description": "Pendentif qui surcadence votre traitement cognitif."
+  },
+  "108": {
+    "name": "Surcadence Mentale",
+    "description": "Amplificateur cortical qui élargit votre bande passante mentale."
+  },
+  "109": {
+    "name": "Montures de Précision Urbaine",
+    "description": "Lunettes tactiques à surcouches de micro-visée."
+  },
+  "110": {
+    "name": "Lorgnons du Coup Fatal",
+    "description": "Lunettes de créateur cachant une IA de visée militaire."
+  },
+  "111": {
+    "name": "Nœud de Conservation",
+    "description": "Puce d'efficacité qui réduit la consommation de 20 %."
+  },
+  "112": {
+    "name": "Noyau d'Efficacité Parfaite",
+    "description": "Régulateur avancé qui divise par deux le gaspillage d'énergie."
+  },
+  "113": {
+    "name": "Trousse de Bien-Être",
+    "description": "Accessoires médicaux pour rester en vie plus longtemps."
+  },
+  "114": {
+    "name": "Sweat à Surtension Ley",
+    "description": "Vêtement tissé des courants magiques de la terre."
+  },
+  "115": {
+    "name": "Bomber Cousu de Runes",
+    "description": "Blouson de rue aux symboles anciens dans la doublure."
+  },
+  "116": {
+    "name": "Fils du Zéphyr",
+    "description": "Streetwear fluide qui canalise le vent lui-même."
+  },
+  "117": {
+    "name": "Capuche Buveuse de Vide",
+    "description": "Sweat noir d'ombre qui absorbe la lumière et les malédictions."
+  },
+  "118": {
+    "name": "Ensemble Antimaléfice",
+    "description": "Vêtement moderne enchanté qui dévie la magie et le métal."
+  },
+  "119": {
+    "name": "Tenue de Conscience Collective",
+    "description": "Habit urbain qui puise sa force dans les âmes de la ville."
+  },
+  "120": {
+    "name": "Gilet d'Esprit de Wyrm",
+    "description": "Armure contemporaine imprégnée d'essence de dragon."
+  },
+  "121": {
+    "name": "Collection Couronne Mystique",
+    "description": "Couvre-chefs enchantés pour sorciers des villes."
+  },
+  "122": {
+    "name": "Bonnet de Vision Psychique",
+    "description": "Bonnet tricoté qui ouvre plus grand votre troisième œil."
+  },
+  "123": {
+    "name": "Casquette au Sceau de Lucidité",
+    "description": "Chapeau gravé de symboles qui aiguisent la concentration."
+  },
+  "124": {
+    "name": "Cercle de Lumière Stellaire",
+    "description": "Bandeau ouvragé qui canalise la puissance céleste."
+  },
+  "125": {
+    "name": "Chapeau Plieur de Probabilités",
+    "description": "Couvre-chef élégant qui gauchit subtilement le réel."
+  },
+  "126": {
+    "name": "Arsenal de Barrière Magique",
+    "description": "Boucliers mystiques pour dévier les menaces surnaturelles."
+  },
+  "127": {
+    "name": "Brassard de Garde de Force",
+    "description": "Brassard ouvragé qui projette des murs de magie pure."
+  },
+  "128": {
+    "name": "Garde du Grimoire Vivant",
+    "description": "Livre ancien relié d'enchantements protecteurs."
+  },
+  "129": {
+    "name": "Pendentif de Cristal Nul",
+    "description": "Amulette cristalline qui absorbe les énergies hostiles."
+  },
+  "130": {
+    "name": "Égide de l'Esprit Sentinelle",
+    "description": "Bouclier abritant une entité protectrice liée."
+  },
+  "131": {
+    "name": "Augmentations Arcaniques",
+    "description": "Bijoux mystiques pour mages urbains en exercice."
+  },
+  "132": {
+    "name": "Chevalière d'Enfer",
+    "description": "Bague à cœur de gemme enchantée de feu."
+  },
+  "133": {
+    "name": "Conducteur de Courant",
+    "description": "Collier branché sur les réseaux de leyline."
+  },
+  "134": {
+    "name": "Encre à Circuit Élémentaire",
+    "description": "Tatouage magique qui accroît l'affinité élémentaire."
+  },
+  "135": {
+    "name": "Bracelet Relique",
+    "description": "Artefact ancien déguisé en bijou à la mode."
+  },
+  "136": {
+    "name": "Équipement Hybride Magitech",
+    "description": "Matériel qui fond circuits et sortilèges sans couture."
+  },
+  "137": {
+    "name": "Plaque à Circuits de Sorts",
+    "description": "Armure qui tourne à parts égales à la magie et à l'électricité."
+  },
+  "138": {
+    "name": "Manteau Trame Matrice",
+    "description": "Veste qui inscrit des formules magiques dans un tissu technique."
+  },
+  "139": {
+    "name": "Barrière Mana-Tech",
+    "description": "Projecteur cybernétique alimenté par magie brute."
+  },
+  "140": {
+    "name": "Amplificateur de Sorts Cortical",
+    "description": "Casque neural qui amplifie la production magique."
+  },
+  "141": {
+    "name": "Montre à Flux Temporel",
+    "description": "Montre connectée qui canalise la manipulation du temps."
+  },
+  "142": {
+    "name": "Mode d'Entre-Mondes",
+    "description": "Vêtement qui existe dans plusieurs dimensions."
+  },
+  "143": {
+    "name": "Manteau Déphaseur",
+    "description": "Veste qui vacille entre des univers parallèles."
+  },
+  "144": {
+    "name": "Lunettes de Vision Dimensionnelle",
+    "description": "Lunettes qui percent le voile entre les réalités."
+  },
+  "145": {
+    "name": "Ancre du Multivers",
+    "description": "Bouclier enraciné dans des dimensions parallèles."
+  },
+  "146": {
+    "name": "Bague d'Éclat d'Outremonde",
+    "description": "Bague renfermant une réalité étrangère cristallisée."
+  },
+  "147": {
+    "name": "Équipement de Fusion Élémentaire",
+    "description": "Matériel imprégné de forces primordiales."
+  },
+  "148": {
+    "name": "Plaque de Flamme Vivante",
+    "description": "Armure abritant une essence de feu capturée."
+  },
+  "149": {
+    "name": "Manteau de l'Appelant d'Orage",
+    "description": "Cape fluide qui canalise la fureur de la tempête."
+  },
+  "150": {
+    "name": "Égide Enracinée",
+    "description": "Bouclier forgé dans une magie de pierre solidifiée."
+  },
+  "151": {
+    "name": "Heaume de Marée Spirituelle",
+    "description": "Casque contenant un élémentaire d'eau lié."
+  },
+  "152": {
+    "name": "Plongée en Benne Deluxe",
+    "description": "Détritus de fond de tonneau qui se font passer pour de l'équipement."
+  },
+  "153": {
+    "name": "Spécial Décharge",
+    "description": "Protection douteuse de provenance douteuse."
+  },
+  "154": {
+    "name": "T-shirt Buffet à Mites",
+    "description": "Chemise blanche qui se prépare déjà à devenir des trous."
+  },
+  "155": {
+    "name": "Rêve qui se Défait",
+    "description": "Sweat tenu par l'espoir et des fils qui lâchent."
+  },
+  "156": {
+    "name": "Invitation à la Pluie",
+    "description": "Poncho qui accueille l'eau par chaque couture."
+  },
+  "157": {
+    "name": "Faux Cuir Craquelé",
+    "description": "Veste en similicuir qui vieillit en années de chien."
+  },
+  "158": {
+    "name": "Gilet de Flic Cosplay",
+    "description": "Gilet de coton avec un insigne auquel personne ne croit."
+  },
+  "159": {
+    "name": "Rescapé de l'Atelier Clandestin",
+    "description": "Tenue de sport fabriquée par la tristesse et l'exploitation."
+  },
+  "160": {
+    "name": "Esprit d'Équipe Contrefait",
+    "description": "Maillot de sport qui se délave en art abstrait."
+  },
+  "161": {
+    "name": "Spécial Tache Mystère",
+    "description": "Veste d'occasion aux inquiétantes taches brunes."
+  },
+  "162": {
+    "name": "Armure de Papier Journal",
+    "description": "Gilet bourré des gros titres d'hier."
+  },
+  "163": {
+    "name": "Autorité d'Halloween",
+    "description": "Costume de policier en polyester acheté au bazar."
+  },
+  "164": {
+    "name": "Illusion en Ruban Adhésif",
+    "description": "Épaulières de football tenues par de l'espoir argenté."
+  },
+  "165": {
+    "name": "Cosplay en Carton",
+    "description": "Gilet tactique qui se dissout sous une pluie fine."
+  },
+  "166": {
+    "name": "Désastre Confort",
+    "description": "Peignoir qui cartographie chacun de vos petits déjeuners."
+  },
+  "167": {
+    "name": "Magicien du Rayon Soldes",
+    "description": "Robe en polyester violet du tas de la honte du magasin de fêtes."
+  },
+  "168": {
+    "name": "Désastre du Jour de Diplôme",
+    "description": "Toge de remise de diplôme si fine qu'elle se déchire en la pliant."
+  },
+  "169": {
+    "name": "Théâtre de la Protection Crânienne",
+    "description": "Couvre-chefs qui n'offrent qu'un réconfort psychologique."
+  },
+  "170": {
+    "name": "Fête Détrempée",
+    "description": "Chapeau de fête qui devient bouillie au moindre humidité."
+  },
+  "171": {
+    "name": "Casquette de Marque Contrefaite",
+    "description": "Casquette dont le logo pèle comme de la peau."
+  },
+  "172": {
+    "name": "Spécial Casse-Crâne",
+    "description": "Casque de vélo conçu pour céder au premier impact."
+  },
+  "173": {
+    "name": "Faire Semblant à la Récré",
+    "description": "Casque de chantier en plastique du rayon jouets."
+  },
+  "174": {
+    "name": "Souvenir de Commotion",
+    "description": "Casque cabossé aux suspectes taches rouges à l'intérieur."
+  },
+  "175": {
+    "name": "Couronne du Complotiste",
+    "description": "Chapeau en papier aluminium qui bloque des signaux imaginaires."
+  },
+  "176": {
+    "name": "Princesse en Plastique",
+    "description": "Serre-tête de bazar dont la fausse gemme bouge déjà."
+  },
+  "177": {
+    "name": "Kit de Défense Poubelle",
+    "description": "Boucliers raclés dans des ordures bien réelles."
+  },
+  "178": {
+    "name": "Défenseur de Ruelle",
+    "description": "Couvercle de poubelle avec des sangles en ruban adhésif."
+  },
+  "179": {
+    "name": "Bouclier de Graisse",
+    "description": "Boîte à pizza pliée avec une poignée improvisée."
+  },
+  "180": {
+    "name": "Spécial Rayon Jouets",
+    "description": "Bouclier en plastique qui plie sous la pression d'un doigt."
+  },
+  "181": {
+    "name": "Accessoire de Convention",
+    "description": "Bouclier en carton emballé de papier aluminium."
+  },
+  "182": {
+    "name": "Sécurité à Écran Fêlé",
+    "description": "Tablette cassée censée abriter des applications pare-feu."
+  },
+  "183": {
+    "name": "Trousse du Vœu Pieux",
+    "description": "Accessoires qui offrent de l'espoir au lieu d'une aide."
+  },
+  "184": {
+    "name": "Royauté à Pièce",
+    "description": "Bague de distributeur automatique à gemme en plastique."
+  },
+  "185": {
+    "name": "Amitié qui se Défait",
+    "description": "Bracelet en fil qui se défait aux deux bouts."
+  },
+  "186": {
+    "name": "Héros du Menu Enfant",
+    "description": "Bracelet en plastique tiré d'un jouet de fast-food."
+  },
+  "187": {
+    "name": "Montre de Schrödinger",
+    "description": "Montre qui ne fonctionne que lorsqu'on ne la regarde pas."
+  },
+  "188": {
+    "name": "Garantie Peau Verte",
+    "description": "Chaîne bon marché qui s'oxyde au contact de la chair."
+  },
+  "189": {
+    "name": "Alerte Médicale Périmée",
+    "description": "Bracelet médical obsolète chiné dans un vide-grenier."
+  },
+  "190": {
+    "name": "Montures Bancales",
+    "description": "Lunettes aux vis desserrées et sans correction."
+  },
+  "191": {
+    "name": "Objets à Pouvoir Placebo",
+    "description": "Fausse magie pour ceux qui rêvent désespérément d'y croire."
+  },
+  "192": {
+    "name": "Arnaque du Cristal de Galerie",
+    "description": "Quartz sur ficelle vendu avec des promesses mystiques."
+  },
+  "193": {
+    "name": "Baguette Mystique en Plastique",
+    "description": "Baguette jouet à étoile LED mourante au bout."
+  },
+  "194": {
+    "name": "Bracelet d'Huile de Serpent",
+    "description": "Bracelet de cuivre qui prétend équilibrer votre énergie."
+  },
+  "195": {
+    "name": "Boussole Paranormale",
+    "description": "Boussole cassée qui ne détecte que la crédulité."
+  },
+  "196": {
+    "name": "Grimoire d'Absurdités",
+    "description": "Vieux livre rempli de gribouillis au hasard."
+  },
+  "197": {
+    "name": "Déchets Véritables",
+    "description": "Objets sauvés des bennes et des regrets."
+  },
+  "198": {
+    "name": "Créateur de Benne",
+    "description": "Veste crasseuse trouvée derrière un restaurant."
+  },
+  "199": {
+    "name": "Chemise Sauce Mystère",
+    "description": "T-shirt taché de crimes alimentaires non identifiables."
+  },
+  "200": {
+    "name": "Rebut de Chantier",
+    "description": "Gilet de travail déchiré, sorti d'une benne de démolition."
+  },
+  "201": {
+    "name": "Couronne de Poubelle Publique",
+    "description": "Chapeau abandonné par quelqu'un et repêché des ordures."
+  },
+  "202": {
+    "name": "Parapluie Squelette",
+    "description": "Parapluie cassé qui fait office de pitoyable bouclier."
+  },
+  "203": {
+    "name": "Kit de Nature Urbaine",
+    "description": "Équipement pour explorateurs qui confondent ville et nature."
+  },
+  "204": {
+    "name": "Coque Anti-Tempête",
+    "description": "Veste météo multipoche à ports de ventilation."
+  },
+  "205": {
+    "name": "Pantalon du Guerrier des Sentiers",
+    "description": "Pantalon de randonnée renforcé, bâti pour encaisser."
+  },
+  "206": {
+    "name": "Gilet d'Équipement du Scout",
+    "description": "Gilet respirant à multiples pochettes pour tout ranger."
+  },
+  "207": {
+    "name": "Veste BioClimat",
+    "description": "Veste autorégulée à chauffage et refroidissement."
+  },
+  "208": {
+    "name": "Bannisseur d'Humidité",
+    "description": "Première couche technique qui gère la sueur et la température."
+  },
+  "209": {
+    "name": "Équipement du Chasseur Vertical",
+    "description": "Vêtement d'escalade renforcé pour les parois rocheuses."
+  },
+  "210": {
+    "name": "Coque d'Expédition Polaire",
+    "description": "Combinaison étanche à isolation thermique pour l'enfer glacé."
+  },
+  "211": {
+    "name": "Kit Sentier Rapide",
+    "description": "Tenue de course légère à mobilité accrue."
+  },
+  "212": {
+    "name": "Armure Conditions Extrêmes",
+    "description": "Équipement robuste homologué pour les milieux hostiles."
+  },
+  "213": {
+    "name": "Combinaison d'Intervention Incendie",
+    "description": "Protection de pompier forestier contre les flammes."
+  },
+  "214": {
+    "name": "Attirail de Secours Alpin",
+    "description": "Matériel professionnel de sauvetage en montagne."
+  },
+  "215": {
+    "name": "Tenue Anti-Impact",
+    "description": "Vêtement de qualité blindée pour sports extrêmes."
+  },
+  "216": {
+    "name": "Combinaison Nature Connectée",
+    "description": "Vêtement intelligent à GPS et technique intégrée."
+  },
+  "217": {
+    "name": "Protection Crânienne de Survie",
+    "description": "Couvre-chef d'extérieur spécialisé pour conditions rudes."
+  },
+  "218": {
+    "name": "Bord d'Horizon",
+    "description": "Chapeau à large bord qui arrête aussi bien le soleil que la pluie."
+  },
+  "219": {
+    "name": "Cagoule Arctique",
+    "description": "Bonnet isolant qui couvre entièrement les oreilles."
+  },
+  "220": {
+    "name": "Protège-Cou Adaptatif",
+    "description": "Tour de cou multiconfiguration qui devient toutes sortes de protections."
+  },
+  "221": {
+    "name": "Coque de Sécurité Balise",
+    "description": "Casque de randonnée à éclairage et communications intégrés."
+  },
+  "222": {
+    "name": "Capsule d'Ascension Verticale",
+    "description": "Casque d'escalade léger pour alpinistes."
+  },
+  "223": {
+    "name": "Heaume Forteresse Météo",
+    "description": "Couvre-chef à écran facial pour conditions extrêmes."
+  },
+  "224": {
+    "name": "Rescapé des Rapides",
+    "description": "Casque de protection professionnel pour eaux vives."
+  },
+  "225": {
+    "name": "Défieur de Gravité",
+    "description": "Protection intégrale de VTT de descente."
+  },
+  "226": {
+    "name": "Couronne du Navigateur",
+    "description": "Casque GPS à affichage tête haute."
+  },
+  "227": {
+    "name": "Essentiels de la Nature",
+    "description": "Accessoires vitaux pour la survie en extérieur."
+  },
+  "228": {
+    "name": "Dominateurs de Terrain",
+    "description": "Gants d'adhérence compatibles écran tactile, pour toute surface."
+  },
+  "229": {
+    "name": "Repousse-Boue",
+    "description": "Guêtres résistantes à l'eau qui protègent les bottes."
+  },
+  "230": {
+    "name": "Serviette Séchage Instantané",
+    "description": "Serviette en microfibre qui se plie en rien et sèche vite."
+  },
+  "231": {
+    "name": "Couteau Suisse de la Nature",
+    "description": "Outil de survie multifonction pour les urgences."
+  },
+  "232": {
+    "name": "Batterie Moisson Solaire",
+    "description": "Chargeur solaire qui prolonge votre vie connectée."
+  },
+  "233": {
+    "name": "Balise Mains Libres",
+    "description": "Lampe frontale qui éclaire l'obscurité sans effort."
+  },
+  "234": {
+    "name": "Commandement d'Expédition",
+    "description": "Montre multicapteur avec altitude et GPS."
+  },
+  "235": {
+    "name": "Porteurs de Voyage",
+    "description": "Systèmes de sac à dos pour les longues explorations."
+  },
+  "236": {
+    "name": "Sac de Sortie à la Journée",
+    "description": "Sac à hydratation intégrée et dos ventilé."
+  },
+  "237": {
+    "name": "Sac Nomade Urbain",
+    "description": "Sac de ville imperméable avec protection antivol."
+  },
+  "238": {
+    "name": "Forteresse Longue Distance",
+    "description": "Sac à dos d'expédition modulaire pour les longs voyages."
+  },
+  "239": {
+    "name": "Porteur Vertical",
+    "description": "Sac technique d'escalade à porte-matériel."
+  },
+  "240": {
+    "name": "Attirail de Combat en Nature",
+    "description": "Sac tactique MOLLE pour environnements hostiles."
+  },
+  "241": {
+    "name": "Chaussures de Terrain",
+    "description": "Bottes et souliers spécialisés pour sols variés."
+  },
+  "242": {
+    "name": "Écraseurs de Montagne",
+    "description": "Chaussures de randonnée imperméables à maintien de cheville."
+  },
+  "243": {
+    "name": "Chaussures Sentier Rapide",
+    "description": "Chaussures légères à plaque de protection anti-cailloux."
+  },
+  "244": {
+    "name": "Hybrides d'Approche",
+    "description": "Chaussures techniques à zone d'escalade à la pointe."
+  },
+  "245": {
+    "name": "Bottes des Terres Gelées",
+    "description": "Bottes imperméables isolées pour froid extrême."
+  },
+  "246": {
+    "name": "Bottes d'Assaut Alpin",
+    "description": "Chaussures techniques d'alpinisme compatibles crampons."
+  },
+  "247": {
+    "name": "Arsenal d'Urgence",
+    "description": "Matériel de survie et de navigation pour les catastrophes."
+  },
+  "248": {
+    "name": "Cocon d'Urgence",
+    "description": "Abri compact pour les nuits imprévues."
+  },
+  "249": {
+    "name": "Feuille Réfléchissante",
+    "description": "Couverture de survie légère qui retient la chaleur."
+  },
+  "250": {
+    "name": "Trousse de Traumatologie",
+    "description": "Nécessaire complet de premiers secours en pleine nature."
+  },
+  "251": {
+    "name": "Purificateur Universel",
+    "description": "Filtre à eau portatif qui rend n'importe quoi potable."
+  },
+  "252": {
+    "name": "Hurleur de Détresse",
+    "description": "Sifflet d'urgence au volume extrême."
+  },
+  "253": {
+    "name": "Outil du Navigateur",
+    "description": "Boussole professionnelle à miroir et réglage."
+  },
+  "254": {
+    "name": "Allumeur Tout-Temps",
+    "description": "Allume-feu fiable en conditions humides."
+  },
+  "255": {
+    "name": "Matériel d'Ascension Verticale",
+    "description": "Équipement pour grimper la roche et la glace."
+  },
+  "256": {
+    "name": "Harnais de Sécurité",
+    "description": "Harnais d'escalade pour voies d'alpinisme."
+  },
+  "257": {
+    "name": "Contrôleur de Friction",
+    "description": "Descendeur qui assure la sécurité en escalade."
+  },
+  "258": {
+    "name": "Kit de Sécurisation de Voie",
+    "description": "Jeu de protections pour équiper une voie."
+  },
+  "259": {
+    "name": "Crocs de Paroi Glacée",
+    "description": "Piolets techniques pour l'escalade verticale."
+  },
+  "260": {
+    "name": "Griffes de Glace",
+    "description": "Pointes de crampon qui se fixent aux bottes."
+  },
+  "261": {
+    "name": "Kit d'Aventure Aquatique",
+    "description": "Équipement pour l'exploration en milieu aquatique."
+  },
+  "262": {
+    "name": "Gilet de Flottaison Professionnel",
+    "description": "Gilet de sauvetage multiréglable pour l'eau sérieuse."
+  },
+  "263": {
+    "name": "Forteresse d'Eau Froide",
+    "description": "Combinaison étanche pour immersion glaciale."
+  },
+  "264": {
+    "name": "Peau du Chevaucheur de Vagues",
+    "description": "Combinaison en néoprène pour le surf et les sports d'eau."
+  },
+  "265": {
+    "name": "Porteur Étanche",
+    "description": "Sac à dos hermétique pour le kayak et le rafting."
+  },
+  "266": {
+    "name": "Sauve-Lunettes Flottant",
+    "description": "Cordon à lunettes flottant pour les sports nautiques."
+  },
+  "267": {
+    "name": "Équipement de Guerre Hivernale",
+    "description": "Matériel pour les sports de neige et les aventures gelées."
+  },
+  "268": {
+    "name": "Capsule de Protection de Piste",
+    "description": "Casque spécifique au ski et au snowboard."
+  },
+  "269": {
+    "name": "Écran de Vision Neige",
+    "description": "Masque de sport d'hiver antibuée."
+  },
+  "270": {
+    "name": "Pantalon Thermique de Piste",
+    "description": "Pantalon de neige isolant, imperméable et renforcé."
+  },
+  "271": {
+    "name": "Coque de Sécurité Glisse",
+    "description": "Veste de ski à poches pour matériel d'avalanche."
+  },
+  "272": {
+    "name": "Localisateur d'Ensevelis",
+    "description": "Balise de détection de victimes d'avalanche."
+  },
+  "273": {
+    "name": "Sonde de Profondeur",
+    "description": "Sonde à avalanche télescopique."
+  },
+  "274": {
+    "name": "Excavateur d'Urgence",
+    "description": "Pelle de secours en avalanche, portative."
+  },
+  "275": {
+    "name": "L'Effet Avant la Défense",
+    "description": "Vêtements élégants qui troquent l'armure contre des bonus."
+  },
+  "276": {
+    "name": "Chemise de Domination Sociale",
+    "description": "Vêtement de créateur qui amplifie votre présence."
+  },
+  "277": {
+    "name": "Couture d'Intimidation",
+    "description": "Veste haut de gamme qui projette la domination."
+  },
+  "278": {
+    "name": "Tenue d'Évitement du Conflit",
+    "description": "Habit de soirée élégant qui désamorce l'agressivité."
+  },
+  "279": {
+    "name": "Confusion Phéromonale",
+    "description": "Tenue de luxe qui diffuse une subtile désorientation."
+  },
+  "280": {
+    "name": "Élégance Obstinée",
+    "description": "Ensemble vintage qui résiste aux tentatives de persuasion."
+  },
+  "281": {
+    "name": "Conservation d'Endurance",
+    "description": "Tenue de sport tendance qui réduit le coût de l'effort."
+  },
+  "282": {
+    "name": "Mode Temps de Réaction",
+    "description": "Streetwear en série limitée qui accélère les réflexes."
+  },
+  "283": {
+    "name": "Ensemble Diversion",
+    "description": "Tenue voyante qui vous rend plus difficile à toucher."
+  },
+  "284": {
+    "name": "Tenue Bouclier d'Affliction",
+    "description": "Vêtement à motif audacieux qui résiste aux altérations d'état."
+  },
+  "285": {
+    "name": "Vêtements de Génie",
+    "description": "Habit avant-gardiste qui stimule les capacités mentales."
+  },
+  "286": {
+    "name": "Costume Sérendipité",
+    "description": "Tenue excentrique qui attire les découvertes rares."
+  },
+  "287": {
+    "name": "Robes de Récupération Arcanique",
+    "description": "Vêtement à la mode qui accélère la régénération de mana."
+  },
+  "288": {
+    "name": "Couvre-Chefs à Bonus",
+    "description": "Chapeaux élégants qui offrent des effets plutôt qu'une armure."
+  },
+  "289": {
+    "name": "Casquette Tendance Perception",
+    "description": "Chapeau branché qui aiguise le sens de l'observation."
+  },
+  "290": {
+    "name": "Lunettes d'Autorité Célèbre",
+    "description": "Lunettes de soleil d'influenceur qui accroissent le pouvoir social."
+  },
+  "291": {
+    "name": "Couronne d'Inspiration",
+    "description": "Couvre-chef artistique qui libère le génie créatif."
+  },
+  "292": {
+    "name": "Cercle de Concentration Mentale",
+    "description": "Diadème de créateur qui aiguise la clarté cognitive."
+  },
+  "293": {
+    "name": "Capsule de Protection Esthétique",
+    "description": "Casque profilé qui privilégie l'allure à la sécurité."
+  },
+  "294": {
+    "name": "Objets de Mode Utilitaires",
+    "description": "Accessoires élégants qui offrent des effets, pas de l'armure."
+  },
+  "295": {
+    "name": "Montre de l'Instant Parfait",
+    "description": "Garde-temps de créateur qui affine le tempo au combat."
+  },
+  "296": {
+    "name": "Bracelet de Beau Parleur",
+    "description": "Bracelet de luxe qui accroît la capacité de persuasion."
+  },
+  "297": {
+    "name": "Symbole d'Autorité",
+    "description": "Collier de statut qui intimide les adversaires plus faibles."
+  },
+  "298": {
+    "name": "Clous de Clarté Sonore",
+    "description": "Boucles d'oreilles à la mode qui affinent l'ouïe."
+  },
+  "299": {
+    "name": "Anneaux d'Agilité",
+    "description": "Bagues tendance qui améliorent la motricité fine."
+  },
+  "300": {
+    "name": "Ceinture de Forme Parfaite",
+    "description": "Ceinture de créateur qui optimise la posture et le mouvement."
+  },
+  "301": {
+    "name": "Amulette de Concentration",
+    "description": "Pendentif mystique qui aiguise la concentration mentale."
+  },
+  "302": {
+    "name": "Charme de Repos Mental",
+    "description": "Accessoire élégant qui réduit la fatigue cognitive."
+  },
+  "303": {
+    "name": "Chaussures à Effet",
+    "description": "Souliers de créateur qui troquent la protection contre des aptitudes."
+  },
+  "304": {
+    "name": "Souliers de Ville Vélocité",
+    "description": "Chaussures de luxe peu pratiques qui accroissent la vitesse."
+  },
+  "305": {
+    "name": "Bottes d'Élévation Sociale",
+    "description": "Bottes de créateur qui rehaussent visiblement votre statut."
+  },
+  "306": {
+    "name": "Baskets Freerun",
+    "description": "Chaussures de sport tendance qui améliorent sauts et réceptions."
+  },
+  "307": {
+    "name": "Mode Marcheur de Murs",
+    "description": "Chaussons d'escalade à la mode pour l'ascension urbaine."
+  },
+  "308": {
+    "name": "Collaborations Exclusives",
+    "description": "Pièces en série limitée aux propriétés uniques."
+  },
+  "309": {
+    "name": "Intimidateur Collab d'Artiste",
+    "description": "Veste d'artiste exclusive qui projette la menace."
+  },
+  "310": {
+    "name": "Ensemble Confiance de Star",
+    "description": "Tenue signée par une vedette qui accroît l'assurance."
+  },
+  "311": {
+    "name": "Collection Zen de Créateur",
+    "description": "Tenue de méditation en série limitée pour la clarté mentale."
+  },
+  "312": {
+    "name": "Collab Performance d'Élite",
+    "description": "Marque de sport exclusive aux capacités accrues."
+  },
+  "313": {
+    "name": "Mode Saisonnière",
+    "description": "Objets de saison aux effets liés au calendrier."
+  },
+  "314": {
+    "name": "Collection Canicule",
+    "description": "Tenue d'été qui garde la fraîcheur sous la chaleur."
+  },
+  "315": {
+    "name": "Élégance Givrée",
+    "description": "Mode d'hiver qui protège du froid avec style."
+  },
+  "316": {
+    "name": "Tenue de Renaissance",
+    "description": "Vêtement de printemps qui accroît la récupération et l'énergie."
+  },
+  "317": {
+    "name": "Vigilance des Moissons",
+    "description": "Mode d'automne qui aiguise la perception."
+  },
+  "318": {
+    "name": "Mode Régionale",
+    "description": "Vêtement culturel aux avantages liés au lieu."
+  },
+  "319": {
+    "name": "Tenue de Concentration Orientale",
+    "description": "Mode d'inspiration asiatique qui accroît la méditation."
+  },
+  "320": {
+    "name": "Équipement Réflexe de la Frontière",
+    "description": "Mode d'inspiration western qui améliore les réflexes."
+  },
+  "321": {
+    "name": "Héritage de Givre",
+    "description": "Mode d'inspiration nordique avec résistance au froid."
+  },
+  "322": {
+    "name": "Style Chaleur des Îles",
+    "description": "Mode d'inspiration tropicale qui résiste à la chaleur."
+  },
+  "323": {
+    "name": "Tenue de Guerre Sociale",
+    "description": "Habit de cérémonie qui procure des avantages sociaux."
+  },
+  "324": {
+    "name": "Smoking de Pouvoir",
+    "description": "Habit de soirée élégant qui accroît la persuasion."
+  },
+  "325": {
+    "name": "Robe Aimant à Regards",
+    "description": "Robe du soir de créateur qui exige l'attention."
+  },
+  "326": {
+    "name": "Costume du Conclure-Affaires",
+    "description": "Tenue d'affaires qui accroît les talents de négociation."
+  },
+  "327": {
+    "name": "Projecteurs d'Autorité",
+    "description": "Accessoires de cérémonie qui diffusent la domination."
+  },
+  "328": {
+    "name": "Manteau au Chaos Chromatique",
+    "description": "Veste aux couleurs d'arc-en-ciel changeantes."
+  },
+  "329": {
+    "name": "T-shirt Vacillement du Réel",
+    "description": "Chemise qui oscille entre le visible et l'invisible."
+  },
+  "330": {
+    "name": "Bomber Kaléidoscope",
+    "description": "Veste aux couleurs mouvantes qui trouble les observateurs."
+  },
+  "331": {
+    "name": "Pantalon Déni de Physique",
+    "description": "Pantalon qui fait traverser la matière solide aux jambes."
+  },
+  "332": {
+    "name": "Tenue de Sport à Pics de Latence",
+    "description": "Tenue de sport qui rend la vitesse de déplacement aléatoire."
+  },
+  "333": {
+    "name": "Combinaison à Distorsion Polygonale",
+    "description": "Tenue qui étire bizarrement les textures de votre corps."
+  },
+  "334": {
+    "name": "Robe Nostalgie Néon",
+    "description": "Vêtement couvert de graffitis et de bracelets claqueurs."
+  },
+  "335": {
+    "name": "Baskets Piste de Disco",
+    "description": "Bottes clignotantes de l'ère des patinoires."
+  },
+  "336": {
+    "name": "Casquette du Samedi Matin",
+    "description": "Snapback bariolée qui irradie une force de dessin animé."
+  },
+  "337": {
+    "name": "Mousse de Supporteur",
+    "description": "Casque taillé comme une main géante en mousse."
+  },
+  "338": {
+    "name": "Chapeau Culture du Centre Commercial",
+    "description": "Chapeau couvert d'écussons, nostalgie du commerce de détail."
+  },
+  "339": {
+    "name": "Casquette Agression Sonore",
+    "description": "Chapeau à haut-parleurs qui balance des tubes pop."
+  },
+  "340": {
+    "name": "Visière Vision Thermique",
+    "description": "Visière qui change de couleur, comme les chemises Hypercolor."
+  },
+  "341": {
+    "name": "Kit de Pinces Papillon",
+    "description": "Collection de bracelets en gelée et de pinces à cheveux."
+  },
+  "342": {
+    "name": "Montre à Distorsion Temporelle",
+    "description": "Cadran kaléidoscope qui gauchit l'écoulement du temps."
+  },
+  "343": {
+    "name": "Bague Afficheur d'Émotion",
+    "description": "Bague d'humeur changeante qui révèle les sentiments."
+  },
+  "344": {
+    "name": "Bracelet Étirement du Réel",
+    "description": "Bracelet qui se gauchit et se dédouble."
+  },
+  "345": {
+    "name": "Collier Pause Sitcom",
+    "description": "Bijou qui déclenche des pas de danse spontanés."
+  },
+  "346": {
+    "name": "Chaos du Coffre à Jouets",
+    "description": "Tenue qui assortit esthétiquement friandises et jouets."
+  },
+  "347": {
+    "name": "Uniforme de Téléport-Tag",
+    "description": "Tenue façon laser game qui permet la téléportation."
+  },
+  "348": {
+    "name": "Plaque à Lutins de Pixels",
+    "description": "Armure décorée de graphismes d'arcade."
+  },
+  "349": {
+    "name": "Robe Motif de Moquette",
+    "description": "Motif de sol d'arcade qui provoque des échanges aléatoires."
+  },
+  "350": {
+    "name": "Bouclier Traversant",
+    "description": "Bouclier décoré qui laisse parfois passer les attaques."
+  },
+  "351": {
+    "name": "Pouvoirs de Merch de Groupe",
+    "description": "Accessoires de groupe de garage aux aptitudes étranges."
+  },
+  "352": {
+    "name": "Denim Inverseur d'Effets",
+    "description": "Veste à écussons qui inverse les altérations d'état."
+  },
+  "353": {
+    "name": "Brouilleur d'Effets",
+    "description": "Survêtement criard qui permute les bonus au hasard."
+  },
+  "354": {
+    "name": "Robe Batterie Naturelle",
+    "description": "Vêtement qui troque le coût en mana contre de l'énergie vitale."
+  },
+  "355": {
+    "name": "Lunettes Réalité Cartoon",
+    "description": "Lunettes qui font paraître les ennemis dessinés."
+  },
+  "356": {
+    "name": "Tenue Corruption de Pixels",
+    "description": "Vêtement à graphismes d'arcade qui bugue visuellement."
+  },
+  "357": {
+    "name": "T-shirt Arc-en-Ciel Infini",
+    "description": "Motifs à la Lisa Frank qui s'étirent sans fin."
+  },
+  "358": {
+    "name": "Gilet Distorsion Basse Résolution",
+    "description": "Gilet qui gauchit le corps en formes polygonales anguleuses."
+  },
+  "359": {
+    "name": "Chapeau à Autocollants",
+    "description": "Casquette qui vous bouche parfois la vue d'autocollants."
+  },
+  "360": {
+    "name": "Gants de Phase en Gak",
+    "description": "Gants au toucher de Gak, qui glissent à travers la matière."
+  },
+  "361": {
+    "name": "Bouclier de Rollers",
+    "description": "Bouclier fait de pièces de patins."
+  },
+  "362": {
+    "name": "Afficheur de Mauvaises Stats",
+    "description": "Casque de talkie-walkie jouet qui affiche de fausses données."
+  },
+  "363": {
+    "name": "Bracelet d'Échange de Récré",
+    "description": "Bracelet qui brouille les aptitudes au hasard."
+  },
+  "364": {
+    "name": "Badge du Chaos",
+    "description": "Badge Pog qui change les options de l'interface."
+  },
+  "365": {
+    "name": "Oreillette d'Animal Virtuel",
+    "description": "Appareil à la voix de Tamagotchi qui donne des ordres brouillés."
+  },
+  "366": {
+    "name": "Boîte Mystère à Lots",
+    "description": "Objets au hasard sortis de pinces à peluches et de boîtes de céréales."
+  },
+  "367": {
+    "name": "Veste à Slogans",
+    "description": "Veste à décalcomanies thermocollantes aux phrases aléatoires."
+  },
+  "368": {
+    "name": "Patchwork Promotionnel",
+    "description": "Tenue faite de boîtes de céréales et de promotions de jouets."
+  },
+  "369": {
+    "name": "Bonnet Publicitaire",
+    "description": "Bonnet brodé de slogans de réclames télévisées."
+  },
+  "370": {
+    "name": "Bouclier Planche et Boombox",
+    "description": "Bouclier fait de planches à roulettes et de haut-parleurs."
+  },
+  "371": {
+    "name": "Bottes de Téléportation de Débogage",
+    "description": "Bottes marquées pour suppression, qui téléportent au hasard."
+  },
+  "372": {
+    "name": "Équipement de Conscience Méta",
+    "description": "Matériel qui brise délibérément le quatrième mur."
+  },
+  "373": {
+    "name": "T-shirt Formule de Dégâts",
+    "description": "Chemise qui affiche des calculs de combat changeants."
+  },
+  "374": {
+    "name": "Chapeau Commentaire du Développeur",
+    "description": "Couvre-chef qui montre les notes du créateur à votre sujet."
+  },
+  "375": {
+    "name": "Lunettes Vision des Variables",
+    "description": "Lunettes qui révèlent les drapeaux cachés du jeu."
+  },
+  "376": {
+    "name": "Bracelet Code Source",
+    "description": "Bracelet qui affiche le code aléatoire du réel."
+  },
+  "377": {
+    "name": "Ras-du-Cou Bouclier PSI",
+    "description": "Pièce de cou élégante qui bloque les attaques psychiques."
+  },
+  "378": {
+    "name": "Arsenal du Chevalier",
+    "description": "Armure médiévale traditionnelle pour guerriers."
+  },
+  "379": {
+    "name": "Harnois Complet du Croisé",
+    "description": "Armure de plates complète pour chevaliers d'élite."
+  },
+  "380": {
+    "name": "Plates à Liseré d'Or",
+    "description": "Armure de maître aux accents royaux."
+  },
+  "381": {
+    "name": "Demi-Plates Gothiques",
+    "description": "Demi-plates souples qui équilibrent défense et mouvement."
+  },
+  "382": {
+    "name": "Cotte d'Anneaux",
+    "description": "Anneaux de métal entrelacés formant une armure souple."
+  },
+  "383": {
+    "name": "Cotte de Mailles Plaquée",
+    "description": "Mailles renforcées de plaques sur les zones vitales."
+  },
+  "384": {
+    "name": "Mailles Légères",
+    "description": "Cotte de mailles allégée pour combattants mobiles."
+  },
+  "385": {
+    "name": "Cuir Clouté",
+    "description": "Cuir durci renforcé de clous métalliques."
+  },
+  "386": {
+    "name": "Cuirasse de Cuir Bouilli",
+    "description": "Cuir bouilli offrant une protection efficace au poids."
+  },
+  "387": {
+    "name": "Gambison du Simple Soldat",
+    "description": "Armure matelassée toute simple pour l'infanterie."
+  },
+  "388": {
+    "name": "Heaumes Médiévaux",
+    "description": "Variantes de couvre-chefs protecteurs médiévaux."
+  },
+  "389": {
+    "name": "Heaume Forteresse",
+    "description": "Casque entièrement fermé qui maximise la protection."
+  },
+  "390": {
+    "name": "Bassinet du Noble",
+    "description": "Casque élégant à visière relevable."
+  },
+  "391": {
+    "name": "Salade à Visage Découvert",
+    "description": "Casque qui privilégie la vision à la couverture."
+  },
+  "392": {
+    "name": "Chapeau de Fer d'Infanterie",
+    "description": "Simple calotte de métal pour une protection sommaire."
+  },
+  "393": {
+    "name": "Coiffe de Sous-Heaume",
+    "description": "Coiffe matelassée portée sous les heaumes."
+  },
+  "394": {
+    "name": "Barrières Médiévales",
+    "description": "Boucliers protecteurs de la guerre médiévale."
+  },
+  "395": {
+    "name": "Pavois de Forteresse",
+    "description": "Bouclier massif qui troque la mobilité contre la protection."
+  },
+  "396": {
+    "name": "Écu de Bataille",
+    "description": "La forme classique du bouclier de chevalier."
+  },
+  "397": {
+    "name": "Rondache Équilibrée",
+    "description": "Bouclier circulaire offrant une défense polyvalente."
+  },
+  "398": {
+    "name": "Bocle du Duelliste",
+    "description": "Petit bouclier d'avant-bras qui laisse manier l'arme."
+  },
+  "399": {
+    "name": "Vêtements Arcaniques",
+    "description": "Armure spécialisée pour les praticiens de la magie."
+  },
+  "400": {
+    "name": "Apparat de l'Archimagister",
+    "description": "Robes opulentes imprégnées de puissance magique."
+  },
+  "401": {
+    "name": "Robes du Tisseur de Sorts",
+    "description": "Robes enchantées qui amplifient la maîtrise magique."
+  },
+  "402": {
+    "name": "Robes de Mage Novice",
+    "description": "Robes sommaires pour étudiants en magie."
+  },
+  "403": {
+    "name": "Couronne de Concentration",
+    "description": "Couvre-chef ouvragé qui aiguise la concentration magique."
+  },
+  "404": {
+    "name": "Toque de l'Académicien",
+    "description": "Couvre-chef savant pour mages et chercheurs."
+  },
+  "405": {
+    "name": "Armure du Guerrier Saint",
+    "description": "Armure religieuse pour combattants fidèles."
+  },
+  "406": {
+    "name": "Plates Sanctifiées",
+    "description": "Armure étincelante bénie par de hauts clercs."
+  },
+  "407": {
+    "name": "Mailles Saintes",
+    "description": "Mailles bénies contre les forces impies."
+  },
+  "408": {
+    "name": "Vêtements du Grand Clerc",
+    "description": "Robes de cérémonie pour la hiérarchie de l'Église."
+  },
+  "409": {
+    "name": "Bouclier au Symbole Sacré",
+    "description": "Bouclier blasonné de marques saintes."
+  },
+  "410": {
+    "name": "Arsenal de l'Archer",
+    "description": "Équipement spécialisé pour les spécialistes du tir."
+  },
+  "411": {
+    "name": "Cuir du Maître Archer",
+    "description": "Armure souple pour archers accomplis."
+  },
+  "412": {
+    "name": "Tenue d'Éclaireur Sylvestre",
+    "description": "Armure légère de forêt pour la discrétion et la vitesse."
+  },
+  "413": {
+    "name": "Gants de Décoche Précise",
+    "description": "Gants spéciaux qui améliorent la précision au tir à l'arc."
+  },
+  "414": {
+    "name": "Garde-Bras d'Archer",
+    "description": "Brassard protecteur pour le bras qui tend la corde."
+  },
+  "415": {
+    "name": "Cape de Dissimulation",
+    "description": "Cape à capuche qui cache efficacement celui qui la porte."
+  },
+  "416": {
+    "name": "Équipement d'Agent de l'Ombre",
+    "description": "Armure pour assassins et voleurs."
+  },
+  "417": {
+    "name": "Cuirs d'Ombre de la Guilde",
+    "description": "Cuir assombri pour les opérations d'infiltration."
+  },
+  "418": {
+    "name": "Tenue du Chasseur Silencieux",
+    "description": "Vêtement moulant qui réduit le bruit au minimum."
+  },
+  "419": {
+    "name": "Cagoule Efface-Identité",
+    "description": "Masque qui dissimule l'identité et le bruit du souffle."
+  },
+  "420": {
+    "name": "Bottes du Pas Chuchoté",
+    "description": "Chaussures spécialement conçues pour ne faire aucun bruit."
+  },
+  "421": {
+    "name": "Armure Aristocratique",
+    "description": "Habits royaux qui équilibrent protection et statut."
+  },
+  "422": {
+    "name": "Apparat de Guerre du Roi",
+    "description": "Armure de cérémonie pour le combat royal."
+  },
+  "423": {
+    "name": "Parure de la Noblesse",
+    "description": "Vêtement luxueux qui affiche un haut statut."
+  },
+  "424": {
+    "name": "Couronne du Souverain",
+    "description": "Couronne élégante qui symbolise l'autorité absolue."
+  },
+  "425": {
+    "name": "Cape de Statut",
+    "description": "Cape de cérémonie qui signale le rang nobiliaire."
+  },
+  "426": {
+    "name": "Armements Mythiques",
+    "description": "Armure faite de matériaux rares et légendaires."
+  },
+  "427": {
+    "name": "Armure d'Écailles de Wyrm",
+    "description": "Armure légendaire forgée dans des peaux de dragon."
+  },
+  "428": {
+    "name": "Tissage Lunaire Elfique",
+    "description": "Armure enchantée qui se meut comme une seconde peau."
+  },
+  "429": {
+    "name": "Robes de l'Archimage Cosmique",
+    "description": "Robes mystiques tissées d'énergies stellaires."
+  },
+  "430": {
+    "name": "Égide Antique",
+    "description": "Bouclier légendaire qui dévie des coups impossibles."
+  },
+  "431": {
+    "name": "Heaume du Dieu de la Guerre",
+    "description": "Casque qu'aurait porté un dieu de la guerre."
+  },
+  "432": {
+    "name": "Habits du Petit Peuple",
+    "description": "Simples vêtements de paysan médiéval."
+  },
+  "433": {
+    "name": "Tunique de Paysan",
+    "description": "Simple tunique portée par le commun partout."
+  },
+  "434": {
+    "name": "Chapeau de Sorcière de la Guilde",
+    "description": "Chapeau pointu officiel des sorcières de la Guilde."
+  },
+  "435": {
+    "name": "Robes de Mage de la Guilde",
+    "description": "Robes officielles de la Guilde des Mages."
+  },
+  "436": {
+    "name": "",
+    "description": ""
+  },
+  "437": {
+    "name": "",
+    "description": ""
+  },
+  "438": {
+    "name": "",
+    "description": ""
+  },
+  "439": {
+    "name": "",
+    "description": ""
+  },
+  "440": {
+    "name": "",
+    "description": ""
+  },
+  "441": {
+    "name": "",
+    "description": ""
+  },
+  "442": {
+    "name": "",
+    "description": ""
+  },
+  "443": {
+    "name": "",
+    "description": ""
+  },
+  "444": {
+    "name": "",
+    "description": ""
+  },
+  "445": {
+    "name": "",
+    "description": ""
+  },
+  "446": {
+    "name": "",
+    "description": ""
+  },
+  "447": {
+    "name": "",
+    "description": ""
+  },
+  "448": {
+    "name": "",
+    "description": ""
+  },
+  "449": {
+    "name": "",
+    "description": ""
+  },
+  "450": {
+    "name": "",
+    "description": ""
+  },
+  "451": {
+    "name": "Arsenal de Combat Moderne",
+    "description": "Équipement tactique avancé pour la guerre urbaine."
+  },
+  "452": {
+    "name": "Porte-Plaques Céramique",
+    "description": "Armure de qualité militaire à plaques de céramique."
+  },
+  "453": {
+    "name": "Combinaison de Combat à Survie Intégrée",
+    "description": "Tenue de combat complète à systèmes de survie intégrés."
+  },
+  "454": {
+    "name": "Armure Polymère des Forces Spéciales",
+    "description": "Polymère léger prisé des forces spéciales."
+  },
+  "455": {
+    "name": "Combinaison NRBC",
+    "description": "Tenue de protection avancée contre les radiations."
+  },
+  "456": {
+    "name": "Systèmes de Tête Tactiques",
+    "description": "Couvre-chefs de combat spécialisés à technique intégrée."
+  },
+  "457": {
+    "name": "Casque de Combat à Affichage",
+    "description": "Casque de combat à surcouche d'affichage intégrée."
+  },
+  "458": {
+    "name": "Casque d'Opérations Nocturnes",
+    "description": "Couvre-chef tactique à fixation de vision nocturne."
+  },
+  "459": {
+    "name": "Casque de Zone Dangereuse",
+    "description": "Couvre-chef protecteur pour milieux toxiques."
+  },
+  "460": {
+    "name": "Arsenal Anti-Émeute",
+    "description": "Boucliers de protection pour la gestion des foules."
+  },
+  "461": {
+    "name": "Bouclier Barrière Transparente",
+    "description": "Contrôle de foule en polycarbonate transparent."
+  },
+  "462": {
+    "name": "Bouclier à Décharge Dissuasive",
+    "description": "Barrière électrifiée qui délivre une tension non létale."
+  },
+  "463": {
+    "name": "Équipement de Crise Médicale",
+    "description": "Protection spécialisée pour le personnel soignant."
+  },
+  "464": {
+    "name": "Combinaison Stérile de Crise",
+    "description": "Tenue protectrice étanche pour les urgences médicales."
+  },
+  "465": {
+    "name": "Respirateur Avancé",
+    "description": "Masque médical à filtration supérieure."
+  },
+  "466": {
+    "name": "Armure de Cérémonie d'État",
+    "description": "Armure de cérémonie pour les fonctions officielles."
+  },
+  "467": {
+    "name": "Apparat Diplomatique",
+    "description": "Uniforme ouvragé pour les hauts fonctionnaires."
+  },
+  "468": {
+    "name": "Grande Tenue Militaire",
+    "description": "Habit militaire de cérémonie avec décorations."
+  },
+  "469": {
+    "name": "Combinaisons Climat Extrême",
+    "description": "Protection environnementale contre les temps hostiles."
+  },
+  "470": {
+    "name": "Armure de Recherche Arctique",
+    "description": "Combinaison isolante pour l'exploration polaire."
+  },
+  "471": {
+    "name": "Combinaison d'Approche Volcanique",
+    "description": "Équipement résistant à la chaleur pour la volcanologie."
+  },
+  "472": {
+    "name": "Équipement de Grand Fond",
+    "description": "Matériel spécialisé pour l'exploration sous-marine."
+  },
+  "473": {
+    "name": "Combinaison de Résistance à la Pression",
+    "description": "Équipement de plongée pressurisé pour les extrêmes profondeurs."
+  },
+  "474": {
+    "name": "Scaphandre Robotisé",
+    "description": "Scaphandre atmosphérique à assistances mécaniques."
+  },
+  "475": {
+    "name": "Équipement en Apesanteur",
+    "description": "Matériel de qualité spatiale pour le vide."
+  },
+  "476": {
+    "name": "Combinaison de Survie EVA",
+    "description": "Protection spatiale environnementale complète."
+  },
+  "477": {
+    "name": "Casque de Communication sous Vide",
+    "description": "Casque pressurisé à communications intégrées."
+  },
+  "478": {
+    "name": "Pioche",
+    "description": "Équipement spécialisé pour les réseaux de cavernes."
+  },
+  "479": {
+    "name": "Combinaison de Spéléologie",
+    "description": "Tenue renforcée pour l'exploration souterraine."
+  },
+  "480": {
+    "name": "Casque de Mineur à LED",
+    "description": "Éclairage puissant intégré au couvre-chef."
+  },
+  "481": {
+    "name": "Arsenal de Sécurité du Travailleur",
+    "description": "Équipement de protection pour milieux industriels."
+  },
+  "482": {
+    "name": "Gilet de Sécurité Réfléchissant",
+    "description": "Gilet à haute visibilité à bandes réfléchissantes."
+  },
+  "483": {
+    "name": "Chaussures de Chantier Renforcées",
+    "description": "Chaussures de construction à embout d'acier."
+  },
+  "484": {
+    "name": "Équipement d'Intervention Incendie",
+    "description": "Matériel spécialisé pour les opérations de lutte contre le feu."
+  },
+  "485": {
+    "name": "Armure de Feu de Structure",
+    "description": "Combinaison résistante à la chaleur pour les feux de bâtiment."
+  },
+  "486": {
+    "name": "Combinaison Chaleur Extrême",
+    "description": "Armure réfléchissante pour l'approche du feu."
+  },
+  "487": {
+    "name": "Casque de Survie aux Fumées",
+    "description": "Casque à appareil respiratoire autonome."
+  },
+  "488": {
+    "name": "Arsenal des Forces de l'Ordre",
+    "description": "Équipement de protection pour les opérations de police."
+  },
+  "489": {
+    "name": "Gilet à Plaques Anti-Traumatisme",
+    "description": "Gilet pare-balles à inserts de plaques."
+  },
+  "490": {
+    "name": "Protection Anti-Émeute Intégrale",
+    "description": "Tenue anti-émeute complète avec écran facial."
+  },
+  "491": {
+    "name": "Équipement de Sport à Sensations",
+    "description": "Vêtement spécialisé pour les mordus d'extrême."
+  },
+  "492": {
+    "name": "Armure de Saut en Wingsuit",
+    "description": "Combinaison rembourrée pour les opérations de base jump."
+  },
+  "493": {
+    "name": "Cuirs de Course sur Circuit",
+    "description": "Bottes de moto renforcées."
+  },
+  "494": {
+    "name": "Gi d'Entraînement",
+    "description": "Équipement classique de pratique des arts martiaux."
+  },
+  "495": {
+    "name": "Kimono de Karaté",
+    "description": "Gi classique pour l'entraînement et la compétition."
+  },
+  "496": {
+    "name": "Armure de Combat d'Entraînement",
+    "description": "Protection d'assaut pour l'entraînement martial."
+  },
+  "497": {
+    "name": "Armure des Civilisations Antiques",
+    "description": "Protection de cérémonie venue d'empires disparus."
+  },
+  "498": {
+    "name": "Bronze du Guerrier Grec",
+    "description": "Cuirasse de bronze de la Grèce antique."
+  },
+  "499": {
+    "name": "Lorica Segmentata Romaine",
+    "description": "Armure segmentée des légionnaires romains."
+  },
+  "500": {
+    "name": "Pavois de Légion",
+    "description": "Grand bouclier rectangulaire de la légion romaine."
+  },
+  "501": {
+    "name": "Arsenal Arcanique Moderne",
+    "description": "Matériel magique avancé pour les lanceurs de sorts d'aujourd'hui."
+  },
+  "502": {
+    "name": "Robes Tissées de Circuits",
+    "description": "Robes fluides aux motifs de circuits intégrés."
+  },
+  "503": {
+    "name": "Robes Holo-Matrice",
+    "description": "Robes profilées qui projettent des matrices de sorts holographiques."
+  },
+  "504": {
+    "name": "Blouse de Laboratoire Protégée",
+    "description": "Blouse de recherche enchantée à protections magiques."
+  },
+  "505": {
+    "name": "Chapeau à Réserve de Sorts",
+    "description": "Chapeau de sorcier moderne qui stocke les sorts préparés."
+  },
+  "506": {
+    "name": "Cercle de Focalisation d'Énergie",
+    "description": "Couvre-chef cristallin qui canalise l'énergie magique."
+  },
+  "507": {
+    "name": "Visière d'Affichage de Formules",
+    "description": "Visière de haute technique qui montre les calculs de sorts."
+  },
+  "508": {
+    "name": "Gants Canal de Mana",
+    "description": "Gants tissés de fibres magiques conductrices."
+  },
+  "509": {
+    "name": "Amulette d'Alimentation de Secours",
+    "description": "Réserve d'énergie magique d'urgence."
+  },
+  "510": {
+    "name": "Tablette Grimoire",
+    "description": "Bâton enchanté déguisé en tablette moderne."
+  },
+  "511": {
+    "name": "Armure Mondaine d'Élite",
+    "description": "Habit de cérémonie élégant pour les soirées de la haute société."
+  },
+  "512": {
+    "name": "Smoking Pare-Balles",
+    "description": "Habit de cérémonie parfaitement coupé à blindage dissimulé."
+  },
+  "513": {
+    "name": "Robe du Soir Protégée",
+    "description": "Robe élégante à magie protectrice dissimulée."
+  },
+  "514": {
+    "name": "Tailleur d'Autorité",
+    "description": "Costume trois pièces qui accroît la présence de commandement."
+  },
+  "515": {
+    "name": "Uniforme de Cérémonie Décoré",
+    "description": "Habit militaire de cérémonie orné de décorations."
+  },
+  "516": {
+    "name": "Tenue Formelle du Négociateur",
+    "description": "Habit diplomatique qui accroît les talents de négociation."
+  },
+  "517": {
+    "name": "Robe de Cocktail d'Élite",
+    "description": "Robe raffinée pour la guerre mondaine."
+  },
+  "518": {
+    "name": "Nœud Papillon Micro-Protégé",
+    "description": "Nœud papillon classique aux enchantements subtils."
+  },
+  "519": {
+    "name": "Gants d'Élégance",
+    "description": "Gants de cérémonie qui accroissent la grâce en société."
+  },
+  "520": {
+    "name": "Tenue de Guerre d'Entreprise",
+    "description": "Habit professionnel pour le combat de bureau."
+  },
+  "521": {
+    "name": "Dominateur de Conseil d'Administration",
+    "description": "Costume d'affaires tranchant qui impose le respect."
+  },
+  "522": {
+    "name": "Blazer de Confiance",
+    "description": "Veste professionnelle qui amplifie l'assurance."
+  },
+  "523": {
+    "name": "Robe de Présence Exécutive",
+    "description": "Robe d'affaires qui accroît l'autorité professionnelle."
+  },
+  "524": {
+    "name": "Chemise de Productivité",
+    "description": "Chemise habillée impeccable aux fils qui accroissent l'efficacité."
+  },
+  "525": {
+    "name": "Cravate de Leadership",
+    "description": "Cravate professionnelle qui amplifie les qualités de commandement."
+  },
+  "526": {
+    "name": "Mallette de Concentration",
+    "description": "Mallette d'affaires qui range mentalement les pensées."
+  },
+  "527": {
+    "name": "Garde-Temps d'Efficacité",
+    "description": "Montre professionnelle qui améliore la gestion du temps."
+  },
+  "528": {
+    "name": "Souliers du Pas d'Autorité",
+    "description": "Chaussures d'affaires qui projettent la domination."
+  },
+  "529": {
+    "name": "Lunettes d'Analyse",
+    "description": "Lunettes professionnelles qui accroissent la pensée analytique."
+  },
+  "530": {
+    "name": "Blazer Catalyseur de Réseau",
+    "description": "Veste d'entreprise qui accroît les relations."
+  },
+  "531": {
+    "name": "Technologie Pré-Squishing",
+    "description": "Matériel de l'ère Y2K qui résiste aux boucles temporelles."
+  },
+  "532": {
+    "name": "Téléphone Indestructible",
+    "description": "Le légendaire Anoki 3310 qui repousse les failles dimensionnelles."
+  },
+  "533": {
+    "name": "Chapeau Bloqueur de TTD",
+    "description": "Couvre-chef doublé d'aluminium qui bloque les maladies de la pensée."
+  },
+  "534": {
+    "name": "Combinaison à l'Épreuve des Boucles",
+    "description": "Tenue industrielle EHI qui survit aux réinitialisations temporelles."
+  },
+  "535": {
+    "name": "Kit de l'Archive Foundation",
+    "description": "Équipement de guerre de l'information."
+  },
+  "536": {
+    "name": "Gilet du Guerrier des Données",
+    "description": "Gilet tactique à stockage d'information intégré."
+  },
+  "537": {
+    "name": "Visière de Transparence",
+    "description": "Lunettes qui affichent toute donnée comme relevant du domaine public."
+  },
+  "538": {
+    "name": "Gants de Déchiffrement au Toucher",
+    "description": "Gants qui brisent le chiffrement par contact."
+  },
+  "539": {
+    "name": "Équipement Hypercapitaliste",
+    "description": "Matériel de haute performance issu du Collectif."
+  },
+  "540": {
+    "name": "Bottes à Bio-Roues",
+    "description": "Bottes à roues intégrées pour un mouvement perpétuel."
+  },
+  "541": {
+    "name": "Costume de Négoce Temporel",
+    "description": "Habit d'affaires qui dégage des profits d'arbitrage temporel."
+  },
+  "542": {
+    "name": "Portefeuille Dimensionnel",
+    "description": "Mallette qui négocie des devises à travers les réalités."
+  },
+  "543": {
+    "name": "Robes Traditionnelles de la Guilde",
+    "description": "Habit de cérémonie classique de la Guilde des Mages."
+  },
+  "544": {
+    "name": "Robes Loyalistes Thatcher",
+    "description": "Robes de cérémonie de la faction de Thatcher."
+  },
+  "545": {
+    "name": "Robes du Chaos de Crowley",
+    "description": "Robes chaotiques pour les disciples de Crowley."
+  },
+  "546": {
+    "name": "Grimoire Post-Apocalyptique",
+    "description": "Livre de sorts relié dans des matériaux à l'épreuve du Squishing."
+  },
+  "547": {
+    "name": "Chapeau Formateur de Sorts",
+    "description": "Chapeau qui met automatiquement les sorts en CamelCase."
+  },
+  "548": {
+    "name": "Bouclier du Nouveau Panthéon",
+    "description": "Reliques divines des dieux revenus."
+  },
+  "549": {
+    "name": "Couronne de la Reine de la Discorde",
+    "description": "La couronne de discorde divine d'Eris."
+  },
+  "550": {
+    "name": "Fragment de Dieu Mort",
+    "description": "Amulette contenant l'essence de YHWH occis."
+  },
+  "551": {
+    "name": "Lance-Mémoire du Déicide",
+    "description": "Lance forgée dans des souvenirs tueurs de dieux."
+  },
+  "552": {
+    "name": "Équipement à Pétrole Conscient",
+    "description": "Matériel contaminé par du pétrole pensant."
+  },
+  "553": {
+    "name": "Combinaison Anti-Pétrodémon",
+    "description": "Combinaison qui protège de l'exposition au pétrole conscient."
+  },
+  "554": {
+    "name": "Protection contre la Possession Pétrolière",
+    "description": "Charme qui résiste à la possession par le pétrole."
+  },
+  "555": {
+    "name": "Équipement de la Route Perpétuelle",
+    "description": "Matériel robuste pour une vie d'autoroute sans fin."
+  },
+  "556": {
+    "name": "Veste d'Évasion de Boucle",
+    "description": "Manteau légendaire de routier venu de la route éternelle."
+  },
+  "557": {
+    "name": "Pièces Miraculeuses de Bubba",
+    "description": "Composants de récupération mécanique impossibles."
+  },
+  "558": {
+    "name": "Compteur de Flux Temporel",
+    "description": "Cadran qui suit la vitesse par rapport au temps lui-même."
+  },
+  "559": {
+    "name": "Équipement à Corruption Dimensionnelle",
+    "description": "Objets gauchis par des anomalies de leyline."
+  },
+  "560": {
+    "name": "Robe de Chaos Brut",
+    "description": "Vêtement qui canalise la puissance imprévisible d'une leyline."
+  },
+  "561": {
+    "name": "Boussole des Points Faibles du Réel",
+    "description": "Instrument de navigation qui trouve les déchirures dimensionnelles."
+  },
+  "562": {
+    "name": "Restes de l'Incident d'Usine",
+    "description": "Matériel issu du fameux désastre Loca-Cola."
+  },
+  "563": {
+    "name": "Combinaison Anti-Substance Cola",
+    "description": "Tenue de protection contre l'exposition à la mystérieuse boisson."
+  },
+  "564": {
+    "name": "Mystère Non-Cola",
+    "description": "Bouteille d'une substance produite par des machines devenues folles."
+  },
+  "565": {
+    "name": "Équipement de Faction Souterraine",
+    "description": "Matériel de cérémonie venu des tribus gobelines."
+  },
+  "566": {
+    "name": "Armure de Guerre Naguka",
+    "description": "Équipement de bataille pour les féroces guerriers gobelins."
+  },
+  "567": {
+    "name": "Robes de Paix Verden",
+    "description": "Simples robes mystiques des gobelins pacifiques."
+  },
+  "568": {
+    "name": "Casque Audio Black Metal",
+    "description": "Arme sonore qui déverse du metal norvégien."
+  },
+  "569": {
+    "name": "Artefacts Figés dans le Temps",
+    "description": "Objets venus d'un village gallois où le temps s'est arrêté."
+  },
+  "570": {
+    "name": "Montre de Minuit Éternel",
+    "description": "Garde-temps figé au dernier instant de 1999."
+  },
+  "571": {
+    "name": "Vêtement de Stase Sans Âge",
+    "description": "Habits immunisés contre le vieillissement et la décomposition."
+  },
+  "572": {
+    "name": "Équipement de la Tamise Inversée",
+    "description": "Matériel venu de la zone où la rivière remonte son cours."
+  },
+  "573": {
+    "name": "Gilet d'Inversion Causale",
+    "description": "Gilet de sauvetage qui flotte à contre-courant du réel."
+  },
+  "574": {
+    "name": "Bottes à Contre-Courant du Temps",
+    "description": "Chaussures qui marchent à reculons dans le temps."
+  },
+  "575": {
+    "name": "Débris de la Chute de la Tour",
+    "description": "Matériel mystérieux venu du site de l'Omega Tower."
+  },
+  "576": {
+    "name": "Heaume de Fragment Stratosphérique",
+    "description": "Casque forgé dans les matériaux de la tour tombée."
+  },
+  "577": {
+    "name": "Combinaison de Nettoyage Cosmique",
+    "description": "Protection pour le syndrome de Kessler\naux travailleurs des débris."
+  },
+  "578": {
+    "name": "Mesureur d'Anomalie Gravitationnelle",
+    "description": "Appareil qui mesure les distorsions de la gravité."
+  },
+  "579": {
+    "name": "Équipement du Voyage Mythique",
+    "description": "Matériel pour la périlleuse expédition du Beagle."
+  },
+  "580": {
+    "name": "Bottes des Routes Mouvantes",
+    "description": "Chaussures pour les chemins qui changent de destination."
+  },
+  "581": {
+    "name": "Arsenal de Fureur Gobeline",
+    "description": "Matériel grossier fait de ferraille et de rage pure."
+  },
+  "582": {
+    "name": "Épaulières de Plaques Rouillées",
+    "description": "Métal ébréché sanglé au fil de fer."
+  },
+  "583": {
+    "name": "Casque Crâne de Bidon",
+    "description": "Fût de pétrole cabossé aux trous de vision grossiers."
+  },
+  "584": {
+    "name": "Gilet de Rage Automobile",
+    "description": "Pièces de voiture tenues ensemble par la colère."
+  },
+  "585": {
+    "name": "Bottes Renforcées de Rancune",
+    "description": "Bottes de cuir blindées de capsules de bouteilles."
+  },
+  "586": {
+    "name": "Bouclier Couvercle à Clous",
+    "description": "Couvercle de poubelle aux bords rouillés affûtés."
+  },
+  "587": {
+    "name": "Cotte de Mailles en Languettes",
+    "description": "Armure tissée de languettes de canettes jetées."
+  },
+  "588": {
+    "name": "Gantelets de Boîtes Malveillantes",
+    "description": "Boîtes de conserve soudées en gants brutaux."
+  },
+  "589": {
+    "name": "Étoffe à Dents-Trophées",
+    "description": "Vêtement en loques qui expose les dents des ennemis."
+  },
+  "590": {
+    "name": "Armure de Détermination en Pneus",
+    "description": "Rustines de caoutchouc tenues par l'entêtement."
+  },
+  "591": {
+    "name": "Lance de Panneau Routier",
+    "description": "Panneau stop affûté par pure haine."
+  },
+  "592": {
+    "name": "Bouclier de Fureur en Enjoliveur",
+    "description": "Pièce de voiture martelée en forme défensive."
+  },
+  "593": {
+    "name": "Peinture à l'Huile de Moteur",
+    "description": "Décoration de guerre faite d'huile et de scarabées."
+  },
+  "594": {
+    "name": "Désespoir de Fil de Caddie",
+    "description": "Armure de caddie née de la nécessité."
+  },
+  "595": {
+    "name": "Passoire Agressive",
+    "description": "Ustensile de cuisine modifié à coups de violence."
+  },
+  "596": {
+    "name": "Collier d'Os de Verre",
+    "description": "Éclats brisés et petits squelettes."
+  },
+  "597": {
+    "name": "Défense de Plaque à Pizza",
+    "description": "Surface de cuisson rouillée servant de bocle."
+  },
+  "598": {
+    "name": "Massues Enroulées de Fil",
+    "description": "Armes grossières ceintes d'une malveillance barbelée."
+  },
+  "599": {
+    "name": "Gilet de Chiffons Tribaux",
+    "description": "Tissu déchiré marqué des symboles du clan."
+  },
+  "600": {
+    "name": "Bottes d'Entêtement en Pneu",
+    "description": "Chaussures démesurées faites de caoutchouc automobile."
+  },
+  "601": {
+    "name": "Couronne de Tronçonneuse",
+    "description": "Lame rouillée portée en bandeau menaçant."
+  },
+  "602": {
+    "name": "Massue Brise-Promesse",
+    "description": "Massue de bois cloutée de clous et de trahison."
+  },
+  "603": {
+    "name": "Combinaison au Ruban de Rancune",
+    "description": "Combinaison déchirée tenue par du ruban adhésif et de la colère."
+  },
+  "604": {
+    "name": "Brassards de Canettes Écrasées",
+    "description": "Protège-bras grossiers faits de canettes aplaties."
+  },
+  "605": {
+    "name": "Masque de Terreur en Bidon",
+    "description": "Bidon de lait en plastique taillé en forme de peur."
+  },
+  "606": {
+    "name": "Plaque de Rage au Volant",
+    "description": "Armure faite de panneaux de signalisation et de fureur."
+  },
+  "607": {
+    "name": "Masse de Cône de Verre",
+    "description": "Cône de chantier improvisé en morgenstern."
+  },
+  "608": {
+    "name": "Crête Industrielle",
+    "description": "Perruque de laine d'acier collée à l'adhésif."
+  },
+  "609": {
+    "name": "Ceinture des Rêves Brisés",
+    "description": "Chaînes de vélo tressées de déception."
+  },
+  "610": {
+    "name": "Haches de Cuisine à Fers à Béton",
+    "description": "Armes de jet faites de couteaux et de barres de métal."
+  },
+  "611": {
+    "name": "Mode du Millénaire",
+    "description": "Vêtement de l'ère Y2K, aujourd'hui tenu pour vintage."
+  },
+  "612": {
+    "name": "Denim à Strass",
+    "description": "Jean taille basse coupe bootcut aux détails scintillants."
+  },
+  "613": {
+    "name": "Crop Top Métallique",
+    "description": "Baby tee à imprimé argenté et coupe courte."
+  },
+  "614": {
+    "name": "Coque en Denim Prédélavé",
+    "description": "Veste vieillie artificiellement, à usure factice."
+  },
+  "615": {
+    "name": "Sandales Compensées en Lucite",
+    "description": "Chaussures à plateforme épaisse en plastique transparent."
+  },
+  "616": {
+    "name": "Ensemble Velours à Strass",
+    "description": "Survêtement rose vif à bordure scintillante."
+  },
+  "617": {
+    "name": "Haut à Bretelles et Sequins",
+    "description": "Haut court à fines bretelles et paillettes."
+  },
+  "618": {
+    "name": "Pantalon Cargo à Chaînes",
+    "description": "Pantalon ample à poches et chaînes décoratives."
+  },
+  "619": {
+    "name": "Créoles à Breloques",
+    "description": "Anneaux surdimensionnés aux ornements pendants."
+  },
+  "620": {
+    "name": "Ras-du-Cou en Plastique Clouté",
+    "description": "Collier de plastique noir orné de clous argentés."
+  },
+  "621": {
+    "name": "Micro-Sac Inutile",
+    "description": "Minuscule pochette où ne tient qu'un gloss."
+  },
+  "622": {
+    "name": "Bob à Coutures Contrastées",
+    "description": "Couvre-chef en denim aux surpiqûres apparentes."
+  },
+  "623": {
+    "name": "Couche de Brassière en Résille",
+    "description": "Résille transparente par-dessus un sous-vêtement coloré."
+  },
+  "624": {
+    "name": "Pattes d'Éph à Poches Fleuries",
+    "description": "Jean évasé aux détails brodés."
+  },
+  "625": {
+    "name": "Dos-Nu en Bandana Noué",
+    "description": "Bandana détourné en haut noué."
+  },
+  "626": {
+    "name": "Baskets Papa Multicolores",
+    "description": "Chaussures de sport à grosse semelle épaisse."
+  },
+  "627": {
+    "name": "Bague d'Humeur Thermique",
+    "description": "Bague changeante qui lit la chaleur du corps."
+  },
+  "628": {
+    "name": "Pinces Papillon Vives",
+    "description": "Accessoires à cheveux colorés en forme d'ailes."
+  },
+  "629": {
+    "name": "Application Scintillante",
+    "description": "Paillettes corporelles pour les bras et le buste."
+  },
+  "630": {
+    "name": "Montures Rectangulaires Teintées",
+    "description": "Lunettes à verres colorés et monture fine."
+  },
+  "631": {
+    "name": "Blouse Paysanne Élastique",
+    "description": "Haut à manches bouffantes et encolure froncée."
+  },
+  "632": {
+    "name": "Jupe Plissée d'Uniforme",
+    "description": "Mini-jupe plissée façon écolière."
+  },
+  "633": {
+    "name": "Casquette Trucker Ironique",
+    "description": "Casquette à résille arrière et logo vintage."
+  },
+  "634": {
+    "name": "Texture Popcorn Ajustée",
+    "description": "Chemise en tissu texturé de coupe près du corps."
+  },
+  "635": {
+    "name": "Nuisette sur T-shirt",
+    "description": "Robe nuisette portée sur un t-shirt ajusté."
+  },
+  "636": {
+    "name": "Fard à Paupières Givré",
+    "description": "Maquillage des yeux scintillant, appliqué franchement."
+  },
+  "637": {
+    "name": "Mèches Blondes Contrastées",
+    "description": "Mèches épaisses en traînées spectaculaires."
+  },
+  "638": {
+    "name": "Gemmes de Visage de Boîte",
+    "description": "Strass adhésifs disposés autour des yeux."
+  },
+  "639": {
+    "name": "Brillance Extrême",
+    "description": "Gloss transparent ou nude au fini aveuglant."
+  },
+  "640": {
+    "name": "Maillot Oversize Décontracté",
+    "description": "Maillot de sport porté large en streetwear."
+  },
+  "641": {
+    "name": "Armure Urbaine Bondage",
+    "description": "Cuir fétiche détourné en protection de rue."
+  },
+  "642": {
+    "name": "Harnais de Domination",
+    "description": "Sangles de cuir noir portées par-dessus les vêtements."
+  },
+  "643": {
+    "name": "Collier Clouté d'Autorité",
+    "description": "Tour de cou en cuir clouté qui projette le pouvoir."
+  },
+  "644": {
+    "name": "Corset de Cuir Renforcé",
+    "description": "Pièce de torse blindée à la silhouette imposante."
+  },
+  "645": {
+    "name": "Domination Cuissardes d'Acier",
+    "description": "Cuissardes à bouts renforcés."
+  },
+  "646": {
+    "name": "Gants de Combat Cloutés",
+    "description": "Cuir sans doigts orné de clous métalliques."
+  },
+  "647": {
+    "name": "Masque de Menace en Cuir",
+    "description": "Cache du haut du visage au dessin agressif."
+  },
+  "648": {
+    "name": "Bikini Minimal à Chaînes",
+    "description": "Maille métallique offrant une protection psychologique."
+  },
+  "649": {
+    "name": "Fouet Défensif",
+    "description": "Fouet de cuir, à la fois outil et dissuasion."
+  },
+  "650": {
+    "name": "Menottes Détournées",
+    "description": "Protection des poignets et des chevilles venue de la sous-culture."
+  },
+  "651": {
+    "name": "Bracelet de Menace à Pointes",
+    "description": "Intimidation au poignet, cuir hérissé de pointes."
+  },
+  "652": {
+    "name": "Combinaison de Combat en Cuir Intégral",
+    "description": "Couverture complète du corps en cuir tactique."
+  },
+  "653": {
+    "name": "Ras-du-Cou à Anneau Utilitaire",
+    "description": "Tour de cou en cuir doté d'un anneau en D fonctionnel."
+  },
+  "654": {
+    "name": "Protège-Bras Rembourrés",
+    "description": "Protection des bras faite de matériel détourné."
+  },
+  "655": {
+    "name": "Protège-Dents de Combat en Cuir",
+    "description": "Bâillon détourné en équipement de protection."
+  },
+  "656": {
+    "name": "Cagoule d'Intimidation en Cuir",
+    "description": "Cagoule qui procure à la fois peur et protection."
+  },
+  "657": {
+    "name": "Gilet Clouté Agressif",
+    "description": "Protection de torse en cuir clouté."
+  },
+  "658": {
+    "name": "Pantalon de Menace Renforcé",
+    "description": "Armure de jambes en cuir au style agressif."
+  },
+  "659": {
+    "name": "Cravache Détournée en Matraque",
+    "description": "Cravache d'équitation servant d'outil disciplinaire."
+  },
+  "660": {
+    "name": "Cache-Yeux Tactique",
+    "description": "Bandeau détourné en protection oculaire."
+  },
+  "661": {
+    "name": "Collection Romance Sombre",
+    "description": "Vêtement gothique pour une esthétique théâtrale."
+  },
+  "662": {
+    "name": "Manteau d'Ombre Victorien",
+    "description": "Long manteau noir au col spectaculaire."
+  },
+  "663": {
+    "name": "Robe Gothique en Dentelle",
+    "description": "Robe noire fluide au corsage corseté."
+  },
+  "664": {
+    "name": "Blazer de Velours Ouvragé",
+    "description": "Velours noir aux détails d'argent élaborés."
+  },
+  "665": {
+    "name": "Bas de Dentelle Détruits",
+    "description": "Bas noirs déchirés à motifs."
+  },
+  "666": {
+    "name": "Écraseuses à Plateforme et Chaînes",
+    "description": "Bottes à boucles renforcées d'acier."
+  },
+  "667": {
+    "name": "Doigts de Dentelle Victorienne",
+    "description": "Mitaines qui remontent au-delà du poignet."
+  },
+  "668": {
+    "name": "Chapeau à Ruban et Plume",
+    "description": "Couvre-chef noir à large bord et rubans flottants."
+  },
+  "669": {
+    "name": "Pendentif Croix de Velours",
+    "description": "Croix d'argent ouvragée sur ruban noir."
+  },
+  "670": {
+    "name": "Collier de Dentelle à Camée",
+    "description": "Dentelle noire au camée d'argent en son centre."
+  },
+  "671": {
+    "name": "",
+    "description": ""
+  },
+  "672": {
+    "name": "",
+    "description": ""
+  },
+  "673": {
+    "name": "",
+    "description": ""
+  },
+  "674": {
+    "name": "",
+    "description": ""
+  },
+  "675": {
+    "name": "",
+    "description": ""
+  },
+  "676": {
+    "name": "",
+    "description": ""
+  },
+  "677": {
+    "name": "",
+    "description": ""
+  },
+  "678": {
+    "name": "",
+    "description": ""
+  },
+  "679": {
+    "name": "",
+    "description": ""
+  },
+  "680": {
+    "name": "",
+    "description": ""
+  },
+  "681": {
+    "name": "",
+    "description": ""
+  },
+  "682": {
+    "name": "",
+    "description": ""
+  },
+  "683": {
+    "name": "",
+    "description": ""
+  },
+  "684": {
+    "name": "",
+    "description": ""
+  },
+  "685": {
+    "name": "",
+    "description": ""
+  },
+  "686": {
+    "name": "",
+    "description": ""
+  },
+  "687": {
+    "name": "",
+    "description": ""
+  },
+  "688": {
+    "name": "",
+    "description": ""
+  },
+  "689": {
+    "name": "",
+    "description": ""
+  },
+  "690": {
+    "name": "",
+    "description": ""
+  },
+  "691": {
+    "name": "",
+    "description": ""
+  },
+  "692": {
+    "name": "",
+    "description": ""
+  },
+  "693": {
+    "name": "",
+    "description": ""
+  },
+  "694": {
+    "name": "",
+    "description": ""
+  },
+  "695": {
+    "name": "",
+    "description": ""
+  },
+  "696": {
+    "name": "",
+    "description": ""
+  },
+  "697": {
+    "name": "",
+    "description": ""
+  },
+  "698": {
+    "name": "",
+    "description": ""
+  },
+  "699": {
+    "name": "",
+    "description": ""
+  },
+  "700": {
+    "name": "",
+    "description": ""
+  },
+  "701": {
+    "name": "",
+    "description": ""
+  },
+  "702": {
+    "name": "",
+    "description": ""
+  },
+  "703": {
+    "name": "",
+    "description": ""
+  },
+  "704": {
+    "name": "",
+    "description": ""
+  },
+  "705": {
+    "name": "",
+    "description": ""
+  },
+  "706": {
+    "name": "",
+    "description": ""
+  },
+  "707": {
+    "name": "",
+    "description": ""
+  },
+  "708": {
+    "name": "",
+    "description": ""
+  },
+  "709": {
+    "name": "",
+    "description": ""
+  },
+  "710": {
+    "name": "",
+    "description": ""
+  },
+  "711": {
+    "name": "",
+    "description": ""
+  },
+  "712": {
+    "name": "",
+    "description": ""
+  },
+  "713": {
+    "name": "",
+    "description": ""
+  },
+  "714": {
+    "name": "",
+    "description": ""
+  },
+  "715": {
+    "name": "",
+    "description": ""
+  },
+  "716": {
+    "name": "",
+    "description": ""
+  },
+  "717": {
+    "name": "",
+    "description": ""
+  },
+  "718": {
+    "name": "",
+    "description": ""
+  },
+  "719": {
+    "name": "",
+    "description": ""
+  },
+  "720": {
+    "name": "",
+    "description": ""
+  },
+  "721": {
+    "name": "",
+    "description": ""
+  },
+  "722": {
+    "name": "",
+    "description": ""
+  },
+  "723": {
+    "name": "",
+    "description": ""
+  },
+  "724": {
+    "name": "",
+    "description": ""
+  },
+  "725": {
+    "name": "",
+    "description": ""
+  },
+  "726": {
+    "name": "",
+    "description": ""
+  },
+  "727": {
+    "name": "",
+    "description": ""
+  },
+  "728": {
+    "name": "",
+    "description": ""
+  },
+  "729": {
+    "name": "",
+    "description": ""
+  },
+  "730": {
+    "name": "",
+    "description": ""
+  },
+  "731": {
+    "name": "",
+    "description": ""
+  },
+  "732": {
+    "name": "",
+    "description": ""
+  },
+  "733": {
+    "name": "",
+    "description": ""
+  },
+  "734": {
+    "name": "",
+    "description": ""
+  },
+  "735": {
+    "name": "",
+    "description": ""
+  },
+  "736": {
+    "name": "",
+    "description": ""
+  },
+  "737": {
+    "name": "",
+    "description": ""
+  },
+  "738": {
+    "name": "",
+    "description": ""
+  },
+  "739": {
+    "name": "",
+    "description": ""
+  },
+  "740": {
+    "name": "",
+    "description": ""
+  }
+}

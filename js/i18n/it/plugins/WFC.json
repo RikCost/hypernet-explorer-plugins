@@ -1,0 +1,12 @@
+{
+  "complete": "Generazione della mappa WFC completata!",
+  "width": "Larghezza: {value}",
+  "height": "Altezza: {value}",
+  "targetMapId": "ID mappa di destinazione: {value}",
+  "useSpecificPattern": "Usa uno schema specifico: {value}",
+  "patternMapId": "ID mappa dello schema: {value}",
+  "fallbackTileId": "ID tile di riserva: {value}",
+  "generate": "Genera la mappa",
+  "yes": "Sì",
+  "no": "No"
+}

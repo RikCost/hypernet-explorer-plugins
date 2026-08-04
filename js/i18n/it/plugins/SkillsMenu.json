@@ -1,0 +1,84 @@
+{
+  "title": "Abilità",
+  "back": "Indietro",
+  "recent": "Recenti",
+  "unit": {
+    "ap": "AP"
+  },
+  "cost": {
+    "mp": "{n} MP",
+    "ap": "{n} AP"
+  },
+  "discipline": {
+    "basic": "Disciplina di base",
+    "standard": "Disciplina ordinaria"
+  },
+  "section": {
+    "damage": "Danno",
+    "skillEffects": "Effetti dell'abilità",
+    "classifications": "Classificazioni"
+  },
+  "role": {
+    "offensive": {
+      "name": "Offensiva",
+      "description": "Abilità che infliggono danni.\nAbbatti i tuoi nemici."
+    },
+    "healing": {
+      "name": "Guarigione",
+      "description": "Cura HP e disturbi.\nRistora te stesso e gli alleati."
+    },
+    "support": {
+      "name": "Supporto",
+      "description": "Potenziamenti, indebolimenti e utilità.\nCambia le sorti della battaglia."
+    }
+  },
+  "option": {
+    "skillCategorization": "Categorizzazione Abilità",
+    "categoryModes": [
+      "Ruolo",
+      "Scuola",
+      "No"
+    ]
+  },
+  "cmd": {
+    "favourites": "Preferiti",
+    "levelUp": "Avanzamento",
+    "use": "Usa",
+    "favourite": "Preferita",
+    "unfavourite": "Rimuovi preferita",
+    "cancel": "Annulla"
+  },
+  "action": {
+    "useSkill": "[ Usa abilità ]",
+    "favourite": "[ Preferita ]",
+    "unfavourite": "[ Rimuovi preferita ]",
+    "back": "[ Indietro ]"
+  },
+  "info": {
+    "type": "Tipo:",
+    "scale": "Scala:",
+    "basic": "Base",
+    "none": "Nessuno",
+    "effect": "Effetto:",
+    "hpDmg": "Danno HP",
+    "mpDmg": "Danno MP",
+    "hpHeal": "Recupero HP",
+    "mpHeal": "Recupero MP",
+    "hpDrain": "Assorbi HP",
+    "mpDrain": "Assorbi MP",
+    "buffs": "Potenzia",
+    "debuffs": "Riduce",
+    "state": "Stato"
+  },
+  "target": {
+    "title": "Compagno bersaglio",
+    "prompt": "Stai incanalando {skill}. Scegli il compagno bersaglio:",
+    "allCompanions": "Tutti i compagni"
+  },
+  "empty": {
+    "title": "Codicillo del Grimorio",
+    "hint": "Scegli un'abilità dall'elenco a sinistra per esaminarne la scala elementale, il costo d'uso e le azioni alchemiche.",
+    "section": "Nessuna abilità catalogata in questa sezione.",
+    "category": "Nessuna abilità catalogata in questa categoria."
+  }
+}

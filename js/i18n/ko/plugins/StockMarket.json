@@ -1,0 +1,47 @@
+{
+  "info": {
+    "money": "잔액: {value}",
+    "oilPrice": "유가: {value}",
+    "oilShares": "원유 보유량: {value}주",
+    "oilValue": "원유 가치: {value}",
+    "netWorth": "총 자산: {value}",
+    "soulPrice": "영혼 가격: {value}",
+    "soulShares": "영혼 보유량: {value}주",
+    "soulValue": "영혼 가치: {value}"
+  },
+  "graph": {
+    "oilLabel": "원유",
+    "soulLabel": "영혼",
+    "oilCurrent": "원유: {value}",
+    "soulCurrent": "영혼: {value}"
+  },
+  "commands": {
+    "buy": "매수",
+    "sell": "매도",
+    "oil": "원유",
+    "souls": "영혼",
+    "cancel": "취소",
+    "sellAll": "전량 매도",
+    "share": "주",
+    "shares": "주"
+  },
+  "titles": {
+    "buyWhich": "어떤 주식을 매수하시겠습니까?",
+    "sellWhich": "어떤 주식을 매도하시겠습니까?",
+    "buyHowMany": "{stock}을(를) 몇 주 매수하시겠습니까?",
+    "sellHowMany": "{stock}을(를) 몇 주 매도하시겠습니까?"
+  },
+  "stockNames": {
+    "oil": "원유",
+    "souls": "영혼"
+  },
+  "appName": "",
+  "portfolio": {
+    "liquid": "",
+    "netWorth": ""
+  },
+  "ui": {
+    "oilTether": "",
+    "soulCrystal": ""
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "title": "Pianoforte",
+  "waveform": "Voce",
+  "octave": "Ottava",
+  "keyboardHints": "Shift cambia voce | F1-F5 scegli voce | Su/Giù ottava | Spazio tieni la nota | ESC per chiudere",
+  "padHints": "Pad: levetta/croce muovi il cursore | A suona | X voce | Y tieni la nota | LB/RB ottava | B chiudi"
+}

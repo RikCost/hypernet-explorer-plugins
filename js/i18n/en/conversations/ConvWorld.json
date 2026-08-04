@@ -1,0 +1,63 @@
+{
+  "topic": {
+    "crimeWave": [
+      "Third break-in on my street this month. Lock your doors.",
+      "Guards on every corner now. About time, with all this thieving.",
+      "I don't walk {group} after dark anymore. Not these days.",
+      "They say the crackdown is working. I say keep your purse close.",
+      "Everyone knows somebody who's been robbed lately. Everyone."
+    ],
+    "boom": [
+      "Work everywhere you look! {group} hasn't seen times like these in years.",
+      "My cousin got hired the day he asked. The day he asked!",
+      "Money's flowing in {group}. Even the beggars are picky now.",
+      "If you can't find a job this season, you're not looking.",
+      "Rents are climbing with the good times. Always a catch."
+    ],
+    "bust": [
+      "Half the shops on my street are dark now. Hard times.",
+      "Nobody's hiring in {group}. Nobody.",
+      "I've seen three friends lose their jobs this season. Three.",
+      "When work dries up, people get desperate. You can feel it.",
+      "Tighten your belt. This slump isn't done with {group} yet."
+    ],
+    "festival": [
+      "Are you going to {festival}? Everyone's going.",
+      "The streets smell like fried dough and lamp oil. I love {festival}.",
+      "Best week of the year, {festival}! Just watch your pockets in the crowd.",
+      "I danced till sunrise last night. {festival} only comes once a year."
+    ],
+    "epidemic": [
+      "Cover your mouth. The {epidemic} is going around.",
+      "Two houses on my lane are shut up with the {epidemic}. Stay clear.",
+      "Markets are half empty. Nobody wants to catch the {epidemic}.",
+      "Wash your hands, stranger. The {epidemic} doesn't care who you are."
+    ],
+    "headline": [
+      "Did you hear? {headline}",
+      "It's all anyone talks about: {headline}",
+      "The news says: {headline}, what times we live in."
+    ],
+    "outlaw": [
+      "That one looks familiar... wasn't there a bounty notice?",
+      "Watch yourself. There are wanted types walking around lately.",
+      "The guard's been showing a sketch around. Looked a lot like you, stranger."
+    ],
+    "market": {
+      "bullish": [
+        "My broker says oil only goes up from here. Everyone's buying.",
+        "Even the dock workers are trading shares now. Good times."
+      ],
+      "bearish": [
+        "Sold my shares before they're worth nothing. Market's rotten.",
+        "Don't put your savings in the market right now. Trust me."
+      ]
+    }
+  },
+  "fallback": {
+    "group": "town",
+    "festival": "the festival",
+    "epidemic": "sickness",
+    "headline": "strange news from afar"
+  }
+}

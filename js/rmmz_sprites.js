@@ -1224,7 +1224,14 @@ Sprite_Animation.prototype.initMembers = function() {
 Sprite_Animation.prototype.destroy = function(options) {
     Sprite.prototype.destroy.call(this, options);
     if (this._handle) {
-        this._handle.stop();
+        // Guard: if the underlying effect was already released elsewhere, the
+        // handle points at freed WASM memory and stop() would fault with
+        // "invalid index into function table". Swallow that so teardown finishes.
+        try {
+            this._handle.stop();
+        } catch (e) {
+            // handle already invalidated; nothing left to stop
+        }
     }
     this._effect = null;
     this._handle = null;

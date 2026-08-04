@@ -1,0 +1,90 @@
+{
+  "name": "Physics",
+  "blurb": "Matter, energy and spacetime under measurement, from slow-light condensates to a scalar resonance at 125 GeV. The precision is set by the apparatus, and the apparatus is built out of the bill of materials.",
+  "nodes": {
+    "phys_attosecond": {
+      "name": "Attosecond Light Pulses",
+      "desc": "High harmonic generation. A femtosecond driving field ionises argon or neon by tunnelling, accelerates the freed electron through half an optical cycle and recollides it with the parent ion; recombination emits odd harmonics of the fundamental out to a cutoff fixed by the ponderomotive energy. The harmonics are mutually phase locked, so filtering some twenty electronvolts of bandwidth around the cutoff leaves a single burst of about 250 attoseconds. The atomic unit of time is 24 attoseconds, and pump-probe below that figure no longer averages over the electronic motion it is meant to record."
+    },
+    "phys_slowlight": {
+      "name": "Slow Light Condensates",
+      "desc": "A coupling laser opens a transparency window in a sodium Bose-Einstein condensate at 450 nanokelvin, and the steep normal dispersion across that window gives a group index near ten million: the probe pulse crosses the cloud at some 17 metres per second, compressed to a length well under the cloud's own. Extinguishing the coupling beam adiabatically maps the pulse onto a ground-state spin coherence, where it is held for up to a millisecond; restoring the beam regenerates the pulse with its amplitude and phase intact."
+    },
+    "phys_neutrino": {
+      "name": "Neutrino Oscillation",
+      "desc": "The Sudbury observatory holds a kilotonne of heavy water two kilometres underground and separates three reaction channels: charged current, sensitive to electron neutrinos alone, neutral current, sensitive to all three flavours equally, and elastic scattering. The neutral-current rate gives a total boron-8 flux of 5.09 million per square centimetre per second, in agreement with the standard solar model, while the charged-current rate accounts for a third of it. The balance arrives as muon and tau neutrinos, and flavour change in flight requires a nonzero mass splitting between the eigenstates."
+    },
+    "phys_graphene": {
+      "name": "Isolation of Graphene",
+      "desc": "Repeated cleaving of pyrolytic graphite with adhesive tape leaves flakes one atom thick on a silicon wafer capped with 300 nanometres of oxide, where a single layer becomes visible in an optical microscope through a few percent of interference contrast. Transport on the flakes gives a linear dispersion with Fermi velocity near a million metres per second, room-temperature mobility above 10,000 square centimetres per volt second, and Hall plateaux at filling factors four times n plus a half, the sequence expected of massless Dirac fermions."
+    },
+    "phys_teleport": {
+      "name": "Quantum Teleportation of Atoms",
+      "desc": "Three beryllium or calcium ions sit in a segmented linear trap. The state to be transferred is written on ion one, ions two and three are entangled, and a joint measurement on ions one and two projects that pair onto one of four Bell states; the two-bit outcome selects which of four rotations is applied to ion three, which then carries the original state. Fidelity is 0.75 to 0.78 against a classical bound of 0.66 and the sequence runs in about four milliseconds. The input state is destroyed by the measurement that reads it, and only the two classical bits cross the trap."
+    },
+    "phys_metamaterial": {
+      "name": "Metamaterial Cloaking",
+      "desc": "Ten concentric cylinders carry split-ring resonators on a pitch one tenth of the free-space wavelength, so at 8.5 gigahertz the array behaves as a continuous medium whose effective permeability is graded from zero at the inner face to unity at the outer. The transformation-optics prescription routes the wave around the hidden cylinder and restores its phase front downstream. Field mapping shows a residual shadow and a few percent of reflection: the resonators are lossy, and the design holds over a fractional bandwidth of about one percent."
+    },
+    "phys_topological": {
+      "name": "Topological Insulators",
+      "desc": "In bismuth antimonide, and more cleanly in bismuth selenide, spin-orbit coupling inverts the ordering of the conduction and valence bands, and the change of the Z2 invariant between crystal and vacuum forces an odd number of gapless Dirac cones onto the surface. Angle-resolved photoemission resolves a single cone with the spin locked perpendicular to the momentum. Elastic backscattering into the opposite momentum would have to reverse that spin, so it is forbidden at first order: the bulk stays insulating and the surface channel survives non-magnetic disorder that would localise an ordinary two-dimensional metal."
+    },
+    "phys_spintronics": {
+      "name": "Giant Magnetoresistance",
+      "desc": "In an iron-chromium multilayer the two ferromagnetic films couple antiparallel through a chromium spacer about one nanometre thick, and a field of a few tens of millitesla aligns them. The mean free path of a conduction electron depends on whether its spin is parallel or antiparallel to the local magnetisation, so the resistance of the stack falls by up to half at 4.2 kelvin and by some ten percent at room temperature. Read heads built first on the multilayer and then on magnetic tunnel junctions carry areal density past 100 gigabits per square inch."
+    },
+    "phys_dark_energy": {
+      "name": "Accelerating Universe Confirmed",
+      "desc": "Type Ia supernovae are standardised through the width-luminosity relation, which ties peak absolute magnitude to the decline rate of the light curve to within about 0.15 magnitudes. Out to redshift one they come in 0.2 to 0.3 magnitudes fainter than any decelerating expansion allows, and neither grey dust nor evolution of the progenitors reproduces the deficit with the redshift dependence required. Combined with the microwave background and the baryon acoustic scale, the fit gives a flat geometry, a matter density of 0.27 and a component of equation of state minus one within a tenth holding the remainder."
+    },
+    "phys_superconductor": {
+      "name": "Iron-Based Superconductors",
+      "desc": "Fluorine-doped lanthanum iron arsenide oxide superconducts at 26 kelvin, and substituting the rare earth raises the critical temperature to 55 kelvin in the samarium compound. Pairing takes place in the iron-arsenic planes, with hole and electron pockets on separate sheets of the Fermi surface and a gap that is nodeless on each sheet but changes sign between them. The parent compounds are antiferromagnetic metals whose order is suppressed by doping, and the superconducting dome opens where that order closes; upper critical fields exceed 50 tesla with little anisotropy."
+    },
+    "phys_lhc": {
+      "name": "First Beam at the LHC",
+      "desc": "The machine occupies the 26.7 kilometre LEP tunnel: 1,232 dipoles at 8.3 tesla bend two counter-rotating proton beams, 392 quadrupoles focus them, and sixteen radiofrequency cavities at 400 megahertz hold the bunch structure. Each beam carries 2,808 bunches of about 115 billion protons on a 25 nanosecond spacing, for some 360 megajoules of stored energy per beam at the design seven tera-electronvolts. Beam is threaded around the ring in both directions on the first attempt; nine days later a defective magnet interconnect vaporises, 53 magnets are damaged and the ring is down for fourteen months."
+    },
+    "phys_quantum_machine": {
+      "name": "The First Quantum Machine",
+      "desc": "A film bulk acoustic resonator 40 micrometres across, its dilatational mode at 6 gigahertz, is cooled in a dilution refrigerator to 25 millikelvin, where the thermal occupation of that mode falls below 0.07 phonons. A phase qubit tuned into resonance exchanges a single quantum with it in about ten nanoseconds and swaps it back, and the tomography that follows shows the resonator in a superposition of zero and one phonon. The oscillator contains of order ten trillion atoms; the state survives some six nanoseconds."
+    },
+    "phys_ftl_neutrino": {
+      "name": "The Faster-Than-Light Anomaly",
+      "desc": "Muon neutrinos are timed over the 730 kilometres from CERN to Gran Sasso against caesium clocks disciplined by GPS, and the arrival maximum falls 60.7 nanoseconds early, with 6.9 statistical and 7.4 systematic, a relative excess of 25 parts per million over the speed of light. The systematic budget is dominated by the fibre chain carrying the timing signal to the detector master clock. Metrology afterwards finds one connector seated loose, worth 73 nanoseconds, and an oscillator drift of the opposite sign; corrected, the velocity is consistent with c. Eris later admits to the connector."
+    },
+    "phys_higgs": {
+      "name": "Discovery of the Higgs Boson",
+      "desc": "ATLAS and CMS each analyse about five inverse femtobarns at seven tera-electronvolts and five more at eight, and each reports an excess in the two-photon and four-lepton channels at 125.3 giga-electronvolts, of local significance 5.0 and 4.9 standard deviations. The observed width is consistent with detector resolution, spin-parity fits favour zero-plus, and the signal strengths across the two-photon, ZZ, WW and tau-tau channels agree with a scalar whose coupling to each particle scales with that particle's mass. The two collaborations keep their analyses blinded from each other until the joint seminar."
+    },
+    "phys_emdrive": {
+      "name": "The EmDrive",
+      "desc": "A sealed copper frustum is driven on a transverse electric mode near 2.45 gigahertz and reported to yield a few tens of micronewtons per kilowatt, attributed to unequal radiation pressure on the wide and narrow end plates. Momentum conservation forbids net thrust from a closed cavity, and the quoted figure sits three orders of magnitude below the resolution of the pendulums used to obtain it. Torsion balance retests at ten micropascal reproduce the signal, then reproduce it with the magnetron detuned: it tracks thermal expansion of the mount and the Lorentz force on the unshielded feed cable in the Earth's field."
+    },
+    "phys_coldfusion": {
+      "name": "The Energy Catalyzer",
+      "desc": "Nickel powder loaded with hydrogen and heated by a resistive element is presented as a nickel-to-copper fusion reactor of gain six or better. Output is inferred from the enthalpy of a steam loop whose dryness fraction is never measured, so entrained water can inflate the figure several-fold, and later runs are read off a thermal camera set to an assumed emissivity. Input power is metered upstream of a control box the inventor keeps sealed. No neutron flux above background, no annihilation line at 511 kilo-electronvolts and no isotopic shift in the spent charge is ever produced, and the charge is never assayed by an independent laboratory."
+    },
+    "phys_electric_universe": {
+      "name": "Electric Universe Theory",
+      "desc": "A cosmology in which stars are anodes in a galactic glow discharge, gravity is a weak residue of electrostatics, and craters, canyons and comet jets are electrical machining scars. Sustaining the solar luminosity from an external current calls for something near a quintillion amperes; a current that size would radiate a synchrotron signature no all-sky survey records at any frequency, and would deflect spacecraft magnetometers by orders of magnitude more than they read. The model derives no main sequence, no stellar lifetime and no abundance pattern, and states no number a measurement could falsify."
+    },
+    "phys_sc_magnets": {
+      "name": "Superconducting Dipole Magnets",
+      "desc": "Each dipole is a cold mass fifteen metres long holding both beam apertures inside a single iron yoke, wound in two layers of Rutherford cable made of niobium-titanium filaments six micrometres across in a copper matrix. At 8.3 tesla and 11,850 amperes the Lorentz force on the coil reaches some 340 tonnes per metre, so the winding is prestressed in austenitic steel collars at assembly and must not go slack as it contracts on cooldown. Integrated field harmonics are specified to a few units in ten thousand; every magnet is measured warm and cold on its own bench, shimmed, and only then assigned a position in the ring."
+    },
+    "phys_cryogenics": {
+      "name": "Cryogenics Near Absolute Zero",
+      "desc": "Niobium-titanium carries the design current density only below about nine kelvin at 8.3 tesla, and the margin against a resistive transition is a fraction of a kelvin. The ring is therefore bathed in superfluid helium at 1.9 kelvin, whose effective thermal conductivity is some thousand times copper's and which spreads a local deposit before it can drive a magnet normal. The inventory is 96 tonnes of helium across eight independent sectors, served by refrigeration units of 2.4 kilowatts at 1.8 kelvin. Quench protection has to remove about a gigajoule per sector, diverting the current into dump resistors and firing heaters that spread the transition over the whole coil."
+    },
+    "phys_detectors": {
+      "name": "The ATLAS and CMS Detectors",
+      "desc": "Both experiments are built as concentric shells around a crossing point: silicon pixels and strips for tracking, then electromagnetic and hadronic calorimetry, then muon chambers outside the return yoke. ATLAS is 46 metres long and 25 across, with a thin two tesla solenoid and an air-core toroid for the muon system; CMS is smaller, heavier at 14,000 tonnes, and puts every layer inside a 3.8 tesla solenoid. Between them they read some hundred million channels. Bunches cross every 25 nanoseconds and each crossing leaves twenty or more overlapping interactions, so every channel is timed as well as measured and each hit is assigned to a vertex reconstructed to tens of micrometres."
+    },
+    "phys_grid": {
+      "name": "The Trigger and the Grid",
+      "desc": "Forty megahertz of bunch crossings has to be reduced to a few hundred events written per second. A first level built from custom electronics holds every channel in a pipeline for 2.5 microseconds while coarse calorimeter and muon data produce a fixed-latency accept at about 100 kilohertz; a farm of commodity processors then runs partial reconstruction on the accepted events and cuts them by a further factor of several hundred. What survives, some 300 megabytes per second, is written to tape at CERN and replicated across a tiered grid of about 170 computing centres in 42 countries, where full reconstruction and the simulated samples are produced."
+    }
+  }
+}

@@ -1,0 +1,422 @@
+/* Global Custom Scrollbars styled like HistorySimulator.js */
+::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 90, 43, 0.4) !important;
+    border-radius: 3px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 90, 43, 0.6) !important;
+}
+
+body {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Force nearest-neighbor scaling on the game canvas so that canvas-rendered text
+   (e.g. RPG Maker Window_Message) stays sharp when the browser scales it up.
+   Without this, bilinear interpolation blurs all canvas text. */
+#gameCanvas {
+    image-rendering: -webkit-optimize-contrast; /* Safari */
+    image-rendering: -moz-crisp-edges;          /* Firefox */
+    image-rendering: crisp-edges;               /* Standard */
+    image-rendering: pixelated;                 /* Chrome / Electron */
+}
+#errorPrinter {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 640px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    text-shadow: 1px 1px 3px #000;
+    font-size: 20px;
+    color: #fff;
+    z-index: 9;
+}
+#errorName {
+    color: #ff0;
+    font-weight: bold;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+#errorMessage {
+    color: #fff;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+#retryButton {
+    font-size: 20px;
+    color: #fff;
+    background-color: #000;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 10px;
+}
+#fpsCounterBox {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 90px;
+    height: 40px;
+    background: #222;
+    opacity: 0.8;
+    z-index: 8;
+}
+#fpsCounterLabel {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 5px 10px;
+    height: 30px;
+    line-height: 32px;
+    font-size: 12px;
+    font-family: rmmz-numberfont, sans-serif;
+    color: #fff;
+    text-align: left;
+}
+#fpsCounterNumber {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 5px 10px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 24px;
+    font-family: rmmz-numberfont, monospace;
+    color: #fff;
+    text-align: right;
+}
+
+/* Loading indicator: a half-closed golden eye caged in a tesseract.
+   The hypercube is drawn entirely in 2D (nested squares + the four corner
+   struts of the cell-first projection); the 4D rotation is faked by letting
+   the two inner cells swap depth in antiphase while the whole projection
+   turns and skews, which is what a real 8-cell eversion looks like on a
+   flat screen. The eye never moves: it is the observer, not the object. */
+#loadingSpinner {
+    /* Removes the centering rules */
+    margin: 0px;
+    position: fixed; /* Fixed ensures it stays in the corner of the viewport */
+
+    /* Anchors it to the bottom right with some padding */
+    bottom: 20px;
+    right: 20px;
+
+    width: 120px;
+    height: 120px;
+    z-index: 10;
+
+    /* Centers the hypercube so the eye pseudo-elements can share its middle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#loadingSpinnerImage {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    width: 76px;
+    height: 76px;
+    position: relative; /* Anchor for the inner cells */
+    z-index: 1;
+
+    /* Outer cell of the tesseract */
+    border: 2px solid #856404;
+
+    /* Backgrounds, painted top layer first:
+       1. a dark core so the struts do not cross behind the eye
+       2. the / strut pair
+       3. the \ strut pair
+       Each strut layer is a 2px band along one diagonal of the square, so
+       every cell corner rides a strut no matter how far it has receded. */
+    background-image:
+        radial-gradient(circle at 50% 50%,
+            rgba(10, 8, 2, 0.92) 0, rgba(10, 8, 2, 0.92) 16px,
+            rgba(10, 8, 2, 0) 18px),
+        linear-gradient(to bottom right,
+            transparent calc(50% - 1px),
+            rgba(255, 215, 0, 0.45) calc(50% - 1px),
+            rgba(255, 215, 0, 0.45) calc(50% + 1px),
+            transparent calc(50% + 1px)),
+        linear-gradient(to bottom left,
+            transparent calc(50% - 1px),
+            rgba(255, 215, 0, 0.45) calc(50% - 1px),
+            rgba(255, 215, 0, 0.45) calc(50% + 1px),
+            transparent calc(50% + 1px));
+
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.45));
+
+    animation: fadein 2s ease, hypercube-turn 9s linear infinite;
+}
+
+/* The two inner cells. Same box, driven purely by scale so their corners
+   stay glued to the struts; the negative delay puts the second one on the
+   opposite half of the cycle, so one always falls inward while the other
+   rises out, the give-away of a rotation through the fourth axis. */
+#loadingSpinnerImage::before,
+#loadingSpinnerImage::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #FFD700;
+    animation: hypercube-cell 3s ease-in-out infinite alternate;
+}
+#loadingSpinnerImage::after {
+    border-color: rgba(255, 243, 176, 0.7);
+    animation-delay: -3s;
+}
+
+/* Half-closed eye suspended in the middle of the projection. */
+#loadingSpinner::before {
+    /* Upper eyelid: a downturned arc that droops over the eye */
+    content: "";
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 15px);
+    width: 30px;
+    height: 15px;
+    border-top: 3px solid #FFD700;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+    z-index: 2;
+    animation: eye-blink 4.5s ease-in-out infinite;
+}
+#loadingSpinner::after {
+    /* Iris peeking out beneath the lowered lid */
+    content: "";
+    position: absolute;
+    top: calc(50% - 1px);
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%,
+        #2a1c00 0, #2a1c00 28%, #FFD700 34%, #FFD700 100%);
+    box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+    z-index: 2;
+    animation: eye-blink 4.5s ease-in-out infinite;
+}
+
+@keyframes hypercube-turn {
+    0% {
+        transform: rotate(0deg) skewX(0deg) skewY(0deg);
+    }
+    25% {
+        transform: rotate(90deg) skewX(8deg) skewY(-5deg);
+    }
+    50% {
+        transform: rotate(180deg) skewX(0deg) skewY(0deg);
+    }
+    75% {
+        transform: rotate(270deg) skewX(-8deg) skewY(5deg);
+    }
+    100% {
+        transform: rotate(360deg) skewX(0deg) skewY(0deg);
+    }
+}
+@keyframes hypercube-cell {
+    0% {
+        transform: scale(0.28);
+        opacity: 0.65;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.92);
+        opacity: 0.65;
+    }
+}
+@keyframes eye-blink {
+    0%, 88%, 100% {
+        transform: scaleY(1);
+    }
+    93% {
+        transform: scaleY(0.12);
+    }
+}
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hide scrollbars during game loading */
+html {
+    overflow: hidden;
+}
+body {
+    overflow: hidden;
+}
+
+/* Map Info HUD - bottom-right card (MapInfoHUD in TimeDateSystem.js) */
+#map-info-hud {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 200;
+    font-family: 'Lora', serif;
+    pointer-events: none;
+    background: var(--bg-secondary-hover);
+    border: 3px double var(--text-primary-hover);
+    border-radius: 6px;
+    box-shadow:
+        0 10px 28px var(--shadow-black-translucent-55),
+        inset 0 0 30px var(--shadow-shadow-alt-2-hover-translucent-8);
+    padding: 18px 26px;
+    min-width: 310px;
+    /* Hidden until the map scene finishes fading in; MapInfoHUD._updateReveal
+       adds .mih-visible, which eases the card in from below. */
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+}
+#map-info-hud.mih-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+#map-info-hud .mih-datetime {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 19px;
+    color: var(--text-success-active);
+    line-height: 1.7;
+}
+#map-info-hud .mih-star {
+    color: var(--text-primary-hover);
+    font-size: 19px;
+    flex-shrink: 0;
+}
+#map-info-hud .mih-location {
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text-primary-hover);
+    letter-spacing: 0.4px;
+    padding: 3px 0 6px 28px;
+    line-height: 1.5;
+}
+#map-info-hud .mih-region {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 0 4px 28px;
+    line-height: 1.4;
+}
+#map-info-hud .mih-region-lbl {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-success-active);
+    letter-spacing: 0.3px;
+}
+#map-info-hud .mih-region-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary-hover);
+    text-align: right;
+}
+#map-info-hud .mih-food {
+    padding-bottom: 6px;
+}
+#map-info-hud .mih-food .mih-region-lbl {
+    color: var(--text-primary-hover);
+}
+#map-info-hud .mih-food .mih-region-val {
+    color: var(--text-success-active);
+    font-weight: 700;
+}
+#map-info-hud .mih-temp .mih-region-val {
+    font-weight: 700;
+}
+#map-info-hud .mih-temp-cold { color: #4fc3f7; }
+#map-info-hud .mih-temp-cool { color: #81d4fa; }
+#map-info-hud .mih-temp-mild { color: var(--text-primary-hover); }
+#map-info-hud .mih-temp-warm { color: #ffb74d; }
+#map-info-hud .mih-temp-hot  { color: var(--text-blood-red); }
+#map-info-hud .mih-temp-drain {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-blood-red);
+    opacity: 0.85;
+}
+#map-info-hud .mih-needs {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 6px;
+}
+#map-info-hud .mih-need {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#map-info-hud .mih-need-lbl {
+    flex: 0 0 76px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary-hover);
+    letter-spacing: 0.3px;
+}
+#map-info-hud .mih-need-bar {
+    flex: 1;
+    height: 10px;
+    border-radius: 5px;
+    background: var(--shadow-black-translucent-55);
+    overflow: hidden;
+}
+#map-info-hud .mih-need-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.25s ease-out;
+}
+#map-info-hud .mih-need-pct {
+    flex: 0 0 56px;
+    text-align: right;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-success-active);
+}
+#map-info-hud .mih-green  { background: var(--accent-green-3); }
+#map-info-hud .mih-blue   { background: var(--text-navy); }
+#map-info-hud .mih-purple { background: #7b1fa2; }
+#map-info-hud .mih-orange { background: #f4511e; }
+#map-info-hud .mih-teal   { background: #00897b; }
+#map-info-hud .mih-fuel   { background: #d4a017; }
+#map-info-hud .mih-amber  { background: var(--text-primary-hover); }
+#map-info-hud .mih-red    { background: var(--text-blood-red); }

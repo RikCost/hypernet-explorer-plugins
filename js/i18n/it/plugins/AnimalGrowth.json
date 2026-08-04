@@ -1,0 +1,20 @@
+{
+  "stage": {
+    "baby": "Cucciolo",
+    "adult": "Adulto"
+  },
+  "collected": "\\I[{icon}]Raccolto \\c[14]{item}\\c[0] ×{qty}!",
+  "mapNumbered": "Mappa {id}",
+  "itemNumbered": "Oggetto #{id}",
+  "petNote": "Un {stage} {animal} allevato a {place}.",
+  "cannotKeep": "Qui non puoi tenere animali.",
+  "noAnimalToSell": "Non c'è nessun animale da vendere qui.",
+  "sold": "Venduto \\c[14]{animal}\\c[0] per €{amount}!",
+  "nothingToCollect": "Non c'è ancora niente da raccogliere.",
+  "youngAnimal": {
+    "one": "Un giovane \\c[14]{animal}\\c[0]. Sarà adulto tra circa {count} giorno.",
+    "other": "Un giovane \\c[14]{animal}\\c[0]. Sarà adulto tra circa {count} giorni."
+  },
+  "pleased": "Il \\c[14]{animal}\\c[0] è contento di vederti.",
+  "nothingReady": "Il \\c[14]{animal}\\c[0] non ha ancora niente di pronto."
+}

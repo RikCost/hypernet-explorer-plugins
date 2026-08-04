@@ -1,0 +1,200 @@
+{
+  "1": {
+    "name": "Indépendant"
+  },
+  "2": {
+    "name": "Sorcière"
+  },
+  "3": {
+    "name": "Nonne"
+  },
+  "4": {
+    "name": "Chevalier"
+  },
+  "5": {
+    "name": "Catcheur"
+  },
+  "6": {
+    "name": "PDG"
+  },
+  "7": {
+    "name": "Vampire"
+  },
+  "8": {
+    "name": "Cultiste"
+  },
+  "9": {
+    "name": "Médecin de combat"
+  },
+  "10": {
+    "name": "Élémentaliste"
+  },
+  "11": {
+    "name": "Artiste martial"
+  },
+  "12": {
+    "name": "Enchanteur"
+  },
+  "13": {
+    "name": "Berserker"
+  },
+  "14": {
+    "name": "Acrobate"
+  },
+  "15": {
+    "name": "Moine"
+  },
+  "16": {
+    "name": "Bagarreur"
+  },
+  "17": {
+    "name": "Boxeur"
+  },
+  "18": {
+    "name": "Catcheur pro"
+  },
+  "19": {
+    "name": "Mage de feu"
+  },
+  "20": {
+    "name": "Mage de glace"
+  },
+  "21": {
+    "name": "Roublard"
+  },
+  "22": {
+    "name": "Paladin"
+  },
+  "23": {
+    "name": "Occultiste"
+  },
+  "24": {
+    "name": "Rôdeur"
+  },
+  "25": {
+    "name": "Clerc"
+  },
+  "26": {
+    "name": "Samouraï"
+  },
+  "27": {
+    "name": "Archimage"
+  },
+  "28": {
+    "name": "Éclaireur"
+  },
+  "29": {
+    "name": "Oracle"
+  },
+  "30": {
+    "name": "Gladiateur"
+  },
+  "31": {
+    "name": "Nécromancien"
+  },
+  "32": {
+    "name": "Commandant"
+  },
+  "33": {
+    "name": "Gardien"
+  },
+  "34": {
+    "name": "Lame-sort"
+  },
+  "35": {
+    "name": "Barde"
+  },
+  "36": {
+    "name": "Illusionniste"
+  },
+  "37": {
+    "name": "Mage de bataille"
+  },
+  "38": {
+    "name": "Mercenaire"
+  },
+  "39": {
+    "name": "Sage"
+  },
+  "40": {
+    "name": "Barbare"
+  },
+  "41": {
+    "name": "Médecin"
+  },
+  "42": {
+    "name": "Scientifique"
+  },
+  "43": {
+    "name": "Pompier"
+  },
+  "44": {
+    "name": "Policier"
+  },
+  "45": {
+    "name": "Cuisinier"
+  },
+  "46": {
+    "name": "Journaliste"
+  },
+  "47": {
+    "name": "Ouvrier du bâtiment"
+  },
+  "48": {
+    "name": "Universitaire"
+  },
+  "49": {
+    "name": "Psychologue"
+  },
+  "50": {
+    "name": "Archéologue"
+  },
+  "51": {
+    "name": "Infirmière"
+  },
+  "52": {
+    "name": "Chasseur-cueilleur"
+  },
+  "53": {
+    "name": "Physicien"
+  },
+  "54": {
+    "name": "Mécanicien"
+  },
+  "55": {
+    "name": "Commerçant"
+  },
+  "56": {
+    "name": "Fermier"
+  },
+  "57": {
+    "name": "Bûcheron"
+  },
+  "58": {
+    "name": "Météorologue"
+  },
+  "59": {
+    "name": "Prêtre"
+  },
+  "60": {
+    "name": "Artiste"
+  },
+  "61": {
+    "name": "Demi-dieu"
+  },
+  "62": {
+    "name": "Misérable"
+  },
+  "63": {
+    "name": "Bête"
+  },
+  "64": {
+    "name": "Mimique"
+  },
+  "65": {
+    "name": "Monstre"
+  },
+  "66": {
+    "name": "Cyborg de mana"
+  }
+}

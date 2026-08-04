@@ -1,0 +1,7 @@
+{
+  "title": "Visual Piano",
+  "waveform": "Voice",
+  "octave": "Octave",
+  "keyboardHints": "Shift voice | F1-F5 pick voice | Up/Down octave | Space sustain | ESC to close",
+  "padHints": "Pad: Stick/D-pad move cursor | A play | X voice | Y sustain | LB/RB octave | B close"
+}

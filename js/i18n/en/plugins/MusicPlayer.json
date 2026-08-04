@@ -1,0 +1,22 @@
+{
+  "genre": {
+    "Auto": "Auto",
+    "Battle": "Battle",
+    "Dungeon": "Dungeon",
+    "Exploration": "Exploration",
+    "Village": "Village",
+    "City": "City",
+    "Cave": "Cave",
+    "Desert": "Desert",
+    "Ice": "Ice",
+    "Digital": "Digital",
+    "Eldritch": "Eldritch",
+    "Industrial": "Industrial",
+    "Ethereal": "Ethereal"
+  },
+  "play": "▶ PLAY",
+  "pause": "▮▮ PAUSE",
+  "stop": "■ STOP",
+  "procSynth": "PROC SYNTH",
+  "playing": "Playing"
+}

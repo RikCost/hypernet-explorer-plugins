@@ -1,0 +1,38 @@
+{
+  "targetedMiss": "L'attacco mirato ha mancato il bersaglio!",
+  "elementVerb": {
+    "2": "bruciato",
+    "3": "congelato",
+    "4": "folgorato",
+    "5": "inzuppato",
+    "6": "spaccato",
+    "7": "spazzato via",
+    "8": "sciolto",
+    "9": "corrotto",
+    "10": "maledetto"
+  },
+  "elementVerbDefault": "distrutto",
+  "partElementalHit": "{part} di {enemy} è stato {effect}!",
+  "partSevered": "{part} di {enemy} è stato reciso!",
+  "partDestroyed": "{part} di {enemy} è stato distrutto!",
+  "customPartMessage": "{enemy} {message}",
+  "partSeverelyDamaged": "{part} gravemente danneggiato, ma il mostro è ancora troppo forte!",
+  "preciseStrike": "Un colpo preciso a {part}!",
+  "partWasHit": "{part} di {enemy} è stato colpito!",
+  "paramNames": [
+    "PV Max",
+    "PM Max",
+    "Attacco",
+    "Magia",
+    "Difesa",
+    "Dif. Mag.",
+    "Agilità",
+    "Fortuna"
+  ],
+  "statFallback": "Statistica",
+  "elementLabel": "Elemento:",
+  "weakToLabel": "Debole a:",
+  "statesLabel": "Stati:",
+  "bodyParts": "Parti del Corpo",
+  "none": "Nessuno"
+}

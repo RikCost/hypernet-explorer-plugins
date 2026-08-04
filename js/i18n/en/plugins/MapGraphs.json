@@ -1,0 +1,19 @@
+{
+  "jsonGenerated": "Map connections JSON generated in console!",
+  "checkConsole": "Check the developer console (F12) for the complete JSON.",
+  "cacheCleared": "Connection cache cleared!",
+  "mostConnected": "Most connected: Map {map} ({links} links)",
+  "mode": "Mode: {mode} analysis",
+  "modeHardcoded": "Hardcoded",
+  "modeRuntime": "Runtime",
+  "noMapLoaded": "Cannot display map. No map is currently loaded.",
+  "controls": "Mouse: Pan | Wheel: Zoom | Click: Select/Deselect | Esc: Exit",
+  "noConnections": "No connections found.",
+  "cluster": "Cluster",
+  "mapInfo": "Map Info",
+  "name": "Name",
+  "status": "Status",
+  "visited": "Visited",
+  "notVisited": "Not Visited",
+  "connections": "Connections"
+}

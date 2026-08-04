@@ -1,0 +1,31 @@
+{
+  "title": "Alchemistry",
+  "back": "Back",
+  "managing": "Managing",
+  "requiredReagents": "Required Reagents",
+  "steps": "Procedure",
+  "noSteps": "No steps recorded. Add one to begin the procedure.",
+  "addStep": "Add Step",
+  "execute": "Execute Project",
+  "clearSteps": "Clear Steps",
+  "selectAction": "Select an Action",
+  "selectReagent": "Select a Reagent",
+  "cancel": "Cancel",
+  "processing": "Processing",
+  "remaining": "remaining",
+  "notEnough": "You don't have enough of this reagent.",
+  "stepAt": "at",
+  "stepFor": "for",
+  "empty": "Select a project to inspect its formula and procedure.",
+  "actions": {
+    "combine": "Combine",
+    "heat": "Heat",
+    "distill": "Distill",
+    "filter": "Filter",
+    "wash": "Wash",
+    "dry": "Dry"
+  },
+  "projectName": "Project {n}",
+  "successCreated": "Alchemistry Success! Created {item}",
+  "failed": "Alchemistry Failed! Incorrect steps or reagents."
+}

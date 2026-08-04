@@ -1,0 +1,11 @@
+{
+  "player1": "Giocatore 1",
+  "player2": "Giocatore 2",
+  "player2Cpu": "Giocatore 2 (CPU)",
+  "controlsP1": "Frecce: Mira | Tieni Spazio: Carica potenza | Rilascia: Tira",
+  "controlsP2": "A/D o Tastierino 4/6: Mira | Tieni E o Tastierino 5/0: Carica potenza",
+  "cpuThinking": "La CPU sta pensando...",
+  "power": "Potenza: {pct}%",
+  "youWin": "Hai vinto!",
+  "cpuWins": "Vince la CPU!"
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Seleziona piano",
+  "noFloors": "Nessun altro piano scoperto",
+  "unknown": "???",
+  "omegaCity": "F-22 Ipermetro",
+  "hypermetro": "F-1 Ipermetro",
+  "hypernetPoint": "F0 - Punto Hypernet",
+  "unknownMap": "Sconosciuta",
+  "floorHud": "Piano: {num}"
+}

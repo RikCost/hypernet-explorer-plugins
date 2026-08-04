@@ -1,0 +1,47 @@
+{
+  "info": {
+    "money": "Argent : {value}",
+    "oilPrice": "Prix du pétrole : {value}",
+    "oilShares": "Actions Pétrole : {value}",
+    "oilValue": "Valeur Pétrole : {value}",
+    "netWorth": "Valeur nette : {value}",
+    "soulPrice": "Prix des âmes : {value}",
+    "soulShares": "Actions Âmes : {value}",
+    "soulValue": "Valeur Âmes : {value}"
+  },
+  "graph": {
+    "oilLabel": "Pétrole",
+    "soulLabel": "Âmes",
+    "oilCurrent": "Pétrole : {value}",
+    "soulCurrent": "Âmes : {value}"
+  },
+  "commands": {
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "oil": "Pétrole",
+    "souls": "Âmes",
+    "cancel": "Annuler",
+    "sellAll": "Tout vendre",
+    "share": "Action",
+    "shares": "Actions"
+  },
+  "titles": {
+    "buyWhich": "Quelle action acheter ?",
+    "sellWhich": "Quelle action vendre ?",
+    "buyHowMany": "Combien d'actions {stock} acheter ?",
+    "sellHowMany": "Combien d'actions {stock} vendre ?"
+  },
+  "stockNames": {
+    "oil": "Pétrole",
+    "souls": "Âmes"
+  },
+  "appName": "",
+  "portfolio": {
+    "liquid": "",
+    "netWorth": ""
+  },
+  "ui": {
+    "oilTether": "",
+    "soulCrystal": ""
+  }
+}

@@ -1,0 +1,566 @@
+{
+  "ui": {
+    "title": "Tavola Periodica",
+    "back": "Indietro",
+    "lanthanides": "Lantanidi",
+    "actinides": "Attinidi",
+    "esotericSection": "Elementi Esoterici",
+    "props": {
+      "symbol": "Simbolo",
+      "number": "Numero Atomico",
+      "mass": "Massa Atomica",
+      "category": "Categoria",
+      "state": "Stato a STP",
+      "discoveredBy": "Scoperto Da",
+      "year": "Anno",
+      "origin": "Origine"
+    }
+  },
+  "categories": {
+    "alkaliMetal": "Metallo Alcalino",
+    "alkalineEarth": "Metallo Alcalino-terroso",
+    "transitionMetal": "Metallo di Transizione",
+    "postTransition": "Post-Transizione",
+    "metalloid": "Metalloide",
+    "nonmetal": "Non-metallo",
+    "halogen": "Alogeno",
+    "nobleGas": "Gas Nobile",
+    "lanthanide": "Lantanide",
+    "actinide": "Attinide",
+    "esoteric": "Esoterico"
+  },
+  "states": {
+    "solid": "Solido",
+    "liquid": "Liquido",
+    "gas": "Gas",
+    "unknown": "Sconosciuto",
+    "mythical": "Mitico",
+    "superposed": "Sovrapposto"
+  },
+  "data": {
+    "H": {
+      "name": "Idrogeno",
+      "desc": "L'elemento più leggero e abbondante dell'universo, componente fondamentale delle stelle e dell'acqua. Gas incolore e altamente infiammabile nelle condizioni standard."
+    },
+    "He": {
+      "name": "Elio",
+      "desc": "Gas nobile prodotto dalla fusione nucleare nelle stelle e accumulato nei giacimenti di gas naturale. Inodore, incolore e secondo elemento per abbondanza nell'universo."
+    },
+    "Li": {
+      "name": "Litio",
+      "desc": "Il più leggero di tutti i metalli, abbastanza morbido da tagliare con un coltello. Reagisce vigorosamente con l'acqua ed è il componente principale delle batterie ricaricabili moderne."
+    },
+    "Be": {
+      "name": "Berillio",
+      "desc": "Un metallo eccezionalmente rigido e leggero usato nelle leghe aerospaziali e nelle finestre per raggi X. Tossico se inalato come polvere, ma insostituibile nell'ingegneria di precisione."
+    },
+    "B": {
+      "name": "Boro",
+      "desc": "Un metalloide essenziale per le pareti cellulari delle piante, usato nel vetro, nelle ceramiche e nei reattori nucleari come assorbitore di neutroni."
+    },
+    "C": {
+      "name": "Carbonio",
+      "desc": "La spina dorsale di tutta la chimica organica conosciuta, il carbonio forma più composti di qualsiasi altro elemento. Dal diamante alla grafite fino alla vita stessa, la sua versatilità è insuperabile."
+    },
+    "N": {
+      "name": "Azoto",
+      "desc": "Costituisce il 78% dell'atmosfera terrestre ed è essenziale per proteine e DNA, eppure nella sua forma pura è chimicamente inerte a temperatura ambiente."
+    },
+    "O": {
+      "name": "Ossigeno",
+      "desc": "Il respiro della vita e il carburante della combustione. L'ossigeno costituisce il 21% dell'atmosfera terrestre ed è l'elemento più abbondante nella crosta terrestre in termini di massa."
+    },
+    "F": {
+      "name": "Fluoro",
+      "desc": "L'elemento più elettronegativo e reattivo, capace di formare composti con quasi tutti gli altri elementi inclusi i gas nobili. Un gas giallo pallido e altamente corrosivo."
+    },
+    "Ne": {
+      "name": "Neon",
+      "desc": "Gas nobile famoso per la sua brillante emissione arancione-rossa nei tubi a scarica. Completamente inerte chimicamente e quinto elemento per abbondanza nell'universo."
+    },
+    "Na": {
+      "name": "Sodio",
+      "desc": "Un metallo alcalino morbido e bianco-argenteo che reagisce violentemente con l'acqua. Essenziale per la trasmissione nervosa e la regolazione della pressione sanguigna."
+    },
+    "Mg": {
+      "name": "Magnesio",
+      "desc": "Un metallo strutturale leggero che brucia con una fiamma bianca abbagliante. Essenziale per la clorofilla nelle piante e per oltre 300 reazioni enzimatiche nel corpo umano."
+    },
+    "Al": {
+      "name": "Alluminio",
+      "desc": "Il metallo più abbondante nella crosta terrestre, apprezzato per la sua bassa densità, la resistenza alla corrosione e la riciclabilità. Fondamento dell'industria aerospaziale moderna."
+    },
+    "Si": {
+      "name": "Silicio",
+      "desc": "Il secondo elemento per abbondanza nella crosta terrestre e la spina dorsale dell'elettronica moderna. Le proprietà semiconduttrici del silicio sono alla base di tutta la tecnologia digitale."
+    },
+    "P": {
+      "name": "Fosforo",
+      "desc": "Essenziale per la vita nel DNA, RNA e nel trasferimento di energia tramite l'ATP. Esiste in diverse forme allotropiche, dalla bianca cerosa alla stabile rossa usata nei fiammiferi."
+    },
+    "S": {
+      "name": "Zolfo",
+      "desc": "Un solido giallo brillante conosciuto e usato fin dall'antichità in medicina e alchimia. Essenziale nelle proteine e prodotto industriale chiave nella fertilizzazione e nella vulcanizzazione."
+    },
+    "Cl": {
+      "name": "Cloro",
+      "desc": "Un gas giallo-verde acre usato nella depurazione dell'acqua e nella sintesi chimica. Con il sodio forma il comune sale da cucina e fu tristemente usato come arma chimica nella Prima Guerra Mondiale."
+    },
+    "Ar": {
+      "name": "Argo",
+      "desc": "Il gas nobile più abbondante nell'atmosfera terrestre con quasi l'1%. Usato come gas inerte protettivo nella saldatura e per riempire le lampade a incandescenza."
+    },
+    "K": {
+      "name": "Potassio",
+      "desc": "Un nutriente essenziale per ogni cellula animale, regolando l'equilibrio dei fluidi e la funzione nervosa. Reagisce esplosivamente con l'acqua, accendendosi con una caratteristica fiamma viola."
+    },
+    "Ca": {
+      "name": "Calcio",
+      "desc": "Il minerale più abbondante nel corpo umano, che forma la base strutturale di ossa e denti. Essenziale anche per la contrazione muscolare e la coagulazione del sangue."
+    },
+    "Sc": {
+      "name": "Scandio",
+      "desc": "Un metallo di transizione raro la cui leggerezza e alto punto di fusione lo rendono prezioso nelle leghe aerospaziali e nelle lampade ai alogenuri metallici ad alta intensità."
+    },
+    "Ti": {
+      "name": "Titanio",
+      "desc": "Celebre per il suo eccezionale rapporto resistenza-peso e la totale resistenza alla corrosione. Biocompatibile con i tessuti umani, è il metallo di elezione per gli impianti chirurgici e i motori a reazione."
+    },
+    "V": {
+      "name": "Vanadio",
+      "desc": "Un metallo duro e grigio-argenteo che aumenta notevolmente la resistenza e la durezza dell'acciaio in piccole quantità. Anche un oligoelemento essenziale in certi enzimi metabolici."
+    },
+    "Cr": {
+      "name": "Cromo",
+      "desc": "L'elemento che rende l'acciaio inossidabile. Il suo nome viene dal greco per 'colore', poiché i suoi composti producono vivaci rossi, verdi e gialli nei pigmenti e nelle pietre preziose."
+    },
+    "Mn": {
+      "name": "Manganese",
+      "desc": "Elemento essenziale nella produzione dell'acciaio, che indurisce le leghe di ferro e previene la fragilità. Anche un oligoelemento critico nella formazione ossea e negli enzimi antiossidanti."
+    },
+    "Fe": {
+      "name": "Ferro",
+      "desc": "Il metallo più utilizzato nella storia dell'umanità e l'elemento dominante del nucleo terrestre. La base dell'acciaio e la spina dorsale della civiltà industriale."
+    },
+    "Co": {
+      "name": "Cobalto",
+      "desc": "Prende il nome dal folletto kobold del folklore minerario tedesco. I suoi composti blu brillante colorano vetri e ceramiche da millenni, ed è essenziale nelle superleghe per i motori a reazione."
+    },
+    "Ni": {
+      "name": "Nichel",
+      "desc": "Un metallo lucente e resistente alla corrosione comune nelle monete e nell'acciaio inossidabile. Prende il nome da un demonio della tradizione tedesca, poiché i minatori del passato maledivano il minerale."
+    },
+    "Cu": {
+      "name": "Rame",
+      "desc": "Uno dei primi metalli mai fusi dall'umanità. Il miglior conduttore metallico di elettricità e calore dopo l'argento, e l'elemento fondamentale dell'Età del Bronzo."
+    },
+    "Zn": {
+      "name": "Zinco",
+      "desc": "Usato per galvanizzare l'acciaio contro la corrosione e come essenziale dietetico per la funzione immunitaria e la cicatrizzazione. L'ossido forma uno strato bianco protettivo all'ossidazione."
+    },
+    "Ga": {
+      "name": "Gallio",
+      "desc": "Un metallo morbido che fonde al calore di una mano umana, a soli 30°C. Usato estensivamente nei semiconduttori, nei LED e nelle celle solari, notevole per la sua espansione durante la solidificazione."
+    },
+    "Ge": {
+      "name": "Germanio",
+      "desc": "Previsto da Mendeleev prima della sua scoperta come eka-silicio. Un semiconduttore di storica importanza, oggi usato nell'ottica a infrarossi e nei cavi in fibra ottica."
+    },
+    "As": {
+      "name": "Arsenico",
+      "desc": "Un metalloide tossico con una lunga e oscura storia sia come veleno che come medicina. Usato industrialmente nei semiconduttori e nei preservanti del legno nonostante la sua notoria tossicità."
+    },
+    "Se": {
+      "name": "Selenio",
+      "desc": "Essenziale per il metabolismo ormonale tiroideo e la funzione antiossidante in tracce, tossico in eccesso. Conferisce un colore rosso al vetro e converte la luce in elettricità nelle fotocellule."
+    },
+    "Br": {
+      "name": "Bromo",
+      "desc": "Uno dei soli due elementi liquidi a temperatura ambiente. Un liquido rosso-bruno intenso con un odore pungente e soffocante, usato nei ritardanti di fiamma e storicamente in fotografia."
+    },
+    "Kr": {
+      "name": "Kripton",
+      "desc": "Un gas nobile usato in lampade flash ad alta potenza per la fotografia e in certe applicazioni laser. In passato definiva la lunghezza del metro attraverso una specifica riga spettrale."
+    },
+    "Rb": {
+      "name": "Rubidio",
+      "desc": "Un metallo alcalino morbido e argenteo che si infiamma spontaneamente a contatto con l'aria e reagisce esplosivamente con l'acqua. Usato negli orologi atomici e in certi vetri speciali."
+    },
+    "Sr": {
+      "name": "Stronzio",
+      "desc": "Un metallo alcalino-terroso che conferisce ai fuochi d'artificio e ai segnali luminosi il loro brillante colore cremisi. Il suo isotopo radioattivo stronzio-90 è un pericoloso sottoprodotto della fissione nucleare."
+    },
+    "Y": {
+      "name": "Ittrio",
+      "desc": "Prende il nome da Ytterby, il villaggio svedese che ha dato origine alla scoperta di quattro nuovi elementi. Usato nei fosfori rossi per schermi televisivi e nei superconduttori ad alta temperatura."
+    },
+    "Zr": {
+      "name": "Zirconio",
+      "desc": "Estremamente resistente alla corrosione in quasi tutti gli ambienti. La sua quasi totale trasparenza ai neutroni lo rende il materiale standard di rivestimento per le barre di combustibile nucleare."
+    },
+    "Nb": {
+      "name": "Niobio",
+      "desc": "Un superconduttore a basse temperature, indispensabile nei magneti per risonanza magnetica e negli acceleratori di particelle. Aggiunto in piccole quantità all'acciaio, ne aumenta notevolmente resistenza e durezza."
+    },
+    "Mo": {
+      "name": "Molibdeno",
+      "desc": "Ha uno dei punti di fusione più alti di tutti gli elementi. Un agente legante critico negli acciai ad alta resistenza e un cofattore essenziale nell'enzima che fissa l'azoto atmosferico."
+    },
+    "Tc": {
+      "name": "Tecnezio",
+      "desc": "Il primo elemento prodotto artificialmente. Il suo isomero metastabile tecnezio-99m è il radioisotopo più usato in medicina nucleare per la diagnostica per immagini."
+    },
+    "Ru": {
+      "name": "Rutenio",
+      "desc": "Un raro metallo del gruppo del platino di straordinaria durezza, usato nei contatti elettrici, nella catalisi e come agente legante per indurire platino e palladio."
+    },
+    "Rh": {
+      "name": "Rodio",
+      "desc": "Tra i metalli stabili più rari e preziosi della Terra. Il suo uso principale è nelle marmitte catalitiche, dove riduce gli ossidi di azoto nei gas di scarico dei veicoli."
+    },
+    "Pd": {
+      "name": "Palladio",
+      "desc": "Può assorbire fino a 900 volte il proprio volume di idrogeno, rendendolo un catalizzatore chiave nelle reazioni di idrogenazione e un componente importante delle marmitte catalitiche."
+    },
+    "Ag": {
+      "name": "Argento",
+      "desc": "Il miglior conduttore elettrico e termico tra tutti gli elementi. Apprezzato sin dall'antichità per la coniazione, i gioielli e le stoviglie, e ora essenziale nell'elettronica e in fotografia."
+    },
+    "Cd": {
+      "name": "Cadmio",
+      "desc": "Un metallo bianco-bluastro morbido usato nelle batterie ricaricabili nichel-cadmio e nei pigmenti giallo-cadmio. Altamente tossico e significativo pericolo ambientale dai rifiuti industriali."
+    },
+    "In": {
+      "name": "Indio",
+      "desc": "Un metallo morbido e argenteo indispensabile nel rivestimento conduttore trasparente degli schermi LCD touchscreen, dei display a pannello piatto e delle celle solari a film sottile."
+    },
+    "Sn": {
+      "name": "Stagno",
+      "desc": "Conosciuto e lavorato sin dall'antichità, lo stagno forma le leghe classiche bronzo (con rame) e peltro. A temperature molto basse subisce una distruttiva trasformazione di fase chiamata 'peste dello stagno'."
+    },
+    "Sb": {
+      "name": "Antimonio",
+      "desc": "Un metalloide fragile conosciuto dall'antico Egitto, usato per indurire il piombo nelle munizioni e nelle batterie. Il suo solfuro fu usato come kohl cosmetico per gli occhi nel mondo antico."
+    },
+    "Te": {
+      "name": "Tellurio",
+      "desc": "Uno degli elementi stabili più rari nella crosta terrestre, eppure essenziale nelle celle solari, nei dispositivi termoelettrici e come agente legante per migliorare la lavorabilità dell'acciaio."
+    },
+    "I": {
+      "name": "Iodio",
+      "desc": "Essenziale per gli ormoni tiroidei che regolano il metabolismo nei vertebrati. Il suo vapore forma una caratteristica nube viola, e fu isolato per la prima volta dalle alghe marine nel 1811."
+    },
+    "Xe": {
+      "name": "Xenon",
+      "desc": "Un gas nobile usato in potenti lampade stroboscopiche, propulsori ionici per veicoli spaziali e come anestetico generale. Forma composti sorprendentemente stabili con fluoro e ossigeno."
+    },
+    "Cs": {
+      "name": "Cesio",
+      "desc": "Il più reattivo tra i metalli alcalini stabili, che si infiamma istantaneamente nell'aria. La sua transizione iperfine definisce il secondo SI, rendendolo la base della misurazione del tempo atomico."
+    },
+    "Ba": {
+      "name": "Bario",
+      "desc": "Un metallo alcalino-terroso denso e morbido i cui composti creano il vivace colore verde nei fuochi d'artificio. Il solfato di bario insolubile è usato come mezzo di contrasto nelle radiografie gastrointestinali."
+    },
+    "Hf": {
+      "name": "Afnio",
+      "desc": "Quasi sempre trovato insieme allo zirconio in natura a causa di raggi ionici quasi identici. Usato nelle barre di controllo nucleari e come dielettrico ad alta costante nei circuiti integrati moderni."
+    },
+    "Ta": {
+      "name": "Tantalio",
+      "desc": "Un metallo refrattario di eccezionale biocompatibilità e resistenza alla corrosione, usato negli impianti chirurgici, nei condensatori per dispositivi elettronici e in applicazioni ad alta temperatura."
+    },
+    "W": {
+      "name": "Tungsteno",
+      "desc": "Ha il punto di fusione più alto (3422°C) di qualsiasi elemento, rendendolo indispensabile per i filamenti delle lampadine, gli utensili da taglio e i forni ad alta temperatura."
+    },
+    "Re": {
+      "name": "Renio",
+      "desc": "Uno degli elementi più rari nella crosta terrestre, scoperto per ultimo tra gli elementi stabili. Critico nelle superleghe per le pale delle turbine a reazione a cristallo singolo che operano vicino al punto di fusione."
+    },
+    "Os": {
+      "name": "Osmio",
+      "desc": "L'elemento naturale più denso. Forma un tetrossido estremamente tossico e volatile all'ossidazione. La sua straordinaria durezza lo rende utile nelle leghe speciali."
+    },
+    "Ir": {
+      "name": "Iridio",
+      "desc": "Il metallo più resistente alla corrosione conosciuto. Lo strato anomalo di iridio al limite Cretaceo-Paleogene è la prova chiave dell'impatto di asteroide che pose fine all'era dei dinosauri."
+    },
+    "Pt": {
+      "name": "Platino",
+      "desc": "Un metallo denso, lucente e notevolmente inerte, molto apprezzato per gioielleria e marmitte catalitiche. La sua resistenza alla corrosione e biocompatibilità lo rendono vitale nei dispositivi medici."
+    },
+    "Au": {
+      "name": "Oro",
+      "desc": "Apprezzato in tutta la storia umana per la sua rarità, il caldo lustro e la completa resistenza alla corrosione. Uno standard di valore e bellezza che ha guidato esplorazioni e guerre."
+    },
+    "Hg": {
+      "name": "Mercurio",
+      "desc": "L'unico metallo liquido a temperatura ambiente. Un tempo ampiamente usato in termometri, barometri e otturazioni dentali, la sua potente neurotossicità ha portato a diffusi divieti."
+    },
+    "Tl": {
+      "name": "Tallio",
+      "desc": "Un metallo morbido e altamente tossico che un tempo trovava uso come veleno per ratti e insetticida. Ora usato principalmente in rivelatori a infrarossi specializzati e vetro ad alta densità."
+    },
+    "Pb": {
+      "name": "Piombo",
+      "desc": "Denso, facilmente modellabile e lavorato fin dall'antichità. Usato per millenni in tubi, vernici e munizioni. La sua neurotossicità cumulativa, specialmente nei bambini, è oggi ben documentata."
+    },
+    "Bi": {
+      "name": "Bismuto",
+      "desc": "L'elemento stabile più pesante, che forma spettacolari cristalli iridescenti grazie allo strato di ossido nativo. Usato in cosmetici, leghe e farmaci; notevolmente non tossico per un metallo pesante."
+    },
+    "Po": {
+      "name": "Polonio",
+      "desc": "Altamente radioattivo, scoperto da Marie Curie e dedicato alla sua patria Polonia. Emette intensa radiazione alfa ed è stato usato come innesco nelle prime bombe atomiche."
+    },
+    "At": {
+      "name": "Astato",
+      "desc": "L'elemento naturale più raro; nell'intera Terra esistono solo minuscole tracce, prodotte dal decadimento radioattivo dell'uranio. La sua chimica è stata appena introdotta allo studio."
+    },
+    "Rn": {
+      "name": "Radon",
+      "desc": "Un gas nobile radioattivo prodotto dal decadimento naturale di uranio e radio nel suolo e nelle rocce. Seeping negli edifici, è la seconda causa principale di cancro ai polmoni dopo il fumo."
+    },
+    "Fr": {
+      "name": "Francio",
+      "desc": "Il secondo elemento naturale più raro, trovato solo come prodotto transitorio di decadimento. Il più reattivo e instabile tra i metalli alcalini, fu l'ultimo elemento scoperto in natura."
+    },
+    "Ra": {
+      "name": "Radio",
+      "desc": "Scoperto da Marie e Pierre Curie nel 1898, emette una debole luminescenza blu-verde causata dall'intensa radioattività che ionizza l'aria circostante. Il suo uso medico pionieristico nel trattamento del cancro fu rivoluzionario e letale."
+    },
+    "Rf": {
+      "name": "Rutherfordio",
+      "desc": "Il primo elemento transattinoide, sintetizzato bombardando californio con nuclei di carbonio. Prende il nome in onore del fisico Ernest Rutherford, padre della fisica nucleare."
+    },
+    "Db": {
+      "name": "Dubnio",
+      "desc": "Un elemento sintetico che prende il nome da Dubna, Russia, dove fu prodotto per la prima volta. Non ha isotopi stabili o a lunga vita ed esiste solo in quantità infinitesimali."
+    },
+    "Sg": {
+      "name": "Seaborgio",
+      "desc": "Prende il nome da Glenn T. Seaborg, l'unico elemento mai intitolato a una persona vivente al momento della sua scoperta. Seaborg detiene il record per il maggior numero di elementi co-scoperti."
+    },
+    "Bh": {
+      "name": "Bohrio",
+      "desc": "Prende il nome dal fisico Niels Bohr. Sintetizzato bombardando bismuto con nuclei di cromo; tutti gli isotopi noti hanno emivite misurate in secondi o meno."
+    },
+    "Hs": {
+      "name": "Hassio",
+      "desc": "Prende il nome dall'Assia, lo stato tedesco in cui è stato creato al GSI. L'elemento più pesante le cui proprietà chimiche siano state confermate sperimentalmente."
+    },
+    "Mt": {
+      "name": "Meitnerio",
+      "desc": "Intitolato a Lise Meitner, la fisica pioniera della ricerca sulla fissione nucleare, controversialmente esclusa dal Premio Nobel assegnato al suo collaboratore."
+    },
+    "Ds": {
+      "name": "Darmstadtio",
+      "desc": "Prende il nome dalla città di Darmstadt, in Germania, sede dell'istituto GSI dove fu sintetizzato per la prima volta nel 1994."
+    },
+    "Rg": {
+      "name": "Roentgenio",
+      "desc": "Prende il nome da Wilhelm Röntgen, scopritore dei raggi X. Un elemento sintetico con soli isotopi di breve durata, creato per la prima volta al GSI bombardando bismuto con ioni di nichel."
+    },
+    "Cn": {
+      "name": "Copernicio",
+      "desc": "Prende il nome da Niccolò Copernico. I calcoli teorici relativistici prevedono che a temperatura ambiente possa comportarsi più come un gas nobile che come un metallo."
+    },
+    "Nh": {
+      "name": "Nihonio",
+      "desc": "Il primo elemento scoperto in Asia, sintetizzato al RIKEN in Giappone. Il nome deriva da 'Nihon', la parola giapponese per il Giappone, che significa 'Terra del Sol Levante'."
+    },
+    "Fl": {
+      "name": "Flerovio",
+      "desc": "Prende il nome dal Laboratorio Flerov di Reazioni Nucleari a Dubna. I calcoli relativistici prevedono proprietà chimiche insolite, con possibile comportamento da gas nobile."
+    },
+    "Mc": {
+      "name": "Moscovio",
+      "desc": "Prende il nome dall'Oblast di Mosca, dove ha sede il Joint Institute for Nuclear Research. Prodotto bombardando americio con ioni di calcio."
+    },
+    "Lv": {
+      "name": "Livermorio",
+      "desc": "Prende il nome congiuntamente dal Lawrence Livermore National Laboratory in California e da Dubna. Sintetizzato per la prima volta da una collaborazione USA-Russia bombardando curio con calcio."
+    },
+    "Ts": {
+      "name": "Tennessine",
+      "desc": "Prende il nome dal Tennessee, in onore della Vanderbilt University, dell'Università del Tennessee e dell'Oak Ridge National Laboratory, tutti cruciali nella ricerca sugli elementi superpesanti."
+    },
+    "Og": {
+      "name": "Oganessone",
+      "desc": "Prende il nome dal fisico nucleare Yuri Oganessian, pioniere della sintesi di elementi superpesanti. L'elemento più pesante conosciuto, con proprietà molto diverse dai gas nobili più leggeri."
+    },
+    "La": {
+      "name": "Lantanio",
+      "desc": "Un metallo morbido bianco-argenteo che dà il nome all'intera serie dei lantanidi. Usato nei vetri per obiettivi fotografici e telescopici, nella raffinazione catalitica del petrolio e nello stoccaggio di idrogeno."
+    },
+    "Ce": {
+      "name": "Cerio",
+      "desc": "Il più abbondante tra le terre rare. Usato nelle marmitte catalitiche per la raffinazione del petrolio, come composto per la lucidatura del vetro e nel rivestimento autopulente dei forni."
+    },
+    "Pr": {
+      "name": "Praseodimio",
+      "desc": "I suoi sali producono un caratteristico colore verde mela usato negli occhiali protettivi per soffiatori di vetro. Combinato con il neodimio forma potenti magneti permanenti."
+    },
+    "Nd": {
+      "name": "Neodimio",
+      "desc": "Usato nei magneti permanenti più potenti al mondo, presenti in hard disk, cuffie e motori elettrici. I suoi magneti sono fondamentali per le turbine eoliche e i veicoli elettrici moderni."
+    },
+    "Pm": {
+      "name": "Prometio",
+      "desc": "L'unica terra rara senza isotopi stabili, che prende il nome dal Titano Prometeo che rubò il fuoco agli dèi. Prodotto solo nei reattori nucleari e nelle supernove."
+    },
+    "Sm": {
+      "name": "Samario",
+      "desc": "Forma magneti samario-cobalto che mantengono le proprietà a temperature molto superiori ai limiti dei magneti al neodimio. Usato anche nel trattamento del cancro e come assorbitore di neutroni."
+    },
+    "Eu": {
+      "name": "Europio",
+      "desc": "Fornisce i fosfori rossi e blu brillanti negli schermi televisivi e nelle lampade fluorescenti. Incorporato nelle banconote in euro sotto inchiostro reattivo ai raggi UV come dispositivo antifalsificazione."
+    },
+    "Gd": {
+      "name": "Gadolinio",
+      "desc": "Ha il momento magnetico più alto di qualsiasi elemento a temperatura ambiente. Ampiamente usato come agente di contrasto paramagnetico nelle risonanze magnetiche per migliorare la visibilità delle lesioni."
+    },
+    "Tb": {
+      "name": "Terbio",
+      "desc": "Usato come fosforo verde nelle lampade fluorescenti e nelle leghe magnetostrettive che cambiano forma in un campo magnetico. Essenziale anche in certi sistemi laser a stato solido."
+    },
+    "Dy": {
+      "name": "Disprosio",
+      "desc": "Il suo nome greco significa 'difficile da raggiungere'. Un additivo essenziale nei magneti al neodimio per mantenerne la potenza ad alte temperature nei motori dei veicoli elettrici."
+    },
+    "Ho": {
+      "name": "Olmio",
+      "desc": "Ha il momento magnetico più elevato tra tutti gli elementi presenti in natura, rendendolo utile nei poli dei magneti molto potenti e nella chirurgia laser specializzata."
+    },
+    "Er": {
+      "name": "Erbio",
+      "desc": "Usato come dopante amplificatore di segnale nei cavi in fibra ottica (amplificatori in fibra drogata all'erbio) che sostengono le telecomunicazioni intercontinentali. Usato anche nei laser medicali."
+    },
+    "Tm": {
+      "name": "Tulio",
+      "desc": "Il lantanide stabile meno abbondante e secondo più pesante. Usato in dispositivi X portatili come sorgente di radiazione quando irradiato in un reattore nucleare, emettendo utili raggi gamma."
+    },
+    "Yb": {
+      "name": "Itterbio",
+      "desc": "Prende il nome da Ytterby, in Svezia. Migliora la raffinazione dei grani e la resistenza dell'acciaio inossidabile, e serve come dopante nei laser a fibra e negli orologi atomici di straordinaria precisione."
+    },
+    "Lu": {
+      "name": "Lutezio",
+      "desc": "Il più pesante e duro dei lantanidi. Usato come catalizzatore nella raffinazione del petrolio, nei rilevatori per PET scan e nella radioimmunochemioterapia per certi tumori."
+    },
+    "Ac": {
+      "name": "Attinio",
+      "desc": "Il primo membro della serie degli attinidi, altamente radioattivo. La sua intensa emissione alfa lo fa brillare di un pallido blu nel buio ionizzando l'aria circostante. Usato nella terapia mirata del cancro."
+    },
+    "Th": {
+      "name": "Torio",
+      "desc": "Tre volte più abbondante dell'uranio, il torio è un potenziale combustibile nucleare. Presente naturalmente nelle sabbie di monazite, un tempo usato nelle reticelle per gas incandescente per il suo brillante bagliore bianco."
+    },
+    "Pa": {
+      "name": "Proattinio",
+      "desc": "Uno degli elementi naturali più rari e tossici. Prodotto radioattivo del decadimento dell'uranio-235, rappresenta gravi rischi per la salute e non ha applicazioni commerciali."
+    },
+    "U": {
+      "name": "Uranio",
+      "desc": "L'elemento naturale più pesante e il principale combustibile dei reattori nucleari. La sua fissione rilascia milioni di volte più energia della combustione chimica per grammo."
+    },
+    "Np": {
+      "name": "Nettunio",
+      "desc": "Il primo elemento transuranico sintetico, prodotto in un ciclotrone nel 1940 e nominato in base al pianeta Nettuno. Piccole quantità si trovano naturalmente come prodotto di decadimento dell'uranio."
+    },
+    "Pu": {
+      "name": "Plutonio",
+      "desc": "Prodotto dall'uranio nei reattori nucleari, il plutonio è il principale materiale fissile nelle armi nucleari. Un chilogrammo di plutonio-239 contiene l'energia equivalente a migliaia di tonnellate di TNT."
+    },
+    "Am": {
+      "name": "Americio",
+      "desc": "Un elemento transuranico sintetico presente in ogni rilevatore di fumo a ionizzazione domestico. Prende il nome dalle Americhe ed emette particelle alfa che ionizzano l'aria nel circuito sensore del rilevatore."
+    },
+    "Cm": {
+      "name": "Curio",
+      "desc": "Prende il nome da Marie e Pierre Curie. La sua intensa radioattività lo fa brillare di un morbido bianco-blu nel buio. Usato come sorgente di energia nei generatori termoelettrici delle sonde spaziali in missioni profonde."
+    },
+    "Bk": {
+      "name": "Berkelio",
+      "desc": "Prende il nome da Berkeley, California. Prodotto solo in quantità di microgrammi e non ha applicazioni pratiche al di fuori della ricerca nucleare e della sintesi di elementi più pesanti."
+    },
+    "Cf": {
+      "name": "Californio",
+      "desc": "Prende il nome dalla California. Un intenso emettitore di neutroni usato come sorgente di neutroni portatile per le barre di avviamento nucleare, l'analisi per attivazione neutronica e il trattamento del cancro."
+    },
+    "Es": {
+      "name": "Einsteinio",
+      "desc": "Prende il nome da Albert Einstein. Rilevato per la prima volta nel 1952 nelle ricadute del primo test di bomba termonucleare, prodotto dall'intensa bombardatura con neutroni dell'uranio-238."
+    },
+    "Fm": {
+      "name": "Fermio",
+      "desc": "Prende il nome da Enrico Fermi. Rilevato anch'esso nelle ricadute di bombe nucleari. Può essere prodotto solo in quantità di nanogrammi negli reattori nucleari ad alto flusso; nessuna applicazione pratica."
+    },
+    "Md": {
+      "name": "Mendelevio",
+      "desc": "Prende il nome da Dmitri Mendeleev, creatore della tavola periodica. Prodotto per la prima volta bombardando einsteinio con particelle alfa; si ottengono solo pochi atomi per volta."
+    },
+    "No": {
+      "name": "Nobelio",
+      "desc": "Prende il nome da Alfred Nobel, inventore della dinamite e fondatore dei Premi Nobel. Identificato inequivocabilmente per la prima volta nel 1958; tutti gli isotopi hanno emivite brevi."
+    },
+    "Lr": {
+      "name": "Laurenzio",
+      "desc": "L'ultimo della serie degli attinidi, prende il nome da Ernest O. Lawrence, inventore del ciclotrone. La sua chimica è stata studiata solo di recente a causa dell'estrema difficoltà di produrlo."
+    },
+    "My": {
+      "name": "Mithrilio",
+      "desc": "Un leggendario metallo argenteo più leggero della seta eppure più resistente dell'acciaio temprato, trovato solo nelle miniere naneschi più profonde sotto le radici delle antiche montagne. La sua struttura molecolare sembra sfidare la fisica convenzionale, mantenendo un ordine cristallino perfetto indefinitamente pur restando malleabile sotto il martello di un mastro fabbro."
+    },
+    "Ad": {
+      "name": "Adamantite",
+      "desc": "La sostanza più dura conosciuta dalla magia o dalla scienza, cristallizzata dalle ossa compresse dei draghi primordiali nel corso di milioni di anni di pressione geologica. Nessuna forza convenzionale può scalfirla o deformarla; solo il fuoco diretto di un drago a piena potenza o un atto di volontà divina sono detti capaci di rimodellarla."
+    },
+    "Ae": {
+      "name": "Etere",
+      "desc": "Pura energia magica condensata in un reticolo cristallino, luminosa oltre lo spettro visibile e rilevabile solo attraverso la vista arcana o l'estrema sensibilità ai campi ley. È il mezzo attraverso cui si propagano tutti gli incantesimi, il fiume invisibile su cui ogni magia fluisce dalla mente alla manifestazione."
+    },
+    "Vd": {
+      "name": "Voidite",
+      "desc": "Materia raccolta dallo spazio nullo tra i piani di esistenza, così scura da rendere visivamente indeterminato lo spazio attorno ad essa, e fredda ben oltre lo zero assoluto. Qualsiasi energia che la contatta viene completamente assorbita, luce, calore e magia compresi, rendendola preziosa per certi rituali proibiti e straordinariamente letale da contenere senza adeguati sigilli protettivi."
+    },
+    "Sl": {
+      "name": "Anisite",
+      "desc": "Essenza cristallizzata di anime viventi, formata solo ai nodi dove l'energia spirituale di migliaia di morti si è raccolta e solidificata nel corso di secoli in frammenti traslucidi rosati. Ogni frammento ronza di una debole emozione persistente, l'ultimo sentimento di qualsiasi coscienza che ha contribuito la propria forza vitale alla formazione del cristallo."
+    },
+    "Dc": {
+      "name": "Dracite",
+      "desc": "Un minerale cremisi intenso trovato solo nel cuore dei draghi anziani morti, dove il fuoco draconico concentrato che li ha sostenuti per millenni ha trasmutato le loro ossa più interne in qualcosa al di là dell'osso o del metallo. Le armi e le armature forgiate da essa mantengono la furia della creatura da cui proviene, senza mai raffreddarsi né appannarsi."
+    },
+    "Ma": {
+      "name": "Manaite",
+      "desc": "La forma solidificata della forza magica grezza, trovata in piccoli depositi ai punti di convergenza delle leyline in profondità nel sottosuolo, dove l'energia magica ambientale si è cristallizzata sotto immensa pressione nel corso di ere arcane. Conserva e amplifica qualsiasi incantesimo lanciato nella sua prossimità, e in quantità sufficiente può sostenere un'incantazione indefinitamente senza una sorgente di energia esterna."
+    },
+    "Sh": {
+      "name": "Schrödingerite",
+      "desc": "Raccolto in scaglie sul bordo di accrescimento dell'orizzonte degli eventi di un buco nero supermassiccio, dove il gradiente di marea tende il confine tra un esito e l'altro finché non si lacera. Ogni altra sostanza conosciuta può porre in sovrapposizione soltanto le particelle; la schrödingerite lo fa con gli oggetti interi, scindendo una chiave, una porta o un cadavere in due stati quantistici coerenti che convivono fianco a fianco finché qualcuno non li osserva. Chi la maneggia viene avvertito che il campione è insieme nella fiala e fuori dalla fiala, e che è l'apertura della fiala a decidere quale delle due giornate stia vivendo."
+    }
+  },
+  "unknownDiscoverer": "Sconosciuto",
+  "eras": {
+    "ancient": "Antichità",
+    "primordial": "Primordiale",
+    "eternal": "Eterno",
+    "unknown": "Sconosciuto",
+    "antediluvian": "Antidiluviano",
+    "arcaneAge": "Era arcana",
+    "unobserved": "Non osservato"
+  },
+  "origins": {
+    "dwarvishMountains": "Montagne dei nani",
+    "dragonBones": "Ossa di drago",
+    "aetherPlane": "Il piano dell'etere",
+    "voidBetween": "Il vuoto interposto",
+    "soulCrystals": "Cristalli d'anima",
+    "draconicCore": "Nucleo draconico",
+    "leylineNexus": "Nexus di leyline",
+    "eventHorizon": "Orizzonte degli eventi supermassiccio"
+  }
+}

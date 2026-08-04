@@ -1,0 +1,10 @@
+{
+  "controls": "Left/Right: Move   Up: Rotate   Down: Soft Drop   Space: Hard Drop",
+  "complexity": "Lock complexity: ",
+  "seconds": "s",
+  "lockPicked": "Lock Picked!",
+  "lockJammed": "Lock jammed...",
+  "timeUp": "Time up!",
+  "usedSkeletonKey": "Used Skeleton Key!",
+  "noLockpicks": "You don't have any lockpicks"
+}

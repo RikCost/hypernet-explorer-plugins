@@ -1,0 +1,19 @@
+{
+  "jsonGenerated": "JSON delle connessioni generato nella console!",
+  "checkConsole": "Controlla la console per sviluppatori (F12) per il JSON completo.",
+  "cacheCleared": "Cache delle connessioni svuotata!",
+  "mostConnected": "Più connessa: mappa {map} ({links} collegamenti)",
+  "mode": "Modalità: analisi {mode}",
+  "modeHardcoded": "predefinita",
+  "modeRuntime": "a runtime",
+  "noMapLoaded": "Impossibile mostrare la mappa. Nessuna mappa caricata.",
+  "controls": "Mouse: trascina | Rotella: zoom | Clic: seleziona/deseleziona | Esc: esci",
+  "noConnections": "Nessuna connessione trovata.",
+  "cluster": "Gruppo",
+  "mapInfo": "Info mappa",
+  "name": "Nome",
+  "status": "Stato",
+  "visited": "Visitata",
+  "notVisited": "Non visitata",
+  "connections": "Connessioni"
+}

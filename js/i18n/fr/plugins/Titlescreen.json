@@ -1,0 +1,215 @@
+{
+  "menu": {
+    "explore": "",
+    "reconnect": "",
+    "tutorial": "",
+    "minigames": "",
+    "sandbox": "",
+    "worlds": "",
+    "preferences": "",
+    "mods": "",
+    "exit": "",
+    "continue": ""
+  },
+  "menuOverlay": {
+    "explore": "",
+    "reconnect": "",
+    "tutorial": "",
+    "minigames": "",
+    "sandbox": "",
+    "worlds": "",
+    "preferences": "",
+    "mods": "",
+    "exit": ""
+  },
+  "minigame": {
+    "arena": "",
+    "camperDriving": "",
+    "surfing": "",
+    "pool": "",
+    "chess": "",
+    "bowling": "",
+    "basketball": "",
+    "fishing": "",
+    "slotMachine": "",
+    "horseRace": "",
+    "tarotReading": "",
+    "scratchCard": "",
+    "monsterTournament": "",
+    "hyperTamer": "",
+    "periodicTable": "",
+    "boosterPack": "",
+    "lockpick": "",
+    "arcadeSnake": "",
+    "arcadeFrogger": "",
+    "arcadeBubblePop": "",
+    "arcadeSpaceInvaders": "",
+    "arcadeBreakout": "",
+    "arcadeManpac": "",
+    "arcadeAsteroids": "",
+    "arcadeCentipede": "",
+    "piano": ""
+  },
+  "disclaimer": {
+    "text": ""
+  },
+  "news": {
+    "header": ""
+  },
+  "support": {
+    "header": "",
+    "patronPerk": ""
+  },
+  "background": {
+    "label": ""
+  },
+  "planet": {
+    "type": "",
+    "radius": "",
+    "mass": "",
+    "earth": "",
+    "orbit": "",
+    "period": "",
+    "years": "",
+    "atmosphere": "",
+    "yes": "",
+    "no": "",
+    "moons": "",
+    "biome": "",
+    "moon": "",
+    "planet": ""
+  },
+  "body": {
+    "mass": "",
+    "sun": "",
+    "spin": "",
+    "schwarzschild": "",
+    "polarJets": "",
+    "jetsActive": "",
+    "jetsNone": "",
+    "diameter": "",
+    "distance": "",
+    "lightYears": "",
+    "arms": "",
+    "spectral": "",
+    "radius": ""
+  },
+  "anomaly": {
+    "flux": "",
+    "curvature": ""
+  },
+  "version": {
+    "text": ""
+  },
+  "language": {
+    "label": ""
+  },
+  "hyperverse": {
+    "lead": "",
+    "catalog": "",
+    "procedural": "",
+    "nextBody": "",
+    "freeLook": "",
+    "controls": "",
+    "catalogButton": "",
+    "catalogTitle": "",
+    "catalogEmpty": "",
+    "catalogControls": "",
+    "groups": {
+      "planets": "",
+      "stars": "",
+      "blackHoles": "",
+      "galaxies": "",
+      "clusters": "",
+      "nebulae": ""
+    }
+  },
+  "autopilot": {
+    "header": "",
+    "speed": "",
+    "heading": "",
+    "lookHint": "",
+    "compass": {
+      "N": "",
+      "NE": "",
+      "E": "",
+      "SE": "",
+      "S": "",
+      "SW": "",
+      "W": "",
+      "NW": ""
+    }
+  },
+  "card": {
+    "weapon": "",
+    "artifact": "",
+    "levelAbbr": "",
+    "price": "",
+    "element": "",
+    "inflicts": "",
+    "info": "",
+    "stats": {
+      "str": "",
+      "con": "",
+      "int": "",
+      "wis": "",
+      "dex": "",
+      "psi": ""
+    },
+    "donorSuffix": ""
+  },
+  "bgMode": {
+    "hyperverse": "",
+    "autodrive": "",
+    "cards": "",
+    "space": "",
+    "bestiary": "",
+    "artifacts": "",
+    "weapons": "",
+    "enemies3d": "",
+    "random": ""
+  },
+  "artifact": {
+    "adjectives": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "itemNouns": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "weaponNouns": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "armorNouns": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "nameFormat": "",
+    "fallbackType": ""
+  }
+}

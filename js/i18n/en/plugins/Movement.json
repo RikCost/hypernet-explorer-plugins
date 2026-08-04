@@ -1,0 +1,20 @@
+{
+  "climb": "Climb",
+  "cancel": "Cancel",
+  "tavern": "Tavern",
+  "tiles": "tiles",
+  "orderFood": "Order food",
+  "sit": "Sit",
+  "changeSeat": "Change seat",
+  "stopSitting": "Stop sitting",
+  "dive": "Dive",
+  "drink": "Drink",
+  "resurface": "Resurface",
+  "reemerge": "Reemerge",
+  "fish": "Fish",
+  "useBoat": "Use boat",
+  "swim": "Swim",
+  "drinkSaltWater": "You drink some salt water and immediately feel nauseous!",
+  "drinkWater": "You drink some water, easing your hunger a little.",
+  "cannotSwimHere": "You can't swim here."
+}

@@ -1,0 +1,44 @@
+{
+  "description": "Descrizione",
+  "parameters": "Parametri",
+  "traits": "Tratti",
+  "noTraits": "Nessun tratto",
+  "states": "Stati",
+  "none": "Nessuno",
+  "more": "altri...",
+  "total": "Totale",
+  "next": "Prossimo",
+  "defaultDescriptions": {
+    "warrior": "Un guerriero esperto\naddestrato al combattimento.",
+    "mage": "Un utilizzatore di magia arcana.",
+    "priest": "Un seguace devoto\ncon poteri curativi.",
+    "rogue": "Un individuo agile\nesperto in furtività.",
+    "archer": "Un tiratore esperto\ncon occhi acuti.",
+    "default": "Un coraggioso"
+  },
+  "back": "Indietro",
+  "descriptionSet": "Descrizione impostata per {name}.",
+  "invalidIndex": "Indice del membro del gruppo non valido.",
+  "actorLine": "{name}, {klass} Liv.{level}",
+  "need": {
+    "hunger": "Fame",
+    "sleep": "Sonno",
+    "hygiene": "Igiene",
+    "social": "Socialità",
+    "leisure": "Svago"
+  },
+  "classAbility": "Abilità di Classe",
+  "ui": {
+    "hp": "PV",
+    "mp": "PM",
+    "ap": "PA",
+    "experience": "Esperienza",
+    "attributesAbilities": "Attributi e abilità",
+    "characterTraits": "Tratti del personaggio",
+    "classAbility": "Abilità di classe",
+    "biologicalVitals": "Parametri vitali",
+    "alignment": "Allineamento",
+    "noTraits": "Nessun tratto assegnato...",
+    "noVitals": "Nessun parametro vitale registrato..."
+  }
+}

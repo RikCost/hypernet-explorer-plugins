@@ -2,6 +2,7 @@
   {
     "id": 19,
     "country": "Albania",
+    "region":"Europe",
     "faction": "Neutral",
     "seasons": {
       "winter": {
@@ -54,7 +55,8 @@
   {
     "id": 42,
     "country": "Algeria",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:51",
@@ -106,7 +108,8 @@
   {
     "id": 0,
     "country": "Andorra",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:06",
@@ -158,7 +161,8 @@
   {
     "id": 0,
     "country": "Armenia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:19",
@@ -210,7 +214,8 @@
   {
     "id": 98,
     "country": "Austria",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:37",
@@ -262,7 +267,8 @@
   {
     "id": 0,
     "country": "Azerbaijan",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:59",
@@ -314,7 +320,8 @@
   {
     "id": 32,
     "country": "Belarus",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:09",
@@ -366,13 +373,14 @@
   {
     "id": 121,
     "country": "Belgium",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:31",
         "sunset": "17:05",
-        "dayTemp": 5.9,
-        "nightTemp": 0.8,
+        "dayTemp": 9.5,
+        "nightTemp": 3.5,
         "precipitation": 0.4,
         "windSpeed": 16,
         "cloudCover": 85,
@@ -418,7 +426,8 @@
   {
     "id": 0,
     "country": "Bosnia and Herzegovina",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:20",
@@ -470,7 +479,8 @@
   {
     "id": 25,
     "country": "Bulgaria",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -522,7 +532,8 @@
   {
     "id": 16,
     "country": "Croatia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:28",
@@ -574,7 +585,8 @@
   {
     "id": 0,
     "country": "Cyprus",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "06:51",
@@ -626,7 +638,8 @@
   {
     "id": 0,
     "country": "Czech Republic",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:49",
@@ -678,7 +691,8 @@
   {
     "id": 0,
     "country": "Denmark",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -730,7 +744,8 @@
   {
     "id": 31,
     "country": "Estonia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:58",
@@ -782,7 +797,8 @@
   {
     "id": 36,
     "country": "Finland",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:12",
@@ -834,13 +850,14 @@
   {
     "id": 102,
     "country": "France",
-    "faction": "Britannia",
+    "region":"Europe",
+"faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
         "sunset": "17:23",
-        "dayTemp": 7.9,
-        "nightTemp": 2.3,
+        "dayTemp": 11.5,
+        "nightTemp": 5.5,
         "precipitation": 1.4,
         "windSpeed": 14,
         "cloudCover": 78,
@@ -886,7 +903,8 @@
   {
     "id": 0,
     "country": "Georgia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:23",
@@ -938,7 +956,8 @@
   {
     "id": 109,
     "country": "Germany",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "08:09",
@@ -990,7 +1009,8 @@
   {
     "id": 20,
     "country": "Greece",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:33",
@@ -1042,7 +1062,8 @@
   {
     "id": 0,
     "country": "Hungary",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:27",
@@ -1094,7 +1115,8 @@
   {
     "id": 37,
     "country": "Iceland",
-    "faction": "Goblin Horde",
+    "region":"Europe",
+"faction": "Goblin Horde",
     "seasons": {
       "winter": {
         "sunrise": "10:49",
@@ -1146,7 +1168,8 @@
   {
     "id": 40,
     "country": "Ireland",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:21",
@@ -1198,13 +1221,14 @@
   {
     "id": 78,
     "country": "Italy",
-    "faction": "The Gods",
+    "region":"Europe",
+"faction": "The Gods",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
         "sunset": "16:56",
-        "dayTemp": 9.8,
-        "nightTemp": 1.5,
+        "dayTemp": 13.0,
+        "nightTemp": 5.0,
         "precipitation": 1.6,
         "windSpeed": 8,
         "cloudCover": 60,
@@ -1249,8 +1273,9 @@
   },
   {
     "id": 255,
-    "country": "Omega tower",
-    "faction": "Archive Foundation",
+    "country": "OmegaTower",
+    "region":"Europe",
+"faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
@@ -1302,7 +1327,8 @@
   {
     "id": 30,
     "country": "Latvia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:48",
@@ -1354,7 +1380,8 @@
   {
     "id": 119,
     "country": "Luxembourg",
-    "faction": "Archive Foundation",
+    "region":"Europe",
+"faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "08:19",
@@ -1406,7 +1433,8 @@
   {
     "id": 0,
     "country": "Malta",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:06",
@@ -1458,7 +1486,8 @@
   {
     "id": 0,
     "country": "Mauritania",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:38",
@@ -1510,7 +1539,8 @@
   {
     "id": 27,
     "country": "Moldova",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -1562,7 +1592,8 @@
   {
     "id": 0,
     "country": "Monaco",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:51",
@@ -1614,7 +1645,8 @@
   {
     "id": 19,
     "country": "Montenegro",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:08",
@@ -1666,7 +1698,8 @@
   {
     "id": 0,
     "country": "Morocco",
-    "faction": "Ottoman Empire",
+    "region":"Europe",
+"faction": "Ottoman Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:28",
@@ -1718,7 +1751,8 @@
   {
     "id": 8,
     "country": "Netherlands",
-    "faction": "Hypercapitalist Collective",
+    "region":"Europe",
+"faction": "Hypercapitalist Collective",
     "seasons": {
       "winter": {
         "sunrise": "08:34",
@@ -1770,7 +1804,8 @@
   {
     "id": 0,
     "country": "North Macedonia",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "06:54",
@@ -1822,7 +1857,8 @@
   {
     "id": 34,
     "country": "Norway",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "09:03",
@@ -1874,7 +1910,8 @@
   {
     "id": 141,
     "country": "Poland",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:38",
@@ -1926,7 +1963,8 @@
   {
     "id": 109,
     "country": "Portugal",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:49",
@@ -1978,7 +2016,8 @@
   {
     "id": 0,
     "country": "Romania",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -2030,7 +2069,8 @@
   {
     "id": 28,
     "country": "Russia",
-    "faction": "Archive Foundation",
+    "region":"Europe",
+"faction": "Archive Foundation",
     "seasons": {
       "winter": {
         "sunrise": "08:44",
@@ -2082,7 +2122,8 @@
   {
     "id": 236,
     "country": "San Marino",
-    "faction": "San Marino Republic",
+    "region":"Europe",
+"faction": "San Marino Republic",
     "seasons": {
       "winter": {
         "sunrise": "07:33",
@@ -2134,7 +2175,8 @@
   {
     "id": 22,
     "country": "Serbia",
-    "faction": "USSR",
+    "region":"Europe",
+"faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:09",
@@ -2186,7 +2228,8 @@
   {
     "id": 0,
     "country": "Slovakia",
-    "faction": "USSR",
+    "region":"Europe",
+"faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:31",
@@ -2238,7 +2281,8 @@
   {
     "id": 15,
     "country": "Slovenia",
-    "faction": "USSR",
+    "region":"Europe",
+"faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:34",
@@ -2290,13 +2334,14 @@
   {
     "id": 69,
     "country": "Spain",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
         "sunset": "18:07",
-        "dayTemp": 14.1,
-        "nightTemp": 5.2,
+        "dayTemp": 16.5,
+        "nightTemp": 8.0,
         "precipitation": 0.6,
         "windSpeed": 8.5,
         "cloudCover": 48,
@@ -2342,7 +2387,8 @@
   {
     "id": 35,
     "country": "Sweden",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:29",
@@ -2394,7 +2440,8 @@
   {
     "id": 63,
     "country": "Switzerland",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:04",
@@ -2446,7 +2493,8 @@
   {
     "id": 0,
     "country": "Tunisia",
-    "faction": "Ottoman Empire",
+    "region":"Europe",
+"faction": "Ottoman Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:25",
@@ -2498,7 +2546,8 @@
   {
     "id": 41,
     "country": "Turkey",
-    "faction": "Neutral",
+    "region":"Europe",
+"faction": "Neutral",
     "seasons": {
       "winter": {
         "sunrise": "08:14",
@@ -2550,7 +2599,8 @@
   {
     "id": 39,
     "country": "Scotland",
-    "faction": "Britannia",
+    "region":"Europe",
+"faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:45",
@@ -2602,7 +2652,8 @@
   {
     "id": 153,
     "country": "Ukraine",
-    "faction": "USSR",
+    "region":"Europe",
+"faction": "USSR",
     "seasons": {
       "winter": {
         "sunrise": "07:44",
@@ -2654,7 +2705,8 @@
   {
     "id": 38,
     "country": "UK",
-    "faction": "Britannia",
+    "region":"Europe",
+"faction": "Britannia",
     "seasons": {
       "winter": {
         "sunrise": "08:00",
@@ -2706,7 +2758,8 @@
   {
     "id": 166,
     "country": "Italy - Sicily",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:15",
@@ -2758,7 +2811,8 @@
   {
     "id": 237,
     "country": "Italy - Sardinia",
-    "faction": "Holy Vatican Empire",
+    "region":"Europe",
+"faction": "Holy Vatican Empire",
     "seasons": {
       "winter": {
         "sunrise": "07:25",
@@ -2806,5 +2860,261 @@
       }
     },
     "controller": "Neutral"
+  },
+  {
+    "id": 400,
+    "country": "Brazil",
+    "region": "South America",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40", "sunset": "17:35",
+        "dayTemp": 23.5, "nightTemp": 15.2,
+        "precipitation": 2.5, "windSpeed": 12.0,
+        "cloudCover": 40, "dayHumidity": 60, "nightHumidity": 75
+      },
+      "spring": {
+        "sunrise": "05:45", "sunset": "18:10",
+        "dayTemp": 27.8, "nightTemp": 18.5,
+        "precipitation": 4.1, "windSpeed": 14.5,
+        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:20", "sunset": "18:45",
+        "dayTemp": 31.2, "nightTemp": 23.0,
+        "precipitation": 6.8, "windSpeed": 10.5,
+        "cloudCover": 65, "dayHumidity": 75, "nightHumidity": 88
+      },
+      "autumn": {
+        "sunrise": "06:05", "sunset": "18:00",
+        "dayTemp": 26.5, "nightTemp": 19.8,
+        "precipitation": 3.2, "windSpeed": 11.2,
+        "cloudCover": 45, "dayHumidity": 68, "nightHumidity": 82
+      }
+    }
+  },
+  {
+    "id": 401,
+    "country": "Canada",
+    "region": "North America",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:50", "sunset": "16:30",
+        "dayTemp": -4.5, "nightTemp": -12.8,
+        "precipitation": 3.0, "windSpeed": 18.5,
+        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+      },
+      "spring": {
+        "sunrise": "06:15", "sunset": "20:00",
+        "dayTemp": 12.5, "nightTemp": 2.5,
+        "precipitation": 2.8, "windSpeed": 15.0,
+        "cloudCover": 55, "dayHumidity": 60, "nightHumidity": 70
+      },
+      "summer": {
+        "sunrise": "05:30", "sunset": "21:15",
+        "dayTemp": 25.0, "nightTemp": 14.5,
+        "precipitation": 2.2, "windSpeed": 12.5,
+        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 65
+      },
+      "autumn": {
+        "sunrise": "07:10", "sunset": "18:20",
+        "dayTemp": 10.8, "nightTemp": 3.2,
+        "precipitation": 3.5, "windSpeed": 16.2,
+        "cloudCover": 60, "dayHumidity": 65, "nightHumidity": 78
+      }
+    }
+  },
+  {
+    "id": 402,
+    "country": "Japan",
+    "region": "Asia",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:50", "sunset": "16:40",
+        "dayTemp": 9.2, "nightTemp": 2.1,
+        "precipitation": 1.8, "windSpeed": 14.0,
+        "cloudCover": 45, "dayHumidity": 50, "nightHumidity": 65
+      },
+      "spring": {
+        "sunrise": "05:30", "sunset": "18:20",
+        "dayTemp": 18.5, "nightTemp": 10.0,
+        "precipitation": 3.5, "windSpeed": 12.5,
+        "cloudCover": 50, "dayHumidity": 60, "nightHumidity": 75
+      },
+      "summer": {
+        "sunrise": "04:30", "sunset": "19:00",
+        "dayTemp": 30.5, "nightTemp": 24.2,
+        "precipitation": 5.2, "windSpeed": 10.0,
+        "cloudCover": 60, "dayHumidity": 78, "nightHumidity": 88
+      },
+      "autumn": {
+        "sunrise": "05:50", "sunset": "17:10",
+        "dayTemp": 21.0, "nightTemp": 14.5,
+        "precipitation": 4.8, "windSpeed": 11.5,
+        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 80
+      }
+    }
+  },
+  {
+    "id": 403,
+    "country": "Australia",
+    "region": "Oceania",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:10", "sunset": "17:00",
+        "dayTemp": 16.5, "nightTemp": 7.8,
+        "precipitation": 1.5, "windSpeed": 16.0,
+        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 70
+      },
+      "spring": {
+        "sunrise": "06:00", "sunset": "18:30",
+        "dayTemp": 24.0, "nightTemp": 13.5,
+        "precipitation": 1.2, "windSpeed": 18.5,
+        "cloudCover": 30, "dayHumidity": 50, "nightHumidity": 65
+      },
+      "summer": {
+        "sunrise": "05:40", "sunset": "20:10",
+        "dayTemp": 32.5, "nightTemp": 20.1,
+        "precipitation": 0.8, "windSpeed": 14.2,
+        "cloudCover": 20, "dayHumidity": 45, "nightHumidity": 60
+      },
+      "autumn": {
+        "sunrise": "06:30", "sunset": "17:45",
+        "dayTemp": 23.8, "nightTemp": 14.2,
+        "precipitation": 2.1, "windSpeed": 15.5,
+        "cloudCover": 40, "dayHumidity": 60, "nightHumidity": 75
+      }
+    }
+  },
+  {
+    "id": 404,
+    "country": "Egypt",
+    "region": "Africa",
+    "faction": "Neutral",
+    "seasons": {
+      "winter": {
+        "sunrise": "06:45", "sunset": "17:15",
+        "dayTemp": 20.5, "nightTemp": 10.2,
+        "precipitation": 0.2, "windSpeed": 15.0,
+        "cloudCover": 15, "dayHumidity": 45, "nightHumidity": 60
+      },
+      "spring": {
+        "sunrise": "05:30", "sunset": "18:20",
+        "dayTemp": 28.5, "nightTemp": 15.5,
+        "precipitation": 0.0, "windSpeed": 18.5,
+        "cloudCover": 10, "dayHumidity": 35, "nightHumidity": 50
+      },
+      "summer": {
+        "sunrise": "04:55", "sunset": "18:55",
+        "dayTemp": 36.5, "nightTemp": 24.0,
+        "precipitation": 0.0, "windSpeed": 14.0,
+        "cloudCover": 0, "dayHumidity": 30, "nightHumidity": 45
+      },
+      "autumn": {
+        "sunrise": "05:55", "sunset": "17:35",
+        "dayTemp": 29.0, "nightTemp": 18.5,
+        "precipitation": 0.1, "windSpeed": 16.2,
+        "cloudCover": 10, "dayHumidity": 40, "nightHumidity": 55
+      }
+    }
+  },
+  {
+    "id": 405,
+    "country": "United States (Free States of Midwest)",
+    "region": "North America",
+    "faction": "Continental Union",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:20", "sunset": "16:40",
+        "dayTemp": -2.0, "nightTemp": -10.5,
+        "precipitation": 2.0, "windSpeed": 18.0,
+        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+      },
+      "spring": {
+        "sunrise": "06:10", "sunset": "19:50",
+        "dayTemp": 15.0, "nightTemp": 5.0,
+        "precipitation": 3.5, "windSpeed": 15.0,
+        "cloudCover": 50, "dayHumidity": 60, "nightHumidity": 70
+      },
+      "summer": {
+        "sunrise": "05:40", "sunset": "20:30",
+        "dayTemp": 28.0, "nightTemp": 18.0,
+        "precipitation": 4.0, "windSpeed": 12.0,
+        "cloudCover": 35, "dayHumidity": 55, "nightHumidity": 65
+      },
+      "autumn": {
+        "sunrise": "07:00", "sunset": "17:50",
+        "dayTemp": 14.0, "nightTemp": 6.0,
+        "precipitation": 2.5, "windSpeed": 15.0,
+        "cloudCover": 55, "dayHumidity": 65, "nightHumidity": 78
+      }
+    }
+  },
+  {
+    "id": 406,
+    "country": "Cascadia Protectorate",
+    "region": "North America",
+    "faction": "Britannia",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:50", "sunset": "16:30",
+        "dayTemp": 6.0, "nightTemp": 1.0,
+        "precipitation": 5.5, "windSpeed": 22.0,
+        "cloudCover": 85, "dayHumidity": 85, "nightHumidity": 92
+      },
+      "spring": {
+        "sunrise": "06:15", "sunset": "20:00",
+        "dayTemp": 14.0, "nightTemp": 7.0,
+        "precipitation": 3.5, "windSpeed": 18.0,
+        "cloudCover": 65, "dayHumidity": 65, "nightHumidity": 78
+      },
+      "summer": {
+        "sunrise": "05:30", "sunset": "21:00",
+        "dayTemp": 22.0, "nightTemp": 13.0,
+        "precipitation": 1.5, "windSpeed": 14.0,
+        "cloudCover": 30, "dayHumidity": 55, "nightHumidity": 68
+      },
+      "autumn": {
+        "sunrise": "07:10", "sunset": "17:40",
+        "dayTemp": 13.0, "nightTemp": 7.0,
+        "precipitation": 4.0, "windSpeed": 19.0,
+        "cloudCover": 70, "dayHumidity": 75, "nightHumidity": 85
+      }
+    }
+  },
+  {
+    "id": 407,
+    "country": "Eastern Seaboard",
+    "region": "North America",
+    "faction": "Britannia",
+    "seasons": {
+      "winter": {
+        "sunrise": "07:15", "sunset": "16:50",
+        "dayTemp": 0.0, "nightTemp": -6.0,
+        "precipitation": 2.8, "windSpeed": 16.0,
+        "cloudCover": 75, "dayHumidity": 80, "nightHumidity": 88
+      },
+      "spring": {
+        "sunrise": "06:05", "sunset": "19:40",
+        "dayTemp": 13.0, "nightTemp": 4.0,
+        "precipitation": 2.5, "windSpeed": 14.0,
+        "cloudCover": 60, "dayHumidity": 62, "nightHumidity": 75
+      },
+      "summer": {
+        "sunrise": "05:35", "sunset": "20:20",
+        "dayTemp": 26.0, "nightTemp": 17.0,
+        "precipitation": 3.5, "windSpeed": 11.0,
+        "cloudCover": 40, "dayHumidity": 58, "nightHumidity": 70
+      },
+      "autumn": {
+        "sunrise": "06:50", "sunset": "17:55",
+        "dayTemp": 14.0, "nightTemp": 7.0,
+        "precipitation": 2.2, "windSpeed": 14.0,
+        "cloudCover": 60, "dayHumidity": 70, "nightHumidity": 82
+      }
+    }
   }
 ]

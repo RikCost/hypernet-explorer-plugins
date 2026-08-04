@@ -1,0 +1,19 @@
+{
+  "back": "Back",
+  "forbiddenDraw": "{percent}% Forbidden draw",
+  "forbiddenTitle": "Forbidden Grimoire",
+  "skillBookTitle": "{school} Skill Book",
+  "forgottenTitle": "Forgotten Grimoire",
+  "schoolTitle": "{school} Grimoire",
+  "thisReader": "This reader",
+  "noSpells": "{reader} cannot grasp any spell here.<br>(none within MP reach, or all already known)",
+  "ui": {
+    "blurb": "Choose a reader, then claim one spell from the five the pages reveal. Only spells within their MP reach appear.",
+    "partyReader": "Party Reader",
+    "psychicDiagnostics": "Psychic Diagnostics",
+    "medianPsi": "Median PSI (Luck)",
+    "forbiddenSurfacing": "Forbidden Surfacing",
+    "forbidden": "✦ Forbidden",
+    "whisperedSpells": "Whispered Spells"
+  }
+}

@@ -1,0 +1,3212 @@
+{
+  "ui": {
+    "investigate": "",
+    "resume": "",
+    "close": "",
+    "investigateHint": "",
+    "where": "",
+    "signalRow": "",
+    "signalUnread": "",
+    "signalLost": ""
+  },
+  "reward": {
+    "artifact": "",
+    "gear": "",
+    "materials": "",
+    "gold": "",
+    "schrodingerite": "",
+    "exp": "",
+    "harm": "",
+    "heal": "",
+    "battle": ""
+  },
+  "relic": {
+    "nameTemplate": "",
+    "description": "",
+    "prefix": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "noun": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "tokens": {
+    "instrument": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "maker": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "wrongness": [
+      "",
+      "",
+      "",
+      ""
+    ],
+    "tone": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "biomes": {
+    "AlienAcidOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCarbon": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienCentaur": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienChthonian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienColdJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDesert": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDiamond": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienDwarf": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienEarthLike": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienGasGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienHabitable": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienHotJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienIce": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienIceGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienLavaOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienLongPeriodComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMagmaPlanet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMagnetar": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMegaIron": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMercurian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienMiniNeptune": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienOcean": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPlanetesimal": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPlasma": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienPuffy": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienQuarkPlanet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRainforest": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRingedGasGiant": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienRogue": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSTypeAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienShortPeriodComet": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSubEarth": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSubMercurian": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienSuperEarth": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienTrojanAsteroid": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienTundra": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    },
+    "AlienWarmJupiter": {
+      "label": "",
+      "scenarios": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "tokens": {
+        "place": [
+          "",
+          "",
+          ""
+        ],
+        "ground": [
+          "",
+          "",
+          ""
+        ],
+        "hazard": [
+          "",
+          "",
+          ""
+        ],
+        "remnant": [
+          "",
+          "",
+          ""
+        ],
+        "sound": [
+          "",
+          "",
+          ""
+        ]
+      }
+    }
+  },
+  "scenarios": {
+    "bloom": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "castaway": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "derelict": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "descent": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "furnace": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "graveyard": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "hollow": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "mirror": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        }
+      }
+    },
+    "predator": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "ruins": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 2,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "shrine": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "signal": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 1,
+            "mag": "",
+            "reward": "",
+            "slot": "",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "swarm": {
+      "title": "",
+      "start": "",
+      "nodes": {
+        "n0": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "b": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "c": {
+          "text": "",
+          "choices": [
+            {
+              "text": "",
+              "to": ""
+            },
+            {
+              "text": "",
+              "to": ""
+            }
+          ]
+        },
+        "a1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "count": 3,
+            "mag": "",
+            "reward": "",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "slot": "",
+            "mag": "",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "",
+          "outcome": {
+            "kind": "",
+            "mag": "",
+            "exp": 14
+          }
+        }
+      }
+    }
+  },
+  "fallbackScenarios": [
+    "",
+    "",
+    "",
+    ""
+  ]
+}

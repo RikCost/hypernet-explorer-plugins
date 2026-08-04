@@ -1,0 +1,11 @@
+{
+  "errorName": "Errore",
+  "unknownName": "Sconosciuto",
+  "error": "[ERRORE] {message}",
+  "checkParams": "Controlla i parametri del plugin.",
+  "noDatabases": "[ERRORE] Nessun archivio di dialoghi disponibile!",
+  "databaseMissing": "[ERRORE] Archivio di testo \"{id}\" non trovato.",
+  "allDatabases": "Tutti gli archivi uniti",
+  "combined": "Uniti: {list}",
+  "seeded": "Da seme: {list}"
+}

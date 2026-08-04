@@ -1,0 +1,68 @@
+{
+  "mapFallback": "Map {id}",
+  "shopkeeperFallback": "Shopkeeper",
+  "frontier": "Frontier",
+  "placeOfCountry": "{place} of {country}",
+  "placeSettlement": "{place} settlement",
+  "thought": {
+    "flee": {
+      "named": [
+        "{name}... I need to get away!",
+        "Stay away from me, {name}!",
+        "I can't face {name} right now!"
+      ],
+      "anon": [
+        "Stay away from me!",
+        "Leave me alone!",
+        "I should run..."
+      ]
+    },
+    "disdain": {
+      "named": [
+        "{name}... tch.",
+        "Not you again, {name}.",
+        "{name}'s nothing but trouble."
+      ],
+      "anon": [
+        "I don't like the look of this person.",
+        "Better keep my distance.",
+        "That stranger gives me bad vibes."
+      ]
+    },
+    "distrust": {
+      "named": [
+        "I don't trust {name}. Not these days.",
+        "What does {name} really want?",
+        "Even {name} could be dangerous now..."
+      ],
+      "anon": [
+        "Can't trust anyone these days.",
+        "What do they want from me?",
+        "Best keep my distance... it's not safe anymore.",
+        "Dark times. Stay wary of strangers."
+      ]
+    },
+    "greet": {
+      "stranger": [
+        "Hello there.",
+        "Oh, a visitor.",
+        "Good day, stranger.",
+        "A new face around here."
+      ],
+      "warm": [
+        "Good to see you, {name}!",
+        "Hey {name}!",
+        "{name}! How's it going?"
+      ],
+      "polite": [
+        "Oh, hello {name}.",
+        "Hey, {name}."
+      ],
+      "cold": [
+        "Hmm.",
+        "...",
+        "Oh. You again."
+      ]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "anItem": "an item",
+  "mapFallback": "Map {id}",
+  "homePool": {
+    "huts": "hut",
+    "houses": "house",
+    "villas": "villa",
+    "skyscrapers": "high-rise"
+  },
+  "log": {
+    "work": "worked as {job} and earned {pay}",
+    "harvested": "harvested mature crops",
+    "animalProduce": "collected animal produce",
+    "stole": "stole {item}",
+    "caughtStealing": "caught stealing {item}",
+    "bought": "bought {item} for {price}",
+    "cooked": "cooked {a} with {b}",
+    "foundInContainer": "found {amount} rummaging through a container",
+    "rentedRoom": "rented a room for the night ({price})",
+    "soldHoney": "sold a batch of honey and wax for {amount}",
+    "tookLoan": "took out a loan for {amount}",
+    "deposited": "deposited {amount} into a savings account",
+    "rentalIncome": "collected {amount} in rental income",
+    "stocksGain": "made {amount} trading stocks",
+    "stocksLoss": "lost {amount} trading stocks",
+    "movedHome": "moved to a {home} ({saved} saved)",
+    "reachedLevel": "reached level {level}",
+    "met": "met {name}"
+  },
+  "narrative": {
+    "noHistory": "{name} has no recorded history yet.",
+    "workShifts": "worked {count} shifts (last: {last})",
+    "tendsCrops": "tends crops regularly",
+    "hasMet": "has met {name}",
+    "acquainted": "is acquainted with {names}",
+    "and": "and",
+    "cooksRegularly": "cooks their own meals regularly",
+    "rentsSometimes": "rents a room from time to time",
+    "keepsBees": "keeps bees on the side",
+    "livesOffRent": "lives off rental income from owned property",
+    "dabblesStocks": "dabbles in the stock market",
+    "wasCaught": "was once caught, {what}",
+    "familiarFace": "considers the player a familiar face",
+    "spokenBefore": "has spoken to the player before",
+    "summary": "{name}: {list}.",
+    "quiet": "{name} has been living quietly."
+  },
+  "unknownDate": "Unknown"
+}

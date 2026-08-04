@@ -1,0 +1,61 @@
+{
+  "action": {
+    "harvest": "Harvest Honey",
+    "simulate": "Simulate Day",
+    "exit": "Exit"
+  },
+  "caste": {
+    "eggs": "Eggs",
+    "larvae": "Larvae",
+    "pupae": "Pupae",
+    "workers": "Workers",
+    "nurses": "Nurses",
+    "guards": "Guards",
+    "foragers": "Foragers",
+    "builders": "Builders",
+    "scouts": "Scouts",
+    "drones": "Drones"
+  },
+  "resource": {
+    "honey": "Honey",
+    "pollen": "Pollen",
+    "royalJelly": "Royal Jelly",
+    "wax": "Wax",
+    "propolis": "Propolis",
+    "water": "Water"
+  },
+  "queenHealth": "Health",
+  "eggsLaid": "Eggs Laid",
+  "noQueen": "No Queen Present!",
+  "threats": "Threats: {list}",
+  "secure": "Colony secure",
+  "harvested": "Harvested {amount} honey.",
+  "notEnoughHoney": "Not enough honey to harvest yet.",
+  "simulatedDay": "Simulated 24 hours of colony activity.",
+  "simulatedHours": "Simulated {hours} hours",
+  "honeyProduced": "Honey produced: {amount}",
+  "currentPopulation": "Current population: {total}",
+  "ui": {
+    "back": "Back",
+    "apiary": "Apiary",
+    "colony": "Colony",
+    "state": "State",
+    "mood": "Mood",
+    "efficiency": "Efficiency",
+    "queen": "Queen",
+    "environment": "Environment",
+    "season": "Season",
+    "weather": "Weather",
+    "temp": "Temp",
+    "flowers": "Flowers",
+    "population": "Population",
+    "total": "Total",
+    "resources": "Resources",
+    "statistics": "Statistics",
+    "births": "Births",
+    "deaths": "Deaths",
+    "honeyProduced": "Honey Produced",
+    "enemiesRepelled": "Enemies Repelled",
+    "swarms": "Swarms"
+  }
+}

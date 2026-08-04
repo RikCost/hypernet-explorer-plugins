@@ -1,0 +1,17 @@
+{
+  "selectABattler": "Select a battler",
+  "baseline": "Baseline",
+  "hybrid": "Hybrid",
+  "selectAnArchetype": "Select an archetype...",
+  "selectCreationMode": "Select Creation Mode",
+  "selectOneOrTwoArchetypes": "Select one or two archetypes",
+  "selectHybridArchetype": "Select Hybrid Archetype",
+  "selectABattlerImage": "Select a Battler Image",
+  "selectACharacterSprite": "Select a Character Sprite",
+  "custom3D": "Custom (3D)",
+  "skillFallback": "Skill {id}",
+  "ui": {
+    "primaryBadge": "Pri",
+    "secondaryBadge": "Sec"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "_comment": "Every possible relationship structure an NPC can lean toward. 'weight' biases the deterministic per-NPC roll (higher is more common). 'mode' gates which styles are eligible given the NPC's current marital status: 'partnered' needs an active partner, 'solo' fits an unpartnered NPC, 'any' fits either. Consumed by NPCEmpathizeUI.js Romance tab.",
+  "styles": [
+    {
+      "key": "monogamous",
+      "name": "Monogamous",
+      "name_it": "Monogamo",
+      "mode": "partnered",
+      "weight": 60,
+      "desc": "One exclusive partner at a time.",
+      "desc_it": "Un unico partner esclusivo alla volta."
+    },
+    {
+      "key": "civil-union",
+      "name": "Civil union",
+      "name_it": "Unione civile",
+      "mode": "partnered",
+      "weight": 8,
+      "desc": "A legally recognized partnership without a formal marriage.",
+      "desc_it": "Un'unione riconosciuta legalmente senza un matrimonio formale."
+    },
+    {
+      "key": "long-distance",
+      "name": "Long-distance",
+      "name_it": "A distanza",
+      "mode": "partnered",
+      "weight": 7,
+      "desc": "A committed couple separated by geography.",
+      "desc_it": "Una coppia impegnata separata dalla distanza."
+    },
+    {
+      "key": "open-relationship",
+      "name": "Open relationship",
+      "name_it": "Relazione aperta",
+      "mode": "partnered",
+      "weight": 6,
+      "desc": "A primary couple who agree to additional partners.",
+      "desc_it": "Una coppia principale che ammette altri partner."
+    },
+    {
+      "key": "polyamorous",
+      "name": "Polyamorous",
+      "name_it": "Poliamoroso",
+      "mode": "partnered",
+      "weight": 5,
+      "desc": "Several loving relationships maintained openly and at once.",
+      "desc_it": "Piu relazioni amorose portate avanti apertamente e insieme."
+    },
+    {
+      "key": "companionate",
+      "name": "Companionate",
+      "name_it": "Compagni di vita",
+      "mode": "partnered",
+      "weight": 4,
+      "desc": "Deep affection and partnership with little or no passion.",
+      "desc_it": "Affetto profondo e vita in comune, con poca o nessuna passione."
+    },
+    {
+      "key": "throuple",
+      "name": "Throuple",
+      "name_it": "Triade",
+      "mode": "partnered",
+      "weight": 4,
+      "desc": "A committed relationship between three people.",
+      "desc_it": "Una relazione impegnata fra tre persone."
+    },
+    {
+      "key": "arranged-marriage",
+      "name": "Arranged marriage",
+      "name_it": "Matrimonio combinato",
+      "mode": "partnered",
+      "weight": 3,
+      "desc": "A union arranged by families rather than chosen by the couple.",
+      "desc_it": "Un'unione combinata dalle famiglie piu che scelta dalla coppia."
+    },
+    {
+      "key": "portland-polycule",
+      "name": "Portland Polycule",
+      "name_it": "Policula di Portland",
+      "mode": "partnered",
+      "weight": 4,
+      "desc": "A sprawling, densely interconnected network of polyamorous partners, metamours and their exes, all somehow still on good terms.",
+      "desc_it": "Una vasta e fittamente interconnessa rete di partner poliamorosi, metamour e loro ex, tutti chissa come ancora in buoni rapporti."
+    },
+    {
+      "key": "serial-monogamy",
+      "name": "Serial monogamist",
+      "name_it": "Monogamo seriale",
+      "mode": "solo",
+      "weight": 18,
+      "desc": "One exclusive partner at a time, in a long string of relationships.",
+      "desc_it": "Un partner esclusivo alla volta, in una lunga serie di relazioni."
+    },
+    {
+      "key": "single-content",
+      "name": "Contentedly single",
+      "name_it": "Single appagato",
+      "mode": "solo",
+      "weight": 14,
+      "desc": "Not seeking a partner and at peace with it.",
+      "desc_it": "Non in cerca di un partner e in pace con questo."
+    },
+    {
+      "key": "situationship",
+      "name": "Situationship",
+      "name_it": "Situazione indefinita",
+      "mode": "solo",
+      "weight": 10,
+      "desc": "An undefined romantic entanglement that never quite becomes a relationship.",
+      "desc_it": "Un legame romantico indefinito che non diventa mai davvero una relazione."
+    },
+    {
+      "key": "friends-with-benefits",
+      "name": "Friends with benefits",
+      "name_it": "Amici di letto",
+      "mode": "solo",
+      "weight": 8,
+      "desc": "Casual intimacy between friends with no romantic commitment.",
+      "desc_it": "Intimita informale fra amici senza impegno romantico."
+    },
+    {
+      "key": "queerplatonic",
+      "name": "Queerplatonic partnership",
+      "name_it": "Rapporto queerplatonico",
+      "mode": "any",
+      "weight": 4,
+      "desc": "A committed bond stronger than friendship but not romantic.",
+      "desc_it": "Un legame impegnato piu forte dell'amicizia ma non romantico."
+    },
+    {
+      "key": "aromantic-solo",
+      "name": "Aromantic solo",
+      "name_it": "Aromantico solitario",
+      "mode": "solo",
+      "weight": 6,
+      "desc": "Living by choice without any romantic partnership.",
+      "desc_it": "Vivere per scelta senza alcun legame romantico."
+    }
+  ]
+}

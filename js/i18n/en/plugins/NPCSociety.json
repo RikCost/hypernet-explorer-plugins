@@ -1,0 +1,77 @@
+{
+  "pronoun": {
+    "0": {
+      "sub": "he",
+      "obj": "him",
+      "cap": "He",
+      "pos": "his",
+      "was": "was",
+      "is": "is",
+      "tries": "tries",
+      "has": "has",
+      "answers": "answers",
+      "born": "Born"
+    },
+    "1": {
+      "sub": "she",
+      "obj": "her",
+      "cap": "She",
+      "pos": "her",
+      "was": "was",
+      "is": "is",
+      "tries": "tries",
+      "has": "has",
+      "answers": "answers",
+      "born": "Born"
+    },
+    "2": {
+      "sub": "they",
+      "obj": "them",
+      "cap": "They",
+      "pos": "their",
+      "was": "were",
+      "is": "are",
+      "tries": "try",
+      "has": "have",
+      "answers": "answer",
+      "born": "Born"
+    },
+    "3": {
+      "sub": "xe",
+      "obj": "xem",
+      "cap": "Xe",
+      "pos": "xyr",
+      "was": "were",
+      "is": "are",
+      "tries": "try",
+      "has": "have",
+      "answers": "answer",
+      "born": "Born"
+    }
+  },
+  "adjective": [
+    "restless",
+    "curious",
+    "cautious",
+    "bold",
+    "quiet"
+  ],
+  "bio": {
+    "uncertainTimes": "uncertain times",
+    "wildsNear": "the wilds near {city}",
+    "later": "Later, {sub} {has} been touched by {event}.",
+    "moral": {
+      "high": "{cap} {is} known for an unwavering moral compass.",
+      "good": "{cap} {tries} to do right by people, most of the time.",
+      "weary": "Life has left {obj} with few illusions.",
+      "loose": "{cap} {has} learned that rules are for others.",
+      "lawless": "{cap} {answers} to no code but {pos} own."
+    },
+    "creature": "{born} in {place}, {sub} came into the world far from human cities, a {adj} creature shaped by {event}. {later} {moral}",
+    "turbulent": "{born} in {year} in {place} during a turbulent age, {sub} {has} lived through {event}. {later} {moral}",
+    "warYears": "{born} in the war years, {sub} {has} spent childhood in {place} and {has} witnessed {event}. {later} {moral}",
+    "postwar": "{born} in {year} in {place}, {sub} {is} a {adj} soul shaped by {event}. {later} {moral}",
+    "modern": "{born} in {place} as the world grew strange, {sub} {has} never forgotten {event}. {later} {moral}",
+    "bornMeta": "Born {year} · {place}"
+  }
+}

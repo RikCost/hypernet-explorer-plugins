@@ -1,0 +1,430 @@
+{
+  "open": {
+    "serious": [
+      "{channel}. Wherever {you are|you're} {receiving|picking up|taking} this, {sit down|settle down|find a chair}: \"{title}\".",
+      "{Good evening|Evening|Good evening to you}. {channel}, hour {hour}, and \"{title}\".",
+      "\"{title}\". {channel}. Everything after this sentence is {provisional|subject to revision|unconfirmed}.",
+      "{You are|You're} {watching|receiving|tuned to} {channel}. This is \"{title}\".",
+      "{channel}. The hour is {hour}, the timeline is {provisional|unsettled|under revision}, and this is \"{title}\".",
+      "This is \"{title}\", on {channel}, {broadcasting|transmitting|coming to you} from inside the Tower's neutral ground.",
+      "{channel} at hour {hour}. \"{title}\", and {nothing in it is guaranteed|not one word of it is guaranteed|no part of it is certified}.",
+      "From {channel}, {as scheduled|on schedule|as billed}: \"{title}\"."
+    ],
+    "solemn": [
+      "{channel}. {We have|We've} been asked to {broadcast|transmit|carry} \"{title}\" without music.",
+      "{Tonight|This evening}, on {channel}: \"{title}\". {Nobody|No one} has asked us to {lighten it|soften it|make it easier}.",
+      "\"{title}\", from {channel}, for {whoever is still counting|those still counting|anyone still keeping count}.",
+      "{channel} presents, {with a heavy heart|with no pleasure at all|reluctantly}, \"{title}\".",
+      "{Be still|Sit quietly|Stay with us}. {channel} brings you \"{title}\".",
+      "\"{title}\". {channel}. {Please sit down before we begin|Sit down before we start|Take a seat before we go on}.",
+      "{channel}. \"{title}\". {There is no light way to say any of this|None of this can be said lightly|We have found no gentle way to put it}.",
+      "{We are|We're} {obliged|required|duty-bound} to read \"{title}\" in full. {channel}, hour {hour}."
+    ],
+    "wry": [
+      "\"{title}\". {channel}. We {tried to get out of it|did try to get out of it|asked to be excused}.",
+      "{It is|It's} hour {hour} and {channel} is {contractually obliged|legally obliged|paid} to present \"{title}\".",
+      "{Back again, are you|You again|Returned, have you}? Good. {channel}. \"{title}\".",
+      "{channel} again? Yes. {It is|It's} time for \"{title}\".",
+      "{Welcome back to|Good to have you back on|Back again on} \"{title}\", here on {channel}, where {nothing is verified|nothing is checked|verification is somebody else's department}.",
+      "\"{title}\". {channel}. {Somebody|Someone} has to.",
+      "\"{title}\", on {channel}, {because the alternative was silence|since the alternative was dead air|for want of anything better}.",
+      "{channel}, hour {hour}. \"{title}\", and {yes, we know|yes, we are aware|yes, we have noticed}."
+    ],
+    "zany": [
+      "{channel}! \"{title}\"! THE STUDIO IS STRUCTURALLY FINE!",
+      "HOUR {hour}! {channel}! \"{title}\"! {NOBODY|NO ONE} IS IN CONTROL!",
+      "You have {found|located|stumbled onto} {channel}! You {cannot|can't} unfind it! \"{title}\"!",
+      "{WELCOME WELCOME|HELLO HELLO|COME IN COME IN} to {channel}! It's \"{title}\"!!!",
+      "{channel} {blasts|hits|assaults} you with \"{title}\"! No refunds, no anchors, no mercy!",
+      "IT'S \"{title}\"! ON {channel}! THE AERIAL IS PAID FOR UNTIL {hour}!",
+      "{channel}!! \"{title}\"!! {WE HAVE NOT REHEARSED|NOBODY REHEARSED|THERE WAS NO REHEARSAL}!!",
+      "{TURN IT UP|LOUDER|VOLUME UP}! {channel}! \"{title}\"! HOUR {hour} AND CLIMBING!"
+    ],
+    "urgent": [
+      "{channel}. {Drop what|Put down whatever} {you are|you're} doing. \"{title}\".",
+      "{Scheduled programming is suspended|The schedule is suspended|Scheduled output is halted}. {channel} presents \"{title}\".",
+      "\"{title}\". {channel}. {Listen to all of it|Hear all of it|Do not stop listening halfway}.",
+      "We {interrupt|break into|cut across} {channel} for \"{title}\".",
+      "THIS IS {channel}. \"{title}\". Stay where {you are|you're} and stay under 80.",
+      "{channel}. {We have taken the hour off somebody else|This hour was somebody else's|The schedule has been stood down}. \"{title}\".",
+      "{channel}. Hour {hour}. \"{title}\". {This cannot wait for the schedule|The schedule can wait|This will not keep}.",
+      "{Attention|Listen|All stations}. {channel}. \"{title}\", and every word matters."
+    ],
+    "cryptic": [
+      "...the carrier {steadies|firms|settles}... {channel}... \"{title}\"...",
+      "{channel} was already {broadcasting|transmitting|on air}. \"{title}\" was already halfway through.",
+      "...\"{title}\"... you tuned to {channel} at hour {hour} for a reason you {have not|haven't} been told...",
+      "...{channel}... the signal {opens|parts|widens}... \"{title}\"...",
+      "You {did not|didn't} {choose|find|select} {channel}. \"{title}\" chose you.",
+      "The aerial turned {by itself|on its own|without a hand on it}. {channel}. \"{title}\".",
+      "...{channel}, hour {hour}... \"{title}\"... {you were expected|you are expected|we counted on you}...",
+      "...somewhere this has already {ended|finished|closed}. {channel}. \"{title}\"..."
+    ],
+    "weird": [
+      "{channel}. Hour {hour}. \"{title}\". The building is {empty except for us|empty but for us|otherwise empty}.",
+      "{Still awake|Still up|Not sleeping}? {channel} is. \"{title}\".",
+      "\"{title}\", on {channel}, recorded somewhere that {is not|isn't} this studio.",
+      "{It's late|It is late|Late, isn't it}. You're still up. It's {channel}, and this is \"{title}\".",
+      "{channel} after dark. \"{title}\". {Don't blink|Try not to blink|Keep your eyes open}.",
+      "Hour {hour} on {channel}. \"{title}\", for {whoever is still receiving|anyone still receiving|the few still tuned in}.",
+      "{channel}. \"{title}\". {The gallery is dark and I am not asking why|Nobody has turned the gallery lights on|The gallery has been dark all night}.",
+      "This is {channel}, hour {hour}, and \"{title}\" {is what we have|is all we have|is all that is left of the schedule}."
+    ],
+    "light": [
+      "{Lovely to have you|How lovely to have you|Good of you to join us}! {channel}, and it's \"{title}\"!",
+      "{channel} here! \"{title}\"! {Nothing dreadful|Nothing grim|Not one dreadful thing} for a whole half hour!",
+      "{Settle in|Sit yourself down|Make yourself comfortable} - {channel} brings you \"{title}\".",
+      "{Hellooo|Hello there|Ah, hello}, and welcome to {channel}! Today on \"{title}\"...",
+      "{channel} here, {hour} on the clock, and \"{title}\". {Nothing in it will frighten you|Nothing frightening in it today|Not one frightening thing in it}.",
+      "{Kettle on|Tea made|Sitting comfortably}? Good. {channel}, \"{title}\", {and put your feet up|and no bad news for half an hour|and there is a chair with your name on it}.",
+      "{What a treat|How nice|Lovely}! {channel}, hour {hour}, and \"{title}\" to keep you company.",
+      "{channel}! \"{title}\"! {Feet up|Put your feet up|Do sit down}, {it's|it is} all quite harmless today."
+    ],
+    "earnest": [
+      "{channel}. \"{title}\". {Pen and paper|Pen and notebook|Something to write with}, if you have both.",
+      "This is \"{title}\", on {channel}, and it {will be on the test|is examinable|matters later}.",
+      "{channel} presents \"{title}\". {Two parts, with a pause between|We will stop halfway so you can catch up|There is a break in the middle, and you will want it}.",
+      "{Welcome, learners|Welcome, students|Welcome, all of you}, to {channel}. Today: \"{title}\".",
+      "{channel} is {proud|glad|pleased} to present \"{title}\".",
+      "\"{title}\", on {channel}. Notes optional. Attention {mandatory|compulsory|non-negotiable}.",
+      "{channel}, hour {hour}. \"{title}\". {We start at the beginning|We begin at the beginning|We will start from first principles}.",
+      "\"{title}\" on {channel}. {Ask questions|Do ask questions|Questions welcome}, even the obvious ones."
+    ],
+    "unsettling": [
+      "{channel}. \"{title}\". The set is already {warm|warm to the touch|warmer than it should be}.",
+      "\"{title}\" {begins|starts} now on {channel}. It {began|started} some time ago.",
+      "{channel}... \"{title}\"... thank you for staying tuned to {us specifically|us in particular|this frequency and no other}...",
+      "{channel}.....{title}.....{please remain seated|remain seated|stay in your seat}.",
+      "{channel} is {experiencing|undergoing|host to} \"{title}\".",
+      "\"{title}\". {channel}. This {transmission|broadcast} was recorded {before you turned the set on|before your set was switched on|in advance of your watching it}.",
+      "{channel}, hour {hour}. \"{title}\". {We knew you would find it|We knew you would be here|Your arrival was on the schedule}.",
+      "\"{title}\", on {channel}, {again|once more|for the {n}th time this week}. {You have not noticed yet|You had not noticed|Nobody notices the first few times}."
+    ]
+  },
+  "close": {
+    "serious": [
+      "{channel}, out. Whatever happens next, it will be indexed.",
+      "{That is|That's} where we leave it. It {will not|won't} stay where we leave it.",
+      "Our thanks to {faction}, who {did not|didn't} help.",
+      "That's the world {tonight|this evening|at this hour}. Keep it under 80 and keep your papers indexed.",
+      "We'll stay with this as long as it stays with us. {channel}, {signing off|closing down|going off air}.",
+      "More when {there is|there's} more. {Statistically|On past form|Going by the averages}, there will be.",
+      "{channel}, hour {hour}, {done|finished|out}. {Keep your head down|Keep your speed down|Keep your papers on you}.",
+      "{That is all we can stand over|That is all we will stand over|That is as far as the record goes}. {channel}, out."
+    ],
+    "solemn": [
+      "We close the file. The file {does not|doesn't} {close back|close in return|agree to be closed}.",
+      "{Goodnight|Good night}. Hold on to {whatever you can still name|whatever you can still put a name to|what you can still name}.",
+      "{channel} ends {transmission|broadcast}. The {remembering|rest of the remembering} is your part.",
+      "{May the Archive hold them gently|May the Archive be kind to them|May the file be gentle with them}. {Goodnight|Good night} from {channel}.",
+      "{Gone, but indexed|Lost, but indexed|Gone, and indexed}. Always indexed.",
+      "The recording ends here. The {remembering|grieving|counting} does not.",
+      "{We have|We've} read the names. {That is the whole|That's the whole|That is the entire} service.",
+      "{channel} closes. {Sit with it a while|Sit with that a while|Give it a moment} before you get up."
+    ],
+    "wry": [
+      "{That's the lot|That is the lot|That is all of it}. Complain to {faction}; they {enjoy it|rather enjoy it|live for it}.",
+      "{We'll|We will} do this again, {apparently|evidently|by all accounts}, whether or not we agree to.",
+      "{channel}, {signing off|closing down|going off air} before {anyone asks a follow-up|anyone asks a second question|the follow-ups start}.",
+      "And people say {nothing happens around here|nothing ever happens here|it is quiet out here}. {channel}, out.",
+      "{Same time next loop|Same hour next loop|Same slot next loop}, {assuming a next loop|if there is a next loop|loop permitting}.",
+      "{That's our lot|That is our lot|That is your lot}. Do complain - the complaints line is a hole in the wall.",
+      "{channel}. {That was the news|That was the programme|That was all of it}, near enough, {give or take the facts|facts notwithstanding|apart from the facts}.",
+      "{Right, that's me|Right, that is me|Well, that's me}. {Somebody|Someone} else can hold the aerial for a bit."
+    ],
+    "zany": [
+      "GOODNIGHT! THE AERIAL IS ON FIRE! {IN A FUN WAY|IN A GOOD WAY|BUT CHEERFULLY}!",
+      "{WE'RE OUT|WE ARE OUT|THAT'S US OUT}! WE WERE NEVER IN! {channel}! BYE!",
+      "That's all - {the sponsor has taken the furniture|the sponsor has taken the chairs|the sponsor is removing the set}! GOODNIGHT!",
+      "THAT'S ALL! GOODNIGHT! {DON'T EXCEED 80|STAY UNDER 80|EIGHTY IS THE LIMIT}! WE MEAN IT THIS TIME!",
+      "{We're out of|We have run out of} budget, {out of|and out of} time, and {out of one presenter|one presenter down|missing a presenter}! BYE!",
+      "The credits are on fire! {Roll them anyway|Roll them regardless|Roll them, roll them}! GOODNIGHT!",
+      "{THAT IS THE SHOW|THAT WAS THE SHOW|SHOW OVER}! {NOBODY|NO ONE} WAS HURT! {PROBABLY|MOSTLY|WE THINK}! BYE!",
+      "{BYE|GOODBYE|SO LONG}! {channel}! {SAME MADNESS NEXT WEEK|MORE OF THIS NEXT WEEK|WE'LL DO IT AGAIN}!"
+    ],
+    "urgent": [
+      "{Stay tuned|Keep the set on|Leave the dial where it is} to {channel}. Stay under eighty. Stay findable.",
+      "This {transmission|broadcast} ends. The situation {does not|doesn't|has not}. {channel}.",
+      "If the signal drops, {assume the worst|assume the worst of it|take the worst reading} and keep your speed down.",
+      "{Remain where you are|Stay exactly where you are|Do not move from where you are}. Remain under 80. {channel} will transmit again.",
+      "This advisory stands until {it is|it's} {withdrawn|lifted|stood down}. It {has never once been|has not once been|has never yet been} withdrawn.",
+      "If {you are|you're} still receiving this, {you are|you're} still in range. Stay in range.",
+      "{channel} will repeat this {on the hour|every hour|until it is lifted}. {Do not|Don't} assume the repeat means it is over.",
+      "{That is the advisory|That is the whole advisory|That is all of the advisory}. {Act on it|Act on all of it|Do as it says}."
+    ],
+    "cryptic": [
+      "...the carrier {thins|narrows|goes thin}... we were never the ones speaking...",
+      "...thank you for the attention. {It has been|It's been} {collected|taken|logged}...",
+      "...{channel} closes. Something else keeps the frequency {warm|open|alive}...",
+      "...the signal folds... count the seconds... there will be {one too many|one more than there should be|an extra}...",
+      "...you have watched this before. {You will|You'll} watch it again. {Hello|Hello again|Welcome back}...",
+      "...somewhere between frames, something {waved back|looked back|answered}. {Goodnight|Good night}...",
+      "...the hour closes {without our help|on its own|whether we finish or not}. {channel}...",
+      "...{do not|don't} thank us. {We were not|We weren't} the ones {transmitting|speaking|on the frequency}..."
+    ],
+    "weird": [
+      "The studio lights are staying on. They always stay on. {Goodnight|Good night}.",
+      "{That's us|That is us|That's me}. Whoever is in the booth can finish the hour themselves.",
+      "{channel} is going quiet now. Quiet {is not the same as|is not the same thing as|is a different thing from} off.",
+      "The lines are open. {Nobody|No one} is calling. {Nobody|No one} ever calls. {Goodnight|Good night}.",
+      "{Stay with me|Stay with us|Keep me company}. The night is long out here on the Road.",
+      "Did you hear that? No? ...Good. {channel}, until {tomorrow|the next one|whenever this is}.",
+      "{I'll|I will} leave the mic open. {It seems to prefer that|The room prefers it that way|Something prefers it open}.",
+      "{channel}, hour {hour}. {Sleep if you can|Get some sleep if you can|Try to sleep}. {Some of us|A few of us|The rest of us} are staying up."
+    ],
+    "light": [
+      "{Right, kettle's gone cold|Well, the kettle's gone cold|Right, tea's gone cold} - off you pop! Bye!",
+      "Thank you for the company. {Genuinely|Honestly|Truly}. It helps. Bye now!",
+      "Look after yourselves, and {mind the boundary|mind the bubbles|watch the boundary} on the way home!",
+      "What a {nice|lovely|decent} bit of world we've got today, all things considered. Bye now!",
+      "Do write in! Our mailbox is {a hole in the wall|a gap in the wall|a slot in a wall}, but do write in!",
+      "See you next time, {if there IS a next time|if next time happens|next time being optional}! Bye bye!",
+      "{Lovely|Smashing|Marvellous}. {That's us done|That is us done|We're done}. {Put the kettle on|Go and put the kettle on|Have a sit down}!",
+      "{Be kind to each other|Look after each other|Be good to one another} out there, and {mind your speed|watch your speed|keep it under eighty}. Bye!"
+    ],
+    "earnest": [
+      "{Read it again tomorrow|Read it again in the morning|Go over it again tomorrow}. Tomorrow {is not|isn't} guaranteed, but read it again.",
+      "{That is|That's} the lesson. {channel} thanks you for staying with it.",
+      "You know more than you did {at the top of the hour|on the hour|at the start of the hour}. Keep it.",
+      "If you learned one thing {tonight|this evening|at this hour}, the {broadcast|programme|hour} paid for itself.",
+      "{Knowledge is the only anchor that holds|Knowledge is the one anchor that holds|Understanding is the only anchor that holds}. Study well.",
+      "{There is|There's} no shame in asking again. Ask again. {Goodnight|Good night}.",
+      "{Write it down before you sleep|Put it on paper before you sleep|Get it written down tonight}. {Memory drifts|Memory slips|Memory wanders}, out here.",
+      "{That is|That's} the hour. {Teach it to somebody|Pass it on to somebody|Tell somebody else} who missed it."
+    ],
+    "unsettling": [
+      "The {transmission|broadcast} ends. Your set will take {a moment|a minute} to agree.",
+      "Thank you for watching. {We knew you would|We knew that you would|It was on the schedule}.",
+      "{channel} withdraws. {Please do not|Please don't|We would ask you not to} follow.",
+      "{Please remain seated|Remain seated|Stay in your seat} a little longer. The {seat|chair|room} is aware of you.",
+      "{We are|We're} contractually obliged to describe this as {normal|routine|unremarkable}. {Goodnight|Good night}.",
+      "The audience applauded. {There is|There's} no audience. {channel} is finished with you.",
+      "{channel} stops here. {Your set will not|The set will not} - {not immediately|not straight away|not for a while}.",
+      "{Goodnight|Good night}. {We will|We'll} be {here|in the room|on this frequency} when you next switch on. {We have not|We haven't} left."
+    ]
+  },
+  "lead": {
+    "puppet_show": [
+      "{Hello children|Hello there children|Good morning children}! Today Mister Sockington is going to {explain|set out|talk about} the Rule of Eighty!",
+      "{Right, is he on|Are we on? He's on|Is the puppet up yet}? {Hello, children|Morning, children}! Mister Sockington {has had a difficult night|is in a mood today|is not himself today}, so {we will keep this one short|be gentle with him|nobody shout}."
+    ],
+    "royal_address": [
+      "Subjects of {realm}, {attend|attend now|hear this}.",
+      "{The following is carried in full|The next four minutes are carried in full|This is carried without cuts}, {by standing order|as required|by order}. {We are not permitted to comment|No comment is permitted|Comment comes later, if at all}."
+    ],
+    "court_report": [
+      "From the judiciary dimension, the docket for today, which is {also the docket for every day|the same docket as every day|indistinguishable from every other day's}.",
+      "The docket, then. {Nine hundred pages this morning|Forty pages we can get through|Longer than yesterday, and yesterday was long}. {We take them as they were filed|We start at the top|Names first, charges after}."
+    ],
+    "market_report": [
+      "Markets. The Collective closed up {pct}%, which they {attribute to demand|put down to demand|credit to demand} and everyone else {attributes to fear|puts down to fear|calls panic}.",
+      "{Markets|Trading|Right, markets}. {The Collective went out at {pct}%|Collective, {pct}%|I have the Collective at {pct}%}, {and the explanation came attached to the figure, which is never a good sign|and I am reading what the desk handed me|and do not ask me to defend it}."
+    ],
+    "phone_in": [
+      "Lines are open. {You're|You are} through to {channel}. {Where are you calling from and are you moving|Where are you calling from, and are you moving|Give us your location and your speed}?",
+      "{Switchboard's open|Lines are open|The lines are open}. {Six holding|Four on hold|Two waiting}, {which is a good night for us|so we will get through what we can|and one of them has been there since the last programme}. {Name, town, and are you moving|Name and town, please|Give us a name and a town}?"
+    ],
+    "sports": [
+      "Goblin-Ball League results now, and {place} have won again by a margin {nobody|no one} {wants to describe|cares to describe|is willing to read out}.",
+      "{Results|The scores|Sport}. {Straight through, no comment|Just the scores, we are short tonight|I will read them straight through}: {place} first, {then the rest as the pigeons landed|then the others in the order they came in|and the rest after}."
+    ],
+    "road_report": [
+      "Trucker's Society advisory for the run to {dest}: boundary drift, {n} kilometres, {moving inland|drifting inland|working inland}.",
+      "{Right, the roads|Roads|The run to {dest}}. {I have three notes here and one of them is somebody's shopping list|Two notes and a smudge|One page from dispatch, and half of it is wet}. {Bear with me|We will do what we can with it|Here we go}."
+    ],
+    "historical_epic": [
+      "The year is {year}. The Tower has been in the ground long enough for the world to {build offices in it|put offices in it|start letting offices inside it}.",
+      "{Four hours, this one|It runs long, this one|This is the long one}. {We break once, at the wedding|One break, halfway|There is one interval}. {Settle in|Get comfortable|Do not start it if you are tired}."
+    ],
+    "soap_opera": [
+      "Previously, in {place}: a will, a leyline, and a body that {keeps coming back at dawn|comes back at dawn|will not stay buried past dawn}.",
+      "{If you missed last week|Last week, quickly|For anyone who missed it}: {a will, a leyline, and a body|the will, the leyline, the body}. {The body is the one to watch|That is all you need|You have not missed much}."
+    ],
+    "test_pattern": [
+      "This is a test pattern. {There is|There's} nothing to watch. {You are|You're} watching it.",
+      "{Nothing scheduled until hour {hour}|No programme until hour {hour}|The next programme is at hour {hour}}. {The tone is deliberate|The tone you can hear is deliberate|The tone is meant to be there}. {The card stays up|We leave the card up|We leave it up}."
+    ],
+    "reality_tv": [
+      "{n} contestants. One bubble. {Nobody|No one} leaves until {somebody|someone} works out the exit is over eighty.",
+      "{Day {n} in the bubble|Day {n}|Week {n} in the bubble}. {They have stopped asking about the exit|Still nobody has worked it out|Nobody has worked it out yet}. {We are not allowed to tell them|We know. We edit this|We could tell them. We do not}."
+    ],
+    "music_video": [
+      "Next up, from Norway, {worshipped by an entire species|worshipped by a whole species|revered by an entire species}: the Mahyem.",
+      "{Straight in|Next|Right}: the Mahyem, {out of Norway|Norway}. {Turn it down before the second chorus|Mind the volume|The second chorus takes the aerial off}."
+    ],
+    "history_obituary": [
+      "We pause to {remember|recall|mark} what the timeline took from us.",
+      "{We have {n} names tonight|{n} names tonight|The list runs to {n} tonight}. {Two of them we could not date|Some are initials only|We have dates for most of them}. {We read what there is|We read what we have}."
+    ],
+    "educational": [
+      "Our lesson today {concerns|is on|deals with} {magic} and why it will hurt you.",
+      "{Books open|Right, books open|Open your book}, {at the diagram|second chapter|the page with the diagram}. {We are behind|We lost a week to the resets|We did the theory last week and half of you were looping}."
+    ],
+    "magic_lesson": [
+      "{Wands down|Wands away|Hands down}. Today: why proximity to a leyline {is not the same as|is not the same thing as|is a different thing from} competence.",
+      "{Wands down|Hands down|Wands away}. {One thing first|Before we start|First}: {nobody casts in this room today|no casting in here today|nobody casts today}. {Not one of you|Not a syllable|Not even the easy one}."
+    ],
+    "emergency": [
+      "This is an emergency {transmission|broadcast} from {faction}. {Remain where you are|Stay exactly where you are|Do not move from where you are}.",
+      "{This is not the scheduled programme|The scheduled programme is not running|We have come off the schedule}. {faction}. {All of it, please|Do not turn it off halfway|Listen to the whole of this}."
+    ],
+    "news_breaking": [
+      "BREAKING: {news}",
+      "{This is coming in as I read it|I am reading this as it arrives|Straight off the wire}: {news}"
+    ],
+    "news_desk": [
+      "Our top story: {news}",
+      "{First tonight|Top of the bulletin|We start with this}: {news}"
+    ],
+    "cooking": [
+      "Today {we're|we are} working with something I {traded off|got off|bartered from} a {job} in {place}. {Don't ask|Do not ask|Best not ask}.",
+      "{Right|So|Now then}. {Apron on|Hands washed|Get your apron on}. {Today's came off a {job} in {place}|A {job} in {place} sold me today's|What we have came off a {job} in {place}}, {and I paid over the odds|and it cost more than it should have|and I would rather not say what for}."
+    ],
+    "history_panel": [
+      "Tonight's question: {did this truly happen|did any of this happen|is this true}? {hist}",
+      "{On the panel tonight|With me tonight|Tonight's panel}: {two historians and somebody who was there|a historian, an archivist, and one eyewitness nobody can verify|three people who disagree}. {hist} {We will not settle it|We never settle these|We will not get to the bottom of it}."
+    ]
+  },
+  "tail": {
+    "history_doc": [
+      "And so the age {turned|closed|ended}, as ages do, and took {pct}% of the paperwork with it.",
+      "{That is where the file stops|The file stops there|The record stops there}. {Somebody put the pen down, is all|Not because the age stopped|Somebody stopped writing}."
+    ],
+    "history_panel": [
+      "{We are|We're} out of time. We are always out of time. {That is the whole|That's the whole|That is the entire} problem.",
+      "{We have overrun|That is us over|We have run over}. {The panel had more. They always do|My apologies to the panel, who had more|Half of that was me, sorry}."
+    ],
+    "history_obituary": [
+      "{There is|There's} no music for this part. There never was.",
+      "{That is the list as we have it|That is all we were given|That is the list}. {Write in if a name is wrong and we will read it again|Send corrections and we read them again|Corrections get read next week}."
+    ],
+    "news_breaking": [
+      "More as it develops. If it develops. If 'more' still {means anything|means something|has a meaning}.",
+      "{We are staying on this|We will stay on this|The desk stays staffed}. {More at the hour|Next update at hour {hour}|Come back at the hour}."
+    ],
+    "weather": [
+      "Temporal meteorologists advise {securing loose memories|tying down loose memories|putting loose memories somewhere safe} before nightfall.",
+      "{That is the outlook|That is what we have|That's the forecast}. {The map is an hour old|Drawn up an hour ago, for what that is worth|It was right when the desk drew it}."
+    ],
+    "game_show": [
+      "The board is glitching. {Everyone|Everybody} wins. {No one|Nobody} wins. {faction} keep the difference.",
+      "{The board has stopped working|The scoreboard has given up|The board is out}. {Scores next week|We will post the scores next week|The producers can sort it out}, {if there is a next week|if the board comes back|assuming a next week}."
+    ],
+    "cooking": [
+      "And THAT is how you {survive|get through|see out} another week. Bon appetit.",
+      "{Wash the pan while it is warm|Do the washing up before it sets|Wash up while the pan is hot}. {It comes off easier|Honestly|I mean it}."
+    ],
+    "children_show": [
+      "And that's why we {never, ever|never ever|absolutely never} break a leyline. {Even if it looks fun|Even when it looks fun|However fun it looks}.",
+      "{Time to go|That's all for today|That is us finished}! {Crayons away|Put the crayons in the tin|Tidy your crayons up}! {And nobody touch a leyline|And LEAVE the leylines alone|And do NOT touch a leyline}!"
+    ],
+    "educational": [
+      "There will be a test. {There is|There's} always a test.",
+      "{Homework|For next time|Before next week}: {the chapter, all of it|read the chapter, both halves|the whole chapter, not the summary}. {I will know|I can tell|I always know}."
+    ],
+    "magic_lesson": [
+      "Practise. Practise where the ground is dead, and where {nobody|no one} can hear you conjugate.",
+      "{Practise on dead ground|Dead ground only|Find dead ground, practise there}. {If you cannot find any, do not practise|No dead ground, no practice|If there is none, leave it}."
+    ],
+    "religious": [
+      "Amen, and keep it under eighty.",
+      "{The plate is at the back|Collection at the back, as always|There is a plate by the door}, {and the roof fund is not going well|and yes, it is still the roof|and the roof is still the roof}. {Mind how you go|Go carefully|Go safely}."
+    ],
+    "road_report": [
+      "Keep the needle honest and keep the cab cold. {That's the whole|That is the whole|That is the entire} job.",
+      "{Next report at hour {hour}|Another one at hour {hour}|Back at hour {hour}}. {Dispatch should have the boundaries in by then|If dispatch send it, we read it|The boundaries should be in by then}."
+    ],
+    "sports": [
+      "Full time. Or as close to it as {anyone here can prove|anybody here can prove|we can demonstrate}.",
+      "{Full time|That is full time|And that is time}. {Tables on the teletext, page 302|Full tables on the teletext page|Tables on teletext}."
+    ],
+    "documentary": [
+      "What you have just watched {was true when we recorded it|was accurate when we recorded it|was correct at the time of recording}.",
+      "{Filmed over two years|Two years in the making|Filmed over eighteen months}, {and one of the villages in it is not there any more|though two of the people in it have since gone quiet|and three of them have since been indexed}."
+    ],
+    "conspiracy": [
+      "{You've|You have} been told this is a fringe {programme|show|broadcast}. {You're|You are} watching it anyway. Good.",
+      "{Same time next week|Next week, same time|Same slot next week}, {if the aerial is still mine|if I am still here|assuming they leave the aerial alone}. {I usually am|I probably will be|Do not write it in ink}."
+    ],
+    "music_video": [
+      "And that's the countdown. The countdown {never reaches one|does not reach one|has never reached one}.",
+      "{Requests to the usual address|Requests by pigeon, as ever|Send requests to the usual address}. {We do read them|We read every one|Some of them we can even play}."
+    ],
+    "test_pattern": [
+      "Service will resume. Service has resumed. Both of these are on file.",
+      "{Normal service at hour {hour}|Programmes resume at hour {hour}|Back at hour {hour}}. {Somebody has gone up to the mast|An engineer is on the road|There is a man on his way to the transmitter}."
+    ],
+    "reality_tv": [
+      "Nominations are open. Nominations have always been open. Nominations are the house.",
+      "{Vote by pigeon|Votes by pigeon, as usual|Send your vote by pigeon}. {A stamp and a bird|Votes cost a stamp and a bird|Your bird will not be coming back}."
+    ],
+    "sitcom": [
+      "And that, {everybody|everyone}, is why we {don't|do not} take the shortcut through {place}.",
+      "{Well|Right|Oh dear}. {Nobody is doing that again|We will not be doing that again|Never again, any of it}. {Until Thursday|See you Thursday|Until next week}!"
+    ],
+    "drama": [
+      "Next week: consequences, at last, and a wedding {nobody|no one} survives.",
+      "{That was part four of six|Three more parts|Part four, that was}. {Next week runs to the hour|The next one runs longer|Next week is the long one}."
+    ],
+    "soap_opera": [
+      "{Next week|Next time}: the reading of the will, and the reading of the room.",
+      "{That is us for the week|Same time Thursday|Back on Thursday}. {Do not watch the next one on your own|Bring somebody with you|The next one is worse}."
+    ],
+    "royal_address": [
+      "Go in whatever grace is still being {manufactured|produced|issued}.",
+      "{The address is repeated at hour {hour}|A repeat follows at hour {hour}|This is carried again at hour {hour}}. {Attendance is noted|Attendance is expected|Attendance is, as ever, noted}."
+    ],
+    "puppet_show": [
+      "Mister Sockington is tired. Mister Sockington has been on since {year}.",
+      "{Wave goodbye to Mister Sockington|Say goodbye to Mister Sockington|Goodbye from Mister Sockington}! {Into the box he goes|He is going in the box now|He lives in the box, and off he goes}! {He says he likes it in there|He does not mind|He likes the box}!"
+    ],
+    "court_report": [
+      "Billions of simultaneous trials, one judge, no precedent. Order is a rumour here.",
+      "{The docket carries over|What we did not reach carries over|The rest carries to tomorrow}. {It never gets shorter|It always carries over|It has carried over every day since the deicide}."
+    ],
+    "market_report": [
+      "{That's the close|That is the close}. Or the open. The bell is {inside a bubble|inside a loop bubble|inside one of the bubbles}.",
+      "{Closing figures on the teletext|Full figures on teletext|Numbers on the teletext page}, {when somebody types them up|updated at the close|updated when somebody remembers}."
+    ],
+    "phone_in": [
+      "{That's|That is} all we have time for. The lines stay open. The lines are always open.",
+      "{Thanks to everyone who got through|Thank you to all of you who rang|Thanks to the ones who got through}, {and sorry to the four who did not|and sorry to those still holding|and apologies to the ones we did not reach}."
+    ],
+    "science_report": [
+      "Peer review {is difficult|is hard|is no easy thing} when half the peers are {in a bubble|in a loop bubble|in one of the bubbles} and are still reviewing last Tuesday.",
+      "{The paper is lodged with the Guild|The paper has gone to the Guild|The full paper is with the Guild}, {where it will sit for a year|who are not fast|who will sit on it}."
+    ],
+    "historical_epic": [
+      "And so the age {turns|closes|ends}, as ages do, in the last reel.",
+      "{Restored from three prints|Assembled from what prints survived|Restored from two surviving prints}, {one of which was underwater|and the reels do not quite match|two of which disagree}."
+    ],
+    "emergency": [
+      "This advisory repeats every {n} minutes until {withdrawn|lifted|stood down}. It {has never|has not once|has at no point} been withdrawn.",
+      "{Do not ring the station|Please do not ring in|Do not telephone us}. {The line is needed|We need the line|The line is for the services}."
+    ],
+    "prophetic": [
+      "...one of you watching this will be the reason. The signal {does not|doesn't} say which...",
+      "...{the tape ends here|the tape runs out here|this is where the tape stops}... {the label on it is wrong|somebody labelled it wrongly|it is labelled for next year}..."
+    ],
+    "late_night": [
+      "{Stay with me|Stay with us|Keep me company}. The night is long out here on the Road.",
+      "{I am on again tomorrow|Same again tomorrow|I will be here tomorrow}. {I am always here|Where else would I be|I am always on}. {Sleep if you can|Try to sleep|Get some sleep}."
+    ]
+  },
+  "gameShowIntro": "Welcome to {show}! Our next contestant will risk it all for a new {prize}!",
+  "technicalDifficulties": "Technical Difficulties. Please stand by.",
+  "advertisementSpeaker": "Advertisement",
+  "narratorSpeaker": "Narrator",
+  "tuneInChoices": [
+    "Listen",
+    "Watch",
+    "Cancel"
+  ],
+  "technophobesLost": {
+    "one": "1 technophobe -{magnitude}",
+    "other": "{n} technophobes -{magnitude}"
+  },
+  "offAir": "(off air)",
+  "weeklySchedule": "WEEKLY SCHEDULE - WEEK {week}",
+  "paidNoticeSpeaker": "Paid Notice"
+}

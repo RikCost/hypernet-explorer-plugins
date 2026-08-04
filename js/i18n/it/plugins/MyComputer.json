@@ -1,0 +1,14 @@
+{
+  "myComputer": "Risorse del computer",
+  "myDocuments": "Documenti",
+  "desktop": "Desktop",
+  "back": "Indietro",
+  "address": "Indirizzo:",
+  "go": "Vai",
+  "systemTasks": "Operazioni di sistema",
+  "vfsError": "Errore VFS: file system non disponibile",
+  "dirInvalid": "La cartella \"{path}\" non è valida o è vuota.",
+  "cannotOpen": "Esplora file: impossibile aprire \"{file}\". Manca il Blocco note.",
+  "unsupportedType": "Esplora file: tipo di file non supportato.",
+  "dirNotFound": "Barra degli indirizzi: cartella \"{path}\" non trovata."
+}

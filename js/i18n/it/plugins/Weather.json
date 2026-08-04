@@ -1,0 +1,9 @@
+{
+  "name": {
+    "Clear": "Sereno",
+    "Rain": "Pioggia",
+    "Storm": "Tempesta",
+    "Snow": "Neve",
+    "Unknown": "Sconosciuto"
+  }
+}

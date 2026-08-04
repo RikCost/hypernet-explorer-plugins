@@ -1,0 +1,8 @@
+{
+  "weight": "Weight",
+  "value": "Value",
+  "stealSuccess": "You successfully stole",
+  "stealFailed": "You failed to steal",
+  "stealTitle": "Steal",
+  "nothingNearby": "Nothing to steal nearby."
+}

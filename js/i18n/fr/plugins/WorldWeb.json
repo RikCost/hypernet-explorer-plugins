@@ -1,0 +1,69 @@
+{
+  "festival": {
+    "foundersDay": "",
+    "harvestLights": "",
+    "lanternRegatta": "",
+    "saintElse": "",
+    "nightMarketWeek": "",
+    "driftParade": "",
+    "tinkersCarnival": "",
+    "longTableFeast": ""
+  },
+  "epidemic": {
+    "greyFever": "",
+    "rustlung": "",
+    "shivers": "",
+    "dockPox": "",
+    "wireFlu": "",
+    "hollowCough": "",
+    "marshAgue": ""
+  },
+  "band": {
+    "thriving": "",
+    "steady": "",
+    "strained": "",
+    "failing": ""
+  },
+  "episode": {
+    "crimeWaveStart": "",
+    "crimeWaveEnd": "",
+    "boomStart": "",
+    "boomEnd": "",
+    "bustStart": "",
+    "bustEnd": "",
+    "festivalStart": "",
+    "festivalEnd": "",
+    "festivalCancelled": "",
+    "epidemicStart": "",
+    "epidemicEnd": "",
+    "mayorScandal": ""
+  },
+  "news": {
+    "crimeWaveStart": "",
+    "crimeWaveEnd": "",
+    "boomStart": "",
+    "boomEnd": "",
+    "bustStart": "",
+    "bustEnd": "",
+    "festivalStart": "",
+    "epidemicStart": "",
+    "epidemicEnd": "",
+    "mayorEvent": ""
+  },
+  "active": {
+    "crimeWave": "",
+    "boom": "",
+    "bust": "",
+    "festival": "",
+    "epidemic": ""
+  },
+  "report": {
+    "noPulse": "",
+    "header": "",
+    "underPower": "",
+    "meters": "",
+    "people": "",
+    "rightNow": "",
+    "quiet": ""
+  }
+}

@@ -1,0 +1,3030 @@
+{
+  "ask_the_archive": {
+    "lead": [
+      "{Lines open|The lines are open|Lines are open}. One question each, and the Archive will answer {if the answer is on file|if it is on file|where the file allows}."
+    ],
+    "tail": [
+      "{That is|That's} all the file will bear {tonight|this evening|at this hour}. {Bring better questions next week|Better questions next week, please|Come back with better questions}."
+    ],
+    "beats": [
+      "First question, from a schoolteacher at {place}, and the file has an answer for once.",
+      "Vance reads the query, Crane fetches the box, and the box takes about a minute to arrive.",
+      "The caller is asking about a family name and the Archive holds four of them, all spelled differently.",
+      "Crane: we can tell you what was written down. We {cannot|can't} tell you whether it was true.",
+      "A caller wants to know why the records stop in {year}. So, frankly, do we.",
+      "That question has been asked on this {programme|show|broadcast} eleven times and answered differently twice.",
+      "{hist}",
+      "We hold the letter over to next week rather than guess at it on air."
+    ]
+  },
+  "long_reconstruction": {
+    "lead": [
+      "How a world that lost its machines in one night {rebuilt them out of spellwork|rebuilt them from spellwork|put them back together with spellwork}."
+    ],
+    "tail": [
+      "It took a decade, it cost the Guild its secrecy, and {it is|it's} why your kettle {works|boils|still works}."
+    ],
+    "beats": [
+      "The lights came back in stages, and every stage was {somebody|someone}'s whole career.",
+      "First the pumps, then the mills, then anything that could be made to turn without a machine.",
+      "The Guild had to teach in public, which it had spent four centuries avoiding.",
+      "A workshop at {place} rebuilt a generator with spellwork and string and it ran for nine years.",
+      "{hist}",
+      "The archive footage of the first lit street is silent. It {did not|didn't} need commentary then either.",
+      "It cost a generation of mages their secrecy and a generation of engineers their pensions.",
+      "{Nobody|No one} planned it. Every account that says it was planned was written afterwards, by a ministry."
+    ]
+  },
+  "voices_from_the_loop": {
+    "lead": [
+      "{Tonight|This evening} we speak to people for whom this conversation {has already happened|happened some time ago|is a repeat}."
+    ],
+    "tail": [
+      "Thank you for coming. You {will not|won't} {remember|recall} that you did."
+    ]
+  },
+  "kola_tapes": {
+    "lead": [
+      "What follows was recovered from the borehole monitoring room and {should not|shouldn't} exist."
+    ],
+    "tail": [
+      "The tape ends there. The tape has ended there {every time|each time|on every playback} we have played it."
+    ]
+  },
+  "old_world_court": {
+    "lead": [
+      "From the archives: judgments handed down when courts {still kept to one timeline|still sat in one timeline|answered to a single timeline}."
+    ],
+    "tail": [
+      "{Filed, sealed, and largely unenforceable|Filed, sealed, and unenforceable|Filed, sealed, and quietly ignored}. Which is how most law ends up."
+    ],
+    "beats": [
+      "The first judgment {tonight|this evening|at this hour} is from a court that sat in one room, in one year, once.",
+      "The defendant was accused of {crime} and the sentence fits on a single line.",
+      "Vance notes the clerk's handwriting deteriorates through the session, which tells its own story.",
+      "{There is|There's} no appeal recorded. There was, in that century, largely no appeal.",
+      "{hist}",
+      "A property dispute from {place} that took nine years and outlived both claimants.",
+      "Dace: the law here is worse than ours and more consistent, and I {will not|won't} say which I prefer.",
+      "The last case was heard on the day the court was dissolved, and it was heard in full."
+    ]
+  },
+  "ledger_of_empires": {
+    "lead": [
+      "History, {tonight|this evening|at this hour}, as a balance sheet. It {is not|isn't} a flattering format."
+    ],
+    "tail": [
+      "Every empire in this {programme|show|broadcast} was solvent {right up until it was not|until the day it was not|until quite suddenly it was not}."
+    ],
+    "beats": [
+      "Tonight's empire kept excellent books, which is how we know {exactly|precisely} how it ended.",
+      "Revenue from {place} held for a century and then halved in nine years. {Nobody|No one} wrote down why.",
+      "Bellweather: an empire is a cashflow problem wearing a crown.",
+      "The military line in this budget outgrows the tax line four decades before anyone notices.",
+      "{hist}",
+      "They borrowed against a harvest, then against the next harvest, then against the idea of harvests.",
+      "The debt was eventually settled by a successor state that {had not|hadn't} agreed to any of it.",
+      "Every figure in this {programme|show|broadcast} was audited at the time and approved by {somebody|someone} who fled."
+    ]
+  },
+  "weekend_review": {
+    "lead": [
+      "Our panel {look back at|review|go back over} the week and fail, {as usual|as ever|as always}, to agree it happened."
+    ],
+    "tail": [
+      "{That was the week|And that was the week|So much for the week}. {Probably|In all likelihood|On balance}. Two of us dissent."
+    ]
+  },
+  "foreign_desk": {
+    "lead": [
+      "A longer look {tonight|this evening|at this hour}, from beyond the routes most bulletins can reach."
+    ],
+    "tail": [
+      "That report was filed at {considerable expense and moderate risk|great expense and some risk|real expense and worse risk}."
+    ],
+    "beats": [
+      "Three weeks, one crew, and a route that ordinary bulletins {do not|don't} have the budget to reach.",
+      "The border at {place} takes six hours to cross if {you are|you're} expected and two days if you are not.",
+      "Our correspondent films the queue because the queue is the story and the officials are not.",
+      "What people there want to talk about {is not|isn't} what the wire says they want to talk about.",
+      "{news}",
+      "A local reporter we {cannot|can't} name arranged all of this and {will not|won't} appear on camera.",
+      "The ministry's statement runs to nine paragraphs and answers the question in none of them.",
+      "We left with tape we {cannot|can't} broadcast and a promise we intend to keep."
+    ]
+  },
+  "ministerial": {
+    "lead": [
+      "We hand over now to a statement, {carried in full and without comment|read in full, without comment|carried whole and uncommented}."
+    ],
+    "tail": [
+      "That was a statement. Our response, {such as it is|for what it is worth|insofar as we have one}, follows the schedule."
+    ]
+  },
+  "late_bulletin": {
+    "lead": [
+      "{It is|It's} late and this has only just reached us, {and the delay is the story|and the delay is worth a bulletin of its own|so the delay leads tonight}."
+    ],
+    "tail": [
+      "{We will|We'll} carry this into the morning bulletin. If {there is|there's} one."
+    ]
+  },
+  "obituaries": {
+    "lead": [
+      "The names we were given today, read {at the speed they deserve|slowly, as they deserve|at the pace they are owed}."
+    ],
+    "tail": [
+      "{That is|That's} the list. {It is|It's} never the whole list."
+    ]
+  },
+  "signal_check": {
+    "lead": [
+      "Engineering {has the transmitter|has hold of the transmitter|are on the transmitter} for the next while. {Please stand by|Stand by|Do not adjust your set}."
+    ],
+    "tail": [
+      "Transmitter released. Normal service resumes, {for a given value of normal|for some value of normal|whatever normal is this week}."
+    ],
+    "beats": [
+      "Bars, tone, and a caption. Engineering has the transmitter and engineering {does not|doesn't} hurry.",
+      "The mast at {place} is being realigned by two people and a radio.",
+      "If you can see all the bars, your set is fine and the problem was never your set.",
+      "This card has been broadcast since {year} and has outlasted three station managers.",
+      "The tone {you are|you're} hearing is deliberate. Everything you are hearing under {it is|it's} not.",
+      "We apologise to viewers in the outer districts, who have had this for six hours.",
+      "Engineering report the fault as intermittent, which is engineering for: {it is|it's} back tomorrow.",
+      "Service resumes shortly. Shortly is doing {a great deal of|a considerable amount of|no small amount of} work in that sentence."
+    ]
+  },
+  "unofficial_emergency": {
+    "lead": [
+      "THIS IS AN EMERGENCY! IT IS NOT AN OFFICIAL EMERGENCY! WE {FOUND IT OURSELVES|SPOTTED IT OURSELVES|DECLARED IT OURSELVES}!"
+    ],
+    "tail": [
+      "STAY CALM! STAY SLOW! STAY TUNED TO {US SPECIFICALLY|THIS FREQUENCY|US AND NOBODY ELSE}!"
+    ],
+    "beats": [
+      "WE HAVE HEARD A NOISE! THE NOISE WAS NEAR {place}! WE ARE ON IT!",
+      "NOBODY HAS AUTHORISED THIS BROADCAST! NOBODY HAS STOPPED IT EITHER!",
+      "GRAVES HAS A MAP! THE MAP IS FROM {year}! IT IS STILL A MAP!",
+      "OFFICIAL ADVICE IS TO STAY CALM! OUR ADVICE IS TO STAY CALM FASTER!",
+      "WE HAVE A CALLER WHO SAYS IT IS FINE! THE CALLER IS ON THE OTHER SIDE OF THE COUNTRY!",
+      "IF THIS IS NOTHING, WE WILL APOLOGISE AT LENGTH AND WITH GREAT VOLUME!",
+      "{news}",
+      "THE OFFICIAL ADVISORY HAS NOW BEEN ISSUED! IT SAYS WHAT WE SAID! FORTY MINUTES LATE!"
+    ]
+  },
+  "weather_probably": {
+    "lead": [
+      "{IT IS TIME FOR THE WEATHER|WEATHER TIME|HERE COMES THE WEATHER}! WE HAVE NO INSTRUMENTS! WE HAVE ENTHUSIASM!"
+    ],
+    "tail": [
+      "THAT WAS THE WEATHER! {IT MAY ALSO HAVE BEEN THE NEWS|IT MAY HAVE BEEN THE NEWS TOO|SOME OF IT WAS THE NEWS}! GOODNIGHT!"
+    ],
+    "beats": [
+      "OUR INSTRUMENT IS A WINDOW! THE WINDOW SAYS GREY!",
+      "TOMORROW: WEATHER! AT SOME POINT! IN SOME PLACES! WE ARE {pct} PERCENT CONFIDENT!",
+      "Halloway has consulted the cards! The cards say RAIN! The cards say rain EVERY WEEK!",
+      "THERE IS A FRONT COMING IN FROM {place}! WE DO NOT KNOW WHAT KIND OF FRONT!",
+      "THE OFFICIAL FORECAST DISAGREES WITH US! THE OFFICIAL FORECAST HAS BEEN WRONG BEFORE!",
+      "TAKE A COAT! TAKE TWO COATS! GIVE ONE TO SOMEBODY WHO HAS NO COAT!",
+      "OUTLOOK FOR THE WEEK: SOMETHING! DEFINITELY SOMETHING!",
+      "WE WERE RIGHT ONCE IN {year} AND WE HAVE NEVER STOPPED MENTIONING IT!"
+    ]
+  },
+  "chef_chaos": {
+    "lead": [
+      "APRONS ON! The kitchen is on a leyline and the oven has {OPINIONS|VIEWS|STRONG FEELINGS}!"
+    ],
+    "tail": [
+      "{SERVE IT|PLATE IT|GET IT OUT}! {SERVE IT BEFORE IT SERVES ITSELF|BEFORE IT SERVES ITSELF|WHILE IT IS STILL FOOD}!"
+    ],
+    "beats": [
+      "THE OVEN IS ON A LEYLINE! THE OVEN HAS PREFERENCES! WE COOK AROUND THE OVEN!",
+      "TODAY: something with {item}! We paid {price}! WE ARE COMMITTED NOW!",
+      "Vurst {does not|doesn't} measure! Vurst ESTIMATES WITH CONFIDENCE!",
+      "IT IS ON FIRE! GOOD! FIRE IS COOKING! THAT IS THE DEFINITION!",
+      "A viewer from {place} has sent in a recipe and we have IMPROVED IT BEYOND RECOGNITION!",
+      "SEASON IT! SEASON IT AGAIN! DO NOT TASTE IT YET! DO NOT TASTE IT AT ALL!",
+      "THE SAUCE HAS SPLIT! WE ARE CALLING IT A DRESSING! IT IS A DRESSING NOW!",
+      "PLATE UP! ONE PLATE! THERE IS ONLY EVER ONE PLATE! THE CREW EAT LATER!"
+    ]
+  },
+  "sermon_of_static": {
+    "lead": [
+      "...the carrier is our congregation... {let us attend|attend with me|let us begin}..."
+    ],
+    "tail": [
+      "...the collection is taken in attention. {It has already been taken|It was taken as you watched|You have already given}..."
+    ],
+    "beats": [
+      "...the congregation {tonight|this evening|at this hour} is {everybody|everyone} whose set is warm...",
+      "...we {do not|don't} pass a plate... we pass a frequency...",
+      "...the deacon has been broadcasting since {year} and {has not|hasn't} been paid in liturgy or coin...",
+      "...there is a hymn under this... it {is not|isn't} being sung... {it is|it's} being received...",
+      "...at {place} a receiver was left on in an empty house and the house is now a chapel...",
+      "...the doctrine is short... the carrier is the covenant... the words are decoration...",
+      "...pray if you like... the transmitter {does not|doesn't} require it and does not object...",
+      "...{somebody|someone} is listening to this in a room with {nobody|no one} else in it... {that is the whole|that's the whole|that is the entire|that is the full} church..."
+    ]
+  },
+  "chaos_docket": {
+    "lead": [
+      "COURT IS IN SESSION! WE ARE NOT A COURT! {NOBODY|NO ONE} HAS STOPPED US!"
+    ],
+    "tail": [
+      "VERDICT: YES! VERDICT: ALSO NO! {COURT EXPLODES|COURT ADJOURNS SIDEWAYS|THE BENCH CATCHES FIRE}!"
+    ],
+    "beats": [
+      "FIRST CASE! A man from {place} accused of BEING SEEN somewhere he says he was not!",
+      "THE PROSECUTION IS ALSO THE DEFENCE! WE COULD ONLY AFFORD ONE PERSON!",
+      "Judge Bramble has read the evidence! Judge Bramble has EATEN some of the evidence!",
+      "OBJECTION! SUSTAINED! OVERRULED! ALL THREE! SIMULTANEOUSLY! THAT IS LEGAL NOW!",
+      "The jury is the audience! The audience has voted GUILTY for eleven weeks running!",
+      "SENTENCE: the defendant must apologise to a bird of the court's choosing!",
+      "{news}",
+      "APPEAL GRANTED! APPEAL HEARD! APPEAL LOST! ALL DURING THIS SENTENCE!"
+    ]
+  },
+  "playtime_for_adults": {
+    "lead": [
+      "The puppets are out. They have been out since {before the studio opened|before this studio opened|long before the studio opened}."
+    ],
+    "tail": [
+      "The puppets go back in the drawer now. The drawer {is not|isn't} always {closed|shut|shut properly}."
+    ]
+  },
+  "market_morning": {
+    "lead": [
+      "Prices first, then we cook whatever came out cheapest. {That is|That's} the format!"
+    ],
+    "tail": [
+      "And {that is|that's} what we can afford {this week|this past week|over the week}. {Isn't that a lovely constraint|What a lovely constraint|Isn't constraint marvellous}?"
+    ],
+    "beats": [
+      "Prices from the stalls at {place}, taken this morning, before anyone tidied them up.",
+      "{item} is at {price} and {that is|that's} dear, and I will say so to the man's face at the stall.",
+      "Plum: buy what is cheap and cook what is bought. {That is|That's} the {programme|show|broadcast} in one sentence.",
+      "Greens are down, roots are steady, and anything that had to cross a boundary is silly money.",
+      "The fish is good today. The fish is good on {exactly|precisely} two days and today is one of them.",
+      "We cook the cheapest thing on the list, live, before the prices change again.",
+      "A stallholder of thirty years explains why the wholesale price and the shelf price have stopped speaking.",
+      "{That is|That's} the market. Come at the end of the day and {it is|it's} cheaper and worse."
+    ]
+  },
+  "larder_run": {
+    "lead": [
+      "What the drivers are carrying {this week|this past week|over the week}, and what you can make out of it."
+    ],
+    "tail": [
+      "{Wave at a lorry today|Do wave at a lorry today|Give a lorry a wave today}. {There's|There is} a week of dinners in the back of it."
+    ],
+    "beats": [
+      "What came off the lorries {this week|this past week|over the week}, and what a household can actually do with it.",
+      "The run from {place} brought roots, flour and something that {was not|wasn't} on the manifest.",
+      "Ganz: if {it is|it's} cheap at the depot on Tuesday, it is cheap in your kitchen on Wednesday.",
+      "{item} at {price}, in a crate, {which is the only|which is still the only|which remains the only} way {it is|it's} worth buying.",
+      "We cook from the crate, live, without a shopping list, because {that is|that's} the situation most weeks.",
+      "The drivers eat better than people think and worse than they deserve.",
+      "Anything {that has been|that's been} on a lorry for four days needs salt and a hot pan, in that order.",
+      "{Next week|Next time}'s run is north, so next week is potatoes. Prepare yourself for potatoes."
+    ]
+  },
+  "kitchen_court": {
+    "lead": [
+      "{Tonight|This evening} we try three recipes and convict two of them."
+    ],
+    "tail": [
+      "Sentence: {rewritten, reduced, and served with something green|reduced, rewritten, and served with greens|commuted, rewritten, served with something green}."
+    ],
+    "beats": [
+      "Three dishes in the dock {tonight|this evening|at this hour}, and {one of them is|one of them happens to be} a soup that has done nothing wrong.",
+      "Magistrate Fen tastes first. Fen tastes everything twice, which the defence considers unfair.",
+      "Charge one: a stew accused of hiding behind its own pepper.",
+      "Dubois appears for the defence and argues, persuasively, that the pepper was provoked.",
+      "The pudding pleads guilty, {immediately|at once|right away}, and asks for two other puddings to be taken into account.",
+      "Fen: I have eaten worse. That {is not|isn't} an acquittal, {that is|that's} context.",
+      "Sentencing involves a rewrite, a shorter cooking time and one fewer ingredient.",
+      "The soup leaves without a stain on its character and is served to the studio audience."
+    ]
+  },
+  "beagle_confidential": {
+    "lead": [
+      "We spent a fortnight in the kitchens at the end of the Road. {Nobody|No one} thanked us."
+    ],
+    "tail": [
+      "They fed half a dimension out of that room. {Badly, but continuously|Badly, but without stopping|Poorly, and without pause}."
+    ],
+    "beats": [
+      "The kitchen runs four hundred covers a night out of a room the size of a corridor.",
+      "Service starts at five and the shouting starts at five past, and both are affectionate.",
+      "The head chef {has not|hasn't} had a full weekend since {year} and says this without self-pity.",
+      "We filmed the deliveries at four in the morning, which is where the real {programme|show|broadcast} was.",
+      "A commis burns her hand, is patched up, and is back on the pass in nine minutes.",
+      "{Nobody|No one} in this kitchen casts anything. {There is|There's} no time and the extraction is bad enough already.",
+      "The staff meal at midnight is better than anything on the menu and costs nothing.",
+      "They fed the whole road out of that room, badly some nights, but never once not at all."
+    ]
+  },
+  "recipe_emergency": {
+    "lead": [
+      "THIS IS A RECIPE EMERGENCY! {GUESTS ARE ARRIVING|GUESTS ARE AT THE DOOR|GUESTS ARE ALREADY HERE}! THE LARDER HAS RESET!"
+    ],
+    "tail": [
+      "CRISIS AVERTED! IT IS EDIBLE! {NOBODY ASK WHAT IT IS|DO NOT ASK WHAT IT IS|NO QUESTIONS ABOUT WHAT IT IS}!"
+    ],
+    "beats": [
+      "GUESTS IN NINETY MINUTES! THE MAIN INGREDIENT HAS GONE! DO NOT ASK WHERE!",
+      "Quay is in the larder! Quay is COMING OUT OF THE LARDER WITH A TIN!",
+      "We can save this! We can save this with onions, and time we {do not|don't} have!",
+      "SUBSTITUTE! You may substitute ANYTHING except the salt! THE SALT IS LOAD-BEARING!",
+      "The oven at {place} takes forty minutes to heat! WE HAVE TWELVE!",
+      "PLAN B IS SOUP! PLAN B IS ALWAYS SOUP! SOUP HAS SAVED MORE DINNERS THAN MAGIC!",
+      "Do NOT tell the guests. Guests can smell a crisis and it puts them off the wine.",
+      "IT IS ON THE TABLE! IT IS HOT! IT IS ARGUABLY A RECIPE!"
+    ]
+  },
+  "sermon_roast": {
+    "lead": [
+      "A little grace, a little gravy. Both take about {the same length of time|as long as each other|the same twenty minutes}."
+    ],
+    "tail": [
+      "{Eat well|Eat properly|Eat something} and be kind to whoever washed up."
+    ],
+    "beats": [
+      "Grace first, then the oven door, and neither takes long if {you are|you're} practised.",
+      "Father Amos does the reading while Croft does the potatoes. {It is|It's} {a very|an extremely|a genuinely} old arrangement.",
+      "The text {this week|this past week|over the week} is about feeding people, which is convenient for the format.",
+      "Croft: a Sunday roast is a liturgy. You do it the same way every week and it means something.",
+      "The joint goes in before the service and comes out after, {which is why|which is the reason|and that is why} the service is timed as it is.",
+      "Amos tells a story about a parish at {place} that fed nine families out of one kitchen.",
+      "No sermon on this {programme|show|broadcast} runs longer than the resting time of the meat. {That is|That's} a rule.",
+      "Lay an extra place. {There is|There's} always {somebody|someone}. There has always been somebody."
+    ]
+  },
+  "tommy": {
+    "lead": [
+      "{It's|It is} time for Temporal Tommy! Tommy, where are you? Tommy, WHEN are you?"
+    ],
+    "tail": [
+      "{Well done|Good work|Marvellous work}, Tommy! And well done YOU for watching all the way to the end!"
+    ],
+    "beats": [
+      "Temporal Tommy has a watch that runs backwards and a friend who does not!",
+      "Uh oh! Tommy has gone past eighty on his bicycle! Tommy, you KNOW what happens!",
+      "Tommy's pet dinosaur is called Kessler and lives in the sky and {that is|that's} very sad!",
+      "Today Tommy visits {place1}! Tommy should NOT visit {place1}!",
+      "Tommy met a {job} who was very tired and Tommy made them a sandwich!",
+      "Oh no, the day happened again! Tommy remembers! {Nobody|No one} else does! That's tricky, isn't it!",
+      "Tommy wrote down what happened so he wouldn't forget! That's called a DIARY and {it is|it's} the best magic!",
+      "Tommy's grandad is {in a bubble|in a loop bubble|in one of the bubbles} and Tommy visits by post! The post is a pigeon called Susan!",
+      "Careful, Tommy! That's a boundary! Boundaries look like nothing at all!",
+      "Tommy asked a grown-up for help and the grown-up HELPED! What a lovely episode!",
+      "Tommy has one loop to fix everything and Tommy has done it {n} times already!",
+      "Well done, Tommy! And well done YOU for watching all the way to the end!"
+    ]
+  },
+  "rangers": {
+    "lead": [
+      "RANGERS! ASSEMBLE! Quietly! {We are|We're} indoors!"
+    ],
+    "tail": [
+      "Mission complete! Rangers, stand down! Rangers, {have a biscuit|take a biscuit|help yourselves to a biscuit}!"
+    ],
+    "beats": [
+      "RANGERS! ASSEMBLE! Quietly! {We are|We're} indoors!",
+      "The Blue Ranger has the map! The Red Ranger has the foil hat! The Green Ranger has QUESTIONS!",
+      "Today's mission: the boundary near {place} has moved and {somebody|someone} has to tell {everybody|everyone}!",
+      "Rangers do NOT go fast. Rangers go CAREFULLY. That is Ranger Rule One!",
+      "Ranger Rule Two: if a grown-up sells you a way out of today, you tell ANOTHER grown-up!",
+      "Villain of the week: a {job} who has been selling maps with the bubbles LEFT OFF! BOO!",
+      "The Rangers have found {artifact} and the Rangers are going to put it back where it was!",
+      "Ranger Rule Three: {everybody|everyone}'s memories belong to everybody. You don't take them!",
+      "Our Ranger from {place} speaks three languages and {one of them is|one of them happens to be} pigeon!",
+      "The mission took all day! Then the day happened again! The Rangers did it BETTER the second time!",
+      "Rangers never leave a friend {inside a boundary|within a boundary}. Never. That's the whole show, really.",
+      "Mission complete! Rangers, stand down! Rangers, have a biscuit!"
+    ]
+  },
+  "camelcase": {
+    "lead": [
+      "Today we learn the most important spelling rule in {the whole world|all the world|the entire world}!"
+    ],
+    "tail": [
+      "{That's|That is} the rule that keeps your voice in your throat! Well done {everybody|everyone}!"
+    ],
+    "beats": [
+      "Today we learn the most important spelling rule in the whole world!",
+      "A spell is ONE word. You squash it together and you put big letters INSIDE.",
+      "If you leave a space, the universe thinks you're doing a TRANSCENDENTAL, and those are for gods!",
+      "And what happens then? You lose your VOICE! Or worse! Usually worse!",
+      "Let's practise! Squash! Squash them together! Capitals in the middle! Lovely!",
+      "Even grown-up mages get this wrong. That's why they write slowly and check twice.",
+      "If a book has a spelling mistake in it, the mistake SPREADS! You have to burn the book!",
+      "You don't leave a wrong book next to a right book. Ever. It eats it!",
+      "Repeat after me: one word, big letters inside, check it twice!",
+      "That's the rule that keeps your voice in your throat! Well done {everybody|everyone}!"
+    ]
+  },
+  "sockington": {
+    "lead": [
+      "{Hello children|Hello there children|Morning, children}! Today Mister Sockington is going to {explain|set out|tell you about} the Rule of Eighty!"
+    ],
+    "tail": [
+      "{That is|That's} all three rules! Mister Sockington {needs a lie down|wants a lie down|is having a lie down}!"
+    ],
+    "beats": [
+      "Mister Sockington has THREE rules today and he is only sure about two of them!",
+      "RULE ONE! Outside a bubble, going fast means the bubble GETS you!",
+      "RULE TWO! Inside a bubble, going fast means you get OUT! It's backwards! Mister Sockington is also backwards!",
+      "RULE THREE is about tithes and Mister Sockington would rather not.",
+      "Mister Sockington is a hand. Mister Sockington has made peace with this. Mostly.",
+      "Boo! Hiss! Here comes {faction} with a CLIPBOARD!",
+      "Mister Sockington has been on air since {year} and {has never once been|has not once been|has never yet been} paid!",
+      "Say the safe word with Mister Sockington! ONE word! CAPITALS inside!",
+      "Mister Sockington's co-star has been repossessed! Wave goodbye to the castle!",
+      "{That is|That's} all three rules! Mister Sockington needs a lie down!"
+    ]
+  },
+  "eighty_song": {
+    "lead": [
+      "{Everybody ready|Everyone ready|All set}? Right! ALL TOGETHER NOW!"
+    ],
+    "tail": [
+      "That was {BEAUTIFUL|LOVELY|WONDERFUL}. {Some of you|A few of you|Some among you} were in tune. Some of you were in a loop."
+    ],
+    "beats": [
+      "Everybody ready? Right! ALL TOGETHER NOW!",
+      "Eighty is plenty! Eighty is plenty! Don't go past eighty today!",
+      "If you go too fast, the bubble says hello, and hello lasts a very LONG time!",
+      "Verse two! If you're already IN one, then you have to go FAST! It's the opposite! It's confusing! IT'S A SONG!",
+      "Now the quiet bit. This is the bit about the people who went too fast and stayed gone.",
+      "Clap on 'eighty'! Clap! CLAP! Lovely!",
+      "The drivers know this song. The drivers taught us this song.",
+      "There's a verse about {place} but we don't sing that one on a weekday.",
+      "One more time, and this time like you MEAN it, because {it is|it's} {genuinely|honestly|truly} important!",
+      "Humming counts! Humming has always counted!",
+      "And if you can only {remember|recall} one line tomorrow, remember the chorus!",
+      "That was BEAUTIFUL. {Some of you|A few of you|Some among you} were in tune. Some of you were in a loop."
+    ]
+  },
+  "first_spell": {
+    "lead": [
+      "Wands down. You {will not|won't} need a wand. {You will|You'll} need to spell correctly."
+    ],
+    "tail": [
+      "One word. Big letters inside. {Off you go|Away you go|Go on then}. Slowly."
+    ],
+    "beats": [
+      "Wands down. You {will not|won't} need a wand. {You will|You'll} need to spell correctly.",
+      "Your first spell is small and safe and it will still hurt you if you rush it.",
+      "One word. Capitals inside. Say it in your head before you say it out loud.",
+      "{We are|We're} doing this on dead ground. Dead ground is boring and {that is|that's} the point.",
+      "Ritual first, always. {It is|It's} slow, {it is|it's} free, and you can do it badly and live.",
+      "{Do not|Don't} try metamagic yet. You have to be able to imagine the whole thing at once.",
+      "If you feel the line under your feet, stop. Tell me. {Do not|Don't} be brave about it.",
+      "Everyone has a limited number of casts a day. Choose your spells before you sleep.",
+      "{Nobody|No one} here is licensed. Nobody here is going to mention this class to {faction}.",
+      "One word. Big letters inside. Off you go. Slowly."
+    ]
+  },
+  "goblin_friends": {
+    "lead": [
+      "{Today's question|The question today} is a hard one and the answer is no! But {let's be FAIR about it|let us be FAIR about it|we shall be FAIR about it}!"
+    ],
+    "tail": [
+      "And {that's|that is} the answer! It was no, but it was a KIND no!"
+    ],
+    "beats": [
+      "Today's question is a hard one and the answer is no! But let's be FAIR about it!",
+      "Goblins are called Naguka and they are, deep down, people! {That is|That's} the complicated part!",
+      "They lived underground for a VERY long time and came up in 1970 and they were CROSS!",
+      "If {you are|you're} unkind to one Naguka, ALL of them find out! {That is|That's} called a collective unconscious!",
+      "The Verden are the OTHER ones! Blue-ish! Polite! They lay EGGS! We like the Verden!",
+      "The Verden came from the Green Fields, which is gone now, {which is why|which is the reason|and that is why} they live here!",
+      "Some goblins paint their faces before a fight! We do NOT copy that at school!",
+      "If you meet {creature}, you say good afternoon and you WALK AWAY! Both! At once!",
+      "The Vatican is friends with the goblins! Sort of! For REASONS!",
+      "So: are goblins our friends? No! Are they people? Yes! Both things are true and that's growing up!",
+      "Draw a Verden! Give them a nice hat! They deserve a nice hat!",
+      "And that's the answer! It was no, but it was a KIND no!"
+    ]
+  },
+  "leyline_lessons": {
+    "lead": [
+      "A leyline is a river you {cannot|can't} see, and {it is|it's} {full of|packed with} magic, and it comes out of oil!"
+    ],
+    "tail": [
+      "Homework: find the nearest line, mark it on paper, and do {absolutely NOTHING ELSE|NOTHING ELSE WHATSOEVER|NOTHING AT ALL BESIDES}!"
+    ],
+    "beats": [
+      "A leyline is a river you {cannot|can't} see, and {it is|it's} {full of|packed with} magic, and it comes out of oil!",
+      "The closer you stand, the stronger your spell, and the harder {it is|it's} to hold on to!",
+      "If you stand right ON one and you're not trained, you might SNAP it. And then it's gone.",
+      "Gone for a whole GENERATION. That means longer than you'll be at school!",
+      "Leylines join up places that matter: old churches, old battles, old wells!",
+      "Today's field trip is to a leyline near {place}. {We are|We're} going to LOOK at it. That's all!",
+      "Never cast on a line to show off. That's how a whole town loses its magic!",
+      "Broken ground is very quiet. You can feel it. {Some of you|A few of you|Some among you} already have.",
+      "Grown-up mages spend most of their time reading MAPS. Not fighting! Maps!",
+      "Homework: find the nearest line, mark it on paper, and do absolutely NOTHING ELSE!"
+    ]
+  },
+  "puppet_court": {
+    "lead": [
+      "ORDER! ORDER IN THE SOCK COURT! Mister Sockington presiding, because {nobody|no one} {stopped him|has stopped him|thought to stop him}!"
+    ],
+    "tail": [
+      "Court is adjourned! {Everybody|Everyone} hug the defendant!"
+    ],
+    "beats": [
+      "ORDER! ORDER IN THE SOCK COURT! Mister Sockington presiding, because {nobody|no one} stopped him!",
+      "Today's case: who ate the last biscuit? The answer is {somebody|someone} who has since reset!",
+      "The defendant is a puppet. The prosecution is a puppet. The judge is the SAME PUPPET!",
+      "Children, this is {exactly|precisely} how the real court works, except the real one is much bigger and run by a goddess!",
+      "The witness says they SAW it! Being seen is very important in court! Ask {anybody|anyone}!",
+      "OBJECTION! Sustained! {Nobody|No one} knows what either of those means!",
+      "Sentence: one apology, said properly, with eye contact!",
+      "In the real court they pay with memories! In Sock Court we pay with a SONG!",
+      "Case dismissed! Case UNdismissed! Case dismissed again! Justice is like that now!",
+      "Court is adjourned! Everybody hug the defendant!"
+    ]
+  },
+  "storytime": {
+    "lead": [
+      "Cushions! {Everybody|Everyone} on a cushion! We have {exactly|precisely} one story before the day turns over!"
+    ],
+    "tail": [
+      "Now close your eyes. If you {remember|recall} this tomorrow, {we'll|we will} do the next chapter."
+    ],
+    "beats": [
+      "Cushions! Everybody on a cushion! We have {exactly|precisely} one story before the day turns over!",
+      "Once upon a time there was a truck, and the truck was very brave and slightly illegal.",
+      "The truck drove all the way to {dest} and {nobody|no one} reset the truck, not even once.",
+      "This story is short because {tonight|this evening|at this hour} is short. Tonight is always short.",
+      "In the story {there is|there's} a {job} who is lost, and a pigeon who is NOT lost.",
+      "The pigeon knew the way. The pigeon always knows the way. That's why we're nice to pigeons!",
+      "And then the day happened again, and the story started again, and that's alright.",
+      "{There is|There's} a bit in the middle with a boundary in it. We go past that bit quickly.",
+      "The hero of {tonight|this evening|at this hour}'s story is {a very|an extremely|a genuinely} old telephone that {would not|wouldn't} stop working.",
+      "'And they lived,' says the book. Just that. Just 'and they lived'. Isn't that nice?",
+      "Now close your eyes. If you {remember|recall} this tomorrow, we'll do the next chapter.",
+      "If you DON'T remember, we'll do this one again, and it'll be just as good!"
+    ]
+  },
+  "tower_tour": {
+    "lead": [
+      "The Tower goes UP past the sky and DOWN past everything! {Both bits count|Both ends count|Both halves count}!"
+    ],
+    "tail": [
+      "And at the very, very top {there is|there's} a chair. {We'll|We will} talk about the chair when you're older!"
+    ],
+    "beats": [
+      "The Tower goes UP past the sky and DOWN past everything! Both bits count!",
+      "It arrived in 1992. It was thrown. We {do not|don't} usually say by whom before lunch.",
+      "At the very bottom {there is|there's} a lady. She was justice. She is still down there.",
+      "The door opened on its own on the last night of 1999, when a great many people died.",
+      "Inside there are shops, and a jungle, and a reactor, and a corridor {full of|packed with} TENTS!",
+      "Every country in the world has an office in it. They {are not|aren't} allowed to fight inside!",
+      "The Archive Foundation keeps the peace on the landings. {That is|That's} their whole job!",
+      "The Tower holds ninety-two worlds together, like the flag in {a very|an extremely|a genuinely} large sandwich!",
+      "You can climb it! {Please do not|Please don't|We would ask you not to} climb it! Both of those are true!",
+      "And at the very, very top {there is|there's} a chair. We'll talk about the chair when you're older!"
+    ]
+  },
+  "pip_lost": {
+    "lead": [
+      "Pip? PIP? {Oh no|Oh dear|Not again}. Pip has done it AGAIN."
+    ],
+    "tail": [
+      "Home safe! Same time tomorrow, when Pip will get lost {in a slightly different way|slightly differently|in a new and inventive way}!"
+    ],
+    "beats": [
+      "Pip? PIP? Oh no. Pip has done it AGAIN.",
+      "Pip was last seen near {place}, which is the WORST place to be last seen near!",
+      "Can you help? Point at the screen! Point HARD! Pip can feel it!",
+      "Pip has gone past a boundary. Pip {does not|doesn't} know what a boundary is. Pip never listens!",
+      "Don't worry! Pip has {a very|an extremely|a genuinely} old telephone in their pocket and that helps!",
+      "A kind {job1} has found Pip! The kind {job1} would like Pip to be {somebody|someone} else's problem!",
+      "Pip says sorry! Pip says sorry EVERY episode! Pip is going to say sorry tomorrow too!",
+      "While we look for Pip, let's practise the safe word! ONE word! Big letters inside!",
+      "Found! Pip is found! Pip was behind the curtain the whole time and that {is not|isn't} where we looked!",
+      "Home safe! Same time tomorrow, when Pip will get lost in a slightly different way!"
+    ]
+  },
+  "cadet_lines": {
+    "lead": [
+      "Cadets! The lines are open! One question each and {no shouting|absolutely no shouting|no shouting, please}!"
+    ],
+    "tail": [
+      "{That's|That is} all the calls! Cadets, dismissed! Go and be careful!"
+    ],
+    "beats": [
+      "Lines open, cadets! One question each, and no shouting into the receiver!",
+      "Cadet Juno takes the first call, from a cadet in {place}, who has found a boundary marker!",
+      "Well spotted! Now the important bit: you told a grown-up, didn't you? GOOD!",
+      "Ranger Ox says the answer to almost every cadet question is: slower, and with a friend.",
+      "A caller wants to know if Rangers are allowed to be scared. Rangers are ALWAYS allowed to be scared!",
+      "This cadet has drawn a map of her street and posted it in! {It is|It's} on the wall now! FOREVER!",
+      "Juno: no, you may not join the real Rangers yet. Yes, you may practise. {That is|That's} the deal!",
+      "Last call is from {a very|an extremely|a genuinely} small cadet who has forgotten the question and told us about a dog instead!"
+    ]
+  },
+  "very_small_news": {
+    "lead": [
+      "Here is the news, but the SMALL version, with all the frightening bits {taken out|removed|left out}!"
+    ],
+    "tail": [
+      "And {that's|that is} the small news! The big news is for grown-ups and {it's|it is} worse!"
+    ],
+    "beats": [
+      "The Very Small News! The news, but only the bits that fit in a lunchbox!",
+      "Our top story: a duck at {place} has moved to a different pond! THE POND IS BIGGER!",
+      "Tiny Tam has been to see the duck! Tiny Tam has photographs!",
+      "In other news, a school has finished a wall it started in the spring! WELL DONE, SCHOOL!",
+      "{There is|There's} a big story today for grown-ups. We {are not|aren't} doing it. Ask a grown-up at teatime.",
+      "The weather for small people: cold in the morning, better later, mittens ADVISED!",
+      "A cat has been returned to its family after nine days! THE CAT IS UNBOTHERED!",
+      "And {that is|that's} the Very Small News! It was small! It was TRUE, though!"
+    ]
+  },
+  "songs_from_the_road": {
+    "lead": [
+      "The drivers taught us these! {Everybody|Everyone} knows the chorus! Even the pigeons!"
+    ],
+    "tail": [
+      "One more hum on the way to bed! {Off you go|Away you go|Go on, off you go}!"
+    ],
+    "beats": [
+      "Songs from the road! These are real songs! Drivers really sing them! Mostly in tune!",
+      "{Here is|This is|What follows is} one about a lorry that has a NAME! The lorry is called Susan! Everything is called Susan!",
+      "Sing along with the chorus! The chorus is four words and {one of them is|one of them happens to be} 'slowly'!",
+      "This one comes from the depot at {place} and {it is|it's} about {a very|an extremely|a genuinely} long queue!",
+      "A song for being homesick! {It is|It's} allowed to be a bit sad! Songs are ALLOWED to be a bit sad!",
+      "The drivers taught us this one and made us promise not to change the funny verse!",
+      "Clap on the off-beat! No! The OTHER off-beat! LOVELY!",
+      "Last one is the one {everybody|everyone} knows, and everybody sings it, even the grown-ups!"
+    ]
+  },
+  "sports_day": {
+    "lead": [
+      "{It's|It is} Sports Day! {Nobody|No one} runs faster than eighty because {nobody|no one} CAN! Hooray!"
+    ],
+    "tail": [
+      "{Everybody|Everyone} gets a ribbon! Even the one who fell over! ESPECIALLY them!"
+    ]
+  },
+  "small_hours_desk": {
+    "lead": [
+      "The news, at an hour when the news {has stopped pretending|no longer pretends|gives up pretending}."
+    ],
+    "tail": [
+      "{That's|That is} the world while it thought {nobody|no one} was looking."
+    ],
+    "beats": [
+      "The desk {at this hour|at this time of the night|this far into the night} is one presenter, one engineer and a wire that {will not|won't} stop.",
+      "Corrigan reads the overnight copy in a voice built for {exactly|precisely} this shift.",
+      "Item one: {news}",
+      "{We have|We've} had that story three times {tonight|this evening|at this hour} in three slightly different shapes.",
+      "The switchboard has taken eleven calls from {place} and none of them from the same street.",
+      "Corrigan: I file what is confirmed. The rest waits for daylight and better sources.",
+      "A late correction, which {nobody|no one} will hear, which we make anyway.",
+      "Handover to the morning desk in {n} hours. Everything unsolved becomes their problem then."
+    ]
+  },
+  "nightschool": {
+    "lead": [
+      "Class is {unlicensed, unrecorded, and starts now|unlicensed and unrecorded, and it starts now|off the books, unrecorded, and starting now}. Keep your voice down."
+    ],
+    "tail": [
+      "Go home separately. {Do not|Don't} discuss this class in daylight."
+    ]
+  },
+  "overnight_docket": {
+    "lead": [
+      "The cases {nobody|no one} schedules for daylight. Read plainly, at the requested hour."
+    ],
+    "tail": [
+      "The bench {does not|doesn't} sleep. {That is|That's} the part I {cannot|can't} get past."
+    ],
+    "beats": [
+      "The overnight list, read at the hour it was actually heard.",
+      "Case one was called at two and is still, technically, being called.",
+      "Magistrate Holt has sat every night this month and speaks like {somebody|someone} who has.",
+      "The charge is {crime}, entered in a district near {place}, by a clerk who has since left the post.",
+      "{Nobody|No one} is in the public gallery {at this hour|at this time of the night|this far into the night}. The gallery is lit anyway.",
+      "A defendant appeared, was remanded, and appeared again on the same list four hours later.",
+      "{news}",
+      "The last item is an adjournment to a date the calendar {does not|doesn't} currently contain."
+    ]
+  },
+  "cold_kitchen": {
+    "lead": [
+      "Nothing hot {at this hour|at this time of the night|this far into the night}. Just what keeps, and what keeps too well."
+    ],
+    "tail": [
+      "Leave it covered. Check it in the morning. Check that {it is|it's} still the same shape."
+    ],
+    "beats": [
+      "Nothing is heated on this {programme|show|broadcast}. The oven {has never|has not once|has at no point} been connected.",
+      "Chef Mons works cold: cured, pickled, pressed, and left alone in the dark for a fortnight.",
+      "Tonight, something that was buried in salt in {year} and is only now considered ready.",
+      "Mons: heat is impatience. Everything you can do with a flame you can do with time.",
+      "The cellar at {place} holds four hundred of these and {nobody|no one} visits them.",
+      "It smells extraordinary and the camera {cannot|can't} help with that, so {you will|you'll} have to trust me.",
+      "Slice it thin. Slice it thinner. If you can read a newspaper through it, {that is|that's} correct.",
+      "Serve at the temperature of the room, which in this kitchen is the temperature of the ground."
+    ]
+  },
+  "three_am_weather": {
+    "lead": [
+      "...conditions, {for those still moving|for anyone still moving|for the ones still moving}..."
+    ],
+    "tail": [
+      "...the boundaries do their walking {at this hour|at this time of the night|this far into the night}. So do you. {Mind each other|Mind one another|Give each other room}..."
+    ],
+    "beats": [
+      "{Nobody|No one} needs a forecast {at this hour|at this time of the night|this far into the night}, {which is why|which is the reason|and that is why} this one is honest.",
+      "{It is|It's} raining on the long routes and {it has been|it's been} raining there since about eleven.",
+      "Frost: fog after four, thin, low, and the kind that makes a familiar road unfamiliar.",
+      "Pressure falling slowly over {place}. Nothing dramatic. Just falling, all night, like a mood.",
+      "{There is|There's} frost on the depot yards and there will be frost on your windscreen.",
+      "The leyline weather is quiet {tonight|this evening|at this hour}, for once, which the mages {will not|won't} enjoy and {the rest of|the remainder of|what is left of} us will.",
+      "First light at about {hour}. Everything looks survivable at first light.",
+      "{That is|That's} the sky as it stands. It will do what it likes regardless."
+    ]
+  },
+  "repeats": {
+    "lead": [
+      "{We are|We're} showing this again. We have shown it every night {this week|this past week|over the week}. {Nobody|No one} has asked us to stop."
+    ],
+    "tail": [
+      "The last reel is missing. {It has been|It's been} missing every night. {Goodnight|Good night}."
+    ]
+  },
+  "faithful_line": {
+    "lead": [
+      "The line is open to anyone who needs it. {We are|We're} in no hurry."
+    ],
+    "tail": [
+      "Whatever you {did not|didn't} manage to say {tonight|this evening|at this hour}, the line is open tomorrow."
+    ],
+    "beats": [
+      "The line is open and Mother Superior Agatha will stay on it as long as it takes.",
+      "First caller {has not|hasn't} been to the house in twenty years and is apologising for it at length.",
+      "Agatha: you {do not|don't} owe me an apology. You have phoned. {That is the entire|That's the entire|That is the whole|That is the full} sacrament {tonight|this evening|at this hour}.",
+      "A caller from {place} asks whether it counts if you no longer believe any of it.",
+      "The answer is the same as it was last week and will be next week, and it is: come anyway.",
+      "{Somebody|Someone} phones about a funeral they {could not|couldn't} attend because the road was shut.",
+      "{hist}",
+      "The last caller {does not|doesn't} speak for a while. We stay with the silence and so does she."
+    ]
+  },
+  "sacred_science": {
+    "lead": [
+      "Faith and instrumentation, in the same room, {behaving|behaving themselves|on their best behaviour}."
+    ],
+    "tail": [
+      "Measure what you can. Believe {carefully|with care|cautiously} about the rest."
+    ]
+  },
+  "reduced_miracle": {
+    "lead": [
+      "What was lost to sacred practice when the Father fell, {catalogued honestly|honestly catalogued|set out honestly}."
+    ],
+    "tail": [
+      "Less than there was. More than nothing. We work with what {continued|survived|carried on}."
+    ],
+    "beats": [
+      "A miracle, attested, investigated, and reduced by the commission to an event.",
+      "The house at {place} recorded it twice: once in wonder, once, later, in careful ink.",
+      "Eleven witnesses. Nine agree. The two who {do not|don't} are the ones the file keeps returning to.",
+      "The commission {is not|isn't} hostile. The commission is simply slower than belief.",
+      "{hist}",
+      "What is left after the reduction is small, and the parish kept honouring the small thing.",
+      "The relic was tested, catalogued and returned, and the queue outside {did not|didn't} shorten.",
+      "The file remains open in the technical sense that {nobody|no one} has been willing to close it."
+    ]
+  },
+  "quiet_heaven": {
+    "lead": [
+      "Music now, for a congregation that has grown used to {silence answering|silence for an answer|being answered by silence}."
+    ],
+    "tail": [
+      "Sung by fewer voices each year, and {no worse for it|none the worse for it|not one bit worse for it}."
+    ],
+    "beats": [
+      "Hymns for a quiet heaven, sung by nine people in a room with a good ceiling.",
+      "No organ {tonight|this evening|at this hour}. The organ at {place} has been silent since the roof came down.",
+      "This one was written for a congregation that {no longer exists|does not exist any more|is gone}, and {it is|it's} still sung weekly.",
+      "The voices {are not|aren't} trained. That {is not|isn't} an apology, it is a description.",
+      "A setting from {year}, sung slowly, because it was written to be sung slowly.",
+      "Between the hymns {there is|there's} silence and the silence is left in the broadcast.",
+      "The last verse is unaccompanied and the recording keeps the breath before it.",
+      "Sung for whoever is listening, and for whoever {is not|isn't} any more."
+    ]
+  },
+  "parish_notices": {
+    "lead": [
+      "The week's business, plainly: repairs, collections, and {who needs visiting|who wants visiting|whose door wants knocking on}."
+    ],
+    "tail": [
+      "{That is|That's} the parish. Look after the parts of it you can reach."
+    ],
+    "beats": [
+      "The notices, read in order, beginning with the ones that affect {somebody|someone}'s Tuesday.",
+      "The house at {place} will hold its meal on Thursday and needs two more pairs of hands.",
+      "Sister Vela: the roof fund stands at rather less than the roof requires.",
+      "A christening, a burial, and a wedding {that has been|that's been} moved twice for reasons of road closure.",
+      "The order asks for blankets rather than money this month, and asks plainly.",
+      "{Somebody|Someone} has left a coat in the porch and {it has been|it's been} in the porch since {year}. Take the coat.",
+      "The evening office continues at the usual hour whether or not {anybody|anyone} comes.",
+      "That is the parish. {It is|It's} small news and {it is|it's} the only news for about four hundred people."
+    ]
+  },
+  "the_vigil": {
+    "lead": [
+      "We keep the carrier open overnight for anyone who {cannot|can't} sleep."
+    ],
+    "tail": [
+      "{Still here|We are still here|Still on air}. Still transmitting. {That is the whole|That's the whole|That is the entire} of the service."
+    ],
+    "beats": [
+      "The vigil is kept in silence, on air, because {somebody|someone} asked and {nobody|no one} could think of a reason not to.",
+      "A single candle, a fixed camera, and the hours between the offices.",
+      "The house at {place} has kept this vigil every year since the loss it was begun for.",
+      "{There is|There's} no commentary. Commentary would be a kind of interruption.",
+      "Names are read once, at the turn of the hour, and not repeated.",
+      "Anyone may join. {Nobody|No one} is counted. {That is|That's} deliberate and {it is|it's} the whole practice.",
+      "The candle {will not|won't} last the night. A second candle is ready and {that is|that's} also the point.",
+      "The vigil ends at first light with no announcement at all."
+    ]
+  },
+  "depot_report": {
+    "lead": [
+      "WHERE IS YOUR ORDER? SOMEWHERE ON THIS MAP! {PROBABLY|WE THINK|MOST LIKELY}!"
+    ],
+    "tail": [
+      "IT IS IN TRANSIT! {EVERYTHING IS ALWAYS IN TRANSIT|IT IS ALL ALWAYS IN TRANSIT|NOTHING IS EVER NOT IN TRANSIT}!"
+    ],
+    "beats": [
+      "THE DEPOT REPORT! WHAT IS IN THE YARD! WHAT IS LEAVING THE YARD! WHAT IS STUCK!",
+      "Hank Dole, live from a loading bay at {place}, standing next to something he will now sell you!",
+      "{big} units came in overnight! MOST OF THEM WERE EXPECTED!",
+      "THE QUEUE FOR BAY FOUR IS FOUR HOURS! BUY SOMETHING WHILE YOU WAIT!",
+      "Dole: I have driven, I have loaded, and I have sold. Selling is the one where you stay dry.",
+      "A pallet has been in the corner since {year} and is now, technically, ours to sell!",
+      "ROAD NEWS AND PRICE NEWS IN THE SAME SENTENCE! THAT IS THE FORMAT! IT IS EFFICIENT!",
+      "IF YOUR DELIVERY IS LATE, IT IS IN THE YARD, AND I AM STANDING NEXT TO IT!"
+    ]
+  },
+  "unclaimed_auction": {
+    "lead": [
+      "{Undelivered|Undeliverable}! Unindexed! UNCLAIMED! {Bidding starts NOW|Bidding opens NOW|We start bidding NOW}!"
+    ],
+    "tail": [
+      "SOLD! To whoever shouted! {We will|We'll} find you! WE ALWAYS FIND YOU!"
+    ]
+  },
+  "complaints_line": {
+    "lead": [
+      "The complaints line, on air, because the sponsor thought it would {build trust|build trust|look like candour}."
+    ],
+    "tail": [
+      "Your complaint has been indexed. Indexed {is not the same as|is not the same thing as|is a different thing from} resolved."
+    ],
+    "beats": [
+      "Verity Cross, at the desk, with the switchboard lit like a festival.",
+      "Caller one ordered in spring and {would like to|wish to|are keen to} know which spring we meant.",
+      "Cross: {I am|I'm} reading your file. Your file is nine pages. Nine pages {is not|isn't} a good sign, sir.",
+      "The item was delivered to {place}, signed for by {nobody|no one}, and photographed next to a bin.",
+      "We can offer a replacement, a credit, or a sincere apology delivered live on this {programme|show|broadcast}.",
+      "A caller has phoned to complain about the complaints line, which Cross accepts as fair.",
+      "The record for this desk is a complaint resolved in {n} minutes. It {has not|hasn't} been beaten since {year}.",
+      "Cross: I {do not|don't} set the prices, I do not pack the boxes, and I do not sleep much."
+    ]
+  },
+  "warehouse_live": {
+    "lead": [
+      "Twenty-four hours in a bonded warehouse that {nobody|no one} has ever {successfully visited|managed to visit|got into twice}!"
+    ],
+    "tail": [
+      "Nothing arrived! Everything is here! {GOODNIGHT|GOOD NIGHT|THAT IS ALL, GOODNIGHT}!"
+    ]
+  },
+  "sponsored_weather": {
+    "lead": [
+      "THE WEATHER! BROUGHT TO YOU BY {SOMEBODY|SOMEONE} WHO CANNOT CHANGE IT!"
+    ],
+    "tail": [
+      "WHATEVER THE WEATHER, YOU NEED THINGS! {BUY THINGS|BUY THEM NOW|BUY THINGS TODAY}!"
+    ],
+    "beats": [
+      "THE FORECAST! BROUGHT TO YOU BY A COMPANY THAT SELLS COATS!",
+      "RAIN TOMORROW! WHAT A COINCIDENCE! WE HAVE UMBRELLAS AT {price}!",
+      "Diana: the sun is out in {place}. We have something for that as well. We have something for everything.",
+      "COLD SNAP INCOMING! THAT IS THE FORECAST! THE FORECAST IS ALSO AN ADVERTISEMENT!",
+      "OUR METEOROLOGIST IS THE SALES TEAM! THEY HAVE NEVER BEEN WRONG ABOUT DEMAND!",
+      "WIND FROM THE NORTH! IDEAL CONDITIONS FOR BUYING A THING!",
+      "THE WEATHER IS FREE! EVERYTHING ELSE ON THIS SCREEN IS NOT!",
+      "OUTLOOK: PURCHASING! WITH SCATTERED PURCHASING!"
+    ]
+  },
+  "before_the_boundary": {
+    "lead": [
+      "A BOUNDARY IS COMING! OUR PRICES ARE GOING! {THESE FACTS ARE RELATED|THE TWO ARE RELATED|THAT IS NOT A COINCIDENCE}!"
+    ],
+    "tail": [
+      "STAY SLOW! SPEND FAST! {THOSE ARE THE ONLY TWO RULES|THAT IS THE WHOLE RULEBOOK|TWO RULES, NO OTHERS}!"
+    ],
+    "beats": [
+      "A BOUNDARY IS FORECAST NEAR {place}! OUR WAREHOUSE IS ON THE WRONG SIDE OF IT!",
+      "EVERYTHING MUST TRAVEL TONIGHT! {item} AT {price}! THAT IS A PANIC PRICE!",
+      "Tom: I want to be clear that we {are not|aren't} profiting from an advisory. We are RESPONDING to one.",
+      "THE DRIVERS ARE LOADING WHILE I SPEAK! YOU CAN HEAR THEM! THAT IS NOT AN EFFECT!",
+      "IF THE ADVISORY LIFTS, THE PRICE GOES BACK UP! THAT IS HOW ADVISORIES WORK!",
+      "ORDER NOW AND IT SHIPS BEFORE THE CORDON! ORDER LATER AND IT SHIPS EVENTUALLY!",
+      "{news}",
+      "STAY SLOW! STAY SAFE! BUT ALSO: STAY ON THE LINE!"
+    ]
+  },
+  "chronicles": {
+    "lead": [
+      "The long view {tonight|this evening|at this hour}: one century, told at the pace {it was actually lived|it was really lived|people actually lived it}."
+    ],
+    "tail": [
+      "That was the age as the files have it. The files {are not|aren't} the age."
+    ],
+    "beats": [
+      "Crane's rule for this {programme|show|broadcast}: a date is a claim, and a claim wants a source.",
+      "We hold three accounts of {event} and they agree on the weather and nothing else.",
+      "{hist}",
+      "The chronicle here breaks for eleven years. {Nobody|No one} has ever explained the gap to my satisfaction.",
+      "A scribe at {place} wrote it down as it happened, badly, {which is the only|which is still the only|which remains the only} reason we have it.",
+      "The ruling houses of the day called it an accident. Their own ledgers call it a purchase.",
+      "{I am|I'm} obliged to note that the Archive's copy has been corrected twice, in two different hands.",
+      "The people in this century {did not|didn't} know they were in it. Neither do you.",
+      "What survives is what {somebody|someone} thought worth carrying. {That is|That's} a bias, not a record."
+    ]
+  },
+  "this_week_in_history": {
+    "lead": [
+      "Seven days, {some of them centuries apart|several of them centuries apart|a few of them centuries apart}. This is the week as the calendar remembers it."
+    ],
+    "tail": [
+      "That was the week that was, {several times over|many times over|more than once}. Next week, the same week again."
+    ],
+    "beats": [
+      "On this day, and I do mean this exact day: {hist}",
+      "Also {this week|this past week|over the week}, in a year the Archive lists three times: {event} at {place}.",
+      "A quieter anniversary: a treaty {nobody|no one} kept, signed by people nobody misses.",
+      "Vance's favourite entry {this week|this past week|over the week} is a receipt. It settles an argument two centuries old.",
+      "This week is unusually crowded. Historians suspect the calendar, not the century.",
+      "We mark it because marking {it is|it's} the whole job. Nothing else keeps a date alive.",
+      "The anniversary falls {inside a bubble|inside a loop bubble|inside one of the bubbles} this year, so the commemoration will be late and sincere.",
+      "One correction from last week's {programme|show|broadcast}, which we make gladly and at length."
+    ]
+  },
+  "before_the_tower": {
+    "lead": [
+      "A world without the Tower in the sky. {It is|It's} harder to picture than {you would think|you might think|anyone expects}."
+    ],
+    "tail": [
+      "Then it was there. Every account after {that is|that's} written in its shadow."
+    ],
+    "beats": [
+      "Everything in this {programme|show|broadcast} happened while the horizon was still empty.",
+      "The maps of that era have a blank where the Tower stands, and the blank is drawn confidently.",
+      "People navigated by coast and by star and by asking. It worked for centuries.",
+      "{There is|There's} no first sighting on record. There are eleven hundred first sightings on record.",
+      "Vane's position, and {it is|it's} only a position: something was built, and something else arrived.",
+      "The oldest structure we can date near {place} is aligned to a horizon that {no longer exists|does not exist any more|is gone}.",
+      "{hist}",
+      "What we lost {was not|wasn't} the buildings. It was the assumption that the sky stayed where it was."
+    ]
+  },
+  "ninety_two": {
+    "lead": [
+      "An anatomy, in four parts, of the year {the world got smaller|the world shrank|the world lost its room}."
+    ],
+    "tail": [
+      "Ninety-two {is not|isn't} a date on this channel. {It is|It's} a shape everything after it {fits into|has to fit into|is made to fit}."
+    ],
+    "beats": [
+      "Part one: the measurements. {Somebody|Someone} was taking them before anyone knew what for.",
+      "Part two: the night itself, reconstructed from instruments rather than witnesses.",
+      "Witnesses, in this case, are the least reliable evidence we have. All of them were inside it.",
+      "The survey teams at {place} recorded the same reading eleven times and filed it as equipment failure.",
+      "Part three: what the authorities said, in the order they said it, and the order matters.",
+      "{hist}",
+      "Part four: the arithmetic. It {is not|isn't} difficult arithmetic. {That is|That's} what makes it unbearable.",
+      "This {programme|show|broadcast} carries no interviews. Everyone we approached asked us not to."
+    ]
+  },
+  "kola_file": {
+    "lead": [
+      "A borehole, a monitoring room, and eleven kilometres of {documented silence|recorded silence|carefully minuted silence}."
+    ],
+    "tail": [
+      "The file remains open. {It has been|It's been} open longer than most of the people in it were alive."
+    ],
+    "beats": [
+      "The drilling logs are ordinary for nine years. {That is|That's} the unsettling part.",
+      "Depth, temperature, rate. Depth, temperature, rate. Then a line the log has no column for.",
+      "The engineers requested a second microphone. The request was approved and the microphone never arrived.",
+      "Three shifts filed the same anomaly independently and none of them had spoken to the others.",
+      "The site was capped, then uncapped, then capped by a different ministry.",
+      "{hist}",
+      "What we have is paperwork about a hole. The hole itself {is not|isn't} available for comment.",
+      "Every copy of the final report ends mid-sentence. Every copy ends mid-sentence in the same place."
+    ]
+  },
+  "y2k_retrospective": {
+    "lead": [
+      "Two billion. The number is the {programme|show|broadcast}. Everything else is context."
+    ],
+    "tail": [
+      "The machines stopped at once. The world took {considerably longer|a good deal longer|far longer} to notice what that meant."
+    ],
+    "beats": [
+      "It was, before anything else, an ordinary night with {a lot of|plenty of|a good deal of} countdowns on television.",
+      "The engineers had been warning about a date field. What arrived {was not|wasn't} a date field.",
+      "Power first, then water, then everything water was holding up.",
+      "The count {is not|isn't} a count. {It is|It's} an estimate that three institutions have declined to revise.",
+      "{hist}",
+      "The first winter is the part {nobody|no one} films. {It is|It's} also the part that killed most of them.",
+      "Every family on this channel's viewing figures is a family that got through it.",
+      "We show the archive footage without music. Music would be a kind of lie here."
+    ]
+  },
+  "great_debates": {
+    "lead": [
+      "Two chairs, three historians, and a century that {cannot|can't} defend itself."
+    ],
+    "tail": [
+      "{We have|We've} run out of time, {which is the only|which is still the only|which remains the only} thing this panel has ever agreed on."
+    ],
+    "beats": [
+      "Crane opens for the motion, and he opens, as ever, with a document.",
+      "Vance {will not|won't} accept the document. Vance {has never|has not once|has at no point} accepted a document on this {programme|show|broadcast}.",
+      "Vane suggests both are asking the wrong question, which is his function here.",
+      "The motion {tonight|this evening|at this hour}: that {event} was inevitable, and that saying so excuses {nobody|no one}.",
+      "I will concede the year. I will concede the year and nothing standing next to it.",
+      "A viewer writes in to say all three of us are wrong, and encloses a better source.",
+      "{hist}",
+      "The panel divides on {faction}, as the panel always divides on {faction}.",
+      "Applause {is not|isn't} evidence. Neither, colleague, is volume."
+    ]
+  },
+  "pillars": {
+    "lead": [
+      "Three pillars hold the discipline up. {Tonight|This evening} we push each of them and see what wobbles."
+    ],
+    "tail": [
+      "Three pillars, one argument, no conclusion. {Same time next week|Same hour next week|We do it again next week}."
+    ],
+    "beats": [
+      "Pillar one: the written record. Vane trusts it. Colm has dug up things it never mentions.",
+      "Pillar two: the ground. Colm trusts the ground. The ground has been moved twice by treaty.",
+      "Pillar three: what people say happened, {which is the only|which is still the only|which remains the only} pillar made of people.",
+      "A dig near {place} has produced an object the written record {insists|maintains|still insists} was never manufactured.",
+      "{hist}",
+      "If the spade and the ledger disagree, one of them was written by {somebody|someone} with an interest.",
+      "Colm's finds this season are unfashionable, which historically means {they are|they're} correct.",
+      "Vane would like it noted that stratigraphy {is not|isn't} an argument, merely {a very|an extremely|a genuinely} heavy hint."
+    ]
+  },
+  "footnotes": {
+    "lead": [
+      "The small print of the age, and the grudges that {got left in it|were left in it|stayed in it}."
+    ],
+    "tail": [
+      "Everything in this {programme|show|broadcast} was a footnote. Footnotes are where the money is."
+    ],
+    "beats": [
+      "Tonight's first footnote runs to four pages and accuses a bishop of arithmetic.",
+      "Marchetti reads it aloud. Marchetti reads everything aloud. {It is|It's} how she catches them.",
+      "A marginal note in a chronicle from {place} calls the author a liar, in the author's own hand.",
+      "Two scholars spent thirty years disputing a comma. One of them was right.",
+      "{hist}",
+      "The grievance here outlived both parties, both houses and the language it was written in.",
+      "Crane maintains that a footnote is where a historian puts what they {could not|couldn't} prove but knew.",
+      "{We have|We've} received a letter of complaint about last month's footnote. It has its own footnotes."
+    ]
+  },
+  "in_memoriam": {
+    "lead": [
+      "We remember, {at the pace remembering takes|at the pace it takes|as slowly as remembering takes}, those the year has taken."
+    ],
+    "tail": [
+      "{They are|They're} entered in the record. {That is|That's} the smallest thing we can do and we do it properly."
+    ],
+    "beats": [
+      "A {job} of {place}, who worked in one trade for fifty-one years and trained everyone who followed.",
+      "They {are not|aren't} famous. Fame {is not|isn't} the criterion here and never has been.",
+      "Marchetti reads the names slowly. {There is|There's} no other correct speed.",
+      "A family has asked us to say only that she was patient. So: she was patient.",
+      "Two of {tonight|this evening|at this hour}'s names were lost {inside a bubble|inside a loop bubble|inside one of the bubbles} and have only now been confirmed.",
+      "{hist}",
+      "One entry is a whole village, listed as a single line because {there is|there's} {nobody|no one} left to itemise it.",
+      "We correct one name from last week, with apologies to the family, who wrote to us kindly."
+    ]
+  },
+  "deicide_hour": {
+    "lead": [
+      "An hour for the gods who died, and for {the exact manner of their dying|exactly how they died|the manner of it}."
+    ],
+    "tail": [
+      "Nothing that large goes quietly. The quiet afterwards is {the part that lasts|the part which lasts|what lasts}."
+    ],
+    "beats": [
+      "Wren keeps a list. The list is shorter than it was in {year} and {that is the whole|that's the whole|that is the entire|that is the full} {programme|show|broadcast}.",
+      "A god {is not|isn't} killed. A god is stopped being needed, and then killed.",
+      "{deity} is the case study {tonight|this evening|at this hour}: worshipped in three realms, mourned in none of them.",
+      "The remains, where there are remains, are usually geography now.",
+      "{hist}",
+      "The theologians call it a reduction. The survivors call it a Tuesday.",
+      "Wren notes, without comment, that most deicides were committed by administrators.",
+      "What replaces a dead god is never nothing. {It is|It's} always paperwork."
+    ]
+  },
+  "falklands": {
+    "lead": [
+      "A reconstruction: the sea, the fleet, and a war fought twice {for different reasons|for two different reasons|for reasons that did not match}."
+    ],
+    "tail": [
+      "The reconstruction ends. The dispute {does not|doesn't}. {It never has|It never did|It has not yet}."
+    ],
+    "beats": [
+      "Filmed on location, insofar as the location still agrees to be one place.",
+      "Our reconstruction uses the original signals traffic, read by actors, uncut.",
+      "The first hour is weather. Wars at sea are mostly weather.",
+      "Okeanus {does not|doesn't} appear in the official histories of this campaign. Okeanus appears in the sonar.",
+      "{hist}",
+      "Both fleets believed they were defending something. Only one of them was near it.",
+      "The islands themselves are barely in this film. {They are|They're} barely in the war.",
+      "We reconstruct the surrender in real time, which means eleven minutes of a man not signing."
+    ]
+  },
+  "road_of_ages": {
+    "lead": [
+      "The Road, filmed end to end, as it was walked by the people who {made it a road|turned it into a road|wore it into a road}."
+    ],
+    "tail": [
+      "The Road goes on. It was going on before the cameras and it will {outlast the reel|outlast this reel|see the reel out}."
+    ],
+    "beats": [
+      "Episode one: a track between two farms. {That is|That's} {genuinely|honestly|truly} how it starts.",
+      "Then a bridge, and the bridge decides where the next hundred years happen.",
+      "Every settlement in this film exists because {somebody|someone} stopped walking at the right hour.",
+      "The Road is older than the Tower, older than the Collective, older than the argument about it.",
+      "{hist}",
+      "The haulers in this reconstruction are real haulers. They asked to keep their own trucks.",
+      "{There is|There's} a stretch near {place} that {has never once been|has not once been|has never yet been} mapped the same way twice.",
+      "The people who kept it open {were not|weren't} heroes. They were paid, badly, and they kept it open."
+    ]
+  },
+  "archive_reading": {
+    "lead": [
+      "No panel, no argument. Just the Archive, read out loud, with {the boring parts left in|the dull parts left in|every dull part left in}."
+    ],
+    "tail": [
+      "The reading room closes. The document goes back in the box {it has been|it's been} in since {year}."
+    ],
+    "beats": [
+      "Tonight's document is a supply manifest. Bear with me: manifests {do not|don't} lie for effect.",
+      "Vance reads it entire, including the columns, because the columns are the argument.",
+      "Note the quantities. Note who signed for them. Note the date they stopped.",
+      "A margin note here in a second hand simply says: asked again. Nothing further.",
+      "{hist}",
+      "This {is not|isn't} a dramatic document. {It is|It's} a document that survived, which is rarer than drama.",
+      "We take three questions by letter {at the end of|at the far end of|right at the end of} every reading, and answer them from the file.",
+      "Where the Archive is uncertain, the Archive says so on air. {That is the whole|That's the whole|That is the entire|That is the full} point of the {programme|show|broadcast}."
+    ]
+  },
+  "evening_desk": {
+    "lead": [
+      "{Good evening|Evening}. The main stories {at this hour|at this time of the night|this far into the night}, in the order {we can stand them up|we can substantiate them|we are able to stand them up}."
+    ],
+    "tail": [
+      "{That is|That's} the Evening Desk. Finch and Marlowe, and whatever the night brings."
+    ],
+    "beats": [
+      "Our top story: {news}",
+      "We have that from two sources. {We are|We're} looking for a third before we go further.",
+      "Marlowe has been at {place} all afternoon and joins us now on a line that keeps dropping.",
+      "The ministry has declined an interview and sent four hundred words instead. {We will|We'll} read the useful ones.",
+      "{news}",
+      "A correction to this bulletin's early edition, which we make now rather than quietly at midnight.",
+      "Finch: the numbers moved today, and the reason they moved {is not|isn't} the reason being offered.",
+      "Still to come: the forecast, the markets, and one story we {are not|aren't} yet able to broadcast."
+    ]
+  },
+  "breaking": {
+    "lead": [
+      "{We are|We're} interrupting the schedule. This is coming in {as we speak|as we sit here|while we are on air}."
+    ],
+    "tail": [
+      "{We will|We'll} stay with this. If it changes in the next hour, {we come back on air|we will be back on air|we return to air}."
+    ],
+    "beats": [
+      "What we know: {news}",
+      "What {we do not know|we don't know|we cannot say|we have no idea} is most of it, and we would rather say so than fill the gap.",
+      "Marlowe is being moved back by the cordon. {That is|That's} the second time in ten minutes.",
+      "{We are|We're} hearing figures. We {are not|aren't} broadcasting figures. Figures at this stage are guesses with confidence.",
+      "The authorities have asked for the roads around {place} to be left clear.",
+      "A second report now, which contradicts the first, and {we will|we'll} carry both until one falls over.",
+      "If {you are|you're} near this, you know more than we do. Stay away from it anyway.",
+      "{We have|We've} lost the line. {We will|We'll} get the line back."
+    ]
+  },
+  "forecast": {
+    "lead": [
+      "The forecast now, for weather and for everything weather has {started to include|come to include|taken to including}."
+    ],
+    "tail": [
+      "{That is|That's} the outlook. Consensus reality is holding, {at time of broadcast|as of this broadcast|for now}."
+    ],
+    "beats": [
+      "Pressure is falling in the west, and so is agreement about the west.",
+      "Ordinary weather first: rain into {place}, clearing by the small hours.",
+      "Leyline activity running high beneath the same area. Beautiful for casting, difficult for controlling it.",
+      "A thin boundary risk overnight. Thin {does not|doesn't} mean thin enough to walk through.",
+      "Pallas: the instruments and the mages disagree {tonight|this evening|at this hour} by about six hours.",
+      "Travellers on the long routes should expect the road to be longer than the map.",
+      "Tomorrow: {pct} percent chance of a day that resembles today in every particular.",
+      "Outlook for the week: unsettled, {which is the only|which is still the only|which remains the only} forecast this office has issued since {year}."
+    ]
+  },
+  "morning_brief": {
+    "lead": [
+      "{It is|It's} early, you have things to do, so here is the morning in {as few words as we can manage|the fewest words we can manage|as little time as we can manage}."
+    ],
+    "tail": [
+      "{That is|That's} the brief. The full bulletin is {at the top of the hour|on the hour|at the start of the hour}, if you have the hour."
+    ],
+    "beats": [
+      "Overnight: {news}",
+      "Two lines on that, because two lines is what it currently supports.",
+      "The markets open shortly and open nervous. Quint has more at the bell.",
+      "Roads: the long haul out of {place} is moving, slowly, and slow is the correct speed.",
+      "Marlowe, who has been up since three, has the story everyone will be discussing by lunchtime.",
+      "Weather in one sentence: take the coat.",
+      "One thing to watch today, and we flag it now so you {are not|aren't} surprised at six.",
+      "{That is|That's} the morning. {We will|We'll} have been wrong about some of it by teatime."
+    ]
+  },
+  "boundary_watch": {
+    "lead": [
+      "Boundary Watch. Where the edges are {tonight|this evening|at this hour}, and which of them are moving."
+    ],
+    "tail": [
+      "Watch stays live overnight. If an edge moves, this {programme|show|broadcast} moves with it."
+    ],
+    "beats": [
+      "Current advisory: the edge near {place} has shifted, and it has shifted towards people.",
+      "Warden Voss joins us from the cordon, which {is not|isn't} where the cordon was this morning.",
+      "The rule {has not|hasn't} changed and {will not|won't} change: under eighty outside, over eighty inside.",
+      "{We are|We're} asked to say that the perimeter is precautionary. We are also asked to say it firmly.",
+      "Pallas has the readings, and the readings have been ugly since about {hour} o'clock.",
+      "Nothing has been lost {tonight|this evening|at this hour}. {We are|We're} broadcasting to keep that sentence true.",
+      "If your route crosses the advisory, {do not|don't} gamble on it having moved back.",
+      "One family inside since {year} sent word out {this week|this past week|over the week}. {That is|That's} the good news in this bulletin."
+    ]
+  },
+  "closing_bell": {
+    "lead": [
+      "The bell has gone. Here is what the day {did to your money|has done to your money|cost your money}."
+    ],
+    "tail": [
+      "{That is|That's} the close. Quint, on a market that closed lower and knows why."
+    ],
+    "beats": [
+      "Freight up, haulage up, anything that has to cross a boundary down sharply.",
+      "{item} finished the session at {price}, which tells you more about the roads than the goods.",
+      "Volumes were thin. Thin volumes make small news look like large news.",
+      "The Collective's paper held. It always holds. That {is not the same as|is not the same thing as|is a different thing from} being sound.",
+      "{news}",
+      "A word on speculation in memory contracts, which this desk continues to regard as unwise.",
+      "Quint: {nobody|no one} rang a bell at the top. {Nobody|No one} ever rings a bell at the top.",
+      "Tomorrow: the auction at {place}, which will move prices whether or not it clears."
+    ]
+  },
+  "docket": {
+    "lead": [
+      "The docket now, from a court that {hears everything and finishes nothing|hears everything and concludes nothing|takes every case and closes none}."
+    ],
+    "tail": [
+      "{That is|That's} {tonight|this evening}'s docket. The court sits on. It has sat on since before this channel existed."
+    ],
+    "beats": [
+      "Case one, and case one has been case one for eleven years.",
+      "The defendant is charged with {crime}. The defendant has been charged with it simultaneously in four dimensions.",
+      "Kel reminds us {there is|there's} no precedent here, only volume.",
+      "Judgment was handed down today and will be handed down again tomorrow, differently.",
+      "A plea was entered by someone who {has not|hasn't} yet been born in this timeline.",
+      "{news}",
+      "The sentence is paid in memory. The court no longer pretends otherwise.",
+      "One acquittal to report, which is rare enough that we lead the second half with it."
+    ]
+  },
+  "above_the_cloud": {
+    "lead": [
+      "Science {tonight|this evening|at this hour}, from above the cloud layer, where the instruments still work."
+    ],
+    "tail": [
+      "Renner will be back next week, {assuming the funding and the sky both hold|if the funding and the sky both hold|funding and sky permitting}."
+    ],
+    "beats": [
+      "The observatory at {place} has published, and the publication is causing arguments.",
+      "Renner: this is a measurement, not a meaning. The meaning takes another decade.",
+      "Three teams ran the same experiment. Two got the same answer. {That is|That's} a good week.",
+      "The instrument was built before {year} and {nobody|no one} alive fully understands the calibration.",
+      "What we can say: the readings have drifted, slowly, in one direction, for a long time.",
+      "{news}",
+      "Peer review {is difficult|is hard|is no easy thing} when a third of your peers are {inside a bubble|inside a loop bubble|inside one of the bubbles}.",
+      "Renner would like it recorded that she {does not|doesn't} know. She says it more often than most guests."
+    ]
+  },
+  "your_call": {
+    "lead": [
+      "Lines are open. One point each, and please {do not|don't} tell us your whole week."
+    ],
+    "tail": [
+      "{That is|That's} all the time we have. The lines close. The opinions, {sadly|regrettably|alas}, do not."
+    ],
+    "beats": [
+      "Caller from {place}, {you are|you're} on the air, and you have ninety seconds.",
+      "Finch: with respect, that {is not|isn't} what the bulletin said, and I have it here.",
+      "Our next caller has phoned this {programme|show|broadcast} every week since {year}.",
+      "Marlowe: we can take the complaint about our coverage. We can't take it twice in one call.",
+      "A caller from {inside a bubble|inside a loop bubble|inside one of the bubbles} has got through, which raises questions for the engineers.",
+      "{news}",
+      "{That is|That's} a good question and neither of us can answer it, which {we will|we'll} admit on air.",
+      "{Somebody|Someone} has phoned in to defend {faction}, bravely, and at some length."
+    ]
+  },
+  "civil_advisory": {
+    "lead": [
+      "This is a civil advisory. {It is|It's} being carried on every channel that {can carry it|is able to carry it|still has an aerial}."
+    ],
+    "tail": [
+      "This advisory repeats until {it is|it's} {withdrawn|lifted|stood down}. {Please do not|Please don't|We would ask you not to} wait for the repeat."
+    ],
+    "beats": [
+      "Residents of {place}: remain where you are, keep the road clear, {do not|don't} travel to look at it.",
+      "Voss speaking. This {is not|isn't} a drill and {I am|I'm} not going to pretend it might be.",
+      "{Do not|Don't} cast in the affected district. Not for light, not for heat, not for anything.",
+      "Keep to under eighty. If {you are|you're} already inside, you know the other rule.",
+      "Water is being brought to three points, and the points are listed after this advisory.",
+      "If your neighbour is elderly or alone, knock. {That is|That's} an instruction, not a suggestion.",
+      "We have no casualty figures and {will not|won't} speculate about casualty figures.",
+      "The advisory covers {tonight|this evening|at this hour}. It will be reviewed at {hour} and {probably|most likely|in all likelihood} extended."
+    ]
+  },
+  "goblin_ball": {
+    "lead": [
+      "Goblin-ball! Six teams, no offside, and a rulebook {nobody|no one} has read since {year}!"
+    ],
+    "tail": [
+      "{That's|That is} the roundup! Tuskbeat and Quick, back next week, {assuming the pitch is|if the pitch survives|pitch permitting}!"
+    ],
+    "beats": [
+      "The result from {place}: a win, a riot, and a replay ordered by {somebody|someone}'s uncle.",
+      "Quick: it was a foul. It was a beautiful foul. I have watched it forty times.",
+      "Tuskbeat: the visitors defended so deep they were technically in another district.",
+      "The league table is a matter of opinion, and the opinion changes on Thursdays.",
+      "A player was sent off for casting. He says it was enthusiasm. The referee says it was a spell.",
+      "Attendance was up! Some of them were even watching!",
+      "Transfer news: a striker has been sold for a warehouse and an unspecified favour.",
+      "The cup draw is {tonight|this evening|at this hour}, and the cup itself remains missing since the semifinal."
+    ]
+  },
+  "correspondents": {
+    "lead": [
+      "Our correspondents, off the leash, on what they {could not|couldn't} fit into the bulletin."
+    ],
+    "tail": [
+      "That was Correspondents at Large. Most of that will be in a bulletin {within the fortnight|inside a fortnight|before the fortnight is out}."
+    ],
+    "beats": [
+      "Ostrow has been three weeks on the far routes and has come back with one sentence that matters.",
+      "Finch: say the sentence, Nadia. We have the time and we have the lawyers.",
+      "What the wire copy leaves out is the queue. {There is|There's} always a queue.",
+      "{news}",
+      "Ostrow: the officials there were courteous, thorough, and lying by omission.",
+      "{We are|We're} able to describe the border post now that our people are back through it.",
+      "One story we {cannot|can't} broadcast at all, and we mention its existence and nothing else.",
+      "The difference between reporting and rumour is one more phone call, and {it is|it's} always a slow one."
+    ]
+  },
+  "night_desk": {
+    "lead": [
+      "The Night Desk. {Fewer of us|Fewer staff|A smaller desk}, stranger stories, same standard of evidence."
+    ],
+    "tail": [
+      "Vanterre, off shift, off air, and off the record {until six|till six|until six in the morning}."
+    ],
+    "beats": [
+      "Overnight so far: {news}",
+      "Vanterre: I have checked this twice. It has changed once between the checks.",
+      "The switchboard has had eleven calls about {place} and no two describe the same thing.",
+      "{We are|We're} carrying it because eleven calls is a story even when the calls are wrong.",
+      "The wire from the Judiciary Dimension has been running for six hours and {has not|hasn't} repeated itself.",
+      "One item held over: it will read better in daylight and be less believable.",
+      "A caller reports lights. A second caller reports the absence of lights. Both are near the same street.",
+      "The morning team inherit all of this at six, with our sympathy."
+    ]
+  },
+  "road_report": {
+    "lead": [
+      "The Long Haul Report. Every route we have word on, in the order {they will|they'll} annoy you."
+    ],
+    "tail": [
+      "{That is|That's} the road as it stands. Halloran, back at the same hour, with the same bad news."
+    ],
+    "beats": [
+      "The main route out of {place} is open and slow, which is the best sentence in this bulletin.",
+      "Halloran: I drove this for twenty-two years. {I am|I'm} not reading a map to you, I am reading a memory.",
+      "Diversion in force at the junction. The diversion adds an hour and avoids a boundary. Take it.",
+      "Depot queues are long at {place} and the canteen there is, as ever, better than it needs to be.",
+      "Under eighty on the open stretches. I say it every night because every night {somebody|someone} doesn't.",
+      "A bridge is down and the alternative is a ford, and the ford is only a rumour so far.",
+      "{news}",
+      "Fuel is dear on the north side and cheap at the halfway stop. Fill at the halfway stop."
+    ]
+  },
+  "wheel": {
+    "lead": [
+      "SPIN THE WHEEL! WIN THE PRIZE! THE PRIZE IS A YEAR! {IT MAY NOT BE THIS ONE|IT NEED NOT BE THIS ONE|NOT NECESSARILY THIS ONE}!"
+    ],
+    "tail": [
+      "{THAT'S THE WHEEL|THAT IS THE WHEEL|WHEEL'S DONE}! COLLECT YOUR YEAR AT THE DESK! NO REFUNDS ON DECADES!"
+    ],
+    "beats": [
+      "Malarkey here! The wheel has sixty segments and eleven of them are just the word LATER!",
+      "Contestant one is from {place} and {would like to|wish to|are keen to} win a Tuesday that stays put!",
+      "SPIN! It's landed on... a decade! Which decade? THE WHEEL DOESN'T SAY! THAT'S THE GAME!",
+      "Isolde reads the omens between spins. The omens {are not|aren't} consulted about the prizes.",
+      "Bonus round: name the year you were born! {Nobody|No one} has got this right in {n} weeks!",
+      "Our previous champion is still spinning. She has been spinning since {year}. She seems content.",
+      "The wheel {is not|isn't} rigged! The wheel is worse than rigged! The wheel is SINCERE!",
+      "Big money round! The money is real! The bigness is negotiable!"
+    ]
+  },
+  "static_hour": {
+    "lead": [
+      "...the hour of static {begins|starts}... it {began|started} some time ago... {we are|we're} catching up to it..."
+    ],
+    "tail": [
+      "...that was the static hour... {it is|it's} still the static hour..."
+    ],
+    "beats": [
+      "...between the words {there is|there's} a second broadcast and {it is|it's} older than this one...",
+      "...{somebody|someone} is reading the schedule aloud... it {is not|isn't} {tonight|this evening|at this hour}'s schedule...",
+      "...the carrier holds a name... {person}... it holds it for one second every hour...",
+      "...if your set is warm, {that is|that's} us... if your set is cold, that is also us...",
+      "...we {have not|haven't} been in this studio since {year}... the studio disagrees...",
+      "...the transmitter at {place} answers when {nobody|no one} is operating it...",
+      "...{there is|there's} a room behind this room and the microphone is in both...",
+      "...{do not|don't} adjust anything... adjustment is how it finds the frequency..."
+    ]
+  },
+  "prophecy_corner": {
+    "lead": [
+      "Isolde Thorne, in the corner, with the cards face down and the news {face up|face up on the table|the other way up}."
+    ],
+    "tail": [
+      "{That's|That is} the corner. {Whatever's coming|Whatever is coming|What is coming} was already coming before I said so."
+    ],
+    "beats": [
+      "First card: something arrives at {place} that was posted a long time ago.",
+      "I {do not|don't} predict. I notice earlier than most people. {That is|That's} the trade.",
+      "{Somebody|Someone} watching this will make {a very|an extremely|a genuinely} stupid decision on a Thursday. {It is|It's} fixable.",
+      "The cards say {faction}. The cards say {faction} an unhelpful amount.",
+      "A prophecy is a rumour with better posture.",
+      "Third card, reversed: a debt paid in the wrong currency and accepted anyway.",
+      "{news}",
+      "If a prophecy tells you to hurry, {it is|it's} selling you something. Prophecies are patient."
+    ]
+  },
+  "panic_at_six": {
+    "lead": [
+      "IT IS SIX O'CLOCK! PANIC RESPONSIBLY! {WE HAVE A PANEL|THERE IS A PANEL|A PANEL IS STANDING BY}!"
+    ],
+    "tail": [
+      "PANIC CONCLUDED! RESUME YOUR EVENING! {THE EVENING RESUMES REGARDLESS|IT RESUMES WITHOUT YOU ANYWAY|THE EVENING GOES ON REGARDLESS}!"
+    ],
+    "beats": [
+      "TONIGHT'S PANIC: {news} WE HAVE THREE PEOPLE WHO WILL SHOUT ABOUT IT!",
+      "Graves says {it is|it's} a conspiracy! Graves says everything is a conspiracy! Graves is right {pct} percent of the time!",
+      "Isolde says the cards saw this coming! The cards see everything coming! THE CARDS ARE SHOWING OFF!",
+      "Malarkey has no position but excellent volume!",
+      "IS IT WORSE THAN {year}? THE PANEL SAYS YES! THE PANEL ALWAYS SAYS YES!",
+      "A caller from {place} would like everyone to calm down! THE CALLER IS OUTNUMBERED!",
+      "{We have|We've} run out of facts and moved on to ATMOSPHERE!",
+      "Graves: they {do not|don't} want you to know this. Isolde: everyone knows this, Gideon."
+    ]
+  },
+  "bubble_house": {
+    "lead": [
+      "Twelve strangers. One bubble. {Nobody|No one} has explained the rules and {nobody|no one} will."
+    ],
+    "tail": [
+      "Nominations {tonight|this evening|at this hour}. Eviction is theoretical. Nothing has left the house since the first week."
+    ],
+    "beats": [
+      "Day one for the housemates and day one hundred for the house.",
+      "Tammy has painted a stripe on the wall for every morning. There are more stripes than mornings.",
+      "Rex has been doing press-ups for six hours. Rex says it keeps the day from repeating.",
+      "Sim the Quiet {has not|hasn't} spoken on camera once and has the highest viewer vote.",
+      "Fiora has requested a mirror. Production have declined, for reasons production {will not|won't} discuss.",
+      "Gubbin has found a door behind the pantry. Gubbin has decided not to mention it to the others.",
+      "Doctor Pell held a house meeting about whether Wednesday happened. It ran to four hours.",
+      "The task {this week|this past week|over the week}: build something that will still be there tomorrow.",
+      "Two housemates had the same argument twice and only one of them noticed."
+    ]
+  },
+  "who_remembers": {
+    "lead": [
+      "{Who still remembers this|Does anybody still remember this|Who remembers this}? Three contestants, one memory, and a buzzer we found."
+    ],
+    "tail": [
+      "{Nobody|No one} remembered it! The object goes back in the box! THE BOX IS NEARLY FULL!"
+    ],
+    "beats": [
+      "Round one! I hold up an object! You tell me what it was FOR!",
+      "Contestant two says {it is|it's} a kettle. Contestant two is wrong but has convinced the audience.",
+      "This one is from before {year} and it needs a socket that {no longer exists|does not exist any more|is gone}!",
+      "TEN POINTS if you can name it! FIFTY if you can name who made it!",
+      "Our champion remembers three whole decades and {cannot|can't} {remember|recall} her own street!",
+      "A viewer from {place} has written in with the answer and the answer is wrong but lovely!",
+      "The prize is the object itself! {Nobody|No one} has ever wanted the object!",
+      "NOBODY REMEMBERS! THE POINT OF THE SHOW IS THAT NOBODY REMEMBERS!"
+    ]
+  },
+  "signal_bleed": {
+    "lead": [
+      "Two programmes are arriving on this frequency. {We are|We're} broadcasting the overlap."
+    ],
+    "tail": [
+      "The bleed clears. Both programmes continue. {Neither of them is ours|Neither is ours|Neither one is ours}."
+    ],
+    "beats": [
+      "One of them is a cookery show. One of them {is not|isn't} a cookery show.",
+      "The other channel is describing {place} in the past tense.",
+      "For eleven seconds a minute, the audio belongs to {somebody|someone} else's studio.",
+      "The engineers have swapped the aerial. It made the second signal louder.",
+      "A voice on the bleed just gave this station's own call sign and got the year wrong.",
+      "{news}",
+      "{We are|We're} contractually obliged to describe this as interference.",
+      "If you can hear a countdown behind us, please {do not|don't} count along."
+    ]
+  },
+  "carrier_wave": {
+    "lead": [
+      "No {programme|show|broadcast} {at this hour|at this time of the night|this far into the night}. Only the carrier, which is more than most stations offer."
+    ],
+    "tail": [
+      "The carrier continues. It will be here when {you are|you're} not."
+    ],
+    "beats": [
+      "This is a tone. {It has been|It's been} this tone since the transmitter was commissioned.",
+      "The tone drops by one step every {n} hours and {nobody|no one} has authorised that.",
+      "Engineering at {place} monitors the carrier and files a report {nobody|no one} reads.",
+      "If {you are|you're} hearing words, they {are not|aren't} in the signal. They are in the room.",
+      "The carrier is what is left when a station has nothing to say and says it anyway.",
+      "{We are|We're} told the wave is unmodulated. The oscilloscope has opinions.",
+      "Somewhere a set is switched on with {nobody|no one} in front of it. That set is the audience.",
+      "Standing by. Standing by. Standing by."
+    ]
+  },
+  "corpse_paint_countdown": {
+    "lead": [
+      "THE COUNTDOWN! Ten tracks, one aerial, and Vex Carrion telling you {which is loudest|which one is loudest|which of them is loudest}!"
+    ],
+    "tail": [
+      "{THAT'S|THAT IS} THE COUNTDOWN! Number one is unchanged! Number one has been unchanged for {n} weeks!"
+    ],
+    "beats": [
+      "Straight in at eight: a three-piece from {place} who play {on a live leyline|on a leyline that is still live} for the reverb.",
+      "Vex: the guitarist has been {in a bubble|in a loop bubble|in one of the bubbles} since the recording. The record is doing better than he is.",
+      "New entry! Six minutes long! Four of them are feedback! MAGNIFICENT!",
+      "This one was banned by {faction}, which has done more for sales than any of our airplay.",
+      "The video was filmed in one take because the crew {were not|weren't} permitted a second one.",
+      "A ballad at number four. Vex apologises but the numbers are the numbers.",
+      "Our request line is open, but Vex only reads the requests that agree with him.",
+      "Number one again {this week|this past week|over the week}. It has outlived two of the people who wrote it."
+    ]
+  },
+  "the_reckoning": {
+    "lead": [
+      "Gideon Graves. One hour. {No producer, no lawyer, no second opinion|No producer, no lawyer, no safety net|No producer, no legal advice, no second opinion}."
+    ],
+    "tail": [
+      "That was the reckoning. Next week, {if the aerial is still on the roof|should the aerial still be on the roof|aerial permitting}."
+    ],
+    "beats": [
+      "I have documents. I always have documents. Tonight the documents have dates.",
+      "Follow it: a permit at {place}, a shipment {nobody|no one} signed for, and a warehouse that appeared.",
+      "They will say {I am|I'm} a crank. I am a crank. That {is not the same as|is not the same thing as|is a different thing from} being wrong.",
+      "{news}",
+      "Three of my previous claims have since been confirmed. {Nobody|No one} has apologised.",
+      "Ask yourself who benefits, then ask yourself who owns the road to where they benefit.",
+      "I have a caller who worked in that building and will only speak with the pitch shifted.",
+      "{I am|I'm} not telling you what to think. I am telling you what I {could not|couldn't} stop noticing."
+    ]
+  },
+  "flatmates": {
+    "lead": [
+      "Two mages. One leyline. A flat directly on top of it, {which the letting agent did mention, briefly|which the agent did mention, briefly|mentioned once by the letting agent, quickly}."
+    ],
+    "tail": [
+      "And {they are|they're} still there next week, because neither of them can afford anywhere else."
+    ],
+    "beats": [
+      "Fennwick has cast in the kitchen again. THEY AGREED. THERE WAS A CHART.",
+      "Marlo says the chart was drawn by Fennwick and is therefore not binding.",
+      "The landlady, Hilda, arrives to discuss the rent and the scorch marks, in that order.",
+      "Fennwick has invented a spell for washing up. It takes longer than washing up.",
+      "Marlo's parents are visiting from {place} and {do not|don't} know about the leyline.",
+      "The upstairs neighbour complains about the humming. The humming is the flat, not the mages.",
+      "Hilda: I have let this flat eleven times. I have let it to two of you twice.",
+      "They resolve it, badly, over tea, which is how {it is|it's} resolved every week."
+    ]
+  },
+  "dead_air": {
+    "lead": [
+      "Nothing is scheduled. Nothing has been scheduled for this slot since {the schedule was written|the schedule was drawn up|anyone wrote the schedule}."
+    ],
+    "tail": [
+      "Dead air ends. Something follows. {Something always follows|Something always does|There is always something}."
+    ],
+    "beats": [
+      "This is the gap. The gap is company for {somebody|someone}.",
+      "Three minutes of it, then a caption, then three minutes more.",
+      "The station at {place} filled its gaps with music. That station is no longer broadcasting.",
+      "Silence on a transmitter {is not|isn't} silence. {It is|It's} {a very|an extremely|a genuinely} quiet noise being made deliberately.",
+      "If {you are|you're} still watching, you are watching a decision made in {year}.",
+      "{Somebody|Someone} is paid to sit with this. {They are|They're} in the building now.",
+      "The clock in the corner is correct. It {is the only thing|is the one thing|is the sole thing} in this slot that is.",
+      "Nothing continues to happen, on schedule, as advertised."
+    ]
+  },
+  "spin_again": {
+    "lead": [
+      "SPIN AGAIN! You have spun before! {You will|You'll} spin again! THAT IS THE FORMAT AND THE PRIZE!"
+    ],
+    "tail": [
+      "SPIN AGAIN NEXT WEEK! YOU ALREADY HAVE! {WE HAVE THE TAPE|THE TAPE PROVES IT|WE KEPT THE TAPE}!"
+    ],
+    "beats": [
+      "Malarkey and Tammy, and a contestant who swears she was on this {programme|show|broadcast} yesterday!",
+      "SHE WAS! WE CHECKED! SHE WON! SHE HAS NO MEMORY OF THE CAR!",
+      "Tammy: the car is still in the car park. The car has been in the car park since {year}.",
+      "Round two is the same as round one, which is the joke, and also the budget.",
+      "A contestant from {place} has answered the same question four different ways and scored {every time|each time|every single time}!",
+      "The jackpot rolls over! It has rolled over so often {it is|it's} now a hill!",
+      "IS THIS A REPEAT? WE ARE LEGALLY UNABLE TO SAY!",
+      "Everyone goes home with something. Most of them go home with the same something."
+    ]
+  },
+  "open_lines": {
+    "lead": [
+      "Open lines. Open doors. We have stopped locking {either of them|either|the doors or the lines}."
+    ],
+    "tail": [
+      "Lines closing. Doors, {regrettably|sadly|for now}, remain open."
+    ],
+    "beats": [
+      "Caller one is whispering and {will not|won't} say from where.",
+      "Isolde: I can hear a second room behind you. Is there {somebody|someone} in it?",
+      "A regular caller phones every week to describe a dream about {place}. {It is|It's} the same dream.",
+      "This caller was on the line last Tuesday and {does not|doesn't} believe us that it was Tuesday.",
+      "We take a call from {inside a bubble|inside a loop bubble|inside one of the bubbles}. The delay is eleven years and forty seconds.",
+      "{news}",
+      "A caller wants to warn the audience about {faction} and is quite specific about the car park.",
+      "{Somebody|Someone} has phoned to ask what this programme is. {Nobody|No one} in the studio could tell them."
+    ]
+  },
+  "frugal": {
+    "lead": [
+      "Four ingredients, one pan, and nothing in this recipe costs more than {a bus fare|a bus ticket|the bus home}."
+    ],
+    "tail": [
+      "{That is|That's} dinner for four and change from a coin. Genevieve Dubois, until next week."
+    ],
+    "beats": [
+      "Start with the cheapest thing on the stall and build the meal around its dignity.",
+      "Onions, salt, patience. Two of those are free if you have the third.",
+      "Dubois: I {do not|don't} use magic in this kitchen. Magic is expensive and gas is not.",
+      "If you can only afford one good ingredient, spend it on the fat.",
+      "This is a recipe from {place}, where it was invented by {somebody|someone} who had less than we do.",
+      "Stale bread {is not|isn't} a failure. Stale bread is a plan you made three days ago.",
+      "{item} at {price} {is not|isn't} worth it {this week|this past week|over the week}. The stall will disagree with me. The stall is selling.",
+      "Taste it. Taste it again. {That is the entire|That's the entire|That is the whole|That is the full} technique."
+    ]
+  },
+  "tavern_rescue": {
+    "lead": [
+      "A failing tavern, one week, and Percival Croft, who {has never once been|has not once been|has never yet been} tactful."
+    ],
+    "tail": [
+      "We leave them with a shorter menu and a clean cellar. {The rest is up to them|The rest is theirs|What happens next is theirs}."
+    ],
+    "beats": [
+      "This week: a roadhouse outside {place}, forty covers a night, eleven of them paying.",
+      "Croft walks the kitchen first. Croft always walks the kitchen first, and always sighs.",
+      "The menu has sixty items. A kitchen this size can cook nine of them properly.",
+      "Bram Tolliver has run a tavern for thirty years and is here to talk to the owner, not the chef.",
+      "The cellar is the problem. The cellar is nearly always the problem.",
+      "Croft: you {are not|aren't} a bad cook. {You are|You're} a bad buyer. Those are different and one is fixable.",
+      "Relaunch night. Nine dishes. The queue goes past the door and the owner cries in the yard.",
+      "We came back a month later, unannounced, {which is the only|which is still the only|which remains the only} honest way to do it."
+    ]
+  },
+  "pixie_dust": {
+    "lead": [
+      "A pinch of pixie dust, which is a spice, is expensive, and {is not|isn't} what you think."
+    ],
+    "tail": [
+      "Season it properly and {you will|you'll} never need a spell in the pot. A pinch! Only a pinch!"
+    ],
+    "beats": [
+      "It grows on the shaded side of leyline country and {it is|it's} graded like saffron.",
+      "Too much and the dish tastes of copper and your guests {remember|recall} a Tuesday twice.",
+      "The good stuff comes from {place}. The bad stuff comes in {a very|an extremely|a genuinely} convincing tin.",
+      "Today we use it three ways: in butter, in cream, and in something it should never be in.",
+      "Dubois: a pinch. A PINCH. I say this every week and every week {somebody|someone} writes in.",
+      "You can substitute pepper. The dish will be worse and your ceiling will be intact.",
+      "{There is|There's} a chef at {place} who uses it by the spoon. He {is not|isn't} permitted to teach.",
+      "Rest it off the heat. Everything with dust in it has to be allowed to settle."
+    ]
+  },
+  "one_loop_meals": {
+    "lead": [
+      "Everything on the {programme|show|broadcast} takes one loop from cold pan to warm plate. {That is the whole|That's the whole|That is the entire} gimmick."
+    ],
+    "tail": [
+      "One loop. One pan. Marisol Quay, and the washing up, which takes {longer than the recipe|rather longer than the recipe|longer than the cooking did}."
+    ],
+    "beats": [
+      "Timer on. The timer is honest. The kitchen {is not|isn't} always honest but the timer is.",
+      "This works because the hardest thing is prepared while the second hardest is resting.",
+      "Quay: I cooked this for haulers at {place} for six years. They had {exactly|precisely} one loop.",
+      "Cut everything the same size. That {is not|isn't} fussiness, {that is|that's} arithmetic.",
+      "If you fall behind, {do not|don't} speed up. Take a thing out of the recipe instead.",
+      "The sauce is four ingredients and {one of them is|one of them happens to be} the water you cooked in.",
+      "People say fast food is a modern shame. Fast food is a shift pattern.",
+      "Plate it flat, eat it hot, and {do not|don't} photograph it. You do not have time."
+    ]
+  },
+  "verden_table": {
+    "lead": [
+      "The Verden table: eggs, greens, long cooking, and a way of eating {older than the Road|older than the Road itself|that predates the Road}."
+    ],
+    "tail": [
+      "Set it in the middle and let people reach. {That is|That's} the Verden table and {it is|it's} a good one."
+    ],
+    "beats": [
+      "Croft has cooked this way for years and is careful to say he {did not|didn't} invent any of it.",
+      "Everything goes in the middle. {Nobody|No one} is served. Reaching is the point.",
+      "The eggs are cooked slow and low until {they are|they're} almost a custard. {Do not|Don't} hurry them.",
+      "The Verden came from the Green Fields with the recipes and very little else.",
+      "Bitter greens, sweet vinegar. The balance is the argument and the argument never ends.",
+      "{There is|There's} a version of this dish at {place} with meat in it. The Verden are polite about that version.",
+      "Nothing here needs a spell, a licence, or a machine. {That is|That's} why it survived the reset.",
+      "Make more than you need. That {is not|isn't} a tip, {that is|that's} the structure of the meal."
+    ]
+  },
+  "broken_leyline_bakes": {
+    "lead": [
+      "Baking on broken ground, where nothing rises by magic and {everything rises anyway|it all rises anyway|the bread rises anyway}."
+    ],
+    "tail": [
+      "Out of the oven, onto the rack, and {do not|don't} cut it hot. Nella Crust says do not cut it hot."
+    ],
+    "beats": [
+      "Dead ground means dead ground: no proving charms, no quick yeast, no shortcuts.",
+      "Crust: my grandmother baked here before the line snapped and her bread was better than mine.",
+      "Cold rise overnight. It takes twelve hours and it takes no effort, which is the trade.",
+      "Dubois is here to be taught, which she says is a nice change from being asked.",
+      "The district around {place} lost its line in {year} and its bakeries got better within a decade.",
+      "Flour, water, salt, time. If the loaf is bad, {it is|it's} the time.",
+      "Steam in the first ten minutes. A tray of water will do it. So will a wet cloth and nerve.",
+      "The crust should crackle as it cools. That sound is the only review that matters."
+    ]
+  },
+  "pantry_politics": {
+    "lead": [
+      "What is in the pantry, who put it there, and who {decided what it costs|decided the price|sets what it costs}."
+    ],
+    "tail": [
+      "{That is|That's} pantry politics. {It is|It's} the same as ordinary politics, but you can eat the evidence."
+    ],
+    "beats": [
+      "Croft and Tobias Plum, who buys for a living and therefore knows where the bodies are stacked.",
+      "The price of {item} is {price}, and none of {that is|that's} the farmer's.",
+      "Plum: three houses control the haulage on that route. Guess what the route costs.",
+      "A tariff at {place} added a coin to every loaf {in the district|across the district|in that district} and {nobody|no one} was told.",
+      "Croft: I {do not|don't} want a subsidy. I want to know who {I am|I'm} actually buying from.",
+      "The stall holders were invited on. Two came. The wholesaler declined, at length, by letter.",
+      "{news}",
+      "{You are|You're} allowed to be annoyed about this. Being annoyed is the only lever most of us have."
+    ]
+  },
+  "field_rations": {
+    "lead": [
+      "What people ate on the long routes, told through {the tins, crates and complaints they left behind|the tins, the crates and the complaints|the tins and crates and the complaints in the margins}."
+    ],
+    "tail": [
+      "It fed them, mostly. The complaining was part of the ration and {nobody|no one} has improved on it."
+    ],
+    "beats": [
+      "A ration {is not|isn't} a meal. A ration is a promise that there will be another one.",
+      "The standard crate {has not|hasn't} changed since {year}, including the biscuit {nobody|no one} can bite.",
+      "We opened a sealed box from the depot at {place}. The contents were edible. Barely, and legally.",
+      "Haulers trade the good tins between trucks. {There is|There's} an economy in it, with exchange rates.",
+      "The hot meal {at the end of|at the far end of|right at the end of} a run matters more than anything in the crate.",
+      "Cooks on the long routes work in a cupboard, on a moving floor, for forty people.",
+      "One driver kept a diary of every meal for eleven years. {It is|It's} the best source we have.",
+      "The worst ration on record was {withdrawn|lifted|stood down} after a strike. The strike was about the ration."
+    ]
+  },
+  "kitchen_calls": {
+    "lead": [
+      "Kitchen Calls. Your pans, your problems, our two opinions, {which will differ|which will not agree|which never agree}."
+    ],
+    "tail": [
+      "Lines closed. Write in if it worked. Write in {especially if it did not|particularly if it did not|above all if it did not}."
+    ],
+    "beats": [
+      "Caller one has curdled it. Take it off the heat and stop stirring. Stop stirring NOW.",
+      "Dubois says add fat. Quay says add acid. Try Dubois first, she is nearer the phone.",
+      "A caller from {place} has been given a joint of something and {is not|isn't} sure what.",
+      "Low, slow, covered. {That is|That's} the answer to about a third of the calls we take.",
+      "Quay: if it tastes of nothing, {it is|it's} salt. {It is|It's} nearly always salt.",
+      "This caller has a cellar problem and {we are|we're} handing them straight to next week's guest.",
+      "{Somebody|Someone} has phoned to say last week's recipe fed nine people. It was written for four.",
+      "No, you {cannot|can't} fix it with a spell. Not on this {programme|show|broadcast}, you cannot."
+    ]
+  },
+  "front_of_house": {
+    "lead": [
+      "Front of House. Forty covers, one waiter short, and a table {that has been|that's been} sitting since noon."
+    ],
+    "tail": [
+      "Service ends. They eat standing up in the kitchen, {which is the only|which is still the only|which remains the only} meal any of them enjoy."
+    ],
+    "beats": [
+      "Bram is on the pass and has stopped pretending to be calm.",
+      "Elsie has been given three sections and one pen and has strong views about the pen.",
+      "Victor announces that a party of twelve has arrived, without a booking, wearing hats.",
+      "Gus is on the fryer and has been on the fryer for eleven weeks, which is a plot point.",
+      "The party of twelve want the kitchen closed early. The kitchen wants the party of twelve gone.",
+      "A regular from {place} orders the same thing every week and {this week|this past week|over the week} {it is|it's} off.",
+      "Elsie and Victor's feud escalates over a napkin fold and resolves over the last portion.",
+      "Nothing is on fire. Bram says {that is|that's} the standard by which he now judges an evening."
+    ]
+  },
+  "sunday_roast": {
+    "lead": [
+      "Nothing hurried today. This roast takes as long as it takes, {and it takes ages|and that is ages|which is a very long time}."
+    ],
+    "tail": [
+      "Rest it. Rest it longer than you think. Then carve it at the table {where they can see|in front of them|where everyone can see}."
+    ],
+    "beats": [
+      "Croft puts it in and then sits down, on camera, for a full minute, deliberately.",
+      "The point of a long roast is that it cooks while {you are|you're} doing something better.",
+      "Fat side up, low oven, and open the door as rarely as you can bear.",
+      "The potatoes go in the fat an hour out. Not sooner. {I am|I'm} not negotiating about this.",
+      "This is a Sunday dish because Sunday is when a household is in the same building.",
+      "Gravy from the pan, wine from the cellar, and neither of them from a tin.",
+      "Croft: my mother did this in a range that had no thermostat and I {have never|have not once|have at no point} bettered it.",
+      "Leftovers on Monday, stock on Tuesday. {That is|That's} {the rest of|the remainder of|what is left of} the week solved."
+    ]
+  },
+  "cellar_hour": {
+    "lead": [
+      "The cellar hour. Down the steps, past the barrels, into the part of the building {nobody|no one} films."
+    ],
+    "tail": [
+      "Up the steps. Mind the third one. Bram Tolliver, {closing the hatch behind us|shutting the hatch behind us|pulling the hatch to behind us}."
+    ],
+    "beats": [
+      "Every good tavern is a cellar with a room on top of it.",
+      "Tolliver: the temperature down here {has not|hasn't} changed since {year} and I {have never|have not once|have at no point} had to make it so.",
+      "{There is|There's} a barrel at the back that came from {place} and predates the licence.",
+      "You can tell a landlord's whole character by how the lines are cleaned.",
+      "A cellar remembers. Not magically. Practically. The smell is thirty years of decisions.",
+      "We found a ledger behind the crates listing debts settled in {year}, mostly in favours.",
+      "Something taps in the wall on the hour. Tolliver has stopped investigating and started nodding at it.",
+      "Last one down bolts the hatch. That rule is older than the tavern and {nobody|no one} questions it."
+    ]
+  },
+  "insomnia": {
+    "lead": [
+      "Julian Blackwood, and the files people only send in {after midnight|once it is dark|after midnight, never before}."
+    ],
+    "tail": [
+      "Sleep if you can. If {you can't|you cannot}, you know where the dial is."
+    ],
+    "beats": [
+      "File one {tonight|this evening|at this hour} comes from a night porter at {place} who wrote it out twice to be sure.",
+      "I read these on air because reading them out {is the only thing|is the one thing|is the sole thing} anyone has asked me to do.",
+      "The detail I keep coming back to is the door. {It is|It's} always a door in these.",
+      "Nothing in this file is impossible. {That is|That's} what makes it a file and not a story.",
+      "A listener sent a tape. We have played the tape. We {are not|aren't} going to describe the tape.",
+      "{news}",
+      "Three separate people, three separate years, one identical sentence.",
+      "I {do not|don't} believe all of it. I believe them, which is a different thing."
+    ]
+  },
+  "witching_hour": {
+    "lead": [
+      "The witching hour, kept properly, by {somebody|someone} who does this for a living."
+    ],
+    "tail": [
+      "The hour closes. Put the light on before you stand up. Rosalind Payne, {going quiet|signing off|going quiet now}."
+    ],
+    "beats": [
+      "Payne: the hour {is not|isn't} dangerous. The hour is honest, which people find worse.",
+      "We begin with the small working, the one you can do with salt and no licence.",
+      "A letter from {place}: a house {that is|that's} fine except between three and four.",
+      "Ritual is slow because slow is what makes it free. Anything faster costs you something.",
+      "{There is|There's} no spell in this broadcast. There is a method, and methods are legal.",
+      "The cards {tonight|this evening|at this hour} are patient. Patient cards are usually about money.",
+      "If it answers you back on the first attempt, you {have not|haven't} been talking to what you thought.",
+      "Close the circle even if nothing happened. Especially if nothing happened."
+    ]
+  },
+  "after_dark": {
+    "lead": [
+      "Two chairs, one lamp, and whoever is still awake enough to {sit in the other one|take the other one|fill the other chair}."
+    ],
+    "tail": [
+      "{That's|That is} the check for {tonight|this evening}. Reality is holding. {We'll|We will} test it again tomorrow."
+    ],
+    "beats": [
+      "Blackwood and Payne, and a guest who works nights and has therefore seen things.",
+      "Payne: everyone on this {programme|show|broadcast} says they {are not|aren't} superstitious, at about two in the morning.",
+      "Our guest drives the route past {place} and {would like to|wish to|are keen to} describe a lay-by.",
+      "The studio phone rang during the last item and {nobody|no one} in the building admits to ringing it.",
+      "{news}",
+      "Blackwood: I have interviewed forty people about this and thirty-eight mention the cold.",
+      "We disagree about it on air, at length, {which is why|which is the reason|and that is why} the {programme|show|broadcast} still exists.",
+      "The daytime desk {would not|wouldn't} run this item. That {is not|isn't} a criticism. It is a schedule."
+    ]
+  },
+  "long_haul_lines": {
+    "lead": [
+      "Long Haul Lines. If {you are|you're} driving, keep both hands on it and just talk."
+    ],
+    "tail": [
+      "Lines are closing. Whoever is still out there, {get in before the light|get in before daylight|be in before the light}. Sable Kray, over."
+    ],
+    "beats": [
+      "Caller one is somewhere between {place} and nowhere, doing a steady seventy-nine.",
+      "Kray: keep it under eighty and I will keep talking. {That is|That's} the arrangement.",
+      "A driver has been on the road eleven hours and phoned in mostly to have a voice in the cab.",
+      "The depot at {place} has a queue that {has not|hasn't} moved since about ten.",
+      "Blackwood asks what they see out there. They all say the same three things.",
+      "A caller wants a song. We have no songs. We have Blackwood humming, badly.",
+      "One of {tonight|this evening|at this hour}'s callers phoned this {programme|show|broadcast} every week for a year and then stopped.",
+      "Anyone breaking down on the long stretch, say so on air. {Somebody|Someone} listening is behind you."
+    ]
+  },
+  "third_shift": {
+    "lead": [
+      "The third shift. For the people who are at work while this is {being broadcast|going out|on air}."
+    ],
+    "tail": [
+      "Two hours left on your shift. This {programme|show|broadcast} will still be here for the last one."
+    ],
+    "beats": [
+      "This is for the night porter, the line watcher, the one on the desk at {place}.",
+      "Blackwood: I have done a third shift. I lasted five weeks and I have respected it since.",
+      "The third shift is where things get noticed, because {nobody|no one} else is looking.",
+      "A machine operator writes in: the plant sounds different at four and always has.",
+      "Nothing on this shift is urgent until all of {it is|it's} at once.",
+      "{news}",
+      "The handover in the morning is the loneliest conversation in the working day.",
+      "Whatever you are watching over {tonight|this evening|at this hour}, {it is|it's} being watched over. {That is|That's} worth saying."
+    ]
+  },
+  "under_the_asphalt": {
+    "lead": [
+      "Cormac Vell. What is under the road, who put it there, and {why the surveys stop|why every survey stops|why the surveys end where they do}."
+    ],
+    "tail": [
+      "Look at the road. Look at what it goes around. {That is|That's} all {I am|I'm} asking anyone to do."
+    ],
+    "beats": [
+      "The route out of {place} bends for no geographical reason. {There is|There's} no hill. I have walked it.",
+      "Roadworks that last nine years {are not|aren't} roadworks.",
+      "I have the survey. I have the second survey. The second survey has fewer pages.",
+      "Vell: {I am|I'm} not saying {there is|there's} a facility. I am saying there is a gap in the paperwork shaped like one.",
+      "Three haulage firms {will not|won't} take that stretch at night and none will say so on record.",
+      "{news}",
+      "{Somebody|Someone} resurfaced eleven kilometres of nothing, at expense, in a year with no budget for it.",
+      "Ask your council for the drainage plans. Watch what happens to the request."
+    ]
+  },
+  "who_owns_the_dark": {
+    "lead": [
+      "A simple question {tonight|this evening|at this hour}, and {nobody|no one} in eleven ministries will answer it."
+    ],
+    "tail": [
+      "{Somebody|Someone} owns the dark. {Somebody|Someone} is billing for it. {That is|That's} where we leave it."
+    ],
+    "beats": [
+      "Streetlights went out in three districts and came back owned by a different company.",
+      "Payne: the old answer was that the dark belongs to whoever {is not|isn't} afraid of it.",
+      "Vell prefers the new answer, which is a registered address in {place}.",
+      "The licence covers illumination, maintenance, and something the licence calls presence.",
+      "A ward {that has been|that's been} on the town boundary since {year} is now a leased asset.",
+      "Payne: you {cannot|can't} own the dark. Vell: you can own the switch, and {that is|that's} nearly the same.",
+      "{news}",
+      "We invited the company on. They sent a map with the district edges removed."
+    ]
+  },
+  "night_convoy": {
+    "lead": [
+      "Night Convoy. Where the trucks are, what the roads are doing, and {who is still moving|who is still out there|which crews are still moving}."
+    ],
+    "tail": [
+      "{Convoy's away|The convoy is away|Convoy is rolling}. Lights on, speed down, and see you at the other end."
+    ],
+    "beats": [
+      "Twelve vehicles out of the depot at {place}, running as one, which is how {it is|it's} done after dark.",
+      "Kray: you run a convoy because a boundary takes the truck at the back and only the truck at the back.",
+      "The long stretch is clear to the junction. After the junction, {nobody|no one} is reporting.",
+      "Fuel stop at the halfway point. Twenty minutes, and the twenty minutes {is not|isn't} negotiable.",
+      "A driver has dropped out with an axle and is waiting with the hazards on. {Somebody|Someone} is going back.",
+      "Weather is holding. Weather {is the only thing|is the one thing|is the sole thing} that is.",
+      "The rule on convoy is that {nobody|no one} overtakes, however long the night gets.",
+      "First light in {n} hours. Everything is easier in about {n} hours."
+    ]
+  },
+  "the_estate": {
+    "lead": [
+      "Marrow Hollow, and a family {that has been|that's been} losing an argument about a house for sixty years."
+    ],
+    "tail": [
+      "Next week: the solicitor returns, and Cordelia {finally opens the east wing|opens the east wing at last|gets into the east wing}."
+    ],
+    "beats": [
+      "Cordelia {has not|hasn't} left the grounds since {year} and {does not|doesn't} accept that this is unusual.",
+      "Ashton has come back from {place} with debts and a plan involving the orchard.",
+      "Gareth Kane keeps the gate and knows precisely which of them he actually works for.",
+      "Mrs. Ondry has served this family for thirty years and has kept a diary for all of them.",
+      "Solicitor Quill arrives with a document {that is|that's} either a will or a threat, depending on the reader.",
+      "Ashton: sell it. Cordelia: to whom, and with what conscience.",
+      "{There is|There's} a wing of the house {nobody|no one} has heated since the war and {everybody|everyone} has an opinion about.",
+      "The scene in the orchard between Cordelia and her son is played almost {entirely|wholly|altogether} in silence."
+    ]
+  },
+  "small_hours_music": {
+    "lead": [
+      "No presenter for this hour. Just the tapes, the aerial and {whatever is still awake|whoever is still awake|whatever else is still awake}."
+    ],
+    "tail": [
+      "{That's|That is} the hour. The gods were loud. You were quiet. {A fair arrangement|A fair enough arrangement|Which seems fair}."
+    ],
+    "beats": [
+      "Something long and slow first, because the hour is long and slow.",
+      "This was recorded live at {place} in front of about nine people.",
+      "The band broke up before the record was pressed. The record {is the only thing|is the one thing|is the sole thing} left of them.",
+      "Side two is one track. {It is|It's} nineteen minutes. {We are|We're} playing all of it.",
+      "Nothing on {tonight|this evening|at this hour}'s tape has a chorus, and none of it needs one.",
+      "A listener sent this in on a cassette with no label and a note saying: three in the morning only.",
+      "The organ on this was played in a church {that is|that's} now a warehouse.",
+      "Last track. Turn it up if the neighbours are awake, down if {they are|they're} not."
+    ]
+  },
+  "sign_off": {
+    "lead": [
+      "{That is|That's} the end of the broadcast day. What follows is the card, the tone, and the aerial."
+    ],
+    "tail": [
+      "Transmission ends. Please switch off at the set. {Goodnight|Good night} from Midnight on the Road."
+    ],
+    "beats": [
+      "The station closes {at this hour|at this time of the night|this far into the night} and has done since {year}.",
+      "The engineers at {place} shut the transmitter by hand. {There is|There's} a lever. There is always a lever.",
+      "Anything you see after this card {is not|isn't} scheduled by us.",
+      "We thank the night staff, who are the only people who hear this part.",
+      "The anthem is optional. The tone is not.",
+      "{Do not|Don't} leave the set warm. It encourages things we {do not|don't} have a budget for.",
+      "Broadcasting resumes at six, weather and consensus permitting.",
+      "{That is|That's} the day. It was a day. {Goodnight|Good night}."
+    ]
+  },
+  "unaired": {
+    "lead": [
+      "This was recorded for broadcast and never broadcast. {Tonight|This evening}, without explanation, it is."
+    ],
+    "tail": [
+      "The tape ends where it ends. {Nobody|No one} has ever found {the rest of|the remainder of|what is left of} it."
+    ],
+    "beats": [
+      "Timecode says {year}. The studio clock in shot disagrees by four hours.",
+      "The presenter on this tape {does not|doesn't} appear in any staff record we can find.",
+      "{There is|There's} an audience. The studio in question {has never|has not once|has at no point} had an audience.",
+      "At eleven minutes the floor manager walks into shot and says one word.",
+      "The word {is not|isn't} audible on any of the three copies, and the copies differ.",
+      "Whoever cut this left the countdown on the front, which suggests they meant to transmit it.",
+      "A caption card names a {programme|show|broadcast} that was never in any schedule at {place}.",
+      "{We are|We're} broadcasting it because holding it {has not|hasn't} made it any less strange."
+    ]
+  },
+  "night_kitchen": {
+    "lead": [
+      "{Nobody|No one} sleeps in Marrow Hollow. {Tonight|This evening}: the will, the doctor, and the thing in the east wing."
+    ],
+    "tail": [
+      "Next week: Vera returns from {place}, and the Gardener {finally says what he saw|says at last what he saw|admits what he saw}."
+    ],
+    "beats": [
+      "Cordelia has called the household together at an hour {nobody|no one} considers reasonable.",
+      "Ashton arrives late, from a road he {will not|won't} name, with {somebody|someone} else's coat.",
+      "Lily has been writing letters to an address in {place} that {does not|doesn't} exist any more.",
+      "Doctor Pell {insists|maintains|still insists} the medicine is working. Mrs. Ondry has counted the bottles.",
+      "Vera Sloane is back in the village and {everybody|everyone} has decided not to mention it.",
+      "Gareth Kane found the gate open at four and locked it and {did not|didn't} report it.",
+      "Aunt Hessa knows what happened in {year} and has said so eleven times, always to the wrong person.",
+      "The Gardener has been digging in the same corner for a fortnight.",
+      "Two of them have the same conversation in different rooms, an hour apart, word for word."
+    ]
+  },
+  "gospel": {
+    "lead": [
+      "The gospel {according to|by the account of|on the word of} Margaret, read as it was written, without improvement."
+    ],
+    "tail": [
+      "{That is|That's} the reading. Take one line of it with you and leave the rest here."
+    ],
+    "beats": [
+      "Margaret {was not|wasn't} a prophet. Margaret kept a notebook, and the notebook was kept after her.",
+      "Chapter four is the difficult one and we {are not|aren't} going to skip it because it {is difficult|is hard|is no easy thing}.",
+      "Finch: she wrote this in a kitchen at {place}, which is where most scripture is actually written.",
+      "{There is|There's} a passage here about waiting that has kept more people alive than any miracle in the book.",
+      "The Church added the headings. The headings are the Church's opinion, not Margaret's.",
+      "She says plainly that she {does not|doesn't} know. Three later editions removed that sentence.",
+      "{hist}",
+      "Read it slowly. It was written by {somebody|someone} who had time and very little else."
+    ]
+  },
+  "infinite_loops": {
+    "lead": [
+      "The Church of Infinite Loops, which holds that the service {has already happened and will again|already happened and will happen again|is behind us and ahead of us}."
+    ],
+    "tail": [
+      "Go in whatever peace is available. {We will|We'll} be here. We have already been here."
+    ],
+    "beats": [
+      "Cardinal Ossian opens, as the rite requires, {in the middle of|halfway through} a sentence.",
+      "The doctrine is simple: nothing is new, and therefore nothing is wasted.",
+      "The congregation at {place} has recited this liturgy the same way since {year}.",
+      "If you have heard this sermon before, that {is not|isn't} a fault in the sermon.",
+      "Ossian: repetition {is not|isn't} despair. Repetition is how a thing is learned.",
+      "The heresy here is the belief that the loop can be escaped by hurrying.",
+      "We hold that the reset {is not|isn't} punishment. We hold this without evidence, deliberately.",
+      "The service ends where it began, which is the doctrine expressed as a schedule."
+    ]
+  },
+  "testimony": {
+    "lead": [
+      "Testimony hour. People say what happened to them, and Oracle Nyx {does not|doesn't} interrupt."
+    ],
+    "tail": [
+      "{That is|That's} the testimony we were given {tonight|this evening}. It {is not|isn't} asked to prove anything."
+    ],
+    "beats": [
+      "Our first speaker was {inside a bubble|inside a loop bubble|inside one of the bubbles} for eleven years and came out into a different street.",
+      "Nyx: I {do not|don't} verify testimony. Verification is a different {programme|show|broadcast} on a different channel.",
+      "A woman from {place} says she was answered. She {does not|doesn't} say by what and we {do not|don't} ask.",
+      "Half of what is said here would be laughed at in daylight. {That is|That's} why we broadcast it {at this hour|at this time of the night|this far into the night}.",
+      "A man testifies about a debt forgiven and {cannot|can't} get through the account without stopping.",
+      "{hist}",
+      "One speaker has come every year since {year} to say the same eleven words.",
+      "We give the last minute to whoever {has not|hasn't} spoken and is still standing at the back."
+    ]
+  },
+  "ringtone_vespers": {
+    "lead": [
+      "Vespers, kept at the proper hour, on the instruments {we actually have|we have to hand|we can still get}."
+    ],
+    "tail": [
+      "The office is complete. The handsets go dark. Sister Vela, {until the morning office|till the morning office|until we say the morning office}."
+    ],
+    "beats": [
+      "The bell tower at {place} fell in {year}, so the parish keeps the hours by handset.",
+      "Every phone in the congregation is set to the same tone for the same minute.",
+      "Vela: it {is not|isn't} a joke. {It is|It's} a bell made of the things people already carry.",
+      "The psalm {tonight|this evening|at this hour} is short, because the office is for the end of a working day.",
+      "Two verses, one silence, and the silence is the longer part of the rite.",
+      "A parish in the next district sings this. We {do not|don't} sing. We were told not to.",
+      "The office has been kept every evening since the tower came down, without exception.",
+      "Charge your handset. {That is|That's} now a devotional instruction and Vela is aware of it."
+    ]
+  },
+  "the_stone_gods": {
+    "lead": [
+      "The stone gods of the White Desert, who were worshipped, {and then weathered|and then left to weather|then weathered away}."
+    ],
+    "tail": [
+      "{They are|They're} geography now. {Somebody|Someone} still leaves things at the feet of the tall one."
+    ],
+    "beats": [
+      "Brother Ilm has walked the site four times and describes it the same way each time.",
+      "Eleven figures, waist deep in sand, facing a direction that no longer means anything.",
+      "The names {are not|aren't} recorded. The offerings are, in a ledger kept at {place}.",
+      "A god with no worshippers {does not|doesn't} vanish. It becomes a landmark, and then a rumour.",
+      "{hist}",
+      "Ilm: I prayed there. {I am|I'm} not going to say whether that was a professional decision.",
+      "The desert has taken three of the figures since {year} and will take the rest.",
+      "We {remember|recall} them here because remembering is the last office anyone can perform for them."
+    ]
+  },
+  "from_the_citadel": {
+    "lead": [
+      "From the Floating Citadel. This address is carried in full, as agreed, {without comment|and without comment|with no comment from us}."
+    ],
+    "tail": [
+      "The address ends. Ordinary programming resumes and {takes its own view|forms its own view|makes up its own mind}."
+    ],
+    "beats": [
+      "Archon Serel speaks from the upper hall, which {has not|hasn't} been opened to broadcast since {year}.",
+      "The address concerns the tithe, the roads, and the settlements below the cloud line.",
+      "{There is|There's} a passage about {faction} {that has been|that's been} {carefully|with care|slowly} worded by several people.",
+      "Serel: what is asked of you this year is more than last year. I {will not|won't} dress that up.",
+      "A list of provisions follows, and the list is longer than the assurances.",
+      "{hist}",
+      "The Citadel asks for patience from those at {place}, who have been patient since the survey.",
+      "The address closes with a blessing that was written before the drafting of the tithe."
+    ]
+  },
+  "the_widow_maat": {
+    "lead": [
+      "A prayer {tonight|this evening|at this hour} for the woman under the crust, who {is not|isn't} dead and {cannot|can't} be reached."
+    ],
+    "tail": [
+      "Amen, or whatever word you use. She is still down there {either way|regardless|whichever word it was}."
+    ],
+    "beats": [
+      "Mother Superior Agatha leads it, as she has since the first vigil.",
+      "We {do not|don't} say she was buried. We say she was left, which is harder and more accurate.",
+      "The order at {place} keeps a light for her and {has never|has not once|has at no point} once let it go out.",
+      "Agatha: prayer {is not|isn't} a rescue. Prayer is refusing to look away, out loud, on a schedule.",
+      "There are people alive who heard her. {They are|They're} old now and {they are|they're} still asked about it.",
+      "{hist}",
+      "Petitions may be sent to the house and are read at the vigil, unedited.",
+      "The prayer is short. Long prayers are for people who are comfortable."
+    ]
+  },
+  "discord_docket": {
+    "lead": [
+      "The mercy of Discord, such as it is, recorded from the hearings {this week|this past week|over the week}."
+    ],
+    "tail": [
+      "Mercy was extended in one case. The other cases {continue and will continue|carry on, and will carry on|go on, and will go on}."
+    ],
+    "beats": [
+      "Adjudicator Vek reads the list. Vek {does not|doesn't} editorialise and would consider it improper.",
+      "The petitioner asked to be judged in one timeline only and was refused.",
+      "A sentence was reduced {this week|this past week|over the week}. {It is|It's} the first reduction recorded since {year}.",
+      "The court's mercy is procedural. It arrives as a form, and the form is very short.",
+      "One case concerns {crime} committed by {somebody|someone} who {has not|hasn't} committed it yet.",
+      "{hist}",
+      "Vek: the goddess {is not|isn't} cruel. The goddess is simply hearing all of it at once.",
+      "Appeals are heard simultaneously with the original trial, which is the whole difficulty."
+    ]
+  },
+  "open_line_to_heaven": {
+    "lead": [
+      "The line is open to whatever answers. Some nights {that is|that's} us, and we say so."
+    ],
+    "tail": [
+      "The line stays open overnight. {Somebody|Someone} in the house sits with it. {Somebody|Someone} always has."
+    ],
+    "beats": [
+      "First caller {is not|isn't} religious and has phoned anyway, which is most of our callers.",
+      "Finch: you {do not|don't} have to believe anything to be listened to on this {programme|show|broadcast}.",
+      "A caller from {place} wants to know whether it counts if you only pray when frightened.",
+      "Sister Vela: it counts. Everything counts. {That is|That's} the least controversial thing I will say {tonight|this evening|at this hour}.",
+      "{Somebody|Someone} has phoned to argue about doctrine and been offered a cup of tea instead.",
+      "A caller {has not|hasn't} spoken to anyone in nine days. We stay with that call past the break.",
+      "{hist}",
+      "One caller asks the question directly and we {do not|don't} have the answer and we say that."
+    ]
+  },
+  "seven_artefacts": {
+    "lead": [
+      "Seven artefacts, one night, and the paperwork that {follows each of them around|trails each of them|attaches to every one of them}."
+    ],
+    "tail": [
+      "Seven objects, six of them accounted for. The seventh is the reason this {programme|show|broadcast} exists."
+    ],
+    "beats": [
+      "The first is in a case at {place} and {has not|hasn't} been moved since {year}.",
+      "Provenance for the second runs to nine pages and contains two centuries of polite theft.",
+      "The third is {artifact}, which three institutions describe as theirs in the same year.",
+      "Nothing in this {programme|show|broadcast} is called holy by us. {It is|It's} called holy by the people who kept it.",
+      "{hist}",
+      "The fifth was lost in transit and turned up in a depot inventory eleven years later.",
+      "We filmed the sixth for four hours. It did nothing, which is what it has always done.",
+      "The seventh exists in inventories, in insurance and in prayer, and nowhere else."
+    ]
+  },
+  "catechism": {
+    "lead": [
+      "Catechism for a reduced heaven. Questions and answers, {learned by heart|memorised|known by heart}, for a smaller sky."
+    ],
+    "tail": [
+      "{That is|That's} the lesson. Learn the answers. Argue with them later, when you know them."
+    ],
+    "beats": [
+      "Question one: what is owed to a god that no longer answers? Answer: the same courtesy.",
+      "Brother Ilm teaches this the old way, by repetition, which the pupils resent and retain.",
+      "Question four is about the tithe and is the only one with a legal answer.",
+      "The catechism was rewritten in {year} and lost eleven questions. Ilm still teaches two of them.",
+      "Question nine: may a thing be sacred if {it is|it's} also useful? The answer is yes, at length.",
+      "{hist}",
+      "Pupils at {place} recite this every week and half of them will never enter the house again.",
+      "Learn the shape of it now. The meaning arrives on its own schedule."
+    ]
+  },
+  "the_signal_is_the_message": {
+    "lead": [
+      "Oracle Nyx, on the doctrine that the carrier itself is {what is being said|the message|all that is being said}."
+    ],
+    "tail": [
+      "The signal continues after we stop speaking. That, Nyx would say, {is the message|is precisely the message|is the whole message}."
+    ],
+    "beats": [
+      "Nyx holds that meaning {is not|isn't} in the words. This makes for a difficult broadcast.",
+      "The transmitter at {place} has carried nothing for two years and is still described as speaking.",
+      "If the message were the words, the words would have to be true, and {they are|they're} not.",
+      "A congregation gathers to sit with a tone. {Nobody|No one} has been able to talk them out of it.",
+      "{hist}",
+      "Nyx: {I am|I'm} a receiver, and a receiver that comments on the signal is a broken receiver.",
+      "The doctrine has no scripture. Writing it down is considered a category error.",
+      "Listen past us. Whatever is under this broadcast has been under it since {year}."
+    ]
+  },
+  "midnight_deals": {
+    "lead": [
+      "FOUR HOURS! NO SLEEP! {NO REGRETS UNTIL MORNING|NO REGRETS TILL MORNING|REGRETS IN THE MORNING}! THE MARATHON BEGINS!"
+    ],
+    "tail": [
+      "THAT IS THE MARATHON! LINES STAY OPEN! {WE STAY OPEN|WE REMAIN OPEN|WE NEVER CLOSE}! WE ARE ALWAYS OPEN!"
+    ],
+    "beats": [
+      "Tom Loopsworth, Diana Crashcode, and {big} units that must physically leave the building {tonight|this evening|at this hour}!",
+      "{item}! Normally more! Tonight {price}! Tonight ONLY, and {tonight|this evening|at this hour} is quite long here!",
+      "Diana has been awake for nineteen hours and is BETTER at this now!",
+      "Hour two is the hour where the prices stop making sense! We are IN hour two!",
+      "A caller from {place} has bought six! SIX! WE ARE NOT ASKING WHY!",
+      "This one was made before {year} and they {cannot|can't} make it any more! {That is|That's} a FEATURE!",
+      "Tom: if {you are|you're} watching {at this hour|at this time of the night|this far into the night}, you and I both know you are going to phone.",
+      "COUNTDOWN ON THE LAST FORTY! THE COUNTDOWN IS THE PRODUCT NOW!"
+    ]
+  },
+  "as_seen": {
+    "lead": [
+      "As seen on the Road! {Actually seen|Genuinely seen|Really seen}! By drivers! Who {are not|aren't} paid to say so!"
+    ],
+    "tail": [
+      "As seen on the Road! Ask for it by {the name on the box|the name printed on the box}! {There is|There's} a name on the box!"
+    ],
+    "beats": [
+      "Every product in this {programme|show|broadcast} has been used by {somebody|someone} at three in the morning in the rain.",
+      "{item}, {price}, and it fits in a cab door pocket. {That is the entire|That's the entire|That is the whole|That is the full} pitch.",
+      "Diana: it does one thing. It does the one thing for eleven years.",
+      "The haulers at {place} buy these in threes. Two to use and one to lose.",
+      "Does it need a licence? It {does not|doesn't} need a licence. We asked twice.",
+      "{There is|There's} a version with a spell in it. It costs four times as much and it breaks.",
+      "Testimonial from a driver on the long routes, filmed in a lay-by, unrehearsed and slightly wet.",
+      "If it fails in the first year, we replace it. {That is|That's} written down somewhere in the building."
+    ]
+  },
+  "fire_sale": {
+    "lead": [
+      "EVERYTHING MUST GO! THE ANCHORS ESPECIALLY! {THE ANCHORS ARE THE PROBLEM|THE ANCHORS ARE THE WHOLE PROBLEM|IT IS THE ANCHORS}!"
+    ],
+    "tail": [
+      "STOCK IS GOING! STOCK IS GONE! MORE STOCK HAS APPEARED! {IT NEVER ENDS|IT DOES NOT END|THIS NEVER ENDS}!"
+    ],
+    "beats": [
+      "Reality anchors, {big} of them, in a warehouse that has started disagreeing with the inventory!",
+      "Diana: we {cannot|can't} store these together. {We have|We've} been TOLD we cannot store these together.",
+      "{item} at {price} and the price drops {every time|each time|every single time} the camera cuts!",
+      "One of these was in a district at {place} that {has not|hasn't} been the same shape since!",
+      "IS IT SAFE? IT IS SAFER SOLD! THAT IS A FORM OF SAFE!",
+      "The insurers have {withdrawn|lifted|stood down}. {That is|That's} why {you are|you're} getting this price!",
+      "Buy two and keep them in different rooms. {That is|That's} manufacturer guidance, not a joke.",
+      "WHEN THEY ARE GONE THEY ARE GONE! SOME OF THEM HAVE ALREADY GONE!"
+    ]
+  },
+  "loop_escape_hour": {
+    "lead": [
+      "An hour of products for {people who have noticed|anyone who has noticed|those who have worked out} that today is happening again!"
+    ],
+    "tail": [
+      "THE HOUR ENDS! IF IT DOES NOT, THAT IS {EXACTLY|PRECISELY} WHY YOU NEEDED THIS PRODUCT!"
+    ],
+    "beats": [
+      "Tom Loopsworth, and eleven items sold specifically to people who keep waking up on Tuesday.",
+      "A notebook! Ordinary! Waterproof! Writes on the OUTSIDE of the loop!",
+      "{item} at {price}, marketed as an anchor, sold as a comfort, works as a paperweight!",
+      "Testimonial from {place}: 'I have bought this four times and I only {remember|recall} buying it once.'",
+      "Tom: {I am|I'm} not going to stand here and tell you this stops a reset. It {does not|doesn't} stop a reset.",
+      "What it DOES do is give you something to check when you {are not|aren't} sure what day it is!",
+      "The premium model has a spell in it! The spell is legal! The spell is barely a spell!",
+      "Order once. Order twice. You may already have ordered. We WILL take the second order."
+    ]
+  },
+  "warehouse_appears": {
+    "lead": [
+      "It {simply appeared|just appeared|turned up} in the warehouse. {We are|We're} selling it. Those are the two facts."
+    ],
+    "tail": [
+      "{That is|That's} the lot. {Nobody|No one} has claimed it. {Somebody|Someone} has now bought it, which is close enough."
+    ],
+    "beats": [
+      "Foreman Gus found it at the back on a Monday. {There is|There's} no docket. There is no supplier.",
+      "Gus: I have worked this floor eleven years. I know what came in the door and this did not.",
+      "It is {item}, near enough, and {it is|it's} going at {price} because we have nothing to compare it to.",
+      "Legal have looked at it. Legal have gone quiet, which is legal's way of saying proceed.",
+      "The stock system lists it as arriving in {year}, which predates the building.",
+      "There are {n} of them. Yesterday there were fewer. We have stopped counting on camera.",
+      "{Nobody|No one} has come looking for it. If {somebody|someone} comes looking for it, {that is|that's} the buyer's affair.",
+      "Gus: I would like it out of my warehouse. {That is|That's} the honest pitch and {it is|it's} the best one."
+    ]
+  },
+  "the_ticker": {
+    "lead": [
+      "The Ticker. Prices, volumes, and the only ten minutes on this channel {with no shouting|without shouting|where nobody shouts}."
+    ],
+    "tail": [
+      "{That is|That's} the tape. Ledger Vane, and the numbers, which {do not|don't} care what you thought."
+    ],
+    "beats": [
+      "Freight indices first, because everything on this channel arrives on a lorry.",
+      "{item} traded at {price} on thin volume and I {would not|wouldn't} read much into it.",
+      "Vane: the sponsor would prefer I said the market is strong. The market is adequate.",
+      "Warehousing at {place} is up, which usually means {somebody|someone} expects the roads to close.",
+      "Memory contracts are being written again. That {is not|isn't} a market signal, {it is|it's} a warning.",
+      "{news}",
+      "Three of this network's own lines were suspended today, which we report because we must.",
+      "Close of business: mixed, thin and nervous. Same as yesterday, and I said that yesterday."
+    ]
+  },
+  "pyramid_hour": {
+    "lead": [
+      "OPPORTUNITY HOUR! {Not a scheme|Legally, not a scheme|Not, legally, a scheme}! The word scheme {will not|won't} be used! LEGALLY!"
+    ],
+    "tail": [
+      "THE OPPORTUNITY CLOSES AT MIDNIGHT! IT REOPENS AT ONE! {DO NOT WAIT|DON'T WAIT|WAIT AT YOUR PERIL}!"
+    ],
+    "beats": [
+      "Tom Loopsworth and Bree Halcyon, who is worth {big} and will tell you how in {a moment|a minute}.",
+      "Bree: I started with nothing. I started with nothing and eleven relatives with savings.",
+      "The structure is simple! You buy in! You bring in! THAT IS BOTH THE STRUCTURE AND THE RISK!",
+      "A distributor from {place} is now earning enough to have stopped answering the phone!",
+      "Tom: is it sustainable? It is ENTHUSIASTIC. Sustainability is a later conversation.",
+      "Testimonials from our top four sellers, three of whom are related to each other!",
+      "{There is|There's} no product. There is a KIT. The kit contains kits.",
+      "Bree: {everybody|everyone} at the bottom can rise. Not at once. Obviously not at once."
+    ]
+  },
+  "bid_your_memories": {
+    "lead": [
+      "BID YOUR MEMORIES! You have plenty! You {will not|won't} miss most of them! {PROBABLY|WE THINK|MOSTLY}!"
+    ],
+    "tail": [
+      "THAT IS THE AUCTION! COLLECT YOUR WINNINGS! {TRY TO REMEMBER WHERE THE DESK IS|IF YOU CAN REMEMBER WHERE THE DESK IS|THE DESK IS WHERE IT ALWAYS WAS}!"
+    ],
+    "beats": [
+      "Ozzy Fell here, and {tonight|this evening|at this hour}'s lot is a holiday that {somebody|someone} else took in {year}!",
+      "Our contestant is bidding a birthday! A whole birthday! THE AUDIENCE APPROVES!",
+      "You may bid anything you can describe. If you {cannot|can't} describe it, it {is not|isn't} yours to bid.",
+      "The court at the Judiciary Dimension takes payment this way, so it is PRACTICALLY OFFICIAL!",
+      "A contestant from {place} has bid her first day at work and {cannot|can't} now say what the work was!",
+      "GOING! GOING! Sold, to the lady who has just forgotten why she is standing up!",
+      "Ozzy: {nobody|no one} leaves with less than they came with. {Nobody|No one} can prove otherwise, either.",
+      "Final lot! {It is|It's} a Tuesday! We {do not|don't} say WHICH Tuesday! THAT IS THE THRILL!"
+    ]
+  },
+  "customer_lines": {
+    "lead": [
+      "Customer lines are open forever. That {is not|isn't} a slogan. {Nobody|No one} can find the switch."
+    ],
+    "tail": [
+      "The lines remain open. Verity remains at the desk. The desk remains, {regrettably|sadly|unfortunately}, staffed."
+    ],
+    "beats": [
+      "Tom takes the calls he likes. Verity Cross takes the other ones.",
+      "Caller one has ordered four and received one and {would like to|wish to|are keen to} discuss the other three.",
+      "Verity: your order is confirmed, dispatched, and in a warehouse near {place} that we {cannot|can't} enter.",
+      "Tom: what a GREAT question! Verity, what is the answer to that great question?",
+      "A caller has been on hold since {year} and has been transferred eleven times.",
+      "We can offer a credit note. The credit note is redeemable against this {programme|show|broadcast} only.",
+      "{Somebody|Someone} has phoned to say the product worked. Tom asks them to say it again, slower.",
+      "Verity: {I have|I've} been at this desk for six years. The lines were open when I arrived."
+    ]
+  },
+  "unboxing_the_tower": {
+    "lead": [
+      "Unboxing the Tower! It {is not|isn't} in a box! We have brought a box! {WE WILL MANAGE|WE SHALL MANAGE|WE'LL MANAGE}!"
+    ],
+    "tail": [
+      "THAT IS THE UNBOXING! We got in the door! {The door is a REAL door|IT IS A REAL DOOR|The door, at least, is REAL}! GOODNIGHT!"
+    ],
+    "beats": [
+      "Diana and Tom, live at the base, with Peb who is carrying everything.",
+      "Peb has been up eleven floors and reports that eleven floors is where the lifts stop caring.",
+      "We have permission to film the lobby. We have taken permission to film the lobby as a starting point.",
+      "Diana: rate this door. RATE THIS DOOR. {It is|It's} a nine and it {is not|isn't} even the main one.",
+      "Tom is attempting to describe the scale and has used the word 'quite' four times.",
+      "A guide from {place} has told us to be down before dark and we intend to disappoint her.",
+      "Peb has found a corridor with a smell. {We are|We're} all going to look at the smell.",
+      "Something is charging viewers a fee for this signal. That something {is not|isn't} us. PROBABLY!"
+    ]
+  },
+  "clearance": {
+    "lead": [
+      "TERMINAL CLEARANCE! THE WORD TERMINAL REFERS TO THE STOCK! {MOSTLY|IN THE MAIN|WE BELIEVE}!"
+    ],
+    "tail": [
+      "CLEARED! CLEARANCE COMPLETE! {NEW CLEARANCE BEGINS AFTER THIS BREAK|ANOTHER CLEARANCE BEGINS AFTER THE BREAK|THE NEXT CLEARANCE STARTS AFTER THE BREAK}!"
+    ],
+    "beats": [
+      "Everything on this pallet is discontinued, unlicensed, or shaped incorrectly!",
+      "{item}! Was more! Is {price}! Will be LESS in four minutes and GONE in five!",
+      "Tom: {I am|I'm} contractually required to tell you these are final sale. FINAL. {Do not|Don't} write in.",
+      "This line was {withdrawn|lifted|stood down} at {place} after an incident that we describe as a labelling issue!",
+      "The last {n} units are in a crate that we {are not|aren't} going to open on air!",
+      "Buy it now or watch {somebody|someone} else buy it! Those are the two available experiences!",
+      "{We are|We're} clearing the warehouse because the warehouse is being cleared FOR us!",
+      "NOTHING RESTOCKS! Except this, which has restocked twice during this sentence!"
+    ]
+  },
+  "brand_devotional": {
+    "lead": [
+      "A devotional for the market god, kept at the hour {the exchanges close|the exchanges shut|trading closes}."
+    ],
+    "tail": [
+      "The rite is complete. Trading resumes. It never {actually stopped|really stopped|stopped at all}."
+    ],
+    "beats": [
+      "Brother Margin presides, in the manner of a liturgy, over a price list.",
+      "The god of the market {is not|isn't} worshipped. The god of the market is TRANSACTED WITH.",
+      "We give thanks for supply, for demand, and for the distance between them.",
+      "The offering {tonight|this evening|at this hour} is {item}, valued at {price}, and it will be sold rather than burned.",
+      "Margin: every faith has a tithe. Ours simply publishes the rate.",
+      "A congregation at {place} prays before the auction and it has improved their bidding.",
+      "The heresy is charity without a receipt, and {it is|it's} more common than you would think.",
+      "Go now, and buy in peace, and mind the interest."
+    ]
+  },
+  "antiques_parish": {
+    "lead": [
+      "The trestle tables are out, the hall is full, and {everyone|everybody} has brought something {from a loft|down from a loft|out of a loft}."
+    ],
+    "tail": [
+      "Doors close at four. Take your item home. Most of them are worth {more to you than to us|more to their owners than to us|rather more to you than to us}."
+    ],
+    "beats": [
+      "First on the table: a teapot, chipped, with a maker's mark {nobody|no one} in the hall recognises.",
+      "Fairbrass: I will say what {it is|it's} worth, and then I will say what it is, and {you will|you'll} prefer the second.",
+      "Douglas has found a set of chairs and has gone quiet, which with Douglas means good news.",
+      "This clock was enchanted to chime early. Charmingly, it now chimes early and wrongly.",
+      "The lady who brought it in says it sat in a spare room for forty years being ignored.",
+      "Value between {n} hundred and rather more, if you can find the matching lid.",
+      "Fairbrass: nothing here is treasure. Some of {it is|it's} very good ordinary furniture.",
+      "Our owner has decided not to sell. {That is|That's} the correct decision and it happens most weeks.",
+      "Douglas has bought something himself, off camera, which he {is not|isn't} supposed to do."
+    ]
+  },
+  "consumer_corner": {
+    "lead": [
+      "Consumer Corner. Your complaint, their reply, and whether the reply {means anything|amounts to anything|says anything at all}."
+    ],
+    "tail": [
+      "{That is|That's} the corner. Keep your receipts, keep your letters, and keep writing to us."
+    ],
+    "beats": [
+      "Case one: a repair booked for a Tuesday and arriving, so far, in neither of the two Tuesdays offered.",
+      "Halloway: the contract says fourteen days. Fourteen days {does not|doesn't} mean fourteen working excuses.",
+      "The company replied within an hour of our letter, having ignored the customer for nine weeks.",
+      "A warranty that excludes 'magical wear' turns out to exclude ordinary wear as well.",
+      "We tested six kettles. Two are excellent, three are fine and one {should not|shouldn't} be sold.",
+      "If a charm on an appliance fails, {you are|you're} entitled to a repair. Say that sentence to them slowly.",
+      "Halloway: never accept a credit note when {you are|you're} owed money. It {is not|isn't} the same thing.",
+      "Result {this week|this past week|over the week}: a full refund, an apology, and a policy change {we will|we'll} check on in six months."
+    ]
+  },
+  "allotment_hour": {
+    "lead": [
+      "Down at the allotments, where {it is|it's} drizzling, and {everyone|everybody} is quietly delighted about it."
+    ],
+    "tail": [
+      "{That is|That's} the hour. Do the watering, then sit down. Sitting down is part of the job."
+    ],
+    "beats": [
+      "Dennis has been on plot eleven for twenty-two years and has strong views about brassicas.",
+      "Winnie: you can charm a seed to germinate. It will come up weak and it will sulk all season.",
+      "Everything on this plot was grown the slow way, which is also the cheap way.",
+      "Dig the trench now for beans you {will not|won't} plant for four months. {That is the whole|That's the whole|That is the entire|That is the full} hobby.",
+      "The shed is the point of an allotment. The vegetables are a pretext for the shed.",
+      "Winnie has brought a comfrey feed that smells appalling and works better than anything sold in a tin.",
+      "Slugs. Beer, boards, or patience. Dennis uses patience and loses about a third of his lettuces.",
+      "Nothing here needs a licence, a line or a permit. Only a fork and somewhere to sit."
+    ]
+  },
+  "two_rooms_ladder": {
+    "lead": [
+      "Two rooms, one ladder, and a fortnight to make a house {somebody|someone} can live in again."
+    ],
+    "tail": [
+      "Kettle on. Stand back. {That is|That's} a job finished and nothing has fallen down yet."
+    ],
+    "beats": [
+      "Ray has looked at the ceiling and made the face. The face costs the budget a hundred {every time|each time|every single time}.",
+      "Sam: measure it twice, cut it once, and put the offcut somewhere {you will|you'll} find it.",
+      "The damp is coming in from outside, which is where damp almost always comes from.",
+      "You can hire a mage to dry a wall. You can also fix the gutter, which lasts longer and costs less.",
+      "Ray: I have nothing against enchanted plaster. I have something against plaster that dries in eight seconds.",
+      "The owners wanted an arch. The owners are getting a straight lintel and a lecture about load.",
+      "Second fix today, which is the boring bit, which is the bit that decides whether it looks right.",
+      "Total spend, including the ladder we broke: under budget, barely, and the tea {was not|wasn't} costed."
+    ]
+  },
+  "pets_people": {
+    "lead": [
+      "Hello! {It is|It's} Pets and Their People, and today we have a dog with a JOB!"
+    ],
+    "tail": [
+      "Give your pet a stroke from us! Not a treat! {You have already given them a treat|You gave them a treat already|They have had a treat}!"
+    ],
+    "beats": [
+      "Captain Barkley is {a very|an extremely|a genuinely} good dog and he {is not|isn't} going to sit still for this introduction!",
+      "Jo Bellamy has looked after animals for eleven years and says the same thing every week: routine!",
+      "Today's letter is from a child whose cat brings home things it should not. {That is|That's} love, {apparently|evidently|by all accounts}!",
+      "A rabbit needs a friend. A rabbit on its own is a sad rabbit. {That is|That's} the fact for today!",
+      "You do NOT charm an animal to behave. It works for an hour and then they trust you less!",
+      "Barkley demonstrates the recall. Barkley recalls at his own speed. He is thinking about it!",
+      "Feeding! Same time, same bowl, same amount. Boring for you! Wonderful for them!",
+      "Ask a grown-up before you touch a dog you {do not|don't} know. Ask the DOG as well, in a way!",
+      "{That was|And that was|So much for} very good, Barkley. Everybody say well done, Barkley!"
+    ]
+  },
+  "late_quiz": {
+    "lead": [
+      "The Late Quiz. Four rounds, no audience, and a prize {we have|we've} been asked to describe as modest."
+    ],
+    "tail": [
+      "Scores on the board. Winner takes the mug. Vic Marlow, back at the same {unreasonable|indefensible|ungodly} hour."
+    ],
+    "beats": [
+      "Round one, general knowledge, and our first contestant has just come off a shift.",
+      "Marlow: no conferring, no notes, and absolutely no spellwork. We check. We have {somebody|someone} who checks.",
+      "Sandra Deen is a student, is defending her title, and has answered before I finish the question.",
+      "Ten points. {Nobody|No one} knows what the points are worth. The points are worth the points.",
+      "The music round is played on a piano by {somebody|someone} in the next studio who {has not|hasn't} been told why.",
+      "Contestant two has answered 'a badger' twice, correctly once, which is statistically remarkable.",
+      "Marlow: this question {has never|has not once|has at no point} been answered on air. {It has been|It's been} answered in the corridor afterwards.",
+      "Sudden death. Both of them are exhausted. This is what the format was designed for."
+    ]
+  },
+  "night_bus": {
+    "lead": [
+      "Last bus of the night. Wes Tandy driving, a camera at the front, and {whoever gets on|whoever happens to get on|anyone who gets on}."
+    ],
+    "tail": [
+      "Terminus. {Everybody|Everyone} off. Wes takes it back to the depot and does it again tomorrow."
+    ],
+    "beats": [
+      "First on is a woman who has finished a double shift and {would like to|wish to|are keen to} talk about her feet.",
+      "Tandy: I have driven this route for nine years. I know who gets on where, and roughly why.",
+      "Two lads get on arguing about a football result and get off still arguing about it.",
+      "A man with a guitar plays half a song and then apologises to the whole bus, unnecessarily.",
+      "The lights on the upper deck flicker. Wes says the bus does that and the bus is fine.",
+      "{Somebody|Someone} falls asleep and is woken at their stop by three separate strangers.",
+      "A nurse coming off nights explains the shift pattern and {everybody|everyone} agrees {it is|it's} unreasonable.",
+      "Last passenger of the night says the same thing they say every night: cheers, driver."
+    ]
+  },
+  "car_boot": {
+    "lead": [
+      "Six in the morning, a field, and four hundred people who {woke up early to sell a lamp|got up early to sell a lamp|rose at dawn to sell a lamp}."
+    ],
+    "tail": [
+      "Pack up at noon. Whatever {did not|didn't} sell goes home, comes back next week, and sells."
+    ],
+    "beats": [
+      "Marge has been doing this pitch since {year} and knows {exactly|precisely} where the good stalls park.",
+      "Nev Cobb buys from one end of the field and sells at the other. {That is the entire|That's the entire|That is the whole|That is the full} business.",
+      "First rule: get there early. Second rule: bring change. Third rule: bring less change than you think.",
+      "A box of records, a bread maker and a single enchanted lamp that only works on Thursdays.",
+      "The lamp goes for very little because {nobody|no one} wants to {explain|set out} the Thursday thing to a guest.",
+      "Marge: haggle politely. Everyone here is cold and {nobody|no one} is getting rich.",
+      "A collector from two counties over has driven since four for a set of tins.",
+      "Best find of the day cost one coin and is now going to be argued about by two experts."
+    ]
+  },
+  "slither_news": {
+    "lead": [
+      "Buonasera and welcome to Slither The News! The desk! The velinas! {The ENVELOPE|THE ENVELOPE|And the ENVELOPE}!"
+    ],
+    "tail": [
+      "That is Slither The News! The Slither Award goes to {somebody|someone} who {will not|won't} collect it!"
+    ],
+    "beats": [
+      "Greggs and Yakketty behind the desk, and neither of them will admit which one is the funny one.",
+      "Tonight's investigation: a market stall at {place} selling the same fish twice a day.",
+      "GUBBIBO! The red one! {Nobody|No one} knows what he is! He has been on the payroll since {year}!",
+      "Gubbibo {does not|doesn't} speak to the audience. Gubbibo speaks to the CAMERA. {There is|There's} a difference.",
+      "Our reporter was thrown out of the building, ON CAMERA, which is worth four items of actual news.",
+      "The Slither Award for the week goes to a council that resurfaced the same road three times!",
+      "{news}",
+      "Yakketty has done a small dance. {Nobody|No one} asked for it. It happens every night.",
+      "{We are|We're} handing the envelope to the authorities! We have handed them {n} envelopes! NOTHING HAS HAPPENED!"
+    ]
+  },
+  "wheel_fortunes": {
+    "lead": [
+      "{It is|It's} the WHEEL! Merry Scott, Paula Barrel, and {a very|an extremely|a genuinely} large amount of consonants!"
+    ],
+    "tail": [
+      "{That is|That's} the Wheel! Come back tomorrow! The wheel {does not|doesn't} stop when you leave!"
+    ],
+    "beats": [
+      "Merry Scott, ladies and gentlemen, in a jacket that has its own lighting requirements!",
+      "Paula turns the letters. Paula has turned letters for {n} years and {has never once been|has not once been|has never yet been} wrong.",
+      "SPIN! And it is... BANKRUPT! The audience makes the noise! MAKE THE NOISE!",
+      "Our contestant is a {job} from {place} and {would like to|wish to|are keen to} buy a vowel, cautiously.",
+      "Merry: signora, the answer is on the board. {It has been|It's been} on the board for some time.",
+      "Solve it! SOLVE IT! She has solved it! SHE HAS SOLVED IT WITH TWO LETTERS!",
+      "The bonus prize is a car. The car is on a turntable. The turntable is the real star.",
+      "Merry Scott {would like to|wish to|are keen to} remind you that he also hosts three other programmes on this channel."
+    ]
+  },
+  "price_correct": {
+    "lead": [
+      "OK! The price is CORRECT! {Come on down|Come along down|Down you come}, and bring your opinion about groceries!"
+    ],
+    "tail": [
+      "The price was correct! It was correct all along! {Goodnight|Good night} from all of us!"
+    ],
+    "beats": [
+      "Eva Zannicky, who has sung in front of thousands and is now holding a tin of tomatoes.",
+      "{item}! What is the price?! It is {price}! WAS ANYBODY CLOSE?! ONE PERSON WAS CLOSE!",
+      "Higher! HIGHER! Lower. Lower. She has gone higher again. The audience has given up guiding her.",
+      "Our contestant from {place} has bid one coin, strategically, and the strategy has worked!",
+      "Eva sings a bar of something between rounds because the schedule has a hole in it.",
+      "The showcase includes a fitted kitchen and a holiday to somewhere the network owns a hotel.",
+      "{Nobody|No one} in this studio knows what anything costs any more. {That is|That's} the format's secret.",
+      "OVER! She is OVER by one coin! The noise the audience makes for {that is|that's} unrepeatable!"
+    ]
+  },
+  "papperissima": {
+    "lead": [
+      "Papperissima! The bloopers! The falls! The people who {did not|didn't} know the camera was ON!"
+    ],
+    "tail": [
+      "That is Papperissima! Send us your tapes! We {will not|won't} credit you but we WILL broadcast you!"
+    ],
+    "beats": [
+      "Clip one: a presenter on a rival channel says the wrong name and keeps going for four minutes.",
+      "Anthony Ritchie produces this. Ritchie produces everything. Ritchie may BE the network.",
+      "A weather forecaster at {place} is defeated, live, by a map that {will not|won't} stay on the wall.",
+      "GUBBIBO IS IN THIS ONE! Gubbibo has knocked over a set! The set was expensive!",
+      "Compilation of people walking into glass doors! It {is not|isn't} clever! It is UNDEFEATED!",
+      "A cooking {programme|show|broadcast} catches fire, mildly, and the chef finishes the recipe anyway. RESPECT.",
+      "Our slow motion department has slowed this down four times. It gets funnier and then sad.",
+      "Ritchie: the outtake is the truth. The {programme|show|broadcast} is what they wanted. The outtake is what happened."
+    ]
+  },
+  "sarabander": {
+    "lead": [
+      "SARABANDER! Seven notes! One buzzer! Henry Poppy shouting! {LET'S GO|HERE WE GO|OFF WE GO}!"
+    ],
+    "tail": [
+      "That is Sarabander! The music continues! {It has been|It's been} continuing all evening!"
+    ],
+    "beats": [
+      "Seven notes and our contestant has it in TWO! TWO NOTES! The band are appalled!",
+      "Poppy: name the song, name the artist, name the YEAR! The year is worth nothing! SAY IT ANYWAY!",
+      "The house band is four people who have been doing this since {year} and never blink.",
+      "Contestant from {place} has buzzed on silence. There was no note. He is CONFIDENT.",
+      "The chorus round! Sing it! SING IT! He {does not|doesn't} know the words! HE IS SINGING ANYWAY!",
+      "Poppy is on the desk. Poppy is often on the desk. Production have stopped mentioning it.",
+      "Head to head! Two buzzers! One of them is faster and both of them are wrong!",
+      "{Nobody|No one} has ever won the final round. The final round is designed by {somebody|someone} who dislikes people."
+    ]
+  },
+  "not_the_rye": {
+    "lead": [
+      "{It isn't|It is not} the Rye! {It is|It's} us! The staircase, the songs, the entire afternoon!"
+    ],
+    "tail": [
+      "Same time tomorrow! Bring your homework! DO NOT bring your homework! We {do not|don't} know!"
+    ],
+    "beats": [
+      "Amber Angelino on the staircase, and the staircase has become more famous than several presenters.",
+      "Everybody is miming. The show {has never|has not once|has at no point} pretended otherwise. {That is|That's} almost honest.",
+      "Today's letters are from a school in {place} and are mostly about a boy called Marco.",
+      "The dance is four steps and half the country can do it. The other half claims not to.",
+      "Amber reads a viewer's poem out sincerely and the studio goes quiet for a full ten seconds.",
+      "A pop group are here to promote a single and to stand awkwardly at the bottom of the stairs.",
+      "{There is|There's} an adult in the corner directing this and he {has never|has not once|has at no point} been seen on camera.",
+      "The {programme|show|broadcast} is somehow both extremely silly and the most-watched hour of the day."
+    ]
+  },
+  "costanza_show": {
+    "lead": [
+      "{Good evening|Evening}. A stage, a chair, a small table, and {as long as it takes|however long it takes|all the time it takes}."
+    ],
+    "tail": [
+      "We have {gone over again|run over again|overrun again}. We always go over. Thank you for staying with us."
+    ],
+    "beats": [
+      "Costanza opens with a monologue that has no jokes in it and holds the room {completely|utterly|entirely}.",
+      "The theatre is full. {Nobody|No one} in it will speak until asked. That rule is thirty years old.",
+      "Tonight's guest is a {job} from {place} who {has never|has not once|has at no point} been on television before.",
+      "Costanza: take your time. {Nobody|No one} here is going anywhere. {There is|There's} nothing after us.",
+      "A second guest disagrees with the first and is allowed to do so at length, without a bell.",
+      "{news}",
+      "The audience applauds in the wrong place and Costanza forgives them, on air, at length.",
+      "One question, asked quietly, changes the tone of the entire hour.",
+      "The band play us out and the guest keeps talking under the music, which is permitted here."
+    ]
+  },
+  "forum_hex": {
+    "lead": [
+      "Forum! Two neighbours, one fence, and a judgment which is binding {only in spirit|in spirit only|morally, at best}!"
+    ],
+    "tail": [
+      "The court rises! {Nobody|No one} is going to prison! {Somebody|Someone} is going to be very annoyed at a barbecue!"
+    ],
+    "beats": [
+      "Rita Della Church presides over the studio, the litigants, and an audience with opinions.",
+      "Case one: a hedge. {It is|It's} always a hedge. Sixty percent of this {programme|show|broadcast} is a hedge.",
+      "The claimant's enchanted washing line has been drying the defendant's washing as well.",
+      "Judge Fabbione delivers the law in one sentence and the moral in eleven.",
+      "The defendant's mother is in the audience and has been asked TWICE to stop commenting.",
+      "Rita: signori, you have lived next door to each other for {n} years. Think about that.",
+      "A surveyor's plan is produced. The plan settles nothing. The plan makes it worse.",
+      "Judgment for the claimant, damages of almost nothing, and a handshake {nobody|no one} means."
+    ]
+  },
+  "lunch_served": {
+    "lead": [
+      "Lunch is served! The table is laid, the cards are shuffled, and {one of you eats|only one of you eats|exactly one of you eats}!"
+    ],
+    "tail": [
+      "Lunch is over! Clear the table! The same table! {We only have the one table|We have but one table|There is only one table}!"
+    ],
+    "beats": [
+      "Corrardo, in the same jacket, at the same table, with the same warm total lack of hurry.",
+      "Two contestants play cards for the courses. It makes no sense. It {has never|has not once|has at no point} made sense.",
+      "The chef prepares the dish while the game is played, which means {it is|it's} served cold on a bad day.",
+      "Corrardo asks the lady from {place} what she does. She talks for two minutes. He lets her.",
+      "The antipasto is decided by a card. The dessert is decided by a card. So is the wine.",
+      "Corrardo: signora, if you lose this hand you get the soup, and the soup is very good today.",
+      "An entire nation used to eat its own lunch while watching this, which is the joke and the point.",
+      "Whoever loses still eats. {Nobody|No one} has ever left this studio hungry."
+    ]
+  },
+  "telemick": {
+    "lead": [
+      "Allegria! {It is|It's} Telemick! The questions! The lights! The gentleman with the microphone!"
+    ],
+    "tail": [
+      "Allegria! That is Telemick! Say hello to your family at home! {SAY IT PROPERLY|SAY IT LOUDER|AND MEAN IT}!"
+    ],
+    "beats": [
+      "Mick Bongiorney, who has hosted quizzes since before this network existed and will host them after.",
+      "The contestant is asked her name, her town and her job, in that order, {exactly|precisely} {as always|as ever|as usual}.",
+      "Question for {big} coins! The categories are: geography, opera, and things Mick likes!",
+      "Mick: signorina, is that your final answer? IS IT? She is thinking. LET HER THINK.",
+      "The audience {is not|isn't} allowed to help. The audience is helping. The audience is always helping.",
+      "A contestant from {place} has got eleven right and has stopped being able to speak.",
+      "Mick reads the sponsor's name with more warmth than most people manage for family.",
+      "{There is|There's} a bell, a hostess and a scoreboard, and none of the three has been replaced in {n} years."
+    ]
+  },
+  "studio_open": {
+    "lead": [
+      "Studio Open. The bulletin, at speed, with the graphics doing {rather more than the facts|considerably more than the facts|more work than the facts}."
+    ],
+    "tail": [
+      "Studio Open closes. Emil Faith, and the next bulletin in forty minutes, {at the same volume|at exactly this volume|no quieter}."
+    ],
+    "beats": [
+      "Emil Faith leans into the camera as though the news is a personal matter between the two of you.",
+      "Top story, and the graphic for it took longer to build than the report.",
+      "{news}",
+      "Faith: I have said this before and I will say it again, at greater length, {immediately|at once|right away}.",
+      "A correspondent at {place} is shouting over wind that the microphone has invented.",
+      "The bulletin cuts to a helicopter. The helicopter has nothing to show. The helicopter stays up.",
+      "Three items in ninety seconds, then four minutes on a story about a dog.",
+      "Faith reads an editorial that {nobody|no one} asked for, sincerely, directly to the lens.",
+      "We end on sport and the sport is treated as considerably more urgent than the opening item."
+    ]
+  },
+  "beautifool": {
+    "lead": [
+      "Previously on Beautifool: a wedding, a document, and Ridge {standing in a doorway|stood in a doorway|in a doorway, saying nothing}."
+    ],
+    "tail": [
+      "Next time on Beautifool: the same conversation, in a different room, {with worse lighting|under worse lighting|lit rather worse}."
+    ],
+    "beats": [
+      "Eric Forrestier has called the family together to {announce|declare} a decision about the company.",
+      "Stephanie objects. Stephanie has objected in this room, in this chair, for eleven years.",
+      "Ridge stands in a doorway and says nothing for {a very|an extremely|a genuinely} long time. This is his best scene.",
+      "Brooke arrives, late, having decided something offscreen that will take four episodes to explain.",
+      "Taylor Hays offers a professional opinion which everyone ignores and everyone later repeats as their own.",
+      "Thorne has been to {place} and returned with a document and an expression.",
+      "Sally Spectrum runs the rival house and has come to the party specifically to be thrown out.",
+      "A character walks into a room and gasps. The room is empty. We {do not|don't} see what they saw until Friday.",
+      "Two people discuss a third by name for the full scene and neither says what actually happened."
+    ]
+  },
+  "bim_bum_bang": {
+    "lead": [
+      "BIM! BUM! BANG! Hello children, hello grandmothers, hello {everybody|everyone} at home!"
+    ],
+    "tail": [
+      "That is Bim Bum Bang! Wan is going to bed! Wan is NOT going to bed! {Goodnight|Good night}!"
+    ],
+    "beats": [
+      "Paul Bonellis is talking to a puppet and losing the argument, which is the format.",
+      "Wan is a duck! Wan is possibly not a duck! WAN HAS NEVER CONFIRMED IT!",
+      "Today's cartoon is from very far away and has been dubbed by four people doing nine voices.",
+      "Wan wants a snack. Wan has had a snack. Wan is going to mention the snack until the credits.",
+      "A competition! Send a drawing to the studio! The address is said too fast, on purpose!",
+      "Paul explains a rule for children and Wan {immediately|at once|right away} breaks it to demonstrate the consequence.",
+      "The studio audience is forty children from {place} and two teachers who have stopped trying.",
+      "Wan says goodbye to {everybody|everyone} individually. It takes longer than the cartoon."
+    ]
+  },
+  "superchart": {
+    "lead": [
+      "The Superchart Show! Twenty places, one countdown, and a presenter who {takes it personally|takes it all personally|is far too invested}!"
+    ],
+    "tail": [
+      "{That is|That's} the chart! {It is|It's} wrong! It is always wrong! SEE YOU NEXT WEEK!"
+    ],
+    "beats": [
+      "Maurice Seymand, in a jumper, with the whole national chart and a fixed opinion about it.",
+      "Number twenty, a group from {place}, up four places and on this {programme|show|broadcast} {for the first time|for the first time on record|for the first time ever}.",
+      "Seymand: this record {is not|isn't} good. {It is|It's} at number six. Both of those things are true.",
+      "The video is played almost in full because the {programme|show|broadcast} is an hour and the chart is not.",
+      "A band are in the studio! {They are|They're} miming! They are miming BADLY! MAGNIFICENT!",
+      "New entry! Straight in! The presenter says 'straight in' with genuine emotion!",
+      "Number one for the {n}th week, and Seymand has run out of ways to introduce it.",
+      "{Next week|Next time}'s predictions, which are guesses, delivered with total authority."
+    ]
+  },
+  "coalpo_grosso": {
+    "lead": [
+      "Late now, and Humbert Smiley invites you to play a card game for {prizes and dignity|prizes and what dignity remains|money and dignity}."
+    ],
+    "tail": [
+      "{That is|That's} all from Coalpo Grosso. Put the light on. Tell {nobody|no one}. {Goodnight|Good night}!"
+    ],
+    "beats": [
+      "Smiley at the piano, in a dinner jacket, at an hour when {nobody|no one} should own a dinner jacket.",
+      "The rules involve cards, a bell and a jury of strangers from three different towns.",
+      "Contestant from {place} is playing for a holiday and the studio has gone very quiet.",
+      "Smiley plays a chord whenever anything happens. Sometimes he plays a chord anyway.",
+      "The jury vote. The jury are wrong. The jury are always wrong and are asked back weekly.",
+      "This {programme|show|broadcast} is broadcast {at this hour|at this time of the night|this far into the night} for reasons the network describes as scheduling.",
+      "{Somebody|Someone}'s uncle is in the audience and the camera has found him and {will not|won't} let go.",
+      "Smiley: signori, {it is|it's} late, {we are|we're} all adults, and the piano is the only honest thing here."
+    ]
+  },
+  "know_the_latest": {
+    "lead": [
+      "Do you know the latest?! Members of the public! Telling JOKES! {For a TROPHY|FOR A TROPHY|For an actual TROPHY}!"
+    ],
+    "tail": [
+      "{That is|That's} the latest! Tell it to {somebody|someone} badly tomorrow! That is how they SPREAD!"
+    ],
+    "beats": [
+      "Pippa Frank hosts, in a hat, and the hat is doing about forty percent of the comedy.",
+      "Contestant one is a {job} from {place} who has one joke and has waited a year to tell it.",
+      "The jury hold up cards. The cards go from one to ten. {Nobody|No one} has ever received a ten.",
+      "A man tells a joke about his mother-in-law. His mother-in-law is in the front row.",
+      "Half of these jokes are older than the network and two are older than the language.",
+      "Pippa laughs first, loudest, and at things that {were not|weren't} the punchline.",
+      "The joke about the priest, the goat and the boundary gets an ovation and a formal complaint.",
+      "Our champion has told forty jokes across four weeks and {has not|hasn't} once explained her day job."
+    ]
+  }
+}

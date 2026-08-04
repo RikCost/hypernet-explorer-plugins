@@ -1,233 +1,473 @@
 {
   "97,142": "Super sacred shrine",
+
   "66,112": "London",
+  "66,113": "London",
+  "67,112": "London",
+  "67,113": "London",
+
   "111,163": "MAXGauntlet",
+
   "126,187": "Vatican Citadel",
+
   "115,161": "MAXTavern",
-  "52,111": "Cardiff",
+
+  "52,109": "Cardiff",
+  "52,110": "Cardiff",
+  "53,109": "Cardiff",
+  "53,110": "Cardiff",
+
+  "121,160": "Milano",
   "121,161": "Milano",
+  "122,160": "Milano",
+  "122,161": "Milano",
+
   "130,223": "Canicattini Bagni",
+
   "117,163": "Casalpusterlengo",
-  "130,171": "Casalpusterlengo",
+
   "48,120": "Plymouth",
   "49,120": "Plymouth",
+
   "73,119": "Canterbury",
+
   "66,120": "Brighton",
+
   "68,105": "Boston",
+
   "62,101": "Manchester",
+
   "57,108": "Birmingham",
+
   "101,127": "Luxembourg",
+
   "62,89": "Edinburgh",
+
   "58,90": "Glasgow",
+
   "61,86": "Perth",
+
   "53,82": "Oban",
+
   "64,82": "Aberdeen",
   "65,82": "Aberdeen",
+
   "88,131": "Petrocave",
+
+  "42,84": "Belfast",
   "42,85": "Belfast",
+  "43,84": "Belfast",
+  "43,85": "Belfast",
+
   "126,186": "Roma",
+
   "127,186": "Rome",
+
   "134,218": "Messina",
-  "37,82": "Londonderry",
+
   "36,82": "Londonderry",
+  "37,82": "Londonderry",
+
   "36,85": "Sligo",
+
   "136,215": "Reggio Calabria",
+
   "137,180": "Alba Adriatica",
+
+  "43,91": "Dublin",
   "43,92": "Dublin",
-  "88,117": "Antwerpen",
+  "44,91": "Dublin",
+  "44,92": "Dublin",
+
   "88,116": "Antwerpen",
+  "88,117": "Antwerpen",
   "89,116": "Antwerpen",
   "89,117": "Antwerpen",
+
   "43,96": "Wexford",
   "44,96": "Wexford",
+
+  "62,115": "GreenWitch",
   "62,116": "GreenWitch",
+  "63,115": "GreenWitch",
+  "63,116": "GreenWitch",
+
   "37,100": "Cork",
   "38,100": "Cork",
+
   "73,111": "Tritunnel East",
+
   "33,101": "Killarney",
+
+  "89,120": "Brusselles",
   "89,121": "Brusselles",
+  "90,120": "Brusselles",
+  "90,121": "Brusselles",
+
+  "49,23": "Reykyavik",
   "49,24": "Reykyavik",
-  "84,119": "Ghent",
+  "50,23": "Reykyavik",
+  "50,24": "Reykyavik",
+
   "84,118": "Ghent",
+  "84,119": "Ghent",
   "85,118": "Ghent",
   "85,119": "Ghent",
+
   "56,25": "Kalfafell",
+
   "60,20": "Laugar",
+
   "50,21": "Hvammstangi",
+
   "76,41": "Klasvik",
+
   "81,129": "Dark tower",
+
   "71,42": "Gasadalur",
+
   "73,45": "Torshavn",
+
   "71,50": "Sandvik",
+
   "85,116": "Crabby Beach",
+
+  "91,107": "Amsterdam",
   "91,108": "Amsterdam",
+  "92,107": "Amsterdam",
+  "92,108": "Amsterdam",
+
+  "87,109": "The Hague",
   "87,110": "The Hague",
+  "88,109": "The Hague",
+  "88,110": "The Hague",
+
+  "91,110": "Rotterdam",
+  "91,111": "Rotterdam",
+  "92,110": "Rotterdam",
   "92,111": "Rotterdam",
+
   "87,112": "Ouddorp",
+
   "85,114": "Middelburg",
+
   "88,107": "Harlem",
   "89,107": "Harlem",
+
   "89,104": "Alkmaar",
+
   "96,100": "Leeuwarden",
+
   "103,101": "Groningen",
+
   "100,118": "Limburg",
+
   "97,112": "Eindhoven",
   "98,112": "Eindhoven",
+
   "102,107": "Zwolle",
+
   "83,115": "Tritunnel Ovest",
+
   "94,124": "Charleroi",
   "95,124": "Charleroi",
-  "94,118": "Luik",
+
   "93,118": "Luik",
+  "94,118": "Luik",
+
+  "49,186": "Madrid",
+  "49,187": "Madrid",
   "49,188": "Madrid",
+  "50,186": "Madrid",
+  "50,187": "Madrid",
+  "50,188": "Madrid",
+  "51,186": "Madrid",
+  "51,187": "Madrid",
+  "51,188": "Madrid",
+
   "54,205": "Granada",
+
+  "70,198": "Valencia",
   "70,199": "Valencia",
-  "110,171": "Genova",
-  "118,171": "La Spezia",
-  "119,175": "Pisa",
-  "118,178": "Livorno",
-  "133,185": "Frosinone",
-  "135,194": "Napoli",
-  "134,196": "Capri",
-  "151,200": "Taranto",
-  "151,199": "Taranto",
-  "152,199": "Taranto",
-  "152,200": "Taranto",
-  "144,210": "Catanzaro",
-  "144,201": "Cosenza",
-  "154,199": "Lecce",
-  "154,198": "Lecce",
-  "155,198": "Lecce",
-  "155,199": "Lecce",
-  "134,176": "Ancona",
-  "129,176": "San Marino",
-  "125,161": "Verona",
-  "136,163": "Venezia",
-  "113,162": "Torino",
-  "121,173": "Lucca",
-  "123,174": "Firenze",
-  "135,181": "L'Aquila",
-  "127,188": "Latina",
-  "137,196": "Amalfi",
-  "139,196": "Sorrento",
-  "148,208": "Crotone",
-  "133,222": "Catania",
-  "132,225": "Siracusa",
-  "125,219": "Palermo",
-  "123,221": "Marsala",
-  "120,228": "Lampedusa",
-  "127,223": "Agrigento",
-  "105,210": "Cagliari",
-  "106,201": "Sassari",
-  "105,226": "Tunisi",
-  "102,223": "Biserta",
-  "125,253": "Tripoli",
-  "59,228": "Algeri",
-  "204,224": "Atene",
-  "237,194": "Instanbul",
-  "151,179": "Corf\u00f9",
-  "232,147": "Odessa",
-  "135,109": "Berlin",
-  "144,78": "Copenaghen",
-  "148,68": "Malmo",
-  "131,45": "Oslo",
-  "79,139": "Paris",
-  "88,166": "Marsiglia",
-  "67,160": "Bordeaux",
-  "53,144": "Brest",
-  "117,151": "Berna",
-  "105,157": "Ginevra",
-  "112,157": "Zermatt",
-  "115,155": "Lugano",
-  "128,153": "Liechtenstein",
-  "118,148": "Zurigo",
-  "112,147": "Basilea",
-  "75,130": "Le Havre",
-  "80,147": "Orleans",
-  "73,144": "Le Mans",
-  "58,136": "Saint Helier",
-  "56,135": "Jersey",
-  "52,131": "Guernsey",
-  "82,194": "Palma di Maiorca",
-  "83,194": "Palma di Maiorca",
-  "80,198": "Ivissa",
-  "88,191": "Minorca",
-  "77,184": "Barcellona",
-  "63,184": "Saragozza",
-  "39,205": "Siviglia",
-  "22,192": "Lisbona",
-  "25,179": "Porto",
-  "34,167": "Santiago di Compostela",
-  "146,172": "Pola",
-  "152,176": "Zara",
-  "168,175": "Sarajevo",
-  "178,165": "Belgrado",
-  "170,157": "Novi Sad",
-  "175,196": "Tirana",
-  "209,190": "Sofia",
-  "207,168": "Bucarest",
-  "226,169": "Costanza",
-  "147,192": "Roccalonga",
-  "124,167": "Bologna",
-  "79,124": "Omega Tower",
-  "136,162": "Venezia",
-  "137,162": "Venezia",
-  "137,163": "Venezia",
-  "113,161": "Torino",
-  "114,161": "Torino",
-  "114,162": "Torino",
+  "71,198": "Valencia",
+  "71,199": "Valencia",
+
   "110,170": "Genova",
+  "110,171": "Genova",
   "111,170": "Genova",
   "111,171": "Genova",
-  "105,156": "Ginevra",
-  "106,156": "Ginevra",
-  "106,157": "Ginevra",
-  "112,146": "Basilea",
-  "113,146": "Basilea",
-  "113,147": "Basilea",
-  "117,150": "Berna",
-  "118,150": "Berna",
-  "118,151": "Berna",
-  "118,147": "Zurigo",
-  "119,147": "Zurigo",
-  "119,148": "Zurigo",
-  "128,152": "Liechtenstein",
-  "129,152": "Liechtenstein",
-  "129,153": "Liechtenstein",
-  "63,183": "Saragozza",
-  "64,183": "Saragozza",
-  "64,184": "Saragozza",
-  "22,191": "Lisbona",
-  "23,191": "Lisbona",
-  "23,192": "Lisbona",
-  "204,223": "Atene",
-  "205,223": "Atene",
-  "205,224": "Atene",
-  "59,227": "Algeri",
-  "60,227": "Algeri",
-  "60,228": "Algeri",
-  "105,225": "Tunisi",
-  "106,225": "Tunisi",
-  "106,226": "Tunisi",
-  "105,209": "Cagliari",
-  "106,209": "Cagliari",
-  "106,210": "Cagliari",
-  "39,204": "Siviglia",
-  "40,204": "Siviglia",
-  "40,205": "Siviglia",
-  "168,174": "Sarajevo",
-  "169,174": "Sarajevo",
-  "169,175": "Sarajevo",
-  "178,164": "Belgrado",
-  "179,164": "Belgrado",
-  "179,165": "Belgrado",
-  "146,171": "Pola",
-  "147,171": "Pola",
-  "147,172": "Pola",
+
+  "118,171": "La Spezia",
+
   "119,174": "Pisa",
+  "119,175": "Pisa",
   "120,174": "Pisa",
   "120,175": "Pisa",
+
+  "118,178": "Livorno",
+
+  "133,185": "Frosinone",
+
+  "135,193": "Napoli",
+  "135,194": "Napoli",
+  "136,193": "Napoli",
+  "136,194": "Napoli",
+
+  "134,196": "Capri",
+
+  "151,199": "Taranto",
+  "151,200": "Taranto",
+  "152,199": "Taranto",
+  "152,200": "Taranto",
+
+  "144,210": "Catanzaro",
+
+  "144,201": "Cosenza",
+
+  "154,198": "Lecce",
+  "154,199": "Lecce",
+  "155,198": "Lecce",
+  "155,199": "Lecce",
+
   "134,175": "Ancona",
+  "134,176": "Ancona",
   "135,175": "Ancona",
-  "135,176": "Ancona"
+  "135,176": "Ancona",
+
+  "129,176": "San Marino",
+
+  "125,161": "Verona",
+
+  "136,162": "Venezia",
+  "136,163": "Venezia",
+  "137,162": "Venezia",
+  "137,163": "Venezia",
+
+  "113,161": "Torino",
+  "113,162": "Torino",
+  "114,161": "Torino",
+  "114,162": "Torino",
+
+  "121,173": "Lucca",
+
+  "123,174": "Firenze",
+
+  "135,181": "L'Aquila",
+
+  "127,188": "Latina",
+
+  "137,196": "Amalfi",
+
+  "139,196": "Sorrento",
+
+  "148,208": "Crotone",
+
+  "133,222": "Catania",
+
+  "132,225": "Siracusa",
+
+  "125,219": "Palermo",
+
+  "123,221": "Marsala",
+
+  "120,228": "Lampedusa",
+
+  "127,223": "Agrigento",
+
+  "105,209": "Cagliari",
+  "105,210": "Cagliari",
+  "106,209": "Cagliari",
+  "106,210": "Cagliari",
+
+  "106,201": "Sassari",
+
+  "105,225": "Tunisi",
+  "105,226": "Tunisi",
+  "106,225": "Tunisi",
+  "106,226": "Tunisi",
+
+  "102,223": "Biserta",
+
+  "125,253": "Tripoli",
+
+  "59,227": "Algeri",
+  "59,228": "Algeri",
+  "60,227": "Algeri",
+  "60,228": "Algeri",
+
+  "204,223": "Atene",
+  "204,224": "Atene",
+  "205,223": "Atene",
+  "205,224": "Atene",
+
+  "237,192": "Instanbul",
+  "237,193": "Instanbul",
+  "237,194": "Instanbul",
+  "238,192": "Instanbul",
+  "238,193": "Instanbul",
+  "238,194": "Instanbul",
+  "239,192": "Instanbul",
+  "239,193": "Instanbul",
+  "239,194": "Instanbul",
+
+  "151,179": "Corf\u00f9",
+
+  "232,146": "Odessa",
+  "232,147": "Odessa",
+  "233,146": "Odessa",
+  "233,147": "Odessa",
+
+  "135,108": "Berlin",
+  "135,109": "Berlin",
+  "136,108": "Berlin",
+  "136,109": "Berlin",
+
+  "144,77": "Copenaghen",
+  "144,78": "Copenaghen",
+  "145,77": "Copenaghen",
+  "145,78": "Copenaghen",
+
+  "148,67": "Malmo",
+  "148,68": "Malmo",
+  "149,67": "Malmo",
+  "149,68": "Malmo",
+
+  "131,44": "Oslo",
+  "131,45": "Oslo",
+  "132,44": "Oslo",
+  "132,45": "Oslo",
+
+  "79,138": "Paris",
+  "79,139": "Paris",
+  "80,138": "Paris",
+  "80,139": "Paris",
+
+  "88,166": "Marsiglia",
+
+  "67,160": "Bordeaux",
+
+  "53,144": "Brest",
+
+  "117,150": "Berna",
+  "117,151": "Berna",
+  "118,150": "Berna",
+  "118,151": "Berna",
+
+  "105,156": "Ginevra",
+  "105,157": "Ginevra",
+  "106,156": "Ginevra",
+  "106,157": "Ginevra",
+
+  "112,157": "Zermatt",
+
+  "115,155": "Lugano",
+
+  "128,152": "Liechtenstein",
+  "128,153": "Liechtenstein",
+  "129,152": "Liechtenstein",
+  "129,153": "Liechtenstein",
+
+  "118,147": "Zurigo",
+  "118,148": "Zurigo",
+  "119,147": "Zurigo",
+  "119,148": "Zurigo",
+
+  "112,146": "Basilea",
+  "112,147": "Basilea",
+  "113,146": "Basilea",
+  "113,147": "Basilea",
+
+  "75,130": "Le Havre",
+
+  "80,147": "Orleans",
+
+  "73,143": "Le Mans",
+  "73,144": "Le Mans",
+  "74,143": "Le Mans",
+  "74,144": "Le Mans",
+
+  "58,136": "Saint Helier",
+
+  "56,135": "Jersey",
+
+  "52,131": "Guernsey",
+
+  "82,194": "Palma di Maiorca",
+  "83,194": "Palma di Maiorca",
+
+  "80,198": "Ivissa",
+
+  "88,191": "Minorca",
+
+  "77,183": "Barcellona",
+  "77,184": "Barcellona",
+  "78,183": "Barcellona",
+  "78,184": "Barcellona",
+
+  "63,183": "Saragozza",
+  "63,184": "Saragozza",
+  "64,183": "Saragozza",
+  "64,184": "Saragozza",
+
+  "39,204": "Siviglia",
+  "39,205": "Siviglia",
+  "40,204": "Siviglia",
+  "40,205": "Siviglia",
+
+  "22,191": "Lisbona",
+  "22,192": "Lisbona",
+  "23,191": "Lisbona",
+  "23,192": "Lisbona",
+
+  "25,178": "Porto",
+  "25,179": "Porto",
+  "26,178": "Porto",
+  "26,179": "Porto",
+
+  "34,166": "Santiago di Compostela",
+  "34,167": "Santiago di Compostela",
+  "35,166": "Santiago di Compostela",
+  "35,167": "Santiago di Compostela",
+
+  "146,171": "Pola",
+  "146,172": "Pola",
+  "147,171": "Pola",
+  "147,172": "Pola",
+
+  "152,176": "Zara",
+
+  "168,174": "Sarajevo",
+  "168,175": "Sarajevo",
+  "169,174": "Sarajevo",
+  "169,175": "Sarajevo",
+
+  "178,164": "Belgrado",
+  "178,165": "Belgrado",
+  "179,164": "Belgrado",
+  "179,165": "Belgrado",
+
+  "170,157": "Novi Sad",
+
+  "175,196": "Tirana",
+
+  "209,189": "Sofia",
+  "209,190": "Sofia",
+  "210,189": "Sofia",
+  "210,190": "Sofia",
+
+  "207,167": "Bucarest",
+  "207,168": "Bucarest",
+  "208,167": "Bucarest",
+  "208,168": "Bucarest",
+
+  "226,169": "Costanza",
+
+  "147,192": "Roccalonga",
+
+  "124,166": "Bologna",
+  "124,167": "Bologna",
+  "125,166": "Bologna",
+  "125,167": "Bologna",
+
+  "79,124": "Omega Tower"
 }

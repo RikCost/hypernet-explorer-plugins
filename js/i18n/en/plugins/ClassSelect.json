@@ -1,0 +1,30 @@
+{
+  "startingSpecializations": "Starting Specializations",
+  "levelUpList": "Level Up List",
+  "stats": "Stats",
+  "skillCategories": "Skill Categories",
+  "prestige": "Prestige",
+  "confirmClass": "Confirm class",
+  "cancel": "Cancel",
+  "noLevelUpSkills": "No level-up skills for this class.",
+  "noSkillCategories": "No skill categories defined.",
+  "primary": "Primary:",
+  "secondary": "Secondary:",
+  "element": {
+    "1": "Physical",
+    "2": "Fire",
+    "3": "Ice",
+    "4": "Thunder",
+    "5": "Water",
+    "6": "Petro",
+    "7": "Wind",
+    "8": "Sacred",
+    "9": "Cursed"
+  },
+  "noSkillsAtLevel1": "No skills at level 1",
+  "selectYourClass": "Select your class",
+  "ui": {
+    "covenantStamp": "COVENANT"
+  },
+  "vocation": "Vocation"
+}

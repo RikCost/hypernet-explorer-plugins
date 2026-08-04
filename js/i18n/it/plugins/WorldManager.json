@@ -1,0 +1,62 @@
+{
+  "randomName": {
+    "adjectives": [
+      "Infranto",
+      "Verdeggiante",
+      "Cremisi",
+      "Cavo",
+      "Dorato",
+      "Gelido",
+      "Sommerso",
+      "Cinereo",
+      "Eterno",
+      "Abbandonato",
+      "Silente",
+      "Radioso",
+      "Affondato",
+      "Crepuscolare",
+      "Ferreo",
+      "Ossidiana",
+      "Smeraldo",
+      "Sussurrante",
+      "Dimenticato",
+      "Errante",
+      "Spezzato",
+      "Antico",
+      "Perduto",
+      "Velato"
+    ],
+    "nouns": [
+      "Distesa",
+      "Confini",
+      "Frontiera",
+      "Dominio",
+      "Lande",
+      "Santuario",
+      "Cavita",
+      "Marche",
+      "Valle",
+      "Guglia",
+      "Estensione",
+      "Entroterra",
+      "Concordia",
+      "Soglia",
+      "Limite",
+      "Meridiano",
+      "Bastione",
+      "Incavo",
+      "Deriva",
+      "Orizzonte",
+      "Fantasticheria",
+      "Eco",
+      "Nexus",
+      "Selve"
+    ],
+    "fallback": "Nuovo Mondo {n}"
+  },
+  "ui": {
+    "artifactBadge": "ARTEFATTO",
+    "military": "militare",
+    "economy": "economia"
+  }
+}

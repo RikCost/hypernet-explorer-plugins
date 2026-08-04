@@ -1,0 +1,14 @@
+{
+  "ui": {
+    "back": "Back",
+    "specializations": "Specializations",
+    "trained": "Trained",
+    "noneTrained": "No specializations trained yet.",
+    "untrained": "Untrained",
+    "noneSelected": "No specialization selected.",
+    "classes": "Classes",
+    "traits": "Traits",
+    "towards": "Towards {level}",
+    "governingStat": "Governing stat: {stat}"
+  }
+}

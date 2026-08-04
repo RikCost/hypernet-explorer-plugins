@@ -1,0 +1,92 @@
+{
+  "preferences": "PREFERENZE",
+  "back": "Indietro",
+  "noSettingsHere": "Nessuna impostazione qui.",
+  "normal": "Normale",
+  "active": "✦ ATTIVO",
+  "inactive": "✧ INATTIVO",
+  "pressOrOkToEdit": "Premi ▼ o OK per modificare.",
+  "l1R1SwitchTabs": "L1 / R1 cambiano scheda.",
+  "adjustTheFocusedValue": "◀ / ▶ regolano il valore.",
+  "slider": "Cursore",
+  "selection": "Selezione",
+  "toggle": "Interruttore",
+  "active2": "Attivo",
+  "inactive2": "Inattivo",
+  "toAdjust": "◀ / ▶ per regolare",
+  "okOrToToggle": "OK o ◀ / ▶ per commutare",
+  "requiresRestartToApply": "⟳ Richiede riavvio per applicare",
+  "currentValue": "Valore Attuale",
+  "controls": "Comandi",
+  "howItWorks": "Come Funziona",
+  "toBrowse": "▲ / ▼ per scorrere",
+  "l1R1SwitchTabs2": "L1 / R1 cambiano scheda",
+  "label": {
+    "gameplay": "Giocabilita",
+    "video": "Video",
+    "audio": "Audio",
+    "shader": "Shader",
+    "experimental": "Sperimentale",
+    "uiVolume": "Volume Interfaccia",
+    "voiceVolume": "Volume Voci",
+    "masterVolume": "Volume Generale",
+    "language": "Lingua",
+    "muteBgm": "Silenzia BGM",
+    "footstepsVolume": "Volume Passi",
+    "enemyBattlers": "Combattenti Nemici",
+    "showFps": "Mostra Contatore FPS",
+    "activeTheme": "Tema Attivo",
+    "weaponSprites3d": "Sprite Armi 3D",
+    "cardCombat": "Combattimento a Carte",
+    "mapBattle": "Battaglia sulla Mappa",
+    "retroShader": "Shader Retro",
+    "renderResolution": "Risoluzione di Render",
+    "dithering": "Dithering",
+    "colorLevels": "Livelli di Colore",
+    "vertexSnap": "Aggancio Vertici",
+    "uiScaling": "Scala Interfaccia",
+    "fontScaling": "Scala Caratteri",
+    "titleBackground": "Sfondo del Titolo",
+    "enemySpawn": "Comparsa Nemici",
+    "enemyDifficulty": "Difficoltà Nemici",
+    "cpuPartyMembers": "Compagni Controllati dalla CPU",
+    "sprite": "Sprite",
+    "sprites": "Sprite"
+  },
+  "warn": {
+    "language": "⚠ Lavori in corso: solo l'inglese è tradotto per intero. Ogni altra lingua lascia gran parte del gioco non tradotta.",
+    "cardCombat": "⚠ Sostituisce la scena di battaglia standard. Attivandolo, Battaglia sulla Mappa si disattiva.",
+    "mapBattleMode": "⚠ Sostituisce la scena di battaglia standard. Attivandolo, Combattimento a Carte si disattiva."
+  },
+  "titleBackground": [
+    "Casuale",
+    "Schede",
+    "Spazio",
+    "Artefatti",
+    "Bestiario",
+    "Armi",
+    "Nemici 3D",
+    "Iperverso",
+    "Camper"
+  ],
+  "enemySpawn": [
+    "Bilanciato",
+    "Realistico"
+  ],
+  "enemyBattler": [
+    "2D",
+    "3D",
+    "Sprite"
+  ],
+  "languageProgress": "{name} tradotto all'1%",
+  "settingsInSection": "{count} impostazioni in questa sezione.",
+  "desc": {
+    "enemySpawnMode": "Decide quanto sono forti i nemici che vagano per il mondo."
+  },
+  "descState": {
+    "enemySpawnMode": [
+      "Bilanciato: i nemici seguono il gruppo. I vaganti restano al tuo livello o sotto, e ogni casella del mondo nasconde un boss ben più forte.",
+      "Realistico: il tuo livello viene ignorato. Il pericolo dipende dal luogo, dai biomi più selvaggi e dalla distanza dalla Torre Omega, quindi le terre lontane possono essere letali fin da subito."
+    ]
+  }
+}

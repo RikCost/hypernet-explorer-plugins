@@ -1,0 +1,61 @@
+{
+  "monthAbbr": [
+    "gen",
+    "feb",
+    "mar",
+    "apr",
+    "mag",
+    "giù",
+    "lug",
+    "ago",
+    "set",
+    "ott",
+    "nov",
+    "dic"
+  ],
+  "dayAbbr": [
+    "dom",
+    "lun",
+    "mar",
+    "mer",
+    "gio",
+    "ven",
+    "sab"
+  ],
+  "loadError": "Errore: impossibile caricare le ricette.",
+  "stillFermenting": "Sta ancora fermentando... torna più tardi.",
+  "missingLine": "{item} ×{need} (ne hai {have})",
+  "missing": "Mancano: {list}",
+  "started": "Fermentazione avviata: {recipe}",
+  "itemNumbered": "Oggetto#{id} ×{qty}",
+  "units": "{min}–{max} unità",
+  "stage": {
+    "primary": "Fermentazione primaria",
+    "secondary": "Fermentazione secondaria",
+    "conditioning": "Maturazione",
+    "ready": "Pronta da raccogliere!"
+  },
+  "ui": {
+    "ready": "Pronto!",
+    "loadingRecipes": "Caricamento ricette...",
+    "barrel": "Botte",
+    "status": "Stato",
+    "state": "Stato",
+    "empty": "Vuota",
+    "selectRecipeHint": "Seleziona una ricetta a sinistra e premi OK per iniziare la fermentazione.",
+    "beginBrewing": "Inizia la fermentazione",
+    "exit": "Esci",
+    "harvest": "Raccogli",
+    "fermenting": "In fermentazione…",
+    "fermentingTitle": "Fermentazione",
+    "recipe": "Ricetta",
+    "stage": "Fase",
+    "timeRemaining": "Tempo rimanente",
+    "started": "Iniziata",
+    "expectedOutput": "Resa prevista",
+    "back": "Indietro",
+    "brewery": "Birrificio",
+    "recipes": "Ricette",
+    "ingredients": "Ingredienti"
+  }
+}

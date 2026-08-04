@@ -1,0 +1,20 @@
+{
+  "stage": {
+    "baby": "Baby",
+    "adult": "Adult"
+  },
+  "collected": "\\I[{icon}]Collected \\c[14]{item}\\c[0] ×{qty}!",
+  "mapNumbered": "Map {id}",
+  "itemNumbered": "Item #{id}",
+  "petNote": "A {stage} {animal} raised at {place}.",
+  "cannotKeep": "You cannot keep animals here.",
+  "noAnimalToSell": "No animal here to sell.",
+  "sold": "Sold \\c[14]{animal}\\c[0] for €{amount}!",
+  "nothingToCollect": "Nothing to collect yet.",
+  "youngAnimal": {
+    "one": "A young \\c[14]{animal}\\c[0]. Fully grown in about {count} day.",
+    "other": "A young \\c[14]{animal}\\c[0]. Fully grown in about {count} days."
+  },
+  "pleased": "The \\c[14]{animal}\\c[0] is pleased to see you.",
+  "nothingReady": "The \\c[14]{animal}\\c[0] has nothing ready yet."
+}

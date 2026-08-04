@@ -1,0 +1,112 @@
+{
+  "notEnoughMaterials": "Materiali insufficienti.",
+  "vehicleFullyRepaired": "Veicolo riparato completamente!",
+  "vehicleRepaired": "Riparazione effettuata.",
+  "vehicleIsOperationalAgain": "Veicolo di nuovo operativo!",
+  "installed": "INSTALLATO",
+  "hullAppearanceUpdated": "Aspetto dello scafo aggiornato.",
+  "camperExpedition": "CAMPER ADVENTURE",
+  "aReinforcedHeavyCamperDesigned": "Un camper pesante rinforzato progettato per resistere a lunghi tragitti nelle terre selvagge. Richiede una solida integrità strutturale.",
+  "standardUrbanSedan": "AUTOMOBILE URBANA",
+  "aClassicStandardEngineTransport": "Una vettura classica adatta alle strade cittadine. Dipende fortemente dal controllo dello sterzo e della trazione.",
+  "lightSportMotorcycle": "MOTOCICLO LEGGERO",
+  "anAgileAndRapidPersonal": "Un motociclo sportivo agile e rapido. Richiede una catena perfettamente oliata e una risposta immediata dei freni.",
+  "explorerStarship": "IMPERIAL STARSHIP",
+  "anAdvancedDeepSpaceExplorer": "Un vascello spaziale orbitale a propulsione termica. Le parti critiche devono essere impeccabili per permettere il volo astrale.",
+  "inflatableDinghy": "GOMMONE GONFIABILE",
+  "aLightPackableBoatFor": "Un gommone leggero per acque aperte. Lo scafo e le camere d'aria devono restare integri per non affondare.",
+  "critical": "CRITICO",
+  "changeAppearance": "CAMBIA ASPETTO",
+  "statusBroken": "STATO: DANNEGGIATO",
+  "statusOperational": "STATO: OPERATIVO",
+  "allCriticalComponentsMustMaintain": "Tutte le parti critiche devono superare lo 0% di integrità per viaggiare.",
+  "repair": "Riparazione",
+  "upgrades": "Potenziamenti",
+  "close": "CHIUDI",
+  "componentsRegistry": "REGISTRO INTEGRITÀ",
+  "fullRepair": "Riparazione totale",
+  "notInstalled": "NON INSTALLATO",
+  "lv": "Liv.",
+  "maxed": "MASSIMO",
+  "install": "Installa",
+  "upgrade": {
+    "accel": {
+      "name": "Iniettori Turbo",
+      "desc": "Risposta dell'acceleratore più pronta e accelerazione più rapida."
+    },
+    "speed": {
+      "name": "Profilo Aerodinamico",
+      "desc": "Velocità massima maggiore e meno tempo di gioco per attraversare ogni tassello."
+    },
+    "fuel": {
+      "name": "Serbatoio Maggiorato",
+      "desc": "Un serbatoio più grande aumenta la capacità massima di carburante."
+    },
+    "health": {
+      "name": "Telaio Rinforzato",
+      "desc": "Un telaio irrobustito fa subire meno danni al veicolo negli impatti."
+    },
+    "aquatic": {
+      "name": "Conversione Anfibia",
+      "desc": "Uno scafo stagno e i pontoni permettono al camper di navigare e immergersi."
+    },
+    "flight": {
+      "name": "Rotori Antigravità",
+      "desc": "Rotori antigravità ripiegabili permettono al camper di decollare e volare."
+    }
+  },
+  "upgradeWorkshop": "OFFICINA POTENZIAMENTI",
+  "noUpgradesAvailable": "Nessun potenziamento disponibile.",
+  "acceleration": "Accelerazione",
+  "fuelCapacity": "Capacità carburante",
+  "damageReduction": "Riduzione danni",
+  "enablesDrivingOnAndDiving": "Abilita navigazione e immersione sull\\'acqua.",
+  "enablesTakeOffAndFlight": "Abilita decollo e volo.",
+  "repairPercent": "Riparazione ({percent}%)",
+  "timePerTile": "Tempo per tassello: {minutes} min",
+  "timePerTileNext": " → {minutes} min (risparmi {saved} min)",
+  "part": {
+    "Engine": "Motore",
+    "Transmission": "Trasmissione",
+    "Brakes": "Freni",
+    "Steering": "Sterzo",
+    "Battery": "Batteria",
+    "Alternator": "Alternatore",
+    "Radiator": "Radiatore",
+    "Fuel System": "Impianto carburante",
+    "Exhaust": "Scarico",
+    "Suspension": "Sospensioni",
+    "Tires": "Pneumatici",
+    "Body": "Carrozzeria",
+    "Interior": "Interni",
+    "Electronics": "Elettronica",
+    "Air Filter": "Filtro dell'aria",
+    "Oil System": "Impianto dell'olio",
+    "Chain": "Catena",
+    "Handlebars": "Manubrio",
+    "Frame": "Telaio",
+    "Lights": "Luci",
+    "Hull": "Scafo",
+    "Air Chambers": "Camere d'aria",
+    "Oars": "Remi",
+    "Valves": "Valvole",
+    "Ropes": "Cime",
+    "Patch Kit": "Kit di riparazione"
+  },
+  "systemNotReady": "Sistema non pronto. Riprova.",
+  "criticalDamage": "\\C[2]Danno critico!\\C[0] {vehicle} adesso è fuori uso!",
+  "tookDamage": "{vehicle} ha subito danni!",
+  "fullyRepaired": "{vehicle} è stato riparato del tutto!",
+  "partiallyRepaired": "{vehicle} è stato riparato in parte ({percent}%).",
+  "nowOperational": "\\C[3]{vehicle} è di nuovo operativo!\\C[0]",
+  "brokenCannotUse": "{vehicle} è fuori uso e non si può usare!",
+  "repairCriticalFirstLong": "Le parti critiche vanno riparate prima di poterlo usare.",
+  "repairCriticalFirst": "Prima vanno riparate le parti critiche.",
+  "vehicle": {
+    "camper": "Il camper",
+    "car": "L'auto",
+    "starship": "L'astronave",
+    "bike": "La moto",
+    "boat": "Il gommone"
+  }
+}

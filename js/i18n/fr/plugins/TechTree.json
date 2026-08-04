@@ -1,0 +1,285 @@
+{
+  "selectNodeHint": "Sélectionnez un nœud avec les flèches.",
+  "nobelWorthy": "Digne du Nobel",
+  "fringe": "Contesté / Marginal",
+  "speculative": "Spéculatif",
+  "researched": "Recherché",
+  "knownAtFounding": "Connu à la fondation du monde",
+  "discoveredBy": "Découvert par ",
+  "prereqIncomplete": "Prérequis incomplets",
+  "activeProject": "Projet de recherche actif",
+  "day": "jour",
+  "materialsRequired": "Matériaux requis",
+  "requires": "Nécessite",
+  "permanentBuffs": "Bonus permanents de l'équipe",
+  "yieldLabel": "Rendement",
+  "exp": "EXP",
+  "gold": "Or",
+  "complete": "Terminer",
+  "locked": "Verrouillé",
+  "research": "Rechercher",
+  "clearProject": "Effacer le projet actif",
+  "setProject": "Définir comme projet actif",
+  "discovered": "Découvert : ",
+  "recoveredMaterials": "Matériaux récupérés :",
+  "menuName": "Recherche",
+  "back": "Retour",
+  "procName": "{c} {b} {a}",
+  "procDesc": "Une piste de travail qui s'est refermée ailleurs et qui est restée ouverte ici. Le résultat se reproduit sur les appareils de ce monde ; aucune démonstration n'en a jamais été publiée.",
+  "unknownDiscoverer": "Inconnu",
+  "progressCleared": "\\C[3]Progression de recherche effacée.\\C[0]",
+  "theme": {
+    "Physics": {
+      "a": [
+        "Anomal",
+        "Cohérent",
+        "Résonant",
+        "du Vide",
+        "Intriqué",
+        "Non Local",
+        "Casimir",
+        "Chiral"
+      ],
+      "b": [
+        "Champ",
+        "Réseau",
+        "Phonon",
+        "Boson",
+        "Symétrie",
+        "Vortex",
+        "Plasma",
+        "Interféromètre"
+      ],
+      "c": [
+        "Couplage",
+        "Condensat",
+        "Effet",
+        "Régime",
+        "Seuil",
+        "Résonance"
+      ]
+    },
+    "Astronomy": {
+      "a": [
+        "Occulté",
+        "Errant",
+        "Transneptunien",
+        "Circumbinaire",
+        "Relique",
+        "Hypervéloce",
+        "Sombre"
+      ],
+      "b": [
+        "Compagnon",
+        "Halo",
+        "Aurore",
+        "Transit",
+        "Nébuleuse",
+        "Microlentille",
+        "Annelet"
+      ],
+      "c": [
+        "Relevé",
+        "Catalogue",
+        "Éphéméride",
+        "Parallaxe",
+        "Occultation"
+      ]
+    },
+    "Mathematics": {
+      "a": [
+        "Creux",
+        "Non Linéaire",
+        "Récursif",
+        "Ergodique",
+        "Modulaire",
+        "Spectral",
+        "Abélien"
+      ],
+      "b": [
+        "de Crible",
+        "Lemme",
+        "Variété",
+        "Automate",
+        "Partition",
+        "Foncteur",
+        "Borne"
+      ],
+      "c": [
+        "Conjecture",
+        "Identité",
+        "Théorème",
+        "Critère",
+        "Dualité"
+      ]
+    },
+    "Alchemistry": {
+      "a": [
+        "Catalytique",
+        "Énantiopur",
+        "Supramoléculaire",
+        "Photoactif",
+        "Aqueux",
+        "Réducteur"
+      ],
+      "b": [
+        "de Ligand",
+        "d'Isomère",
+        "Réactif",
+        "Polymère",
+        "Complexe",
+        "Substrat",
+        "Enzyme"
+      ],
+      "c": [
+        "Synthèse",
+        "Cascade",
+        "Voie",
+        "Dosage",
+        "Réaction"
+      ]
+    },
+    "SocialSciences": {
+      "a": [
+        "Réticulaire",
+        "Comportemental",
+        "Émergent",
+        "Réflexif",
+        "Distribué",
+        "Informel"
+      ],
+      "b": [
+        "Cascade",
+        "Communs",
+        "Norme",
+        "Signal",
+        "Cohorte",
+        "Contagion",
+        "Institution"
+      ],
+      "c": [
+        "Théorie",
+        "Modèle",
+        "Étude",
+        "Cadre",
+        "Hypothèse"
+      ]
+    },
+    "Arcane": {
+      "a": [
+        "Brisé",
+        "Chuchoté",
+        "Décroissant",
+        "Scellé",
+        "Creux",
+        "Nonuple",
+        "Ombral"
+      ],
+      "b": [
+        "Sceau",
+        "Garde",
+        "Rite",
+        "Conjuration",
+        "Voile",
+        "Cercle",
+        "Litanie"
+      ],
+      "c": [
+        "Œuvre",
+        "Ascendance",
+        "Ligature",
+        "Remémoration",
+        "Éveil"
+      ]
+    },
+    "Technomagica": {
+      "a": [
+        "Câblé",
+        "Compilé",
+        "Sanctifié",
+        "Surcadencé",
+        "Bifurqué",
+        "Mis en Cache",
+        "Thaumique"
+      ],
+      "b": [
+        "Démon",
+        "Noyau",
+        "Puce-Sceau",
+        "Runtime",
+        "Tampon",
+        "Protocole",
+        "Chemin de Code"
+      ],
+      "c": [
+        "Moteur",
+        "Cadriciel",
+        "Version",
+        "Déploiement",
+        "Compilateur"
+      ]
+    },
+    "Theotecnical": {
+      "a": [
+        "Consacré",
+        "Promulgué",
+        "Blindé",
+        "Canonique",
+        "Ordonné",
+        "Oint",
+        "Aéroporté"
+      ],
+      "b": [
+        "Bobine",
+        "Reliquaire",
+        "Carcan",
+        "Chaire",
+        "Bulle",
+        "Contrefort",
+        "Sacrement"
+      ],
+      "c": [
+        "Doctrine",
+        "Batterie",
+        "Mission",
+        "Rite",
+        "Schéma",
+        "Encyclique"
+      ]
+    }
+  },
+  "phase": {
+    "Platform": "Plateforme",
+    "Rediscovery": "Redécouverte",
+    "High Ritual": "Haut Rituel",
+    "False Lead": "Fausse Piste",
+    "Vaporware": "Vaporware",
+    "Foundation": "Fondation",
+    "First Working": "Première Opération",
+    "Sympathy": "Sympathie",
+    "Sublimation": "Sublimation",
+    "Prototype": "Prototype",
+    "Toolchain": "Chaîne d'Outils",
+    "Power": "Puissance",
+    "Classified": "Classifié",
+    "Deployment": "Déploiement",
+    "Speculative": "Spéculatif",
+    "Ascension": "Ascension",
+    "Ordnance": "Munitions",
+    "Bulwark": "Rempart",
+    "Mission": "Mission",
+    "Doctrine": "Doctrine",
+    "Apostasy": "Apostasie",
+    "Apotheosis": "Apothéose"
+  },
+  "news": {
+    "fringe": "on colporte de nouveau {name}",
+    "procedural": "une étrange science nouvelle qu'on appelle {name} a fait surface",
+    "arcane": "l'art perdu de {name} a été réappris",
+    "technomagica": "Esoteric Heavy Industries a dévoilé {name}",
+    "generic": "{name} a enfin été découvert",
+    "nobelSuffix": ", et il est question d'un prix Nobel",
+    "credit": " La rumeur en attribue le mérite à {who} et à son cercle.",
+    "theotecnical": "le Saint Empire du Vatican a promulgué {name}"
+  }
+}

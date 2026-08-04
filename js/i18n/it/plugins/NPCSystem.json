@@ -1,0 +1,68 @@
+{
+  "mapFallback": "Mappa {id}",
+  "shopkeeperFallback": "Negoziante",
+  "frontier": "Frontiera",
+  "placeOfCountry": "{place} di {country}",
+  "placeSettlement": "Insediamento: {place}",
+  "thought": {
+    "flee": {
+      "named": [
+        "{name}... devo andarmene!",
+        "Stammi lontano, {name}!",
+        "Non riesco ad affrontare {name} adesso!"
+      ],
+      "anon": [
+        "Stammi lontano!",
+        "Lasciami in pace!",
+        "Dovrei scappare..."
+      ]
+    },
+    "disdain": {
+      "named": [
+        "{name}... tsk.",
+        "Ancora tu, {name}.",
+        "{name} porta solo guai."
+      ],
+      "anon": [
+        "Questo tipo non mi piace.",
+        "Meglio tenere le distanze.",
+        "Quello sconosciuto mi mette a disagio."
+      ]
+    },
+    "distrust": {
+      "named": [
+        "Non mi fido di {name}. Non di questi tempi.",
+        "Cosa vuole davvero {name}?",
+        "Perfino {name} potrebbe essere pericoloso ormai..."
+      ],
+      "anon": [
+        "Non ci si può fidare di nessuno di questi tempi.",
+        "Cosa vogliono da me?",
+        "Meglio tenere le distanze... non è più sicuro.",
+        "Tempi bui. Occhio agli sconosciuti."
+      ]
+    },
+    "greet": {
+      "stranger": [
+        "Salve.",
+        "Oh, una visita.",
+        "Buongiorno, straniero.",
+        "Una faccia nuova da queste parti."
+      ],
+      "warm": [
+        "Che piacere vederti, {name}!",
+        "Ehi {name}!",
+        "{name}! Come va?"
+      ],
+      "polite": [
+        "Oh, ciao {name}.",
+        "Ehi, {name}."
+      ],
+      "cold": [
+        "Hmm.",
+        "...",
+        "Oh. Ancora tu."
+      ]
+    }
+  }
+}

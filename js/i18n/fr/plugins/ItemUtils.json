@@ -1,0 +1,22 @@
+{
+  "need": {
+    "hunger": "",
+    "sleep": "",
+    "hygiene": "",
+    "social": "",
+    "leisure": ""
+  },
+  "category": {
+    "materials": "",
+    "item": "",
+    "food": "",
+    "tools": ""
+  },
+  "rarity": {
+    "Common": "",
+    "Uncommon": "",
+    "Rare": "",
+    "Epic": "",
+    "Legendary": ""
+  }
+}

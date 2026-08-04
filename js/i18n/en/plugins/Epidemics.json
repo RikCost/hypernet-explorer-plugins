@@ -1,0 +1,24 @@
+{
+  "name": {
+    "hysteria": "The {disease} of {place}, {year}",
+    "medical": "{disease} outbreak, {place} {year}"
+  },
+  "log": {
+    "firstCases": "First cases filed in {place}.",
+    "reaches": "Reaches {place} (from {from}).",
+    "declaredOver": "Declared over. {cases} cases, {dead} dead."
+  },
+  "news": {
+    "hysteria": "{disease} spreads through {place}; officials appeal for calm.",
+    "medical": "Outbreak of {disease} confirmed in {place}. Eurodemics raises the alert."
+  },
+  "caught": "{actor} caught {disease}.",
+  "caughtFrom": "{actor} caught {disease} from {source}.",
+  "undated": "undated",
+  "begins": "{name} begins.",
+  "bulletin": {
+    "header": "Eurodemics bulletin, {date}",
+    "totals": "{active} active outbreak(s) across {towns} town(s); {infected} currently ill, {dead} dead.",
+    "line": "  {name} ({kind}), {infected} ill in {towns} town(s)."
+  }
+}

@@ -1,0 +1,2905 @@
+/*:
+ * @plugindesc [Add-on] Prosthetic shop (Refactored UI - Full Screen Steps)
+ * @author Omni-Lex 
+ * @help
+ * This plugin is an add-on for the Core Limb Damage System.
+ *
+ * Flow:
+ * 1. Party member selection
+ * 2. Command menu (Install bodypart / Remove bodypart / Replace bodypart /
+ *    Install implant / Cancel)
+ * 3a. [Install bodypart]  → Archetype select → Part list → confirm purchase
+ * 3b. [Remove bodypart]   → Actor part list → (if implant) confirm warning
+ * 3c. [Install implant]  → Body part grid → Prosthetic list
+ *
+ * Body part install price  : hpPercent * 1000 gold
+ * Body part removal price  : hpPercent * 100  gold
+ * Vital parts cannot be removed.
+ * Installing a body part grants the abs(statEffect.amount) bonus to that param.
+ * Removing a body part reverts that bonus.
+ *
+ * @command OpenProstheticShop
+ * @desc Opens the prosthetic shop.
+ *
+ */
+(function () {
+  "use strict";
+
+  // A body part's skillId may be a single number or an array of numbers.
+  // Normalize to a clean array of positive ids (falls back if Health_Core's
+  // helper is unavailable for any reason).
+  function skillIdList(value) {
+    if (window.HealthCore && window.HealthCore.normalizeSkillIds) {
+      return window.HealthCore.normalizeSkillIds(value);
+    }
+    if (Array.isArray(value)) return value.filter((id) => typeof id === "number" && id > 0);
+    return typeof value === "number" && value > 0 ? [value] : [];
+  }
+
+  // Write a freshly grafted/replaced body part onto the actor: build the part
+  // record, apply its stat effect, learn its own skill(s), clear any pending
+  // removed-part debuff, and grant the part-type bonus skills
+  // (Mouth/Hands/Eyes/Feet) immediately so they are not missing until the next
+  // map load re-runs ensureAllPartyBodyPartSkills. Shared by the install and
+  // replace shop paths.
+  // ==========================================================================
+  // What an operation teaches
+  // ==========================================================================
+  // Every graft is surgery, so Surgery (265) is always earned. What else is
+  // learned depends on what was actually fitted: bolting a hydraulic arm on is
+  // not the same trade as grafting living gills or seating a mana crystal.
+  // Matched on the implant key by keyword rather than by a table of all 69, so
+  // an implant added to ProstheticCompatibility.json is classified without a
+  // code change.
+  // i18n-ignore-start: specialization names and keyword probes, matched
+  // against Specialization.json rather than shown as prose
+  const IMPLANT_SPEC_KEYWORDS = [
+    // Machinery, electronics and fabricated hardware.
+    ["Cybernetics", [
+      "CYBER", "MECHANICAL", "NEURAL", "HYDRAULIC", "STEAM", "GYRO", "SPRING",
+      "MAGNETIC", "HOVER", "GRAPPLING", "TOOLS", "BLADE", "LOCK_PICKS",
+      "TELESCOPIC", "SONIC", "SENSOR", "FILTRATION", "FILTER", "PURIFIER",
+      "EXTRACTOR", "SYNTHESIZER", "IRON", "REINFORCEMENT", "ADAMANTINE",
+      "NEEDLES", "SPIKES", "CONDUCTOR", "PROCESSOR", "ABSORBERS", "PADS",
+      "SOLES", "COILS", "BOILER", "RIBCAGE", "FURNACE"
+    ]],
+    // Anything worked in mana, spirit or rune.
+    ["Runecrafting", [
+      "ARCANE", "MANA", "RUNIC", "ASTRAL", "SPIRIT", "VOID", "SHADOW",
+      "ANCIENT", "CRYSTAL", "ELEMENTAL", "PHOENIX", "EARTH_SENSE", "ESSENCE"
+    ]],
+    // Grown, grafted or otherwise alive.
+    ["Biomancy", [
+      "BEAST", "VAMPIRIC", "VENOM", "AQUATIC", "LIVING", "TREE", "SPORE",
+      "MITOSIS", "TESTES", "UTERUS", "OVIDUCT", "DRAGON", "HAWK", "ELVEN",
+      "SCENT", "SILVER_TONGUE", "FANGS", "TEETH", "CLAWS", "GLANDS", "GILLS",
+      "FINS", "VINES", "GOLEM", "TITAN", "LIMB", "ARM"
+    ]]
+  ];
+
+  function implantSpec(prostheticKey) {
+    const key = String(prostheticKey || "").toUpperCase();
+    if (!key) return null;
+    for (const [spec, words] of IMPLANT_SPEC_KEYWORDS) {
+      if (words.some(w => key.includes(w))) return spec;
+    }
+    return "Bionic Installation";
+  }
+  // i18n-ignore-end
+
+  // Called by both install paths (the window method and the standalone one).
+  function trainOnImplant(prostheticKey) {
+    if (!window.SpecializationXP) return;
+    window.SpecializationXP.awardCapped("Surgery", 2);
+    const spec = implantSpec(prostheticKey);
+    if (spec) window.SpecializationXP.awardCapped(spec, 2);
+  }
+
+  function graftBodyPart(actor, item, partKey, archPart, itemId) {
+    if (!actor._bodyParts) actor._bodyParts = {};
+    const hpPercentage = item.hpPercent / 100;
+    actor._bodyParts[partKey] = {
+      name: item.name,
+      maxHp: Math.round(actor.mhp * hpPercentage),
+      currentHp: Math.round(actor.mhp * hpPercentage),
+      vital: item.vital,
+      damaged: false,
+      equipSlot: archPart.equipSlot || null,
+      childParts: archPart.childParts || [],
+      multiple: archPart.multiple || false,
+      appliedStatEffect: false,
+      hpPercent: item.hpPercent,
+      statEffect: item.statEffect,
+      skillId: item.skillId || 0,
+      itemId: itemId,
+    };
+
+    if (item.statEffect && item.statBonus > 0) {
+      if (!actor._bodyPartStatEffects) actor._bodyPartStatEffects = {};
+      const p = item.statEffect.param;
+      if (!actor._bodyPartStatEffects[p]) actor._bodyPartStatEffects[p] = 0;
+      actor._bodyPartStatEffects[p] += item.statBonus;
+    }
+
+    skillIdList(item.skillId).forEach((sid) => { if ($dataSkills[sid]) actor.learnSkill(sid); });
+
+    if (actor._removedPartDebuffs && actor._removedPartDebuffs[partKey]) {
+      const debuff = actor._removedPartDebuffs[partKey];
+      const p = debuff.param;
+      const amount = debuff.amount;
+      if (actor._statModifiers && actor._statModifiers[p] !== undefined) {
+        actor._statModifiers[p] -= amount;
+        if (actor._statModifiers[p] === 0) delete actor._statModifiers[p];
+      }
+      delete actor._removedPartDebuffs[partKey];
+    }
+
+    if (window.HealthCore && window.HealthCore.ensureBodyPartSkills) {
+      window.HealthCore.ensureBodyPartSkills(actor);
+    }
+  }
+
+  // Display label for a part's skill(s): joined skill names, or "" if none.
+  function skillNames(value) {
+    return skillIdList(value)
+      .map((id) => ($dataSkills && $dataSkills[id] ? $dataSkills[id].name : ""))
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  // ── Shared character-switcher hint helper (idempotent across plugins) ──────
+  // Shows controller bumper hints (L / R) around a .companion-tabs-row when a
+  // gamepad is connected, or a single TAB hint otherwise. Also installs a Tab
+  // keyboard shortcut that cycles characters only while no controller is
+  // connected (the bumpers / pageup-pagedown handle it when one is).
+  if (!window.CharSwitcher) {
+    window.CharSwitcher = {
+      isControllerConnected() {
+        const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+        for (let i = 0; i < pads.length; i++) {
+          if (pads[i] && pads[i].connected) return true;
+        }
+        return false;
+      },
+      injectStyles() {
+        if (document.getElementById('char-switch-hint-styles')) return;
+        const style = document.createElement('style');
+        style.id = 'char-switch-hint-styles';
+        style.textContent = `
+          .companion-switcher { display:flex; align-items:center; gap:6px; }
+          .char-switch-hint {
+            font-family:'Lora',serif; font-size:0.6rem; font-weight:bold;
+            line-height:1; letter-spacing:0.5px; color:var(--text-primary-hover);
+            border:1.5px solid var(--text-primary-hover); border-radius:3px;
+            padding:2px 5px; opacity:0.7; user-select:none; white-space:nowrap;
+            text-transform:uppercase; flex-shrink:0;
+          }
+        `;
+        document.head.appendChild(style);
+      },
+      parts(memberCount) {
+        this.injectStyles();
+        if (!memberCount || memberCount <= 1) return { left: '', right: '' };
+        if (this.isControllerConnected()) {
+          return {
+            left: '<span class="char-switch-hint">L</span>',
+            right: '<span class="char-switch-hint">R</span>'
+          };
+        }
+        return { left: '', right: '<span class="char-switch-hint">TAB</span>' };
+      },
+      inner(tabsRowHTML, memberCount) {
+        const p = this.parts(memberCount);
+        return p.left + tabsRowHTML + p.right;
+      },
+      wrap(tabsRowHTML, memberCount) {
+        return `<div class="companion-switcher">${this.inner(tabsRowHTML, memberCount)}</div>`;
+      },
+      installTabKey(scene, onCycle) {
+        if (scene._charSwitchTabListener) return;
+        scene._charSwitchTabListener = (e) => {
+          if (e.key !== 'Tab') return;
+          e.preventDefault();
+          if (this.isControllerConnected()) return;
+          onCycle(e.shiftKey ? -1 : 1);
+        };
+        window.addEventListener('keydown', scene._charSwitchTabListener);
+      },
+      removeTabKey(scene) {
+        if (scene._charSwitchTabListener) {
+          window.removeEventListener('keydown', scene._charSwitchTabListener);
+          scene._charSwitchTabListener = null;
+        }
+      }
+    };
+  }
+
+  var pluginName = "Health_ProstheticShop";
+  var parameters = {};
+  // Getters for dynamic database access to prevent load-order timing issues
+  const getBodyParts = () => window.Health ? window.Health.BodyParts : null;
+  const getProstheticTypes = () => window.Health ? window.Health.ProstheticTypes : null;
+  const getProstheticCompatibility = () => window.Health ? window.Health.ProstheticCompatibility : null;
+  const getEnemyArchetypes = () => window.Health ? window.Health.EnemyArchetypes : null;
+
+  // --- Utility constants & functions ---
+
+  const AUTO_ASSIGN_IMPLANTS = [
+    "TESTES",       // 0
+    "UTERUS",       // 1
+    "OVIDUCT",      // 2
+    "SPORE_GLAND",  // 3
+    "MITOSIS_GLAND",// 4
+    "TESTES",       // 5
+  ];
+
+  // Maps party index (0/1/2) to the game variable for reproduction type
+  function getReproductionVariableId(actor) {
+    const idx = $gameParty.members().indexOf(actor);
+    return [87, 115, 116][idx] !== undefined ? [87, 115, 116][idx] : 87;
+  }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    parameters = PluginManager.parameters(pluginName);
+  } else {
+    parameters = PluginManager.parameters(pluginName);
+  }
+
+  if (Utils.RPGMAKER_NAME === "MZ" && !window.Window_StatusBase) {
+    throw new Error("Window_StatusBase is required for this plugin in RPG Maker MZ");
+  }
+
+  function getParamName(paramId) {
+    return T.list('Prosthetics.paramNames')[paramId] || T('Prosthetics.statFallback');
+  }
+
+  function formatPriceInEuros(goldPrice) {
+    return (goldPrice / 100).toFixed(2) + "€";
+  }
+
+  function getTranslated(dataObject, propertyName) {
+    const val = dataObject[propertyName];
+    if (val && typeof val === "string" && val.includes('.')) {
+      return window.getArchetypeText(val);
+    }
+    const lang = ConfigManager.language;
+    const langKey = `${propertyName}_${lang}`;
+    return lang !== "en" && dataObject[langKey] ? dataObject[langKey] : dataObject[propertyName];
+  }
+
+  function initializeBodyParts(actor) {
+    const BodyParts = getBodyParts();
+    if (actor && !actor._bodyParts && BodyParts) {
+      actor._bodyParts = {};
+      actor._statModifiers = {};
+      for (const partKey in BodyParts) {
+        const basePart = BodyParts[partKey];
+        const hpPercentage = basePart.hp / 100;
+        actor._bodyParts[partKey] = {
+          name: getTranslated(basePart, "name"),
+          maxHp: Math.round(actor.mhp * hpPercentage),
+          currentHp: Math.round(actor.mhp * hpPercentage),
+          vital: basePart.vital,
+          damaged: false,
+          equipSlot: basePart.equipSlot || null,
+          childParts: basePart.childParts || [],
+          multiple: basePart.multiple || false,
+          appliedStatEffect: false,
+        };
+      }
+    }
+  }
+
+  const getTextColor = function (id) {
+    if (this && this.textColor) return this.textColor(id);
+    if (Utils.RPGMAKER_NAME === "MZ" && window.ColorManager) return ColorManager.textColor(id);
+    return "rgba(255,255,255,1)";
+  };
+
+  const getSystemColor = function () {
+    if (this && this.systemColor) return this.systemColor();
+    if (Utils.RPGMAKER_NAME === "MZ" && window.ColorManager) return ColorManager.systemColor();
+    return "rgba(176,224,248,1)";
+  };
+
+  // Helper: infer hpPercent for an existing body part
+  function inferHpPercent(part, actor) {
+    if (part.hpPercent !== undefined) return part.hpPercent;
+    if (actor.mhp > 0) return Math.round((part.maxHp / actor.mhp) * 100);
+    return 10;
+  }
+
+  // Helper: look up statEffect for a part key
+  function lookupStatEffect(partKey, part, actor) {
+    if (part.statEffect) return part.statEffect;
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (actor._currentArchetype && EnemyArchetypes) {
+      const arch = EnemyArchetypes[actor._currentArchetype];
+      if (arch && arch.parts && arch.parts[partKey]) return arch.parts[partKey].statEffect;
+    }
+    return null;
+  }
+
+  // Returns true if the given part should be treated as vital for this actor.
+  // LEFT_LUNG / RIGHT_LUNG are only vital when their partner is already damaged.
+  const LUNG_PAIRS = { LEFT_LUNG: "RIGHT_LUNG", RIGHT_LUNG: "LEFT_LUNG" };
+  function isPartVital(actor, partKey, basePart) {
+    if (partKey in LUNG_PAIRS) {
+      const partner = actor._bodyParts && actor._bodyParts[LUNG_PAIRS[partKey]];
+      // Vital only when the other lung is missing or fully damaged
+      return !partner || partner.damaged;
+    }
+    return !!(basePart && basePart.vital);
+  }
+
+  // Compute the effective stat bonus from a statEffect object.
+  // HP (param 0) and MP (param 1) are multiplied by 10.
+  // All other stats are divided by 3, rounded up.
+  function computeStatBonus(statEffect) {
+    if (!statEffect) return 0;
+    const raw = Math.abs(statEffect.amount);
+    if (statEffect.param === 0 || statEffect.param === 1) return raw * 10;
+    return Math.ceil(raw / 3);
+  }
+
+  // --- END UTILITY ---
+
+  // --- Daily randomized prosthetic shop availability ---
+  const prostheticShopCache = {};
+
+  function _prostheticGetDateKey() {
+    const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
+    const parts = dateStr.split(' ').filter(Boolean);
+    if (parts.length < 3) return '2001-01-01';
+    const day = parseInt(parts[0]) || 1;
+    const monthStr = (parts[1] || '').toUpperCase();
+    const year = parseInt(parts[2]) || 2001;
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    let month = months.indexOf(monthStr);
+    if (month === -1) {
+      const itMonths = ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'];
+      month = itMonths.indexOf(monthStr);
+    }
+    if (month === -1) month = 0;
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  // Canonical world seed so prosthetic stock is consistent per world
+  function _prostheticGetWorldSeed() {
+    let historySeed = 19002001;
+    if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+      historySeed = window.HistoryManager.getSeed();
+    } else if (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._historySeed !== undefined) {
+      historySeed = $gameSystem._historySeed;
+    }
+    return historySeed >>> 0;
+  }
+
+  function _prostheticSeededShuffle(array, seed) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      seed = (seed * 9301 + 49297) % 233280;
+      const j = Math.floor((seed / 233280) * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  function getDailyProstheticArchetypes(mapId, x, y) {
+    const dateKey = _prostheticGetDateKey();
+    const cacheKey = `${mapId}_${x}_${y}_${dateKey}`;
+    if (prostheticShopCache[cacheKey]) return prostheticShopCache[cacheKey];
+
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!EnemyArchetypes) return null;
+
+    const allKeys = Object.keys(EnemyArchetypes);
+    const dateNum = parseInt(dateKey.replace(/-/g, ''), 10);
+    const base = mapId * 10000000 + x * 10000 + y * 100 + (dateNum % 10000);
+    const seed = (base ^ _prostheticGetWorldSeed()) >>> 0;
+    const shuffled = _prostheticSeededShuffle(allKeys, seed);
+
+    // 4–6 archetypes available per day
+    const rand = (Math.sin(seed + 42) * 10000) % 1;
+    const count = Math.min(allKeys.length, 4 + Math.floor(Math.abs(rand) * 3));
+    const selected = shuffled.slice(0, count);
+
+    prostheticShopCache[cacheKey] = selected;
+    return selected;
+  }
+  // --- END Daily randomization ---
+
+  const INSTALLATION_FEE = 5000; // 50€ flat labor fee for any installation
+
+  function buildBodyPartItemLookup() {
+    const lookup = {};
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!EnemyArchetypes) return lookup;
+    for (const archKey of Object.keys(EnemyArchetypes)) {
+      const arch = EnemyArchetypes[archKey];
+      if (!arch || !arch.parts) continue;
+      for (const partKey of Object.keys(arch.parts)) {
+        const part = arch.parts[partKey];
+        if (!part.itemId) continue;
+        if (!lookup[part.itemId]) lookup[part.itemId] = [];
+        lookup[part.itemId].push({ archetypeKey: archKey, partKey, part });
+      }
+    }
+    return lookup;
+  }
+
+  function getInventoryBodyParts() {
+    const lookup = buildBodyPartItemLookup();
+    const results = [];
+    for (let i = 1; i < $dataItems.length; i++) {
+      const item = $dataItems[i];
+      if (!item || !item.note) continue;
+      const note = item.note.toLowerCase();
+      if (!note.includes('<category: bodypart>') && !note.includes('<category:bodypart>')) continue;
+      if ($gameParty.numItems(item) <= 0) continue;
+      const matches = lookup[i];
+      if (!matches || matches.length === 0) continue;
+      const { archetypeKey, partKey, part } = matches[0];
+      const statBonus = computeStatBonus(part.statEffect);
+      results.push({
+        isInventoryPart: true,
+        isArchetypePart: true,
+        item,
+        itemId: i,
+        archetypeKey,
+        partKey,
+        name: getTranslated(part, "name"),
+        hpPercent: part.hpPercent,
+        vital: part.vital,
+        statEffect: part.statEffect || null,
+        statBonus,
+        skillId: part.skillId || 0,
+        cost: INSTALLATION_FEE,
+        alreadyOwned: false,
+        archPart: part,
+      });
+    }
+    return results;
+  }
+
+  // ===========================================================================
+  // Window_PartySelect  (Step 1)
+  // ===========================================================================
+  function Window_PartySelect() { this.initialize(...arguments); }
+  Window_PartySelect.prototype = Object.create(Window_Command.prototype);
+  Window_PartySelect.prototype.constructor = Window_PartySelect;
+
+  Window_PartySelect.prototype.initialize = function () {
+    const ww = 400;
+    const members = $gameParty.members();
+    const wh = members.length * 36 + 24;
+    const wx = (Graphics.boxWidth - ww) / 2;
+    const wy = (Graphics.boxHeight - wh) / 2;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_Command.prototype.initialize.call(this, new Rectangle(wx, wy, ww, wh));
+    } else {
+      Window_Command.prototype.initialize.call(this, wx, wy, ww, wh);
+    }
+  };
+
+  Window_PartySelect.prototype.makeCommandList = function () {
+    for (const actor of $gameParty.members()) {
+      this.addCommand(actor.name(), "selectMember", true, actor);
+    }
+  };
+
+  Window_PartySelect.prototype.getSelectedActor = function () {
+    return this.currentExt();
+  };
+
+  // ===========================================================================
+  // Window_ShopCommand  (Step 2)
+  // ===========================================================================
+  function Window_ShopCommand() { this.initialize(...arguments); }
+  Window_ShopCommand.prototype = Object.create(Window_Command.prototype);
+  Window_ShopCommand.prototype.constructor = Window_ShopCommand;
+
+  Window_ShopCommand.prototype.initialize = function () {
+    const ww = 400;
+    const wh = 5 * 36 + 24; // 5 commands
+    const wx = (Graphics.boxWidth - ww) / 2;
+    const wy = (Graphics.boxHeight - wh) / 2;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_Command.prototype.initialize.call(this, new Rectangle(wx, wy, ww, wh));
+    } else {
+      Window_Command.prototype.initialize.call(this, wx, wy, ww, wh);
+    }
+  };
+
+  Window_ShopCommand.prototype.makeCommandList = function () {
+    this.addCommand(T('Prosthetics.installBodypart'), "installBodypart", true);
+    this.addCommand(T('Prosthetics.removeBodypart'), "removeBodypart", true);
+    this.addCommand(T('Prosthetics.replaceBodypart'), "replaceBodypart", true);
+    this.addCommand(T('Prosthetics.installImplant'), "installImplant", true);
+    this.addCommand(T('Prosthetics.cancel'), "cancel", true);
+  };
+
+  // ===========================================================================
+  // Window_ArchetypeSelect  (Install bodypart – step A)
+  // ===========================================================================
+  function Window_ArchetypeSelect() { this.initialize(...arguments); }
+  Window_ArchetypeSelect.prototype = Object.create(Window_Command.prototype);
+  Window_ArchetypeSelect.prototype.constructor = Window_ArchetypeSelect;
+
+  Window_ArchetypeSelect.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_Command.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Command.prototype.initialize.call(this, 0, 0, width, height);
+    }
+  };
+
+  Window_ArchetypeSelect.prototype.maxCols = function () { return 3; };
+
+  Window_ArchetypeSelect.prototype.makeCommandList = function () {
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!EnemyArchetypes) return;
+    for (const key of Object.keys(EnemyArchetypes)) {
+      const label = key.replace(/([A-Z])/g, " $1").trim();
+      this.addCommand(label, "archetype", true, key);
+    }
+  };
+
+  Window_ArchetypeSelect.prototype.getSelectedKey = function () {
+    return this.currentExt();
+  };
+
+  // ===========================================================================
+  // Window_ArchetypePartList  (Install bodypart – step B)
+  // ===========================================================================
+  function Window_ArchetypePartList() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_ArchetypePartList.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_ArchetypePartList.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_ArchetypePartList.prototype.constructor = Window_ArchetypePartList;
+
+  Window_ArchetypePartList.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._archetypeKey = null;
+    this._partList = [];
+    this.refresh();
+  };
+
+  Window_ArchetypePartList.prototype.setContext = function (actor, archetypeKey) {
+    this._actor = actor;
+    this._archetypeKey = archetypeKey;
+    this.refresh();
+    this.select(0);
+  };
+
+  Window_ArchetypePartList.prototype.maxItems = function () { return this._partList.length; };
+  Window_ArchetypePartList.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_ArchetypePartList.prototype.setupPartList = function () {
+    this._partList = [];
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!this._archetypeKey || !EnemyArchetypes) return;
+    const archetype = EnemyArchetypes[this._archetypeKey];
+    if (!archetype || !archetype.parts) return;
+
+    for (const partKey of Object.keys(archetype.parts)) {
+      const part = archetype.parts[partKey];
+
+      // Skip vital parts and parts whose key or name contains "Core" or "Body"
+      if (part.vital) continue;
+      const keyLower = partKey.toLowerCase();
+      const nameLower = (part.name || "").toLowerCase();
+      if (keyLower.includes("core") || keyLower.includes("body") ||
+        nameLower.includes("core") || nameLower.includes("body") ||
+        nameLower.includes("head") || nameLower.includes("head")) continue;
+
+      // Key-based check first, then name-based: hide if the actor already owns
+      // any part whose name is contained in this part's name (case-insensitive).
+      // e.g. actor has "Right Hand" → hides archetype parts like "Right Hand (Cyber)"
+      const partName = getTranslated(part, "name").toLowerCase();
+      let alreadyOwned = !!(this._actor && this._actor._bodyParts && this._actor._bodyParts[partKey]);
+      if (!alreadyOwned && this._actor && this._actor._bodyParts) {
+        for (const existingKey in this._actor._bodyParts) {
+          const existingName = (this._actor._bodyParts[existingKey].name || "").toLowerCase();
+          if (existingName && partName.includes(existingName)) { alreadyOwned = true; break; }
+        }
+      }
+      // A party with a surgeon in it pays for the parts, not for the theatre.
+      const surgeonRate = window.SpecializationXP
+        ? window.SpecializationXP.discount("Surgery", 0.06, 0.7) : 1;
+      const cost = Math.round((part.hpPercent * 1000 +
+        Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000) * surgeonRate);
+      const statBonus = computeStatBonus(part.statEffect);
+
+      this._partList.push({
+        isArchetypePart: true,
+        partKey,
+        archetypeKey: this._archetypeKey,
+        name: getTranslated(part, "name"),
+        hpPercent: part.hpPercent,
+        vital: part.vital,
+        statEffect: part.statEffect || null,
+        statBonus,
+        skillId: part.skillId || 0,
+        cost,
+        alreadyOwned,
+        archPart: part,   // keep full archetype part data for installation
+      });
+    }
+  };
+
+  Window_ArchetypePartList.prototype.drawItem = function (index) {
+    const item = this._partList[index];
+    if (!item) return;
+
+    const rect = this.itemRect(index);
+    const x = rect.x + 4;
+    const width = rect.width - 8;
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+
+    if (item.alreadyOwned) {
+      this.contents.paintOpacity = 96;
+      this.changeTextColor(getTextColor.call(this, 7));
+    } else {
+      this.contents.paintOpacity = 255;
+      this.resetTextColor();
+    }
+
+    // Name
+    this.drawText(item.name, x, rect.y, width - 160);
+
+    // Price or OWNED badge
+    if (item.alreadyOwned) {
+      this.changeTextColor(getTextColor.call(this, 3));
+      this.drawText(T('Prosthetics.owned'), x + width - 160, rect.y, 160, "right");
+    } else {
+      this.resetTextColor();
+      this.drawText(formatPriceInEuros(item.cost), x + width - 160, rect.y, 160, "right");
+    }
+
+    // Second line: stat bonus + skill name
+    const y2 = rect.y + this.lineHeight();
+    const partSkillNames = skillNames(item.skillId);
+    if (item.statEffect && item.statBonus > 0) {
+      const paramName = getParamName(item.statEffect.param);
+      const skillText = partSkillNames ? "  ★ " + partSkillNames : "";
+      this.changeTextColor(getTextColor.call(this, 3));
+      this.drawText(`${paramName} +${item.statBonus}${skillText}`, x, y2, width);
+    } else if (partSkillNames) {
+      this.changeTextColor(getTextColor.call(this, 6));
+      this.drawText("★ " + partSkillNames, x, y2, width);
+    }
+
+    this.contents.paintOpacity = 255;
+    this.resetTextColor();
+  };
+
+  Window_ArchetypePartList.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupPartList();
+    this.drawAllItems();
+  };
+
+  Window_ArchetypePartList.prototype.isOkEnabled = function () {
+    const item = this._partList[this.index()];
+    return !!(item && !item.alreadyOwned);
+  };
+
+  Window_ArchetypePartList.prototype.processOk = function () {
+    if (!this.isOkEnabled()) { SoundManager.playBuzzer(); return; }
+    this.callHandler("ok");
+  };
+
+  Window_ArchetypePartList.prototype.getCurrentSelection = function () {
+    return this._partList[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_RemovePartList  (Remove bodypart)
+  // ===========================================================================
+  function Window_RemovePartList() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_RemovePartList.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_RemovePartList.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_RemovePartList.prototype.constructor = Window_RemovePartList;
+
+  Window_RemovePartList.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._partList = [];
+    this.refresh();
+  };
+
+  Window_RemovePartList.prototype.setActor = function (actor) {
+    this._actor = actor;
+    this.refresh();
+    this.select(0);
+  };
+
+  Window_RemovePartList.prototype.maxItems = function () { return this._partList.length; };
+  Window_RemovePartList.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_RemovePartList.prototype.setupPartList = function () {
+    this._partList = [];
+    if (!this._actor || !this._actor._bodyParts) return;
+
+    for (const partKey of Object.keys(this._actor._bodyParts)) {
+      const part = this._actor._bodyParts[partKey];
+      const hasImplant = !!(this._actor._prosthetics && this._actor._prosthetics[partKey]);
+      const hpPercent = inferHpPercent(part, this._actor);
+      const cost = hpPercent * 100;
+      const statEffect = lookupStatEffect(partKey, part, this._actor);
+      const statBonus = computeStatBonus(statEffect);
+
+      this._partList.push({
+        isRemoveBodypart: true,
+        partKey,
+        name: part.name || partKey,
+        vital: isPartVital(this._actor, partKey, part),
+        hasImplant,
+        hpPercent,
+        cost,
+        statEffect,
+        statBonus,
+        skillId: part.skillId || 0,
+      });
+    }
+  };
+
+  Window_RemovePartList.prototype.drawItem = function (index) {
+    const item = this._partList[index];
+    if (!item) return;
+
+    const rect = this.itemRect(index);
+    const x = rect.x + 4;
+    const width = rect.width - 8;
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+
+    if (item.vital) {
+      this.contents.paintOpacity = 96;
+      this.changeTextColor(getTextColor.call(this, 7));
+    } else {
+      this.contents.paintOpacity = 255;
+      this.resetTextColor();
+    }
+
+    // Name  (* = has implant)
+    const nameText = item.name + (item.hasImplant ? " *" : "");
+    this.drawText(nameText, x, rect.y, width - 160);
+
+    // VITAL badge or removal price
+    if (item.vital) {
+      this.changeTextColor(getTextColor.call(this, 18));
+      this.drawText(T('Prosthetics.vital'), x + width - 160, rect.y, 160, "right");
+    } else {
+      this.resetTextColor();
+      this.drawText(formatPriceInEuros(item.cost), x + width - 160, rect.y, 160, "right");
+    }
+
+    // Second line: stat loss + skill name
+    const y2 = rect.y + this.lineHeight();
+    const partSkillNames = skillNames(item.skillId);
+    const skillText = partSkillNames ? "  ★ " + partSkillNames : "";
+    if (item.statEffect && item.statBonus > 0) {
+      const paramName = getParamName(item.statEffect.param);
+      this.changeTextColor(getTextColor.call(this, 7));
+      this.drawText(
+        T('Prosthetics.loses', { p1: paramName, p2: item.statBonus }) + skillText,
+        x, y2, width
+      );
+    } else if (skillText) {
+      this.changeTextColor(getTextColor.call(this, 7));
+      this.drawText("★ " + partSkillNames, x, y2, width);
+    }
+
+    this.contents.paintOpacity = 255;
+    this.resetTextColor();
+  };
+
+  Window_RemovePartList.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupPartList();
+    this.drawAllItems();
+  };
+
+  Window_RemovePartList.prototype.isOkEnabled = function () {
+    const item = this._partList[this.index()];
+    return !!(item && !item.vital);
+  };
+
+  Window_RemovePartList.prototype.processOk = function () {
+    if (!this.isOkEnabled()) { SoundManager.playBuzzer(); return; }
+    this.callHandler("ok");
+  };
+
+  Window_RemovePartList.prototype.getCurrentSelection = function () {
+    return this._partList[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_ConfirmRemove  (Yes/No when implant would be lost)
+  // ===========================================================================
+  function Window_ConfirmRemove() { this.initialize(...arguments); }
+  Window_ConfirmRemove.prototype = Object.create(Window_Command.prototype);
+  Window_ConfirmRemove.prototype.constructor = Window_ConfirmRemove;
+
+  Window_ConfirmRemove.prototype.initialize = function () {
+    const ww = Math.min(520, Math.floor(Graphics.boxWidth * 0.75));
+    const wh = 3 * 36 + 24; // warning line + 2 choices
+    const wx = (Graphics.boxWidth - ww) / 2;
+    const wy = (Graphics.boxHeight - wh) / 2;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_Command.prototype.initialize.call(this, new Rectangle(wx, wy, ww, wh));
+    } else {
+      Window_Command.prototype.initialize.call(this, wx, wy, ww, wh);
+    }
+  };
+
+  Window_ConfirmRemove.prototype.makeCommandList = function () {
+    this.addCommand(T('Prosthetics.yesRemoveIt'), "confirm", true);
+    this.addCommand(T('Prosthetics.cancel'), "cancel", true);
+  };
+
+  // Push items down one line to leave room for the warning text
+  Window_ConfirmRemove.prototype.itemRect = function (index) {
+    const rect = Window_Command.prototype.itemRect.call(this, index);
+    rect.y += this.lineHeight();
+    return rect;
+  };
+
+  Window_ConfirmRemove.prototype.drawAllItems = function () {
+    this.changeTextColor(getTextColor.call(this, 17)); // orange/yellow
+    this.drawText(
+      T('Prosthetics.warningImplantWillBeLost'),
+      0, 0, this.contents.width, "center"
+    );
+    this.resetTextColor();
+    Window_Command.prototype.drawAllItems.call(this);
+  };
+
+  // ===========================================================================
+  // Window_ReplacePartList  (Replace bodypart – step A: pick part to replace)
+  // ===========================================================================
+  function Window_ReplacePartList() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_ReplacePartList.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_ReplacePartList.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_ReplacePartList.prototype.constructor = Window_ReplacePartList;
+
+  Window_ReplacePartList.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._partList = [];
+    this.refresh();
+  };
+
+  Window_ReplacePartList.prototype.setActor = function (actor) {
+    this._actor = actor;
+    this.refresh();
+    this.select(0);
+  };
+
+  Window_ReplacePartList.prototype.maxItems = function () { return this._partList.length; };
+  Window_ReplacePartList.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_ReplacePartList.prototype.setupPartList = function () {
+    this._partList = [];
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!this._actor || !this._actor._bodyParts) return;
+
+    for (const partKey of Object.keys(this._actor._bodyParts)) {
+      const part = this._actor._bodyParts[partKey];
+      const hpPercent = inferHpPercent(part, this._actor);
+      const removalFee = hpPercent * 100;
+      const statEffect = lookupStatEffect(partKey, part, this._actor);
+      const statBonus = computeStatBonus(statEffect);
+
+      // Only show parts that have at least one replacement option in any archetype
+      let hasReplacement = false;
+      if (EnemyArchetypes) {
+        for (const archKey of Object.keys(EnemyArchetypes)) {
+          const arch = EnemyArchetypes[archKey];
+          if (arch && arch.parts && arch.parts[partKey]) { hasReplacement = true; break; }
+        }
+      }
+      if (!hasReplacement) continue;
+
+      this._partList.push({
+        isReplaceSelectPart: true,
+        partKey,
+        name: part.name || partKey,
+        vital: part.vital,
+        hpPercent,
+        removalFee,
+        statEffect,
+        statBonus,
+      });
+    }
+  };
+
+  Window_ReplacePartList.prototype.drawItem = function (index) {
+    const item = this._partList[index];
+    if (!item) return;
+
+    const rect = this.itemRect(index);
+    const x = rect.x + 4;
+    const width = rect.width - 8;
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+    this.resetTextColor();
+
+    this.drawText(item.name, x, rect.y, width - 160);
+
+    // Show removal fee on the right
+    this.changeTextColor(getTextColor.call(this, 17));
+    this.drawText(
+      T('Prosthetics.removal') + formatPriceInEuros(item.removalFee),
+      x + width - 160, rect.y, 160, "right"
+    );
+
+    // Second line: vital badge or stat loss
+    if (item.vital) {
+      this.changeTextColor(getTextColor.call(this, 18));
+      this.drawText(T('Prosthetics.vital'), x, rect.y + this.lineHeight(), width);
+    } else if (item.statEffect && item.statBonus > 0) {
+      const paramName = getParamName(item.statEffect.param);
+      this.changeTextColor(getTextColor.call(this, 7));
+      this.drawText(
+        T('Prosthetics.loses', { p1: paramName, p2: item.statBonus }),
+        x, rect.y + this.lineHeight(), width
+      );
+    }
+
+    this.resetTextColor();
+    this.contents.paintOpacity = 255;
+  };
+
+  Window_ReplacePartList.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupPartList();
+    this.drawAllItems();
+  };
+
+  Window_ReplacePartList.prototype.isOkEnabled = function () {
+    return !!(this._partList[this.index()]);
+  };
+
+  Window_ReplacePartList.prototype.getCurrentSelection = function () {
+    return this._partList[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_ReplaceArchetypePartList  (Replace bodypart – step B: pick replacement)
+  // ===========================================================================
+  function Window_ReplaceArchetypePartList() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_ReplaceArchetypePartList.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_ReplaceArchetypePartList.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_ReplaceArchetypePartList.prototype.constructor = Window_ReplaceArchetypePartList;
+
+  Window_ReplaceArchetypePartList.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._partKey = null;
+    this._removalFee = 0;
+    this._partList = [];
+    this.refresh();
+  };
+
+  Window_ReplaceArchetypePartList.prototype.setContext = function (actor, partKey, removalFee) {
+    this._actor = actor;
+    this._partKey = partKey;
+    this._removalFee = removalFee || 0;
+    this.refresh();
+    this.select(0);
+  };
+
+  Window_ReplaceArchetypePartList.prototype.maxItems = function () { return this._partList.length; };
+  Window_ReplaceArchetypePartList.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_ReplaceArchetypePartList.prototype.setupPartList = function () {
+    this._partList = [];
+    const EnemyArchetypes = getEnemyArchetypes();
+    if (!this._partKey || !EnemyArchetypes) return;
+
+    for (const archKey of Object.keys(EnemyArchetypes)) {
+      const archetype = EnemyArchetypes[archKey];
+      if (!archetype || !archetype.parts) continue;
+      const part = archetype.parts[this._partKey];
+      if (!part) continue;
+
+      const installCost = part.hpPercent * 1000 + Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000;
+      const totalCost = installCost + this._removalFee;
+      const statBonus = computeStatBonus(part.statEffect);
+      const partName = ConfigManager.language === "it" && part.name_it ? part.name_it : part.name;
+      const archLabel = archKey.replace(/([A-Z])/g, " $1").trim();
+
+      this._partList.push({
+        isReplacePart: true,
+        partKey: this._partKey,
+        archetypeKey: archKey,
+        archetypeLabel: archLabel,
+        name: partName,
+        hpPercent: part.hpPercent,
+        vital: part.vital,
+        statEffect: part.statEffect || null,
+        statBonus,
+        skillId: part.skillId || 0,
+        installCost,
+        removalFee: this._removalFee,
+        cost: totalCost,
+        archPart: part,
+      });
+    }
+  };
+
+  Window_ReplaceArchetypePartList.prototype.drawItem = function (index) {
+    const item = this._partList[index];
+    if (!item) return;
+
+    const rect = this.itemRect(index);
+    const x = rect.x + 4;
+    const width = rect.width - 8;
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+    this.resetTextColor();
+
+    // Name + archetype source
+    this.drawText(item.name, x, rect.y, width - 200);
+    this.changeTextColor(getTextColor.call(this, 6));
+    this.drawText("[" + item.archetypeLabel + "]", x + width - 380, rect.y, 180, "right");
+
+    // Total cost
+    this.resetTextColor();
+    this.drawText(formatPriceInEuros(item.cost), x + width - 160, rect.y, 160, "right");
+
+    // Second line: stat bonus + skill name
+    const y2 = rect.y + this.lineHeight();
+    const partSkillNames = skillNames(item.skillId);
+    if (item.statEffect && item.statBonus > 0) {
+      const paramName = getParamName(item.statEffect.param);
+      const skillText = partSkillNames ? "  ★ " + partSkillNames : "";
+      this.changeTextColor(getTextColor.call(this, 3));
+      this.drawText(`${paramName} +${item.statBonus}${skillText}`, x, y2, width);
+    } else if (partSkillNames) {
+      this.changeTextColor(getTextColor.call(this, 6));
+      this.drawText("★ " + partSkillNames, x, y2, width);
+    }
+
+    this.resetTextColor();
+    this.contents.paintOpacity = 255;
+  };
+
+  Window_ReplaceArchetypePartList.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupPartList();
+    this.drawAllItems();
+  };
+
+  Window_ReplaceArchetypePartList.prototype.isOkEnabled = function () {
+    return !!(this._partList[this.index()]);
+  };
+
+  Window_ReplaceArchetypePartList.prototype.getCurrentSelection = function () {
+    return this._partList[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_BodyPartSelect  (Install implant – step A)
+  // ===========================================================================
+  function Window_BodyPartSelect() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_BodyPartSelect.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_BodyPartSelect.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_BodyPartSelect.prototype.constructor = Window_BodyPartSelect;
+
+  Window_BodyPartSelect.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._bodyPartKeys = [];
+    this.refresh();
+    this.activate();
+    this.select(0);
+  };
+
+  Window_BodyPartSelect.prototype.setActor = function (actor) {
+    this._actor = actor;
+    this.refresh();
+    this.select(0);
+  };
+
+  Window_BodyPartSelect.prototype.colSpacing = function () { return 12; };
+  Window_BodyPartSelect.prototype.maxCols = function () { return 2; };
+  Window_BodyPartSelect.prototype.maxItems = function () { return this._bodyPartKeys.length; };
+  Window_BodyPartSelect.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_BodyPartSelect.prototype.setupBodyParts = function () {
+    if (!this._actor) { this._bodyPartKeys = []; return; }
+    if (!this._actor._bodyParts) initializeBodyParts(this._actor);
+    this._bodyPartKeys = [];
+    const ProstheticCompatibility = getProstheticCompatibility();
+    if (ProstheticCompatibility) {
+      for (var partKey in ProstheticCompatibility) {
+        if (this._actor._bodyParts[partKey]) this._bodyPartKeys.push(partKey);
+      }
+    }
+  };
+
+  Window_BodyPartSelect.prototype.drawItem = function (index) {
+    const partKey = this._bodyPartKeys[index];
+    if (!partKey || !this._actor) return;
+
+    const rect = this.itemRect(index);
+    const part = this._actor._bodyParts[partKey];
+    const currentProstheticKey = this._actor._prosthetics ? this._actor._prosthetics[partKey] : null;
+
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+    this.resetTextColor();
+
+    this.changeTextColor(getSystemColor.call(this));
+    this.drawText(part.name, rect.x, rect.y, rect.width);
+    this.resetTextColor();
+
+    let statusText = T('Prosthetics.original');
+    const ProstheticTypes = getProstheticTypes();
+    if (currentProstheticKey && ProstheticTypes && ProstheticTypes[currentProstheticKey]) {
+      const prosthetic = ProstheticTypes[currentProstheticKey];
+      statusText = ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en;
+      this.changeTextColor(getTextColor.call(this, 3));
+    } else {
+      this.changeTextColor(getTextColor.call(this, 0));
+    }
+    this.drawText(statusText, rect.x, rect.y + this.lineHeight(), rect.width);
+    this.resetTextColor();
+  };
+
+  Window_BodyPartSelect.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupBodyParts();
+    this.drawAllItems();
+  };
+
+  Window_BodyPartSelect.prototype.getPartKey = function () {
+    return this._bodyPartKeys[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_ProstheticList  (Install implant – step B)
+  // ===========================================================================
+  function Window_ProstheticList() { this.initialize(...arguments); }
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    Window_ProstheticList.prototype = Object.create(Window_StatusBase.prototype);
+  } else {
+    Window_ProstheticList.prototype = Object.create(Window_Selectable.prototype);
+  }
+  Window_ProstheticList.prototype.constructor = Window_ProstheticList;
+
+  Window_ProstheticList.prototype.initialize = function () {
+    const width = Graphics.boxWidth;
+    const height = Graphics.boxHeight - 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_StatusBase.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
+    } else {
+      Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+    }
+    this._actor = null;
+    this._partKey = null;
+    this._prostheticList = [];
+    this._selectedProsthetics = {};
+    this.refresh();
+  };
+
+  Window_ProstheticList.prototype.setActor = function (actor) {
+    this._actor = actor;
+    this.refresh();
+  };
+
+  Window_ProstheticList.prototype.setPartKey = function (partKey) {
+    if (this._partKey !== partKey) {
+      this._partKey = partKey;
+      this.refresh();
+      this.select(0);
+    }
+  };
+
+  Window_ProstheticList.prototype.maxItems = function () { return this._prostheticList.length; };
+  Window_ProstheticList.prototype.itemHeight = function () { return this.lineHeight() * 2; };
+
+  Window_ProstheticList.prototype.setupProstheticList = function () {
+    this._prostheticList = [];
+    if (!this._partKey || !this._actor) return;
+
+    const currentProstheticKey = this._actor._prosthetics ? this._actor._prosthetics[this._partKey] : null;
+
+    this._prostheticList.push({
+      isRemoveOption: true,
+      name: T('Prosthetics.removeCurrentProsthetic'),
+      canRemove: !!currentProstheticKey,
+      currentProsthetic: currentProstheticKey,
+    });
+
+    const ProstheticCompatibility = getProstheticCompatibility();
+    const ProstheticTypes = getProstheticTypes();
+    const compatibleProsthetics = ProstheticCompatibility ? ProstheticCompatibility[this._partKey] || [] : [];
+    for (var i = 0; i < compatibleProsthetics.length; i++) {
+      const prostheticKey = compatibleProsthetics[i];
+      const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
+      if (!prosthetic) continue;
+      this._prostheticList.push({
+        isProsthetic: true,
+        partKey: this._partKey,
+        prostheticKey,
+        prosthetic,
+        name: ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en,
+        cost: prosthetic.cost,
+        isCurrentlyInstalled: currentProstheticKey === prostheticKey,
+      });
+    }
+  };
+
+  Window_ProstheticList.prototype.drawItem = function (index) {
+    const item = this._prostheticList[index];
+    if (!item) return;
+
+    const rect = this.itemRect(index);
+    this.contents.clearRect(rect.x, rect.y, rect.width, rect.height);
+
+    if (item.isRemoveOption) {
+      this.changeTextColor(item.canRemove ? getTextColor.call(this, 17) : getTextColor.call(this, 7));
+      this.drawText(item.name, rect.x, rect.y, rect.width, "center");
+      if (item.currentProsthetic) {
+        const ProstheticTypes = getProstheticTypes();
+        const pData = ProstheticTypes ? ProstheticTypes[item.currentProsthetic] : null;
+        const curName = pData ? (T.language() === "it" ? pData.name_it : pData.name_en) : T('Prosthetics.unknown');
+        this.changeTextColor(getTextColor.call(this, 0));
+        this.drawText(T('Prosthetics.current') + curName, rect.x, rect.y + this.lineHeight(), rect.width, "center");
+      } else {
+        this.changeTextColor(getTextColor.call(this, 7));
+        this.drawText(T('Prosthetics.originalPart'), rect.x, rect.y + this.lineHeight(), rect.width, "center");
+      }
+    } else if (item.isProsthetic) {
+      const x = rect.x + 12;
+      const width = rect.width - 24;
+      if (item.isCurrentlyInstalled) {
+        this.contents.paintOpacity = 96;
+        this.changeTextColor(getTextColor.call(this, 7));
+      } else {
+        this.contents.paintOpacity = 255;
+        this.resetTextColor();
+      }
+
+      this.drawText(item.name, x, rect.y, width - 100);
+
+      if (item.isCurrentlyInstalled) {
+        this.drawText("---", x + width - 100, rect.y, 100, "right");
+        this.changeTextColor(getTextColor.call(this, 3));
+        this.drawText(T('Prosthetics.installed'), x + width - 200, rect.y, 100, "right");
+      } else {
+        this.drawText(formatPriceInEuros(item.cost), x + width - 100, rect.y, 100, "right");
+      }
+
+      if (item.prosthetic.effects) {
+        let effectText = "";
+        for (const paramId in item.prosthetic.effects) {
+          effectText += getParamName(parseInt(paramId)) + " +" + item.prosthetic.effects[paramId] + " ";
+        }
+        this.drawText(effectText, x, rect.y + this.lineHeight(), width);
+      }
+
+      this.contents.paintOpacity = 255;
+      this.resetTextColor();
+    }
+  };
+
+  Window_ProstheticList.prototype.refresh = function () {
+    this.contents.clear();
+    this.setupProstheticList();
+    this.drawAllItems();
+  };
+
+  Window_ProstheticList.prototype.isOkEnabled = function () {
+    const item = this._prostheticList[this.index()];
+    if (!item) return false;
+    if (item.isRemoveOption) return item.canRemove;
+    if (item.isProsthetic) return !item.isCurrentlyInstalled;
+    return false;
+  };
+
+  Window_ProstheticList.prototype.processOk = function () {
+    if (!this._prostheticList[this.index()]) return;
+    this.callHandler("ok");
+  };
+
+  Window_ProstheticList.prototype.installProstheticImmediate = function (actor, partKey, prostheticKey) {
+    const ProstheticTypes = getProstheticTypes();
+    const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
+    if (!prosthetic) return;
+
+    if (!actor._prosthetics) actor._prosthetics = {};
+    if (!actor._prostheticEffects) actor._prostheticEffects = {};
+
+    this.removeProstheticImmediate(actor, partKey);
+    actor._prosthetics[partKey] = prostheticKey;
+
+    if (prosthetic.effects) {
+      for (const paramId in prosthetic.effects) {
+        if (!actor._prostheticEffects[paramId]) actor._prostheticEffects[paramId] = 0;
+        actor._prostheticEffects[paramId] += prosthetic.effects[paramId];
+      }
+    }
+
+    if (prosthetic.skill) actor.learnSkill(prosthetic.skill);
+
+    const reproVarId = getReproductionVariableId(actor);
+    if (prostheticKey === "UTERUS") $gameVariables.setValue(reproVarId, 1);
+    else if (prostheticKey === "OVIDUCT") $gameVariables.setValue(reproVarId, 2);
+    else if (prostheticKey === "SPORE_GLAND") $gameVariables.setValue(reproVarId, 3);
+    else if (prostheticKey === "MITOSIS_GLAND") $gameVariables.setValue(reproVarId, 4);
+    else if (prostheticKey === "TESTES") $gameVariables.setValue(reproVarId, 0);
+
+    trainOnImplant(prostheticKey);
+    actor.refresh();
+  };
+
+  Window_ProstheticList.prototype.removeProstheticImmediate = function (actor, partKey) {
+    const currentProstheticKey = actor._prosthetics ? actor._prosthetics[partKey] : null;
+    if (!currentProstheticKey) return;
+    const ProstheticTypes = getProstheticTypes();
+    const prosthetic = ProstheticTypes ? ProstheticTypes[currentProstheticKey] : null;
+    if (!prosthetic) return;
+
+    if (prosthetic.effects) {
+      for (const paramId in prosthetic.effects) {
+        if (actor._prostheticEffects && actor._prostheticEffects[paramId]) {
+          actor._prostheticEffects[paramId] -= prosthetic.effects[paramId];
+          if (actor._prostheticEffects[paramId] === 0) delete actor._prostheticEffects[paramId];
+        }
+      }
+    }
+
+    if (prosthetic.skill) actor.forgetSkill(prosthetic.skill);
+
+    const reproVarId = getReproductionVariableId(actor);
+    if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
+      $gameVariables.setValue(reproVarId, 0);
+    }
+
+    delete actor._prosthetics[partKey];
+    actor.refresh();
+  };
+
+  Window_ProstheticList.prototype.getCurrentSelection = function () {
+    return this._prostheticList[this.index()];
+  };
+
+  // ===========================================================================
+  // Window_ProstheticCost  (bottom info bar – shared by all flows)
+  // ===========================================================================
+  function Window_ProstheticCost() { this.initialize(...arguments); }
+  Window_ProstheticCost.prototype = Object.create(Window_Base.prototype);
+  Window_ProstheticCost.prototype.constructor = Window_ProstheticCost;
+
+  Window_ProstheticCost.prototype.initialize = function () {
+    const height = 120;
+    if (Utils.RPGMAKER_NAME === "MZ") {
+      Window_Base.prototype.initialize.call(this, new Rectangle(0, Graphics.boxHeight - height, Graphics.boxWidth, height));
+    } else {
+      Window_Base.prototype.initialize.call(this, 0, Graphics.boxHeight - height, Graphics.boxWidth, height);
+    }
+    this._totalCost = 0;
+    this._selection = null;
+    this.refresh();
+  };
+
+  Window_ProstheticCost.prototype.setSelection = function (item) {
+    this._selection = item;
+    this._totalCost = (item && item.cost) ? item.cost : 0;
+    this.refresh();
+  };
+
+  Window_ProstheticCost.prototype.refresh = function () {
+    this.contents.clear();
+    const sel = this._selection;
+    const w = this.contents.width - 12;
+
+    // Line 1: cost
+    if (sel && sel.isProsthetic && !sel.isCurrentlyInstalled) {
+      this.drawText(T('Prosthetics.cost') + formatPriceInEuros(this._totalCost), 6, 0, w);
+    } else if (sel && sel.isRemoveOption && sel.canRemove) {
+      this.drawText(T('Prosthetics.removalFree'), 6, 0, w);
+    } else if (sel && sel.isArchetypePart && !sel.alreadyOwned) {
+      this.drawText(T('Prosthetics.cost') + formatPriceInEuros(this._totalCost), 6, 0, w);
+    } else if (sel && sel.isRemoveBodypart && !sel.vital) {
+      this.drawText(T('Prosthetics.removal2') + formatPriceInEuros(this._totalCost), 6, 0, w);
+    } else if (sel && sel.isReplaceSelectPart) {
+      this.drawText(
+        T('Prosthetics.removalFee') + formatPriceInEuros(sel.removalFee),
+        6, 0, w
+      );
+    } else if (sel && sel.isReplacePart) {
+      this.drawText(
+        T('Prosthetics.total') + formatPriceInEuros(sel.cost) +
+        "  (" + T('Prosthetics.install') + formatPriceInEuros(sel.installCost) +
+        " + " + T('Prosthetics.removal') + formatPriceInEuros(sel.removalFee) + ")",
+        6, 0, w
+      );
+    } else {
+      this.drawText(T('Prosthetics.cost2'), 6, 0, w);
+    }
+
+    // Line 2: current money
+    this.drawText(
+      T('Prosthetics.currentMoney') + formatPriceInEuros($gameParty.gold()),
+      6, this.lineHeight(), w
+    );
+    this.resetTextColor();
+  };
+
+  Window_ProstheticCost.prototype.canAfford = function () {
+    return $gameParty.gold() >= this._totalCost && this._totalCost > 0;
+  };
+
+  // ===========================================================================
+  // ===========================================================================
+  // UIShopInputManager (High-performance keyboard & gamepad menu navigator)
+  // ===========================================================================
+  class UIShopInputManager {
+    static init(container, scene) {
+      this.container = container;
+      this.scene = scene;
+      this.activeElements = [];
+      this.focusIndex = 0;
+      this.actionElements = [];
+      this.actionIndex = 0;
+      this.mode = 'list'; // 'list' or 'actions'
+      this.active = false;
+      this.cols = 1;
+    }
+
+    static activate(cols = 1) {
+      this.activeElements = Array.from(this.container.querySelectorAll('.focusable'));
+      this.actionElements = Array.from(this.container.querySelectorAll('.action-focusable'));
+      this.focusIndex = 0;
+      this.actionIndex = 0;
+      this.mode = 'list';
+      this.cols = cols;
+      this.active = true;
+      this.updateFocus();
+    }
+
+    static deactivate() {
+      this.active = false;
+    }
+
+    static update() {
+      if (!this.active) return;
+
+      // Bumpers (L1/R1) cycle the active patient outside the picker view.
+      if (this.scene && this.scene._viewState !== 'party' && $gameParty.members().length > 1) {
+        if (Input.isTriggered('pagedown')) { this.scene.cyclePatient(1); return; }
+        if (Input.isTriggered('pageup')) { this.scene.cyclePatient(-1); return; }
+      }
+
+      if (this.mode === 'list') {
+        this.updateListNavigation();
+      } else if (this.mode === 'actions') {
+        this.updateActionsNavigation();
+      }
+    }
+
+    static updateListNavigation() {
+      if (this.activeElements.length === 0) {
+        if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+          SoundManager.playCancel();
+          this.scene.onUICancel();
+        }
+        return;
+      }
+
+      let moved = false;
+      const len = this.activeElements.length;
+
+      if (this.cols > 1) {
+        if (Input.isTriggered('down') || Input.isRepeated('down')) {
+          if (this.focusIndex + this.cols < len) {
+            this.focusIndex += this.cols;
+          } else {
+            this.focusIndex = this.focusIndex % this.cols;
+          }
+          moved = true;
+        } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
+          if (this.focusIndex - this.cols >= 0) {
+            this.focusIndex -= this.cols;
+          } else {
+            let target = Math.floor((len - 1) / this.cols) * this.cols + (this.focusIndex % this.cols);
+            if (target >= len) target -= this.cols;
+            this.focusIndex = target >= 0 ? target : 0;
+          }
+          moved = true;
+        } else if (Input.isTriggered('right') || Input.isRepeated('right')) {
+          if (this.focusIndex + 1 < len) {
+            this.focusIndex += 1;
+          } else {
+            this.focusIndex = 0;
+          }
+          moved = true;
+        } else if (Input.isTriggered('left') || Input.isRepeated('left')) {
+          if (this.focusIndex - 1 >= 0) {
+            this.focusIndex -= 1;
+          } else {
+            this.focusIndex = len - 1;
+          }
+          moved = true;
+        }
+      } else {
+        if (Input.isTriggered('down') || Input.isRepeated('down')) {
+          if (this.focusIndex + 1 < len) {
+            this.focusIndex += 1;
+          } else {
+            this.focusIndex = 0;
+          }
+          moved = true;
+        } else if (Input.isTriggered('up') || Input.isRepeated('up')) {
+          if (this.focusIndex - 1 >= 0) {
+            this.focusIndex -= 1;
+          } else {
+            this.focusIndex = len - 1;
+          }
+          moved = true;
+        }
+      }
+
+      if (Input.isTriggered('ok')) {
+        const el = this.activeElements[this.focusIndex];
+        if (el) {
+          SoundManager.playOk();
+          el.click();
+        }
+        return;
+      }
+
+      if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+        SoundManager.playCancel();
+        this.scene.onUICancel();
+        return;
+      }
+
+      if (moved) {
+        SoundManager.playCursor();
+        this.updateFocus();
+        this.scene.onUIFocusChange(this.focusIndex);
+      }
+    }
+
+    static updateActionsNavigation() {
+      if (this.actionElements.length === 0) {
+        this.mode = 'list';
+        return;
+      }
+
+      let moved = false;
+      const len = this.actionElements.length;
+
+      if (Input.isTriggered('right')) {
+        if (this.actionIndex + 1 < len) {
+          this.actionIndex += 1;
+        } else {
+          this.actionIndex = 0;
+        }
+        moved = true;
+      } else if (Input.isTriggered('left')) {
+        if (this.actionIndex - 1 >= 0) {
+          this.actionIndex -= 1;
+        } else {
+          this.actionIndex = len - 1;
+        }
+        moved = true;
+      } else if (Input.isTriggered('ok')) {
+        const el = this.actionElements[this.actionIndex];
+        if (el) {
+          el.click();
+        }
+        return;
+      } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+        SoundManager.playCancel();
+        this.mode = 'list';
+        this.updateFocus();
+        return;
+      }
+
+      if (moved) {
+        SoundManager.playCursor();
+        this.updateFocus();
+      }
+    }
+
+    static updateFocus() {
+      this.activeElements.forEach((el, idx) => {
+        if (this.mode === 'list' && idx === this.focusIndex) {
+          el.classList.add('selected');
+          el.scrollIntoView({ block: 'nearest' });
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+
+      this.actionElements.forEach((el, idx) => {
+        if (this.mode === 'actions' && idx === this.actionIndex) {
+          el.classList.add('selected');
+        } else {
+          el.classList.remove('selected');
+        }
+      });
+    }
+  }
+
+  // Helper Implant Install/Remove procedures (isolated from windows)
+  function installProstheticImmediate(actor, partKey, prostheticKey) {
+    const ProstheticTypes = getProstheticTypes();
+    const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
+    if (!prosthetic) return;
+
+    if (!actor._prosthetics) actor._prosthetics = {};
+    if (!actor._prostheticEffects) actor._prostheticEffects = {};
+
+    removeProstheticImmediate(actor, partKey);
+    actor._prosthetics[partKey] = prostheticKey;
+
+    if (prosthetic.effects) {
+      for (const paramId in prosthetic.effects) {
+        if (!actor._prostheticEffects[paramId]) actor._prostheticEffects[paramId] = 0;
+        actor._prostheticEffects[paramId] += prosthetic.effects[paramId];
+      }
+    }
+
+    if (prosthetic.skill) actor.learnSkill(prosthetic.skill);
+
+    const reproVarId = getReproductionVariableId(actor);
+    if (prostheticKey === "UTERUS") $gameVariables.setValue(reproVarId, 1);
+    else if (prostheticKey === "OVIDUCT") $gameVariables.setValue(reproVarId, 2);
+    else if (prostheticKey === "SPORE_GLAND") $gameVariables.setValue(reproVarId, 3);
+    else if (prostheticKey === "MITOSIS_GLAND") $gameVariables.setValue(reproVarId, 4);
+    else if (prostheticKey === "TESTES") $gameVariables.setValue(reproVarId, 0);
+
+    trainOnImplant(prostheticKey);
+    actor.refresh();
+  }
+
+  function removeProstheticImmediate(actor, partKey) {
+    const currentProstheticKey = actor._prosthetics ? actor._prosthetics[partKey] : null;
+    if (!currentProstheticKey) return;
+    const ProstheticTypes = getProstheticTypes();
+    const prosthetic = ProstheticTypes ? ProstheticTypes[currentProstheticKey] : null;
+    if (!prosthetic) return;
+
+    if (prosthetic.effects) {
+      for (const paramId in prosthetic.effects) {
+        if (actor._prostheticEffects && actor._prostheticEffects[paramId]) {
+          actor._prostheticEffects[paramId] -= prosthetic.effects[paramId];
+          if (actor._prostheticEffects[paramId] === 0) delete actor._prostheticEffects[paramId];
+        }
+      }
+    }
+
+    if (prosthetic.skill) actor.forgetSkill(prosthetic.skill);
+
+    const reproVarId = getReproductionVariableId(actor);
+    if (["UTERUS", "OVIDUCT", "SPORE_GLAND", "MITOSIS_GLAND"].includes(currentProstheticKey)) {
+      $gameVariables.setValue(reproVarId, 0);
+    }
+
+    delete actor._prosthetics[partKey];
+    actor.refresh();
+  }
+
+  function getGenderName(actor) {
+    const idx = $gameParty.members().indexOf(actor);
+    const varId = [38, 39, 40][idx] !== undefined ? [38, 39, 40][idx] : 38;
+    const val = $gameVariables.value(varId);
+    return T.list('Prosthetics.genderNames')[val] || T('Prosthetics.notAvailable');
+  }
+
+  function getReproductionName(actor) {
+    const varId = getReproductionVariableId(actor);
+    const val = $gameVariables.value(varId);
+    const names = T.obj('Prosthetics.reproductionNames') || {};
+    return names[val] || T('Prosthetics.notAvailable');
+  }
+
+  // ===========================================================================
+  // Scene_ProstheticShop - Beautiful custom DOM parchment character manual
+  // ===========================================================================
+  function Scene_ProstheticShop() { this.initialize(...arguments); }
+  Scene_ProstheticShop.prototype = Object.create(Scene_MenuBase.prototype);
+  Scene_ProstheticShop.prototype.constructor = Scene_ProstheticShop;
+
+  Scene_ProstheticShop.prototype.initialize = function () {
+    Scene_MenuBase.prototype.initialize.call(this);
+    this._selectedActor = null;
+    this._selectedArchetypeKey = null;
+    this._selectedPartKey = null;
+    this._removalFee = 0;
+    this._viewState = 'party'; // 'party', 'command', 'install_archetype', 'install_part', 'remove_part', 'replace_part', 'replace_archetype', 'implant_select_part', 'implant_select_prosthetic'
+    this._activeListItems = [];
+    this._notification = null;
+    this._notificationTimeout = null;
+    this._lastDrawnActor = null;
+    this._forceRightPageRedraw = false;
+    this._dailyArchetypes = null;
+  };
+
+  Scene_ProstheticShop.prototype.create = function () {
+    Scene_MenuBase.prototype.create.call(this);
+
+    // Inject styles unique to this scene
+    this._dndContainer = document.createElement('div');
+    this._dndContainer.id = 'menu-container';
+    document.body.appendChild(this._dndContainer);
+
+    this._onContextMenu = (event) => {
+      event.preventDefault();
+    };
+    window.addEventListener("contextmenu", this._onContextMenu);
+
+    UIShopInputManager.init(this._dndContainer, this);
+    const _seedData = $gameTemp._prostheticShopSeedData;
+    if (_seedData) {
+      this._dailyArchetypes = getDailyProstheticArchetypes(_seedData.mapId, _seedData.x, _seedData.y);
+      $gameTemp._prostheticShopSeedData = null;
+    }
+    this._viewState = 'party';
+    this.refreshUIShopDOM();
+
+    // Tab cycles the patient outside the picker view (no controller connected).
+    window.CharSwitcher.installTabKey(this, (dir) => {
+      if (this._viewState !== 'party') this.cyclePatient(dir);
+    });
+  };
+
+  Scene_ProstheticShop.prototype.terminate = function () {
+    Scene_MenuBase.prototype.terminate.call(this);
+    window.CharSwitcher.removeTabKey(this);
+    if (this._dndContainer) {
+      document.body.removeChild(this._dndContainer);
+      this._dndContainer = null;
+    }
+    UIShopInputManager.deactivate();
+    if (this._notificationTimeout) {
+      clearTimeout(this._notificationTimeout);
+      this._notificationTimeout = null;
+    }
+    if (this._onContextMenu) {
+      window.removeEventListener("contextmenu", this._onContextMenu);
+    }
+  };
+
+  Scene_ProstheticShop.prototype.update = function () {
+    Scene_MenuBase.prototype.update.call(this);
+    UIShopInputManager.update();
+  };
+
+  Scene_ProstheticShop.prototype.showClinicNotification = function (msg) {
+    this._notification = msg;
+    const notifContainer = document.getElementById("clinic-notification-container");
+    if (notifContainer) {
+      notifContainer.innerHTML = msg
+        ? `<div class="clinic-notification">${msg}</div>`
+        : "";
+    }
+
+    if (this._notificationTimeout) clearTimeout(this._notificationTimeout);
+    this._notificationTimeout = setTimeout(() => {
+      this._notification = null;
+      if (notifContainer) {
+        notifContainer.innerHTML = "";
+      }
+    }, 2800);
+  };
+
+  Scene_ProstheticShop.prototype.refreshUIShopDOM = function () {
+    if (!this._dndContainer) return;
+
+    if (!document.getElementById("left-page-content")) {
+      this._dndContainer.innerHTML = `
+        <div id="clinic-notification-container"></div>
+        <div class="book-spread">
+            <div class="left-page">
+                <h2 id="left-title" class="title" style="margin:0 0 10px 0;"></h2>
+                <p id="left-desc" style="font-family:'Lora', serif; font-size:0.88em; line-height:1.45; color:#5d483b; margin:0 0 15px 0; text-align:center; font-style:italic;"></p>
+                <div id="left-page-content" style="display:flex; flex-direction:column; height:100%; overflow:hidden;"></div>
+            </div>
+            <div class="right-page" id="right-page-content">
+            </div>
+        </div>
+      `;
+
+      this._dndContainer.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const scroll = document.getElementById("clinic-parts-scroll");
+        if (scroll) scroll.scrollTop += e.deltaY;
+      }, { passive: false });
+    }
+
+    let leftPageHTML = "";
+    let leftTitle = "";
+    let leftDesc = "";
+    let cols = 1;
+
+    if (this._viewState === 'party') {
+      leftTitle = T('Prosthetics.hospitalRegister');
+      leftDesc = T('Prosthetics.selectAPatientToInspectVitalSystemsPerformBi');
+
+      const activeMembers = $gameParty.members();
+      leftPageHTML += '<div class="shop-scroll">';
+      activeMembers.forEach((actor, idx) => {
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectActor(${idx})">
+              <div class="portrait-frame" style="width:48px; height:48px;">
+                  <canvas id="actor-canvas-left-${idx}" width="48" height="48" style="image-rendering:pixelated; display:block;"></canvas>
+              </div>
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.25em; color:#58180D;">${actor.name()}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.85em; color:#5d483b;">
+                      ${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})
+                  </p>
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'command') {
+      leftTitle = T('Prosthetics.biologicLaboratory');
+      leftDesc = T('Prosthetics.performHeavyIndustryLimbConfigurationsOrMicr', { p1: this._selectedActor ? this._selectedActor.name() : "" });
+
+      const installLabel = T('Prosthetics.installBodypart');
+      const removeLabel = T('Prosthetics.removeBodypart');
+      const replaceLabel = T('Prosthetics.replaceBodypart');
+      const implantLabel = T('Prosthetics.installImplant');
+      const cancelLabel = T('Prosthetics.cancel');
+
+      leftPageHTML += `
+        <div class="shop-scroll" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('install')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(189 % 16) * 32}px -${Math.floor(189 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${installLabel}</span>
+            </div>
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('remove')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(196 % 16) * 32}px -${Math.floor(196 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${removeLabel}</span>
+            </div>
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('replace')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(180 % 16) * 32}px -${Math.floor(180 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${replaceLabel}</span>
+            </div>
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('implant')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(128 % 16) * 32}px -${Math.floor(128 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${implantLabel}</span>
+            </div>
+            <div class="command-item focusable" onclick="SceneManager._scene.chooseCommand('cancel')">
+                <span class="icon" style="background: url('img/system/IconSet.png') -${(16 % 16) * 32}px -${Math.floor(16 / 16) * 32}px no-repeat; width: 32px; height: 32px; display: inline-block; transform: scale(0.85); margin-right: 10px;"></span>
+                <span>${cancelLabel}</span>
+            </div>
+        </div>
+      `;
+
+    } else if (this._viewState === 'install_archetype') {
+      leftTitle = T('Prosthetics.archetypeDissect');
+      const _dailyCount = this._dailyArchetypes ? this._dailyArchetypes.length : null;
+      leftDesc = T('Prosthetics.chooseArchetypeCode') +
+        (_dailyCount ? T('Prosthetics.suppliersAvailable', { count: _dailyCount }) : "");
+
+      const EnemyArchetypes = getEnemyArchetypes();
+      const _archetypeKeys = (this._dailyArchetypes && EnemyArchetypes)
+        ? this._dailyArchetypes.filter(k => EnemyArchetypes[k])
+        : (EnemyArchetypes ? Object.keys(EnemyArchetypes) : []);
+      leftPageHTML += '<div class="shop-scroll" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start;">';
+      cols = 2;
+      leftPageHTML += `
+        <div class="command-item focusable" style="grid-column:1/-1; font-size:1.1em; display:flex; justify-content:center; text-align:center; padding:10px 6px; border:2px solid rgba(88,24,13,0.4); background:rgba(88,24,13,0.06);" onclick="SceneManager._scene.chooseArchetype('__INVENTORY__')">
+            <span>${T('Prosthetics.inventoryOwnedParts')}</span>
+        </div>
+      `;
+      for (const key of _archetypeKeys) {
+        const label = key.replace(/([A-Z])/g, " $1").trim();
+        leftPageHTML += `
+          <div class="command-item focusable" style="font-size: 1.15em; display:flex; justify-content:center; text-align:center; padding:12px 6px;" onclick="SceneManager._scene.chooseArchetype('${key}')">
+              <span>${label}</span>
+          </div>
+        `;
+      }
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'install_part') {
+      leftTitle = T('Prosthetics.surgicalCatalog');
+      leftDesc = T('Prosthetics.selectALimbOrOrganToGraftFromTheSource', { p1: this._selectedArchetypeKey ? this._selectedArchetypeKey.replace(/([A-Z])/g, " $1").trim() : "" });
+
+      this._activeListItems = [];
+      const EnemyArchetypes = getEnemyArchetypes();
+      if (this._selectedArchetypeKey && EnemyArchetypes) {
+        const archetype = EnemyArchetypes[this._selectedArchetypeKey];
+        if (archetype && archetype.parts) {
+          for (const partKey of Object.keys(archetype.parts)) {
+            const part = archetype.parts[partKey];
+            if (part.vital) continue;
+            const keyLower = partKey.toLowerCase();
+            const nameLower = (part.name || "").toLowerCase();
+            if (keyLower.includes("core") || keyLower.includes("body") ||
+              nameLower.includes("core") || nameLower.includes("body") ||
+              nameLower.includes("head") || nameLower.includes("head")) continue;
+
+            const partName = getTranslated(part, "name").toLowerCase();
+            let alreadyOwned = !!(this._selectedActor && this._selectedActor._bodyParts && this._selectedActor._bodyParts[partKey]);
+            if (!alreadyOwned && this._selectedActor && this._selectedActor._bodyParts) {
+              for (const existingKey in this._selectedActor._bodyParts) {
+                const existingName = (this._selectedActor._bodyParts[existingKey].name || "").toLowerCase();
+                if (existingName && partName.includes(existingName)) { alreadyOwned = true; break; }
+              }
+            }
+            // A party with a surgeon in it pays for the parts, not for the theatre.
+      const surgeonRate = window.SpecializationXP
+        ? window.SpecializationXP.discount("Surgery", 0.06, 0.7) : 1;
+      const cost = Math.round((part.hpPercent * 1000 +
+        Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000) * surgeonRate);
+            const statBonus = computeStatBonus(part.statEffect);
+
+            this._activeListItems.push({
+              isArchetypePart: true,
+              partKey,
+              archetypeKey: this._selectedArchetypeKey,
+              name: getTranslated(part, "name"),
+              hpPercent: part.hpPercent,
+              vital: part.vital,
+              statEffect: part.statEffect || null,
+              statBonus,
+              skillId: part.skillId || 0,
+              cost,
+              alreadyOwned,
+              archPart: part
+            });
+          }
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        const opacity = item.alreadyOwned ? "opacity: 0.55;" : "";
+        leftPageHTML += `
+          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      ${item.statEffect ? `${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
+                      ${skillNames(item.skillId) ? ` | ★ ${skillNames(item.skillId)}` : ""}
+                  </p>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                  ${item.alreadyOwned ? T('Prosthetics.owned') : formatPriceInEuros(item.cost)}
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'install_inventory') {
+      leftTitle = T('Prosthetics.inventoryParts');
+      leftDesc = T('Prosthetics.installBodyPartsYouAlreadyOwnInstallationFee', { p1: formatPriceInEuros(INSTALLATION_FEE) });
+
+      this._activeListItems = getInventoryBodyParts();
+      if (this._selectedActor && this._selectedActor._bodyParts) {
+        this._activeListItems.forEach(entry => {
+          entry.alreadyOwned = !!this._selectedActor._bodyParts[entry.partKey];
+        });
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      if (this._activeListItems.length === 0) {
+        leftPageHTML += `<p style="font-family:'Lora',serif; color:#5d483b; font-style:italic; text-align:center; padding:20px;">${T('Prosthetics.noBodyPartItemsInInventory')}</p>`;
+      } else {
+        this._activeListItems.forEach((entry, idx) => {
+          const opacity = entry.alreadyOwned ? "opacity:0.55;" : "";
+          const archLabel = entry.archetypeKey.replace(/([A-Z])/g, " $1").trim();
+          leftPageHTML += `
+            <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+                <div style="flex-grow:1;">
+                    <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${entry.name}</h4>
+                    <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                        [${archLabel}]${entry.statEffect ? ` | ${getParamName(entry.statEffect.param)} +${entry.statBonus}` : ""}
+                        ${skillNames(entry.skillId) ? ` | ★ ${skillNames(entry.skillId)}` : ""}
+                    </p>
+                </div>
+                <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                    ${entry.alreadyOwned ? T('Prosthetics.installed2') : formatPriceInEuros(entry.cost)}
+                </div>
+            </div>
+          `;
+        });
+      }
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'remove_part') {
+      leftTitle = T('Prosthetics.extractSystems');
+      leftDesc = T('Prosthetics.chooseAnActiveLimbOrOrganToRemoveVitalOrgans');
+
+      this._activeListItems = [];
+      if (this._selectedActor && this._selectedActor._bodyParts) {
+        for (const partKey of Object.keys(this._selectedActor._bodyParts)) {
+          const part = this._selectedActor._bodyParts[partKey];
+          const hasImplant = !!(this._selectedActor._prosthetics && this._selectedActor._prosthetics[partKey]);
+          const hpPercent = inferHpPercent(part, this._selectedActor);
+          const cost = hpPercent * 100;
+          const statEffect = lookupStatEffect(partKey, part, this._selectedActor);
+          const statBonus = computeStatBonus(statEffect);
+
+          this._activeListItems.push({
+            isRemoveBodypart: true,
+            partKey,
+            name: part.name || partKey,
+            vital: isPartVital(this._selectedActor, partKey, part),
+            hasImplant,
+            hpPercent,
+            cost,
+            statEffect,
+            statBonus,
+            skillId: part.skillId || 0
+          });
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        const opacity = item.vital ? "opacity: 0.55;" : "";
+        leftPageHTML += `
+          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name} ${item.hasImplant ? " *" : ""}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      ${item.statEffect && item.statBonus > 0 ? T('Prosthetics.loses', { p1: getParamName(item.statEffect.param), p2: item.statBonus }) : ""}
+                  </p>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#822d2d;">
+                  ${item.vital ? T('Prosthetics.vital') : formatPriceInEuros(item.cost)}
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'replace_part') {
+      leftTitle = T('Prosthetics.replaceSystem');
+      leftDesc = T('Prosthetics.chooseAnActiveBiologicalPartToReplaceWithAnA');
+
+      this._activeListItems = [];
+      const EnemyArchetypes = getEnemyArchetypes();
+      if (this._selectedActor && this._selectedActor._bodyParts) {
+        for (const partKey of Object.keys(this._selectedActor._bodyParts)) {
+          const part = this._selectedActor._bodyParts[partKey];
+          const hpPercent = inferHpPercent(part, this._selectedActor);
+          const removalFee = hpPercent * 100;
+          const statEffect = lookupStatEffect(partKey, part, this._selectedActor);
+          const statBonus = computeStatBonus(statEffect);
+
+          let hasReplacement = false;
+          if (EnemyArchetypes) {
+            for (const archKey of Object.keys(EnemyArchetypes)) {
+              const arch = EnemyArchetypes[archKey];
+              if (arch && arch.parts && arch.parts[partKey]) { hasReplacement = true; break; }
+            }
+          }
+          if (!hasReplacement) continue;
+
+          this._activeListItems.push({
+            isReplaceSelectPart: true,
+            partKey,
+            name: part.name || partKey,
+            vital: part.vital,
+            hpPercent,
+            removalFee,
+            statEffect,
+            statBonus
+          });
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      ${item.vital ? T('Prosthetics.vital') : `${T('Prosthetics.removalFee2')} ${formatPriceInEuros(item.removalFee)}`}
+                  </p>
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'replace_archetype') {
+      leftTitle = T('Prosthetics.selectReplacement');
+      leftDesc = T('Prosthetics.chooseAReplacementDeviceModelToInstallOntoPa', { p1: this._selectedPartKey || "" });
+
+      this._activeListItems = [];
+      const EnemyArchetypes = getEnemyArchetypes();
+      const _replaceArchKeys = (this._dailyArchetypes && EnemyArchetypes)
+        ? this._dailyArchetypes.filter(k => EnemyArchetypes[k])
+        : (EnemyArchetypes ? Object.keys(EnemyArchetypes) : []);
+      if (this._selectedPartKey && _replaceArchKeys.length > 0) {
+        for (const archKey of _replaceArchKeys) {
+          const archetype = EnemyArchetypes[archKey];
+          if (!archetype || !archetype.parts) continue;
+          const part = archetype.parts[this._selectedPartKey];
+          if (!part) continue;
+
+          const installCost = part.hpPercent * 1000 + Math.abs((part.statEffect && part.statEffect.amount) || 0) * 10000;
+          const totalCost = installCost + this._removalFee;
+          const statBonus = computeStatBonus(part.statEffect);
+          const partName = ConfigManager.language === "it" && part.name_it ? part.name_it : part.name;
+          const archLabel = archKey.replace(/([A-Z])/g, " $1").trim();
+
+          this._activeListItems.push({
+            isReplacePart: true,
+            partKey: this._selectedPartKey,
+            archetypeKey: archKey,
+            archetypeLabel: archLabel,
+            name: partName,
+            hpPercent: part.hpPercent,
+            vital: part.vital,
+            statEffect: part.statEffect || null,
+            statBonus,
+            skillId: part.skillId || 0,
+            installCost,
+            removalFee: this._removalFee,
+            cost: totalCost,
+            archPart: part
+          });
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      [${item.archetypeLabel}] ${item.statEffect ? ` | ${getParamName(item.statEffect.param)} +${item.statBonus}` : ""}
+                  </p>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                  ${formatPriceInEuros(item.cost)}
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'implant_select_part') {
+      leftTitle = T('Prosthetics.chooseSocket');
+      leftDesc = T('Prosthetics.chooseAnImplantCompatibleBiologicalOrCyberne');
+
+      this._activeListItems = [];
+      const ProstheticCompatibility = getProstheticCompatibility();
+      if (this._selectedActor && this._selectedActor._bodyParts && ProstheticCompatibility) {
+        for (const partKey in ProstheticCompatibility) {
+          if (this._selectedActor._bodyParts[partKey]) {
+            const part = this._selectedActor._bodyParts[partKey];
+            const currentProstheticKey = this._selectedActor._prosthetics ? this._selectedActor._prosthetics[partKey] : null;
+
+            this._activeListItems.push({
+              partKey,
+              name: part.name,
+              currentProstheticKey
+            });
+          }
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        let statusText = T('Prosthetics.original');
+        const ProstheticTypes = getProstheticTypes();
+        if (item.currentProstheticKey && ProstheticTypes && ProstheticTypes[item.currentProstheticKey]) {
+          const prosthetic = ProstheticTypes[item.currentProstheticKey];
+          statusText = ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en;
+        }
+        leftPageHTML += `
+          <div class="patient-card focusable" style="position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:${item.currentProstheticKey ? '#2e7d32' : '#5d483b'};">
+                      ${statusText}
+                  </p>
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+
+    } else if (this._viewState === 'implant_select_prosthetic') {
+      leftTitle = T('Prosthetics.prostheticsList');
+      leftDesc = T('Prosthetics.selectAnAdvancedMicroChipOrProstheticImplant', { p1: this._selectedPartKey || "" });
+
+      this._activeListItems = [];
+      if (this._selectedPartKey && this._selectedActor) {
+        const currentProstheticKey = this._selectedActor._prosthetics ? this._selectedActor._prosthetics[this._selectedPartKey] : null;
+
+        this._activeListItems.push({
+          isRemoveOption: true,
+          name: T('Prosthetics.removeCurrentProsthetic'),
+          canRemove: !!currentProstheticKey,
+          currentProsthetic: currentProstheticKey
+        });
+
+        const ProstheticCompatibility = getProstheticCompatibility();
+        const ProstheticTypes = getProstheticTypes();
+        const compatibleProsthetics = ProstheticCompatibility ? ProstheticCompatibility[this._selectedPartKey] || [] : [];
+        for (var i = 0; i < compatibleProsthetics.length; i++) {
+          const prostheticKey = compatibleProsthetics[i];
+          const prosthetic = ProstheticTypes ? ProstheticTypes[prostheticKey] : null;
+          if (!prosthetic) continue;
+          this._activeListItems.push({
+            isProsthetic: true,
+            partKey: this._selectedPartKey,
+            prostheticKey,
+            prosthetic,
+            name: ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en,
+            cost: prosthetic.cost,
+            isCurrentlyInstalled: currentProstheticKey === prostheticKey
+          });
+        }
+      }
+
+      leftPageHTML += '<div class="shop-scroll">';
+      this._activeListItems.forEach((item, idx) => {
+        const opacity = item.isCurrentlyInstalled ? "opacity: 0.55;" : "";
+        leftPageHTML += `
+          <div class="patient-card focusable" style="${opacity} position:relative;" onclick="SceneManager._scene.selectListItem(${idx})">
+              <div style="flex-grow:1;">
+                  <h4 style="margin:0; font-family:'Lora', serif; font-size:1.15em; color:#58180D;">${item.name}</h4>
+                  <p style="margin:2px 0 0 0; font-family:'Lora', serif; font-size:0.8em; color:#5d483b;">
+                      ${item.isRemoveOption ? (item.currentProsthetic ? T('Prosthetics.uninstallActiveDevice') : T('Prosthetics.limbHasOriginalPart')) : ""}
+                      ${item.isProsthetic && item.prosthetic.effects ? Object.entries(item.prosthetic.effects).map(([paramId, val]) => `${getParamName(parseInt(paramId))} +${val}`).join(" | ") : ""}
+                  </p>
+              </div>
+              <div style="font-family:'Lora', serif; font-size:0.95em; font-weight:bold; color:#58180D;">
+                  ${item.isRemoveOption ? "" : (item.isCurrentlyInstalled ? T('Prosthetics.installed') : formatPriceInEuros(item.cost))}
+              </div>
+          </div>
+        `;
+      });
+      leftPageHTML += '</div>';
+    }
+
+    document.getElementById("left-title").innerHTML = leftTitle;
+    document.getElementById("left-desc").innerHTML = `"${leftDesc}"`;
+    document.getElementById("left-page-content").innerHTML = leftPageHTML;
+
+    const actorChanged = (this._selectedActor !== this._lastDrawnActor);
+    if (actorChanged || this._forceRightPageRedraw) {
+      this._forceRightPageRedraw = false;
+      this._lastDrawnActor = this._selectedActor;
+      document.getElementById("right-page-content").innerHTML = this.generateRightPageCharacterSheet(this._selectedActor);
+
+      if (this._selectedActor) {
+        this.drawUIActorPortrait(this._selectedActor, `actor-canvas`);
+      }
+    }
+
+    UIShopInputManager.activate(cols);
+
+    if (this._viewState === 'party') {
+      const activeMembers = $gameParty.members();
+      activeMembers.forEach((actor, idx) => {
+        this.drawUIActorPortrait(actor, `actor-canvas-left-${idx}`);
+      });
+    }
+
+    if (this._activeListItems.length > 0) {
+      this.refreshRightPageSurgeryPreview(0);
+    }
+  };
+
+  Scene_ProstheticShop.prototype.generateRightPageCharacterSheet = function (actor) {
+    if (!actor) {
+      return `
+        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; font-family:'Lora', serif; color:#5d483b; text-align:center; padding: 20px;">
+            <span style="font-size:3em; margin-bottom:15px; filter: opacity(0.65);"></span>
+            <h3 style="font-family:'Lora', serif; color:#58180D; font-size:1.6em; margin:0 0 10px 0;">${T('Prosthetics.dossierTitle')}</h3>
+            <p style="font-size:0.95em; line-height:1.5; font-style:italic;">${T('Prosthetics.dossierPrompt')}</p>
+        </div>
+      `;
+    }
+
+    const members = $gameParty.members();
+    let companionTabsHTML = "";
+    members.forEach((mem, idx) => {
+      const isSelected = mem === actor ? "selected" : "";
+      companionTabsHTML += `<div class="companion-tab ${isSelected}" onclick="SceneManager._scene.switchSelectedActor(${idx})">${mem.name()}</div>`;
+    });
+    const companionsHTML = `<div class="companion-switcher" style="justify-content:flex-end; margin-bottom:12px;">${window.CharSwitcher.inner(
+      `<div class="companion-tabs-row" style="border-bottom:none; margin-bottom:0; padding-bottom:0;">${companionTabsHTML}</div>`, members.length
+    )}</div>`;
+
+    const str = actor.param(2);
+    const con = actor.param(3);
+    const dex = actor.param(6);
+    const intVal = actor.param(4);
+    const wis = actor.param(5);
+    const psi = actor.param(7);
+
+    const getModText = (val) => {
+      const m = Math.floor((val - 10) / 2);
+      return m >= 0 ? "+" + m : String(m);
+    };
+
+    const repName = getReproductionName(actor);
+    const genderName = getGenderName(actor);
+
+    let partsHTML = "";
+    if (actor._bodyParts) {
+      partsHTML += '<div id="clinic-parts-scroll" style="margin-top:10px; max-height:160px; overflow-y:auto; padding-right:5px; border-top:1px dashed rgba(88,24,13,0.15); padding-top:8px; flex-grow: 1;">';
+      partsHTML += `<h4 style="font-family:'Lora', serif; font-size:1em; color:#58180D; margin:0 0 6px 0;">${T('Prosthetics.biologicalSystemsStatus')}</h4>`;
+      for (const partKey of Object.keys(actor._bodyParts)) {
+        const part = actor._bodyParts[partKey];
+        const hasImplant = actor._prosthetics && actor._prosthetics[partKey];
+        let implantName = "";
+        if (hasImplant) {
+          const ProstheticTypes = getProstheticTypes();
+          const prosthetic = ProstheticTypes ? ProstheticTypes[actor._prosthetics[partKey]] : null;
+          if (prosthetic) {
+            implantName = ` [${ConfigManager.language === "it" ? prosthetic.name_it : prosthetic.name_en}]`;
+          }
+        }
+        partsHTML += `
+          <div style="display:flex; justify-content:space-between; font-size:0.8em; margin-bottom:4px; font-family:'Lora', serif; border-bottom:1px dotted rgba(0,0,0,0.06); padding-bottom:2px;">
+            <span>${part.name || partKey}</span>
+            <span style="color:${hasImplant ? '#2e7d32' : '#5d483b'}; font-weight:${hasImplant ? 'bold' : 'normal'};">${hasImplant ? `Implant:${implantName}` : T('Prosthetics.original')}</span>
+          </div>
+        `;
+      }
+      partsHTML += '</div>';
+    }
+
+    return `
+      ${companionsHTML}
+      <div class="bio-row" style="margin-bottom:10px;">
+          <div class="portrait-frame">
+              <canvas id="actor-canvas" width="48" height="48"></canvas>
+          </div>
+          <div class="bio-text">
+              <h3 class="char-name">${actor.name()}</h3>
+              <p class="char-class">${actor.currentClass() ? actor.currentClass().name : T('Prosthetics.classless')} (${T('Prosthetics.levelShort', { level: actor.level })})</p>
+              <p style="font-size:0.75em; margin:2px 0 0 0; color:#6b5242; font-family:'Lora', serif;">${T('Prosthetics.genderReprLine', { gender: genderName, repr: repName })}</p>
+          </div>
+      </div>
+
+      <div class="ability-container" style="margin-bottom:10px; grid-gap:5px;">
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.str')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${str}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(str)}</span>
+          </div>
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.con')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${con}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(con)}</span>
+          </div>
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.dex')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${dex}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(dex)}</span>
+          </div>
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.int')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${intVal}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(intVal)}</span>
+          </div>
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.wis')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${wis}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(wis)}</span>
+          </div>
+          <div class="ability-card" style="padding:2px;">
+              <span class="ability-label" style="font-size:0.65em;">${T('Prosthetics.ability.psi')}</span>
+              <span class="ability-value" style="font-size:1.1em; margin:1px 0;">${psi}</span>
+              <span class="ability-mod" style="font-size:0.65em;">${getModText(psi)}</span>
+          </div>
+      </div>
+
+      <div class="vitals-box" style="padding:8px 12px; margin-bottom:10px;">
+          <div class="vital-row" style="margin-bottom:4px;">
+              <span class="vital-lbl" style="width:20px; font-size:0.85em;">${T('Prosthetics.vital.hp')}</span>
+              <div class="flask-container" style="height:10px;">
+                  <div class="flask-fill hp-fill" style="width: ${Math.floor(actor.hpRate() * 100)}%;"></div>
+              </div>
+              <span class="vital-vals" style="font-size:0.85em; width:65px;">${actor.hp}/${actor.mhp}</span>
+          </div>
+          <div class="vital-row">
+              <span class="vital-lbl" style="width:20px; font-size:0.85em;">${T('Prosthetics.vital.mp')}</span>
+              <div class="flask-container" style="height:10px;">
+                  <div class="flask-fill mp-fill" style="width: ${Math.floor(actor.mpRate() * 100)}%;"></div>
+              </div>
+              <span class="vital-vals" style="font-size:0.85em; width:65px;">${actor.mp}/${actor.mmp}</span>
+          </div>
+      </div>
+
+      ${partsHTML}
+
+      <!-- Surgery preview will overlay dynamically in this container for catalog lists -->
+      <div class="surgery-briefing-container"></div>
+    `;
+  };
+
+  Scene_ProstheticShop.prototype.onUIFocusChange = function (focusIndex) {
+    this.refreshRightPageSurgeryPreview(focusIndex);
+  };
+
+  Scene_ProstheticShop.prototype.refreshRightPageSurgeryPreview = function (focusIndex) {
+    const previewContainer = this._dndContainer.querySelector(".surgery-briefing-container");
+    if (!previewContainer) return;
+
+    const item = this._activeListItems[focusIndex];
+    if (!item) {
+      previewContainer.innerHTML = "";
+      return;
+    }
+
+    const actor = this._selectedActor;
+    const isAffordable = $gameParty.gold() >= (item.cost || 0);
+    const costColor = isAffordable ? "#2e7d32" : "#c62828";
+
+    let title = "";
+    let costText = "";
+    let descText = "";
+    let actionBtnLabel = "";
+    let actionSymbol = "";
+
+    if (this._viewState === 'install_part' || this._viewState === 'install_inventory') {
+      title = T('Prosthetics.surgicalBlueprint');
+      costText = formatPriceInEuros(item.cost);
+      descText = T('Prosthetics.thisSurgeryWillPermanentlyGraftANewOntoSBiol', { p1: item.name, p2: actor.name() });
+      actionBtnLabel = T('Prosthetics.graftLimb');
+      actionSymbol = "install";
+    } else if (this._viewState === 'remove_part') {
+      title = T('Prosthetics.amputationProtocol');
+      costText = formatPriceInEuros(item.cost);
+      let warnText = "";
+      if (item.hasImplant) {
+        warnText = T('Prosthetics.strongStyleColor822d2dBrWarningInstalledImpl');
+      }
+      descText = item.vital
+        ? T('Prosthetics.criticalVitalPartsCannotBeAmputatedWithoutCa')
+        : T('Prosthetics.surgicallyAmputatingWillRemoveAllItsStatBonu', { p1: item.name, p2: warnText });
+      actionBtnLabel = T('Prosthetics.amputate');
+      actionSymbol = "remove";
+    } else if (this._viewState === 'replace_archetype') {
+      title = T('Prosthetics.upgradeProtocol');
+      costText = formatPriceInEuros(item.cost);
+      descText = T('Prosthetics.performFullSwapOfTheCurrentLimbForACustomize', { p1: item.name });
+      actionBtnLabel = T('Prosthetics.replaceSystem2');
+      actionSymbol = "replace";
+    } else if (this._viewState === 'implant_select_prosthetic') {
+      if (item.isRemoveOption) {
+        title = T('Prosthetics.reconfigurationProtocol');
+        costText = "FREE";
+        descText = T('Prosthetics.uninstallTheCurrentlyEquippedProstheticDevic');
+        actionBtnLabel = T('Prosthetics.uninstall');
+        actionSymbol = "remove_implant";
+      } else {
+        title = T('Prosthetics.implantProtocol');
+        costText = formatPriceInEuros(item.cost);
+        descText = T('Prosthetics.installTheAdvancedProstheticMicroDeviceInsid', { p1: item.name });
+        actionBtnLabel = T('Prosthetics.installImplant2');
+        actionSymbol = "install_implant";
+      }
+    }
+
+    let isOkEnabled = true;
+    if (this._viewState === 'remove_part' && item.vital) isOkEnabled = false;
+    if (this._viewState === 'implant_select_prosthetic' && item.isRemoveOption && !item.canRemove) isOkEnabled = false;
+    if ((this._viewState === 'install_part' || this._viewState === 'install_inventory') && item.alreadyOwned) isOkEnabled = false;
+    if (!isAffordable && actionSymbol !== "remove_implant" && !(this._viewState === 'implant_select_prosthetic' && item.isRemoveOption)) isOkEnabled = false;
+
+    previewContainer.innerHTML = `
+      <div class="surgery-blueprint" style="font-family:'Lora', serif;">
+          <h4 style="font-family:'Lora', serif; color:#58180D; font-size:1.1em; margin:0 0 4px 0; border-bottom: 1px dashed rgba(88,24,13,0.15); padding-bottom:4px; letter-spacing:0.5px;">${title}</h4>
+          <p style="margin:4px 0; font-size:0.8em; line-height:1.4; color:#5d483b;">${descText}</p>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; font-family:'Lora', serif; font-size:0.9em; margin-top:6px; border-top:1px dotted rgba(88,24,13,0.12); padding-top:4px;">
+              <span>${T('Prosthetics.surgeryFee')} <strong style="color:${costColor};">${costText}</strong></span>
+              <span>${T('Prosthetics.availableFunds')} <strong style="color:#2e7d32;">${formatPriceInEuros($gameParty.gold())}</strong></span>
+          </div>
+          
+          <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="action-btn action-focusable ${!isOkEnabled ? 'disabled' : ''}" style="flex:1; padding:4px 8px; font-size:0.9em;" onclick="SceneManager._scene.executeSurgeryAction('${actionSymbol}')">${actionBtnLabel}</button>
+              <button class="action-btn action-focusable" style="flex:1; padding:4px 8px; font-size:0.9em;" onclick="SceneManager._scene.cancelSurgeryAction()">${T('Prosthetics.cancel')}</button>
+          </div>
+      </div>
+    `;
+
+    UIShopInputManager.actionElements = Array.from(previewContainer.querySelectorAll('.action-focusable'));
+    UIShopInputManager.actionIndex = 0;
+    UIShopInputManager.updateFocus();
+  };
+
+  Scene_ProstheticShop.prototype.onUICancel = function () {
+    if (this._viewState === 'party') {
+      this.popScene();
+    } else if (this._viewState === 'command') {
+      this._viewState = 'party';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'install_archetype') {
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'install_part') {
+      this._viewState = 'install_archetype';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'install_inventory') {
+      this._viewState = 'install_archetype';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'remove_part') {
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'replace_part') {
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'replace_archetype') {
+      this._viewState = 'replace_part';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'implant_select_part') {
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    } else if (this._viewState === 'implant_select_prosthetic') {
+      this._viewState = 'implant_select_part';
+      this.refreshUIShopDOM();
+    }
+  };
+
+  Scene_ProstheticShop.prototype.selectActor = function (idx) {
+    const members = $gameParty.members();
+    if (members[idx]) {
+      this._selectedActor = members[idx];
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    }
+  };
+
+  Scene_ProstheticShop.prototype.switchSelectedActor = function (idx) {
+    const members = $gameParty.members();
+    if (members[idx]) {
+      this._selectedActor = members[idx];
+      SoundManager.playOk();
+      this._viewState = 'command';
+      this.refreshUIShopDOM();
+    }
+  };
+
+  // Cycle the active patient via Tab / L1-R1, returning to the command view for
+  // the new patient (mirrors clicking a companion tab).
+  Scene_ProstheticShop.prototype.cyclePatient = function (dir) {
+    const members = $gameParty.members();
+    if (members.length <= 1) return;
+    const cur = members.indexOf(this._selectedActor);
+    const next = ((cur < 0 ? 0 : cur) + dir + members.length) % members.length;
+    this.switchSelectedActor(next);
+  };
+
+  Scene_ProstheticShop.prototype.chooseCommand = function (cmd) {
+    if (cmd === 'install') {
+      this._viewState = 'install_archetype';
+      this.refreshUIShopDOM();
+    } else if (cmd === 'remove') {
+      this._viewState = 'remove_part';
+      this.refreshUIShopDOM();
+    } else if (cmd === 'replace') {
+      this._viewState = 'replace_part';
+      this.refreshUIShopDOM();
+    } else if (cmd === 'implant') {
+      this._viewState = 'implant_select_part';
+      this.refreshUIShopDOM();
+    } else if (cmd === 'cancel') {
+      this._viewState = 'party';
+      this.refreshUIShopDOM();
+    }
+  };
+
+  Scene_ProstheticShop.prototype.chooseArchetype = function (key) {
+    if (key === '__INVENTORY__') {
+      this._viewState = 'install_inventory';
+    } else {
+      this._selectedArchetypeKey = key;
+      this._viewState = 'install_part';
+    }
+    this.refreshUIShopDOM();
+  };
+
+  Scene_ProstheticShop.prototype.selectListItem = function (idx) {
+    if (this._viewState === 'replace_part') {
+      const item = this._activeListItems[idx];
+      if (item) {
+        this._selectedPartKey = item.partKey;
+        this._removalFee = item.removalFee;
+        this._viewState = 'replace_archetype';
+        this.refreshUIShopDOM();
+      }
+    } else if (this._viewState === 'implant_select_part') {
+      const item = this._activeListItems[idx];
+      if (item) {
+        this._selectedPartKey = item.partKey;
+        this._viewState = 'implant_select_prosthetic';
+        this.refreshUIShopDOM();
+      }
+    } else {
+      UIShopInputManager.focusIndex = idx;
+      UIShopInputManager.mode = 'actions';
+      UIShopInputManager.actionIndex = 0;
+      UIShopInputManager.updateFocus();
+    }
+  };
+
+  Scene_ProstheticShop.prototype.executeSurgeryAction = function (action) {
+    const focusIndex = UIShopInputManager.focusIndex;
+    const item = this._activeListItems[focusIndex];
+    if (!item) return;
+
+    const actor = this._selectedActor;
+    this._forceRightPageRedraw = true;
+
+    if (action === "install") {
+      if (item.isInventoryPart) {
+        $gameParty.loseGold(INSTALLATION_FEE);
+        if (item.itemId && $dataItems[item.itemId]) $gameParty.loseItem($dataItems[item.itemId], 1);
+      } else {
+        $gameParty.loseGold(item.cost);
+      }
+
+      const archPart = item.archPart;
+      const itemId = item.itemId || (archPart && archPart.itemId) || 0;
+      graftBodyPart(actor, item, item.partKey, archPart, itemId);
+
+      actor.refresh();
+      SoundManager.playShop();
+      this.showClinicNotification(T('Prosthetics.limbGraftedSuccessfully'));
+
+      this._viewState = item.isInventoryPart ? 'install_inventory' : 'install_part';
+      this.refreshUIShopDOM();
+
+    } else if (action === "remove") {
+      $gameParty.loseGold(item.cost);
+
+      if (item.hasImplant && actor._prosthetics && actor._prosthetics[item.partKey]) {
+        removeProstheticImmediate(actor, item.partKey);
+      }
+
+      if (item.statEffect && item.statBonus > 0 && actor._bodyPartStatEffects) {
+        const p = item.statEffect.param;
+        if (actor._bodyPartStatEffects[p]) {
+          actor._bodyPartStatEffects[p] -= item.statBonus;
+          if (actor._bodyPartStatEffects[p] <= 0) delete actor._bodyPartStatEffects[p];
+        }
+      }
+
+      const removedPart = actor._bodyParts[item.partKey];
+      if (removedPart) {
+        skillIdList(removedPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+      }
+      if (removedPart && removedPart.itemId && $dataItems[removedPart.itemId]) {
+        $gameParty.gainItem($dataItems[removedPart.itemId], 1);
+      }
+
+      delete actor._bodyParts[item.partKey];
+      actor.refresh();
+      SoundManager.playShop();
+      this.showClinicNotification(T('Prosthetics.limbAmputatedSuccessfully'));
+
+      this._viewState = 'remove_part';
+      this.refreshUIShopDOM();
+
+    } else if (action === "replace") {
+      $gameParty.loseGold(item.cost);
+
+      const partKey = item.partKey;
+      const archPart = item.archPart;
+
+      const oldPart = actor._bodyParts && actor._bodyParts[partKey];
+      if (oldPart) {
+        const oldStatEffect = lookupStatEffect(partKey, oldPart, actor);
+        const oldBonus = computeStatBonus(oldStatEffect);
+        if (oldBonus > 0 && actor._bodyPartStatEffects) {
+          const p = oldStatEffect.param;
+          if (actor._bodyPartStatEffects[p]) {
+            actor._bodyPartStatEffects[p] -= oldBonus;
+            if (actor._bodyPartStatEffects[p] <= 0) delete actor._bodyPartStatEffects[p];
+          }
+        }
+        if (actor._prosthetics && actor._prosthetics[partKey]) {
+          removeProstheticImmediate(actor, partKey);
+        }
+        skillIdList(oldPart.skillId).forEach((sid) => actor.forgetSkill(sid));
+        if (oldPart.itemId && $dataItems[oldPart.itemId]) {
+          $gameParty.gainItem($dataItems[oldPart.itemId], 1);
+        }
+      }
+
+      graftBodyPart(actor, item, partKey, archPart, (archPart && archPart.itemId) || 0);
+
+      actor.refresh();
+      SoundManager.playShop();
+      this.showClinicNotification(T('Prosthetics.deviceReplacedSuccessfully'));
+
+      this._viewState = 'replace_part';
+      this.refreshUIShopDOM();
+
+    } else if (action === "install_implant") {
+      $gameParty.loseGold(item.cost);
+      installProstheticImmediate(actor, item.partKey, item.prostheticKey);
+      SoundManager.playShop();
+      this.showClinicNotification(T('Prosthetics.prostheticInstalledSuccessfully'));
+
+      this._viewState = 'implant_select_prosthetic';
+      this.refreshUIShopDOM();
+
+    } else if (action === "remove_implant") {
+      removeProstheticImmediate(actor, this._selectedPartKey);
+      SoundManager.playShop();
+      this.showClinicNotification(T('Prosthetics.prostheticUninstalledSuccessfully'));
+
+      this._viewState = 'implant_select_prosthetic';
+      this.refreshUIShopDOM();
+    }
+  };
+
+  Scene_ProstheticShop.prototype.cancelSurgeryAction = function () {
+    SoundManager.playCancel();
+    UIShopInputManager.mode = 'list';
+    UIShopInputManager.updateFocus();
+  };
+
+  Scene_ProstheticShop.prototype.drawUIActorPortrait = function (actor, canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const bitmap = ImageManager.loadCharacter(actor.characterName());
+    const drawPortrait = () => {
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.imageSmoothingEnabled = false;
+
+      const isBig = ImageManager.isBigCharacter(actor.characterName());
+      const pw = bitmap.width / (isBig ? 3 : 12);
+      const ph = bitmap.height / (isBig ? 4 : 8);
+
+      const charIndex = actor.characterIndex();
+      const sx = ((charIndex % 4) * 3 + 1) * pw;
+      const sy = (Math.floor(charIndex / 4) * 4) * ph;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bitmap.canvas, sx, sy, pw, ph, 0, 0, canvas.width, canvas.height);
+    };
+
+    if (bitmap.isReady()) {
+      drawPortrait();
+    } else {
+      bitmap.addLoadListener(drawPortrait);
+    }
+  };
+  // ===========================================================================
+  // Game_Actor.prototype.param  – prosthetic + body-part stat bonuses
+  // ===========================================================================
+  var _Game_Actor_param_prosthetic = Game_Actor.prototype.param;
+  Game_Actor.prototype.param = function (paramId) {
+    var value = _Game_Actor_param_prosthetic.call(this, paramId);
+    if (this._prostheticEffects && this._prostheticEffects[paramId]) value += this._prostheticEffects[paramId];
+    if (this._bodyPartStatEffects && this._bodyPartStatEffects[paramId]) value += this._bodyPartStatEffects[paramId];
+    return Math.max(1, value);
+  };
+
+  // ===========================================================================
+  // Scene_Menu integration
+  // ===========================================================================
+  var _Scene_Menu_createCommandWindow_prosthetic = Scene_Menu.prototype.createCommandWindow;
+  Scene_Menu.prototype.createCommandWindow = function () {
+    _Scene_Menu_createCommandWindow_prosthetic.call(this);
+    this._commandWindow.setHandler("prostheticShop", this.commandProstheticShop.bind(this));
+  };
+
+  Scene_Menu.prototype.commandProstheticShop = function () {
+    SceneManager.push(Scene_ProstheticShop);
+  };
+
+  // ===========================================================================
+  // autoAssignProsthetic  (targets actor 1 only)
+  // ===========================================================================
+  Game_System.prototype.autoAssignProsthetic = function () {
+    const actor = $gameActors.actor(1);
+    const assignmentDone = $gameSwitches.value(88);
+    const storedName = $gameVariables.value(89);
+    const currentName = actor.name();
+    const shouldAssign = !assignmentDone || currentName !== storedName;
+
+    if (shouldAssign) {
+      const v87Value = $gameVariables.value(87);
+      const implantName = AUTO_ASSIGN_IMPLANTS[v87Value] !== undefined
+        ? AUTO_ASSIGN_IMPLANTS[v87Value]
+        : "TESTES";
+      console.log(`Auto-assigning implant: ${implantName} (V87 value: ${v87Value})`);
+      $gameSwitches.setValue(88, true);
+      $gameVariables.setValue(89, currentName);
+    } else {
+      console.log(`Prosthetic auto-assignment skipped. (Name: ${currentName})`);
+    }
+  };
+
+  // ===========================================================================
+  // Plugin Commands
+  // ===========================================================================
+  var _Game_Interpreter_pluginCommand_prosthetic = Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    _Game_Interpreter_pluginCommand_prosthetic.call(this, command, args);
+    if (command === "OpenProstheticShop") {
+      $gameSystem.autoAssignProsthetic();
+      const _ev = $gameMap.event(this.eventId());
+      if (_ev) $gameTemp._prostheticShopSeedData = { mapId: $gameMap.mapId(), x: _ev.x, y: _ev.y };
+      SceneManager.push(Scene_ProstheticShop);
+    }
+  };
+
+  if (Utils.RPGMAKER_NAME === "MZ") {
+    PluginManager.registerCommand("Health_ProstheticShop", "OpenProstheticShop", () => {
+      $gameSystem.autoAssignProsthetic();
+      const _ev = $gameMap.event($gameMap._interpreter.eventId());
+      if (_ev) $gameTemp._prostheticShopSeedData = { mapId: $gameMap.mapId(), x: _ev.x, y: _ev.y };
+      SceneManager.push(Scene_ProstheticShop);
+    });
+  }
+})();

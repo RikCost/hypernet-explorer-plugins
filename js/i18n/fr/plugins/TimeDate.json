@@ -1,0 +1,56 @@
+{
+  "needs": {
+    "hungry": "",
+    "starving": "",
+    "noLongerHungry": "",
+    "sleepy": "",
+    "exhausted": "",
+    "noLongerSleepy": "",
+    "hygieneLow": "",
+    "hygieneCritical": "",
+    "socialLow": "",
+    "socialCritical": "",
+    "leisureLow": "",
+    "leisureCritical": "",
+    "hp": "",
+    "mp": "",
+    "mpRestored": "",
+    "vomited": "",
+    "collapsed": "",
+    "outOfMp": ""
+  },
+  "sleepMenu": {
+    "titleMain": "",
+    "titleSleep": "",
+    "titlePostSleep": "",
+    "titleCryo": "",
+    "titleWait": "",
+    "sleep": "",
+    "wait": "",
+    "hoursWait": "",
+    "hourWait": "",
+    "halfHour": "",
+    "cryo": "",
+    "cryoYear": "%1",
+    "cryoFinalYear": "",
+    "save": "",
+    "respawn": "",
+    "cancel": "",
+    "hours": "",
+    "wakeup": "",
+    "dream": ""
+  },
+  "hud": {
+    "food": "",
+    "temp": "",
+    "noFood": "",
+    "weatherClear": ""
+  },
+  "needLabel": {
+    "hunger": "",
+    "sleep": "",
+    "hygiene": "",
+    "social": "",
+    "leisure": ""
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "description": "",
+  "parameters": "",
+  "traits": "",
+  "noTraits": "",
+  "states": "",
+  "none": "",
+  "more": "",
+  "total": "",
+  "next": "",
+  "defaultDescriptions": {
+    "warrior": "",
+    "mage": "",
+    "priest": "",
+    "rogue": "",
+    "archer": "",
+    "default": ""
+  },
+  "back": "",
+  "descriptionSet": "",
+  "invalidIndex": "",
+  "actorLine": "",
+  "need": {
+    "hunger": "",
+    "sleep": "",
+    "hygiene": "",
+    "social": "",
+    "leisure": ""
+  },
+  "classAbility": "",
+  "ui": {
+    "hp": "",
+    "mp": "",
+    "ap": "",
+    "experience": "",
+    "attributesAbilities": "",
+    "characterTraits": "",
+    "classAbility": "",
+    "biologicalVitals": "",
+    "alignment": "",
+    "noTraits": "",
+    "noVitals": ""
+  }
+}

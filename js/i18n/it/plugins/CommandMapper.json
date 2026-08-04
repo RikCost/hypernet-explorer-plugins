@@ -1,0 +1,29 @@
+{
+  "commands": "Comandi",
+  "keyboard": "Tastiera",
+  "gamepad": "Controller",
+  "pressKey": "Premi un tasto...",
+  "pressButton": "Premi un pulsante...",
+  "selectCommand": "Seleziona un comando da rimappare. Premi ESC per tornare indietro.",
+  "selectCommandGamepad": "Seleziona un comando da rimappare. Premi B per tornare indietro.",
+  "resetToDefault": "Ripristina Predefiniti",
+  "keysReset": "Le mappature dei tasti sono state ripristinate.",
+  "gamepadReset": "Le mappature del controller sono state ripristinate.",
+  "commandNames": {
+    "ok": "OK/Conferma",
+    "cancel": "Annulla",
+    "shift": "Scatto/Speciale",
+    "menu": "Menu",
+    "pageup": "Pagina Su",
+    "pagedown": "Pagina Giù",
+    "up": "Muovi Su",
+    "down": "Muovi Giù",
+    "left": "Muovi Sinistra",
+    "right": "Muovi Destra",
+    "zoomIn": "Zoom Avanti",
+    "zoomOut": "Zoom Indietro",
+    "kick": "Calcio",
+    "run": "Corri"
+  },
+  "unassigned": "Non assegnato"
+}

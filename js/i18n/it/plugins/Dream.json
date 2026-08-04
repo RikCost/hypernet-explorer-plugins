@@ -1,0 +1,18 @@
+{
+  "biome": {
+    "0": "Vestibolo pallido",
+    "1": "Giardino di occhi",
+    "2": "Reticolo al neon",
+    "3": "Mare di mercurio",
+    "4": "Labirinto statico",
+    "5": "Viscere di zucchero",
+    "6": "Dune rovesciate",
+    "7": "Statica numerica"
+  },
+  "caption": "  -  doppio tocco su SPAZIO per volare  -  tocca un'entità per cambiare  -  Esc: svegliati",
+  "wakeUp": "Pizzicati le guance (svegliati)",
+  "keepDreaming": "Continua a sognare",
+  "dreamThins": "Il sogno si assottiglia...",
+  "youWokeUp": "Ti sei svegliato",
+  "willNotForm": "Sogni, ma il mondo non prende forma..."
+}

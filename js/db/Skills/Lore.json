@@ -1,0 +1,2631 @@
+{
+  "_comment": "Combinatorial skill-lore grammar. Loaded as window.Skills.Lore by DataService. The <Lore: #School> directive on each skill note (see gen_skill_lore.py) is resolved at RUNTIME by ItemSystemUtils.fillLore, seeded from the live world seed (worldSeed() ^ skillId) so every world tells its own history. Each School supplies bespoke vocabulary banks (art/era/mechanism/attrib); each family is a distinct sentence-generation algorithm (tone + templates). Keep additions grammatical: art=bare noun phrase, era=temporal appositive, mechanism=participial clause, attrib=noun phrase for people/peoples.",
+  "version": 1,
+  "categoryArchetype": {
+    "Physical": "MartialArts",
+    "Arcane": "Arcanism",
+    "Holy": "HolyMagic",
+    "Dark": "ForbiddenMagic",
+    "Restorative": "Healing",
+    "Support": "Leadership",
+    "Composite": "Fusion"
+  },
+  "tokenBanks": {
+    "worldly": [
+      "{faction} still drills it near {city}",
+      "{leader} of {faction} pays well for its masters in {city}",
+      "the {title} of {faction} prove their rank by it across {nation}",
+      "{nation} guards the old forms under {leader}",
+      "{faction} keeps a hardened master of it in {city}",
+      "{leader} stakes {nation} on those who wield it",
+      "the {title} of {nation} carry it into {city}",
+      "the wandering folk of {nation} bear it far past {city}",
+      "{faction} hires the finest of its practitioners out of {city}",
+      "{leader} rules {city} by little else",
+      "{govType} of {nation} sets a checkpoint toll on every master of it out of {city}",
+      "{leader} keeps a whole barracks of it {govType} could never afford",
+      "the market stalls of {city} sell knock-offs of it while {faction} keeps the true drills",
+      "no trucker convoy leaves {city} without a {title} of {faction} who knows it",
+      "{leader} traded {nation} half a road for one master of it",
+      "the {title} of {govType} enforce it at the borders of {city}",
+      "{faction} and its rivals both bleed for it in the alleys of {city}",
+      "{leader} of {faction} outlawed its teaching everywhere but {city}",
+      "past the last checkpoint of {nation} only {faction} still drills it",
+      "the road-stalls near {city} hawk it to any who carry {faction} coin",
+      "{govType} pretends it never mattered, yet {leader} hoards its masters in {city}",
+      "the {title} of {faction} bury their dead near {city} with it carved on the stone",
+      "{nation} taxes it, {faction} smuggles it, and {city} pays for it in the dark",
+      "{leader} learned it before the walls of {city} and never let it go",
+      "convoy-runners out of {city} swear no {title} of {faction} moves without it",
+      "the {title} who hold {city} for {govType} were all schooled in it",
+      "{faction} left its old masters of it stranded past the checkpoints of {nation}",
+      "{leader} would trade {city} sooner than the last practitioner of it",
+      "the caravan-guards of {nation} carry it where {govType} law cannot reach",
+      "even the beggars at the gates of {city} name {faction} and {leader} when they speak of it"
+    ],
+    "arcane": [
+      "{faction} still works the rite near {city}",
+      "{leader} of {faction} guards its grimoires in {city}",
+      "the {title} of {faction} learn it by rote in {nation}",
+      "{nation} whispers it yet in {deity}'s name",
+      "{faction} alone dares teach it beneath {city}",
+      "the seers of {faction} swear by it before {deity}",
+      "{leader} of {faction} hoards its secrets in {city}",
+      "{deity}'s faithful within {faction} preserve every word of it",
+      "{nation} burns those who steal it, yet {faction} keeps the rolls",
+      "the adepts of {faction} carry it out of {city} for {leader}",
+      "the leylines under {city} answer only the {title} of {faction}",
+      "{leader} of {faction} keeps its CamelCase names sealed away from {nation}",
+      "{govType} of {nation} forbids it, so {faction} works it beneath {city}",
+      "the {title} of {faction} scratch its sigils on the road-stones out of {city}",
+      "{deity} is said to have taught it to {leader} before {faction} ever formed",
+      "the grimoire-cellars of {city} hold what {leader} of {faction} will not name",
+      "{nation} calls it heresy, yet the {title} of {faction} chant it before {deity}",
+      "no rite of it may be sold in {city} unless {faction} has copied it first",
+      "{leader} bound {nation} to {deity} with the oldest form of it",
+      "the ley-scribes of {faction} carry its rolls past the wards of {city}",
+      "{govType} keeps a chained copy of it, but {faction} keeps the working one",
+      "the {title} of {faction} say {deity} still listens for it above {city}",
+      "past the leyline-gates of {nation} only {leader} of {faction} may work it",
+      "{deity}'s name is spoken thrice over each casting of it in {city}",
+      "{faction} burned {nation}'s copies of it and kept its own in {city}",
+      "the adepts of {faction} trade its stanzas for safe passage through {nation}",
+      "{leader} of {faction} paid a road in blood for the last grimoire of it in {city}",
+      "the {title} of {govType} hunt it, and {faction} hides it in the cellars of {city}",
+      "{nation} swears {deity} laid it in the leylines beneath {city}",
+      "the ley-witches of {faction} whisper it to {leader} and to no one else in {city}"
+    ]
+  },
+  "families": {
+    "primordial": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}. {Attrib} first sang {art}, and {token}.",
+        "The first magic of all: {art}, {mechanism}; {token}.",
+        "{Attrib} bequeathed {art} to no one, yet {mechanism}; {token}.",
+        "{Art} of the deep world, {era}, {mechanism}. {Token}."
+      ]
+    },
+    "ancient": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} first shaped {art}, and {token}.",
+        "Older than any kingdom, {art} endures, {mechanism}; {token}.",
+        "{Attrib} kindled {art} at the dawn of things; {token}.",
+        "A primal craft, {era}. {Mechanism_cap}, so {token}."
+      ]
+    },
+    "wild": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}, when {attrib} first wore the hide and took the horn; {token}.",
+        "{Attrib} sang {art} to the wilds long before the walls rose, and {token}.",
+        "A wild art {era}, {mechanism}; {token}.",
+        "{Art} of the wilds, {mechanism}. {Token}."
+      ]
+    },
+    "greek": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, copied from {attrib}, {mechanism}. {Token}.",
+        "{Era}: high sorcery from {attrib}, {mechanism}; {token}.",
+        "{Art} of the old grimoires, systematised by {attrib}; {token}.",
+        "Ceremonial arcana {era}, {mechanism}. {Token}.",
+        "{Attrib} set down {art} in the spell-papers, and {token}."
+      ]
+    },
+    "holy": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "A grace {era}, sanctified by {attrib}; {token}.",
+        "{Attrib} first kindled {art}, and {token}.",
+        "{Art} of temple and cathedral, {mechanism}; {token}.",
+        "Divine light {era}, blessed by {attrib}. {Token}."
+      ]
+    },
+    "dream": {
+      "tokens": "arcane",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Attrib} first walked it, sieving the night; {token}.",
+        "Sleep-craft {era}, {mechanism}; {token}.",
+        "{Era}: {attrib} read the soul's wishes in dream, and {token}.",
+        "{Art} drawn from the vision-quest, {mechanism}. {Token}."
+      ]
+    },
+    "modern": {
+      "tokens": "arcane",
+      "templates": [
+        "Newly drafted: {art}, {era}, {mechanism}. {Token}.",
+        "{Era}. {Attrib} married {art} to the age, and {token}.",
+        "{Art}, no older than the satellite age, {mechanism}; {token}.",
+        "The youngest of the schools, {art} was born {era}; {token}.",
+        "{Attrib} forged {art} from the broken world, {mechanism}. {Token}."
+      ]
+    },
+    "forbidden": {
+      "tokens": "arcane",
+      "templates": [
+        "A proscribed working: {art}, {mechanism}, condemned in every age. {Token}.",
+        "{Art}, outlawed since {attrib} first dared it, {mechanism}; {token}.",
+        "Black sorcery {era}, {mechanism}. {Token}.",
+        "{Attrib} passed {art} in secret, and {token}.",
+        "An interdicted rite, {art} warps the leylines; {mechanism}, and {token}."
+      ]
+    },
+    "martial": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} drilled {art}, and {token}.",
+        "{Art} sharpened in every war since, {mechanism}; {token}.",
+        "{Attrib} codified {art} in the war-schools; {token}.",
+        "A soldier's craft {era}, {mechanism}. {Token}."
+      ]
+    },
+    "trade": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} plied {art}, and {token}.",
+        "{Art} handed down the guild-lines, {mechanism}; {token}.",
+        "{Attrib} mastered {art} the long way; {token}.",
+        "A workaday craft {era}, {mechanism}. {Token}."
+      ]
+    },
+    "fusion": {
+      "tokens": "arcane",
+      "templates": [
+        "A joined working: two arts braided into one, {mechanism}. {Token}.",
+        "{Era}, when the Squishing let separate spells fuse; {mechanism}, and {token}.",
+        "A composite rite, {mechanism}; {token}.",
+        "{Attrib} first welded these strands together, and {token}.",
+        "Two disciplines made one, {mechanism}. {Token}."
+      ]
+    },
+    "wayfaring": {
+      "tokens": "worldly",
+      "templates": [
+        "Road-craft {era}, {mechanism}. {Token}.",
+        "{Attrib} keep the routes open, {mechanism}; {token}.",
+        "{Art} of the Encompassing Road, {mechanism}; {token}.",
+        "{Era}: hold the pace or be reset; {attrib} learned to bend it, and {token}.",
+        "Travel-magic {era}, {mechanism}. {Token}."
+      ]
+    },
+    "generic": {
+      "tokens": "worldly",
+      "templates": [
+        "An old craft of uncertain origin, {mechanism}. {Token}.",
+        "{Era}: its first practitioner is forgotten, yet {token}.",
+        "{Art} passed from master to pupil across the ages; {token}.",
+        "Lore of long standing, {mechanism}; {token}.",
+        "{Attrib} carried {art} down the years, and {token}."
+      ]
+    },
+    "forged": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} hammered {art}, and {token}.",
+        "{Attrib} beat {art} out on the anvil, {mechanism}; {token}.",
+        "{Art} of the forge-towns, {mechanism}. {Token}.",
+        "A smith's work {era}, {mechanism}; {token}.",
+        "Steel-craft older than most walls, {art}, {mechanism}. {Token}."
+      ]
+    },
+    "primitive": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} chipped {art} from what they could find, and {token}.",
+        "{Attrib} scavenged {art} from the ruins, {mechanism}; {token}.",
+        "{Art} of the scrap-heaps, {mechanism}. {Token}.",
+        "A crude thing {era}, {mechanism}; {token}.",
+        "Stone-age work in a broken age, {art}, {mechanism}. {Token}."
+      ]
+    },
+    "firearm": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} bored and rifled {art}, and {token}.",
+        "{Attrib} machined {art} in the gun-shops, {mechanism}; {token}.",
+        "{Art} of the trench and the assembly line, {mechanism}. {Token}.",
+        "A gunsmith's piece {era}, {mechanism}; {token}.",
+        "Powder-and-steel work, {art}, {mechanism}. {Token}."
+      ]
+    },
+    "marketed": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} stamped {art} out by the thousand, and {token}.",
+        "{Attrib} shipped {art} straight from the catalog, {mechanism}; {token}.",
+        "{Art} off the loop-resistant lines, {mechanism}. {Token}.",
+        "Factory stock {era}, {mechanism}; {token}.",
+        "Mass-made and never quite the same twice, {art}, {mechanism}. {Token}."
+      ]
+    },
+    "relic": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} first bore {art}, and {token}.",
+        "{Attrib} carried {art} through the old wars, {mechanism}; {token}.",
+        "{Art} of the leyline and the deep past, {mechanism}. {Token}.",
+        "A named thing {era}, {mechanism}; {token}.",
+        "Older than the Squishing and stranger for it, {art}, {mechanism}. {Token}."
+      ]
+    },
+    "warding": {
+      "tokens": "worldly",
+      "templates": [
+        "{Art}, {era}, {mechanism}. {Token}.",
+        "{Era}: {attrib} raised {art} against the assault, and {token}.",
+        "{Attrib} bore {art} in the siege-lines, {mechanism}; {token}.",
+        "{Art} of the shield-wall, {mechanism}. {Token}.",
+        "A shelter {era}, {mechanism}; {token}.",
+        "Built to turn a blow and hold a line, {art}, {mechanism}. {Token}."
+      ]
+    }
+  },
+  "archetypes": {
+    "Geomancy": {
+      "family": "primordial",
+      "art": [
+        "petromancy",
+        "the deep-stone art",
+        "earth-singing",
+        "the marrow-rite",
+        "the tar-pit calling",
+        "crude-oil divination",
+        "the bedrock summons"
+      ],
+      "era": [
+        "older than mankind",
+        "eldest of all the sorceries",
+        "from before the first mammal drew breath",
+        "born in the Mesozoic deep",
+        "remembered from before the continents drifted",
+        "of the age when oil first pooled in the dark",
+        "sung in the reptile-tongue of the deep swamps"
+      ],
+      "mechanism": [
+        "drawing on the petrodemons asleep in the crude oil",
+        "binding blood, oil and leyline through Porphyrin threads",
+        "coaxing power from the Earth's own marrow",
+        "answering the black sentient oil in the deep",
+        "listening to the pressure of the buried sea of oil",
+        "reading the copper-penny smell of stirred Porphyrin",
+        "waking the strata that slept since the great heat"
+      ],
+      "attrib": [
+        "the saurian shamans of the Mesozoic swamps",
+        "the reptile-priests of the primeval tar-pits",
+        "Enrico Mattei (1906-1962), who copied it from a Libyan tomb-scroll",
+        "the petrodemons that taught it to no one",
+        "the drill-shamans who court the petrodemons",
+        "the tomb-scroll copyists of the Libyan sands",
+        "the deep-earth listeners who never see the sun"
+      ]
+    },
+    "Elemental": {
+      "family": "ancient",
+      "art": [
+        "the element-craft",
+        "fire-and-frost sorcery",
+        "the first storm-calling",
+        "the ember-and-lightning rite",
+        "the four-hearth rite",
+        "storm-and-ember conjuring",
+        "the raw-air calling"
+      ],
+      "era": [
+        "kindled at the first Stone-Age hearth",
+        "tens of thousands of years deep",
+        "from the dawn of fire",
+        "older than any spoken language",
+        "remembered from the last ice age's long dark",
+        "of the age when fire was still a secret",
+        "older than the words for hot and cold"
+      ],
+      "mechanism": [
+        "bending flame, frost and thunder to a frightened hand",
+        "calling down fire and lightning at will",
+        "commanding the four elements as the first hunters did",
+        "wringing storm and ember from the raw air",
+        "pulling frost from the marrow of the winter air",
+        "striking spark from nothing as the first hunters did",
+        "turning a warm hand cold and a cold air to flame"
+      ],
+      "attrib": [
+        "the nameless cave-shamans of the deep Stone Age",
+        "the ice-age firekeepers",
+        "the first hunters who feared and courted the storm",
+        "the cavemen who knew it before writing",
+        "the hearth-tenders who guarded the only flame",
+        "the storm-fearing hunters of the frozen wastes",
+        "the ember-keepers of the deep caves"
+      ]
+    },
+    "Tempest": {
+      "family": "ancient",
+      "art": [
+        "the storm-songs",
+        "tempest-lore",
+        "the weather-craft",
+        "the gale-calling"
+      ],
+      "era": [
+        "as old as the Stone Age awe of thunder",
+        "sung since the first sky-watchers",
+        "of deep antiquity",
+        "from the age of ice and storm"
+      ],
+      "mechanism": [
+        "whistling up the gale from a clear sky",
+        "raising wind and rain over a whole province",
+        "loosing the fury of the skies",
+        "turning the weather against an army"
+      ],
+      "attrib": [
+        "the earliest sky-watchers",
+        "the ice-age hunters who whistled up the wind",
+        "the old storm-witches of the marshes",
+        "the shamans who bargained with the thunder"
+      ]
+    },
+    "Bestial": {
+      "family": "wild",
+      "art": [
+        "beast-lore",
+        "the hide-and-horn rite",
+        "primal beast-magic",
+        "the wild kinship"
+      ],
+      "era": [
+        "from the deep Stone Age",
+        "older than any city",
+        "sung since the ice-age hunts",
+        "as old as the walk with the herds"
+      ],
+      "mechanism": [
+        "borrowing the strength and fury of the beasts",
+        "taking on claw, hide and savage instinct",
+        "speaking with the animals as kin",
+        "wearing the totem's shape in battle"
+      ],
+      "attrib": [
+        "the ice-age shamans who first wore the hide",
+        "the druids older than any city",
+        "the wild-folk who walked with the herds",
+        "the horn-crowned hunters of the elder wilds"
+      ]
+    },
+    "Hunting": {
+      "family": "wild",
+      "art": [
+        "the hunter's craft",
+        "the tracking-lore",
+        "the stalk-and-kill",
+        "the trail-craft"
+      ],
+      "era": [
+        "eldest of all human skills",
+        "drilled since the Paleolithic",
+        "older than agriculture itself",
+        "the first skill our kind ever mastered"
+      ],
+      "mechanism": [
+        "reading sign and running down the quarry",
+        "loosing the killing shot at the last breath",
+        "fighting beside a loyal beast",
+        "feeding a whole camp from a cold trail"
+      ],
+      "attrib": [
+        "the Paleolithic trackers",
+        "the first hunters who fed the fire",
+        "the trail-masters of the old cold wastes",
+        "the beast-hunters of the elder tundra"
+      ]
+    },
+    "Pastoral": {
+      "family": "wild",
+      "art": [
+        "the green art",
+        "the growing-words",
+        "seed-and-herd lore",
+        "the pastoral rite"
+      ],
+      "era": [
+        "as old as agriculture itself",
+        "ten thousand years deep",
+        "from the dawn of the plough",
+        "born with the first Neolithic village"
+      ],
+      "mechanism": [
+        "coaxing root, vine and beast to obey",
+        "whispering seed and herd to fatness",
+        "turning barren furrows green",
+        "binding the flock to a single voice"
+      ],
+      "attrib": [
+        "the grain-priests of the first villages",
+        "the settled folk of the Neolithic",
+        "the cunning-folk who sang to the sowing",
+        "the herders who first put down roots"
+      ]
+    },
+    "Arcanism": {
+      "family": "greek",
+      "art": [
+        "the arcane art",
+        "high ceremonial magic",
+        "structured sorcery",
+        "the pure arcana",
+        "the figure-and-formula work",
+        "the graven-sigil art",
+        "the diagram-magic"
+      ],
+      "era": [
+        "older than Rome",
+        "from the spell-papers of Greco-Roman Egypt",
+        "codified anew in 1888",
+        "of the Hermetic tradition",
+        "set down in the Alexandrian spell-papers",
+        "revived in the parlour-lodges of 1888",
+        "of the Hermetic revival's careful hand"
+      ],
+      "mechanism": [
+        "channelling raw magical power through learned figures",
+        "shaping pure arcane energy by rote and diagram",
+        "binding sigil and word into effect",
+        "drawing structure out of chaos",
+        "ruling clean lines until the chaos took shape",
+        "reciting the barbarous names in exact order",
+        "binding a figure so precisely nothing could leak"
+      ],
+      "attrib": [
+        "the scribes of the Greek Magical Papyri",
+        "Agrippa (1486-1535) and John Dee (1527-1608)",
+        "the Hermetic Order of the Golden Dawn",
+        "the copyists of the Sefer Raziel and the Picatrix",
+        "the lodge-adepts who measured every sigil",
+        "the Alexandrian copyists of the spell-papers",
+        "the diagram-masters of the Golden Dawn"
+      ]
+    },
+    "StatusMagic": {
+      "family": "greek",
+      "art": [
+        "hex-craft",
+        "affliction-magic",
+        "the binding-curses",
+        "the katadesmoi"
+      ],
+      "era": [
+        "from the classical curse-tablets",
+        "of deep antiquity",
+        "buried with the Greek and Roman dead",
+        "of the temple-witches"
+      ],
+      "mechanism": [
+        "binding sleep, sickness and fear into a foe",
+        "scratching a curse to fix a rival's fate",
+        "loosing or lifting a dozen afflictions",
+        "twisting a body's own states against it"
+      ],
+      "attrib": [
+        "the curse-scribes of the defixiones",
+        "the temple-witches who buried the lead tablets",
+        "the hex-writers of the Greek Magical Papyri",
+        "the old katadesmos-makers of the graves"
+      ]
+    },
+    "Illusion": {
+      "family": "greek",
+      "art": [
+        "glamour-lore",
+        "illusion-craft",
+        "the deceiver's art",
+        "the phantasm-weaving",
+        "the sense-fooling glamour",
+        "the false-seeming craft",
+        "the phantasm-weave"
+      ],
+      "era": [
+        "from the classical mystery-cults",
+        "woven since antiquity",
+        "of the temple-illusionists",
+        "as old as the first sleight of eye",
+        "shown first in the old mystery-rites",
+        "woven since the first trick of the eye",
+        "of the shrine-illusionists who fooled the pilgrims"
+      ],
+      "mechanism": [
+        "making the unreal seem real to any eye",
+        "fooling every sense of a foe",
+        "cloaking a whole company in seeming",
+        "conjuring phantasms that bleed and bite",
+        "laying a seeming over a whole company at once",
+        "convincing every sense a thing was truly there",
+        "conjuring a phantom solid enough to draw blood"
+      ],
+      "attrib": [
+        "the priests of the old mystery-cults",
+        "the temple-illusionists of antiquity",
+        "the glamour-weavers of the elder shrines",
+        "the deceivers who fooled kings",
+        "the mystery-priests who staged the god's return",
+        "the shrine-glamourists who awed the credulous",
+        "the deceivers who could fool a wary king"
+      ]
+    },
+    "HolyMagic": {
+      "family": "holy",
+      "art": [
+        "holy fire",
+        "the sacred grace",
+        "divine light",
+        "the blessing-craft",
+        "the litany of light",
+        "the smiting-grace",
+        "the cleansing fire"
+      ],
+      "era": [
+        "shaped in Greek temples and Roman basilicas",
+        "inherited by the Christian saints",
+        "of the classical mysteries and the Church alike",
+        "older than the cathedrals",
+        "carried on after the Father was slain",
+        "of the basilica-choirs and the temple-oracles",
+        "kept alight through the age of ash"
+      ],
+      "mechanism": [
+        "purifying with sacred light",
+        "smiting the wicked with righteous power",
+        "calling grace down upon the faithful",
+        "burning corruption from flesh and soul",
+        "singing the wicked into ash with a clean note",
+        "laying grace on a company like cool water",
+        "burning what the leyline had rotted out of a soul"
+      ],
+      "attrib": [
+        "Jeanne d'Arc (1412-1431) on the fields of France",
+        "the oracles of Greece and the augurs of Rome",
+        "the martyrs of the early Church",
+        "the saints who sanctified it anew",
+        "the war-clerics who bless before the charge",
+        "the choir-saints of the surviving basilicas",
+        "the martyrs whose faith outlived their gods"
+      ]
+    },
+    "Healing": {
+      "family": "holy",
+      "art": [
+        "the mending art",
+        "restorative magic",
+        "the healing rites",
+        "the poultice-lore",
+        "the laid-hand rite",
+        "the fever-drawing art",
+        "the bone-knitting craft"
+      ],
+      "era": [
+        "from the temple-medicine of antiquity",
+        "as old as the first poultice",
+        "sanctified in the Greek healing-temples",
+        "of the ancient houses of healing",
+        "of the sleep-temples where the sick lay in vision",
+        "as old as the first clean bandage",
+        "handed down the healer-houses unbroken"
+      ],
+      "mechanism": [
+        "knitting wound and bone whole again",
+        "drawing sickness out of the living",
+        "restoring vitality with a laid hand",
+        "turning back a mortal hurt",
+        "drawing the fever out through a laid palm",
+        "coaxing torn flesh to remember its own shape",
+        "sealing a mortal wound before the breath could leave"
+      ],
+      "attrib": [
+        "the healer-priests of the old temples",
+        "Hildegard von Bingen (1098-1179)",
+        "the physicians of the classical mysteries",
+        "the visionary abbess-healers",
+        "the dream-healers of the sleep-temples",
+        "the abbess-physicians who wrote down every cure",
+        "the field-menders who work by lamplight"
+      ]
+    },
+    "Augury": {
+      "family": "holy",
+      "art": [
+        "the divining art",
+        "omen-craft",
+        "the sky-reading",
+        "prophecy"
+      ],
+      "era": [
+        "old as the Maya day-count",
+        "of the Etruscan haruspices",
+        "read since the calendar-priests",
+        "refined in the 16th century"
+      ],
+      "mechanism": [
+        "reading fate in the tzolk'in count of days",
+        "peering beyond the veil of the future",
+        "casting the bird-signs before any march",
+        "fixing a destiny by its birth-day"
+      ],
+      "attrib": [
+        "the Maya day-keepers",
+        "the Etruscan haruspices and Roman augurs",
+        "Nostradamus (1503-1566)",
+        "the Aztec calendar-priests of the tonalpohualli"
+      ]
+    },
+    "Oneiromancy": {
+      "family": "dream",
+      "art": [
+        "dream-magic",
+        "the sleep-sorcery",
+        "vision-craft",
+        "the dreamwalking"
+      ],
+      "era": [
+        "of the Native American dream-lodges",
+        "remade by the Squishing of 2003",
+        "sieved through the first dreamcatcher",
+        "of the Plains vision-quest"
+      ],
+      "mechanism": [
+        "choosing each day's spells within a dream",
+        "walking and shaping the sleeping mind",
+        "reading the soul's hidden wishes",
+        "drawing power from the country of sleep"
+      ],
+      "attrib": [
+        "the Ojibwe who wove the first dreamcatchers",
+        "the Iroquois who practised Ondinnonk",
+        "the dream-lodges of the Plains nations",
+        "the vision-seekers who fasted for the sight"
+      ]
+    },
+    "Technomagical": {
+      "family": "modern",
+      "art": [
+        "thaumotech",
+        "the circuit-sorcery",
+        "gadget-magic",
+        "the wired arcana",
+        "the ritual-circuit work",
+        "the sanctified microchip",
+        "the wired grimoire"
+      ],
+      "era": [
+        "no older than the satellite age",
+        "drafted after the Falklands War of 1982",
+        "born in the unseen workshops of a new industry",
+        "the youngest school of all",
+        "patented in the workshops after the Falklands",
+        "no older than the satellite the age put up",
+        "drafted where silicon first met the sigil"
+      ],
+      "mechanism": [
+        "making spell and silicon share a single current",
+        "weaponising a microchip through ritual",
+        "turning grimoires into hardware",
+        "fusing arcana to the machine",
+        "etching a spell into a wafer of doped glass",
+        "making a current carry a working down a wire",
+        "compiling a grimoire until it ran as hardware"
+      ],
+      "attrib": [
+        "Esoteric Heavy Industries",
+        "the R&D arm of the new world",
+        "the thaumo-engineers who patent every prototype",
+        "the technomancers of the post-1982 age",
+        "the thaumo-engineers of Esoteric Heavy Industries",
+        "the patent-holders of the post-1982 labs",
+        "the circuit-mages who solder by ritual"
+      ]
+    },
+    "Economy": {
+      "family": "modern",
+      "art": [
+        "money-magic",
+        "mercantile arcana",
+        "the profit-rite",
+        "the market-sorcery"
+      ],
+      "era": [
+        "young as the new world's markets",
+        "born after the Squishing of 2003",
+        "of the loop-monetising age",
+        "no older than the last crash"
+      ],
+      "mechanism": [
+        "monetising the very time-loops",
+        "turning gold into greater fortune",
+        "trading memory and hour as currency",
+        "cornering a market by unnatural means"
+      ],
+      "attrib": [
+        "the Hypercapitalist Collective",
+        "the brokers who sell loop-escapes",
+        "the ledger-mages of the new economy",
+        "the merchant-adepts of the Collective"
+      ]
+    },
+    "Mutation": {
+      "family": "modern",
+      "art": [
+        "flesh-shaping",
+        "mutation-craft",
+        "the bio-rite",
+        "the reshaping art"
+      ],
+      "era": [
+        "impossible before 2003",
+        "of the post-Squishing bio-labs",
+        "young as the Rule of 80",
+        "born when speed became a way of life"
+      ],
+      "mechanism": [
+        "growing wheels and extra arms to thrive on speed",
+        "reshaping the willing flesh for a fee",
+        "rewriting a body against its nature",
+        "transforming flesh at a spoken will"
+      ],
+      "attrib": [
+        "the Hypercapitalist Collective's bio-labs",
+        "the post-Squishing mutilators",
+        "the flesh-surgeons of the new world",
+        "the changers who made the Rule of 80 livable"
+      ]
+    },
+    "Vainglory": {
+      "family": "modern",
+      "art": [
+        "glory-magic",
+        "the renown-rite",
+        "vainglorious sorcery",
+        "the acclaim-craft"
+      ],
+      "era": [
+        "new as the post-Squishing world",
+        "of the broken age",
+        "born of the new economy of fame",
+        "young as spent reputation"
+      ],
+      "mechanism": [
+        "spending reputation like coin",
+        "growing in raw power with each acclaim",
+        "measuring a soul's worth in renown",
+        "seizing levels and glory outright"
+      ],
+      "attrib": [
+        "the fame-brokers of the broken age",
+        "the spectacle-mages of the new world",
+        "the glory-hoarders of the Collective",
+        "those who chase renown across a ruined world"
+      ]
+    },
+    "Chronomancy": {
+      "family": "modern",
+      "art": [
+        "time-magic",
+        "the loop-craft",
+        "chronomancy",
+        "the hour-bending art",
+        "the stolen-minute art",
+        "the loop-bending craft",
+        "the pace-holding rite"
+      ],
+      "era": [
+        "born of the broken clocks after 1999",
+        "of the loop-age",
+        "impossible before the Millennium burned the tech",
+        "mapped once hours became negotiable",
+        "mapped once the Millennium burned the tech",
+        "of the loop-age brokers",
+        "no older than the negotiable hour"
+      ],
+      "mechanism": [
+        "hastening allies and slowing foes",
+        "bending the daily loop of the Rule of 80",
+        "selling escapes from the time-loops",
+        "stealing minutes from the flow itself",
+        "skimming a minute off another man's day",
+        "holding the pace so the reset could not take hold",
+        "slowing a foe until his blow arrived too late"
+      ],
+      "attrib": [
+        "the loop-mages of the Millennium's end",
+        "the clock-breakers of 1999",
+        "the Collective, who covet it above all",
+        "the chronomancers who trade in stolen hours",
+        "the clock-breakers who cheated the Rule of 80",
+        "the hour-brokers of the loop-age markets",
+        "the Collective's chronomancers who hoard the trade"
+      ]
+    },
+    "Whimsy": {
+      "family": "modern",
+      "art": [
+        "nonsense-magic",
+        "whimsy-craft",
+        "the absurd art",
+        "capricious sorcery"
+      ],
+      "era": [
+        "born of the post-Squishing loose reality",
+        "young as the broken world",
+        "of the leyline's silliest hour",
+        "made real only after 2003"
+      ],
+      "mechanism": [
+        "making the absurd suddenly real",
+        "confounding foes with sheer nonsense",
+        "turning contradiction into effect",
+        "loosing an irrational miracle no one can predict"
+      ],
+      "attrib": [
+        "the leyline-fools of the broken world",
+        "the jester-mages of the loose reality",
+        "those who indulge the absurd near the ley",
+        "the whimsy-callers half-feared by the guilds"
+      ]
+    },
+    "PsychicAbilities": {
+      "family": "modern",
+      "art": [
+        "mind-power",
+        "the psychic art",
+        "the will-craft",
+        "telepathy"
+      ],
+      "era": [
+        "studied only in the 20th century",
+        "of the TTD-era labs",
+        "a modern science of the mind",
+        "young as the new world's research"
+      ],
+      "mechanism": [
+        "reading thoughts and bending wills",
+        "manipulating minds and emotions",
+        "striking a foe through the skull alone",
+        "shielding a mind against every intrusion"
+      ],
+      "attrib": [
+        "the labs that named the Thought-Transmitted Diseases",
+        "the mind-researchers of the new world",
+        "the screeners who test recruits for the talent",
+        "the foil-shielded adepts of the modern age"
+      ]
+    },
+    "AstralMagic": {
+      "family": "modern",
+      "art": [
+        "star-and-void travel",
+        "astral sorcery",
+        "the cosmic art",
+        "the leyline-riding"
+      ],
+      "era": [
+        "mapped only after the Squishing of 2003",
+        "impossible before the dimensional collapse",
+        "no older than the broken sky",
+        "of the new cosmos"
+      ],
+      "mechanism": [
+        "charting the Scraps of Creation",
+        "riding the leylines between worlds",
+        "walking the astral roads laid bare by the collapse",
+        "drawing power from the space between stars"
+      ],
+      "attrib": [
+        "the wayfarers who ride the leylines",
+        "the seers sent along the astral roads",
+        "the star-charters of the broken sky",
+        "the cosmic adepts of the new world"
+      ]
+    },
+    "VoidMagic": {
+      "family": "forbidden",
+      "art": [
+        "void-craft",
+        "the negation-art",
+        "abyss-sorcery",
+        "the empty rite"
+      ],
+      "era": [
+        "unknown until the Squishing laid the Abyss bare",
+        "of the empty places",
+        "young as the dimensional collapse",
+        "fished from the post-Squishing void"
+      ],
+      "mechanism": [
+        "drawing on the churning nothing between the Scraps",
+        "unmaking a foe with pure negation",
+        "opening the Abyss where physics fails",
+        "answering the void with the void"
+      ],
+      "attrib": [
+        "the void-callers who dare the Abyss",
+        "the negators of the empty places",
+        "the few who will teach it at all",
+        "the abyss-adepts of the broken world"
+      ]
+    },
+    "ForbiddenMagic": {
+      "family": "forbidden",
+      "art": [
+        "the forbidden working",
+        "black sorcery",
+        "the proscribed rite",
+        "the interdicted art",
+        "the sealed working",
+        "the leyline-warping rite",
+        "the price-paid sorcery"
+      ],
+      "era": [
+        "condemned in every age",
+        "outlawed since Solomon's day",
+        "too dangerous for any guild to teach",
+        "burned wherever it is found",
+        "burned out of every ledger it appears in",
+        "proscribed since the first guild set rules",
+        "too costly for any age to keep openly"
+      ],
+      "mechanism": [
+        "warping the leylines around the caster",
+        "buying power at a terrible cost",
+        "twisting reality past what should be allowed",
+        "loosing what should have stayed sealed",
+        "tearing a hole where the leylines should have held",
+        "paying in something the caster cannot get back",
+        "loosing a thing the last binder swore was sealed"
+      ],
+      "attrib": [
+        "the heirs of Aleister Crowley",
+        "the desperate who seek it still",
+        "the outlaw-mages who deny it exists",
+        "those the Mages Guild burned for it",
+        "the outlaw-adepts who deny it to your face",
+        "the ruined few who paid its price and lived",
+        "those the Mages Guild hunts between the lines"
+      ]
+    },
+    "Necromancy": {
+      "family": "forbidden",
+      "art": [
+        "grave-magic",
+        "death-sorcery",
+        "the mortuary rite",
+        "the raising art",
+        "the tomb-whisper",
+        "the last-breath art",
+        "the corpse-marshalling craft"
+      ],
+      "era": [
+        "as old as burial itself",
+        "of the ancient death-cults",
+        "practised before Rome",
+        "condemned in every age and used in every age",
+        "practised before the first city walled its dead",
+        "of the barrow-cults the Squishing stirred awake",
+        "as old as the fear of an unburied body"
+      ],
+      "mechanism": [
+        "raising and binding the dead to serve",
+        "drawing power from the road to the underworld",
+        "stealing the last breath from the dying",
+        "treading the nine-layered road in reverse",
+        "walking the nine-layered road against its current",
+        "catching the last breath before it could rise",
+        "binding cold flesh to a warm and borrowed will"
+      ],
+      "attrib": [
+        "the Witch of Endor",
+        "the Thessalian witch Erichtho",
+        "the mortuary cults of deep antiquity",
+        "the death-priests of the Aztec Mictlan",
+        "the barrow-witches who traffic with the buried",
+        "the Mictlan death-priests of the reversed road",
+        "the grave-callers who answer to no living master"
+      ]
+    },
+    "Convokation": {
+      "family": "forbidden",
+      "art": [
+        "the summoner's art",
+        "conjuration",
+        "the convoking rite",
+        "the calling-craft"
+      ],
+      "era": [
+        "traced to Solomon (c.960 BC)",
+        "reforged in the Squishing of 2003",
+        "of the Lesser Key and the dimensional collapse",
+        "made flesh only after 2003"
+      ],
+      "mechanism": [
+        "binding the seventy-two spirits with a sealed ring",
+        "calling the bound things bodily forth",
+        "convoking allies from the crushed dimensions",
+        "drawing a chalk circle to summon flesh and breath"
+      ],
+      "attrib": [
+        "King Solomon and his brazen vessel",
+        "the conjurers who reworked the rite after the Squishing",
+        "the circle-drawers of the new world",
+        "those who called Varlenia out of nothing"
+      ]
+    },
+    "MetaMagic": {
+      "family": "forbidden",
+      "art": [
+        "metamagic",
+        "the spell-about-spells",
+        "the soul-split art",
+        "the higher working"
+      ],
+      "era": [
+        "younger than the new millennium",
+        "reserved since the Squishing",
+        "born of the soul-separation ritual",
+        "no older than 2003"
+      ],
+      "mechanism": [
+        "replacing every physical component with pure imagination",
+        "multiplying meta-properties into wholly new workings",
+        "reshaping a spell as it is cast",
+        "bending the rules other magic must obey"
+      ],
+      "attrib": [
+        "the heirs of Aleister Crowley",
+        "the few who endured the soul-splitting rite",
+        "the meta-mages of the post-Squishing age",
+        "those who separated soul from body and lived"
+      ]
+    },
+    "MartialArts": {
+      "family": "martial",
+      "art": [
+        "the empty-hand art",
+        "the grappling styles",
+        "unarmed combat",
+        "the fighting-forms",
+        "the throw-and-lock forms",
+        "the empty-hand drill",
+        "the close-grapple art"
+      ],
+      "era": [
+        "humanity's oldest unarmed art",
+        "carved into the Beni Hasan tombs by 2000 BC",
+        "older than steel",
+        "drilled since the Bronze Age",
+        "carved on tomb walls before the first sword",
+        "drilled in the war-monasteries of every age",
+        "older than the armies that borrowed it"
+      ],
+      "mechanism": [
+        "striking with disciplined precision and form",
+        "throwing a foe with the oldest holds known",
+        "breaking a guard bare-handed",
+        "answering a blade with an empty hand",
+        "turning a foe's own weight into his fall",
+        "closing inside a blade's reach to end it bare-handed",
+        "breaking a hold that should have broken the arm"
+      ],
+      "attrib": [
+        "the wrestlers of Sumer and Egypt",
+        "the pankration fighters of the 648 BC Olympics",
+        "the warrior-monks who preserved the forms",
+        "the masters who ranked pupils by it alone",
+        "the temple-fighters who ranked by the forms alone",
+        "the tomb-carvers who left the holds in stone",
+        "the pit-wrestlers of the old festival games"
+      ]
+    },
+    "Swordsmanship": {
+      "family": "martial",
+      "art": [
+        "blade-work",
+        "the sword-craft",
+        "fencing",
+        "the way of the blade",
+        "the half-sword work",
+        "the winding-guard craft",
+        "the single-pass discipline"
+      ],
+      "era": [
+        "as old as bronze",
+        "from the first true swords of c.3300 BC",
+        "codified in the 14th-century fechtbucher",
+        "drilled in every army since",
+        "set down in the medieval fencing-books",
+        "as old as the first cast bronze blade",
+        "sharpened in every duel since the war-schools"
+      ],
+      "mechanism": [
+        "striking with the refined guards and cuts",
+        "turning a blade with a hair's margin",
+        "reading a duel three moves ahead",
+        "ending a fight in a single pass",
+        "reading the opening three moves before it shows",
+        "winding the point in past a stronger guard",
+        "ending the pass before the foe had committed"
+      ],
+      "attrib": [
+        "the smiths of Arslantepe who forged the first swords",
+        "the Bronze Age duellists",
+        "the medieval fencing-masters",
+        "the fecht-masters who set it down in books",
+        "the fecht-masters who inked the guard-plates",
+        "the bronze-age duellists of the first true swords",
+        "the fencing-schools that drill it dawn to dusk"
+      ]
+    },
+    "Tactical": {
+      "family": "martial",
+      "art": [
+        "battlefield craft",
+        "the general's art",
+        "the war-tactics",
+        "field-command"
+      ],
+      "era": [
+        "as old as organised war",
+        "refined through every campaign since the Bronze Age",
+        "handed down from the classical war-schools",
+        "sharpened in every staff-room since"
+      ],
+      "mechanism": [
+        "turning ground and timing against an enemy",
+        "reading a battle before it is joined",
+        "wringing victory from a weaker line",
+        "binding a company into one moving weapon"
+      ],
+      "attrib": [
+        "the phalanx-captains of antiquity",
+        "the classical war-schools",
+        "the marshals who staked kingdoms on it",
+        "the staff-officers who drill it still"
+      ]
+    },
+    "Leadership": {
+      "family": "martial",
+      "art": [
+        "the art of command",
+        "captaincy",
+        "the rallying-craft",
+        "the leader's discipline"
+      ],
+      "era": [
+        "old as the first warband",
+        "as ancient as kingship",
+        "sharpened in every age since",
+        "handed from warlord to warlord"
+      ],
+      "mechanism": [
+        "rallying allies to a hopeless charge",
+        "binding a host to a single banner",
+        "steadying a line that should have broken",
+        "inspiring more from soldiers than they own"
+      ],
+      "attrib": [
+        "the first war-chiefs",
+        "the captains who bound nations to a banner",
+        "the officers measured against it",
+        "the warlords who ruled by it alone"
+      ]
+    },
+    "Dominion": {
+      "family": "martial",
+      "art": [
+        "the science of dominion",
+        "conqueror's craft",
+        "the rule-and-subjugation art",
+        "the mastery of thrones"
+      ],
+      "era": [
+        "as old as the first empire",
+        "as new as the last coup",
+        "learned from every toppled throne",
+        "ancient and pitiless"
+      ],
+      "mechanism": [
+        "pressing a whole people beneath one will",
+        "bending society to a single influence",
+        "holding a nation by fear and favour",
+        "turning a court against itself"
+      ],
+      "attrib": [
+        "the first empire-builders",
+        "the tyrants of every fallen throne",
+        "the schemers who topple kings",
+        "those who kept nations underfoot"
+      ]
+    },
+    "Firearms": {
+      "family": "trade",
+      "art": [
+        "the gun-craft",
+        "powder-and-shot",
+        "marksmanship",
+        "the fire-lance drill",
+        "the hand-cannon drill",
+        "the smoke-and-shot art",
+        "the true-barrel work"
+      ],
+      "era": [
+        "first fielded in 10th-century Song China",
+        "reached Europe by the 14th century",
+        "king of the field since the 1800s",
+        "as old as gunpowder",
+        "first loosed in Song-dynasty China",
+        "king of the field since the powder age",
+        "carried west with the hand-cannoneers"
+      ],
+      "mechanism": [
+        "striking from afar with deadly accuracy",
+        "loosing fire-lance and hand-cannon",
+        "keeping a barrel true through the smoke",
+        "putting a shot where the eye can barely see",
+        "keeping the barrel true through the black smoke",
+        "putting a ball where the eye can barely fix",
+        "timing the charge so the fire-lance never fouled"
+      ],
+      "attrib": [
+        "the Song-dynasty gunners",
+        "the hand-cannoneers of medieval Europe",
+        "the marksmen paid in silver",
+        "the gunsmiths who keep the drills sharp",
+        "the Song gunners who first made powder speak",
+        "the paid marksmen who shoot for silver",
+        "the gunsmiths who keep the old drills honest"
+      ]
+    },
+    "Roguery": {
+      "family": "trade",
+      "art": [
+        "the thief's trade",
+        "roguery",
+        "the shadow-craft",
+        "the cutpurse art",
+        "the second-storey work",
+        "the fence's trade",
+        "the quiet-exit craft"
+      ],
+      "era": [
+        "old as the first locked door",
+        "whispered in the alleys of every age",
+        "as old as the wealth worth stealing",
+        "of the thieves' cant",
+        "old as the first thing worth locking away",
+        "whispered in the cant of every crooked age",
+        "kept alive wherever wealth outran its guards"
+      ],
+      "mechanism": [
+        "striking from the shadows with cunning",
+        "deceiving, stealing and backstabbing",
+        "slipping a lock and a pocket alike",
+        "vanishing before the alarm is raised",
+        "slipping a lock in the time a guard blinks",
+        "reading a mark's pockets before he feels the loss",
+        "vanishing down an alley before the cry goes up"
+      ],
+      "attrib": [
+        "the cutpurses of the old cities",
+        "the shadow-guilds of every age",
+        "the fences who whisper the cant",
+        "the master-thieves paid to teach",
+        "the master-thieves who hire out to teach",
+        "the fences who keep the cant and the ledgers",
+        "the shadow-guilds of the crooked wards"
+      ]
+    },
+    "Performance": {
+      "family": "trade",
+      "art": [
+        "bardic craft",
+        "the performer's art",
+        "stagecraft",
+        "the troubadour's skill"
+      ],
+      "era": [
+        "from the medieval courts",
+        "old as the first campfire tale",
+        "handed down by the wandering players",
+        "sung in every court and tavern"
+      ],
+      "mechanism": [
+        "stirring crowds and kings alike",
+        "swaying a whole hall with a voice",
+        "captivating and influencing through art",
+        "turning a mood with a single verse"
+      ],
+      "attrib": [
+        "the minstrels of the medieval courts",
+        "the wandering players of old",
+        "the troubadours who fed on applause",
+        "the stage-masters who swayed cities"
+      ]
+    },
+    "Vocation": {
+      "family": "trade",
+      "art": [
+        "a trade-skill",
+        "honest vocation",
+        "workaday mastery",
+        "the guild-craft"
+      ],
+      "era": [
+        "of the guild age",
+        "taught master to apprentice",
+        "handed down the guild-lines",
+        "learned the long way through years"
+      ],
+      "mechanism": [
+        "applying craft to battle and labour alike",
+        "mastering the trades of daily life",
+        "turning raw stock into finished work",
+        "keeping a workshop true to the old indentures"
+      ],
+      "attrib": [
+        "the guild-masters of the medieval trades",
+        "the apprentices who earned the tools",
+        "the craftsfolk of the old workshops",
+        "those who honour the old indentures"
+      ]
+    },
+    "Buffoonery": {
+      "family": "trade",
+      "art": [
+        "fool's craft",
+        "the buffoon's art",
+        "clowning",
+        "the jester's trade"
+      ],
+      "era": [
+        "from the medieval courts",
+        "as old as the first court fool",
+        "handed down by the jesters",
+        "harmless and barbed at once"
+      ],
+      "mechanism": [
+        "confounding foes with sheer nonsense",
+        "mocking a king and living to laugh",
+        "hiding a barb inside a pratfall",
+        "disarming a hall with absurdity"
+      ],
+      "attrib": [
+        "the court jesters of old",
+        "the fools who alone could mock the crown",
+        "the clowns of the medieval halls",
+        "the buffoons kept for their barbs"
+      ]
+    },
+    "Cooking": {
+      "family": "trade",
+      "art": [
+        "hearth-craft",
+        "the cook's art",
+        "kitchen-lore",
+        "the meal-magic"
+      ],
+      "era": [
+        "as old as the cooking-fire",
+        "perfected over ten thousand suppers",
+        "from the first settled hearths",
+        "handed down the kitchens of the ages"
+      ],
+      "mechanism": [
+        "combining ingredients for beneficial effect",
+        "restoring body and spirit at a table",
+        "coaxing virtue out of plain fare",
+        "feeding strength into the weary"
+      ],
+      "attrib": [
+        "the hearth-cooks of the first settlements",
+        "the kitchen-masters of the old halls",
+        "the cooks who fed whole cities",
+        "those who kept the old recipes"
+      ]
+    },
+    "Gluttony": {
+      "family": "trade",
+      "art": [
+        "the glutton's indulgence",
+        "appetite-magic",
+        "feasting-craft",
+        "the excess-rite"
+      ],
+      "era": [
+        "as old as the first surplus harvest",
+        "born where a settled people grew fat",
+        "of the old harvest-festivals",
+        "gluttonous and merry"
+      ],
+      "mechanism": [
+        "conjuring food to sate any need",
+        "feasting to restore body and spirit",
+        "turning appetite into raw power",
+        "keeping a table groaning past all reason"
+      ],
+      "attrib": [
+        "the feast-lords of the fat harvests",
+        "the gluttons of the old festivals",
+        "those who revelled while others starved",
+        "the excess-priests of the groaning table"
+      ]
+    },
+    "ChemicalArts": {
+      "family": "greek",
+      "art": [
+        "the chemist's art",
+        "transmutation-lore",
+        "the reaction-craft",
+        "alchemy"
+      ],
+      "era": [
+        "descended from Jabir ibn Hayyan (8th century)",
+        "refined by Paracelsus (1493-1541)",
+        "poured from medieval crucibles into modern retorts",
+        "of the old alchemists"
+      ],
+      "mechanism": [
+        "brewing potions and chemical reactions",
+        "transmuting base stock into potent draughts",
+        "distilling virtue from raw reagent",
+        "loosing a reaction where none should occur"
+      ],
+      "attrib": [
+        "Jabir ibn Hayyan of the 8th century",
+        "Paracelsus (1493-1541)",
+        "Nicolas Flamel (c.1330-1418)",
+        "the alchemists who fed the modern labs"
+      ]
+    },
+    "Fusion": {
+      "family": "fusion",
+      "art": [
+        "the fused working",
+        "the braided art",
+        "the composite rite",
+        "the joined spell"
+      ],
+      "era": [
+        "made possible only by the Squishing",
+        "of the post-2003 blending",
+        "born when separate spells could merge",
+        "young as the broken world"
+      ],
+      "mechanism": [
+        "braiding two disciplines into a single stroke",
+        "letting one art carry the properties of another",
+        "welding strand to strand into a new whole",
+        "multiplying two effects into a third"
+      ],
+      "attrib": [
+        "the meta-mages who first welded arts together",
+        "the post-Squishing fusers",
+        "those who braided the strands",
+        "the adepts who made two spells one"
+      ]
+    },
+    "Wayfaring": {
+      "family": "wayfaring",
+      "art": [
+        "road-craft",
+        "the wayfarer's art",
+        "the route-lore",
+        "travel-magic"
+      ],
+      "era": [
+        "as old as travel yet remade by the Road",
+        "born of the Squishing",
+        "of the post-collapse world",
+        "young as the Encompassing Road"
+      ],
+      "mechanism": [
+        "traversing great distances in an instant",
+        "holding 80 km/h against the reset",
+        "keeping the loops at bay with an Anoki phone",
+        "riding the sentient Road past every hazard"
+      ],
+      "attrib": [
+        "the Truckers' Society, knights of the Road",
+        "the drivers who keep the routes open",
+        "the wayfarers of the post-Squishing world",
+        "those who bargain safe passage"
+      ]
+    },
+    "WpLight": {
+      "family": "forged",
+      "art": [
+        "the fighting knife",
+        "stiletto work",
+        "the throwing dagger",
+        "the boot-blade",
+        "the parrying dagger",
+        "the quick short blade"
+      ],
+      "era": [
+        "as old as the first flint edge",
+        "carried since men learned to distrust each other",
+        "a craft the Squishing did not touch",
+        "no younger than the back-alley trade",
+        "handed down every knife-fighting age",
+        "first drawn in the goblin wars"
+      ],
+      "mechanism": [
+        "ground to a needle point and never blunted twice",
+        "folded thin over a low coal fire for the flex",
+        "balanced to sit true in the throwing hand",
+        "sharpened on a whetstone worn to a groove",
+        "riveted through the tang for a fight, not a show",
+        "honed until it would part a falling hair"
+      ],
+      "attrib": [
+        "the back-alley knifesmiths of the furnace-cities",
+        "the cutthroats who lived by the quick draw",
+        "the couriers who kept one in the boot",
+        "the guild-cutlers who stamp the small blades",
+        "the duelists who never trusted a longer reach",
+        "the road-folk who carried little else"
+      ]
+    },
+    "WpSword": {
+      "family": "forged",
+      "art": [
+        "the dueling saber",
+        "the arming sword",
+        "the boarding cutlass",
+        "the thrusting rapier",
+        "long-blade work",
+        "the cavalry blade"
+      ],
+      "era": [
+        "as old as bronze itself",
+        "drilled in the war-schools before the walls fell",
+        "a craft older than the furnace-cities",
+        "first swung in the goblin wars",
+        "handed down every army since the Bronze Age",
+        "no younger than the first true edge"
+      ],
+      "mechanism": [
+        "folded over charcoal fire until the edge held",
+        "quenched in oil and drawn to a true temper",
+        "hammered flat and fullered for a lighter swing",
+        "peened to the guard by hands that had done it a thousand times",
+        "ground to a distal taper so the point led the cut",
+        "tested against the post before it left the forge"
+      ],
+      "attrib": [
+        "the arms-guilds of the furnace-cities",
+        "the swordsmiths who signed the ricasso",
+        "the duelists who lived by it",
+        "the war-schools that ranked a pupil by the blade",
+        "the bladewrights of the old smithing streets",
+        "the officers who wore it as a badge of rank"
+      ]
+    },
+    "WpHeavy": {
+      "family": "forged",
+      "art": [
+        "the war-maul",
+        "the flanged mace",
+        "the crushing hammer",
+        "the iron-bound club",
+        "the horseman's pick",
+        "blunt-weapon work"
+      ],
+      "era": [
+        "older than the first cast bronze",
+        "swung since armor made edges useless",
+        "a craft the Squishing left well alone",
+        "no younger than the siege-camps",
+        "handed down every age of heavy plate",
+        "first raised in the goblin wars"
+      ],
+      "mechanism": [
+        "cast solid and pinned to a seasoned haft",
+        "forged with flanges to bite through mail",
+        "weighted at the head so the blow did the work",
+        "banded in iron where lesser wood would split",
+        "balanced to fall true under its own mass",
+        "hardened at the striking face and left soft within"
+      ],
+      "attrib": [
+        "the arms-guilds who cast the heavy heads",
+        "the siege-crews who needed no edge at all",
+        "the smiths of the furnace-city foundries",
+        "the sappers who broke gates and skulls alike",
+        "the heavy troops who scorned finesse",
+        "the makers who sold weight by the pound"
+      ]
+    },
+    "WpAxe": {
+      "family": "forged",
+      "art": [
+        "the boarding axe",
+        "the bearded war-axe",
+        "the hand hatchet",
+        "the great cleaver",
+        "the throwing axe",
+        "the felling blade"
+      ],
+      "era": [
+        "as old as the first split log",
+        "carried since the axe was tool and weapon both",
+        "a craft older than any city wall",
+        "no younger than the logging camps",
+        "handed down the road since the goblin wars",
+        "first thrown in the deep forests"
+      ],
+      "mechanism": [
+        "forge-welded with a hard steel bit set in soft iron",
+        "bearded low for a hooking pull off a shield",
+        "seated on a straight-grain haft and wedged tight",
+        "ground to a convex edge that would not chip",
+        "balanced so the head led the throw end over end",
+        "tempered at the bit and left tough at the eye"
+      ],
+      "attrib": [
+        "the axe-smiths of the logging roads",
+        "the boarding-crews of the river trade",
+        "the arms-guilds who forge-weld the bits",
+        "the woodcutters who fought with the felling blade",
+        "the raiders who threw before they closed",
+        "the road-folk who never travel without one"
+      ]
+    },
+    "WpWhip": {
+      "family": "martial",
+      "art": [
+        "the plaited whip",
+        "chain-and-flail work",
+        "the meteor chain",
+        "the drover's lash",
+        "the weighted flail",
+        "the coiling scourge"
+      ],
+      "era": [
+        "as old as the herds men drove",
+        "drilled since the drovers learned to strike from reach",
+        "a craft older than the furnace-cities",
+        "handed down every road since the goblin wars",
+        "no younger than the cattle-trails",
+        "sharpened in every war that lacked a longer reach"
+      ],
+      "mechanism": [
+        "plaited from cured hide over a tapered core",
+        "weighted at the fall so the crack landed true",
+        "linked chain to chain and swivelled at the grip",
+        "drilled into the wrist until the coil obeyed",
+        "knotted through a bone handle by a patient hand",
+        "swung in a figure so the strike could not be read"
+      ],
+      "attrib": [
+        "the drovers who struck cattle and men alike",
+        "the flail-masters of the war-schools",
+        "the road-folk who kept the reach honest",
+        "the whip-plaiters of the trail-towns",
+        "the pit-fighters who favored the wrap and pull",
+        "the wandering folk who taught the coil for coin"
+      ]
+    },
+    "WpStaff": {
+      "family": "relic",
+      "art": [
+        "the channeling staff",
+        "the wizard's rod",
+        "the leyline wand",
+        "the sceptre of office",
+        "the focusing stave",
+        "the graven rod"
+      ],
+      "era": [
+        "older than the first written spell",
+        "kept since power needed a shape to run through",
+        "a craft the Squishing only sharpened",
+        "no younger than the leyline-schools",
+        "handed down from the old grimoire-halls",
+        "first carried before the walls of any city"
+      ],
+      "mechanism": [
+        "cored with copper wire to carry the leyline current",
+        "capped with a stone that would hold a charge",
+        "graven along the grain with figures that ran true",
+        "seasoned for years before it would channel at all",
+        "bound with silver at the ferrule to earth the flow",
+        "carved from a struck tree that had drunk the ley"
+      ],
+      "attrib": [
+        "the rod-wrights of the old grimoire-halls",
+        "the leyline-adepts who signed every stave",
+        "the guild-mages who taught the channel",
+        "the makers who read the wood for the wire",
+        "the seers who carried it as sign of their craft",
+        "the relic-keepers who fit the old stones anew"
+      ]
+    },
+    "WpBow": {
+      "family": "wild",
+      "art": [
+        "the longbow",
+        "the horn-and-sinew bow",
+        "the hunting crossbow",
+        "the recurve",
+        "the war-sling",
+        "the stalking bow"
+      ],
+      "era": [
+        "eldest of all the far weapons",
+        "loosed since the first hunters fed the fire",
+        "a craft older than the plough",
+        "no younger than the deep-forest hunts",
+        "handed down since men killed at a distance",
+        "drilled in every wild age since the ice"
+      ],
+      "mechanism": [
+        "backed with sinew and bellied with horn for the pull",
+        "tillered slow so both limbs bent even",
+        "strung with waxed cord that would not stretch",
+        "seasoned from a straight yew stave for years",
+        "cranked and locked so a weak arm could hold full draw",
+        "fletched and nocked by hands that hunted to eat"
+      ],
+      "attrib": [
+        "the bowyers of the deep-forest camps",
+        "the hunters who read sign and ran the quarry",
+        "the wild-folk who loosed before they were seen",
+        "the fletchers who kept the shafts running true",
+        "the trail-masters who fed a whole camp by it",
+        "the marsh-hunters who whistled the birds in close"
+      ]
+    },
+    "WpProjectile": {
+      "family": "primitive",
+      "art": [
+        "the throwing junk",
+        "sling-and-stone work",
+        "the improvised bomb",
+        "the hurled scrap",
+        "the pipe-and-bolt",
+        "the thrown weight"
+      ],
+      "era": [
+        "as old as the first flung rock",
+        "carried since men had nothing better to throw",
+        "a craft the Squishing filled with new scrap",
+        "no younger than the ruin-pickers",
+        "handed down wherever proper arms ran out",
+        "first hurled in the goblin wars"
+      ],
+      "mechanism": [
+        "lashed together from road-scrap that came to hand",
+        "weighted at one end so it flew point-first",
+        "packed and fused by a nervous, practiced hand",
+        "wound with wire until it held for one good throw",
+        "balanced by feel alone against a wall",
+        "cast from a sling cut off a dead conveyor belt"
+      ],
+      "attrib": [
+        "the ruin-pickers who armed themselves from wreckage",
+        "the scrap-throwers of the road-side camps",
+        "the goblins who reverted to stone and sling",
+        "the desperate who fought with what lay about",
+        "the tinkers who fused a bomb for a fee",
+        "the road-folk who never ran out of rubble"
+      ]
+    },
+    "WpGun": {
+      "family": "firearm",
+      "art": [
+        "trench-gun work",
+        "the service pistol",
+        "the bolt rifle",
+        "the scrap carbine",
+        "the sawn-off",
+        "powder-and-shot"
+      ],
+      "era": [
+        "no older than the furnace-cities",
+        "fielded since powder first ruled the open ground",
+        "a craft the Squishing choked with dead factories",
+        "no younger than the last working assembly line",
+        "handed down the road since the war-camps",
+        "young beside the blade it replaced"
+      ],
+      "mechanism": [
+        "milled on a dead assembly line and never proofed",
+        "rebored by hand and headspaced by feel",
+        "reamed true and blued against the road-damp",
+        "cobbled from three broken guns into one that fired",
+        "loaded with cast slugs poured in a road-side mold",
+        "kept running with spit, wire and stubborn faith"
+      ],
+      "attrib": [
+        "the back-alley gunsmiths",
+        "the trench-crews who cleared a room by it",
+        "the road-convoys who trusted lead over steel",
+        "the armorers who scavenge the dead factories",
+        "the shootists paid in silver and shot",
+        "the makers who cast their own from wheel-weights"
+      ]
+    },
+    "WpClaw": {
+      "family": "primitive",
+      "art": [
+        "the tin claws",
+        "the beast-claw",
+        "the knuckle-hook",
+        "the tiger-claw",
+        "the scavenger's talon",
+        "the raking blade"
+      ],
+      "era": [
+        "as old as the first sharpened bone",
+        "worn since men aped the beasts that killed them",
+        "a craft the Squishing dressed in fresh scrap",
+        "no younger than the pit-fights",
+        "handed down where a blade was too dear",
+        "first raked in the deep wilds"
+      ],
+      "mechanism": [
+        "cut from can-metal and bound to the knuckle",
+        "fitted over the fingers so the fist did the driving",
+        "sharpened from a beast's own claw and lashed on",
+        "riveted to a leather cuff by a patient thug",
+        "curved to hook and tear on the pull-back",
+        "ground thin so it slipped between the ribs"
+      ],
+      "attrib": [
+        "the pit-fighters who fought like animals",
+        "the scrappers who armed the bare hand",
+        "the beast-cults who wore the claw as kin",
+        "the road-thugs of the trail-town alleys",
+        "the scavengers who made a weapon of a can",
+        "the wild-folk who kept the old raking forms"
+      ]
+    },
+    "WpGlove": {
+      "family": "martial",
+      "art": [
+        "the brass knuckles",
+        "the war-gauntlet",
+        "hand-wrap work",
+        "the loaded glove",
+        "the fist-iron",
+        "the striking cestus"
+      ],
+      "era": [
+        "as old as the closed fist",
+        "drilled since the first bare-knuckle rings",
+        "a craft older than any forged blade",
+        "no younger than the fighting-pits",
+        "handed down every unarmed age since the ice",
+        "carved into the old tomb-walls with the wrestlers"
+      ],
+      "mechanism": [
+        "cast to fit the fist and rounded at the wear",
+        "wrapped tight over the knuckle by an old hand",
+        "plated across the back to turn a blade and land a blow",
+        "weighted in the palm to double the strike",
+        "stitched with cord and set with a hidden bar",
+        "drilled into the wrist until the guard was second nature"
+      ],
+      "attrib": [
+        "the bare-knuckle masters of the fighting-pits",
+        "the war-school teachers of the empty hand",
+        "the bruisers who wrapped iron in a glove",
+        "the gauntlet-smiths of the arms-guilds",
+        "the ring-fighters who lived by the fist",
+        "the road-toughs who kept the knuckles in a pocket"
+      ]
+    },
+    "WpSpear": {
+      "family": "forged",
+      "art": [
+        "the war-spear",
+        "the footman's pike",
+        "the cavalry lance",
+        "the boar-spear",
+        "polearm work",
+        "the thrusting glaive"
+      ],
+      "era": [
+        "as old as the sharpened stick",
+        "drilled since the first shield-wall held",
+        "a craft older than the furnace-cities",
+        "no younger than the pike-blocks",
+        "handed down every army since the Bronze Age",
+        "first leveled in the goblin wars"
+      ],
+      "mechanism": [
+        "forged with a socket and riveted to a seasoned shaft",
+        "winged below the head to stop a charging beast",
+        "ground to a long thrusting point that would not fold",
+        "socketed deep so the head sat true under a lunge",
+        "banded down the haft against a hacking cut",
+        "balanced so a whole block could level it as one"
+      ],
+      "attrib": [
+        "the spear-smiths of the furnace-city forges",
+        "the pike-blocks that broke every cavalry charge",
+        "the shield-wall crews who held by the reach",
+        "the arms-guilds who socketed the heads",
+        "the boar-hunters who stopped the charge with wings",
+        "the drill-masters who taught the block to move as one"
+      ]
+    },
+    "WpToy": {
+      "family": "marketed",
+      "art": [
+        "the foam sword",
+        "the plastic dart-gun",
+        "the wooden training blade",
+        "the novelty mace",
+        "the squeaky mallet",
+        "the party-favor axe"
+      ],
+      "era": [
+        "no older than the last toy-fair",
+        "shipped since someone decided war should sell",
+        "a thing the Squishing failed to take seriously",
+        "no younger than the clearance-bin",
+        "handed out at every fete since the collapse",
+        "young as the cheapest thing on the shelf"
+      ],
+      "mechanism": [
+        "injection-molded in a color no weapon should be",
+        "stuffed with foam and stickered with a warning",
+        "glued together in a way that will not survive a swing",
+        "printed with a mascot and priced to move",
+        "assembled from parts that rattle when you shake it",
+        "sold three to a blister-pack and worth rather less"
+      ],
+      "attrib": [
+        "the toy-mongers of the market stalls",
+        "the mass-producers who never held a real one",
+        "the fete-organizers who armed the children",
+        "the discount-sellers of the collapse-era shelves",
+        "the pranksters who bought a crate for a laugh",
+        "the shopkeepers who swear it is a real bargain"
+      ]
+    },
+    "WpHoly": {
+      "family": "holy",
+      "art": [
+        "the blessed blade",
+        "the consecrated arm",
+        "the sanctified weapon",
+        "the reliquary sword",
+        "the censer-mace",
+        "the anointed steel"
+      ],
+      "era": [
+        "consecrated before the cathedrals rose",
+        "carried since the saints took up arms",
+        "a grace the Squishing could not defile",
+        "no younger than the first ordained blade",
+        "handed down from the old temple-forges",
+        "blessed in every righteous age since"
+      ],
+      "mechanism": [
+        "quenched in holy water and prayed over at the anvil",
+        "graven with a psalm along the fuller",
+        "anointed with oil and set with a splinter of relic",
+        "blessed by a laid hand before it drew blood",
+        "forged on a feast-day and sworn to no unclean use",
+        "hallowed until corruption would not bide its edge"
+      ],
+      "attrib": [
+        "the temple-smiths who forge on feast-days",
+        "the ordained who carry it against the dark",
+        "the saints who sanctified it anew",
+        "the reliquary-keepers of the old shrines",
+        "the church-armorers who bless every blade",
+        "the faithful who trust the grace in the steel"
+      ]
+    },
+    "WpCursed": {
+      "family": "forbidden",
+      "art": [
+        "the cursed blade",
+        "the void-eaten arm",
+        "the necrotic weapon",
+        "the demon-forged steel",
+        "the hungering edge",
+        "the blighted iron"
+      ],
+      "era": [
+        "outlawed since the first hand it ruined",
+        "carried in secret through every condemning age",
+        "a thing the Squishing let bleed through",
+        "no younger than the abyss it drank from",
+        "burned wherever the guilds could find it",
+        "too old and too wrong for any ledger"
+      ],
+      "mechanism": [
+        "quenched in blood and left to drink from its bearer",
+        "graven with a name no smith would speak aloud",
+        "forged where the leylines ran black and wrong",
+        "bound to a hunger that outlasts its wielder",
+        "tempered in the void so its edge never dulls or forgives",
+        "sealed with a rite the guilds would burn a town to stop"
+      ],
+      "attrib": [
+        "the outlaw-smiths who deny the craft exists",
+        "the void-callers who fed it from the Abyss",
+        "the desperate who took up what they should not",
+        "the heirs of a proscribed forge",
+        "the few the Mages Guild burned for making it",
+        "the petrodemon-cults who bless it in reverse"
+      ]
+    },
+    "WpFlame": {
+      "family": "forged",
+      "art": [
+        "the flame-tongue blade",
+        "the molten-core arm",
+        "the ember-forged steel",
+        "the burning brand",
+        "the searing edge",
+        "the fire-quenched weapon"
+      ],
+      "era": [
+        "forged at the hottest hearth in the furnace-cities",
+        "carried since men married the blade to fire",
+        "a craft the Squishing set alight anew",
+        "no younger than the great foundries",
+        "handed down from the ember-smiths",
+        "kindled first in the goblin wars"
+      ],
+      "mechanism": [
+        "quenched glowing so a wisp of heat never left the steel",
+        "cored with a coal that will not gutter out",
+        "graven with runnels that catch and hold a flame",
+        "hammered at a white heat few smiths dare to reach",
+        "banked with an ember that wakes when blood is drawn",
+        "tempered in oil-fire so the edge runs warm to the touch"
+      ],
+      "attrib": [
+        "the ember-smiths of the great foundries",
+        "the fire-tenders of the furnace-city forges",
+        "the makers who quench at a killing heat",
+        "the arms-guilds who keep the hottest hearth",
+        "the road-smiths who bank a coal in every blade",
+        "the flame-wrights who sign their work in soot"
+      ]
+    },
+    "WpFrost": {
+      "family": "ancient",
+      "art": [
+        "the frost-bitten blade",
+        "the glacial arm",
+        "the rime-edged steel",
+        "the ice-quenched weapon",
+        "the winter brand",
+        "the cold-forged edge"
+      ],
+      "era": [
+        "as old as the ice that shaped it",
+        "carried since the first winter-forges",
+        "a craft from before the furnace-cities warmed",
+        "no younger than the glacier-camps",
+        "handed down from the deep-cold smiths",
+        "older than any spoken thaw"
+      ],
+      "mechanism": [
+        "quenched in meltwater until the steel ran blue-cold",
+        "graven with rime-figures that never fully thaw",
+        "forged in a cold so deep the metal barely gave",
+        "cored with a chill that fogs the air near the edge",
+        "tempered under the glacier so its cold outlasts the smith",
+        "hammered slow in the killing frost of the deep camps"
+      ],
+      "attrib": [
+        "the winter-smiths of the glacier-camps",
+        "the ice-forge masters of the deep cold",
+        "the makers who quench in glacial melt",
+        "the old cold-wrights from before the furnaces",
+        "the frost-hunters who carried it through the ice",
+        "the rime-smiths who sign in blue"
+      ]
+    },
+    "WpPetro": {
+      "family": "forbidden",
+      "art": [
+        "the tar-fouled blade",
+        "the petro-forged arm",
+        "the oil-quenched steel",
+        "the porphyrin edge",
+        "the crude-slicked weapon",
+        "the petrodemon's brand"
+      ],
+      "era": [
+        "forged where blood, oil and leyline meet",
+        "carried since the tar first taught the steel",
+        "a thing the Squishing pumped up from below",
+        "no younger than the deep-oil wells",
+        "handed down the black-derrick roads",
+        "old as the sleeping things in the crude"
+      ],
+      "mechanism": [
+        "quenched in black crude that smells of copper pennies",
+        "graven with the porphyrin threads that bind oil to blood",
+        "forged over a well-flame the smith fed with tribute",
+        "slicked with a tar that will not wash from the edge",
+        "bound to the petrodemons asleep in the deep",
+        "tempered in oil that answered when it was poured"
+      ],
+      "attrib": [
+        "the derrick-smiths of the black-oil roads",
+        "the heirs of Enrico Mattei and his tomb-scroll",
+        "the petrodemon-cults who bless the crude",
+        "the porphyrin-adepts who thread oil to blood",
+        "the well-priests who feed the forge-flame",
+        "the outlaw-makers the guilds will not name"
+      ]
+    },
+    "WpThunder": {
+      "family": "modern",
+      "art": [
+        "the arc-edged blade",
+        "the plasma arm",
+        "the storm-caller weapon",
+        "the shock-lance",
+        "the live-wire brand",
+        "the charged steel"
+      ],
+      "era": [
+        "no older than the satellite age",
+        "wired since the first current ran through a hilt",
+        "a craft born of the broken world's dead grids",
+        "no younger than the last working power line",
+        "drafted after the Millennium burned the tech",
+        "young as the machine it is welded to"
+      ],
+      "mechanism": [
+        "cored with a capacitor that dumps its charge on contact",
+        "wired to an arc that leaps the last inch to flesh",
+        "welded from a blade and a salvaged battery pack",
+        "insulated at the grip and live everywhere else",
+        "cobbled from grid-scrap and never once safety-rated",
+        "tuned to spit plasma the moment the circuit closes"
+      ],
+      "attrib": [
+        "Esoteric Heavy Industries and its unmarked workshops",
+        "the thaumo-engineers who patent every prototype",
+        "the grid-scavengers who wire the dead lines live",
+        "the technomancers of the post-collapse age",
+        "the armorers who marry steel to silicon",
+        "the road-electricians who charge a blade for coin"
+      ]
+    },
+    "WpLegendary": {
+      "family": "relic",
+      "art": [
+        "the named blade",
+        "the mythic arm",
+        "the hero's weapon",
+        "the one-of-its-kind steel",
+        "the storied brand",
+        "the crowned edge"
+      ],
+      "era": [
+        "older than the story told of it",
+        "carried by every hand that mattered since",
+        "a relic the Squishing could not unmake",
+        "no younger than the deed it is named for",
+        "handed down king to king and thief to thief",
+        "sung of long before it was last drawn"
+      ],
+      "mechanism": [
+        "forged once and never matched by any smith since",
+        "graven with the name it earned in a single battle",
+        "kept whole down the ages against every forgetting",
+        "tempered by a hand whose secret died with it",
+        "passed through a dozen legends and dulled by none",
+        "wrought so fine that lesser steel shatters against it"
+      ],
+      "attrib": [
+        "the relic-keepers who guard the named arms",
+        "the heroes remembered only by what they carried",
+        "the archivists who track it world to world",
+        "the collectors who would ruin a nation to hold it",
+        "the one lost master who forged it",
+        "those who died to keep it out of the wrong hand"
+      ]
+    },
+    "ArClothes": {
+      "family": "trade",
+      "art": [
+        "the layered rags",
+        "convoy work-clothes",
+        "the padded jerkin",
+        "stitched street garments",
+        "the patched overcoat",
+        "the tarpaulin cloak"
+      ],
+      "era": [
+        "worn thin since the last winter",
+        "cut in the years after the Squishing",
+        "of the dead-mall clothing racks",
+        "no older than the last convoy season",
+        "handed down through three owners at least",
+        "salvaged from the wardrobes of the looped dead"
+      ],
+      "mechanism": [
+        "layered from whatever cloth outlasted the looting",
+        "quilted thick against the cold and the cudgel",
+        "sewn from convoy tarpaulin over a slow week",
+        "patched again each time a seam finally gave",
+        "belted tight so the padding would turn a glancing blow",
+        "reinforced with cardboard where the wool ran out"
+      ],
+      "attrib": [
+        "the tailors who work by candle in the market rows",
+        "the road-poor who armour themselves in laundry",
+        "the cloth-menders of the ruined high streets",
+        "the stall-keepers who sell warmth by the layer",
+        "the scavengers who dress from other people's closets",
+        "the seamstresses of the dead-mall arcades"
+      ]
+    },
+    "ArRobe": {
+      "family": "relic",
+      "art": [
+        "the sigil-worked robe",
+        "the grey vestment",
+        "the mantle of many hems",
+        "the ashen cassock",
+        "the leyline-stitched mantle",
+        "the deacon's overrobe"
+      ],
+      "era": [
+        "woven long before the dimensions fused",
+        "of an order that no longer keeps its chapter-house",
+        "older than the guild that reveres it",
+        "kept folded since the last true conclave",
+        "from the wardrobes of a burned monastery",
+        "of a rite the Squishing left half-remembered"
+      ],
+      "mechanism": [
+        "embroidered with figures that turn a curse aside",
+        "dyed in the ash of a consecrated fire",
+        "hung with charms the wearer no longer understands",
+        "sewn so each hem carries a warding word",
+        "woven from thread drawn along a live leyline",
+        "blessed once and never washed since for fear of losing it"
+      ],
+      "attrib": [
+        "the vestment-weavers of the old orders",
+        "the robed adepts of the Mages Guild",
+        "the cloister-tailors whose houses are ash",
+        "the seers who will not be seen without it",
+        "the relic-keepers who ration each surviving mantle",
+        "the deacons who inherited more cloth than doctrine"
+      ]
+    },
+    "ArLight": {
+      "family": "warding",
+      "art": [
+        "the boiled-leather cuirass",
+        "scavenged plate over padding",
+        "the studded jerkin",
+        "riveted road-leathers",
+        "the layered brigandine",
+        "the scrap-scale vest"
+      ],
+      "era": [
+        "knocked together since the last raid",
+        "no older than the last siege",
+        "of the post-collapse workshops",
+        "cut down from something larger and older",
+        "assembled across a single hard season",
+        "salvaged from the plate the dead left behind"
+      ],
+      "mechanism": [
+        "boiled and moulded to turn a passing edge",
+        "riveted from tin and salvaged plate over padding",
+        "laced tight so it moved with the shoulder",
+        "layered with metal cards sewn between the leather",
+        "cured hard over a low fire for a week",
+        "patched with whatever scrap would take a rivet"
+      ],
+      "attrib": [
+        "the leather-workers of the market wards",
+        "the road-wardens who outlived their convoys",
+        "the scrap-armourers who fit by eye",
+        "the caravan guards who arm on the cheap",
+        "the tanners who moonlight as armourers",
+        "the scavengers who cut plate down to size"
+      ]
+    },
+    "ArHeavy": {
+      "family": "forged",
+      "art": [
+        "the riveted harness",
+        "the full plate",
+        "the tower of mail",
+        "the fluted cuirass",
+        "the great harness",
+        "the furnace-black plate"
+      ],
+      "era": [
+        "hammered out in the furnace-cities",
+        "no older than the last siege",
+        "of the deep forge-halls",
+        "cast in a foundry that still runs day and night",
+        "shaped in the years the war never ended",
+        "quenched in the great works before the fuel ran low"
+      ],
+      "mechanism": [
+        "riveted from salvaged plate over a winter",
+        "hammered over charcoal until it rang true",
+        "articulated so a whole man could still run in it",
+        "quenched hard and tempered soft to hold an edge out",
+        "fitted plate by plate to one body alone",
+        "welded and buckled where the old joints had failed"
+      ],
+      "attrib": [
+        "the armorers of the furnace-cities",
+        "the forge-guilds who stamp their marks in the steel",
+        "the smiths who work Esoteric Heavy Industries iron",
+        "the plate-fitters paid in fuel and silver",
+        "the heavy-armourers of the foundry wards",
+        "the master-smiths who outlast their apprentices"
+      ]
+    },
+    "ArEquipment": {
+      "family": "marketed",
+      "art": [
+        "the utility belt",
+        "trucker gear",
+        "the padded kit-harness",
+        "the charm-hung rig",
+        "the loop-rated toolbelt",
+        "the industrial webbing"
+      ],
+      "era": [
+        "fresh off an Esoteric Heavy Industries line",
+        "no older than the last product recall",
+        "of the current catalogue",
+        "still under its printed warranty",
+        "shipped after the last convoy re-order",
+        "stamped with this season's model number"
+      ],
+      "mechanism": [
+        "clipped together from parts sold in blister packs",
+        "loaded with charms and kits rated for the loop",
+        "buckled across the chest for a driver's reach",
+        "assembled from an approved-accessory checklist",
+        "fitted with pouches marketed for exactly this fear",
+        "strapped on over the clothes and sold as protection"
+      ],
+      "attrib": [
+        "the sales reps of Esoteric Heavy Industries",
+        "the Trucker Society, who kit out by the manual",
+        "the catalogue-buyers of the convoy trade",
+        "the gearheads who trust the printed rating",
+        "the outfitters who move stock by the pallet",
+        "the road-crews who arm from the accessory aisle"
+      ]
+    },
+    "ArShield": {
+      "family": "warding",
+      "art": [
+        "the tower shield",
+        "the dented buckler",
+        "the door-turned-aegis",
+        "the road-sign shield",
+        "the boss-and-board",
+        "the scrap-plate barrier"
+      ],
+      "era": [
+        "carried since the last hard winter",
+        "no older than the last siege",
+        "of the barricade years",
+        "cut from something that used to be a wall",
+        "made new after the old one splintered",
+        "salvaged from the wreck of a convoy"
+      ],
+      "mechanism": [
+        "planked and banded to stop a charge cold",
+        "hammered from a stop-sign over a spare afternoon",
+        "faced with plate so an edge would skate away",
+        "gripped and braced to take the weight of a blow",
+        "bound at the rim with strap and rivet against splitting",
+        "backed with a boss cut from a truck hub"
+      ],
+      "attrib": [
+        "the shield-wrights of the barricade wards",
+        "the road-wardens who stand the line",
+        "the scrap-smiths who bang out bucklers to order",
+        "the convoy guards who front the column",
+        "the wall-keepers who arm from the ruins",
+        "the drill-masters who teach the shield-wall still"
+      ]
+    },
+    "ArToy": {
+      "family": "marketed",
+      "art": [
+        "the foam knight's breastplate",
+        "the plastic riot helmet",
+        "the inflatable sumo suit",
+        "the costume-shop chainmail",
+        "the bubble-wrap cuirass",
+        "the novelty hard-hat"
+      ],
+      "era": [
+        "still in its shrink-wrap from the toy aisle",
+        "no older than last year's Halloween stock",
+        "of the dead-mall clearance bins",
+        "past its recommended age of eight and up",
+        "left over from a party that never happened",
+        "marked down twice and still not sold"
+      ],
+      "mechanism": [
+        "moulded from bright plastic that squeaks when struck",
+        "inflated by mouth before every serious fight",
+        "held together with the original twist-ties",
+        "printed with a superhero who could actually take a hit",
+        "padded with foam that remembers every dent forever",
+        "assembled per the pictogram instructions, mostly"
+      ],
+      "attrib": [
+        "the clearance-shoppers who armour for cheap",
+        "the party-store looters of the dead malls",
+        "the desperate who trust a costume to stop steel",
+        "the children of the loop who never grew out of it",
+        "the bargain-hunters of the toy-aisle apocalypse",
+        "the jesters who go to war dressed for a birthday"
+      ]
+    },
+    "ArHoly": {
+      "family": "holy",
+      "art": [
+        "the blessed hauberk",
+        "the consecrated mantle",
+        "the saint's cuirass",
+        "the anointed plate",
+        "the ward-marked vestment",
+        "the pilgrim's harness"
+      ],
+      "era": [
+        "sanctified before the Father was slain",
+        "of the old cathedral vaults",
+        "blessed anew after the Squishing",
+        "older than the parish that still guards it",
+        "kept on the altar between wars",
+        "hallowed in a rite few can still perform"
+      ],
+      "mechanism": [
+        "anointed with oil and marked with a warding cross",
+        "blessed on the altar the night before it was worn",
+        "stitched with scripture along every seam",
+        "consecrated so corruption would not cling to it",
+        "censed in holy smoke until the steel smelled of it",
+        "sealed with a saint's relic sewn beneath the breast"
+      ],
+      "attrib": [
+        "the armour-priests of the surviving cathedrals",
+        "the war-clerics who bless before they buckle",
+        "the martyrs' orders that still forge for the faithful",
+        "the deacons who keep the anointing oil",
+        "the pilgrim-knights who arm at the altar",
+        "the sanctifiers who hallow what the smiths make"
+      ]
+    },
+    "ArCursed": {
+      "family": "forbidden",
+      "art": [
+        "the necrotic mail",
+        "the void-touched cuirass",
+        "the grave-cold harness",
+        "the flesh-bonded plate",
+        "the whispering vestment",
+        "the abyss-marked shield"
+      ],
+      "era": [
+        "dug from a barrow no one will name",
+        "condemned in every age it has surfaced",
+        "of the death-cults the Squishing set loose",
+        "older than the curse laid upon it",
+        "buried and unburied more times than it should be",
+        "sealed away until someone always breaks the seal"
+      ],
+      "mechanism": [
+        "fused to the wearer so it will not come off willingly",
+        "chilled by whatever it drank from the last owner",
+        "marked with sigils that ache against the leylines",
+        "stitched through the flesh at a terrible price",
+        "quenched once in blood and never cleaned since",
+        "bound with a bargain the wearer cannot fully recall"
+      ],
+      "attrib": [
+        "the grave-robbers who sell what they should have left",
+        "the necromancers who armour their servants in it",
+        "the void-callers who barter for its protection",
+        "the desperate who wear it knowing the cost",
+        "the outlaw-smiths the guilds burned for making it",
+        "those the Road remembers by the marks it leaves"
+      ]
+    },
+    "ArLegendary": {
+      "family": "relic",
+      "art": [
+        "the named harness",
+        "the heirloom plate",
+        "the unbroken cuirass of legend",
+        "the champion's mail",
+        "the storied aegis",
+        "the crowned armour"
+      ],
+      "era": [
+        "forged in an age the records only half recall",
+        "older than the war it is famous for",
+        "of a smith whose name outlived the world",
+        "handed down since before the dimensions fused",
+        "kept whole through catastrophes that broke everything else",
+        "of a make no living hand can match"
+      ],
+      "mechanism": [
+        "hammered once and never bettered since",
+        "fitted so perfectly it has never needed reforging",
+        "worked with an art the furnace-cities have lost",
+        "quenched in a rite the last master took to the grave",
+        "inlaid with the deeds of everyone who wore it",
+        "preserved unmarred by whatever should have destroyed it"
+      ],
+      "attrib": [
+        "the lost masters whose marks are still copied",
+        "the champions who each added to its legend",
+        "the relic-keepers who guard it between owners",
+        "the heirs who claim it and rarely keep it long",
+        "the chroniclers who argue over who forged it",
+        "those the world remembers only for having worn it"
+      ]
+    }
+  },
+  "fallbackArchetype": {
+    "family": "generic",
+    "art": [
+      "the old craft",
+      "the handed-down art",
+      "the long-kept skill",
+      "the elder discipline"
+    ],
+    "era": [
+      "of uncertain origin",
+      "its first day forgotten",
+      "of long standing",
+      "older than the records"
+    ],
+    "mechanism": [
+      "passed from master to pupil across the ages",
+      "kept alive against every forgetting",
+      "handed down where it was needed most",
+      "carried quietly through the years"
+    ],
+    "attrib": [
+      "forgotten first practitioners",
+      "the masters who kept it alive",
+      "those who valued it in hard times",
+      "the pupils who carried it on"
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "msg": {
+    "noUnderstand": "Il nemico non ti capisce.",
+    "cantTalkNow": "Il nemico non può parlare ora.",
+    "silenced": "Il nemico è silenziato!\n Non può parlare ora.",
+    "enraged": "Il nemico è infuriato!\n Non vuole parlarti.",
+    "confused": "Il nemico è confuso!\nNon sa cosa dire.",
+    "sleeping": "Il nemico sta dormendo!",
+    "frozen": "Il nemico è congelato!",
+    "friendlier": "Il nemico sembra più amichevole.",
+    "surrender": "Il nemico accetta di ritirarsi!",
+    "refuseSurrender": "Il nemico rifiuta di arrendersi!",
+    "enragedAfterInsult": "Il nemico è infuriato!",
+    "notFriendlyEnough": "Il nemico non è abbastanza amichevole per unirsi.",
+    "toBeImplemented": "(Funzione unisciti al gruppo - da implementare)",
+    "partyFull": "Il gruppo è pieno!",
+    "joined": "si è unito al gruppo!",
+    "stoneThrown": "Hai lanciato un sasso al nemico!",
+    "petSuccess": "Al nemico sembra piacere essere accarezzato!",
+    "petFail": "Il nemico non vuole essere accarezzato.",
+    "petRefuse": "Questa creatura non risponde alle carezze."
+  },
+  "choices": [
+    "Chiacchiera",
+    "Unisciti",
+    "Chiedi Resa",
+    "Insulta",
+    "Lancia Sasso",
+    "Accarezza",
+    "Annulla"
+  ],
+  "opinion": "Opinione",
+  "navHint": "↑↓ naviga · OK conferma · Esc annulla",
+  "recruit": {
+    "askToFollow": "Chiedi di Seguirti",
+    "adoptAsPet": "Adotta come Animale"
+  },
+  "pet": {
+    "refusesToFollow": "Rifiuta di seguirti.",
+    "wontApproach": "Non si lascia avvicinare.",
+    "follower": "seguace",
+    "pet": "animale",
+    "joined": "{name} ora ti accompagna come {kind}!"
+  }
+}

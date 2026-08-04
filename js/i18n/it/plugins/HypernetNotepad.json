@@ -1,0 +1,13 @@
+{
+  "appName": "Blocco note",
+  "untitled": "Senza titolo",
+  "windowTitle": "Blocco note - {file}",
+  "menuFileTail": "ile",
+  "menuEdit": "<u>M</u>odifica",
+  "menuFormat": "<u>F</u>ormato",
+  "menuHelp": "<u>?</u>",
+  "save": "Salva",
+  "exit": "Esci",
+  "savePrompt": "Scrivi un nome file da salvare in C:/Documents:",
+  "writeError": "Errore di sistema: impossibile scrivere sul file system virtuale."
+}

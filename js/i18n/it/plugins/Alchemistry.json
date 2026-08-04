@@ -1,0 +1,31 @@
+{
+  "title": "Alchimia",
+  "back": "Indietro",
+  "managing": "In lavorazione",
+  "requiredReagents": "Reagenti Richiesti",
+  "steps": "Procedura",
+  "noSteps": "Nessun passaggio registrato. Aggiungine uno per iniziare.",
+  "addStep": "Aggiungi Passaggio",
+  "execute": "Esegui Progetto",
+  "clearSteps": "Cancella Passaggi",
+  "selectAction": "Seleziona un’Azione",
+  "selectReagent": "Seleziona un Reagente",
+  "cancel": "Annulla",
+  "processing": "In elaborazione",
+  "remaining": "rimanenti",
+  "notEnough": "Non hai abbastanza di questo reagente.",
+  "stepAt": "a",
+  "stepFor": "per",
+  "empty": "Seleziona un progetto per ispezionarne formula e procedura.",
+  "actions": {
+    "combine": "Combina",
+    "heat": "Riscalda",
+    "distill": "Distilla",
+    "filter": "Filtra",
+    "wash": "Lava",
+    "dry": "Asciuga"
+  },
+  "projectName": "Progetto {n}",
+  "successCreated": "Alchimia riuscita! Hai creato {item}",
+  "failed": "Alchimia fallita! Passaggi o reagenti sbagliati."
+}

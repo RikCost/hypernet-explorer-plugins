@@ -1,0 +1,886 @@
+/* Skeumorphic Vending Machine CSS styles */
+
+#vending-machine-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    user-select: none;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+}
+
+/* The cabinet fills the window rather than sitting as a small panel in the
+   middle of it, but never grows past the point where the coils look silly. */
+.vm-wrapper {
+    position: relative;
+    width: min(96vw, 1480px);
+    height: min(95vh, 1000px);
+    display: flex;
+    background: linear-gradient(145deg, #2b2e33 0%, #15171a 100%);
+    border: 10px solid #3c4046;
+    border-radius: 24px;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.7),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+/* Chrome screws in each corner. Drawn as four corner-anchored gradients so
+   they stay put now that the cabinet resizes with the window. */
+.vm-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%),
+        radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%),
+        radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%),
+        radial-gradient(circle, #ddd 0%, #777 60%, transparent 61%);
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position:
+        left 12px top 12px, right 12px top 12px,
+        left 12px bottom 12px, right 12px bottom 12px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* ==========================================
+   LEFT CABINET: Product Chamber (Glass front)
+   ========================================== */
+.vm-chamber-outer {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 22px 14px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+}
+
+/* Lit header board carrying the machine's seeded brand */
+.vm-marquee {
+    flex: 0 0 auto;
+    background: linear-gradient(180deg, #2a2f3a 0%, #14171c 100%);
+    border: 3px solid #464c56;
+    border-radius: 10px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow:
+        inset 0 2px 6px rgba(255, 255, 255, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.vm-marquee-brand {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #f8fafc;
+    text-shadow: 0 0 14px rgba(226, 232, 240, 0.45), 0 2px 3px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vm-marquee-right {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex: 0 0 auto;
+}
+
+.vm-marquee-tagline {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #ffcc00;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
+}
+
+.vm-marquee-clock {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #39ff14;
+    text-shadow: 0 0 6px rgba(57, 255, 20, 0.6);
+}
+
+/* A machine full of oddities wears it on the outside. */
+.vm-wrapper.vm-weird .vm-marquee {
+    border-color: #6d3fa3;
+    background: linear-gradient(180deg, #2c2140 0%, #150f20 100%);
+}
+.vm-wrapper.vm-weird .vm-marquee-brand {
+    color: #e9d5ff;
+    text-shadow: 0 0 16px rgba(192, 132, 252, 0.6), 0 2px 3px rgba(0, 0, 0, 0.8);
+}
+.vm-wrapper.vm-weird .vm-marquee-tagline { color: #c084fc; }
+.vm-wrapper.vm-weird .vm-led-bar {
+    background: linear-gradient(to bottom, #f5e8ff 20%, #d8b4fe 50%, #f5e8ff 80%);
+    box-shadow: 0 0 16px rgba(216, 180, 254, 0.85);
+}
+
+.vm-glass-chamber {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: #0d0e10;
+    border: 5px solid #1c1e22;
+    border-radius: 14px;
+    box-shadow:
+        inset 0 0 40px rgba(0, 0, 0, 0.95),
+        inset 0 0 15px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Vertical LED Light Bars */
+.vm-led-bar {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    width: 7px;
+    background: linear-gradient(to bottom, #fff 20%, #e0f2fe 50%, #fff 80%);
+    box-shadow: 0 0 14px rgba(224, 242, 254, 0.8);
+    opacity: 0.85;
+    z-index: 5;
+}
+.vm-led-left { left: 5px; }
+.vm-led-right { right: 5px; }
+
+/* Grid of slots */
+.vm-grid {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    flex: 1;
+    min-height: 0;
+    padding: 16px 22px;
+    gap: 14px;
+    z-index: 2;
+}
+
+.vm-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    min-height: 0;
+}
+
+.vm-slot {
+    position: relative;
+    background: linear-gradient(180deg, #131518 0%, #0a0b0d 100%);
+    border-bottom: 3px solid #2d3139;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 6px 26px;
+    box-sizing: border-box;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow:
+        inset 0 1px 3px rgba(255,255,255,0.05),
+        0 4px 6px rgba(0,0,0,0.4);
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Highlight for the selected coil (keyboard, gamepad or mouse hover) */
+.vm-slot.active {
+    box-shadow:
+        0 0 0 3px #ffcc00,
+        0 0 22px rgba(255, 204, 0, 0.35);
+    background: linear-gradient(180deg, #181c22 0%, #0f1216 100%);
+    border-bottom-color: #ffcc00;
+}
+
+/* Unlisted merchandise gets its own tell through the glass. */
+.vm-slot.weird {
+    border-bottom-color: #7e3ff2;
+}
+.vm-slot.weird.active {
+    box-shadow:
+        0 0 0 3px #c084fc,
+        0 0 24px rgba(192, 132, 252, 0.45);
+    border-bottom-color: #c084fc;
+}
+
+/* Dispenser coil */
+.vm-coil {
+    position: absolute;
+    top: 18%;
+    width: 78px;
+    height: 58px;
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(150, 155, 165, 0.6) 8px,
+        rgba(150, 155, 165, 0.6) 12px,
+        rgba(255, 255, 255, 0.3) 12px,
+        rgba(255, 255, 255, 0.3) 14px
+    );
+    border: 2px solid rgba(100, 105, 115, 0.3);
+    border-radius: 24px;
+    z-index: 1;
+    pointer-events: none;
+    transform-origin: center center;
+}
+
+@keyframes coilRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.vm-slot.spinning .vm-coil {
+    animation: coilRotate 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Slot items */
+.vm-item-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+    z-index: 3;
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.vm-slot.active .vm-item-container {
+    transform: scale(1.06);
+}
+
+.vm-item-icon {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.75));
+}
+
+.vm-slot-name {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: #cbd5e1;
+    text-align: center;
+    max-width: 100%;
+    padding: 0 2px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+}
+.vm-slot.active .vm-slot-name { color: #fff; }
+
+.vm-slot-empty {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #3f444d;
+}
+
+/* Slot label / code tags */
+.vm-slot-tag {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e2025;
+    border: 1px solid #3c4046;
+    border-radius: 4px;
+    color: #ffcc00;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 8px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    z-index: 4;
+    pointer-events: none;
+}
+.vm-slot.active .vm-slot-tag {
+    background: #ffcc00;
+    color: #111;
+    border-color: #ffea70;
+}
+.vm-slot.weird.active .vm-slot-tag {
+    background: #c084fc;
+    border-color: #e9d5ff;
+}
+
+.vm-slot-price {
+    font-size: 13px;
+    color: #ffcc66;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+    z-index: 3;
+}
+.vm-slot.active .vm-slot-price { color: #fff; }
+
+/* Sold out styles */
+.vm-slot.sold-out {
+    opacity: 0.6;
+    cursor: default;
+}
+.vm-soldout-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    pointer-events: none;
+}
+.vm-soldout-badge {
+    background: #ef4444;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid #f87171;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    transform: rotate(-10deg);
+    letter-spacing: 0.5px;
+}
+
+/* Glass glare reflection overlay */
+.vm-glass-glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0) 40.1%);
+    z-index: 6;
+    pointer-events: none;
+}
+
+/* Bottom Dispenser Chamber */
+.vm-dispenser-tray {
+    position: relative;
+    flex: 0 0 auto;
+    height: 96px;
+    background: linear-gradient(180deg, #1a1c20 0%, #111215 100%);
+    border: 3px solid #0d0e10;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow:
+        inset 0 10px 20px rgba(0,0,0,0.8),
+        0 4px 6px rgba(0,0,0,0.3);
+}
+
+.vm-dispenser-door {
+    position: relative;
+    width: 70%;
+    height: 80%;
+    background: linear-gradient(180deg, #262930 0%, #17191e 100%);
+    border: 2px solid #3c4046;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow:
+        0 3px 6px rgba(0,0,0,0.6),
+        inset 0 1px 2px rgba(255,255,255,0.1);
+    transform-origin: top center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 8;
+}
+
+.vm-dispenser-door::before {
+    content: 'PUSH';
+    font-size: 13px;
+    font-weight: 800;
+    color: #4b525d;
+    letter-spacing: 3px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.vm-dispenser-door.loaded {
+    border-color: #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.6), inset 0 1px 2px rgba(255,255,255,0.1);
+}
+
+.vm-dispenser-door.active {
+    transform: rotateX(45deg) translateZ(5px);
+    background: linear-gradient(180deg, #1b1d22 0%, #0d0e10 100%);
+    box-shadow: inset 0 5px 10px rgba(0,0,0,0.8);
+}
+
+/* Dropped item icon container inside flap */
+.vm-dispenser-item {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 9;
+    image-rendering: pixelated;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+    animation: floatDispenser 2s ease-in-out infinite;
+}
+
+@keyframes floatDispenser {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Gravity drop animation item */
+.vm-gravity-item {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* ==========================================
+   RIGHT SIDE: Control Panel & Mechanics
+   ========================================== */
+.vm-control-panel {
+    width: 360px;
+    flex: 0 0 360px;
+    height: 100%;
+    padding: 22px 22px 22px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-sizing: border-box;
+}
+
+/* LED Digital Screen */
+.vm-lcd-screen {
+    flex: 0 0 auto;
+    height: 84px;
+    background: #0f1d13;
+    border: 4px solid #2f343a;
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow:
+        inset 0 3px 10px rgba(0,0,0,0.8),
+        0 2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Retro CRT lines */
+.vm-lcd-screen::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        rgba(0, 0, 0, 0.1) 0px,
+        rgba(0, 0, 0, 0.1) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+}
+
+.vm-lcd-text-primary {
+    color: #39ff14;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 6px rgba(57, 255, 20, 0.75);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vm-lcd-text-secondary {
+    color: #1ebd1e;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 3px rgba(30, 189, 30, 0.5);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* ------------------------------------------
+   Selected product card (direct selection)
+   ------------------------------------------ */
+.vm-product-card {
+    flex: 1 1 auto;
+    min-height: 0;
+    background: linear-gradient(135deg, #23262c 0%, #15171b 100%);
+    border: 2px solid #3c4046;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 3px 6px rgba(0,0,0,0.35);
+    overflow: hidden;
+}
+
+.vm-product-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 0 0 auto;
+}
+
+.vm-product-icon {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    image-rendering: pixelated;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
+}
+
+.vm-product-titles {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.vm-product-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #f8fafc;
+    line-height: 1.2;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.vm-product-code {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.vm-product-desc {
+    flex: 1 1 auto;
+    min-height: 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #a3adbb;
+    overflow: hidden;
+}
+
+/* Direct purchase button: no code entry required */
+.vm-buy-btn {
+    flex: 0 0 auto;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+    border: 1px solid #14532d;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-shadow:
+        0 4px 0 #14532d,
+        0 6px 10px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    transition: transform 0.06s, box-shadow 0.06s, background 0.15s;
+}
+
+.vm-buy-btn:hover {
+    background: linear-gradient(180deg, #2ee06d 0%, #17924a 100%);
+}
+
+.vm-buy-btn:active {
+    transform: translateY(4px);
+    box-shadow:
+        0 0 0 #14532d,
+        0 2px 4px rgba(0,0,0,0.4),
+        inset 0 2px 4px rgba(0,0,0,0.35);
+}
+
+.vm-buy-btn.disabled {
+    background: linear-gradient(180deg, #4b5563 0%, #262b33 100%);
+    border-color: #1a1d22;
+    box-shadow:
+        0 4px 0 #1a1d22,
+        0 6px 10px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    color: #9aa4b2;
+    cursor: not-allowed;
+}
+
+/* Money Slots */
+.vm-payment-section {
+    flex: 0 0 auto;
+    background: #1b1c20;
+    border: 2px solid #2a2c33;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    gap: 12px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.vm-payment-slot {
+    flex: 1;
+    height: 46px;
+    background: #0b0c0e;
+    border: 1px solid #33363d;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.vm-payment-slot::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    width: 30px;
+    height: 4px;
+    background: #000;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+}
+.vm-coin-slot::before {
+    width: 6px;
+    height: 18px;
+    top: 6px;
+}
+
+.vm-payment-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #5d6575;
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+}
+
+.vm-payment-led {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 5px;
+    height: 5px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #22c55e;
+}
+
+/* Keypad Grid */
+.vm-keypad-panel {
+    flex: 0 0 auto;
+    background: #1b1c20;
+    border: 2px solid #2a2c33;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow:
+        inset 0 1px 3px rgba(255,255,255,0.05),
+        0 4px 6px rgba(0,0,0,0.3);
+}
+
+.vm-keypad-hint {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #5d6575;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.vm-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.vm-key {
+    height: 34px;
+    background: linear-gradient(135deg, #4b525d 0%, #2f343a 100%);
+    border: 1px solid #1a1c20;
+    border-radius: 6px;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow:
+        0 3px 0 #1b1d22,
+        0 4px 6px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: all 0.05s;
+    user-select: none;
+}
+
+.vm-key:active, .vm-key.pressed {
+    transform: translateY(3px);
+    box-shadow:
+        0 0 0 #1b1d22,
+        0 1px 2px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, #2f343a 0%, #1f2226 100%);
+}
+
+.vm-key.special-clear {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: #fff;
+    font-size: 11px;
+}
+.vm-key.special-clear:active, .vm-key.special-clear.pressed {
+    background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+}
+
+.vm-key.special-enter {
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    color: #fff;
+    font-size: 11px;
+}
+.vm-key.special-enter:active, .vm-key.special-enter.pressed {
+    background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+}
+
+/* User wallet status / balance overview */
+.vm-wallet-status {
+    flex: 0 0 auto;
+    background: linear-gradient(135deg, #272a30 0%, #17181c 100%);
+    border: 2px solid #3c4046;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 2px 4px rgba(0,0,0,0.3);
+}
+
+.vm-wallet-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.vm-wallet-row span.val {
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.vm-wallet-row.money-row {
+    font-size: 13px;
+    color: #cbd5e1;
+    border-top: 1px solid #33373e;
+    padding-top: 6px;
+    margin-top: 2px;
+}
+
+.vm-wallet-row.money-row span.val {
+    color: #fbbf24;
+    font-size: 15px;
+    text-shadow: 0 0 4px rgba(251, 191, 36, 0.25);
+}
+
+.vm-footer-btn-container {
+    flex: 0 0 auto;
+}
+
+.vm-exit-btn {
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+    border: 1px solid #111827;
+    border-radius: 8px;
+    color: #f3f4f6;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow:
+        0 3px 6px rgba(0,0,0,0.4),
+        inset 0 1px 1px rgba(255,255,255,0.1);
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
+
+.vm-exit-btn:hover {
+    background: linear-gradient(180deg, #4b5563 0%, #374151 100%);
+}
+
+.vm-exit-btn.has-tray {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    border-color: #92400e;
+}
+.vm-exit-btn.has-tray:hover {
+    background: linear-gradient(180deg, #fbbf24 0%, #ea8f06 100%);
+}
+
+.vm-exit-btn:active {
+    transform: translateY(2px);
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.4),
+        inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Shorter windows: give the glass chamber the room instead of the panel. */
+@media (max-height: 760px) {
+    .vm-marquee { padding: 6px 16px; }
+    .vm-marquee-brand { font-size: 22px; }
+    .vm-dispenser-tray { height: 74px; }
+    /* The icon sheet is positioned by inline styles computed for 64px, so it
+       is never resized here - only the padding around it gives way. */
+    .vm-product-card { padding: 10px; gap: 8px; }
+    .vm-buy-btn { height: 44px; font-size: 14px; }
+    .vm-key { height: 28px; }
+    .vm-payment-section { display: none; }
+}

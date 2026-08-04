@@ -1,0 +1,7 @@
+{
+  "noRooms": "Non ci sono stanze disponibili in affitto.",
+  "ui": {
+    "rooms": "Stanze",
+    "hint": "↑↓ naviga · OK per affittare · Esc per chiudere"
+  }
+}

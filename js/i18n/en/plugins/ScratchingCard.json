@@ -1,0 +1,20 @@
+{
+  "noWinTryAgain": "No win. Try again!",
+  "pressOkOrEscTo": "Press OK or ESC to continue",
+  "title": {
+    "esoteric": "Scratch & Curse",
+    "corporate": "Scratch & Profit",
+    "vacation": "Scratch & Relax",
+    "hypercapitalist": "Scratch & Dominate"
+  },
+  "cellsRemaining": "Panels left: {remaining}",
+  "needMoney": "You need €{cost} to play. Press OK to exit.",
+  "youWon": "YOU WON €{amount}!",
+  "matchThree": "MATCH THREE SYMBOLS TO WIN",
+  "stake": "STAKE €{cost}",
+  "topPrize": "TOP PRIZE €{amount}",
+  "serial": "SERIAL {serial}",
+  "controlsMouse": "Drag to turn the card  ·  Rub or click a panel to scratch it  ·  ESC scratches the rest",
+  "controlsPad": "Arrows choose  ·  OK scratches  ·  Right stick turns  ·  L2/R2 zoom  ·  SHIFT squares up",
+  "noRenderer": "3D renderer unavailable"
+}

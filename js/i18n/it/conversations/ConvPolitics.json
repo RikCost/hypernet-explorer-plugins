@@ -1,0 +1,185 @@
+{
+  "stance": {
+    "support": [
+      "Di' quel che vuoi su {head}, ma {power} non ha mai funzionato così bene.",
+      "{party} capisce la gente come me. Li voterei due volte, se potessi.",
+      "{head} è la sola persona a memoria d'uomo che meriti quella carica di {title}.",
+      "Le cose finalmente vanno nella direzione giusta sotto {party}.",
+      "I miei nonni sarebbero fieri di ciò che {power} sta diventando.",
+      "Mi sono messo una spilla di {party} sul cappotto e la porto ovunque.",
+      "Checché ne dicano i brontoloni, {head} ha ereditato un disastro e lo sta sistemando.",
+      "Guida ferma, mani salde. Non chiedo altro, ed è quello che abbiamo."
+    ],
+    "oppose": [
+      "Non farmi parlare di {head}. Il peggiore fra quanti hanno mai retto {power} come {title}.",
+      "{party} si è comprata questo governo e adesso paghiamo tutti gli interessi.",
+      "Ogni promessa fatta da {head} è evaporata in silenzio. Il solito.",
+      "{power} merita di meglio di questo circo che chiamano governo.",
+      "Ancora un mandato di {party} e non resterà più niente da governare.",
+      "Io non ho votato per questo, e conosco un sacco di gente che dice lo stesso.",
+      "Loro lo chiamano ordine. Io lo chiamo uno stivale sul collo.",
+      "Qualcuno dovrebbe chiedere a {head} dove siano finiti davvero tutti quei soldi."
+    ],
+    "apathetic": [
+      "Politica? Ho già abbastanza guai a mettere il pane in tavola.",
+      "{title} di qua, {election} di là... niente di tutto ciò cambia il mio affitto.",
+      "Una volta seduti su quella poltrona sono tutti uguali, se vuoi il mio parere.",
+      "Ho smesso di leggere i proclami anni fa. Meglio per la digestione.",
+      "Chiunque vinca, io sarò comunque in piedi all'alba a fare lo stesso lavoro.",
+      "Il mio vicino non smette mai di parlare di {party}. Io annuisco e penso al pranzo."
+    ],
+    "radical": [
+      "Le chiacchiere non cambiano niente. A {power} serve il fuoco, non un'altra {election}.",
+      "Quando sarà il momento, tutti dovranno scegliere da che parte stare. Io ho già scelto.",
+      "{party} è l'unica cosa fra noi e l'abisso: la storia ci darà ragione.",
+      "Ci hanno riso in faccia nelle piazze. Non rideranno per sempre.",
+      "Ogni impero sembra eterno la settimana prima di cadere.",
+      "Tengo una lista di tutti quelli che hanno detto che non si poteva fare."
+    ]
+  },
+  "election": {
+    "upcoming": [
+      "Mancano solo {days} giorni a {election}. Si sente per le strade.",
+      "{election} è fra {days} giorni e i candidati sono già alla gola l'uno dell'altro.",
+      "Restano {days} giorni. Non ho ancora deciso, e non provare a convincermi.",
+      "Hanno ricominciato a dipingere slogan sui muri: aria di {election}.",
+      "Prima di {election} sorridono tutti di più. Non dura mai.",
+      "Mi dicono che {election} sia fra {days} giorni. Le bandierine sono già appese."
+    ],
+    "won": [
+      "La mia parte ha davvero vinto l'ultima {election}. Ancora non ci sono abituato.",
+      "Ho votato {winner} e per una volta è servito a qualcosa.",
+      "Abbiamo vinto! Ora vediamo se si ricordano di noi poveracci.",
+      "Si ballava per strada la sera in cui {winner} l'ha spuntata.",
+      "Tengo il foglio della vittoria piegato nella tasca del cappotto."
+    ],
+    "lost": [
+      "Ha vinto {winner}. Ancora non credo che la gente ci sia cascata.",
+      "Il mio voto è finito dritto nel rigagnolo, come sempre.",
+      "{election} era già decisa prima di un solo voto, segnati queste parole.",
+      "Torneremo. Perdere una {election} non è perdere la ragione.",
+      "Non parlo più di politica con mio cugino. Non da quando ha vinto {winner}."
+    ]
+  },
+  "rumor": [
+    "Dicono che {rumorSubject} sia immischiato in una faccenda di {rumorKind}. L'ho sentito da tre persone.",
+    "Hai sentito di {rumorSubject}? Qualcosa a proposito di {rumorKind}. Acqua in bocca.",
+    "Al mercato bisbigliano tutti di {rumorSubject} e di quella storia di {rumorKind}.",
+    "Io non spettegolo... ma {rumorSubject}? {rumorKind}? Dove c'è fumo...",
+    "Il mio barbiere giura che la storia di {rumorSubject} e {rumorKind} è vera. I barbieri sanno le cose.",
+    "Se anche solo metà di quel che dicono su {rumorSubject} è vero, cadranno teste."
+  ],
+  "grumble": [
+    "Detto fra noi, {gripe} ci sta dissanguando.",
+    "Con tutto il resto ci convivrei, se non fosse per {gripe}.",
+    "Si aspettano che sorridiamo e li ringraziamo per {gripe}. Incredibile.",
+    "Mio padre non ha mai dovuto sopportare niente di simile a {gripe}.",
+    "Prima era una cosa temporanea, adesso {gripe} è semplicemente... la vita.",
+    "Qualcuno nella capitale è stato promosso per aver inventato {gripe}, ci metto la mano sul fuoco."
+  ],
+  "officeHolder": [
+    "Fare {office} di {group} è soprattutto scartoffie e lamentele. Soprattutto lamentele.",
+    "Adesso mi chiamano {office}. Mia madre finalmente parla di me ai vicini.",
+    "Tutti vogliono un favore da chi ricopre la carica di {office}. In pochi si ricordano di {office} al tempo della festa.",
+    "Non ho mai voluto fare {office}, ma qualcuno di competente doveva pur farlo."
+  ],
+  "debate": [
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Hai seguito le ultime elezioni? Una vergogna."
+        ],
+        [
+          1,
+          "Lo dici ogni volta che perde la tua parte."
+        ],
+        [
+          0,
+          "La mia parte? Io voto per principio, non per abitudine!"
+        ],
+        [
+          1,
+          "Strano come i tuoi principi scelgano sempre lo stesso colore."
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Di nuovo le tasse. La capitale mangia e noi digiuniamo."
+        ],
+        [
+          1,
+          "Strade, guardie, feste: pensi che siano gratis?"
+        ],
+        [
+          0,
+          "La nostra strada l'ho vista. Rivoglio i miei soldi."
+        ],
+        [
+          1,
+          "E allora candidati e sistemala tu!"
+        ]
+      ]
+    },
+    {
+      "agreement": false,
+      "lines": [
+        [
+          0,
+          "Le iperpotenze si spartiscono la mappa come un arrosto."
+        ],
+        [
+          1,
+          "Meglio un patrono forte che il caos alla frontiera."
+        ],
+        [
+          0,
+          "Finché il patrono non decide che il prezzo è la tua città."
+        ],
+        [
+          1,
+          "Per questo scegli il patrono che vince."
+        ]
+      ]
+    },
+    {
+      "agreement": true,
+      "lines": [
+        [
+          0,
+          "Chiunque vinca queste elezioni, il pane costa di più."
+        ],
+        [
+          1,
+          "I politici cambiano. La fila dal fornaio è per sempre."
+        ],
+        [
+          0,
+          "Forse dovrebbe comandare la fornaia per un po'."
+        ],
+        [
+          1,
+          "Avrebbe il mio voto. Almeno si alza presto."
+        ]
+      ]
+    }
+  ],
+  "fallback": {
+    "party": "il partito",
+    "head": "il capo",
+    "title": "governante",
+    "power": "il reame",
+    "election": "elezione",
+    "gripe": "le tasse",
+    "rumorSubject": "qualcuno in alto",
+    "rumorKind": "scandalo",
+    "winner": "i vincitori",
+    "office": "carica pubblica",
+    "group": "città"
+  }
+}

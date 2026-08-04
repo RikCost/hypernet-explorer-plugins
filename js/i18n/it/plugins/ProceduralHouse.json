@@ -1,0 +1,13 @@
+{
+  "unknownLocation": "Luogo sconosciuto",
+  "getOut": "Fuori da casa mia!",
+  "lockpick": "Scassina",
+  "bash": "Sfonda",
+  "cancel": "Annulla",
+  "doorLocked": "La porta è chiusa a chiave.",
+  "usedSkeletonKey": "Hai usato il Passepartout!",
+  "groundFloor": "Piano terra",
+  "floorNumbered": "Piano {n}",
+  "noElevator": "Qui non c'è nessun ascensore.",
+  "selectFloor": "Scegli un piano:"
+}

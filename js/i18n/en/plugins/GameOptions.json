@@ -1,0 +1,92 @@
+{
+  "preferences": "PREFERENCES",
+  "back": "Back",
+  "noSettingsHere": "No settings here.",
+  "normal": "Normal",
+  "active": "✦ ACTIVE",
+  "inactive": "✧ INACTIVE",
+  "pressOrOkToEdit": "Press ▼ or OK to edit settings.",
+  "l1R1SwitchTabs": "L1 / R1 switch tabs.",
+  "adjustTheFocusedValue": "◀ / ▶ adjust the focused value.",
+  "slider": "Slider",
+  "selection": "Selection",
+  "toggle": "Toggle",
+  "active2": "Active",
+  "inactive2": "Inactive",
+  "toAdjust": "◀ / ▶ to adjust",
+  "okOrToToggle": "OK or ◀ / ▶ to toggle",
+  "requiresRestartToApply": "⟳ Requires restart to apply",
+  "currentValue": "Current Value",
+  "controls": "Controls",
+  "howItWorks": "How It Works",
+  "toBrowse": "▲ / ▼ to browse",
+  "l1R1SwitchTabs2": "L1 / R1 switch tabs",
+  "label": {
+    "gameplay": "Gameplay",
+    "video": "Video",
+    "audio": "Audio",
+    "shader": "Shader",
+    "experimental": "Experimental",
+    "uiVolume": "UI Volume",
+    "voiceVolume": "Voice Volume",
+    "masterVolume": "Master Volume",
+    "language": "Language",
+    "muteBgm": "Mute BGM",
+    "footstepsVolume": "Footsteps Volume",
+    "enemyBattlers": "Enemy Battlers",
+    "showFps": "Show FPS Counter",
+    "activeTheme": "Active Theme",
+    "weaponSprites3d": "3D Weapon Sprites",
+    "cardCombat": "Card Combat",
+    "mapBattle": "Map Battle",
+    "retroShader": "Retro Shader",
+    "renderResolution": "Render Resolution",
+    "dithering": "Dithering",
+    "colorLevels": "Color Levels",
+    "vertexSnap": "Vertex Snap",
+    "uiScaling": "UI Scaling",
+    "fontScaling": "Font Scaling",
+    "titleBackground": "Title Background",
+    "enemySpawn": "Enemy Spawn",
+    "enemyDifficulty": "Enemy Difficulty",
+    "cpuPartyMembers": "CPU Party Members",
+    "sprite": "Sprite",
+    "sprites": "Sprites"
+  },
+  "warn": {
+    "language": "⚠ Work in progress: only English is fully translated. Any other language leaves large parts of the game untranslated.",
+    "cardCombat": "⚠ Replaces the standard battle scene. Turning this on turns Map Battle off.",
+    "mapBattleMode": "⚠ Replaces the standard battle scene. Turning this on turns Card Combat off."
+  },
+  "titleBackground": [
+    "Random",
+    "Cards",
+    "Space",
+    "Artifacts",
+    "Bestiary",
+    "Weapons",
+    "Enemies 3D",
+    "Hyperverse",
+    "Camper Drive"
+  ],
+  "enemySpawn": [
+    "Balanced",
+    "Realistic"
+  ],
+  "enemyBattler": [
+    "2D",
+    "3D",
+    "Sprites"
+  ],
+  "languageProgress": "{name} 1% done",
+  "settingsInSection": "{count} settings in this section.",
+  "desc": {
+    "enemySpawnMode": "Decides how strong the enemies wandering the world are."
+  },
+  "descState": {
+    "enemySpawnMode": [
+      "Balanced: enemies match your party. Roamers stay at or below your level, and each world tile hides one boss well above it.",
+      "Realistic: your level is ignored. The danger comes from the place itself, wilder biomes and the distance from the Omega Tower, so far lands can be lethal early."
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "boot": {
+    "stage": ""
+  },
+  "hud": {
+    "score": "",
+    "noScores": "",
+    "lives": "",
+    "level": "",
+    "hiScore": "",
+    "time": ""
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "name": "Astronomie",
+  "blurb": "Le ciel mesuré et, quand le delta-v le permet, visité : pics acoustiques, profondeurs de transit et ellipses d'atterrissage. Chaque chiffre ci-dessous est cité avec l'instrument qui l'a produit.",
+  "nodes": {
+    "astro_wmap": {
+      "name": "Âge Cosmique selon WMAP",
+      "desc": "Depuis une orbite de Lissajous autour du point L2 Terre-Soleil, deux télescopes grégoriens dos à dos alimentent des radiomètres différentiels dans cinq bandes de 23 à 94 gigahertz, mesurant des écarts de température de quelques dizaines de microkelvins sur tout le ciel pendant que l'engin tourne et précesse pour annuler les systématiques. Le spectre de puissance angulaire montre le premier pic acoustique au multipôle 220 et deux autres au-delà. L'ajustement à six paramètres donne un âge de 13,7 milliards d'années à un pour cent près, une géométrie plate, et un budget de 4,6 pour cent de baryons, 23 pour cent de matière noire et le reste en énergie sombre."
+    },
+    "astro_mars_rovers": {
+      "name": "Spirit et Opportunity",
+      "desc": "Deux rovers solaires de 180 kilogrammes entrent à 5,4 kilomètres par seconde, décélèrent sous un parachute supersonique, allument des rétrofusées et rebondissent jusqu'à l'arrêt dans des grappes d'airbags, à Gusev et à Meridiani, dans des hémisphères opposés. Chacun porte un outil d'abrasion qui meule cinq millimètres dans une face, un spectromètre à rayons X à particules alpha pour la composition élémentaire et un spectromètre Mössbauer pour la minéralogie du fer. Opportunity trouve des concrétions d'hématite et de la jarosite, un sulfate dont la formation exige de l'eau liquide sous pH 4. La durée de vie prévue est de 90 sols ; Opportunity fonctionne quatorze ans."
+    },
+    "astro_deep_impact": {
+      "name": "Deep Impact",
+      "desc": "Un impacteur de 370 kilogrammes, largement en cuivre pour ne pas contaminer les spectres, est largué 24 heures avant et se manœuvre lui-même sur la trajectoire de la comète Tempel 1, qu'il frappe à 10,3 kilomètres par seconde pour un rendement cinétique voisin de 19 gigajoules. Le vaisseau de survol image et spectroscopie le panache depuis 500 kilomètres, puis se protège contre la coma. Les éjectas montent lentement et retombent selon une courbe qui implique un noyau de résistance à la traction presque nulle et de 75 pour cent de porosité, fait de grains silicatés de l'ordre du micron, de glace d'eau et d'organiques."
+    },
+    "astro_titan": {
+      "name": "Huygens se Pose sur Titan",
+      "desc": "Huygens se sépare de Cassini, dérive vingt jours et entre dans l'atmosphère de Titan à six kilomètres par seconde, décélérant jusqu'à Mach 1,5 en moins de trois minutes avant que trois parachutes successifs ne le descendent en deux heures et vingt-sept minutes. Un chromatographe en phase gazeuse couplé à un spectromètre de masse profile une atmosphère d'azote avec quelques pour cent de méthane, et l'imageur de descente renvoie des réseaux de drainage dendritiques creusés dans un terrain clair. Il se pose à cinq mètres par seconde sur un sol granulaire humide à 94 kelvins, et transmet encore soixante-dix minutes jusqu'à ce que Cassini passe sous l'horizon."
+    },
+    "astro_pluto": {
+      "name": "Reclassement des Planètes Naines",
+      "desc": "La découverte d'Éris, de diamètre comparable et de masse supérieure de 27 pour cent, force la question de ce qu'il faut compter. La résolution 5A de l'Assemblée générale de l'UAI définit une planète par trois clauses : elle orbite autour du Soleil, sa propre gravité l'a amenée à l'équilibre hydrostatique, et elle a nettoyé le voisinage de son orbite. Pluton satisfait aux deux premières, et selon le paramètre de Soter sa zone orbitale contient quelque dix mille fois sa propre masse en d'autres corps : elle est donc placée dans la nouvelle catégorie des planètes naines."
+    },
+    "astro_stardust": {
+      "name": "Retour d'Échantillons de Stardust",
+      "desc": "Un collecteur d'aérogel de silice à 0,01 gramme par centimètre cube, déployé en grille de 0,1 mètre carré, traverse la coma de la comète Wild 2 à 6,1 kilomètres par seconde et arrête les grains sur plusieurs centimètres de sillage sans les vaporiser. La capsule revient et rentre à 12,9 kilomètres par seconde, la plus grande vitesse jamais atteinte par un objet humain. Les grains comprennent forstérite, anorthite et l'inclusion riche en calcium et aluminium Inti, minéraux qui se condensent au-dessus de 1 400 kelvins : de la matière formée près du Soleil a donc été transportée vers l'extérieur du disque avant que la comète ne s'accrète."
+    },
+    "astro_exo_image": {
+      "name": "Première Image d'une Exoplanète",
+      "desc": "Un miroir déformable corrige le front d'onde atmosphérique à plus d'un kilohertz tandis qu'un coronographe supprime la lumière stellaire dans l'axe, et l'imagerie différentielle angulaire fait tourner le champ contre le motif fixe de l'instrument afin que les tavelures résiduelles puissent être soustraites. Trois compagnons de HR 8799 sont résolus dans le proche infrarouge à des contrastes voisins de dix puissance moins cinq et des séparations de 24, 38 et 68 unités astronomiques. Leur mouvement propre commun confirme qu'ils sont liés, et leurs arcs orbitaux sont ensuite suivis d'image en image au fil des années suivantes."
+    },
+    "astro_water_moon": {
+      "name": "De l'Eau sur la Lune",
+      "desc": "Un étage supérieur Centaur épuisé de 2 300 kilogrammes est dirigé vers le fond perpétuellement à l'ombre de Cabeus, près du pôle sud lunaire, où la surface n'a pas vu le soleil depuis deux milliards d'années et se tient sous 40 kelvins. Il excave quelque 350 tonnes de régolithe, et le vaisseau accompagnateur traverse le panache quatre minutes plus tard, mesurant l'absorption de l'eau dans le proche infrarouge avant de frapper à son tour. Le panache contient 5,6 pour cent de glace d'eau en masse, avec à ses côtés hydroxyle, monoxyde de carbone, ammoniac et mercure."
+    },
+    "astro_kepler": {
+      "name": "Lancement du Télescope Kepler",
+      "desc": "Un télescope de Schmidt de 0,95 mètre, sur une orbite héliocentrique traînant derrière la Terre, fixe sans jamais pivoter un unique champ de 115 degrés carrés dans le Cygne et la Lyre, lisant 42 CCD à une cadence de trente minutes pour 150 000 étoiles cibles. La photométrie est délibérément défocalisée sur plusieurs pixels et étalonnée pixel par pixel, ce qui tient la précision différentielle près de 20 parties par million sur six heures. Une planète d'un rayon terrestre passant devant une étoile d'un rayon solaire l'assombrit de 84 parties par million pendant quelques heures une fois par an : le signal n'existe donc que si ce plancher de bruit tient toute la mission."
+    },
+    "astro_dawn_vesta": {
+      "name": "Dawn en Orbite autour de Vesta",
+      "desc": "Trois propulseurs ioniques au xénon délivrent 90 millinewtons à une impulsion spécifique de 3 100 secondes, et les faire tourner des années accumule plus de 11 kilomètres par seconde de delta-v sur 425 kilogrammes d'ergol, assez pour qu'un seul engin se mette en orbite autour d'un corps de la ceinture principale puis la quitte pour un second. Caméras de cadrage, spectromètre visible et infrarouge, détecteur de rayons gamma et de neutrons cartographient Vesta en quatorze mois : le bassin de Rheasilvia couvre l'essentiel de l'hémisphère sud, les météorites howardite-eucrite-diogénite sont rattachées à sa croûte, et le champ de gravité confirme un noyau de fer."
+    },
+    "astro_habitable": {
+      "name": "Premier Monde en Zone Habitable",
+      "desc": "Kepler-22b est confirmée sur trois transits donnant une période de 289,9 jours autour d'une étoile G5 un peu plus froide que le Soleil. La profondeur du transit correspond à 2,4 rayons terrestres, et le flux incident vaut 1,1 fois le terrestre, ce qui la place dans la zone habitable conservatrice. La photométrie de transit ne contraint que le rayon et la période : l'amplitude en vitesse radiale est sous la limite de détection, si bien que la masse est bornée et non mesurée, et à ce rayon l'objet a autant de chances d'être une mini-Neptune à enveloppe d'hydrogène qu'un monde rocheux."
+    },
+    "astro_curiosity": {
+      "name": "Curiosity se Pose sur Mars",
+      "desc": "Un rover de 900 kilogrammes dépasse la masse à laquelle les airbags fonctionnent. L'étage de croisière entre à 5,8 kilomètres par seconde, vole une entrée portante guidée qui ramène l'ellipse à 20 sur 7 kilomètres, déploie un parachute de 21,5 mètres à Mach 1,7, puis l'étage de descente module huit moteurs pour tenir un vol stationnaire à 0,75 mètre par seconde tandis que le rover est descendu au treuil sur des brides de sept mètres et demi. Le contact est lu à la consigne de poussée, les brides sont coupées et l'étage s'écarte pour aller s'écraser. La puissance est de 110 watts issus d'un générateur radio-isotopique ; la charge utile comprend un spectromètre à plasma induit par laser, un diffractomètre à rayons X et un four à échantillons."
+    },
+    "astro_face_mars": {
+      "name": "Le Visage sur Mars",
+      "desc": "L'image 35A72 de Viking Orbiter 1, acquise à 43 mètres par pixel avec le Soleil à 20 degrés au-dessus de l'horizon, montre une mesa de Cydonia où l'ombre emplit symétriquement les dépressions ; un bit de données perdu ajoute la tache sombre lue comme une narine. Mars Global Surveyor réimage deux fois le même relief jusqu'à 1,56 mètre par pixel et sous un soleil haut, et Mars Express en renvoie un modèle numérique de terrain stéréo. La formation est un massif érodé du type qui se compte par centaines dans la région."
+    },
+    "astro_nibiru": {
+      "name": "Nibiru et le Périhélie de l'Apocalypse",
+      "desc": "Un corps de masse planétaire est placé sur une orbite excentrique de 3 600 ans, au périhélie calé sur la fin du treizième baktun. Un objet de cette masse arrivant à quelques mois d'échéance serait déjà visible à l'œil nu et se déplacerait de façon détectable sur le fond du ciel, serait apparu dans tous les relevés infrarouges du ciel entier depuis IRAS, et laisserait un résidu dans les éphémérides d'Uranus, de Neptune et de la télémétrie de Cassini vers Saturne. Ces éphémérides sont ajustées à la dizaine de mètres et n'exigent aucun terme de ce genre."
+    },
+    "astro_ancient_astronauts": {
+      "name": "L'Hypothèse des Anciens Astronautes",
+      "desc": "Une lecture où construction mégalithique, alignement astronomique et mythe de création sont tous des produits d'une technologie de passage. Elle exige d'écarter les preuves subsistantes de la construction terrestre : les carrières abandonnées avec les blocs encore attachés, les traces d'outils de cuivre et de dolérite appariées à ces blocs, les rampes, les terrils, les villages d'ouvriers, les registres de rations et les reconstitutions menées avec des outils d'époque. Elle ne prédit aucun artefact, aucun alliage et aucune strate, et chacune de ses assertions est un argument d'incrédulité sur le travail humain."
+    },
+    "astro_photometry": {
+      "name": "Photométrie de Transit de Précision",
+      "desc": "Un transit terrestre est un assombrissement d'une part sur dix mille durant quelques heures, un ordre de grandeur sous les résidus de champ plat, la gigue de pointage et la dérive thermique d'un photomètre ordinaire. Le signal se récupère en différentiel, contre un ensemble d'étoiles de comparaison sur le même détecteur afin que les termes de mode commun se divisent ; la fonction d'étalement du point est répartie sur de nombreux pixels pour moyenner les variations de réponse ; et la carte de gain pixel à pixel est tenue stable à quelques parties par million des années durant, la dérive résiduelle étant ôtée en ajustant des vecteurs de base de cotendance dérivés de l'ensemble lui-même."
+    },
+    "astro_rtg": {
+      "name": "Alimentation Radio-isotopique",
+      "desc": "Huit modules de source de chaleur à usage général renferment 4,8 kilogrammes de dioxyde de plutonium 238, dont la demi-vie de 87,7 ans rend environ deux kilowatts de chaleur de désintégration. Cette chaleur traverse 768 thermocouples de tellurure de plomb et de skutterudite montés en série-parallèle, et la tension Seebeck délivre à peu près 110 watts sous 28 volts, pour un rendement de conversion voisin de six pour cent. La sortie décroît d'environ 1,6 pour cent par an par désintégration et dégradation des thermocouples, et elle est indépendante de l'empoussièrement, de la saison, de la latitude et de la nuit, ce qu'aucun panneau solaire sur Mars n'est."
+    },
+    "astro_skycrane": {
+      "name": "La Répétition de la Grue Aérienne",
+      "desc": "Un rover d'une tonne ne peut être déposé par la méthode des airbags, qui plafonne vers 200 kilogrammes de masse posée, et des pattes assez longues pour dégager le terrain sous lui dépasseraient son propre empattement en hauteur et mettraient le pont hors de portée du bras. L'étage de descente s'arrête plutôt au-dessus de la surface sur huit moteurs modulables de 3 000 newtons, tient le panache et sa poussière loin du véhicule, et descend le rover sur trois brides de nylon et un ombilical. Le contact se détecte comme une chute de la poussée commandée ; les brides sont coupées par pyrotechnie et l'étage s'éloigne sur l'ergol restant."
+    }
+  }
+}

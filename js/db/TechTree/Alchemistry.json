@@ -1,0 +1,470 @@
+{
+  "id": "Alchemistry",
+  "icon": 176,
+  "accent": "#8a6d2f",
+  "real": true,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "chem_chiral",
+      "year": 2001,
+      "requires": [],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 871,
+          "qty": 100
+        },
+        {
+          "id": 869,
+          "qty": 100
+        },
+        {
+          "id": 870,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "chem_click",
+      "year": 2001,
+      "requires": [
+        "chem_chiral"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 871,
+          "qty": 140
+        },
+        {
+          "id": 869,
+          "qty": 120
+        },
+        {
+          "id": 858,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "chem_ubiquitin",
+      "year": 2004,
+      "requires": [
+        "chem_chiral"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 869,
+          "qty": 160
+        },
+        {
+          "id": 862,
+          "qty": 120
+        },
+        {
+          "id": 858,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mhp": 15
+      }
+    },
+    {
+      "id": "chem_metathesis",
+      "year": 2005,
+      "requires": [
+        "chem_click"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 870,
+          "qty": 180
+        },
+        {
+          "id": 871,
+          "qty": 140
+        },
+        {
+          "id": 858,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 856,
+        "qty": 8
+      }
+    },
+    {
+      "id": "chem_gfp",
+      "year": 2008,
+      "requires": [
+        "chem_ubiquitin"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 869,
+          "qty": 180
+        },
+        {
+          "id": 858,
+          "qty": 200
+        },
+        {
+          "id": 862,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "chem_oganesson",
+      "year": 2006,
+      "requires": [
+        "chem_target_fabrication"
+      ],
+      "materials": [
+        {
+          "id": 865,
+          "qty": 120
+        },
+        {
+          "id": 871,
+          "qty": 220
+        },
+        {
+          "id": 863,
+          "qty": 140
+        },
+        {
+          "id": 851,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "atk": 2
+      }
+    },
+    {
+      "id": "chem_ribosome",
+      "year": 2009,
+      "requires": [
+        "chem_heavy_atom"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 200
+        },
+        {
+          "id": 869,
+          "qty": 240
+        },
+        {
+          "id": 867,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mhp": 25
+      },
+      "reward": {
+        "kind": "item",
+        "id": 733,
+        "qty": 1
+      }
+    },
+    {
+      "id": "chem_crosscoupling",
+      "year": 2010,
+      "requires": [
+        "chem_metathesis",
+        "chem_oganesson"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 863,
+          "qty": 240
+        },
+        {
+          "id": 870,
+          "qty": 220
+        },
+        {
+          "id": 864,
+          "qty": 160
+        },
+        {
+          "id": 871,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "atk": 2
+      }
+    },
+    {
+      "id": "chem_quasicrystal",
+      "year": 2011,
+      "requires": [
+        "chem_crosscoupling"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 280
+        },
+        {
+          "id": 867,
+          "qty": 300
+        },
+        {
+          "id": 865,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "def": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 866,
+        "qty": 12
+      }
+    },
+    {
+      "id": "chem_gpcr",
+      "year": 2012,
+      "requires": [
+        "chem_membrane_protein",
+        "chem_quasicrystal"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 869,
+          "qty": 400
+        },
+        {
+          "id": 866,
+          "qty": 200
+        },
+        {
+          "id": 871,
+          "qty": 340
+        },
+        {
+          "id": 862,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "mhp": 30,
+        "mdf": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 734,
+        "qty": 1
+      }
+    },
+    {
+      "id": "chem_water_memory",
+      "year": 2004,
+      "requires": [
+        "chem_chiral"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 869,
+          "qty": 140
+        },
+        {
+          "id": 871,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "chem_water_fuel",
+      "year": 2008,
+      "requires": [
+        "chem_metathesis"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 870,
+          "qty": 160
+        },
+        {
+          "id": 863,
+          "qty": 140
+        },
+        {
+          "id": 854,
+          "qty": 180
+        },
+        {
+          "id": 871,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mhp": 15
+      }
+    },
+    {
+      "id": "chem_alkaline_diet",
+      "year": 2010,
+      "requires": [
+        "chem_ubiquitin"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 858,
+          "qty": 160
+        },
+        {
+          "id": 869,
+          "qty": 120
+        },
+        {
+          "id": 862,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mhp": 10
+      }
+    },
+    {
+      "id": "chem_target_fabrication",
+      "year": 2005,
+      "requires": [
+        "chem_metathesis"
+      ],
+      "materials": [
+        {
+          "id": 865,
+          "qty": 120
+        },
+        {
+          "id": 863,
+          "qty": 160
+        },
+        {
+          "id": 871,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "atk": 2
+      }
+    },
+    {
+      "id": "chem_synchrotron",
+      "year": 2007,
+      "requires": [
+        "chem_gfp"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 200
+        },
+        {
+          "id": 867,
+          "qty": 180
+        },
+        {
+          "id": 851,
+          "qty": 120
+        },
+        {
+          "id": 854,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "chem_heavy_atom",
+      "year": 2008,
+      "requires": [
+        "chem_synchrotron"
+      ],
+      "materials": [
+        {
+          "id": 865,
+          "qty": 100
+        },
+        {
+          "id": 871,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "chem_membrane_protein",
+      "year": 2011,
+      "requires": [
+        "chem_ribosome"
+      ],
+      "materials": [
+        {
+          "id": 869,
+          "qty": 200
+        },
+        {
+          "id": 870,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mhp": 25
+      }
+    }
+  ]
+}

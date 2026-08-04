@@ -1,0 +1,194 @@
+{
+  "need": {
+    "sleep": [
+      "Ho davvero bisogno di riposare...",
+      "Non riesco quasi più a tenere gli occhi aperti.",
+      "Casa mi sta chiamando.",
+      "Ancora qualche passo e poi dormo."
+    ],
+    "hunger": [
+      "Mi brontola lo stomaco...",
+      "Mangerei davvero qualcosa adesso.",
+      "C'è un distributore automatico qui vicino?",
+      "Devo trovare del cibo."
+    ],
+    "work": [
+      "È ora di un altro turno.",
+      "Almeno la paga è sicura.",
+      "Dovrei mettermi al lavoro.",
+      "Un altro giorno, un'altra moneta."
+    ],
+    "leisure": [
+      "Bella giornata per una passeggiata.",
+      "Magari faccio un salto alla sala giochi.",
+      "Chissà cosa succede da queste parti.",
+      "Ho un po' di tempo libero, cosa faccio?"
+    ],
+    "crime": [
+      "Non guarda nessuno...",
+      "Solo per questa volta.",
+      "A me i soldi servono più che a loro.",
+      "Se faccio in fretta, nessuno se ne accorge."
+    ],
+    "hygiene": [
+      "Ho proprio bisogno di lavarmi.",
+      "Mi sento lercio, dov'è il lavandino più vicino?",
+      "Un salto al bagno non mi farebbe male.",
+      "Dovrei darmi una ripulita."
+    ],
+    "money": [
+      "Sto rimanendo a corto di fondi.",
+      "Devo trovare il modo di fare un po' di soldi.",
+      "Le cose stanno diventando care...",
+      "Devo rimpinguare il portafoglio."
+    ],
+    "safety": [
+      "Farei meglio a stare nell'ombra per un po'.",
+      "Meglio nascondere questo in un posto sicuro.",
+      "Non voglio guai adesso.",
+      "Meglio darsi alla macchia finché non si calmano le acque."
+    ],
+    "comfort": [
+      "Mi servirebbe un posto più decente dove stare.",
+      "Forse è ora di migliorare la mia sistemazione.",
+      "Un letto vero, per una volta, sarebbe bello.",
+      "Ho messo da parte abbastanza: perché non concedermelo?"
+    ],
+    "social": [
+      "Dovrei andare a conoscere gente nuova.",
+      "È da un po' che non faccio una bella chiacchierata.",
+      "Chissà chi c'è in giro oggi.",
+      "Magari incontro qualcuno di interessante."
+    ],
+    "null": [
+      "..."
+    ]
+  },
+  "crimeIntent": [
+    "{item}: starebbe meglio nella mia tasca...",
+    "Lo voglio proprio: {item}.",
+    "A nessuno mancherebbe, un pezzo solo di {item}, no?",
+    "Se faccio in fretta, {item} è roba mia.",
+    "Solo un pezzo di {item}. Non se ne accorgeranno mai."
+  ],
+  "crimeSuccess": [
+    "Preso: {item}. Cammina normale. Cammina normale.",
+    "{item}, a costo zero.",
+    "È stato quasi troppo facile.",
+    "Adesso {item} è roba mia."
+  ],
+  "crimeCaught": [
+    "Mi hanno visto prendere {item}...",
+    "Non avrei dovuto metterci le mani sopra: {item}.",
+    "Fantastico. Adesso ho una taglia sulla testa.",
+    "Sparisci. Sparisci. Sparisci."
+  ],
+  "itemBuy": {
+    "cheap": [
+      "Bella cosetta, {item}, e non è costata quasi niente.",
+      "{item} andrà benissimo.",
+      "Con {item} a buon mercato non si sbaglia mai.",
+      "Contento del mio acquisto: {item}.",
+      "Proprio quello che mi serviva: {item}."
+    ],
+    "pricey": [
+      "{item}: mi è costata cara, ma ne vale la pena.",
+      "Roba come {item} non si trova a poco prezzo.",
+      "Ho fatto una follia per {item}. Nessun rimpianto.",
+      "{item}, roba di qualità. Si ottiene quel che si paga.",
+      "{item} costa un occhio, ma me lo merito."
+    ]
+  },
+  "itemBrowse": {
+    "cheap": [
+      "{item} costa così poco che mi tenta.",
+      "{item}, hm. Magari un altro giorno.",
+      "Niente male, {item}.",
+      "Roba come {item} mi tornerebbe utile.",
+      "{item} mi attira l'occhio."
+    ],
+    "pricey": [
+      "{item}: decisamente fuori dalla mia portata.",
+      "{item} a quel prezzo? Un furto bell'e buono.",
+      "Roba come {item} posso solo ammirarla.",
+      "Bella roba, {item}: peccato per il prezzo.",
+      "Chi se la può permettere {item} di questi tempi?"
+    ]
+  },
+  "itemDisposition": {
+    "greedy": [
+      "Ne voglio ancora.",
+      "Mio, tutto mio.",
+      "Non è mai abbastanza."
+    ],
+    "frugal": [
+      "Però dovrei risparmiare le mie monete.",
+      "Mi serve davvero?",
+      "Una moneta risparmiata..."
+    ],
+    "vain": [
+      "Sarò l'invidia della via.",
+      "L'aspetto conta.",
+      "Per me solo il meglio."
+    ],
+    "generous": [
+      "Magari lo regalo a qualcuno.",
+      "Condividere è già una ricompensa.",
+      "A qualcuno potrebbe servire."
+    ]
+  },
+  "familiar": [
+    "Chissà se rivedrò quel viandante.",
+    "Quella persona gira parecchio da queste parti ultimamente.",
+    "È quasi come se lo conoscessi.",
+    "Strano come continuiamo a incrociarci.",
+    "Mi fido di loro più che della maggior parte degli sconosciuti."
+  ],
+  "capability": {
+    "cooking_station": [
+      "Quel pasto era proprio quello che ci voleva.",
+      "Cucinare da sé è meglio che comprare fuori.",
+      "Dovrei farlo più spesso."
+    ],
+    "container": [
+      "Chi trova, tiene.",
+      "Ti sorprenderebbe cosa si lascia in giro la gente.",
+      "Un piccolo extra non ha mai fatto male."
+    ],
+    "rentable_room": [
+      "Un letto vero per una volta, meraviglioso.",
+      "Vale ogni moneta per una notte di sonno.",
+      "Avevo bisogno di quel riposo."
+    ],
+    "apiary": [
+      "Gli alveari vanno bene questa stagione.",
+      "Il miele si vende sempre.",
+      "Le api sono un buon affare."
+    ],
+    "bank": [
+      "Questo dovrebbe bastarmi per un po'.",
+      "Meglio prevenire che curare: nel caveau ci va.",
+      "Le banche. Non ci puoi vivere, non ci puoi vivere senza."
+    ],
+    "real_estate_office": [
+      "Gli immobili si ripagano davvero da soli.",
+      "Un altro mese, un altro affitto incassato.",
+      "Comprare terra è stata la cosa più intelligente che abbia mai fatto."
+    ],
+    "stock_exchange": [
+      "Come viene, così se ne va.",
+      "Il mercato dà e il mercato toglie.",
+      "Me li riprendo la prossima volta."
+    ],
+    "fast_travel_terminal": [
+      "Non c'è niente come vedere un posto nuovo.",
+      "Viaggiare schiarisce le idee.",
+      "Chissà cosa c'è là fuori oggi."
+    ],
+    "furniture_builder": [
+      "Qualche tocco nuovo e questo posto sembra casa.",
+      "Le belle cose fanno di una casa un focolare.",
+      "Già così sta meglio."
+    ]
+  }
+}

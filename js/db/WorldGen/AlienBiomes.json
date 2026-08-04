@@ -1,0 +1,6544 @@
+[
+  {
+    "name": "AlienSubMercurian",
+    "hasNPC": false,
+    "tilesetId": 318,
+    "color": "#6b5a52",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Mysterious/Lost Frontier",
+      "KevinMacLeod/Mysterious/Tabuk"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Mysterious/Tempting Secrets"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "winchester-wind-ambience"
+    ],
+    "bgs": [
+      "wind-in-the-desert-countryside"
+    ],
+    "dayTemperature": 32,
+    "nightTemperature": 20,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 18.0,
+        "nightTemp": 6.7,
+        "precipitation": 0.5,
+        "windSpeed": 14.9,
+        "cloudCover": 18,
+        "dayHumidity": 25,
+        "nightHumidity": 45
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 27.1,
+        "nightTemp": 15.3,
+        "precipitation": 0.3,
+        "windSpeed": 13.7,
+        "cloudCover": 14,
+        "dayHumidity": 22,
+        "nightHumidity": 40
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 46.0,
+        "nightTemp": 33.3,
+        "precipitation": 0.1,
+        "windSpeed": 11.7,
+        "cloudCover": 8,
+        "dayHumidity": 18,
+        "nightHumidity": 33
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 34.8,
+        "nightTemp": 22.7,
+        "precipitation": 0.2,
+        "windSpeed": 13.0,
+        "cloudCover": 16,
+        "dayHumidity": 24,
+        "nightHumidity": 43
+      }
+    },
+    "biomeIds": [
+      384
+    ],
+    "features": [
+      {
+        "name": "Badland",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "BadlandRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "RockDesert",
+        "density": 2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Pebble",
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienMercurian",
+    "hasNPC": false,
+    "tilesetId": 319,
+    "color": "#a85433",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "winchester-wind-ambience"
+    ],
+    "bgs": [
+      "mountain-wind"
+    ],
+    "dayTemperature": 30,
+    "nightTemperature": 18,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 85.0,
+        "nightTemp": -182.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 107.8,
+        "nightTemp": -156.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 155.0,
+        "nightTemp": -102.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 132.2,
+        "nightTemp": -128.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 1.0
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.8
+      },
+      {
+        "name": "Rock",
+        "density": 2.5
+      },
+      {
+        "name": "Cliff",
+        "density": 1.5
+      },
+      {
+        "name": "Crack",
+        "density": 0.8
+      },
+      {
+        "name": "Pebble",
+        "density": 1
+      },
+      {
+        "name": "Cave",
+        "density": 0.004
+      }
+    ]
+  },
+  {
+    "name": "AlienSubEarth",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 320,
+    "color": "#a9743f",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "night-crickets",
+      "mountain-wind",
+      "night-ambience"
+    ],
+    "bgs": [
+      "mountain-wind",
+      "mountain-ambience",
+      "montain-ambience2"
+    ],
+    "dayTemperature": 8,
+    "nightTemperature": -2,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": -4.0,
+        "nightTemp": -11.6,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 3.8,
+        "nightTemp": -5.4,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 20.0,
+        "nightTemp": 7.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 10.4,
+        "nightTemp": -0.1,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "biomeIds": [
+      352,
+      361,
+      352,
+      358,
+      361,
+      353,
+      354,
+      359,
+      383,
+      380,
+      282,
+      481,
+      480,
+      369,
+      376,
+      381,
+      379,
+      373,
+      481,
+      291,
+      377,
+      374,
+      370,
+      363,
+      375,
+      366,
+      368,
+      290,
+      364,
+      360,
+      357,
+      365,
+      382
+    ],
+    "features": [
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Mud",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "GrassDark",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "Rock",
+        "density": 2.5
+      },
+      {
+        "name": "Pebble",
+        "density": 1
+      }
+    ]
+  },
+  {
+    "name": "AlienEarthLike",
+    "hasNPC": false,
+    "tilesetId": 321,
+    "color": "#2fa88a",
+    "prefabs": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      324,
+      325,
+      326,
+      327,
+      328,
+      329,
+      330,
+      331,
+      332,
+      333,
+      334,
+      335,
+      336,
+      337,
+      338,
+      339,
+      340,
+      341,
+      342,
+      343,
+      344,
+      345,
+      346,
+      347,
+      348,
+      349,
+      350,
+      351,
+      352,
+      353,
+      354,
+      355,
+      356,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362,
+      363,
+      364,
+      365,
+      366,
+      367,
+      368,
+      369,
+      370,
+      371,
+      372,
+      373,
+      374,
+      375,
+      376,
+      377,
+      378,
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      388
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Calm/Living Voyage"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "crickets5",
+      "night-crickets",
+      "country-crickets"
+    ],
+    "bgs": [
+      "field_tallgrass",
+      "openfield_grass_rustlinginsects-",
+      "grass_field_insectbed"
+    ],
+    "dayTemperature": 25,
+    "nightTemperature": 16,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 13.0,
+        "nightTemp": 6.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 20.8,
+        "nightTemp": 12.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 37.0,
+        "nightTemp": 25.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 27.4,
+        "nightTemp": 17.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "biomeIds": [
+      256,
+      371,
+      288
+    ],
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 3
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "GrassPlant",
+        "terrain": true,
+        "density": 1.5
+      },
+      {
+        "name": "GrassFlower",
+        "terrain": true,
+        "density": 1.0
+      },
+      {
+        "name": "Flower",
+        "density": 1
+      },
+      {
+        "name": "Weed",
+        "density": 0.8
+      },
+      {
+        "name": "Tree",
+        "density": 0.04
+      }
+    ]
+  },
+  {
+    "name": "AlienSuperEarth",
+    "hasNPC": false,
+    "tilesetId": 322,
+    "color": "#8a6fd0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "night-crickets",
+      "crickets5",
+      "night-ambience"
+    ],
+    "bgs": [
+      "mountain-wind",
+      "mountain-ambience",
+      "grass-wind"
+    ],
+    "dayTemperature": 18,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 6.0,
+        "nightTemp": 0.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 13.8,
+        "nightTemp": 6.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 30.0,
+        "nightTemp": 19.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 20.4,
+        "nightTemp": 11.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 1.0
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.8
+      },
+      {
+        "name": "GrassPlant",
+        "terrain": true,
+        "density": 0.5
+      },
+      {
+        "name": "GrassFlower",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "Rock",
+        "density": 1.5
+      },
+      {
+        "name": "Cliff",
+        "density": 1
+      },
+      {
+        "name": "Bush",
+        "density": 0.6
+      },
+      {
+        "name": "Pebble",
+        "density": 0.8
+      },
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 1
+      }
+    ]
+  },
+  {
+    "name": "AlienMiniNeptune",
+    "hasNPC": false,
+    "tilesetId": 323,
+    "color": "#5fb6d8",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienIce",
+    "hasNPC": false,
+    "tilesetId": 324,
+    "color": "#8fd0ff",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienOcean",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 325,
+    "color": "#3a5fd0",
+    "prefabs": [
+      [
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "SeaBed",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Calm/Aquarium"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "ocean-night",
+      "ocean-night2"
+    ],
+    "bgs": [
+      "ocean-waves",
+      "ocean2",
+      "ocean3"
+    ],
+    "dayTemperature": 18,
+    "nightTemperature": 16,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:18",
+        "sunset": "18:02",
+        "dayTemp": 12.0,
+        "nightTemp": 12.4,
+        "precipitation": 2.7,
+        "windSpeed": 9.2,
+        "cloudCover": 80,
+        "dayHumidity": 92,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:05",
+        "sunset": "18:12",
+        "dayTemp": 15.9,
+        "nightTemp": 14.7,
+        "precipitation": 3.7,
+        "windSpeed": 8.4,
+        "cloudCover": 64,
+        "dayHumidity": 82,
+        "nightHumidity": 92
+      },
+      "summer": {
+        "sunrise": "05:54",
+        "sunset": "18:24",
+        "dayTemp": 24.0,
+        "nightTemp": 19.6,
+        "precipitation": 5.1,
+        "windSpeed": 7.2,
+        "cloudCover": 35,
+        "dayHumidity": 67,
+        "nightHumidity": 75
+      },
+      "autumn": {
+        "sunrise": "06:09",
+        "sunset": "18:10",
+        "dayTemp": 19.2,
+        "nightTemp": 16.7,
+        "precipitation": 4.4,
+        "windSpeed": 8.0,
+        "cloudCover": 74,
+        "dayHumidity": 89,
+        "nightHumidity": 99
+      }
+    },
+    "biomeIds": [
+      0,
+      3,
+      18,
+      21,
+      1,
+      10,
+      29,
+      25,
+      22,
+      24,
+      16,
+      8,
+      17,
+      28,
+      12,
+      13,
+      11,
+      7,
+      5,
+      6,
+      9,
+      2
+    ],
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "GrassPlant",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "GrassFlower",
+        "terrain": true,
+        "density": 0.2
+      },
+      {
+        "name": "Water",
+        "density": 4
+      }
+    ]
+  },
+  {
+    "name": "AlienLavaOcean",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 326,
+    "color": "#d0431a",
+    "prefabs": [
+      [
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "bgs": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "dayTemperature": 50,
+    "nightTemperature": 40,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 38.0,
+        "nightTemp": 29.8,
+        "precipitation": 0.2,
+        "windSpeed": 14.9,
+        "cloudCover": 35,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 45.8,
+        "nightTemp": 36.4,
+        "precipitation": 0.1,
+        "windSpeed": 13.7,
+        "cloudCover": 28,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 80.0,
+        "nightTemp": 65.5,
+        "precipitation": 0.0,
+        "windSpeed": 11.7,
+        "cloudCover": 15,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 56.0,
+        "nightTemp": 45.1,
+        "precipitation": 0.1,
+        "windSpeed": 13.0,
+        "cloudCover": 32,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "biomeIds": [
+      208,
+      209,
+      304,
+      305,
+      296,
+      296,
+      289
+    ],
+    "features": [
+      {
+        "name": "Rock",
+        "density": 0.2
+      },
+      {
+        "name": "Crater",
+        "density": 0.2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Debris",
+        "density": 0.8
+      },
+      {
+        "name": "Lava",
+        "terrain": true,
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienDesert",
+    "hasNPC": false,
+    "tilesetId": 327,
+    "color": "#d0a84a",
+    "prefabs": [
+      [
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Mysterious/Lost Frontier",
+      "KevinMacLeod/Mysterious/Tabuk"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Mysterious/Tempting Secrets"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "desert-ambience",
+      "desert-monolit"
+    ],
+    "bgs": [
+      "desert-ambient-loop",
+      "desert",
+      "desert2"
+    ],
+    "dayTemperature": 35,
+    "nightTemperature": 15,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 21.0,
+        "nightTemp": 1.7,
+        "precipitation": 0.5,
+        "windSpeed": 14.9,
+        "cloudCover": 18,
+        "dayHumidity": 25,
+        "nightHumidity": 45
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 30.1,
+        "nightTemp": 10.3,
+        "precipitation": 0.3,
+        "windSpeed": 13.7,
+        "cloudCover": 14,
+        "dayHumidity": 22,
+        "nightHumidity": 40
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 49.0,
+        "nightTemp": 28.3,
+        "precipitation": 0.1,
+        "windSpeed": 11.7,
+        "cloudCover": 8,
+        "dayHumidity": 18,
+        "nightHumidity": 33
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 37.8,
+        "nightTemp": 17.7,
+        "precipitation": 0.2,
+        "windSpeed": 13.0,
+        "cloudCover": 16,
+        "dayHumidity": 24,
+        "nightHumidity": 43
+      }
+    },
+    "NPCPool": 0,
+    "biomeIds": [
+      521,
+      513,
+      520,
+      512,
+      518,
+      524,
+      517,
+      525,
+      526
+    ],
+    "features": [
+      {
+        "name": "Sand",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "SandRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "RockDesert",
+        "density": 3
+      },
+      {
+        "name": "Cactus",
+        "density": 0.8
+      },
+      {
+        "name": "Pebble",
+        "density": 1
+      },
+      {
+        "name": "Skull",
+        "density": 0.02
+      }
+    ]
+  },
+  {
+    "name": "AlienRainforest",
+    "hasNPC": false,
+    "tilesetId": 328,
+    "color": "#2fd08a",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Calm/Living Voyage"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "jungle-night",
+      "crickets5",
+      "frogs-croaking-at-night"
+    ],
+    "bgs": [
+      "jungle-sounds-background-ambience-1",
+      "forest-birds",
+      "nature-summer"
+    ],
+    "dayTemperature": 30,
+    "nightTemperature": 24,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 16.0,
+        "nightTemp": 10.7,
+        "precipitation": 0.5,
+        "windSpeed": 14.9,
+        "cloudCover": 18,
+        "dayHumidity": 25,
+        "nightHumidity": 45
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 25.1,
+        "nightTemp": 19.3,
+        "precipitation": 0.3,
+        "windSpeed": 13.7,
+        "cloudCover": 14,
+        "dayHumidity": 22,
+        "nightHumidity": 40
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 44.0,
+        "nightTemp": 37.3,
+        "precipitation": 0.1,
+        "windSpeed": 11.7,
+        "cloudCover": 8,
+        "dayHumidity": 18,
+        "nightHumidity": 33
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 32.8,
+        "nightTemp": 26.7,
+        "precipitation": 0.2,
+        "windSpeed": 13.0,
+        "cloudCover": 16,
+        "dayHumidity": 24,
+        "nightHumidity": 43
+      }
+    },
+    "features": [
+      {
+        "name": "GrassDark",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "GrassJungle",
+        "terrain": true,
+        "density": 1.5
+      },
+      {
+        "name": "Dirt",
+        "terrain": true,
+        "density": 0.5
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.8
+      },
+      {
+        "name": "Tree",
+        "density": 2
+      },
+      {
+        "name": "Vine",
+        "density": 1.5
+      },
+      {
+        "name": "Plant",
+        "density": 1.2
+      },
+      {
+        "name": "Mushroom",
+        "density": 0.6
+      }
+    ]
+  },
+  {
+    "name": "AlienTundra",
+    "hasNPC": false,
+    "tilesetId": 329,
+    "color": "#8fb6c8",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-arctic",
+      "wind-blizzard2"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-soft",
+      "snowing"
+    ],
+    "dayTemperature": -10,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -44.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -21.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": -1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -8.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "Ice",
+        "terrain": true,
+        "density": 2.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "MoorIce",
+        "density": 1
+      },
+      {
+        "name": "PebbleIce",
+        "density": 0.8
+      }
+    ]
+  },
+  {
+    "name": "AlienAcidOcean",
+    "hasNPC": false,
+    "tilesetId": 330,
+    "color": "#9fd02b",
+    "biomeIds": [
+      75,
+      77,
+      79
+    ],
+    "prefabs": [
+      [
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "FloodedCave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "frogs-croaking-at-night",
+      "night-swamp",
+      "countryside-swamp9"
+    ],
+    "bgs": [
+      "swamp-woods",
+      "forest-swamp",
+      "countryside-swamp9"
+    ],
+    "dayTemperature": 24,
+    "nightTemperature": 18,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:18",
+        "sunset": "18:02",
+        "dayTemp": 18.0,
+        "nightTemp": 14.4,
+        "precipitation": 2.7,
+        "windSpeed": 9.2,
+        "cloudCover": 80,
+        "dayHumidity": 92,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:05",
+        "sunset": "18:12",
+        "dayTemp": 21.9,
+        "nightTemp": 16.7,
+        "precipitation": 3.7,
+        "windSpeed": 8.4,
+        "cloudCover": 64,
+        "dayHumidity": 82,
+        "nightHumidity": 92
+      },
+      "summer": {
+        "sunrise": "05:54",
+        "sunset": "18:24",
+        "dayTemp": 30.0,
+        "nightTemp": 21.6,
+        "precipitation": 5.1,
+        "windSpeed": 7.2,
+        "cloudCover": 35,
+        "dayHumidity": 67,
+        "nightHumidity": 75
+      },
+      "autumn": {
+        "sunrise": "06:09",
+        "sunset": "18:10",
+        "dayTemp": 25.2,
+        "nightTemp": 18.7,
+        "precipitation": 4.4,
+        "windSpeed": 8.0,
+        "cloudCover": 74,
+        "dayHumidity": 89,
+        "nightHumidity": 99
+      }
+    },
+    "features": [
+      {
+        "name": "GrassDark",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "Mud",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "TreeSwamp",
+        "density": 2
+      },
+      {
+        "name": "Lilypad",
+        "density": 1
+      },
+      {
+        "name": "Vine",
+        "density": 1
+      },
+      {
+        "name": "Skull",
+        "density": 1
+      },
+      {
+        "name": "Mushroom",
+        "density": 1
+      },
+      {
+        "name": "Moor",
+        "terrain": true,
+        "density": 1
+      }
+    ]
+  },
+  {
+    "name": "AlienGasGiant",
+    "hasNPC": false,
+    "tilesetId": 331,
+    "color": "#6fb0d8",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienHotJupiter",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 332,
+    "color": "#d05a2b",
+    "prefabs": [
+      [
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "bgs": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "dayTemperature": 50,
+    "nightTemperature": 40,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 38.0,
+        "nightTemp": 29.8,
+        "precipitation": 0.2,
+        "windSpeed": 14.9,
+        "cloudCover": 35,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 45.8,
+        "nightTemp": 36.4,
+        "precipitation": 0.1,
+        "windSpeed": 13.7,
+        "cloudCover": 28,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 80.0,
+        "nightTemp": 65.5,
+        "precipitation": 0.0,
+        "windSpeed": 11.7,
+        "cloudCover": 15,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 56.0,
+        "nightTemp": 45.1,
+        "precipitation": 0.1,
+        "windSpeed": 13.0,
+        "cloudCover": 32,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "biomeIds": [
+      208,
+      209,
+      304,
+      305,
+      296,
+      296,
+      289
+    ],
+    "features": [
+      {
+        "name": "Rock",
+        "density": 0.2
+      },
+      {
+        "name": "Crater",
+        "density": 0.2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Debris",
+        "density": 0.8
+      },
+      {
+        "name": "Lava",
+        "terrain": true,
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienWarmJupiter",
+    "hasNPC": false,
+    "tilesetId": 333,
+    "color": "#7fc0d0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienColdJupiter",
+    "hasNPC": false,
+    "tilesetId": 334,
+    "color": "#7f9fe0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienIceGiant",
+    "hasNPC": false,
+    "tilesetId": 335,
+    "color": "#8fd0ee",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienRingedGasGiant",
+    "hasNPC": false,
+    "tilesetId": 336,
+    "color": "#7fb6e0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienPuffy",
+    "hasNPC": false,
+    "tilesetId": 337,
+    "color": "#a8c8e0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -42.0,
+        "nightTemp": -35.4,
+        "precipitation": 3.4,
+        "windSpeed": 18.4,
+        "cloudCover": 85,
+        "dayHumidity": 76,
+        "nightHumidity": 94
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -19.9,
+        "nightTemp": -22.1,
+        "precipitation": 2.4,
+        "windSpeed": 16.8,
+        "cloudCover": 68,
+        "dayHumidity": 68,
+        "nightHumidity": 84
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 1.0,
+        "nightTemp": -9.6,
+        "precipitation": 1.4,
+        "windSpeed": 14.4,
+        "cloudCover": 37,
+        "dayHumidity": 56,
+        "nightHumidity": 69
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": -6.2,
+        "nightTemp": -13.9,
+        "precipitation": 2.9,
+        "windSpeed": 16.0,
+        "cloudCover": 78,
+        "dayHumidity": 73,
+        "nightHumidity": 91
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienChthonian",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 338,
+    "color": "#c0431a",
+    "prefabs": [
+      [
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "bgs": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "dayTemperature": 50,
+    "nightTemperature": 40,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 38.0,
+        "nightTemp": 29.8,
+        "precipitation": 0.2,
+        "windSpeed": 14.9,
+        "cloudCover": 35,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 45.8,
+        "nightTemp": 36.4,
+        "precipitation": 0.1,
+        "windSpeed": 13.7,
+        "cloudCover": 28,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 80.0,
+        "nightTemp": 65.5,
+        "precipitation": 0.0,
+        "windSpeed": 11.7,
+        "cloudCover": 15,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 56.0,
+        "nightTemp": 45.1,
+        "precipitation": 0.1,
+        "windSpeed": 13.0,
+        "cloudCover": 32,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "biomeIds": [
+      208,
+      209,
+      304,
+      305,
+      296,
+      296,
+      289
+    ],
+    "features": [
+      {
+        "name": "Rock",
+        "density": 0.2
+      },
+      {
+        "name": "Crater",
+        "density": 0.2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Debris",
+        "density": 0.8
+      },
+      {
+        "name": "Lava",
+        "terrain": true,
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienMegaIron",
+    "hasNPC": false,
+    "tilesetId": 339,
+    "color": "#9a6f52",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "old-mine-ambience",
+      "cave-deep",
+      "rumbling-underground"
+    ],
+    "bgs": [
+      "old-mine-ambience",
+      "cave-dripping",
+      "rumbling-underground"
+    ],
+    "dayTemperature": 12,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": -2.0,
+        "nightTemp": -3.3,
+        "precipitation": 0.5,
+        "windSpeed": 14.9,
+        "cloudCover": 18,
+        "dayHumidity": 25,
+        "nightHumidity": 45
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 7.1,
+        "nightTemp": 5.3,
+        "precipitation": 0.3,
+        "windSpeed": 13.7,
+        "cloudCover": 14,
+        "dayHumidity": 22,
+        "nightHumidity": 40
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 26.0,
+        "nightTemp": 23.3,
+        "precipitation": 0.1,
+        "windSpeed": 11.7,
+        "cloudCover": 8,
+        "dayHumidity": 18,
+        "nightHumidity": 33
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 14.8,
+        "nightTemp": 12.7,
+        "precipitation": 0.2,
+        "windSpeed": 13.0,
+        "cloudCover": 16,
+        "dayHumidity": 24,
+        "nightHumidity": 43
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "RailNS",
+        "density": 1
+      },
+      {
+        "name": "RailEOStart",
+        "density": 0.3
+      },
+      {
+        "name": "Torch",
+        "density": 0.6
+      },
+      {
+        "name": "Crate",
+        "density": 0.5
+      },
+      {
+        "name": "Ladder",
+        "density": 0.4
+      },
+      {
+        "name": "Gold",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "AlienCarbon",
+    "hasNPC": false,
+    "tilesetId": 340,
+    "color": "#2b2b30",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "landfill"
+    ],
+    "bgs": [
+      "landfill"
+    ],
+    "dayTemperature": 22,
+    "nightTemperature": 14,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 47.0,
+        "nightTemp": -166.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 69.8,
+        "nightTemp": -140.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 117.0,
+        "nightTemp": -86.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 94.2,
+        "nightTemp": -112.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 0.4
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.6
+      },
+      {
+        "name": "Debris",
+        "density": 2.5
+      },
+      {
+        "name": "Trash",
+        "density": 2
+      },
+      {
+        "name": "Crate",
+        "density": 0.8
+      },
+      {
+        "name": "Oil",
+        "density": 0.5
+      },
+      {
+        "name": "Gear",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienDiamond",
+    "hasNPC": false,
+    "tilesetId": 341,
+    "color": "#a8eeff",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "crickets5",
+      "night-crickets",
+      "night-crickets2"
+    ],
+    "bgs": [
+      "ce-cracking",
+      "cave",
+      "cave-temple"
+    ],
+    "dayTemperature": 16,
+    "nightTemperature": 12,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 4.0,
+        "nightTemp": 2.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 11.8,
+        "nightTemp": 8.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 28.0,
+        "nightTemp": 21.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 18.4,
+        "nightTemp": 13.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Crystal",
+        "density": 3
+      },
+      {
+        "name": "Orb",
+        "density": 0.6
+      },
+      {
+        "name": "Rock",
+        "density": 0.5
+      }
+    ]
+  },
+  {
+    "name": "AlienMagmaPlanet",
+    "lockTravel": true,
+    "hasNPC": false,
+    "tilesetId": 342,
+    "color": "#d0361a",
+    "prefabs": [
+      [
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281
+      ]
+    ],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dramatic/Mountain Emperor",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Anguish",
+      "KevinMacLeod/Dramatic/The Pyre"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "bgs": [
+      "lava-loop-1",
+      "lava-loop-2",
+      "lava-loop-3"
+    ],
+    "dayTemperature": 50,
+    "nightTemperature": 40,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 38.0,
+        "nightTemp": 29.8,
+        "precipitation": 0.2,
+        "windSpeed": 14.9,
+        "cloudCover": 35,
+        "dayHumidity": 17,
+        "nightHumidity": 28
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 45.8,
+        "nightTemp": 36.4,
+        "precipitation": 0.1,
+        "windSpeed": 13.7,
+        "cloudCover": 28,
+        "dayHumidity": 15,
+        "nightHumidity": 25
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 80.0,
+        "nightTemp": 65.5,
+        "precipitation": 0.0,
+        "windSpeed": 11.7,
+        "cloudCover": 15,
+        "dayHumidity": 12,
+        "nightHumidity": 20
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 56.0,
+        "nightTemp": 45.1,
+        "precipitation": 0.1,
+        "windSpeed": 13.0,
+        "cloudCover": 32,
+        "dayHumidity": 16,
+        "nightHumidity": 27
+      }
+    },
+    "biomeIds": [
+      208,
+      209,
+      304,
+      305,
+      296,
+      296,
+      289
+    ],
+    "features": [
+      {
+        "name": "Rock",
+        "density": 0.2
+      },
+      {
+        "name": "Crater",
+        "density": 0.2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Debris",
+        "density": 0.8
+      },
+      {
+        "name": "Lava",
+        "terrain": true,
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienPlasma",
+    "hasNPC": false,
+    "tilesetId": 343,
+    "color": "#c06fe0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "horror",
+      "abyss-ambience",
+      "abyss-ambience2"
+    ],
+    "bgs": [
+      "horror",
+      "drone",
+      "unknown-noise"
+    ],
+    "dayTemperature": 14,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 2.0,
+        "nightTemp": 0.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 9.8,
+        "nightTemp": 6.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 26.0,
+        "nightTemp": 19.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 16.4,
+        "nightTemp": 11.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Tentacle",
+        "density": 1.2
+      },
+      {
+        "name": "Pentagram",
+        "density": 0.4
+      },
+      {
+        "name": "Skull",
+        "density": 0.6
+      },
+      {
+        "name": "Orb",
+        "density": 0.5
+      },
+      {
+        "name": "Blood",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienMagnetar",
+    "hasNPC": false,
+    "tilesetId": 344,
+    "color": "#b04fe0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "horror",
+      "abyss-ambience",
+      "abyss-ambience2"
+    ],
+    "bgs": [
+      "horror",
+      "drone",
+      "unknown-noise"
+    ],
+    "dayTemperature": 14,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 2.0,
+        "nightTemp": 0.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 9.8,
+        "nightTemp": 6.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 26.0,
+        "nightTemp": 19.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 16.4,
+        "nightTemp": 11.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Tentacle",
+        "density": 1.2
+      },
+      {
+        "name": "Pentagram",
+        "density": 0.4
+      },
+      {
+        "name": "Skull",
+        "density": 0.6
+      },
+      {
+        "name": "Orb",
+        "density": 0.5
+      },
+      {
+        "name": "Blood",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienQuarkPlanet",
+    "hasNPC": false,
+    "tilesetId": 345,
+    "color": "#d05fc0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Horror/Nightmare Machine",
+      "KevinMacLeod/Horror/Unseen Horrors"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "horror",
+      "abyss-ambience",
+      "abyss-ambience2"
+    ],
+    "bgs": [
+      "horror",
+      "drone",
+      "unknown-noise"
+    ],
+    "dayTemperature": 14,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 2.0,
+        "nightTemp": 0.4,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 9.8,
+        "nightTemp": 6.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 26.0,
+        "nightTemp": 19.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 16.4,
+        "nightTemp": 11.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "Tentacle",
+        "density": 1.2
+      },
+      {
+        "name": "Pentagram",
+        "density": 0.4
+      },
+      {
+        "name": "Skull",
+        "density": 0.6
+      },
+      {
+        "name": "Orb",
+        "density": 0.5
+      },
+      {
+        "name": "Blood",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienRogue",
+    "hasNPC": false,
+    "tilesetId": 346,
+    "color": "#3a3f6b",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "spaceship",
+      "drone",
+      "hum-loop"
+    ],
+    "bgs": [
+      "spaceship",
+      "drone",
+      "room-scifi"
+    ],
+    "dayTemperature": 10,
+    "nightTemperature": 5,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": -2.0,
+        "nightTemp": -4.6,
+        "precipitation": 2.3,
+        "windSpeed": 12.6,
+        "cloudCover": 60,
+        "dayHumidity": 67,
+        "nightHumidity": 90
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 5.8,
+        "nightTemp": 1.6,
+        "precipitation": 1.8,
+        "windSpeed": 11.6,
+        "cloudCover": 48,
+        "dayHumidity": 60,
+        "nightHumidity": 80
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 22.0,
+        "nightTemp": 14.6,
+        "precipitation": 0.9,
+        "windSpeed": 9.9,
+        "cloudCover": 26,
+        "dayHumidity": 49,
+        "nightHumidity": 66
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 12.4,
+        "nightTemp": 6.9,
+        "precipitation": 2.5,
+        "windSpeed": 11.0,
+        "cloudCover": 55,
+        "dayHumidity": 65,
+        "nightHumidity": 86
+      }
+    },
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 0.5
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "Tech",
+        "density": 1
+      },
+      {
+        "name": "Crystal",
+        "density": 0.5
+      },
+      {
+        "name": "Debris",
+        "density": 0.6
+      },
+      {
+        "name": "Crater",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienHabitable",
+    "hasNPC": false,
+    "tilesetId": 347,
+    "color": "#d06fb0",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Calm/Living Voyage"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight",
+      "KevinMacLeod/Atmospheric/Night Cave"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "crickets5",
+      "night-crickets2",
+      "country-crickets"
+    ],
+    "bgs": [
+      "openfield_grass_rustlinginsects-",
+      "grass_field_insectbed",
+      "nature-summer"
+    ],
+    "dayTemperature": 24,
+    "nightTemperature": 15,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:18",
+        "sunset": "18:02",
+        "dayTemp": 18.0,
+        "nightTemp": 11.4,
+        "precipitation": 2.7,
+        "windSpeed": 9.2,
+        "cloudCover": 80,
+        "dayHumidity": 92,
+        "nightHumidity": 100
+      },
+      "spring": {
+        "sunrise": "06:05",
+        "sunset": "18:12",
+        "dayTemp": 21.9,
+        "nightTemp": 13.7,
+        "precipitation": 3.7,
+        "windSpeed": 8.4,
+        "cloudCover": 64,
+        "dayHumidity": 82,
+        "nightHumidity": 92
+      },
+      "summer": {
+        "sunrise": "05:54",
+        "sunset": "18:24",
+        "dayTemp": 30.0,
+        "nightTemp": 18.6,
+        "precipitation": 5.1,
+        "windSpeed": 7.2,
+        "cloudCover": 35,
+        "dayHumidity": 67,
+        "nightHumidity": 75
+      },
+      "autumn": {
+        "sunrise": "06:09",
+        "sunset": "18:10",
+        "dayTemp": 25.2,
+        "nightTemp": 15.7,
+        "precipitation": 4.4,
+        "windSpeed": 8.0,
+        "cloudCover": 74,
+        "dayHumidity": 89,
+        "nightHumidity": 99
+      }
+    },
+    "NPCPool": 0,
+    "biomeIds": [
+      278,
+      283,
+      274,
+      331,
+      324,
+      276,
+      272,
+      287,
+      281,
+      284,
+      273,
+      286,
+      280,
+      277,
+      285
+    ],
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1.5
+      },
+      {
+        "name": "GrassFlower",
+        "terrain": true,
+        "density": 3.5
+      },
+      {
+        "name": "Flower",
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienDwarf",
+    "hasNPC": false,
+    "tilesetId": 348,
+    "color": "#7fbdd0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienCentaur",
+    "hasNPC": false,
+    "tilesetId": 349,
+    "color": "#7f9fd8",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienPlanetesimal",
+    "hasNPC": false,
+    "tilesetId": 350,
+    "color": "#9ab6c8",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienCTypeAsteroid",
+    "hasNPC": false,
+    "tilesetId": 351,
+    "color": "#5f5248",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "winchester-wind-ambience"
+    ],
+    "bgs": [
+      "wind-in-the-desert-countryside"
+    ],
+    "dayTemperature": 32,
+    "nightTemperature": 20,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 87.0,
+        "nightTemp": -180.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 109.8,
+        "nightTemp": -154.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 157.0,
+        "nightTemp": -100.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 134.2,
+        "nightTemp": -126.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      384
+    ],
+    "features": [
+      {
+        "name": "Badland",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "BadlandRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "RockDesert",
+        "density": 2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Pebble",
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienSTypeAsteroid",
+    "hasNPC": false,
+    "tilesetId": 352,
+    "color": "#a85f33",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "winchester-wind-ambience"
+    ],
+    "bgs": [
+      "mountain-wind"
+    ],
+    "dayTemperature": 30,
+    "nightTemperature": 18,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 85.0,
+        "nightTemp": -182.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 107.8,
+        "nightTemp": -156.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 155.0,
+        "nightTemp": -102.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 132.2,
+        "nightTemp": -128.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "features": [
+      {
+        "name": "Grass",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "GrassRock",
+        "terrain": true,
+        "density": 1.0
+      },
+      {
+        "name": "DirtGrass",
+        "terrain": true,
+        "density": 0.8
+      },
+      {
+        "name": "Rock",
+        "density": 2.5
+      },
+      {
+        "name": "Cliff",
+        "density": 1.5
+      },
+      {
+        "name": "Crack",
+        "density": 0.8
+      },
+      {
+        "name": "Pebble",
+        "density": 1
+      },
+      {
+        "name": "Cave",
+        "density": 0.004
+      }
+    ]
+  },
+  {
+    "name": "AlienMTypeAsteroid",
+    "hasNPC": false,
+    "tilesetId": 353,
+    "color": "#8f7f6b",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "old-mine-ambience",
+      "cave-deep",
+      "rumbling-underground"
+    ],
+    "bgs": [
+      "old-mine-ambience",
+      "cave-dripping",
+      "rumbling-underground"
+    ],
+    "dayTemperature": 12,
+    "nightTemperature": 10,
+    "seasons": {
+      "winter": {
+        "sunrise": "07:32",
+        "sunset": "16:41",
+        "dayTemp": 37.0,
+        "nightTemp": -170.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "06:11",
+        "sunset": "19:04",
+        "dayTemp": 59.8,
+        "nightTemp": -144.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:19",
+        "sunset": "20:12",
+        "dayTemp": 107.0,
+        "nightTemp": -90.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:49",
+        "sunset": "17:42",
+        "dayTemp": 84.2,
+        "nightTemp": -116.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "features": [
+      {
+        "name": "CaveFloor",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "RailNS",
+        "density": 1
+      },
+      {
+        "name": "RailEOStart",
+        "density": 0.3
+      },
+      {
+        "name": "Torch",
+        "density": 0.6
+      },
+      {
+        "name": "Crate",
+        "density": 0.5
+      },
+      {
+        "name": "Ladder",
+        "density": 0.4
+      },
+      {
+        "name": "Gold",
+        "density": 0.3
+      }
+    ]
+  },
+  {
+    "name": "AlienTrojanAsteroid",
+    "hasNPC": false,
+    "tilesetId": 354,
+    "color": "#6b5f52",
+    "prefabs": [],
+    "specialBiomes": [],
+    "lowerLayer": "Cave",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "winchester-wind-ambience"
+    ],
+    "bgs": [
+      "wind-in-the-desert-countryside"
+    ],
+    "dayTemperature": 32,
+    "nightTemperature": 20,
+    "seasons": {
+      "winter": {
+        "sunrise": "06:40",
+        "sunset": "18:50",
+        "dayTemp": 87.0,
+        "nightTemp": -180.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "05:30",
+        "sunset": "20:20",
+        "dayTemp": 109.8,
+        "nightTemp": -154.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "04:20",
+        "sunset": "21:40",
+        "dayTemp": 157.0,
+        "nightTemp": -100.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "06:00",
+        "sunset": "19:20",
+        "dayTemp": 134.2,
+        "nightTemp": -126.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      384
+    ],
+    "features": [
+      {
+        "name": "Badland",
+        "terrain": true,
+        "density": 1
+      },
+      {
+        "name": "BadlandRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "RockDesert",
+        "density": 2
+      },
+      {
+        "name": "Crack",
+        "density": 1
+      },
+      {
+        "name": "Pebble",
+        "density": 1.5
+      }
+    ]
+  },
+  {
+    "name": "AlienComet",
+    "hasNPC": false,
+    "tilesetId": 355,
+    "color": "#8fd0e0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienShortPeriodComet",
+    "hasNPC": false,
+    "tilesetId": 356,
+    "color": "#8fc8e0",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  },
+  {
+    "name": "AlienLongPeriodComet",
+    "hasNPC": false,
+    "tilesetId": 357,
+    "color": "#8fd8ee",
+    "prefabs": [
+      [
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186
+      ],
+      [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ]
+    ],
+    "specialBiomes": [
+      "Crystals"
+    ],
+    "lowerLayer": "CaveIce",
+    "bgm": [
+      "KevinMacLeod/Atmospheric/Aftermath",
+      "KevinMacLeod/Atmospheric/Dark Fog",
+      "KevinMacLeod/Atmospheric/Deep Haze",
+      "KevinMacLeod/Atmospheric/Distant Tension",
+      "KevinMacLeod/Atmospheric/Floating Cities",
+      "KevinMacLeod/Atmospheric/Frozen Star",
+      "KevinMacLeod/Atmospheric/Gloom Horizon",
+      "KevinMacLeod/Atmospheric/Interloper",
+      "KevinMacLeod/Atmospheric/Lithium",
+      "KevinMacLeod/Atmospheric/Long Note Four",
+      "KevinMacLeod/Atmospheric/Long Note One",
+      "KevinMacLeod/Atmospheric/Long Note Three",
+      "KevinMacLeod/Atmospheric/Long Note Two",
+      "KevinMacLeod/Atmospheric/Lost Time",
+      "KevinMacLeod/Atmospheric/Night Cave",
+      "KevinMacLeod/Atmospheric/Ossuary 5 - Rest",
+      "KevinMacLeod/Atmospheric/Ossuary 6 - Air",
+      "KevinMacLeod/Atmospheric/Penumbra",
+      "KevinMacLeod/Atmospheric/Shadowlands 4 - Breath",
+      "KevinMacLeod/Atmospheric/Spacial Harvest",
+      "KevinMacLeod/Atmospheric/Wisps of Whorls",
+      "KevinMacLeod/Dreamy/Frost Waltz"
+    ],
+    "bgmNight": [
+      "KevinMacLeod/Dark/Ancient Rite",
+      "KevinMacLeod/Dark/Bent and Broken",
+      "KevinMacLeod/Dark/Crossing the Chasm",
+      "KevinMacLeod/Dark/Dark Times",
+      "KevinMacLeod/Dark/Dark Walk",
+      "KevinMacLeod/Dark/Darkling",
+      "KevinMacLeod/Dark/Gathering Darkness",
+      "KevinMacLeod/Dark/Ice Demon",
+      "KevinMacLeod/Dark/Lightless Dawn",
+      "KevinMacLeod/Dark/Mystic Force",
+      "KevinMacLeod/Dark/The Ice Giants",
+      "KevinMacLeod/Dark/Unholy Knight"
+    ],
+    "bgmBattle": [],
+    "bgsNight": [
+      "wind-blizzard",
+      "wind-blizzard2",
+      "wind-arctic"
+    ],
+    "bgs": [
+      "cold-wind-loop",
+      "wind-icelake",
+      "snowing"
+    ],
+    "dayTemperature": -8,
+    "nightTemperature": -15,
+    "seasons": {
+      "winter": {
+        "sunrise": "10:10",
+        "sunset": "14:20",
+        "dayTemp": -43.0,
+        "nightTemp": -210.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "spring": {
+        "sunrise": "07:40",
+        "sunset": "17:40",
+        "dayTemp": -13.7,
+        "nightTemp": -180.8,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "summer": {
+        "sunrise": "05:40",
+        "sunset": "20:00",
+        "dayTemp": 47.0,
+        "nightTemp": -120.0,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      },
+      "autumn": {
+        "sunrise": "08:40",
+        "sunset": "15:40",
+        "dayTemp": 17.8,
+        "nightTemp": -149.2,
+        "precipitation": 0.0,
+        "windSpeed": 0.0,
+        "cloudCover": 0,
+        "dayHumidity": 0,
+        "nightHumidity": 0
+      }
+    },
+    "biomeIds": [
+      642,
+      645,
+      640,
+      653,
+      649,
+      646,
+      641,
+      652,
+      651
+    ],
+    "features": [
+      {
+        "name": "Snow",
+        "terrain": true,
+        "density": 2
+      },
+      {
+        "name": "SnowRock",
+        "terrain": true,
+        "density": 0.3
+      },
+      {
+        "name": "PebbleIce",
+        "density": 1.5
+      },
+      {
+        "name": "RockIce",
+        "density": 1
+      },
+      {
+        "name": "FlowerIce",
+        "density": 0.4
+      },
+      {
+        "name": "WeedIce",
+        "density": 0.4
+      }
+    ]
+  }
+]

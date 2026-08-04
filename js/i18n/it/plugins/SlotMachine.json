@@ -1,0 +1,18 @@
+{
+  "pullToSpin": "Tira per girare",
+  "noTokens": "Non hai gettoni.",
+  "notEnoughTokens": "Gettoni insufficienti! Ne hai {have}, ne servono {need}.",
+  "jackpot": "JACKPOT! Tris, vinti {amount} gettoni! (x{mult})",
+  "pair": "Due simboli uguali, vinti {amount} gettoni!",
+  "noMatch": "Nessuna combinazione. Riprova!",
+  "ui": {
+    "title": "FORTUNA",
+    "subtitle": "&#9670; DELUXE &#9670;",
+    "pressSpin": "Premi GIRA per giocare",
+    "tokens": "GETTONI",
+    "bet": "PUNTATA",
+    "lastWin": "ULTIMA VINCITA",
+    "spin": "GIRA",
+    "hint": "&uarr;&darr; Puntata &plusmn;10 &nbsp;&bull;&nbsp; &larr;&rarr; Puntata &plusmn;1 &nbsp;&bull;&nbsp; Invio: Gira &nbsp;&bull;&nbsp; Esc: Esci"
+  }
+}

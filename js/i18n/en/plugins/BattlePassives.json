@@ -1,0 +1,349 @@
+{
+  "passive": {
+    "4": {
+      "name": "Guardian's Vow",
+      "desc": "While you live above 25% HP, your other party members take 15% less damage and the redirected portion is dealt to you."
+    },
+    "13": {
+      "name": "Bloodrage",
+      "desc": "Your attack grows as your HP drops (up to +40% at 10% HP), but healing you receive is halved."
+    },
+    "26": {
+      "name": "Iaido Stance",
+      "desc": "Your first action each battle deals double damage and cannot miss."
+    },
+    "30": {
+      "name": "Crowd Favorite",
+      "desc": "Arena win streaks grant permanent attack and richer arena loot rolls."
+    },
+    "33": {
+      "name": "Aegis Ward",
+      "desc": "While you live, the whole party takes less physical AND magical damage, scaled by your current HP (a full-HP Guardian wards 25%). Multiple Guardians stack, up to 50%."
+    },
+    "40": {
+      "name": "Thick Hide",
+      "desc": "Elemental weaknesses against you are capped at x1.5 instead of x2, and cold cannot harm you."
+    },
+    "22": {
+      "name": "Consecration",
+      "desc": "Sacred damage you deal also heals you for 20% of the damage."
+    },
+    "38": {
+      "name": "Contractor",
+      "desc": "You earn a gold bounty for each enemy you defeat, and combat jobs pay you more."
+    },
+    "32": {
+      "name": "Field Marshal",
+      "desc": "While you live, all allies gain +10% hit; troops you recruit cost less and desert less."
+    },
+    "5": {
+      "name": "Grapple Chain",
+      "desc": "Consecutive basic attacks on the same enemy build a Pin; at 3 the enemy is stunned."
+    },
+    "11": {
+      "name": "Chi Flow",
+      "desc": "Every 3rd action refunds its TP and grants a surge of extra energy."
+    },
+    "15": {
+      "name": "Ascetic",
+      "desc": "Hunger and sleep drain 30% slower and resting restores more energy."
+    },
+    "16": {
+      "name": "Street Fighter",
+      "desc": "While unarmed you deal +25% damage and counter a share of melee hits."
+    },
+    "17": {
+      "name": "Footwork",
+      "desc": "High evasion lets you slip punches; each dodge builds a Combo stack (max 5) that adds +8% damage per stack to your next hit."
+    },
+    "18": {
+      "name": "Kayfabe",
+      "desc": "You play to the crowd, opening every battle with a surge of bonus AP."
+    },
+    "14": {
+      "name": "Freerunner",
+      "desc": "Your agility is greatly heightened (+30%), so you act sooner, and you shrug off fall damage."
+    },
+    "2": {
+      "name": "Brewmistress",
+      "desc": "Your potions come out one quality tier higher and you can brew battle hexes."
+    },
+    "10": {
+      "name": "Attunement",
+      "desc": "At battle start you attune to the weather, gaining +25% to the matching element."
+    },
+    "12": {
+      "name": "Runesmith",
+      "desc": "You can imbue equipment with an extra affix at no material cost once per item."
+    },
+    "19": {
+      "name": "Combustion",
+      "desc": "Your fire deals +30% damage and you are immune to Burn."
+    },
+    "20": {
+      "name": "Deep Freeze",
+      "desc": "Your ice deals +30% damage and slows the enemies it strikes."
+    },
+    "27": {
+      "name": "Arcane Mastery",
+      "desc": "All your spell MP costs are reduced by 20%."
+    },
+    "36": {
+      "name": "Mirror Image",
+      "desc": "You start each battle with decoy images that absorb the first hits aimed at you."
+    },
+    "39": {
+      "name": "Enlightened",
+      "desc": "You gain bonus skill-training progress and read extra lore from every book."
+    },
+    "34": {
+      "name": "Spell Edge",
+      "desc": "Your basic attacks carry the element of the last spell you cast."
+    },
+    "37": {
+      "name": "War Caster",
+      "desc": "You cast from the front line without penalty and spells draw on TP when your MP runs dry."
+    },
+    "23": {
+      "name": "Pact",
+      "desc": "You can burn your own HP as spell fuel and dark-faction standing strengthens your curses."
+    },
+    "31": {
+      "name": "Grave Harvest",
+      "desc": "Every enemy that dies leaves a soul charge that fuels your summons."
+    },
+    "8": {
+      "name": "Devotee",
+      "desc": "During night hours you deal +15% damage and take 10% less; your trial penalties are reduced."
+    },
+    "7": {
+      "name": "Sanguine",
+      "desc": "You steal 30% of melee damage as HP, but sunlight burns you and you feed instead of eating."
+    },
+    "62": {
+      "name": "Desperation",
+      "desc": "The less gold you carry, the higher your critical and evasion; you fear nothing."
+    },
+    "21": {
+      "name": "Ambush",
+      "desc": "You have a high critical rate and deal +25% damage to enemies still at full HP."
+    },
+    "35": {
+      "name": "Songweaver",
+      "desc": "Each turn a rotating song pulses a buff to the whole party."
+    },
+    "3": {
+      "name": "Benediction",
+      "desc": "While you live, the party heals a little at the end of every turn."
+    },
+    "25": {
+      "name": "Divine Favor",
+      "desc": "Overhealing you deliver is converted into a protective barrier rather than wasted."
+    },
+    "59": {
+      "name": "Sermon",
+      "desc": "You deal bonus Sacred damage to cursed foes and bless allies with lingering regen."
+    },
+    "29": {
+      "name": "Foresight",
+      "desc": "You foresee each enemy's next action, shown on the battle HUD."
+    },
+    "9": {
+      "name": "Triage",
+      "desc": "Healing an ally below 25% HP also grants them an adrenaline attack boost."
+    },
+    "41": {
+      "name": "Physician",
+      "desc": "Your limb and organ injuries heal faster and you can perform field surgery."
+    },
+    "51": {
+      "name": "Bedside Manner",
+      "desc": "Every potion and healing item you use restores 30% more."
+    },
+    "61": {
+      "name": "Divine Blood",
+      "desc": "You are immune to instant death; once per battle a lethal hit revives you at 30% HP."
+    },
+    "42": {
+      "name": "Method",
+      "desc": "Your crafting and alchemy yield an extra output and you can analyze unknown items."
+    },
+    "48": {
+      "name": "Tenure",
+      "desc": "You learn fast: +25% battle experience, and read full bestiary entries at once."
+    },
+    "49": {
+      "name": "Insight",
+      "desc": "Your composure makes you immune to fear, confusion and charm; you also read enemy morale and NPC minds."
+    },
+    "50": {
+      "name": "Excavator",
+      "desc": "Your digging and treasure rolls improve and artifacts are more likely identified."
+    },
+    "53": {
+      "name": "Kinematics",
+      "desc": "Your thunder and physical crits splash based on enemy speed and your ship burns less fuel."
+    },
+    "58": {
+      "name": "Forecaster",
+      "desc": "You always foresee current and upcoming weather and its effect on crops and bees."
+    },
+    "46": {
+      "name": "Press Pass",
+      "desc": "You cover every fight for a small gold scoop per enemy defeated, and NPCs reveal more to you."
+    },
+    "54": {
+      "name": "Gearhead",
+      "desc": "Vehicle repairs cost half and dismantling furniture returns full materials."
+    },
+    "24": {
+      "name": "Marksman",
+      "desc": "Your bow and gun attacks deal +25% damage and never suffer the melee-range penalty."
+    },
+    "28": {
+      "name": "Pathfinder",
+      "desc": "You spot danger early: battles you enter are far more likely to be a preemptive strike, and enemies rarely ambush you."
+    },
+    "52": {
+      "name": "Forager",
+      "desc": "You passively gather wild food and materials and harvest more from plants and spoils."
+    },
+    "56": {
+      "name": "Green Thumb",
+      "desc": "Your crops grow 25% faster and yield more, and animals mature and produce faster."
+    },
+    "57": {
+      "name": "Timberman",
+      "desc": "You gather extra wood and swing axes with bonus damage and a chance to fell large foes."
+    },
+    "43": {
+      "name": "Fireproof",
+      "desc": "You are immune to Burn and fire damage and can put out environmental blazes."
+    },
+    "47": {
+      "name": "Builder",
+      "desc": "Your building is free-form, crafting costs less material and structures can be reinforced."
+    },
+    "45": {
+      "name": "Gourmet",
+      "desc": "Your cooking gives more nutrition, grants a well-fed buff and never causes overeating."
+    },
+    "1": {
+      "name": "Jack of All Trades",
+      "desc": "You get a flat bonus to every job, never hard-fail a stat check and learn a random skill on level up."
+    },
+    "6": {
+      "name": "Capital",
+      "desc": "Markets and loans favor you, shops you run produce faster, and you buy at a discount."
+    },
+    "44": {
+      "name": "Law",
+      "desc": "You accrue less bounty, get trial leniency and can arrest weakened humanoid foes."
+    },
+    "55": {
+      "name": "Merchant",
+      "desc": "You buy cheaper and sell dearer everywhere, and daily stock restocks with better items."
+    },
+    "60": {
+      "name": "Showtime",
+      "desc": "You earn gold and goodwill performing, and the party gains morale after any minigame win."
+    },
+    "66": {
+      "name": "Augmented",
+      "desc": "You are immune to poison, disease and bleed, run on power instead of hunger, and carry a regenerating energy shield."
+    },
+    "63": {
+      "name": "Feral",
+      "desc": "Your natural weapons hit hard, you regenerate quickly and you intimidate weak foes on sight."
+    },
+    "64": {
+      "name": "Shapeshift",
+      "desc": "You stay disguised so enemies target you last, and you copy a defeated foe's skill."
+    },
+    "65": {
+      "name": "Apex",
+      "desc": "You feed on defeated enemies to heal and grow stronger with each kill."
+    }
+  },
+  "trait": {
+    "202": {
+      "name": "Gun-Fu",
+      "desc": "While wielding a gun, projectile weapon or bow, every Martial Arts skill you use is followed by a free normal attack on the same enemy."
+    },
+    "43": {
+      "name": "Dual Grip",
+      "desc": "You handle a weapon in each hand without the off-hand penalty."
+    },
+    "74": {
+      "name": "Feel Nothing",
+      "desc": "Pain never staggers you: wounds do not reduce your accuracy or speed."
+    },
+    "41": {
+      "name": "Total Recall",
+      "desc": "You remember every enemy you have fought, revealing their resistances on sight."
+    },
+    "152": {
+      "name": "Riposte",
+      "desc": "When a single enemy faces you alone, you answer its misses with a counter."
+    },
+    "155": {
+      "name": "Bulwark",
+      "desc": "A raised shield also protects the ally standing beside you."
+    },
+    "156": {
+      "name": "First Blood",
+      "desc": "Your opening strike of a battle always critically hits an unaware foe."
+    },
+    "31": {
+      "name": "Pain Feeds",
+      "desc": "Damage you take charges your energy instead of only hurting you."
+    },
+    "190": {
+      "name": "Mana Wellspring",
+      "desc": "Your magic reserves refill on their own between battles."
+    },
+    "195": {
+      "name": "Moonchange",
+      "desc": "Under a full moon you shift form and fight with a beast's strength."
+    },
+    "99": {
+      "name": "Ill Fate",
+      "desc": "Misfortune follows you, but curses cast at you rebound on their caster."
+    }
+  },
+  "elem": {
+    "1": "Phys",
+    "2": "Fire",
+    "3": "Ice",
+    "4": "Thunder",
+    "5": "Water",
+    "6": "Petro",
+    "7": "Wind",
+    "8": "Sacred",
+    "9": "Cursed"
+  },
+  "log": {
+    "pinStunned": "{target} is pinned and stunned!",
+    "chiFlows": "{actor}'s chi flows!",
+    "mirrorShatters": "A mirror image of {actor} shatters!",
+    "gunFuFollowThrough": "{actor} follows through - Gun-Fu!",
+    "divineBloodSurges": "{target}'s divine blood surges!",
+    "comboSlip": "{target} slips the blow! Combo x{combo}"
+  },
+  "chip": {
+    "next": "Next",
+    "pin": "Pin {count}/3",
+    "chi": "Chi {count}/3",
+    "combo": "Combo x{count}",
+    "decoys": "Decoys {count}",
+    "iaido": "Iaido",
+    "edge": "Edge: {elem}",
+    "attuned": "Attuned: {elem}",
+    "souls": "Souls {count}",
+    "divineBlood": "Divine Blood",
+    "rage": "Rage +{bonus}%",
+    "aegis": "Aegis {pct}%",
+    "night": "Night +15%",
+    "gunFu": "Gun-Fu"
+  }
+}

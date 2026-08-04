@@ -5,20 +5,7 @@
 
 # Steamworks.js
 
-A modern implementation of the Steamworks SDK for HTML/JS based applications.
-
-| Feature | Supported |
-|----------|------------ |
-| Windows | ✔ |
-| Linux | ✔ |
-| MacOS | ✔ |
-| Electron 12+ | ✔ |
-| NW.js 0.29+ | ✔ |
-| Node.js 14+ | ✔ |
-| Pre-built binaries | ✔ |
-| Easy to install | ✔ |
-| Open Source | ✔ |
-| MIT license | ✔ |
+A modern implementation of the Steamworks SDK for HTML/JS and NodeJS based applications.
 
 ## Why
 
@@ -26,7 +13,7 @@ I used [greenworks](https://github.com/greenheartgames/greenworks) for a long ti
 
 * It's not being maintained anymore.
 * It's not up to date.
-* It's not context-aware
+* It's not context-aware.
 * You have to build the binaries by yourself.
 * Don't have typescript definitions.
 * The API it's not trustful.
@@ -38,19 +25,31 @@ I used [greenworks](https://github.com/greenheartgames/greenworks) for a long ti
 ```js
 const steamworks = require('steamworks.js')
 
-// You can pass the appId or nothing if you want to use the steam_appid.txt file
-const client = steamworks.init()
+// You can pass an appId, or don't pass anything and use a steam_appid.txt file
+const client = steamworks.init(480)
 
-console.log(client.getName()) // Print user name
+// Print Steam username
+console.log(client.localplayer.getName())
+
 // Tries to activate an achievement
-if (client.activateAchievement('ACHIEVEMENT')) {
+if (client.achievement.activate('ACHIEVEMENT')) {
     // ...
 }
 ```
 
-## Electron instructions
+You can refer to the [declarations file](https://github.com/ceifa/steamworks.js/blob/main/client.d.ts) to check the API support and get more detailed documentation of each function.
 
-Steamworks.js it's a native module and cannot be used by default in the renderer process. To enable the usage of native modules on the renderer process, the following configurations should be made on `main.js`:
+## Installation
+
+To use steamworks.js you don't have to build anything, just install it from npm:
+
+```sh
+$: npm i steamworks.js
+```
+
+### Electron
+
+Steamworks.js is a native module and cannot be used by default in the renderer process. To enable the usage of native modules on the renderer process, the following configurations should be made on `main.js`:
 
 ```js
 const mainWindow = new BrowserWindow({
@@ -63,9 +62,27 @@ const mainWindow = new BrowserWindow({
 })
 ```
 
-You also have to enable some flags on chromium to make the steam overlay work. Put this code on the final of `main.js`:
+To make the steam overlay working, call the `electronEnableSteamOverlay` on the end of your `main.js` file:
 
 ```js
-app.commandLine.appendSwitch('in-process-gpu')
-app.commandLine.appendSwitch('disable-direct-composition')
+require('steamworks.js').electronEnableSteamOverlay()
 ```
+
+For the production build, copy the relevant distro files from `sdk/redistributable_bin/{YOUR_DISTRO}` into the root of your build. If you are using electron-forge, look for [#75](https://github.com/ceifa/steamworks.js/issues/75).
+
+
+## How to build
+
+> You **only** need to build if you are going to change something on steamworks.js code, if you are looking to just consume the library or use it in your game, refer to the [installation section](#installation).
+
+Make sure you have the latest [node.js](https://nodejs.org/en/), [Rust](https://www.rust-lang.org/tools/install) and [Clang](https://rust-lang.github.io/rust-bindgen/requirements.html). We also need [Steam](https://store.steampowered.com/about/) installed and running.
+
+Install dependencies with `npm install` and then run `npm run build:debug` to build the library.
+
+There is no way to build for all targets easily. The good news is that you don't need to. You can develop and test on your current target, and open a PR. When the code is merged to main, a github action will build for all targets and publish a new version.
+
+### Testing Electron
+
+Go to the [test/electron](./test/electron) directory. There, you can run `npm install` and then `npm start` to run the Electron app.
+
+Click "activate overlay" to test the overlay.

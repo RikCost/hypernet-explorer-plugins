@@ -1,0 +1,11 @@
+{
+  "player1": "Player 1",
+  "player2": "Player 2",
+  "player2Cpu": "Player 2 (CPU)",
+  "controlsP1": "Arrow Keys: Aim | Hold Space: Charge Power | Release: Shoot",
+  "controlsP2": "A/D or Numpad 4/6: Aim | Hold E or Numpad 5/0: Charge Power",
+  "cpuThinking": "CPU is thinking...",
+  "power": "Power: {pct}%",
+  "youWin": "You Win!",
+  "cpuWins": "CPU Wins!"
+}

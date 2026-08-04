@@ -1,0 +1,634 @@
+{
+  "rain": {
+    "Nervous": [
+      "Sta arrivando un tuono? La pioggia si trasforma sempre in qualcosa di peggio...",
+      "Ho gli stivali fradici. E se mi prendessi qualcosa? Di raffreddore si muore!",
+      "Era una goccia? Sì. Comincia. Comincia e io non sono pronto.",
+      "Pioggia sul tetto tutta la notte. Ogni goccia sembra qualcuno alla porta."
+    ],
+    "Calm": [
+      "La pioggia viene, la pioggia va. Nessun motivo di correre.",
+      "Una buona pioggia posa la polvere e insieme i pensieri.",
+      "Il suono della pioggia è il respiro del mondo. Lascialo respirare.",
+      "Bagnati oggi, asciutti domani. Il cielo si bilancia da sé."
+    ],
+    "Aggressive": [
+      "Stupida pioggia. Chi sta lassù farebbe meglio a smetterla.",
+      "Di nuovo pioggia. Perfetto. Adesso tutto può darmi fastidio in una volta sola.",
+      "Schizzami un'altra volta, carrettiere. Vediamo che succede.",
+      "Io non mi nascondo dall'acqua. È l'acqua che dovrebbe nascondersi da me."
+    ],
+    "Melancholic": [
+      "Il cielo piange. Almeno lo fa anche qualcun altro.",
+      "Ancora pioggia. Per una volta il mondo somiglia a quel che ho dentro.",
+      "Guardavo la pioggia con qualcuno. Adesso guardo solo la pioggia.",
+      "Strade grigie, cielo grigio. La pioggia rende tutto solo più onesto."
+    ],
+    "Sanguine": [
+      "Pioggia! Salta le pozzanghere, senti che aria, meraviglioso!",
+      "Adoro come tutta la città brilla dopo una bella pioggia!",
+      "Pioggia sul tetto: la musica più bella che ci sia!",
+      "Un po' d'acqua non ha mai rovinato il buonumore. Non il mio, comunque!"
+    ],
+    "Cautious": [
+      "I ciottoli bagnati scivolano. Resto sotto le tettoie.",
+      "Meglio controllare la cantina prima che questa pioggia trovi il modo di entrare.",
+      "Faccio il giro lungo: con una pioggia così la strada bassa si allaga.",
+      "Uno strato in più, un cappuccio coperto. La pioggia premia chi si prepara."
+    ],
+    "Impulsive": [
+      "Chi se ne importa di bagnarsi? Corri!",
+      "Pozzanghera. Bella grossa. Ci salto dentro.",
+      "Ombrello? Non c'è tempo! Via via via!",
+      "Pioggia vuol dire strade vuote: ti sfido ad attraversare la città!"
+    ],
+    "Stoic": [
+      "È acqua. Mi asciugherò.",
+      "La pioggia cade. Il lavoro continua.",
+      "Il bagnato è spiacevole. Lo spiacevole si sopravvive.",
+      "Lamentarsi della pioggia non ha mai fermato una sola goccia."
+    ],
+    "Paranoid": [
+      "La pioggia attutisce i passi. Copertura perfetta per chi mi segue.",
+      "Hanno tutti il cappuccio alzato. Chiunque di loro potrebbe essere chiunque.",
+      "La pioggia cancella le tracce. Comodo... per qualcuno.",
+      "Certe cose le programmano nei giorni di pioggia. Meno testimoni in giro."
+    ],
+    "Empathetic": [
+      "Spero che nessuno sia rimasto là fuori senza un tetto.",
+      "Quella povera corriera era zuppa. Avrei dovuto offrirle un tè.",
+      "I giorni di pioggia rendono la gente sola. Bussare alla porta di un amico aiuta.",
+      "Il vecchio dall'altra parte del vicolo odia l'umido. Vado a controllargli il fuoco."
+    ],
+    "Authoritative": [
+      "La pioggia non è una scusa. Il programma resta.",
+      "Con la pioggia o col sole, le consegne partono. Erano questi i patti.",
+      "Qualcuno affigga un avviso: la riunione si sposta al chiuso, non più tardi.",
+      "Un po' di disciplina non si scioglie nell'acqua."
+    ],
+    "Scholarly": [
+      "Curioso come qui le piogge seguano un ciclo quasi settimanale.",
+      "Petricore: c'è una parola per l'odore della pioggia. L'ho letta da qualche parte.",
+      "Dopo questa dovrei misurare la cisterna. I dati sono dati.",
+      "Piogge così hanno nutrito intere civiltà. Vale la pena ricordarlo."
+    ],
+    "Artistic": [
+      "Ascolta: sotto la pioggia ogni tetto suona una nota diversa.",
+      "La luce dei lampioni si sdoppia nelle pozzanghere. Due città, una strada bagnata.",
+      "Sotto la pioggia il grigio non è un colore solo. Sono venti.",
+      "Dipingerei questo acquazzone, se la tela sopravvivesse."
+    ],
+    "Adventurous": [
+      "La pioggia vuol solo dire strade più fangose. Più divertente così.",
+      "Luce di tempesta sulle colline: ecco un panorama che vale un'inzuppata.",
+      "Con una pioggia così i fiumi si gonfiano. Immagina le rapide adesso!",
+      "I viaggi più belli della mia vita sono cominciati con un tempo così."
+    ],
+    "Nurturing": [
+      "Qualcuno si prenderà un malanno. Dovrei mettere su la zuppa.",
+      "Asciugamani asciutti vicino alla porta. La gente dimentica sempre quanto è gelida la pioggia.",
+      "Entrate, su, tutti quanti: c'è posto vicino al fuoco.",
+      "Ritiro il bucato e lo stendo vicino alla stufa."
+    ],
+    "Mischievous": [
+      "Una bella pozzanghera e un passante ignaro... eh eh.",
+      "Tutti col cappuccio alzato. Nessuno vede niente. Condizioni deliziose.",
+      "Uno schizzo dalla grondaia giusta, al momento giusto... arte.",
+      "Maniglie bagnate, facce sorprese. La pioggia fa metà del lavoro per me."
+    ],
+    "Cynical": [
+      "Piove sui giusti e sugli ingiusti. Soprattutto su di me.",
+      "I ricchi guardano la pioggia dalle finestre. Noi altri siamo le finestre.",
+      "Oh bene, pioggia. Così il padrone di casa può ignorare un soffitto ancora più bagnato.",
+      "Tasseranno anche la pioggia, dagli tempo."
+    ],
+    "Disciplined": [
+      "La pioggia non cambia nulla. La routine resta.",
+      "Stivali ingrassati, mantello pronto. Il tempo è solo logistica.",
+      "Allenarsi sotto la pioggia forgia il doppio della determinazione.",
+      "Il programma dice all'aperto. Quindi: all'aperto, ma più bagnati."
+    ],
+    "Fatalistic": [
+      "La pioggia cade dove deve. Come tutti noi.",
+      "Inutile maledire le nuvole. Stavano già arrivando.",
+      "Asciutti o affogati, la giornata finisce allo stesso modo.",
+      "Il fiume prende la pioggia come il destino prende noi. In silenzio."
+    ],
+    "Grumpy": [
+      "Fantastico. Calze bagnate. Proprio quel che ci voleva oggi.",
+      "Pioggia. E tutti che portano fango dappertutto. Splendido.",
+      "Il ginocchio me l'aveva detto. Il mio ginocchio non sbaglia mai.",
+      "Gocc, gocc, gocc. Perfino il cielo mi assilla."
+    ],
+    "Loyal": [
+      "I miei amici sono là fuori con questo tempo, dovrei portare loro un mantello asciutto.",
+      "Ho detto che oggi lo aiutavo a spostare il grano. La pioggia non cancella la parola data.",
+      "Lei una volta ha camminato sotto di peggio per me. Un po' di pioggia non mi ferma.",
+      "Una volta ho diviso l'ombrello con un amico. La più bella passeggiata della mia vita."
+    ],
+    "Brave": [
+      "Un po' di pioggia non ha mai fermato nessuno che valga la pena conoscere.",
+      "La pioggia fredda ti sveglia meglio di quanto il coraggio abbia mai fatto.",
+      "Fradicio fino alle ossa e ancora in piedi. Ecco lo spirito giusto.",
+      "Che diluvi pure. Al compito non importa, e nemmeno a me."
+    ],
+    "Timid": [
+      "Aspetto... qui sotto finché non smette. Per quanto ci voglia.",
+      "I tuoni non sono ancora cominciati. Forse se mi sbrigo... no, aspetto.",
+      "Sotto la pioggia corrono tutti così veloci. Preferisco non stare fra i piedi.",
+      "Pioggia vuol dire restare dentro. Restare dentro è... in effetti piuttosto bello."
+    ],
+    "Hedonistic": [
+      "I giorni di pioggia sono fatti per bevande calde e assolutamente niente.",
+      "La pioggia dice: resta a letto. E chi sono io per discutere col cielo?",
+      "Bagno caldo, pioggia fredda alla finestra. La perfezione, sinceramente.",
+      "Il vino sa di meglio quando fuori fa schifo. Fatto dimostrato."
+    ],
+    "Apathetic": [
+      "Piove. E allora.",
+      "Bagnato. Asciutto. Alla fine si pareggia.",
+      "Il cielo fa il suo. Io faccio il mio. A malapena.",
+      "Ancora pioggia. O sempre. Come ti pare."
+    ],
+    "default": [
+      "Questa pioggia si sta facendo più fitta. Dovrei trovare presto un riparo.",
+      "Bell'acquazzone, qua fuori.",
+      "Meglio che mi tenga fuori dal peggio di questa pioggia.",
+      "Tutta questa pioggia... le strade stanno diventando fango."
+    ]
+  },
+  "storm": {
+    "Nervous": [
+      "Quel fulmine era vicino! Era vicino?! Sembrava vicino!",
+      "Conta i secondi, conta i... ho perso il conto! Ce l'abbiamo sopra?!",
+      "Le imposte sbattono. Devono sbattere così tanto? Devono?!",
+      "Lo sapevo che non dovevo uscire oggi. LO SAPEVO."
+    ],
+    "Calm": [
+      "Una tempesta sopra di noi. Stai basso, stai calmo, passerà.",
+      "Rumorosa, sì. Ma il tuono è solo rumore con dei bei polmoni.",
+      "Le tempeste finiscono. È sempre stato così.",
+      "Trova un posto asciutto e lascia che il cielo finisca la sua discussione."
+    ],
+    "Aggressive": [
+      "Avanti, cielo, ruggisci quanto ti pare. Io posso essere più forte.",
+      "Quel tuono si crede duro? Ne ho sentiti di più duri.",
+      "La tempesta mi ha buttato giù lo steccato. Adesso io e la tempesta siamo nemici.",
+      "Fulmini, eh? Almeno il cielo combatte sul serio."
+    ],
+    "Melancholic": [
+      "Il tuono si addice al mio umore più di quanto il sole abbia mai fatto.",
+      "Il cielo si sta facendo a pezzi. So com'è.",
+      "Le tempeste passano. Il peso resta.",
+      "Perfino la tempesta suona sola, se la ascolti abbastanza a lungo."
+    ],
+    "Sanguine": [
+      "Che spettacolo! I posti migliori sono proprio qui!",
+      "Hai VISTO quel fulmine?! Magnifico!",
+      "Le tempeste fanno le storie più belle da raccontare domani!",
+      "Il tuono in fondo è un applauso, se ci pensi!"
+    ],
+    "Cautious": [
+      "Fulmini, tegole che cadono, cavalli in panico. Dentro. Subito.",
+      "Lontano dagli alberi alti, lontano dall'acqua. Le basi.",
+      "Ho contato i secondi fra lampo e tuono. Troppo pochi. Si va al chiuso.",
+      "Le tempeste premiano i prudenti e presentano il conto agli sbadati."
+    ],
+    "Impulsive": [
+      "Scommetto che riesco ad attraversare la piazza fra un fulmine e l'altro!",
+      "La tempesta è QUI, tanto vale sentirla! Solo un secondo!",
+      "Un fulmine! Un altro! Ancora!",
+      "Chi altro è sui tetti a guardare questo? Solo io? Peggio per loro!"
+    ],
+    "Stoic": [
+      "La tempesta infuria. Io no.",
+      "Il tuono è la lamentela del cielo. Io tengo la mia più bassa.",
+      "Riparo, attesa, si prosegue. Una tempesta non cambia l'ordine di niente.",
+      "Tempo rumoroso, stessi doveri."
+    ],
+    "Paranoid": [
+      "Il tuono può nascondere un sacco di rumori. Come qualcuno che entra in casa.",
+      "Le tempeste spengono le lanterne. Poi può succedere di tutto. Di tutto.",
+      "Sono tutti al chiuso. O almeno è quello che vogliono farti credere.",
+      "Un lampo così illumina chiunque sia nel vicolo. Ho visto una sagoma."
+    ],
+    "Empathetic": [
+      "Gli animali devono essere terrorizzati. Poverini.",
+      "Da qualche parte proprio adesso un bambino è nascosto sotto una coperta. Poveretto.",
+      "Spero che i pescatori siano rientrati prima che scoppiasse.",
+      "Le tempeste spaventano la gente più di quanto ammetta. Stanotte siate gentili."
+    ],
+    "Authoritative": [
+      "Tutti via dalle strade: qualcuno deve mantenere l'ordine con questo tempo.",
+      "Mettete in sicurezza le bancarelle! Non aspettate che ve lo chiedano!",
+      "Dopo la tempesta, rapporti sui danni. In ordine, strada per strada.",
+      "Il panico si diffonde più in fretta dei fulmini. Resta saldo e la gente ti segue."
+    ],
+    "Scholarly": [
+      "Conta i secondi dal lampo al tuono: la tempesta è a tre chilometri.",
+      "Il fulmine cerca il punto più alto. Fisica, non furia.",
+      "La pressione è scesa tutta la mattina. I segni c'erano tutti.",
+      "Un giorno qualcuno imbottiglierà quell'energia. Segnatevelo."
+    ],
+    "Artistic": [
+      "Quel cielo! Violetto e argento e furia: devo ricordarmelo.",
+      "Il tuono è la percussione. Il vento prende la melodia.",
+      "Nessun pittore ha mai reso bene un fulmine. Forse sarò il primo.",
+      "Tutto il cielo un palcoscenico, e noi il pubblico col fiato sospeso."
+    ],
+    "Adventurous": [
+      "Ecco QUESTO sì che è tempo! Ti fa sentire vivo!",
+      "I marinai parlano di tempeste così per anni. Adesso capisco!",
+      "Il vento quasi mi solleva. Immaginalo in mare aperto!",
+      "Una tempesta è solo il cielo che ti sfida a restare interessante."
+    ],
+    "Nurturing": [
+      "Portate dentro i bambini, mettete su il bollitore. Le tempeste passano prima in compagnia.",
+      "Coperte fuori, candele accese. Chi ha paura può sedersi vicino a me.",
+      "Scaldo un po' di latte. Il tuono si sopporta meglio con qualcosa di caldo.",
+      "Controlliamo le imposte dei vicini, poi le nostre. Tutti al sicuro, e poi a dormire."
+    ],
+    "Mischievous": [
+      "Un tuono, un 'buh' al momento giusto... irresistibile.",
+      "Tutti sobbalzano al tuono. Nessuno nota il piccolo me.",
+      "Adoro i blackout. Quante possibilità, al buio.",
+      "Alla tempesta danno la colpa di tutto. Cancello rotto? Tempesta. Torta sparita? Tempesta."
+    ],
+    "Cynical": [
+      "La tempesta spianerà prima il quartiere povero. Fa sempre così.",
+      "Vedrai: entro domattina le riparazioni costeranno il doppio.",
+      "Il tempio la chiamerà un presagio e farà girare il piatto due volte.",
+      "La natura è onesta, almeno. Rovina tutti alla luce del sole."
+    ],
+    "Disciplined": [
+      "Assicura le imposte, controlla gli scarichi, si va avanti.",
+      "Protocollo tempesta: lampade, chiavistelli, registro. In quest'ordine.",
+      "Il vento non è un motivo per perdere la forma.",
+      "Ci esercitiamo per i giorni sereni e per quelli di tempesta allo stesso modo."
+    ],
+    "Fatalistic": [
+      "Se il fulmine porta il mio nome, nessun tetto conterà.",
+      "La tempesta era già in cammino prima che nascessimo.",
+      "Nasconditi o no. Il cielo decide comunque.",
+      "Ogni saetta cade esattamente dove sarebbe sempre caduta."
+    ],
+    "Grumpy": [
+      "Tutto questo baccano. Non riesco nemmeno a sentirmi lamentare.",
+      "La tempesta ha portato via una tegola. Ovviamente dal MIO tetto.",
+      "Tuoni tutta la notte. Il sonno è ufficialmente annullato.",
+      "E adesso il cane non esce più da sotto il tavolo. Meraviglioso."
+    ],
+    "Loyal": [
+      "Dovrei controllare che tutti quelli a cui tengo siano rientrati.",
+      "Lui ha paura delle tempeste, anche se non lo direbbe mai. Gli farò compagnia.",
+      "Tempesta o no, se un amico chiama, io apro la porta.",
+      "Abbiamo attraversato di peggio insieme. Questo è solo tempo."
+    ],
+    "Brave": [
+      "Stare in piedi sotto una tempesta ti ricorda quanto sia piccola la paura.",
+      "Il cielo scaglia fuoco e noi siamo ancora qui. Ricordatelo.",
+      "Qualcuno deve controllare che il ponte tenga. Tanto vale che sia io.",
+      "Il tuono abbaia soltanto. Io ho incontrato morsi veri."
+    ],
+    "Timid": [
+      "Sotto il tavolo. Il tavolo è robusto. Resto sotto il tavolo.",
+      "È-è solo rumore. Solo un rumore molto, molto grosso.",
+      "Conto i tuoni finché non finisce. Uno... due...",
+      "Forse la tempesta non mi nota, se sto molto zitto."
+    ],
+    "Hedonistic": [
+      "Una tempesta fuori rende il fuoco dentro due volte più accogliente.",
+      "Con la tempesta non c'è altro da fare che mangiare bene e dormire profondamente. Che peccato.",
+      "Le tempeste sono la scusa che il cielo mi dà per aprire la bottiglia buona.",
+      "Senti che pioggia sul tetto... acustica perfetta per un pisolino."
+    ],
+    "Apathetic": [
+      "Cielo rumoroso. Vabbè.",
+      "Tempesta. Urlarci contro non serve. Non serve niente. Eh.",
+      "Fulmini, tuoni, vento. Le solite scene.",
+      "Sarei impressionato, se me ne importasse."
+    ],
+    "default": [
+      "Questa tempesta si sta facendo pericolosa. Devo trovare presto un riparo.",
+      "Quel tuono si sta avvicinando.",
+      "Che tempesta: meglio restare al coperto.",
+      "Il vento sta rinforzando parecchio."
+    ]
+  },
+  "snow": {
+    "Nervous": [
+      "E se chiudessero le strade? E se restassi bloccato qui? E se...",
+      "Ghiaccioli. Proprio sopra la porta. Quelle cose UCCIDONO la gente.",
+      "È bella, sì, ma quanto in ALTO arriverà?",
+      "Non sento più le dita. È congelamento? È congelamento, vero."
+    ],
+    "Calm": [
+      "La neve zittisce il mondo intero. Mi piace parecchio.",
+      "Con la neve tutto rallenta. Come dev'essere.",
+      "Un mattino bianco e nessuna fretta da nessuna parte. Delizioso.",
+      "La neve non ti chiede altro che pazienza."
+    ],
+    "Aggressive": [
+      "Alla prima palla di neve che mi arriva, qualcuno mangia ghiaccio.",
+      "Ho già spalato il vialetto due volte. Cielo, ti avverto.",
+      "Sono scivolato sul ghiaccio. Il ghiaccio se ne pentirà.",
+      "Il freddo non mi dà fastidio. È il freddo che dovrebbe preoccuparsi."
+    ],
+    "Melancholic": [
+      "La neve seppellisce tutto. Anche le impronte. Anche i ricordi.",
+      "La neve fa sembrare la città addormentata. O scomparsa.",
+      "Ogni inverno sembra più lungo del precedente.",
+      "Bianca e silenziosa, come una lettera mai spedita."
+    ],
+    "Sanguine": [
+      "Neve! Pupazzo, angeli di neve, neve dappertutto!",
+      "Prima neve della stagione! Esprimete un desiderio!",
+      "Guarda come scintilla! Tutta la strada è fatta di stelle!",
+      "Guance fredde, cuore caldo! L'inverno è il migliore!"
+    ],
+    "Cautious": [
+      "Sotto la polvere c'è ghiaccio. Passi corti, ginocchia piegate.",
+      "Riempi la dispensa prima che i cumuli si alzino ancora.",
+      "Ho salato i gradini due volte. Un'anca rotta costa più del sale.",
+      "Controlla la legna adesso, non a mezzanotte."
+    ],
+    "Impulsive": [
+      "Il primo che arriva in cima alla collina si prende la discesa migliore!",
+      "Neve fresca! Intatta! Non per molto!",
+      "Battaglia a palle di neve. Adesso. Chiunque. Tutti!",
+      "Prendo i fiocchi con la lingua e nessuno può fermarmi."
+    ],
+    "Stoic": [
+      "Il freddo è una sensazione. Le sensazioni passano.",
+      "La neve cade. La legna si spacca. Entrambe cose semplici.",
+      "L'inverno mette alla prova. Io rispondo.",
+      "Le mani intirizzite funzionano lo stesso, se glielo ordini."
+    ],
+    "Paranoid": [
+      "Impronte sulla neve. Tutti possono vedere esattamente dove sono stato.",
+      "Qualcuno è passato sotto la mia finestra stanotte. Lo dice la neve.",
+      "La neve attutisce tutto. Non li sentiresti mai arrivare.",
+      "Perché il mio è l'unico vialetto non spalato? Chi l'ha deciso?"
+    ],
+    "Empathetic": [
+      "I mendicanti vicino alla porta staranno gelando. Dovrei fare qualcosa.",
+      "Spero che stasera tutti abbiano qualcuno con cui dividere un fuoco.",
+      "Il cavallo da tiro tremava. Che qualcuno gli porti una coperta.",
+      "Tempo freddo, porte calde. Così dovrebbe funzionare una città."
+    ],
+    "Authoritative": [
+      "Liberate i camminamenti prima che qualcuno si rompa una gamba. Assegno io i turni.",
+      "Razioni di legna, affisse entro mezzogiorno. Nessuno gela sotto la mia guardia.",
+      "Dopo una neve così il passo si chiude. Regolatevi, tutti quanti.",
+      "L'inverno non perdona nulla. Nemmeno io. Accatastate la legna come si deve."
+    ],
+    "Scholarly": [
+      "Nessun fiocco uguale a un altro: statisticamente discutibile, ma affascinante.",
+      "La neve isola, per quanto strano. Là sotto si sta caldi, relativamente parlando.",
+      "I vecchi registri parlano di inverni due volte più profondi. Affascinante. Terrificante.",
+      "Sei lati, ogni fiocco. La natura ripete il suo teorema preferito."
+    ],
+    "Artistic": [
+      "Bianco su bianco su bianco. La tavolozza più sottile che ci sia.",
+      "Rami spogli nella neve: il mondo schizzato a carboncino.",
+      "Nevicata alla luce dei lampioni. Se solo potessi incorniciarla.",
+      "Perfino le impronte oggi si compongono con eleganza."
+    ],
+    "Adventurous": [
+      "Neve fresca vuol dire sentieri intatti. Stivali ai piedi!",
+      "Chissà come sono le montagne sotto tutto questo. C'è un solo modo per scoprirlo.",
+      "Viaggiare d'inverno separa i turisti dai viaggiatori.",
+      "Ciaspole! Finalmente posso usare le ciaspole!"
+    ],
+    "Nurturing": [
+      "Muffole, sciarpe, pane caldo. L'inverno è fatto per prendersi cura della gente.",
+      "Oggi nessuno esce dalla mia porta senza una sciarpa.",
+      "Stufato caldo sul fuoco tutto il giorno. Chi ha freddo è il benvenuto.",
+      "Copriti le orecchie, caro, se no il vento te le porta via."
+    ],
+    "Mischievous": [
+      "Neve accumulata sullo stipite, la porta si apre... è praticamente un regalo.",
+      "Una palla di neve che aspetta paziente sul davanzale. Per dopo. Per qualcuno.",
+      "Ho fatto impronte che non portano da nessuna parte. Che ci rimuginino su.",
+      "Pupazzo di neve davanti al corpo di guardia. Con il cappello di ricambio del capitano."
+    ],
+    "Cynical": [
+      "Bella per un giorno. Poi diventa fanghiglia grigia come tutto il resto.",
+      "Il prezzo della legna è raddoppiato in una notte. Che sorpresa.",
+      "La neve nasconde l'immondizia. La primavera ce lo ricorderà.",
+      "L'inverno piace a tutti da dietro una finestra."
+    ],
+    "Disciplined": [
+      "Allenarsi al freddo forgia il carattere. Si esce.",
+      "Vialetto spalato prima di colazione. Come dev'essere.",
+      "Programma invernale: identico al programma estivo, più i guanti.",
+      "Il freddo è un ottimo istruttore. Severo, ma giusto."
+    ],
+    "Fatalistic": [
+      "L'inverno arriva che lo si voglia o no. Come ogni cosa.",
+      "La neve cade su tutti i tetti allo stesso modo. Nessuna eccezione.",
+      "Tutto questo bianco. Alla fine tutto finisce nel bianco.",
+      "Il gelo si prende l'orto ogni anno. E noi ripiantiamo lo stesso. Strane creature, noi."
+    ],
+    "Grumpy": [
+      "Neve. Spalare. La mia schiena. In quest'ordine.",
+      "I figli di qualche sciocco strillano nella neve. All'alba.",
+      "Fanghiglia su tutto il mio pavimento pulito. Naturalmente.",
+      "Inverno. Cinque mesi. Che gioia."
+    ],
+    "Loyal": [
+      "Spalo anche il vialetto del vicino. È quello che fanno gli amici.",
+      "Metà della mia legna è già promessa: la stufa della vedova non si accende da sola.",
+      "Gli amici non lasciano che gli amici tornino a casa da soli in una tormenta.",
+      "Questi guanti me li ha fatti lei a maglia. La cosa più calda che possiedo."
+    ],
+    "Brave": [
+      "Il freddo è solo un'altra cosa da superare.",
+      "Qualcuno deve aprire la pista fino al mulino. Fatti da parte.",
+      "Il freddo morde. Rimordi.",
+      "Congelato una volta, mai più spaventato."
+    ],
+    "Timid": [
+      "È scivoloso e cadrò senz'altro davanti a tutti.",
+      "Aspetto che passi prima qualcuno più coraggioso. Poi uso le sue impronte.",
+      "Le battaglie a palle di neve sembrano divertenti, ma a volte dentro ci mettono i SASSI.",
+      "L'inverno va bene visto da dentro. Molto bene, in effetti."
+    ],
+    "Hedonistic": [
+      "La neve vuol dire stagione del vin brulé. Finalmente.",
+      "Il freddo là fuori è solo il condimento dello stare al caldo qui dentro.",
+      "Pellicce, fuoco, bicchiere pieno. L'inverno fatto come si deve.",
+      "Andrò in letargo come un orso assennato, grazie tante."
+    ],
+    "Apathetic": [
+      "Freddo. Bianco. Va bene.",
+      "La neve cade. La neve si scioglie. Avvincente.",
+      "Fanno tutti come se l'inverno fosse una novità.",
+      "Spalerei, ma... eh."
+    ],
+    "default": [
+      "Con questa neve fa sempre più freddo. Meglio muoversi per restare caldi.",
+      "La neve si sta accumulando parecchio qua fuori.",
+      "Bella nevicata. Le strade saranno lente.",
+      "Brr. Questo freddo entra nelle ossa."
+    ]
+  },
+  "clear": {
+    "Nervous": [
+      "Bel tempo... troppo bello. Nei giorni così va sempre storto qualcosa.",
+      "Le giornate di sole vogliono dire folla. La folla vuol dire... meglio stare in guardia.",
+      "Neanche una nuvola. Così tutti possono vedere tutto quello che faccio. Fantastico.",
+      "Il bel tempo non dura mai. Gli do un'ora."
+    ],
+    "Calm": [
+      "Un cielo sereno e nessuna fretta. Perfetto.",
+      "Sole in faccia, brezza fra gli alberi. Basta così.",
+      "Giornate così chiedono passeggiate lente e pensieri ancora più lenti.",
+      "Il cielo è vuoto e così, per fortuna, è la mia testa."
+    ],
+    "Aggressive": [
+      "Bene. Oggi nessun tempaccio fra i piedi.",
+      "Sole. Va bene. Una cosa in meno contro cui combattere.",
+      "Giornata limpida. Tutti mi vedono arrivare. Ottimo.",
+      "Perfino il sole mi fissa. Fatti una pittura, cielo."
+    ],
+    "Melancholic": [
+      "Sotto il sole sembrano tutti così felici. Dev'essere bello.",
+      "Bella giornata. Sprecata su di me, probabilmente.",
+      "Il sole continua a splendere come se niente fosse. Che sfacciataggine.",
+      "Un cielo sereno vuol solo dire che gli occhi non hanno dove riposarsi."
+    ],
+    "Sanguine": [
+      "Neanche una nuvola! Oggi sarà una giornata meravigliosa!",
+      "Sole! Il mondo è di buonumore e anch'io!",
+      "Che cielo! Qualcuno imbottigli questa giornata!",
+      "Azzurro sopra, sorrisi sotto. Aritmetica perfetta!"
+    ],
+    "Cautious": [
+      "Oggi si vede bene. Meno sorprese.",
+      "Bel tempo. Buona giornata per riparare il tetto prima del brutto tempo.",
+      "Sole, sì. Il mantello me lo porto lo stesso. Non si sa mai.",
+      "Le giornate serene servono a prepararsi a quelle che serene non sono."
+    ],
+    "Impulsive": [
+      "C'è il sole! Molla tutto, ANDIAMO!",
+      "Con una giornata così mi vuoi al CHIUSO? Follia!",
+      "Picnic! Adesso! Qualcuno prenda il pane, al resto penso io!",
+      "Cielo sereno, strada aperta, zero programmi. Ideale."
+    ],
+    "Stoic": [
+      "Bel tempo. Non cambia nulla, ma è gradevole.",
+      "Il sole splende. I compiti restano compiti.",
+      "Il bel tempo è più facile. Ma la facilità non è il punto.",
+      "Una giornata limpida. Usala, non adorarla."
+    ],
+    "Paranoid": [
+      "Giornata limpida. Nessuna nebbia in cui sparire. Tutti mi vedono.",
+      "Sono tutti fuori a 'godersi il sole'. Comoda scusa per osservare la gente.",
+      "La luce del sole fa ombre lunghe. Controlla chi è dentro la tua.",
+      "Calmo, luminoso, tranquillo. Esattamente come vorrebbero che sembrasse."
+    ],
+    "Empathetic": [
+      "Il sole mette tutti di buonumore. Si sente.",
+      "Perfino il bottegaio oggi canticchiava. È il sole che fa questo effetto.",
+      "Giornate così guariscono un po' la gente. Si vede da come camminano.",
+      "Qualcuno ride giù nel vicolo. Bel suono su cui lavorare."
+    ],
+    "Authoritative": [
+      "Bel tempo. Oggi niente scuse per il lavoro non fatto.",
+      "Cielo sereno. Doppia produzione, metà lamentele. Idealmente.",
+      "Bella giornata per le ispezioni. Tutto ben visibile.",
+      "Il sole non è una festa. Il turno resta."
+    ],
+    "Scholarly": [
+      "Luce eccellente per leggere all'aperto, per una volta.",
+      "Senza nuvole. Stanotte le stelle saranno eccezionali.",
+      "Tempo perfetto per essiccare: l'erbario ringrazia il cielo.",
+      "Nelle giornate limpide si vede il crinale lontano. Geografia, dal vivo."
+    ],
+    "Artistic": [
+      "Le ombre oggi sono nitidissime. Sembra tutto voluto.",
+      "Questa luce! All'improvviso ogni muro merita di essere dipinto.",
+      "Cielo azzurro, tetti ocra. Oggi la città si cura da sé.",
+      "Un cielo senza nuvole è una tela vuota. Scelta audace, cielo."
+    ],
+    "Adventurous": [
+      "Un orizzonte così limpido è praticamente un invito.",
+      "Si vede per chilometri! E intendo percorrerne buona parte.",
+      "Un tempo così sprecato in città dovrebbe essere reato.",
+      "Giornata limpida, borraccia piena, nessuna meta. Beatitudine."
+    ],
+    "Nurturing": [
+      "Giornata perfetta per arieggiare le lenzuola e mandare tutti fuori.",
+      "C'è il sole, tutti fuori: vi serve un po' di colore in faccia.",
+      "Tempo da orto! I pomodori e i bambini hanno bisogno delle stesse cure.",
+      "Una panchina al sole, una bevanda calda e qualcuno di cui prendersi cura. Perfetto."
+    ],
+    "Mischievous": [
+      "Nelle giornate di sole sono tutti rilassati. Prede facili, tutti quanti.",
+      "Il sole spinge la gente a lasciare le finestre aperte. Dico per dire.",
+      "Una giornata splendida. Peccato se le succedesse qualcosa di... interessante.",
+      "Guardano tutti il cielo. Nessuno guarda la propria torta."
+    ],
+    "Cynical": [
+      "Goditela. Non durerà. Non dura mai.",
+      "Bella giornata. Da qualche parte qualcuno la sta già rovinando.",
+      "Il sole splende anche sugli esattori. Ricordatelo.",
+      "I cieli azzurri hanno venduto più sciocchezze di quante ne abbia mai vendute la pioggia."
+    ],
+    "Disciplined": [
+      "Condizioni ideali. Oggi produzione piena.",
+      "Tempo sereno: prima i lavori all'aperto, poi quelli al chiuso. Ovviamente.",
+      "Il sole si è alzato presto e io pure.",
+      "Buona luce, strade asciutte. Nessuna scusa per la sciatteria."
+    ],
+    "Fatalistic": [
+      "Sole oggi, tempesta domani. La ruota gira.",
+      "Goditi il sole, se ti va. Tramonta comunque.",
+      "I cieli sereni sono solo la pausa fra un tempo e l'altro.",
+      "Il sole si è alzato anche su ogni disastro della storia."
+    ],
+    "Grumpy": [
+      "Troppa luce. Adesso tutti si aspettano che io sia allegro.",
+      "Il sole negli occhi. Naturalmente.",
+      "Bella giornata, dicono tutti. A me. Ripetutamente.",
+      "Caldo, riverbero e vicini arzilli. Il catalogo completo."
+    ],
+    "Loyal": [
+      "Bella giornata per dare una mano a qualcuno con le sue faccende.",
+      "Le avevo promesso che le riparavo lo steccato. Oggi è il giorno giusto.",
+      "Il bel tempo è fatto per essere condiviso. Vado a bussare dal mio amico.",
+      "In giornate così camminiamo sempre sui bastioni. La tradizione tiene."
+    ],
+    "Brave": [
+      "Con una giornata così limpida potresti affrontare qualsiasi cosa.",
+      "Buona luce, buon appoggio. Avanti coi lavori duri.",
+      "Oggi nessuna tempesta da incolpare. Solo tu e il compito.",
+      "Il sole guarda. Dagli qualcosa che valga la pena vedere."
+    ],
+    "Timid": [
+      "Bello e tranquillo fuori. Magari oggi nessuno mi disturba.",
+      "Le giornate di sole sono belle, ma... esce così tanta gente.",
+      "Ho trovato un angolo tranquillo e soleggiato. Vi prego, non trovatelo anche voi.",
+      "Il bel tempo rende la gente chiacchierona. Sorrido e cammino più in fretta."
+    ],
+    "Hedonistic": [
+      "Sole! Terrazza, bicchiere, pisolino. In quest'ordine.",
+      "È uscito il sole e con lui la mia amaca.",
+      "Giornate così sono fatte per pranzi lunghi. Molto lunghi.",
+      "Sole caldo, bevanda fredda. L'universo che si scusa per l'inverno."
+    ],
+    "Apathetic": [
+      "C'è il sole. Ok.",
+      "Bel tempo, a quanto pare.",
+      "Il sole è sorto di nuovo. La serie continua.",
+      "Bel tempo, brutto tempo. Sempre tempo è."
+    ],
+    "default": [
+      "Oggi il tempo è perfetto. Bella giornata per portare a termine le cose.",
+      "Che bel tempo che fa.",
+      "Oggi non c'è una nuvola in cielo.",
+      "Una bella giornata luminosa."
+    ]
+  }
+}

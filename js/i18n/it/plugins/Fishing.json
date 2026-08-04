@@ -1,0 +1,25 @@
+{
+  "no3d": "Sistema 3D non disponibile",
+  "badCast": "Lancio sbagliato",
+  "lineSnapped": "Lenza spezzata",
+  "nothingBiting": "Non abbocca niente",
+  "tooSlow": "Troppo lento",
+  "something": "Qualcosa",
+  "hint": {
+    "loading": "Carico il lago...",
+    "no3d": "Sistema 3D non disponibile",
+    "aim": "WASD / frecce / trascina per mirare     Conferma per lanciare     Annulla per uscire",
+    "power": "Conferma per fissare la potenza del lancio",
+    "casting": "Lancio in corso...",
+    "waiting": "Aspetti che abbocchi     WASD per guardarti intorno",
+    "bite": "Conferma ORA per ferrare",
+    "reeling": "Tieni premuto Conferma per recuperare     rilascia per dare lenza",
+    "caught": "Preso     Conferma per lanciare di nuovo",
+    "miss": "Ti è scappato     Conferma per lanciare di nuovo"
+  },
+  "meter": {
+    "power": "POTENZA",
+    "line": "LENZA - tienila fuori dal rosso",
+    "dist": "DIST"
+  }
+}

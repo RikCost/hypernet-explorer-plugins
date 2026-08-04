@@ -1,0 +1,967 @@
+{
+  "1": {
+    "val": "1",
+    "excluded": "",
+    "name": ""
+  },
+  "2": {
+    "val": "2",
+    "excluded": "",
+    "name": ""
+  },
+  "3": {
+    "val": "3",
+    "excluded": "",
+    "name": ""
+  },
+  "4": {
+    "val": "4",
+    "excluded": "",
+    "name": ""
+  },
+  "5": {
+    "val": "5",
+    "excluded": "",
+    "name": ""
+  },
+  "6": {
+    "val": "6",
+    "excluded": "",
+    "name": ""
+  },
+  "10": {
+    "val": "10",
+    "excluded": "",
+    "name": ""
+  },
+  "20": {
+    "val": "20",
+    "excluded": "",
+    "name": ""
+  },
+  "30": {
+    "val": "30",
+    "excluded": "",
+    "name": ""
+  },
+  "40": {
+    "val": "40",
+    "excluded": "",
+    "name": ""
+  },
+  "50": {
+    "val": "50",
+    "excluded": "",
+    "name": ""
+  },
+  "60": {
+    "val": "60",
+    "excluded": "",
+    "name": ""
+  },
+  "70": {
+    "val": "70",
+    "excluded": "",
+    "name": ""
+  },
+  "80": {
+    "val": "80",
+    "excluded": "",
+    "name": ""
+  },
+  "90": {
+    "val": "90",
+    "excluded": "",
+    "name": ""
+  },
+  "99": {
+    "val": "99",
+    "excluded": "",
+    "name": ""
+  },
+  "AHAH YOU WISH.": {
+    "val": "AHAH TI PARE.",
+    "excluded": "",
+    "name": ""
+  },
+  "YOU ARE NOT WORTHY": {
+    "val": "NON SEI DEGNO",
+    "excluded": "",
+    "name": ""
+  },
+  "ddd": {
+    "val": "ddd",
+    "excluded": "",
+    "name": ""
+  },
+  "Surf the Hypernet": {
+    "val": "Naviga nell'Hypernet",
+    "excluded": "",
+    "name": ""
+  },
+  "Shopping": {
+    "val": "Shopping",
+    "excluded": "",
+    "name": ""
+  },
+  "Latest news": {
+    "val": "Ultime notizie",
+    "excluded": "",
+    "name": ""
+  },
+  "Euro Market": {
+    "val": "Mercato Euro",
+    "excluded": "",
+    "name": ""
+  },
+  "Job offers": {
+    "val": "Offerte di lavoro",
+    "excluded": "",
+    "name": ""
+  },
+  "Cancel": {
+    "val": "Annulla",
+    "excluded": "",
+    "name": ""
+  },
+  "Stock options": {
+    "val": "Opzioni azionarie",
+    "excluded": "",
+    "name": ""
+  },
+  "Buy real estate": {
+    "val": "Acquistare immobili",
+    "excluded": "",
+    "name": ""
+  },
+  "Use": {
+    "val": "Utilizzo",
+    "excluded": "",
+    "name": ""
+  },
+  "Vomit": {
+    "val": "Vomita",
+    "excluded": "",
+    "name": ""
+  },
+  "Cook": {
+    "val": "Cucina",
+    "excluded": "",
+    "name": ""
+  },
+  "Sleep by the fire": {
+    "val": "Dormi vicino al fuoco",
+    "excluded": "",
+    "name": ""
+  },
+  "Save": {
+    "val": "Salva",
+    "excluded": "",
+    "name": ""
+  },
+  "Retire from adventuring": {
+    "val": "Ritirati dalla vita da avventuriero",
+    "excluded": "",
+    "name": ""
+  },
+  "Put out fire": {
+    "val": "Spegni il fuoco",
+    "excluded": "",
+    "name": ""
+  },
+  "You need to disconnect from the room before\nbeing able to save.": {
+    "val": "Devi disconnetterti dalla stanza prima\ndi poter salvare.",
+    "excluded": "",
+    "name": ""
+  },
+  "Do you really want to retire from adventuring\nand return home?": {
+    "val": "Vuoi davvero ritirarti dalle avventure\ne tornare a casa?",
+    "excluded": "",
+    "name": ""
+  },
+  "No": {
+    "val": "No",
+    "excluded": "",
+    "name": ""
+  },
+  "Yes": {
+    "val": "Sì",
+    "excluded": "",
+    "name": ""
+  },
+  "Sleep": {
+    "val": "Sonno",
+    "excluded": "",
+    "name": ""
+  },
+  "Set respawn point": {
+    "val": "Imposta punto di rinascita",
+    "excluded": "",
+    "name": ""
+  },
+  "Manage party": {
+    "val": "Gestisci il party",
+    "excluded": "",
+    "name": ""
+  },
+  "How much do you want to sleep?": {
+    "val": "Quanto vuoi dormire?",
+    "excluded": "",
+    "name": ""
+  },
+  "8 Hours": {
+    "val": "8 Ore",
+    "excluded": "",
+    "name": ""
+  },
+  "7 Hours": {
+    "val": "7 Ore",
+    "excluded": "",
+    "name": ""
+  },
+  "6 Hours": {
+    "val": "6 Ore",
+    "excluded": "",
+    "name": ""
+  },
+  "5 Hours": {
+    "val": "5 Ore",
+    "excluded": "",
+    "name": ""
+  },
+  "4 Hours": {
+    "val": "4 Ore",
+    "excluded": "",
+    "name": ""
+  },
+  "Wake up": {
+    "val": "Svegliati",
+    "excluded": "",
+    "name": ""
+  },
+  "Dream": {
+    "val": "Sogno",
+    "excluded": "",
+    "name": ""
+  },
+  "Keep sleeping": {
+    "val": "Continua a dormire",
+    "excluded": "",
+    "name": ""
+  },
+  "Kick out \\N[2]": {
+    "val": "Espellere \\N[2]",
+    "excluded": "",
+    "name": ""
+  },
+  "Kick out \\N[3]": {
+    "val": "Espellere \\N[3]",
+    "excluded": "",
+    "name": ""
+  },
+  "Are you sure?": {
+    "val": "Sei sicuro?",
+    "excluded": "",
+    "name": ""
+  },
+  "UNUSED EVENT": {
+    "val": "EVENTO NON USATO",
+    "excluded": "",
+    "name": ""
+  },
+  "Clean your clothes?": {
+    "val": "Vuoi lavare i tuoi vestiti?",
+    "excluded": "",
+    "name": ""
+  },
+  "Wash your hands": {
+    "val": "Lavati le mani",
+    "excluded": "",
+    "name": ""
+  },
+  "Wash your face": {
+    "val": "Lavati la faccia",
+    "excluded": "",
+    "name": ""
+  },
+  "Drink": {
+    "val": "Bere",
+    "excluded": "",
+    "name": ""
+  },
+  "Do experiment": {
+    "val": "Fai un esperimento",
+    "excluded": "",
+    "name": ""
+  },
+  "Take a shower": {
+    "val": "Fare una doccia",
+    "excluded": "",
+    "name": ""
+  },
+  "Show map name": {
+    "val": "Mostra il nome della mappa",
+    "excluded": "",
+    "name": ""
+  },
+  "Show coordinates": {
+    "val": "Mostra coordinate",
+    "excluded": "",
+    "name": ""
+  },
+  "The egg is empty.": {
+    "val": "L'uovo è vuoto.",
+    "excluded": "",
+    "name": ""
+  },
+  "This bed is not yours.": {
+    "val": "Questo letto non è tuo.",
+    "excluded": "",
+    "name": ""
+  },
+  "Do nothing": {
+    "val": "Non fare nulla",
+    "excluded": "",
+    "name": ""
+  },
+  "Sleep anyway": {
+    "val": "Dormi comunque",
+    "excluded": "",
+    "name": ""
+  },
+  "Take a seat": {
+    "val": "Prendi posto",
+    "excluded": "",
+    "name": ""
+  },
+  "Your party is full.": {
+    "val": "Il tuo Party è al completo.",
+    "excluded": "",
+    "name": ""
+  },
+  "Set up camp": {
+    "val": "Monta l'accampamento",
+    "excluded": "",
+    "name": ""
+  },
+  "Stop camping": {
+    "val": "Smetti di campeggiare",
+    "excluded": "",
+    "name": ""
+  },
+  "Archive your journey": {
+    "val": "Archivia il tuo viaggio",
+    "excluded": "",
+    "name": ""
+  },
+  "Yes?": {
+    "val": "Si?",
+    "excluded": "",
+    "name": ""
+  },
+  "Do you have any questions?": {
+    "val": "Hai delle domande?",
+    "excluded": "",
+    "name": ""
+  },
+  "I'm here to help": {
+    "val": "Sono qui per aiutarti",
+    "excluded": "",
+    "name": ""
+  },
+  "What is this place?": {
+    "val": "Che posto è questo?",
+    "excluded": "",
+    "name": ""
+  },
+  "Where is the dungeon entrance?": {
+    "val": "Dov’è l’ingresso del dungeon?",
+    "excluded": "",
+    "name": ""
+  },
+  "Where i can find companions?": {
+    "val": "Dove posso trovare dei compagni?",
+    "excluded": "",
+    "name": ""
+  },
+  "Where i can go shopping?": {
+    "val": "Dove posso fare acquisti?",
+    "excluded": "",
+    "name": ""
+  },
+  "I have other questions...": {
+    "val": "Ho altre domande…",
+    "excluded": "",
+    "name": ""
+  },
+  "We call this place Omega Tower\nNo one's quite sure what it used to be.": {
+    "val": "Chiamiamo questo posto Torre Omega.\nNessuno sa esattamente cosa fosse un tempo.",
+    "excluded": "",
+    "name": ""
+  },
+  "It’s massive: it extends into the clouds and \nburrows deep down into the bowels of earth. ": {
+    "val": "È enorme: si estende fino alle nuvole e\nsi insinua in profondità nelle viscere della terra.",
+    "excluded": "",
+    "name": ""
+  },
+  "Most likely a failed arcology project built \non anomalous and thaumaturgical principles. ": {
+    "val": "Molto probabilmente un progetto di arcologia fallito, basato\nsu principi anomali e taumaturgici.",
+    "excluded": "",
+    "name": ""
+  },
+  "We've deployed probes for over a\nthousand floors in both directions. \nNo confirmed top...or bottom.": {
+    "val": "Abbiamo posizionato sonde su oltre\nmille piani in entrambe le direzioni.\nNessun punto in alto...né in basso confermato.",
+    "excluded": "",
+    "name": ""
+  },
+  "The entrance is at the Hypernet Point. \nTake the elevator to Floor 0 then go to the\ndoor to the left.": {
+    "val": "L'ingresso è presso l'Hypernet Point.\nPrendete l'ascensore fino al piano 0, poi dirigetevi verso\nla porta a sinistra.",
+    "excluded": "",
+    "name": ""
+  },
+  "Once inside take the big central staircase\nand you can start exploring freely, just \nremember to stock up before an expedition.": {
+    "val": "Una volta dentro, prendete la grande scalinata centrale\ne potrete iniziare a esplorare liberamente, ricordandovi solo\ndi fare scorta prima di una spedizione.",
+    "excluded": "",
+    "name": ""
+  },
+  "Do you want me to take you there?": {
+    "val": "Vuoi che ti porti lì?",
+    "excluded": "",
+    "name": ""
+  },
+  "Ok, please follow me.": {
+    "val": "Ok, per favore seguitemi.",
+    "excluded": "",
+    "name": ""
+  },
+  "Like everywere in the tower!\nAlmost every person here is a": {
+    "val": "Come ovunque nella torre!\nQuasi ogni persona qui è un",
+    "excluded": "",
+    "name": ""
+  },
+  "Some of them are willing to team up if your goals align.": {
+    "val": "Alcuni di loro sono disposti a fare squadra se i\nvostri obiettivi coincidono.",
+    "excluded": "",
+    "name": ""
+  },
+  "Its' dangerous to go alone!": {
+    "val": "È pericoloso andare da solo!",
+    "excluded": "",
+    "name": ""
+  },
+  "Sometimes, when you’re exploring a floor or returning \nto base, you’ll run into other explorers and archivists.": {
+    "val": "A volte, mentre esplori un piano o torni\nalla base, incontrerai altri esploratori e archivisti.",
+    "excluded": "",
+    "name": ""
+  },
+  "If you want allies, talk to people around here. \nShare what you’ve found. \nThey’re more likely to trust someone who actually\ncontributes to the Archive. ": {
+    "val": "Se vuoi degli alleati, parla con le persone qui intorno.\nCondividi ciò che hai scoperto.\nSaranno più propensi a fidarsi di qualcuno che effettivamente\ncontribuisce all'Archivio.",
+    "excluded": "",
+    "name": ""
+  },
+  "How the elevator works?": {
+    "val": "Come funziona l’ascensore?",
+    "excluded": "",
+    "name": ""
+  },
+  "Why everybody talks so weird?": {
+    "val": "Perchè qui tutti parlano strano?",
+    "excluded": "",
+    "name": ""
+  },
+  "The Hypernet": {
+    "val": "l’Hypernet",
+    "excluded": "",
+    "name": ""
+  },
+  "The Squishing": {
+    "val": "Lo Squishing",
+    "excluded": "",
+    "name": ""
+  },
+  "It’s an anomalous construct, probably alive. ": {
+    "val": "È una costruzione anomala, probabilmente viva.",
+    "excluded": "",
+    "name": ""
+  },
+  "Maybe even self-aware, though it won’t say\nanything directly.": {
+    "val": "Forse anche autocosciente, anche se non dirà\nnulla di diretto.",
+    "excluded": "",
+    "name": ""
+  },
+  "Here’s the tricky part. The elevator won’t take you\nsomewhere you haven’t been on foot.": {
+    "val": "Ecco la parte difficile. L'ascensore non ti porterà\nda qualche parte dove non sei mai stato a piedi.",
+    "excluded": "",
+    "name": ""
+  },
+  "If you want to reach a floor via elevator, \nyou’ve got to earn it first. ": {
+    "val": "Se vuoi raggiungere un piano con l'ascensore,\ndevi prima guadagnartelo.",
+    "excluded": "",
+    "name": ""
+  },
+  "Strangely enough, a few high floors are unlocked right \nfrom the start. No one knows why. \nMight be just a design feature or it just wants to show off.": {
+    "val": "Stranamente, alcuni piani alti sono sbloccati\nfin dall'inizio. Nessuno sa perché.\nPotrebbe essere solo un dettaglio di design o solo un modo per mettersi in mostra.",
+    "excluded": "",
+    "name": ""
+  },
+  "It's called DungeonSpeak!": {
+    "val": "Si chiama DungeonSpeak!",
+    "excluded": "",
+    "name": ""
+  },
+  "It's a neolanguage based on the deconstruction\nand recostruction of English,": {
+    "val": "È una neolingua basata sulla decostruzione\ne ricostruzione dell'inglese,",
+    "excluded": "",
+    "name": ""
+  },
+  "The Hypernet isn’t what it used to be.": {
+    "val": "L’Hypernet non è più quello di una volta",
+    "excluded": "",
+    "name": ""
+  },
+  "It was destroyed during the Y2K Event, \nwhen something, something not from here, breached \ninto our layer of reality. We call it Omni-Lex.": {
+    "val": "Fu distrutto durante l'evento Y2K,\nquando qualcosa, qualcosa che non proviene da qui, fece irruzione\nnel nostro strato di realtà. Lo chiamiamo Omni-Lex.",
+    "excluded": "",
+    "name": ""
+  },
+  "An extradimensional intelligence that decrypted \nevery password, breached every firewall, \nand made everything public.": {
+    "val": "Un'intelligenza extradimensionale che ha decifrato\nogni password, violato ogni firewall\ne reso tutto pubblico.",
+    "excluded": "",
+    "name": ""
+  },
+  "The Hypernet couldn’t survive full transparency.": {
+    "val": "L’Iperrete non poteva sopravvivere alla piena\ntrasparenza.",
+    "excluded": "",
+    "name": ""
+  },
+  "In the aftermath, the Foundation did what \nit always does, salvage and rebuild.": {
+    "val": "In seguito, la Fondazione ha fatto ciò che \nfa sempre: recuperare e ricostruire.",
+    "excluded": "",
+    "name": ""
+  },
+  "What’s left of the Hypernet now is fragile, patchy, \nand deeply weird. We’re trying to reconstruct \nit from recovered HTML files, old hard drives, \nforgotten caches. ": {
+    "val": "Ciò che resta dell'Hypernet è fragile, frammentario\ne profondamente strano. Stiamo cercando di ricostruirlo\na partire da file HTML recuperati, vecchi dischi rigidi,\ncache dimenticate.",
+    "excluded": "",
+    "name": ""
+  },
+  "Most links are broken. Images are missing. \nHexScript's practically radioactive. But sometimes, \nburied in the markup, we find data worth keeping.": {
+    "val": "La maggior parte dei link non funziona. Mancano immagini.\nHexScript è praticamente radioattivo. Ma a volte,\nnascosti nel markup, troviamo dati che vale la pena conservare.",
+    "excluded": "",
+    "name": ""
+  },
+  "You’ll be browsing fragments and static pages once \nhosted by people long gone.": {
+    "val": "Navigherai tra frammenti e pagine statiche che un tempo\nerano ospitate da persone scomparse da tempo.",
+    "excluded": "",
+    "name": ""
+  },
+  "Keep your expectations low, and your firewall strong.": {
+    "val": "Mantieni basse le tue aspettative e rafforza il tuo firewall.",
+    "excluded": "",
+    "name": ""
+  },
+  "Yound the remains of an adventurer, what do you want\nto do?": {
+    "val": "Cercando i resti di un avventuriero, cosa vuoi\nfare?",
+    "excluded": "",
+    "name": ""
+  },
+  "Loot the body": {
+    "val": "Saccheggia il corpo",
+    "excluded": "",
+    "name": ""
+  },
+  "Resurrect him": {
+    "val": "Resuscitalo",
+    "excluded": "",
+    "name": ""
+  },
+  "Desacrate the grave": {
+    "val": "Profana la tomba",
+    "excluded": "",
+    "name": ""
+  },
+  "Ignore it": {
+    "val": "Ignora",
+    "excluded": "",
+    "name": ""
+  },
+  "Select your destination": {
+    "val": "Seleziona la destinazione",
+    "excluded": "",
+    "name": ""
+  },
+  "Bologna": {
+    "val": "Bologna",
+    "excluded": "",
+    "name": ""
+  },
+  "Omega Tower": {
+    "val": "Torre Omega",
+    "excluded": "",
+    "name": ""
+  },
+  "Green Witch Space Center": {
+    "val": "Centro spaziale della strega verde",
+    "excluded": "",
+    "name": ""
+  },
+  "Teleport": {
+    "val": "Teletrasporto",
+    "excluded": "",
+    "name": ""
+  },
+  "Add level": {
+    "val": "Aggiungi livello",
+    "excluded": "",
+    "name": ""
+  },
+  "3d MODE": {
+    "val": "MODALITÀ 3D",
+    "excluded": "",
+    "name": ""
+  },
+  "Initialize": {
+    "val": "Inizializzare",
+    "excluded": "",
+    "name": ""
+  },
+  "Add items/Money": {
+    "val": "Aggiungi articoli/Denaro",
+    "excluded": "",
+    "name": ""
+  },
+  "Other": {
+    "val": "Altro",
+    "excluded": "",
+    "name": ""
+  },
+  "Go down": {
+    "val": "Scendi",
+    "excluded": "",
+    "name": ""
+  },
+  "Base set": {
+    "val": "Set di base",
+    "excluded": "",
+    "name": ""
+  },
+  "Materials": {
+    "val": "Materiali",
+    "excluded": "",
+    "name": ""
+  },
+  "Money": {
+    "val": "Soldi",
+    "excluded": "",
+    "name": ""
+  },
+  "Teleport to vehicle": {
+    "val": "Teletrasporto al veicolo",
+    "excluded": "",
+    "name": ""
+  },
+  "Spawn vehicle": {
+    "val": "Genera veicolo",
+    "excluded": "",
+    "name": ""
+  },
+  "Death": {
+    "val": "Morte",
+    "excluded": "",
+    "name": ""
+  },
+  "Test battle": {
+    "val": "Battaglia di prova",
+    "excluded": "",
+    "name": ""
+  },
+  "Camper": {
+    "val": "Camper",
+    "excluded": "",
+    "name": ""
+  },
+  "Car": {
+    "val": "Auto",
+    "excluded": "",
+    "name": ""
+  },
+  "Inn": {
+    "val": "Entra",
+    "excluded": "",
+    "name": ""
+  },
+  "Campfire": {
+    "val": "Falò",
+    "excluded": "",
+    "name": ""
+  },
+  "Advance time": {
+    "val": "Avanza il tempo",
+    "excluded": "",
+    "name": ""
+  },
+  "Set player speed": {
+    "val": "Imposta la velocità del lettore",
+    "excluded": "",
+    "name": ""
+  },
+  "Buy troops": {
+    "val": "Compra truppe",
+    "excluded": "",
+    "name": ""
+  },
+  "Change Weather": {
+    "val": "Cambia Meteo",
+    "excluded": "",
+    "name": ""
+  },
+  "Surgery": {
+    "val": "Chirurgia",
+    "excluded": "",
+    "name": ""
+  },
+  "Make a coffee": {
+    "val": "Prepara un caffè",
+    "excluded": "",
+    "name": ""
+  },
+  "Play Locktris": {
+    "val": "Gioca a Locktris",
+    "excluded": "",
+    "name": ""
+  },
+  "Select difficulty:": {
+    "val": "Seleziona la difficoltà:",
+    "excluded": "",
+    "name": ""
+  },
+  "Walk in the park": {
+    "val": "Passeggiata nel parco",
+    "excluded": "",
+    "name": ""
+  },
+  "Easy": {
+    "val": "Facile",
+    "excluded": "",
+    "name": ""
+  },
+  "Medium": {
+    "val": "Medio",
+    "excluded": "",
+    "name": ""
+  },
+  "Hard": {
+    "val": "Difficile",
+    "excluded": "",
+    "name": ""
+  },
+  "Hyperhard": {
+    "val": "Iperduro",
+    "excluded": "",
+    "name": ""
+  },
+  "Stop working": {
+    "val": "Smettere di lavorare",
+    "excluded": "",
+    "name": ""
+  },
+  "Change role": {
+    "val": "Cambia ruolo",
+    "excluded": "",
+    "name": ""
+  },
+  "Manager": {
+    "val": "Manager",
+    "excluded": "",
+    "name": ""
+  },
+  "Producer": {
+    "val": "Produttore",
+    "excluded": "",
+    "name": ""
+  },
+  "Rider": {
+    "val": "Cavaliere",
+    "excluded": "",
+    "name": ""
+  },
+  "Start working": {
+    "val": "Inizia a lavorare",
+    "excluded": "",
+    "name": ""
+  },
+  "Select your role": {
+    "val": "Seleziona il tuo ruolo",
+    "excluded": "",
+    "name": ""
+  },
+  "You are in\n\\V[63] \\V[64] \\V[68]": {
+    "val": "Ti trovi in\n\\V[63] \\V[64] \\V[68]",
+    "excluded": "",
+    "name": ""
+  },
+  "No gas pump near": {
+    "val": "Nessuna pompa di benzina nelle vicinanze",
+    "excluded": "",
+    "name": ""
+  },
+  "Repairing...": {
+    "val": "Riparazione...",
+    "excluded": "",
+    "name": ""
+  },
+  "Where you want to go?": {
+    "val": "Dove vuoi andare?",
+    "excluded": "",
+    "name": ""
+  },
+  "Hypernet Point": {
+    "val": "Hypernet Point",
+    "excluded": "",
+    "name": ""
+  },
+  "Outside the tower": {
+    "val": "Fuori dalla torre",
+    "excluded": "",
+    "name": ""
+  },
+  "Shopping mall": {
+    "val": "Centro commerciale",
+    "excluded": "",
+    "name": ""
+  },
+  "Pay the bounty": {
+    "val": "Paga la taglia",
+    "excluded": "",
+    "name": ""
+  },
+  "Go to trial": {
+    "val": "Vai alla prova",
+    "excluded": "",
+    "name": ""
+  },
+  "See crime list": {
+    "val": "Vedi l'elenco dei crimini",
+    "excluded": "",
+    "name": ""
+  },
+  "Resist arrest": {
+    "val": "Resistere all'arresto",
+    "excluded": "",
+    "name": ""
+  },
+  "Go to jail": {
+    "val": "Vai in prigione",
+    "excluded": "",
+    "name": ""
+  },
+  "You don't have any money to clear\nyour bounty.": {
+    "val": "Non hai abbastanza denaro per estinguere\nla tua taglia.",
+    "excluded": "",
+    "name": ""
+  },
+  "Steal": {
+    "val": "Rubare",
+    "excluded": "",
+    "name": ""
+  },
+  "You don't have any bounties.": {
+    "val": "Non hai alcuna taglia.",
+    "excluded": "",
+    "name": ""
+  },
+  "Talk": {
+    "val": "Parla",
+    "excluded": "",
+    "name": ""
+  },
+  "Turn yourself in": {
+    "val": "Costituisciti",
+    "excluded": "",
+    "name": ""
+  },
+  "Ask directions": {
+    "val": "Chiedi indicazioni",
+    "excluded": "",
+    "name": ""
+  },
+  "50€ was added to your account.": {
+    "val": "50€ sono stati aggiunti al tuo conto.",
+    "excluded": "",
+    "name": ""
+  },
+  "You can fly only in the world map.": {
+    "val": "Puoi volare solo sulla mappa del mondo.",
+    "excluded": "",
+    "name": ""
+  },
+  "TO DO": {
+    "val": "DA FARE",
+    "excluded": "",
+    "name": ""
+  },
+  "You look at yourself in the mirror.": {
+    "val": "Ti guardi allo specchio.",
+    "excluded": "",
+    "name": ""
+  },
+  "Shop": {
+    "val": "Negozio",
+    "excluded": "",
+    "name": ""
+  },
+  "Rent room": {
+    "val": "Affitta stanza",
+    "excluded": "",
+    "name": ""
+  },
+  "Recruit troops": {
+    "val": "Recluta truppe",
+    "excluded": "",
+    "name": ""
+  },
+  "Fight": {
+    "val": "Combatti",
+    "excluded": "",
+    "name": ""
+  },
+  "Open star map": {
+    "val": "Apri la mappa stellare",
+    "excluded": "",
+    "name": ""
+  },
+  "Land": {
+    "val": "Atterra",
+    "excluded": "",
+    "name": ""
+  },
+  "Refuel": {
+    "val": "Fai rifornimento",
+    "excluded": "",
+    "name": ""
+  },
+  "Repair": {
+    "val": "Riparazione",
+    "excluded": "",
+    "name": ""
+  },
+  "Greenwitch space center": {
+    "val": "Centro spaziale di Greenwitch",
+    "excluded": "",
+    "name": ""
+  },
+  "Apulia Spaceport": {
+    "val": "Spazioporto di Puglia",
+    "excluded": "",
+    "name": ""
+  },
+  "Jump in the trash": {
+    "val": "Salta nella spazzatura",
+    "excluded": "",
+    "name": ""
+  },
+  "You donated sperm \\V[102] times and you have\ngiven birth to \\V[103] children.": {
+    "val": "Hai donato lo sperma \\V[102] volte e hai\npartorito \\V[103] figli.",
+    "excluded": "",
+    "name": ""
+  }
+}

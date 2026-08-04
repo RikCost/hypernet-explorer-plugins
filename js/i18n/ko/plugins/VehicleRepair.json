@@ -1,0 +1,112 @@
+{
+  "notEnoughMaterials": "",
+  "vehicleFullyRepaired": "",
+  "vehicleRepaired": "",
+  "vehicleIsOperationalAgain": "",
+  "installed": "",
+  "hullAppearanceUpdated": "",
+  "camperExpedition": "",
+  "aReinforcedHeavyCamperDesigned": "",
+  "standardUrbanSedan": "",
+  "aClassicStandardEngineTransport": "",
+  "lightSportMotorcycle": "",
+  "anAgileAndRapidPersonal": "",
+  "explorerStarship": "",
+  "anAdvancedDeepSpaceExplorer": "",
+  "inflatableDinghy": "",
+  "aLightPackableBoatFor": "",
+  "critical": "",
+  "changeAppearance": "",
+  "statusBroken": "",
+  "statusOperational": "",
+  "allCriticalComponentsMustMaintain": "",
+  "repair": "",
+  "upgrades": "",
+  "close": "",
+  "componentsRegistry": "",
+  "fullRepair": "",
+  "notInstalled": "",
+  "lv": "",
+  "maxed": "",
+  "install": "",
+  "upgrade": {
+    "accel": {
+      "name": "",
+      "desc": ""
+    },
+    "speed": {
+      "name": "",
+      "desc": ""
+    },
+    "fuel": {
+      "name": "",
+      "desc": ""
+    },
+    "health": {
+      "name": "",
+      "desc": ""
+    },
+    "aquatic": {
+      "name": "",
+      "desc": ""
+    },
+    "flight": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "upgradeWorkshop": "",
+  "noUpgradesAvailable": "",
+  "acceleration": "",
+  "fuelCapacity": "",
+  "damageReduction": "",
+  "enablesDrivingOnAndDiving": "",
+  "enablesTakeOffAndFlight": "",
+  "repairPercent": "",
+  "timePerTile": "",
+  "timePerTileNext": "",
+  "part": {
+    "Engine": "",
+    "Transmission": "",
+    "Brakes": "",
+    "Steering": "",
+    "Battery": "",
+    "Alternator": "",
+    "Radiator": "",
+    "Fuel System": "",
+    "Exhaust": "",
+    "Suspension": "",
+    "Tires": "",
+    "Body": "",
+    "Interior": "",
+    "Electronics": "",
+    "Air Filter": "",
+    "Oil System": "",
+    "Chain": "",
+    "Handlebars": "",
+    "Frame": "",
+    "Lights": "",
+    "Hull": "",
+    "Air Chambers": "",
+    "Oars": "",
+    "Valves": "",
+    "Ropes": "",
+    "Patch Kit": ""
+  },
+  "systemNotReady": "",
+  "criticalDamage": "",
+  "tookDamage": "",
+  "fullyRepaired": "",
+  "partiallyRepaired": "",
+  "nowOperational": "",
+  "brokenCannotUse": "",
+  "repairCriticalFirstLong": "",
+  "repairCriticalFirst": "",
+  "vehicle": {
+    "camper": "",
+    "car": "",
+    "starship": "",
+    "bike": "",
+    "boat": ""
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "menuCommand": "Scacchi",
+  "mode": "Modalità: {mode}",
+  "modeNormal": "Scacchi normali",
+  "modeChaos": "Scacchi caotici",
+  "cheatMeterTitle": "CONTATORE DA BARO",
+  "cheatMeterGain": "Contatore da baro +{gain}! ({meter}/{max})",
+  "cheatModeOn": "MODALITÀ BARO ATTIVATA! Puoi fare 3 mosse illegali! ",
+  "cheatModeOff": "Modalità baro esaurita. Si torna alle mosse legali!",
+  "cheatModeLeft": "MODALITÀ BARO: {moves} mosse rimaste ",
+  "pressShift": "Premi MAIUSC per attivare!",
+  "chargeHint": "Cattura pezzi per caricarlo!",
+  "blackStuck": "Il Nero non ha mosse valide! Vince il Bianco!",
+  "blackPlays": "Il Nero gioca: {move}",
+  "blackPlaysNormally": "Il Nero gioca normalmente: {move}",
+  "whitePlays": "Il Bianco gioca: {move}",
+  "whiteCheats": "Il Bianco bara: {move} ",
+  "multiMoveStep": "\"{index} di {total}!\" {move}",
+  "whiteWiped": "Tutti i pezzi bianchi sono distrutti! Vince il Nero!",
+  "blackWiped": "Tutti i pezzi neri sono distrutti! Vince il Bianco!",
+  "chaosPiece": {
+    "bomb": "una Bomba",
+    "egg": "un Uovo",
+    "mushroom": "un Fungo",
+    "chest": "un Forziere",
+    "fish": "un Pesce",
+    "campfire": "un Falò",
+    "stew": "una Scodella di Stufato",
+    "jug": "una Brocca",
+    "candle": "una Candela",
+    "soda": "una Bibita Gassata"
+  },
+  "taunt": {
+    "colorChange": [
+      "\"Adesso è MIO!\" Il Nero ti ruba {piece} in {square}! ",
+      "\"Correzione di colore!\" Il Nero corrompe {piece} e lo fa passare al lato oscuro! Mwahahah! ",
+      "\"Ops, l'ho fatto io?\" Il Nero converte al nero {piece} 'per sbaglio'! ",
+      "\"Le regole sono per i perdenti!\" Il Nero ti ruba {piece} con la magia nera, sfacciato! ",
+      "\"Grazie della donazione!\" Il Nero ride mentre {piece} cambia bandiera! "
+    ],
+    "relocate": [
+      "\"Te lo sposto io!\" Il Nero trasloca {piece} in {square} senza chiedere! ",
+      "\"Ops, mani di burro!\" Il Nero sposta {piece} su una casa pessima 'per aiutarti'! ",
+      "\"Ti sistemo la strategia!\" Il Nero teletrasporta {piece} in un posto inutile! ",
+      "\"Fidati, così è meglio!\" Il Nero riposiziona {piece} con aria da saputello! ",
+      "\"Ora gioco per due!\" Il Nero muove {piece} come fosse suo! "
+    ],
+    "transform": [
+      "\"Abracadabra!\" Il Nero trasforma {from} in {to}! \"La magia è così comoda!\" ",
+      "\"Ora di potenziare!\" Il Nero 'migliora' {from} in {to} per prenderti in giro! ",
+      "\"Cambiare forma è lecito, no?\" Il Nero sogghigna mentre {from} diventa {to}! ",
+      "\"Quel pezzo non mi piace!\" Il Nero cambia {from} in {to} per capriccio! ",
+      "\"Colpo di scena!\" Il Nero trasforma {from} in {to} con gran teatro! "
+    ],
+    "spawnPiece": [
+      "\"Alzati, mio servo!\" Il Nero evoca {piece} in {square}! \"La morte è facoltativa!\" ",
+      "\"Rinforzi a sorpresa!\" Il Nero fa entrare {piece} di contrabbando! \"Avevo ordinato pezzi extra!\" ",
+      "\"Ti avevo parlato del mio esercito?\" Il Nero fa comparire {piece} dal nulla! Baro! ",
+      "\"Piano di riserva attivato!\" Il Nero materializza {piece}! \"Serve sempre un piano B!\" ",
+      "\"Venerdì del pezzo gratis!\" Il Nero sogghigna mentre appare {piece}! \"Uno preso, uno in regalo!\" "
+    ],
+    "spawnChaos": [
+      "\"Ti presento un amico!\" Il Nero evoca {piece} in {square}! \"E' addestrato in casa!\" ",
+      "\"Io li colleziono!\" Il Nero piazza {piece} sulla scacchiera con orgoglio! \"Edizione limitata!\" ",
+      "\"Pezzo di supporto emotivo!\" Il Nero introduce {piece}! \"Per quando i pezzi normali non bastano!\" ",
+      "\"Perchè essere noiosi?\" Il Nero fa comparire {piece} con un gesto plateale! \"Gli scacchi hanno bisogno di personalità!\" ",
+      "\"Arma segreta in campo!\" Il Nero scatena {piece}! \"Non te lo aspettavi, eh!\" "
+    ],
+    "drain": [
+      "\"Zac! Adesso è mio!\" Il Nero ti prosciuga {amount} di energia da baro! \"Chi trova tiene!\" ",
+      "\"Modalità vampiro energetico!\" Il Nero ti succhia {amount} punti da baro! \"Squisiti!\" ",
+      "\"Condividere è bello!\" Il Nero ti ruba {amount} di contatore! \"Grazie della donazione!\" ",
+      "\"Drenaggio attivato!\" Il Nero ti fulmina {amount} di energia! \"Mi serviva più che a te!\" ",
+      "\"Ops, l'ho fatto io?\" Il Nero assorbe {amount} punti da baro 'per sbaglio'! Che faccia tosta! "
+    ],
+    "multiMove": [
+      "\"Il tempo è una convenzione sociale!\" Il Nero fa {moves} mosse in una volta! ",
+      "\"Doppia razione!\" Il Nero fa {moves} mosse per ingordigia! \"Turno mio, regole mie!\" ",
+      "\"Modalità speedrun!\" Il Nero infila {moves} mosse di fila! \"Efficienza!\" ",
+      "\"Attacco in combo!\" Il Nero concatena {moves} mosse! \"Sarà regolare? Chi se ne importa!\" ",
+      "\"Perchè aspettare?\" Il Nero fa {moves} mosse per impazienza! \"La pazienza è sopravvalutata!\" "
+    ]
+  }
+}

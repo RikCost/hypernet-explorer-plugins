@@ -1,0 +1,2338 @@
+﻿{
+    "-": {
+        "bank": 8,
+        "program": 25
+    },
+    "9000_cb": {
+        "bank": 0,
+        "program": 0
+    },
+    "EmuDrumulator_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_lt": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_oh": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "SequentialCircuitsDrumtracks_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "agogo": {
+        "bank": 0,
+        "program": 113
+    },
+    "anchor": {
+        "bank": 0,
+        "program": 0
+    },
+    "anvil": {
+        "bank": 0,
+        "program": 0
+    },
+    "ballwhistle": {
+        "bank": 0,
+        "program": 78
+    },
+    "bassdrum2": {
+        "bank": 0,
+        "program": 33
+    },
+    "bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "bongo": {
+        "bank": 128,
+        "program": 116
+    },
+    "brown": {
+        "bank": 0,
+        "program": 0
+    },
+    "cajon": {
+        "bank": 0,
+        "program": 0
+    },
+    "chord": {
+        "bank": 0,
+        "program": 6
+    },
+    "clap": {
+        "bank": 128,
+        "program": 116
+    },
+    "clave": {
+        "bank": 128,
+        "program": 116
+    },
+    "clip": {
+        "bank": 0,
+        "program": 0
+    },
+    "cowbell": {
+        "bank": 128,
+        "program": 116
+    },
+    "cp": {
+        "bank": 128,
+        "program": 116
+    },
+    "cr": {
+        "bank": 0,
+        "program": 98
+    },
+    "crow": {
+        "bank": 0,
+        "program": 0
+    },
+    "dr110_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_accordion": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_acoustic_guitar_nylon": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_acoustic_guitar_steel": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_applause": {
+        "bank": 0,
+        "program": 126
+    },
+    "gm_bandoneon": {
+        "bank": 0,
+        "program": 23
+    },
+    "gm_baritone_sax": {
+        "bank": 0,
+        "program": 67
+    },
+    "gm_bassoon": {
+        "bank": 0,
+        "program": 70
+    },
+    "gm_brass_section": {
+        "bank": 25,
+        "program": 61
+    },
+    "gm_cello": {
+        "bank": 0,
+        "program": 42
+    },
+    "gm_choir_aahs": {
+        "bank": 9,
+        "program": 52
+    },
+    "gm_church_organ": {
+        "bank": 0,
+        "program": 19
+    },
+    "gm_clarinet": {
+        "bank": 0,
+        "program": 71
+    },
+    "gm_contrabass": {
+        "bank": 0,
+        "program": 43
+    },
+    "gm_distortion_guitar": {
+        "bank": 0,
+        "program": 30
+    },
+    "gm_drawbar_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_dulcimer": {
+        "bank": 0,
+        "program": 15
+    },
+    "gm_electric_bass_finger": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_electric_bass_pick": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_electric_guitar_clean": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_electric_guitar_jazz": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_flute": {
+        "bank": 1,
+        "program": 73
+    },
+    "gm_fretless_bass": {
+        "bank": 0,
+        "program": 35
+    },
+    "gm_gunshot": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_harmonica": {
+        "bank": 0,
+        "program": 22
+    },
+    "gm_lead_1_square": {
+        "bank": 0,
+        "program": 80
+    },
+    "gm_lead_2_sawtooth": {
+        "bank": 0,
+        "program": 80
+    },
+    "gm_lead_8_bass_lead": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_marimba": {
+        "bank": 0,
+        "program": 12
+    },
+    "gm_oboe": {
+        "bank": 8,
+        "program": 68
+    },
+    "gm_ocarina": {
+        "bank": 0,
+        "program": 79
+    },
+    "gm_overdriven_guitar": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_pad_bowed": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_choir": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_halo": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_poly": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_warm": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_percussive_organ": {
+        "bank": 0,
+        "program": 17
+    },
+    "gm_piano": {
+        "bank": 8,
+        "program": 4
+    },
+    "gm_piccolo": {
+        "bank": 16,
+        "program": 72
+    },
+    "gm_pizzicato_strings": {
+        "bank": 8,
+        "program": 45
+    },
+    "gm_recorder": {
+        "bank": 1,
+        "program": 74
+    },
+    "gm_reed_organ": {
+        "bank": 0,
+        "program": 20
+    },
+    "gm_rock_organ": {
+        "bank": 0,
+        "program": 18
+    },
+    "gm_string_ensemble_1": {
+        "bank": 0,
+        "program": 48
+    },
+    "gm_string_ensemble_2": {
+        "bank": 0,
+        "program": 48
+    },
+    "gm_synth_bass_1": {
+        "bank": 0,
+        "program": 38
+    },
+    "gm_synth_strings_1": {
+        "bank": 0,
+        "program": 50
+    },
+    "gm_synth_strings_2": {
+        "bank": 0,
+        "program": 51
+    },
+    "gm_tenor_sax": {
+        "bank": 1,
+        "program": 66
+    },
+    "gm_trombone": {
+        "bank": 2,
+        "program": 57
+    },
+    "gm_trumpet": {
+        "bank": 0,
+        "program": 56
+    },
+    "gm_tuba": {
+        "bank": 0,
+        "program": 58
+    },
+    "gm_vibraphone": {
+        "bank": 0,
+        "program": 11
+    },
+    "gm_violin": {
+        "bank": 0,
+        "program": 40
+    },
+    "gtr": {
+        "bank": 0,
+        "program": 0
+    },
+    "handbells": {
+        "bank": 0,
+        "program": 0
+    },
+    "harmonica_soft": {
+        "bank": 0,
+        "program": 22
+    },
+    "hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "ht": {
+        "bank": 0,
+        "program": 1
+    },
+    "kawai": {
+        "bank": 0,
+        "program": 0
+    },
+    "legacy": {
+        "bank": 0,
+        "program": 0
+    },
+    "linn9000_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "linn9000_lt": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "linndrum_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "linndrum_hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_oh": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "lt": {
+        "bank": 0,
+        "program": 65
+    },
+    "mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "n": {
+        "bank": 8,
+        "program": 4
+    },
+    "note": {
+        "bank": 0,
+        "program": 0
+    },
+    "ocarina": {
+        "bank": 0,
+        "program": 79
+    },
+    "oh": {
+        "bank": 8,
+        "program": 53
+    },
+    "piano": {
+        "bank": 8,
+        "program": 4
+    },
+    "psaltery_pluck": {
+        "bank": 0,
+        "program": 0
+    },
+    "pulse": {
+        "bank": 0,
+        "program": 0
+    },
+    "r8_rd": {
+        "bank": 128,
+        "program": 116
+    },
+    "rd": {
+        "bank": 0,
+        "program": 21
+    },
+    "recorder_bass_sus": {
+        "bank": 0,
+        "program": 74
+    },
+    "recorder_tenor_sus": {
+        "bank": 0,
+        "program": 74
+    },
+    "rim": {
+        "bank": 0,
+        "program": 12
+    },
+    "saw": {
+        "bank": 16,
+        "program": 81
+    },
+    "sawtooth": {
+        "bank": 11,
+        "program": 81
+    },
+    "sax": {
+        "bank": 0,
+        "program": 65
+    },
+    "sd": {
+        "bank": 25,
+        "program": 16
+    },
+    "shaker_small": {
+        "bank": 128,
+        "program": 116
+    },
+    "sine": {
+        "bank": 8,
+        "program": 80
+    },
+    "sleighbells": {
+        "bank": 0,
+        "program": 0
+    },
+    "square": {
+        "bank": 1,
+        "program": 80
+    },
+    "supersaw": {
+        "bank": 0,
+        "program": 0
+    },
+    "tambourine": {
+        "bank": 12,
+        "program": 119
+    },
+    "tr808_hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "tri": {
+        "bank": 8,
+        "program": 45
+    },
+    "triangle": {
+        "bank": 9,
+        "program": 80
+    },
+    "vibraslap": {
+        "bank": 128,
+        "program": 116
+    },
+    "white": {
+        "bank": 12,
+        "program": 122
+    },
+    "z_sawtooth": {
+        "bank": 0,
+        "program": 81
+    },
+    "z_square": {
+        "bank": 0,
+        "program": 80
+    },
+    "|": {
+        "bank": 0,
+        "program": 0
+    },
+    "rhodes_piano_2": {
+        "bank": 8,
+        "program": 4
+    },
+    "clavinet": {
+        "bank": 0,
+        "program": 7
+    },
+    "accordian": {
+        "bank": 0,
+        "program": 21
+    },
+    "route_1_piano": {
+        "bank": 9,
+        "program": 0
+    },
+    "bassoon": {
+        "bank": 0,
+        "program": 70
+    },
+    "nylon_guitar": {
+        "bank": 0,
+        "program": 24
+    },
+    "acoustic_piano": {
+        "bank": 0,
+        "program": 0
+    },
+    "harpsichord": {
+        "bank": 0,
+        "program": 6
+    },
+    "glockenspiel": {
+        "bank": 0,
+        "program": 9
+    },
+    "gamelan": {
+        "bank": 11,
+        "program": 112
+    },
+    "vibraphone": {
+        "bank": 0,
+        "program": 11
+    },
+    "marimba": {
+        "bank": 0,
+        "program": 12
+    },
+    "xylophone": {
+        "bank": 0,
+        "program": 13
+    },
+    "tubular_bells": {
+        "bank": 0,
+        "program": 14
+    },
+    "percussive_organ": {
+        "bank": 0,
+        "program": 17
+    },
+    "church_organ": {
+        "bank": 0,
+        "program": 19
+    },
+    "overdrive_guitar_2": {
+        "bank": 1,
+        "program": 29
+    },
+    "distortion_guitar": {
+        "bank": 0,
+        "program": 30
+    },
+    "distortion_guitar_4": {
+        "bank": 16,
+        "program": 30
+    },
+    "guitar_harmonics": {
+        "bank": 0,
+        "program": 31
+    },
+    "finger_bass": {
+        "bank": 0,
+        "program": 33
+    },
+    "picked_bass_2": {
+        "bank": 1,
+        "program": 34
+    },
+    "fretless_bass": {
+        "bank": 0,
+        "program": 35
+    },
+    "slap_bass_1": {
+        "bank": 0,
+        "program": 36
+    },
+    "slap_bass_2": {
+        "bank": 0,
+        "program": 37
+    },
+    "synth_bass": {
+        "bank": 0,
+        "program": 38
+    },
+    "violin": {
+        "bank": 0,
+        "program": 40
+    },
+    "pizzicato_strings_3": {
+        "bank": 8,
+        "program": 45
+    },
+    "harp": {
+        "bank": 0,
+        "program": 46
+    },
+    "string_ensemble": {
+        "bank": 0,
+        "program": 48
+    },
+    "slow_strings": {
+        "bank": 0,
+        "program": 49
+    },
+    "koto": {
+        "bank": 0,
+        "program": 107
+    },
+    "synth_strings_1": {
+        "bank": 0,
+        "program": 50
+    },
+    "choir_aahs_4": {
+        "bank": 9,
+        "program": 52
+    },
+    "voice_oohs": {
+        "bank": 8,
+        "program": 53
+    },
+    "orchestra_hit": {
+        "bank": 0,
+        "program": 55
+    },
+    "trumpet": {
+        "bank": 0,
+        "program": 56
+    },
+    "tuba": {
+        "bank": 0,
+        "program": 58
+    },
+    "trombone_3": {
+        "bank": 2,
+        "program": 57
+    },
+    "french_horn": {
+        "bank": 0,
+        "program": 60
+    },
+    "oboe_2": {
+        "bank": 8,
+        "program": 68
+    },
+    "english_horn": {
+        "bank": 0,
+        "program": 69
+    },
+    "clarinet": {
+        "bank": 0,
+        "program": 71
+    },
+    "flute_2": {
+        "bank": 1,
+        "program": 73
+    },
+    "shakuhachi": {
+        "bank": 0,
+        "program": 77
+    },
+    "whistle": {
+        "bank": 0,
+        "program": 78
+    },
+    "steel_drums": {
+        "bank": 0,
+        "program": 114
+    },
+    "white_noise": {
+        "bank": 12,
+        "program": 122
+    },
+    "winds": {
+        "bank": 3,
+        "program": 122
+    },
+    "drums": {
+        "bank": 128,
+        "program": 0
+    },
+    "tremelo_strings": {
+        "bank": 0,
+        "program": 44
+    },
+    "square_wave": {
+        "bank": 1,
+        "program": 80
+    },
+    "saw_wave_3": {
+        "bank": 16,
+        "program": 81
+    },
+    "saw_wave": {
+        "bank": 1,
+        "program": 81
+    },
+    "bright_piano": {
+        "bank": 0,
+        "program": 1
+    },
+    "drawbar_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "muted_guitar": {
+        "bank": 0,
+        "program": 28
+    },
+    "acoustic_bass": {
+        "bank": 0,
+        "program": 32
+    },
+    "picked_bass": {
+        "bank": 0,
+        "program": 34
+    },
+    "synth_voice": {
+        "bank": 0,
+        "program": 54
+    },
+    "flute": {
+        "bank": 0,
+        "program": 73
+    },
+    "synth_brass_1": {
+        "bank": 0,
+        "program": 62
+    },
+    "synth_brass_2": {
+        "bank": 0,
+        "program": 63
+    },
+    "alto_sax": {
+        "bank": 0,
+        "program": 65
+    },
+    "fantasia": {
+        "bank": 0,
+        "program": 88
+    },
+    "warm_pad": {
+        "bank": 0,
+        "program": 89
+    },
+    "soundtrack": {
+        "bank": 0,
+        "program": 97
+    },
+    "goblin": {
+        "bank": 0,
+        "program": 101
+    },
+    "ice_rain": {
+        "bank": 0,
+        "program": 96
+    },
+    "banjo": {
+        "bank": 0,
+        "program": 105
+    },
+    "shamisen": {
+        "bank": 0,
+        "program": 106
+    },
+    "sitar": {
+        "bank": 0,
+        "program": 104
+    },
+    "rock_organ": {
+        "bank": 0,
+        "program": 18
+    },
+    "castanet": {
+        "bank": 8,
+        "program": 115
+    },
+    "crystal": {
+        "bank": 0,
+        "program": 98
+    },
+    "sine_wave": {
+        "bank": 8,
+        "program": 80
+    },
+    "atmosphere": {
+        "bank": 0,
+        "program": 99
+    },
+    "jazz_guitar": {
+        "bank": 0,
+        "program": 26
+    },
+    "synth_bass_2": {
+        "bank": 0,
+        "program": 39
+    },
+    "m3_piccolo": {
+        "bank": 16,
+        "program": 72
+    },
+    "church_organ_2": {
+        "bank": 8,
+        "program": 19
+    },
+    "overdrive_guitar": {
+        "bank": 0,
+        "program": 29
+    },
+    "rhodes": {
+        "bank": 0,
+        "program": 4
+    },
+    "polysynth_4": {
+        "bank": 8,
+        "program": 90
+    },
+    "sweep_pad": {
+        "bank": 0,
+        "program": 95
+    },
+    "brass_section_7": {
+        "bank": 25,
+        "program": 61
+    },
+    "tinker_bell": {
+        "bank": 0,
+        "program": 112
+    },
+    "overdrive_guitar_3": {
+        "bank": 2,
+        "program": 29
+    },
+    "slap_bass_4": {
+        "bank": 1,
+        "program": 37
+    },
+    "bandoneon": {
+        "bank": 0,
+        "program": 23
+    },
+    "applause": {
+        "bank": 0,
+        "program": 126
+    },
+    "shenai": {
+        "bank": 0,
+        "program": 111
+    },
+    "woodblock": {
+        "bank": 0,
+        "program": 115
+    },
+    "harmonica": {
+        "bank": 0,
+        "program": 22
+    },
+    "clean_guitar_2": {
+        "bank": 1,
+        "program": 27
+    },
+    "fret_noise": {
+        "bank": 0,
+        "program": 120
+    },
+    "seashore": {
+        "bank": 0,
+        "program": 122
+    },
+    "muted_trumpet": {
+        "bank": 0,
+        "program": 59
+    },
+    "melodic_tom": {
+        "bank": 0,
+        "program": 117
+    },
+    "shamisen_2": {
+        "bank": 1,
+        "program": 106
+    },
+    "wide_marimba": {
+        "bank": 8,
+        "program": 12
+    },
+    "kalimba": {
+        "bank": 0,
+        "program": 108
+    },
+    "gun_shot": {
+        "bank": 0,
+        "program": 127
+    },
+    "taiko_drum": {
+        "bank": 0,
+        "program": 116
+    },
+    "echo_drops": {
+        "bank": 0,
+        "program": 102
+    },
+    "halo_pad": {
+        "bank": 0,
+        "program": 94
+    },
+    "solo_vox_2": {
+        "bank": 8,
+        "program": 85
+    },
+    "bass_'n'_lead": {
+        "bank": 0,
+        "program": 87
+    },
+    "mo3_synth_strings": {
+        "bank": 1,
+        "program": 51
+    },
+    "distortion_guitar_3": {
+        "bank": 2,
+        "program": 30
+    },
+    "fm_piano": {
+        "bank": 0,
+        "program": 5
+    },
+    "pan_flute": {
+        "bank": 0,
+        "program": 75
+    },
+    "brightness": {
+        "bank": 0,
+        "program": 100
+    },
+    "distortion_guitar_2": {
+        "bank": 1,
+        "program": 30
+    },
+    "tenor_sax_2": {
+        "bank": 1,
+        "program": 66
+    },
+    "slap_bass_3": {
+        "bank": 1,
+        "program": 36
+    },
+    "brass_section_2": {
+        "bank": 1,
+        "program": 61
+    },
+    "timpani": {
+        "bank": 0,
+        "program": 47
+    },
+    "reverse_cymbal": {
+        "bank": 0,
+        "program": 119
+    },
+    "choir_aahs_3": {
+        "bank": 8,
+        "program": 52
+    },
+    "french_horn_3": {
+        "bank": 8,
+        "program": 60
+    },
+    "orchestra": {
+        "bank": 8,
+        "program": 48
+    },
+    "synth_drum": {
+        "bank": 0,
+        "program": 118
+    },
+    "orchestra_drums": {
+        "bank": 128,
+        "program": 48
+    },
+    "pizzicato_strings_2": {
+        "bank": 1,
+        "program": 45
+    },
+    "fifth_lead": {
+        "bank": 0,
+        "program": 86
+    },
+    "mother_3_drums": {
+        "bank": 128,
+        "program": 8
+    },
+    "chiffer_lead": {
+        "bank": 0,
+        "program": 83
+    },
+    "strings_ensemble_2": {
+        "bank": 1,
+        "program": 48
+    },
+    "oboe": {
+        "bank": 0,
+        "program": 68
+    },
+    "glockenspiel_2": {
+        "bank": 1,
+        "program": 9
+    },
+    "accordian_2": {
+        "bank": 8,
+        "program": 21
+    },
+    "honky_tonk_piano": {
+        "bank": 0,
+        "program": 3
+    },
+    "power_drums": {
+        "bank": 128,
+        "program": 16
+    },
+    "808_drums": {
+        "bank": 128,
+        "program": 25
+    },
+    "drawbar_organ_2": {
+        "bank": 8,
+        "program": 16
+    },
+    "vibraphone_2": {
+        "bank": 1,
+        "program": 11
+    },
+    "celeste": {
+        "bank": 0,
+        "program": 8
+    },
+    "electronic_drums": {
+        "bank": 128,
+        "program": 24
+    },
+    "crystal_2": {
+        "bank": 11,
+        "program": 98
+    },
+    "strings_ensemble_3": {
+        "bank": 11,
+        "program": 48
+    },
+    "slow_strings_4": {
+        "bank": 11,
+        "program": 49
+    },
+    "trumpet_2": {
+        "bank": 1,
+        "program": 56
+    },
+    "synth_bass_3": {
+        "bank": 8,
+        "program": 38
+    },
+    "fiddle": {
+        "bank": 0,
+        "program": 110
+    },
+    "soprano_sax": {
+        "bank": 0,
+        "program": 64
+    },
+    "piccolo_2": {
+        "bank": 1,
+        "program": 72
+    },
+    "funky_guitar": {
+        "bank": 8,
+        "program": 28
+    },
+    "square_lead": {
+        "bank": 0,
+        "program": 80
+    },
+    "steel_drum_2": {
+        "bank": 1,
+        "program": 114
+    },
+    "steel_guitar": {
+        "bank": 0,
+        "program": 25
+    },
+    "glockenspiel_3": {
+        "bank": 8,
+        "program": 9
+    },
+    "birds": {
+        "bank": 0,
+        "program": 123
+    },
+    "fretless_bass_2": {
+        "bank": 1,
+        "program": 35
+    },
+    "church_bells": {
+        "bank": 8,
+        "program": 14
+    },
+    "synth_bass_101": {
+        "bank": 1,
+        "program": 38
+    },
+    "rubber_bass": {
+        "bank": 16,
+        "program": 39
+    },
+    "choir_aahs_2": {
+        "bank": 1,
+        "program": 52
+    },
+    "cello": {
+        "bank": 0,
+        "program": 42
+    },
+    "saw_wave_2": {
+        "bank": 8,
+        "program": 81
+    },
+    "fm_piano_2": {
+        "bank": 8,
+        "program": 5
+    },
+    "charang": {
+        "bank": 0,
+        "program": 84
+    },
+    "saw_lead": {
+        "bank": 0,
+        "program": 81
+    },
+    "blown_bottle": {
+        "bank": 0,
+        "program": 76
+    },
+    "space_voice": {
+        "bank": 0,
+        "program": 91
+    },
+    "bowed_pad_2": {
+        "bank": 1,
+        "program": 92
+    },
+    "synth_brass_3": {
+        "bank": 8,
+        "program": 62
+    },
+    "synth_brass_4": {
+        "bank": 8,
+        "program": 63
+    },
+    "metal_pad": {
+        "bank": 0,
+        "program": 93
+    },
+    "music_box_2": {
+        "bank": 1,
+        "program": 10
+    },
+    "synth_bass_4": {
+        "bank": 8,
+        "program": 39
+    },
+    "baritone_sax": {
+        "bank": 0,
+        "program": 67
+    },
+    "pan_flute_2": {
+        "bank": 8,
+        "program": 75
+    },
+    "voice_doohs": {
+        "bank": 0,
+        "program": 53
+    },
+    "rain": {
+        "bank": 1,
+        "program": 122
+    },
+    "thunder": {
+        "bank": 2,
+        "program": 122
+    },
+    "stream": {
+        "bank": 4,
+        "program": 122
+    },
+    "drawbar_organ_3": {
+        "bank": 16,
+        "program": 16
+    },
+    "fantasia_2": {
+        "bank": 1,
+        "program": 88
+    },
+    "flute_3": {
+        "bank": 8,
+        "program": 73
+    },
+    "harpsichord_2": {
+        "bank": 8,
+        "program": 6
+    },
+    "record_scratch_2": {
+        "bank": 4,
+        "program": 124
+    },
+    "harp_2": {
+        "bank": 8,
+        "program": 46
+    },
+    "rby_b+l": {
+        "bank": 6,
+        "program": 87
+    },
+    "triangle_wave": {
+        "bank": 9,
+        "program": 80
+    },
+    "standard_kit": {
+        "bank": 120,
+        "program": 0
+    },
+    "mother_3_kit": {
+        "bank": 120,
+        "program": 8
+    },
+    "power_kit": {
+        "bank": 120,
+        "program": 16
+    },
+    "electronic_kit": {
+        "bank": 120,
+        "program": 24
+    },
+    "808_kit": {
+        "bank": 120,
+        "program": 25
+    },
+    "orchestra_kit": {
+        "bank": 120,
+        "program": 48
+    },
+    "ethnic_drums": {
+        "bank": 128,
+        "program": 49
+    },
+    "detuned_square_wave": {
+        "bank": 16,
+        "program": 80
+    },
+    "m._dungeon_drums": {
+        "bank": 128,
+        "program": 1
+    },
+    "m._dungeon_kit": {
+        "bank": 120,
+        "program": 1
+    },
+    "polysynth_2": {
+        "bank": 1,
+        "program": 90
+    },
+    "clarinet_2": {
+        "bank": 1,
+        "program": 71
+    },
+    "vox_lead": {
+        "bank": 1,
+        "program": 85
+    },
+    "contrabass": {
+        "bank": 0,
+        "program": 43
+    },
+    "piccolo_3": {
+        "bank": 8,
+        "program": 72
+    },
+    "sea_of_eden_pad": {
+        "bank": 8,
+        "program": 89
+    },
+    "nylon_guitar_2": {
+        "bank": 8,
+        "program": 24
+    },
+    "mrob_synth": {
+        "bank": 4,
+        "program": 87
+    },
+    "polysynth": {
+        "bank": 0,
+        "program": 90
+    },
+    "ethnic_kit": {
+        "bank": 120,
+        "program": 49
+    },
+    "jazz_drums": {
+        "bank": 128,
+        "program": 32
+    },
+    "jazz_kit": {
+        "bank": 120,
+        "program": 32
+    },
+    "pizzicato_strings": {
+        "bank": 0,
+        "program": 45
+    },
+    "viola": {
+        "bank": 0,
+        "program": 41
+    },
+    "mandolin": {
+        "bank": 16,
+        "program": 25
+    },
+    "fifth_pad": {
+        "bank": 8,
+        "program": 86
+    },
+    "bright_piano_2": {
+        "bank": 8,
+        "program": 1
+    },
+    "strings_ensemble_4": {
+        "bank": 16,
+        "program": 48
+    },
+    "slow_strings_3": {
+        "bank": 10,
+        "program": 49
+    },
+    "brass_section_3": {
+        "bank": 8,
+        "program": 61
+    },
+    "bagpipe": {
+        "bank": 0,
+        "program": 109
+    },
+    "dance_drums": {
+        "bank": 128,
+        "program": 26
+    },
+    "rhodes_3": {
+        "bank": 25,
+        "program": 4
+    },
+    "trombone_2": {
+        "bank": 1,
+        "program": 57
+    },
+    "calliope_lead": {
+        "bank": 0,
+        "program": 82
+    },
+    "12-string_guitar": {
+        "bank": 8,
+        "program": 25
+    },
+    "telephone": {
+        "bank": 0,
+        "program": 124
+    },
+    "dulcimer": {
+        "bank": 0,
+        "program": 15
+    },
+    "fm_piano_4": {
+        "bank": 24,
+        "program": 5
+    },
+    "pick_scrape": {
+        "bank": 6,
+        "program": 120
+    },
+    "tuba_staccato": {
+        "bank": 8,
+        "program": 58
+    },
+    "sitar_2": {
+        "bank": 1,
+        "program": 104
+    },
+    "soft_toms": {
+        "bank": 1,
+        "program": 117
+    },
+    "melodic_toms_2": {
+        "bank": 8,
+        "program": 117
+    },
+    "synth_strings_3": {
+        "bank": 8,
+        "program": 50
+    },
+    "ice_rain_2": {
+        "bank": 1,
+        "program": 96
+    },
+    "trumpet_3": {
+        "bank": 8,
+        "program": 56
+    },
+    "oboe_3": {
+        "bank": 16,
+        "program": 68
+    },
+    "strings_ensemble_5": {
+        "bank": 24,
+        "program": 48
+    },
+    "slow_strings_5": {
+        "bank": 24,
+        "program": 49
+    },
+    "explosion": {
+        "bank": 3,
+        "program": 127
+    },
+    "church_organ_3": {
+        "bank": 16,
+        "program": 19
+    },
+    "brass_section_md": {
+        "bank": 2,
+        "program": 61
+    },
+    "feedback_guitar_2": {
+        "bank": 9,
+        "program": 30
+    },
+    "muted_guitar_2": {
+        "bank": 16,
+        "program": 28
+    },
+    "vibraphone_3": {
+        "bank": 8,
+        "program": 11
+    },
+    "windchimes": {
+        "bank": 5,
+        "program": 124
+    },
+    "bassoon_2": {
+        "bank": 1,
+        "program": 70
+    },
+    "finger_bass_2": {
+        "bank": 1,
+        "program": 33
+    },
+    "recorder_2": {
+        "bank": 1,
+        "program": 74
+    },
+    "machine_gun": {
+        "bank": 1,
+        "program": 127
+    },
+    "helicopter": {
+        "bank": 0,
+        "program": 125
+    },
+    "voice_one": {
+        "bank": 16,
+        "program": 126
+    },
+    "voice_two": {
+        "bank": 17,
+        "program": 126
+    },
+    "voice_three": {
+        "bank": 18,
+        "program": 126
+    },
+    "voice_tah": {
+        "bank": 19,
+        "program": 126
+    },
+    "boney_(dog)": {
+        "bank": 1,
+        "program": 123
+    },
+    "club_titiboo": {
+        "bank": 7,
+        "program": 126
+    },
+    "electric_piano": {
+        "bank": 0,
+        "program": 2
+    },
+    "harmonica_2": {
+        "bank": 1,
+        "program": 22
+    },
+    "jet_plane": {
+        "bank": 7,
+        "program": 125
+    },
+    "tenor_sax_3": {
+        "bank": 8,
+        "program": 66
+    },
+    "bubbles": {
+        "bank": 5,
+        "program": 122
+    },
+    "distortion_guitar_5": {
+        "bank": 17,
+        "program": 30
+    },
+    "guitar_feedback": {
+        "bank": 8,
+        "program": 31
+    },
+    "clean_guitar_3": {
+        "bank": 17,
+        "program": 27
+    },
+    "car_start": {
+        "bank": 1,
+        "program": 125
+    },
+    "scream": {
+        "bank": 2,
+        "program": 126
+    },
+    "harp_3": {
+        "bank": 16,
+        "program": 46
+    },
+    "birds_2": {
+        "bank": 3,
+        "program": 123
+    },
+    "whistlin'": {
+        "bank": 11,
+        "program": 78
+    },
+    "calliope_2": {
+        "bank": 2,
+        "program": 82
+    },
+    "chiffer_lead_2": {
+        "bank": 8,
+        "program": 83
+    },
+    "slow_violin": {
+        "bank": 8,
+        "program": 40
+    },
+    "ice_rain_3": {
+        "bank": 11,
+        "program": 96
+    },
+    "md_crystal": {
+        "bank": 1,
+        "program": 98
+    },
+    "md_piano": {
+        "bank": 8,
+        "program": 0
+    },
+    "recorder": {
+        "bank": 0,
+        "program": 74
+    },
+    "muted_trumpet_2": {
+        "bank": 1,
+        "program": 59
+    },
+    "rock_organ_2": {
+        "bank": 16,
+        "program": 18
+    },
+    "solo_vox": {
+        "bank": 0,
+        "program": 85
+    },
+    "rhodes_4": {
+        "bank": 26,
+        "program": 4
+    },
+    "fm_piano_3": {
+        "bank": 16,
+        "program": 5
+    },
+    "steel_guitar_2": {
+        "bank": 9,
+        "program": 25
+    },
+    "overdrive_guitar_4": {
+        "bank": 3,
+        "program": 29
+    },
+    "violin_2": {
+        "bank": 1,
+        "program": 40
+    },
+    "applause_2": {
+        "bank": 6,
+        "program": 126
+    },
+    "laughing": {
+        "bank": 1,
+        "program": 126
+    },
+    "steel_guitar_3": {
+        "bank": 17,
+        "program": 25
+    },
+    "bowed_pad": {
+        "bank": 0,
+        "program": 92
+    },
+    "synth_strings_4": {
+        "bank": 8,
+        "program": 51
+    },
+    "trumpet_4": {
+        "bank": 24,
+        "program": 56
+    },
+    "distortion_guitar_6": {
+        "bank": 24,
+        "program": 30
+    },
+    "techno_hit": {
+        "bank": 17,
+        "program": 55
+    },
+    "magic_organ": {
+        "bank": 24,
+        "program": 16
+    },
+    "trumpet_5": {
+        "bank": 25,
+        "program": 56
+    },
+    "distortion_guitar_7": {
+        "bank": 25,
+        "program": 30
+    },
+    "slow_square_wave": {
+        "bank": 24,
+        "program": 80
+    },
+    "flute_4": {
+        "bank": 16,
+        "program": 73
+    },
+    "crisis_hit": {
+        "bank": 24,
+        "program": 55
+    },
+    "clavinet_2": {
+        "bank": 8,
+        "program": 7
+    },
+    "star_theme": {
+        "bank": 0,
+        "program": 103
+    },
+    "nylon_guitar_5": {
+        "bank": 32,
+        "program": 24
+    },
+    "marimba_2": {
+        "bank": 1,
+        "program": 12
+    },
+    "philly_hit": {
+        "bank": 9,
+        "program": 55
+    },
+    "breath_noise": {
+        "bank": 0,
+        "program": 121
+    },
+    "bass_clarinet": {
+        "bank": 8,
+        "program": 71
+    },
+    "alto_sax_3": {
+        "bank": 9,
+        "program": 65
+    },
+    "fun_fm_piano": {
+        "bank": 1,
+        "program": 5
+    },
+    "door": {
+        "bank": 3,
+        "program": 124
+    },
+    "footstep": {
+        "bank": 5,
+        "program": 126
+    },
+    "brass_fall": {
+        "bank": 16,
+        "program": 61
+    },
+    "phonograph_noise": {
+        "bank": 10,
+        "program": 124
+    },
+    "e._piano_+_rds_1": {
+        "bank": 1,
+        "program": 2
+    },
+    "e._piano_+_rds_2": {
+        "bank": 2,
+        "program": 2
+    },
+    "tuba_2": {
+        "bank": 1,
+        "program": 58
+    },
+    "sfx_kit": {
+        "bank": 120,
+        "program": 56
+    },
+    "sfx": {
+        "bank": 128,
+        "program": 56
+    },
+    "percussive_organ_3": {
+        "bank": 24,
+        "program": 19
+    },
+    "808_tom": {
+        "bank": 8,
+        "program": 118
+    },
+    "acoustic_bass_2": {
+        "bank": 1,
+        "program": 32
+    },
+    "synth_voice_2": {
+        "bank": 8,
+        "program": 54
+    },
+    "acoustic_piano_pkmn": {
+        "bank": 16,
+        "program": 0
+    },
+    "piano_+_str._sus": {
+        "bank": 24,
+        "program": 0
+    },
+    "celeste_2": {
+        "bank": 1,
+        "program": 8
+    },
+    "accordian_3": {
+        "bank": 24,
+        "program": 21
+    },
+    "tamboura": {
+        "bank": 16,
+        "program": 104
+    },
+    "impact_hit": {
+        "bank": 8,
+        "program": 55
+    },
+    "rave_hit": {
+        "bank": 16,
+        "program": 55
+    },
+    "cheesy_organ": {
+        "bank": 17,
+        "program": 18
+    },
+    "siren": {
+        "bank": 5,
+        "program": 125
+    },
+    "brush_drums": {
+        "bank": 128,
+        "program": 40
+    },
+    "brush_kit": {
+        "bank": 120,
+        "program": 40
+    },
+    "hawaiian_guitar": {
+        "bank": 8,
+        "program": 26
+    },
+    "bass_'n'_lead_2": {
+        "bank": 1,
+        "program": 87
+    },
+    "jazz_guitar_2": {
+        "bank": 1,
+        "program": 26
+    },
+    "heartbeat": {
+        "bank": 4,
+        "program": 126
+    },
+    "bass_'n'_lead_4": {
+        "bank": 5,
+        "program": 87
+    },
+    "brass_section_4": {
+        "bank": 9,
+        "program": 61
+    },
+    "warm_pad_2": {
+        "bank": 1,
+        "program": 89
+    },
+    "polysynth_3": {
+        "bank": 2,
+        "program": 90
+    },
+    "punch": {
+        "bank": 3,
+        "program": 126
+    },
+    "even_bar": {
+        "bank": 33,
+        "program": 16
+    },
+    "60's_rhodes": {
+        "bank": 24,
+        "program": 4
+    },
+    "feedack_guitar": {
+        "bank": 8,
+        "program": 30
+    },
+    "slap_bass_6": {
+        "bank": 8,
+        "program": 37
+    },
+    "slap_bass_5": {
+        "bank": 8,
+        "program": 36
+    },
+    "kart_organ": {
+        "bank": 8,
+        "program": 18
+    },
+    "bass_'n'_lead_3": {
+        "bank": 2,
+        "program": 87
+    },
+    "overdrive_guitar_5": {
+        "bank": 8,
+        "program": 29
+    },
+    "kart_brass": {
+        "bank": 1,
+        "program": 62
+    },
+    "brass_section_5": {
+        "bank": 10,
+        "program": 61
+    },
+    "choir_aahs": {
+        "bank": 0,
+        "program": 52
+    },
+    "fretless_bass_3": {
+        "bank": 2,
+        "program": 35
+    },
+    "electric_piano_2": {
+        "bank": 8,
+        "program": 2
+    },
+    "tambura": {
+        "bank": 8,
+        "program": 104
+    },
+    "flute_of_the_past": {
+        "bank": 2,
+        "program": 73
+    },
+    "past_rhodes": {
+        "bank": 16,
+        "program": 4
+    },
+    "kalimba_2": {
+        "bank": 8,
+        "program": 108
+    },
+    "koto_2": {
+        "bank": 8,
+        "program": 107
+    },
+    "wacky_flute": {
+        "bank": 3,
+        "program": 73
+    },
+    "whistle_blip": {
+        "bank": 5,
+        "program": 98
+    },
+    "dance_kit": {
+        "bank": 120,
+        "program": 26
+    },
+    "brass_section": {
+        "bank": 0,
+        "program": 61
+    },
+    "f._horn_rip": {
+        "bank": 24,
+        "program": 60
+    },
+    "fishing_organ": {
+        "bank": 19,
+        "program": 16
+    },
+    "soft_trumpet": {
+        "bank": 2,
+        "program": 56
+    },
+    "vibraphone_4": {
+        "bank": 9,
+        "program": 11
+    },
+    "piccolo": {
+        "bank": 0,
+        "program": 72
+    },
+    "alto_sax_2": {
+        "bank": 8,
+        "program": 65
+    },
+    "nylon_guitar_3": {
+        "bank": 16,
+        "program": 24
+    },
+    "music_box": {
+        "bank": 0,
+        "program": 10
+    },
+    "fishing_piano": {
+        "bank": 16,
+        "program": 1
+    },
+    "church_flute": {
+        "bank": 32,
+        "program": 19
+    },
+    "909_kit": {
+        "bank": 120,
+        "program": 30
+    },
+    "909_drums": {
+        "bank": 128,
+        "program": 30
+    },
+    "guitar_chords": {
+        "bank": 11,
+        "program": 120
+    },
+    "dist._cut_noise": {
+        "bank": 4,
+        "program": 120
+    },
+    "stack_brass": {
+        "bank": 2,
+        "program": 62
+    },
+    "sitar_3": {
+        "bank": 3,
+        "program": 104
+    },
+    "percussive_organ_2": {
+        "bank": 8,
+        "program": 17
+    },
+    "french_horn_2": {
+        "bank": 1,
+        "program": 60
+    },
+    "woosh_goblin": {
+        "bank": 4,
+        "program": 101
+    },
+    "gt._cut": {
+        "bank": 1,
+        "program": 120
+    },
+    "trombone": {
+        "bank": 0,
+        "program": 57
+    },
+    "mean_bass": {
+        "bank": 3,
+        "program": 38
+    },
+    "cs_bass": {
+        "bank": 2,
+        "program": 38
+    },
+    "clean_guitar": {
+        "bank": 0,
+        "program": 27
+    },
+    "chorus_clean_guitar": {
+        "bank": 8,
+        "program": 27
+    },
+    "bandoneon_2": {
+        "bank": 8,
+        "program": 23
+    },
+    "starship": {
+        "bank": 8,
+        "program": 125
+    },
+    "angklung": {
+        "bank": 16,
+        "program": 115
+    },
+    "finger_snaps": {
+        "bank": 24,
+        "program": 115
+    },
+    "concert_bass_drum": {
+        "bank": 8,
+        "program": 116
+    },
+    "car_pass": {
+        "bank": 3,
+        "program": 125
+    },
+    "dist._mutes_2": {
+        "bank": 2,
+        "program": 28
+    },
+    "dist._mutes_1": {
+        "bank": 1,
+        "program": 28
+    },
+    "soft_crystal": {
+        "bank": 2,
+        "program": 98
+    },
+    "acoustic_bass_3": {
+        "bank": 8,
+        "program": 32
+    },
+    "whistle_2": {
+        "bank": 1,
+        "program": 78
+    },
+    "picked_bass_3": {
+        "bank": 2,
+        "program": 34
+    },
+    "clarinet_3": {
+        "bank": 16,
+        "program": 71
+    },
+    "synth_strings_2": {
+        "bank": 0,
+        "program": 51
+    },
+    "act_clear_lead": {
+        "bank": 3,
+        "program": 87
+    },
+    "sawtooth_stab": {
+        "bank": 11,
+        "program": 81
+    },
+    "harpsichord_3": {
+        "bank": 24,
+        "program": 6
+    },
+    "brass_section_6": {
+        "bank": 24,
+        "program": 61
+    },
+    "weak_hit": {
+        "bank": 12,
+        "program": 55
+    },
+    "space_voice_2": {
+        "bank": 1,
+        "program": 91
+    },
+    "log_drum": {
+        "bank": 24,
+        "program": 12
+    },
+    "quartz_crystal": {
+        "bank": 7,
+        "program": 98
+    },
+    "hollow_mini_sq.": {
+        "bank": 2,
+        "program": 80
+    },
+    "bend_square_wave": {
+        "bank": 4,
+        "program": 80
+    },
+    "octave_syn._brass": {
+        "bank": 16,
+        "program": 62
+    },
+    "p5_bass": {
+        "bank": 5,
+        "program": 38
+    },
+    "choir_oohs": {
+        "bank": 32,
+        "program": 52
+    },
+    "lasergun": {
+        "bank": 2,
+        "program": 127
+    },
+    "hot_hit": {
+        "bank": 17,
+        "program": 12
+    },
+    "distortion": {
+        "bank": 3,
+        "program": 30
+    },
+    "shopping_organ": {
+        "bank": 32,
+        "program": 17
+    },
+    "echo_pan": {
+        "bank": 2,
+        "program": 102
+    },
+    "bubsy_organ": {
+        "bank": 2,
+        "program": 17
+    },
+    "prologue": {
+        "bank": 2,
+        "program": 97
+    },
+    "shakuhachi_2": {
+        "bank": 1,
+        "program": 77
+    },
+    "metallic_fantasy": {
+        "bank": 8,
+        "program": 100
+    },
+    "metallic_hit_1": {
+        "bank": 10,
+        "program": 55
+    },
+    "metallic_hit_2": {
+        "bank": 11,
+        "program": 55
+    },
+    "dulcimer_2": {
+        "bank": 1,
+        "program": 15
+    },
+    "trumpet_fall": {
+        "bank": 17,
+        "program": 61
+    },
+    "slow_orchestra": {
+        "bank": 8,
+        "program": 49
+    },
+    "jp_synth_strings": {
+        "bank": 3,
+        "program": 50
+    },
+    "glock_crystal": {
+        "bank": 3,
+        "program": 98
+    },
+    "perc._organ": {
+        "bank": 1,
+        "program": 17
+    },
+    "tenor_sax_4": {
+        "bank": 9,
+        "program": 66
+    },
+    "nylon_guitar_4": {
+        "bank": 24,
+        "program": 24
+    },
+    "collision_bass": {
+        "bank": 10,
+        "program": 38
+    },
+    "quadrant_bass": {
+        "bank": 9,
+        "program": 38
+    },
+    "gender": {
+        "bank": 9,
+        "program": 112
+    },
+    "koto_64": {
+        "bank": 1,
+        "program": 107
+    },
+    "synth_voice_3": {
+        "bank": 9,
+        "program": 54
+    },
+    "sleigh_bell": {
+        "bank": 2,
+        "program": 119
+    },
+    "wide_horns": {
+        "bank": 3,
+        "program": 60
+    },
+    "reed_organ": {
+        "bank": 0,
+        "program": 20
+    },
+    "steel_guitar_4": {
+        "bank": 32,
+        "program": 25
+    },
+    "lucky_square": {
+        "bank": 3,
+        "program": 80
+    },
+    "jungle_drums": {
+        "bank": 128,
+        "program": 10
+    },
+    "jungle_kit": {
+        "bank": 120,
+        "program": 10
+    },
+    "romantic_trumpet": {
+        "bank": 32,
+        "program": 56
+    },
+    "honky_tonk_piano_2": {
+        "bank": 8,
+        "program": 3
+    },
+    "finger_bass_3": {
+        "bank": 16,
+        "program": 33
+    },
+    "soft_rhodes": {
+        "bank": 10,
+        "program": 4
+    },
+    "slow_strings_2": {
+        "bank": 1,
+        "program": 49
+    },
+    "lsd_organ": {
+        "bank": 25,
+        "program": 16
+    },
+    "burst_noise": {
+        "bank": 9,
+        "program": 125
+    },
+    "nylon_guitar_6": {
+        "bank": 40,
+        "program": 24
+    },
+    "fretless_bass_4": {
+        "bank": 3,
+        "program": 35
+    },
+    "triangle_wave_2": {
+        "bank": 1,
+        "program": 83
+    },
+    "saw_wave_2_(alt)": {
+        "bank": 1,
+        "program": 82
+    },
+    "tenor_sax": {
+        "bank": 0,
+        "program": 66
+    },
+    "tambourine_sc-88": {
+        "bank": 16,
+        "program": 113
+    }
+}

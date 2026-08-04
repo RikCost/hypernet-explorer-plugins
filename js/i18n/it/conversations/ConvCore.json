@@ -1,0 +1,177 @@
+{
+  "Nervous": [
+    "Cos'era quel rumore?",
+    "Ho un brutto presentimento.",
+    "Ho dimenticato qualcosa di importante?",
+    "Mi batte forte il cuore...",
+    "Voglio solo che finisca."
+  ],
+  "Calm": [
+    "Un passo alla volta.",
+    "Continua a respirare. Va tutto bene.",
+    "Anche questo passerà.",
+    "Preoccuparsi non risolve nulla.",
+    "Mantieni la concentrazione."
+  ],
+  "Aggressive": [
+    "Non mettermi alla prova.",
+    "Sono pronto a fare a botte.",
+    "Che cosa guardi?",
+    "La pazienza si sta esaurendo.",
+    "Spostati, o ti sposto io."
+  ],
+  "Melancholic": [
+    "È tutto qui?",
+    "Ricordo quando le cose andavano meglio.",
+    "Una sensazione pesante...",
+    "La solitudine mi si addice.",
+    "Sembra tutto grigio."
+  ],
+  "Sanguine": [
+    "Che giornata meravigliosa!",
+    "Dovrei parlare con qualcuno.",
+    "E adesso? Qualcosa di divertente, spero!",
+    "Mi sento benissimo!",
+    "Il futuro è luminoso."
+  ],
+  "Cautious": [
+    "Ragioniamoci su.",
+    "Quali sono i rischi?",
+    "Una decisione affrettata è una cattiva decisione.",
+    "Meglio prevenire che curare.",
+    "Prima analizziamo la situazione."
+  ],
+  "Impulsive": [
+    "Fallo e basta!",
+    "Perché aspettare?",
+    "Mi sembra una buona idea!",
+    "Alle conseguenze penseremo dopo.",
+    "Prima agisci, poi pensa."
+  ],
+  "Stoic": [
+    "È solo una cosa. Passerà.",
+    "Il dolore è temporaneo.",
+    "Lamentarsi non cambia niente.",
+    "Controlla ciò che puoi, accetta ciò che non puoi.",
+    "Resisterò."
+  ],
+  "Paranoid": [
+    "Mi stanno osservando.",
+    "Di chi posso fidarmi? Di nessuno.",
+    "Cosa vogliono davvero?",
+    "È un complotto.",
+    "Devo stare attento."
+  ],
+  "Empathetic": [
+    "Sento quello che stai passando.",
+    "Staranno bene? Sembrano tristi.",
+    "Percepisco la tensione nella stanza.",
+    "Come posso aiutare?",
+    "La loro gioia è la mia gioia."
+  ],
+  "Authoritative": [
+    "Seguite me.",
+    "Questo è il piano. Attenetevi ad esso.",
+    "La decisione la prendo io.",
+    "La disciplina è tutto.",
+    "Dobbiamo riuscirci."
+  ],
+  "Scholarly": [
+    "Mi chiedo perché sia così...",
+    "Questo mi ricorda un libro che ho letto.",
+    "I dati non sono conclusivi.",
+    "La conoscenza è il vero potere.",
+    "Devo saperne di più."
+  ],
+  "Artistic": [
+    "La luce qui è bellissima.",
+    "Che suono strano e meraviglioso.",
+    "Lo sento nel profondo.",
+    "Ispirazione... devo ricordare questa sensazione.",
+    "Il mondo è una tela."
+  ],
+  "Adventurous": [
+    "Chissà cosa c'è oltre quella collina.",
+    "Che noia. Facciamo qualcosa!",
+    "Un po' di pericolo rende la vita interessante.",
+    "Avanti verso la prossima avventura!",
+    "Non ci sono mai stato? Andiamoci!"
+  ],
+  "Nurturing": [
+    "Tutto bene?",
+    "Sembri infreddolito. Prendi il mio mantello.",
+    "Tutti hanno bisogno di essere accuditi.",
+    "Devo proteggerli.",
+    "Lascia che ti dia una mano."
+  ],
+  "Mischievous": [
+    "Sarebbe molto più divertente se...",
+    "Mettiamo un po' di scompiglio.",
+    "Non se lo aspetteranno mai.",
+    "Chissà cosa fa questo pulsante?",
+    "Uno scherzetto non ha mai fatto male a nessuno... quasi."
+  ],
+  "Cynical": [
+    "Fanno tutti il proprio interesse.",
+    "Dov'è la fregatura?",
+    "È esattamente quello che vogliono farmi credere.",
+    "Ma certo, 'altruismo'. Come no.",
+    "Andrà tutto a finire male."
+  ],
+  "Disciplined": [
+    "Prima il compito. Poi il resto.",
+    "I sentimenti vengono dopo il dovere.",
+    "Attieniti alla routine.",
+    "Il controllo è forza.",
+    "Nessuna scorciatoia."
+  ],
+  "Fatalistic": [
+    "Quel che succede, succede.",
+    "Doveva andare così.",
+    "Non ha senso opporsi.",
+    "Il mio cammino è già scritto.",
+    "A che serve?"
+  ],
+  "Grumpy": [
+    "Uffa, e adesso?",
+    "È tutto così stupido.",
+    "Lasciami in pace.",
+    "Ovvio che doveva succedere.",
+    "Odio tutto questo."
+  ],
+  "Loyal": [
+    "Non li abbandonerò.",
+    "Per i miei amici, qualsiasi cosa.",
+    "Devo mantenere la promessa.",
+    "Insieme, qualunque cosa accada.",
+    "La mia lealtà è il mio vincolo."
+  ],
+  "Brave": [
+    "Qualcuno deve pur farlo.",
+    "Fa paura, ma devo agire.",
+    "La paura è solo una sensazione.",
+    "Non farò un passo indietro.",
+    "Avanti!"
+  ],
+  "Timid": [
+    "Oh, cielo. Si mette male.",
+    "Preferirei di no...",
+    "Magari può occuparsene qualcun altro?",
+    "Voglio andare a casa.",
+    "Per favore, non notatemi."
+  ],
+  "Hedonistic": [
+    "Se dà piacere, fallo.",
+    "La vita è breve, godiamocela adesso.",
+    "Mi serve altro vino. E formaggio.",
+    "Questa sì che è vita!",
+    "Lavorare? Uffa. Più tardi."
+  ],
+  "Apathetic": [
+    "Mah.",
+    "Non mi interessa granché.",
+    "Come ti pare.",
+    "È finita?",
+    "Non ha importanza."
+  ]
+}

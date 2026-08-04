@@ -1,0 +1,518 @@
+{
+    "-": {
+        "bank": 0,
+        "program": 0
+    },
+    "9000_cb": {
+        "bank": 0,
+        "program": 0
+    },
+    "EmuDrumulator_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_lt": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_oh": {
+        "bank": 128,
+        "program": 116
+    },
+    "EmuDrumulator_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "SequentialCircuitsDrumtracks_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "agogo": {
+        "bank": 128,
+        "program": 116
+    },
+    "anchor": {
+        "bank": 0,
+        "program": 0
+    },
+    "anvil": {
+        "bank": 0,
+        "program": 0
+    },
+    "ballwhistle": {
+        "bank": 0,
+        "program": 0
+    },
+    "bassdrum2": {
+        "bank": 0,
+        "program": 33
+    },
+    "bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "bongo": {
+        "bank": 128,
+        "program": 116
+    },
+    "brown": {
+        "bank": 0,
+        "program": 0
+    },
+    "cajon": {
+        "bank": 0,
+        "program": 0
+    },
+    "chord": {
+        "bank": 0,
+        "program": 0
+    },
+    "clap": {
+        "bank": 128,
+        "program": 116
+    },
+    "clave": {
+        "bank": 128,
+        "program": 116
+    },
+    "clip": {
+        "bank": 0,
+        "program": 0
+    },
+    "cowbell": {
+        "bank": 128,
+        "program": 116
+    },
+    "cp": {
+        "bank": 128,
+        "program": 116
+    },
+    "cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "crow": {
+        "bank": 0,
+        "program": 0
+    },
+    "dr110_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_accordion": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_acoustic_guitar_nylon": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_acoustic_guitar_steel": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_applause": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_bandoneon": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_baritone_sax": {
+        "bank": 0,
+        "program": 65
+    },
+    "gm_bassoon": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_brass_section": {
+        "bank": 0,
+        "program": 62
+    },
+    "gm_cello": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_choir_aahs": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_church_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_clarinet": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_contrabass": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_distortion_guitar": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_drawbar_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_dulcimer": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_electric_bass_finger": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_electric_bass_pick": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_electric_guitar_clean": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_electric_guitar_jazz": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_flute": {
+        "bank": 0,
+        "program": 73
+    },
+    "gm_fretless_bass": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_gunshot": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_harmonica": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_lead_1_square": {
+        "bank": 0,
+        "program": 80
+    },
+    "gm_lead_2_sawtooth": {
+        "bank": 0,
+        "program": 80
+    },
+    "gm_lead_8_bass_lead": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_marimba": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_oboe": {
+        "bank": 0,
+        "program": 68
+    },
+    "gm_ocarina": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_overdriven_guitar": {
+        "bank": 0,
+        "program": 27
+    },
+    "gm_pad_bowed": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_choir": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_halo": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_poly": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_pad_warm": {
+        "bank": 0,
+        "program": 88
+    },
+    "gm_percussive_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_piano": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_piccolo": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_pizzicato_strings": {
+        "bank": 0,
+        "program": 48
+    },
+    "gm_recorder": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_reed_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_rock_organ": {
+        "bank": 0,
+        "program": 16
+    },
+    "gm_string_ensemble_1": {
+        "bank": 0,
+        "program": 49
+    },
+    "gm_string_ensemble_2": {
+        "bank": 0,
+        "program": 49
+    },
+    "gm_synth_bass_1": {
+        "bank": 0,
+        "program": 33
+    },
+    "gm_synth_strings_1": {
+        "bank": 0,
+        "program": 48
+    },
+    "gm_synth_strings_2": {
+        "bank": 0,
+        "program": 48
+    },
+    "gm_tenor_sax": {
+        "bank": 0,
+        "program": 65
+    },
+    "gm_trombone": {
+        "bank": 0,
+        "program": 57
+    },
+    "gm_trumpet": {
+        "bank": 0,
+        "program": 56
+    },
+    "gm_tuba": {
+        "bank": 0,
+        "program": 58
+    },
+    "gm_vibraphone": {
+        "bank": 0,
+        "program": 0
+    },
+    "gm_violin": {
+        "bank": 0,
+        "program": 40
+    },
+    "gtr": {
+        "bank": 0,
+        "program": 0
+    },
+    "handbells": {
+        "bank": 0,
+        "program": 0
+    },
+    "harmonica_soft": {
+        "bank": 0,
+        "program": 0
+    },
+    "hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "ht": {
+        "bank": 128,
+        "program": 116
+    },
+    "kawai": {
+        "bank": 0,
+        "program": 0
+    },
+    "legacy": {
+        "bank": 0,
+        "program": 0
+    },
+    "linn9000_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "linn9000_lt": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "linn9000_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "linndrum_bd": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_cr": {
+        "bank": 0,
+        "program": 0
+    },
+    "linndrum_hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_oh": {
+        "bank": 128,
+        "program": 116
+    },
+    "linndrum_sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "lt": {
+        "bank": 128,
+        "program": 116
+    },
+    "mt": {
+        "bank": 128,
+        "program": 116
+    },
+    "n": {
+        "bank": 0,
+        "program": 0
+    },
+    "note": {
+        "bank": 0,
+        "program": 0
+    },
+    "ocarina": {
+        "bank": 0,
+        "program": 0
+    },
+    "oh": {
+        "bank": 128,
+        "program": 116
+    },
+    "piano": {
+        "bank": 0,
+        "program": 0
+    },
+    "psaltery_pluck": {
+        "bank": 0,
+        "program": 0
+    },
+    "pulse": {
+        "bank": 0,
+        "program": 0
+    },
+    "r8_rd": {
+        "bank": 128,
+        "program": 116
+    },
+    "rd": {
+        "bank": 128,
+        "program": 116
+    },
+    "recorder_bass_sus": {
+        "bank": 0,
+        "program": 33
+    },
+    "recorder_tenor_sus": {
+        "bank": 0,
+        "program": 0
+    },
+    "rim": {
+        "bank": 128,
+        "program": 116
+    },
+    "saw": {
+        "bank": 0,
+        "program": 0
+    },
+    "sawtooth": {
+        "bank": 0,
+        "program": 81
+    },
+    "sax": {
+        "bank": 0,
+        "program": 65
+    },
+    "sd": {
+        "bank": 0,
+        "program": 0
+    },
+    "shaker_small": {
+        "bank": 128,
+        "program": 116
+    },
+    "sine": {
+        "bank": 0,
+        "program": 0
+    },
+    "sleighbells": {
+        "bank": 0,
+        "program": 0
+    },
+    "square": {
+        "bank": 0,
+        "program": 80
+    },
+    "supersaw": {
+        "bank": 0,
+        "program": 0
+    },
+    "tambourine": {
+        "bank": 0,
+        "program": 0
+    },
+    "tr808_hh": {
+        "bank": 128,
+        "program": 116
+    },
+    "tri": {
+        "bank": 0,
+        "program": 0
+    },
+    "triangle": {
+        "bank": 0,
+        "program": 0
+    },
+    "vibraslap": {
+        "bank": 128,
+        "program": 116
+    },
+    "white": {
+        "bank": 0,
+        "program": 0
+    },
+    "z_sawtooth": {
+        "bank": 0,
+        "program": 81
+    },
+    "z_square": {
+        "bank": 0,
+        "program": 80
+    },
+    "|": {
+        "bank": 0,
+        "program": 0
+    }
+}

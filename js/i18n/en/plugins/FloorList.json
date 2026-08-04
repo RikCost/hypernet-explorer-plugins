@@ -1,0 +1,10 @@
+{
+  "title": "Floor Select",
+  "noFloors": "No other floors discovered",
+  "unknown": "???",
+  "omegaCity": "F-22 Hypermetro",
+  "hypermetro": "F-1 Hypermetro",
+  "hypernetPoint": "F0 - Hypernet point",
+  "unknownMap": "Unknown",
+  "floorHud": "Floor: {num}"
+}

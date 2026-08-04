@@ -1,0 +1,47 @@
+{
+  "info": {
+    "money": "Denaro: {value}",
+    "oilPrice": "Prezzo OIL: {value}",
+    "oilShares": "Azioni OIL: {value}",
+    "oilValue": "Valore OIL: {value}",
+    "netWorth": "Patrimonio: {value}",
+    "soulPrice": "Prezzo SOUL: {value}",
+    "soulShares": "Azioni SOUL: {value}",
+    "soulValue": "Valore SOUL: {value}"
+  },
+  "graph": {
+    "oilLabel": "OIL",
+    "soulLabel": "SOUL",
+    "oilCurrent": "OIL: {value}",
+    "soulCurrent": "SOUL: {value}"
+  },
+  "commands": {
+    "buy": "Compra",
+    "sell": "Vendi",
+    "oil": "OIL",
+    "souls": "SOUL",
+    "cancel": "Annulla",
+    "sellAll": "Vendi Tutto",
+    "share": "azione",
+    "shares": "azioni"
+  },
+  "titles": {
+    "buyWhich": "Compra quale stock?",
+    "sellWhich": "Vendi quale stock?",
+    "buyHowMany": "Compra quante azioni di {stock}?",
+    "sellHowMany": "Vendi quante azioni di {stock}?"
+  },
+  "stockNames": {
+    "oil": "OIL",
+    "souls": "SOUL"
+  },
+  "appName": "Proiettore Quantistico",
+  "portfolio": {
+    "liquid": "Oro Liquido",
+    "netWorth": "Patrimonio Netto"
+  },
+  "ui": {
+    "oilTether": "Ancoraggio Petrolio:",
+    "soulCrystal": "Cristallo d'Anima:"
+  }
+}

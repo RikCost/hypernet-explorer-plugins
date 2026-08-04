@@ -1,0 +1,177 @@
+{
+  "unknownObject": "Oggetto sconosciuto",
+  "unknown": "Sconosciuto",
+  "targetLine": "BERSAGLIO: {target}   TIPO: {type}   LASER: 532nm CW",
+  "axisX": "Spostamento Raman  (cm⁻¹)",
+  "axisY": "Intensità",
+  "statusAnalyzing": "ANALISI DELLA FIRMA SPETTRALE...",
+  "statusComplete": "█ SCANSIONE COMPLETA - LASER 532nm CW  |  RIS: 2 cm⁻¹  |  SNR: 84 dB",
+  "statusScanning": "SCANSIONE LASER{dots}   [ν = {shift} cm⁻¹]",
+  "statusRendering": "RESA DELLO SPETTRO{dots}",
+  "msgHeader": "\\C[8][ SCANNER RAMAN ]\\C[0]",
+  "msgNoMaterial": "Nessun materiale spettralmente attivo rilevato nell'area di scansione.",
+  "msgHint": "Il bersaglio deve essere una statua, un dipinto o un oggetto di biblioteca entro 1 m.",
+  "objectType": {
+    "tagged": "marcato",
+    "fossil": "fossile",
+    "statue": "statua",
+    "painting": "dipinto",
+    "library": "biblioteca",
+    "mask": "maschera",
+    "surface": "superficie"
+  },
+  "material": {
+    "marble": {
+      "name": "Calcite  CaCO₃",
+      "subname": "Marmo"
+    },
+    "granite": {
+      "name": "SiO₂ + Feldspati",
+      "subname": "Granito"
+    },
+    "bronze": {
+      "name": "Cu₂O / SnO₂  lega",
+      "subname": "Bronzo + patina"
+    },
+    "limestone": {
+      "name": "CaCO₃ / MgCO₃",
+      "subname": "Calcare"
+    },
+    "lapis": {
+      "name": "Lazurite  Na₈[Al₆Si₆O₂₄]Sₙ",
+      "subname": "Lapislazzuli + legante a olio"
+    },
+    "vermillion": {
+      "name": "α-HgS  Cinabro",
+      "subname": "Pigmento vermiglione"
+    },
+    "malachite": {
+      "name": "Cu₂(CO₃)(OH)₂",
+      "subname": "Pigmento malachite"
+    },
+    "lead_white": {
+      "name": "2PbCO₃·Pb(OH)₂",
+      "subname": "Pigmento bianco di piombo"
+    },
+    "wood": {
+      "name": "Cellulosa + Lignina",
+      "subname": "Legno duro"
+    },
+    "paper": {
+      "name": "Cellulosa",
+      "subname": "Pergamena invecchiata"
+    },
+    "onyx": {
+      "name": "SiO₂  Calcedonio",
+      "subname": "Onice nero"
+    },
+    "obsidian": {
+      "name": "SiO₂  Vetro vulcanico",
+      "subname": "Ossidiana"
+    },
+    "jade": {
+      "name": "NaAlSi₂O₆  Giadeite",
+      "subname": "Giada"
+    },
+    "quartz": {
+      "name": "SiO₂  α-Quarzo",
+      "subname": "Cristallo di rocca / quarzo"
+    },
+    "sandstone": {
+      "name": "SiO₂ + Cemento calcitico",
+      "subname": "Arenaria"
+    },
+    "basalt": {
+      "name": "Pirosseno + Plagioclasio",
+      "subname": "Basalto"
+    },
+    "alabaster": {
+      "name": "CaSO₄·2H₂O  Gesso",
+      "subname": "Alabastro"
+    },
+    "clay": {
+      "name": "Al₂Si₂O₅(OH)₄  Caolinite",
+      "subname": "Argilla cotta / terracotta"
+    },
+    "gold": {
+      "name": "Au  Strato di ossido superficiale",
+      "subname": "Oro (dorato)"
+    },
+    "silver": {
+      "name": "Ag₂S + AgCl  Ossidazione",
+      "subname": "Argento (ossidato)"
+    },
+    "copper": {
+      "name": "Cu₂O / CuO  Patina",
+      "subname": "Rame"
+    },
+    "iron": {
+      "name": "α-Fe₂O₃  Ematite",
+      "subname": "Ferro (ossidato / arrugginito)"
+    },
+    "steel": {
+      "name": "Fe/C + Fe₂O₃  Lega",
+      "subname": "Acciaio (patinato)"
+    },
+    "ivory": {
+      "name": "Ca₅(PO₄)₃OH  Idrossiapatite",
+      "subname": "Avorio / osso"
+    },
+    "ebony": {
+      "name": "Cellulosa + Lignina (densa)",
+      "subname": "Legno di ebano"
+    },
+    "bamboo": {
+      "name": "Cellulosa + Fitoliti di silice",
+      "subname": "Bambù"
+    },
+    "ultramarine": {
+      "name": "Na₈[AlSiO₄]₆S₃  Sintetico",
+      "subname": "Blu oltremare"
+    },
+    "prussian_blue": {
+      "name": "Fe₇[Fe(CN)₆]₃",
+      "subname": "Blu di Prussia"
+    },
+    "cobalt_blue": {
+      "name": "CoAl₂O₄  Spinello",
+      "subname": "Blu cobalto"
+    },
+    "burnt_sienna": {
+      "name": "α-Fe₂O₃  Terra calcinata",
+      "subname": "Terra di Siena bruciata"
+    },
+    "azurite": {
+      "name": "Cu₃(CO₃)₂(OH)₂",
+      "subname": "Azzurrite"
+    },
+    "viridian": {
+      "name": "Cr₂O₃·H₂O  Ossido di cromo idrato",
+      "subname": "Verde viridiano"
+    },
+    "charcoal": {
+      "name": "Carbonio amorfo",
+      "subname": "Carbone / nero di carbonio"
+    },
+    "amber": {
+      "name": "Resina terpenoide polimerizzata",
+      "subname": "Ambra fossile"
+    },
+    "fossil_bone": {
+      "name": "Bioapatite + Calcite diagenetica",
+      "subname": "Osso permineralizzato"
+    },
+    "fossil_silicified": {
+      "name": "SiO₂  Calcedonio / Selce",
+      "subname": "Fossile silicizzato"
+    },
+    "fossil_pyrite": {
+      "name": "FeS₂  Disolfuro di ferro",
+      "subname": "Fossile piritizzato"
+    },
+    "fossil_calcite": {
+      "name": "CaCO₃  Calcite diagenetica",
+      "subname": "Conchiglia / corallo calcificato"
+    }
+  }
+}

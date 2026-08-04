@@ -1,0 +1,18 @@
+{
+  "archive": "Archivio",
+  "archiveEntry": "Voce dell'Archivio",
+  "general": "Generale",
+  "lore": "Codice",
+  "states": "Stati",
+  "elements": "Elementi",
+  "hints": "Suggerimenti",
+  "selectATopicToStart": "Seleziona un argomento per iniziare a leggere...",
+  "back": "Indietro",
+  "on": "ATTIVI",
+  "off": "DISATTIVI",
+  "worldMapHints": "Suggerimenti in Mappa",
+  "enableOrDisableRealTime": "Abilita o disabilita gli avvisi dei tutorial in tempo reale, i segnaposto della quest e i suggerimenti scritti mentre esplori il mondo.",
+  "configureWorldMapHintsAnd": "Regola le preferenze di navigazione ed i suggerimenti sulla mappa nella pagina a destra.",
+  "noCodexEntriesFoundIn": "Nessun documento trovato in questa categoria...",
+  "command": "Aiuto"
+}

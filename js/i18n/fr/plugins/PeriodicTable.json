@@ -1,0 +1,566 @@
+{
+  "ui": {
+    "title": "",
+    "back": "",
+    "lanthanides": "",
+    "actinides": "",
+    "esotericSection": "",
+    "props": {
+      "symbol": "",
+      "number": "",
+      "mass": "",
+      "category": "",
+      "state": "",
+      "discoveredBy": "",
+      "year": "",
+      "origin": ""
+    }
+  },
+  "categories": {
+    "alkaliMetal": "",
+    "alkalineEarth": "",
+    "transitionMetal": "",
+    "postTransition": "",
+    "metalloid": "",
+    "nonmetal": "",
+    "halogen": "",
+    "nobleGas": "",
+    "lanthanide": "",
+    "actinide": "",
+    "esoteric": ""
+  },
+  "states": {
+    "solid": "",
+    "liquid": "",
+    "gas": "",
+    "unknown": "",
+    "mythical": "",
+    "superposed": ""
+  },
+  "data": {
+    "H": {
+      "name": "",
+      "desc": ""
+    },
+    "He": {
+      "name": "",
+      "desc": ""
+    },
+    "Li": {
+      "name": "",
+      "desc": ""
+    },
+    "Be": {
+      "name": "",
+      "desc": ""
+    },
+    "B": {
+      "name": "",
+      "desc": ""
+    },
+    "C": {
+      "name": "",
+      "desc": ""
+    },
+    "N": {
+      "name": "",
+      "desc": ""
+    },
+    "O": {
+      "name": "",
+      "desc": ""
+    },
+    "F": {
+      "name": "",
+      "desc": ""
+    },
+    "Ne": {
+      "name": "",
+      "desc": ""
+    },
+    "Na": {
+      "name": "",
+      "desc": ""
+    },
+    "Mg": {
+      "name": "",
+      "desc": ""
+    },
+    "Al": {
+      "name": "",
+      "desc": ""
+    },
+    "Si": {
+      "name": "",
+      "desc": ""
+    },
+    "P": {
+      "name": "",
+      "desc": ""
+    },
+    "S": {
+      "name": "",
+      "desc": ""
+    },
+    "Cl": {
+      "name": "",
+      "desc": ""
+    },
+    "Ar": {
+      "name": "",
+      "desc": ""
+    },
+    "K": {
+      "name": "",
+      "desc": ""
+    },
+    "Ca": {
+      "name": "",
+      "desc": ""
+    },
+    "Sc": {
+      "name": "",
+      "desc": ""
+    },
+    "Ti": {
+      "name": "",
+      "desc": ""
+    },
+    "V": {
+      "name": "",
+      "desc": ""
+    },
+    "Cr": {
+      "name": "",
+      "desc": ""
+    },
+    "Mn": {
+      "name": "",
+      "desc": ""
+    },
+    "Fe": {
+      "name": "",
+      "desc": ""
+    },
+    "Co": {
+      "name": "",
+      "desc": ""
+    },
+    "Ni": {
+      "name": "",
+      "desc": ""
+    },
+    "Cu": {
+      "name": "",
+      "desc": ""
+    },
+    "Zn": {
+      "name": "",
+      "desc": ""
+    },
+    "Ga": {
+      "name": "",
+      "desc": ""
+    },
+    "Ge": {
+      "name": "",
+      "desc": ""
+    },
+    "As": {
+      "name": "",
+      "desc": ""
+    },
+    "Se": {
+      "name": "",
+      "desc": ""
+    },
+    "Br": {
+      "name": "",
+      "desc": ""
+    },
+    "Kr": {
+      "name": "",
+      "desc": ""
+    },
+    "Rb": {
+      "name": "",
+      "desc": ""
+    },
+    "Sr": {
+      "name": "",
+      "desc": ""
+    },
+    "Y": {
+      "name": "",
+      "desc": ""
+    },
+    "Zr": {
+      "name": "",
+      "desc": ""
+    },
+    "Nb": {
+      "name": "",
+      "desc": ""
+    },
+    "Mo": {
+      "name": "",
+      "desc": ""
+    },
+    "Tc": {
+      "name": "",
+      "desc": ""
+    },
+    "Ru": {
+      "name": "",
+      "desc": ""
+    },
+    "Rh": {
+      "name": "",
+      "desc": ""
+    },
+    "Pd": {
+      "name": "",
+      "desc": ""
+    },
+    "Ag": {
+      "name": "",
+      "desc": ""
+    },
+    "Cd": {
+      "name": "",
+      "desc": ""
+    },
+    "In": {
+      "name": "",
+      "desc": ""
+    },
+    "Sn": {
+      "name": "",
+      "desc": ""
+    },
+    "Sb": {
+      "name": "",
+      "desc": ""
+    },
+    "Te": {
+      "name": "",
+      "desc": ""
+    },
+    "I": {
+      "name": "",
+      "desc": ""
+    },
+    "Xe": {
+      "name": "",
+      "desc": ""
+    },
+    "Cs": {
+      "name": "",
+      "desc": ""
+    },
+    "Ba": {
+      "name": "",
+      "desc": ""
+    },
+    "Hf": {
+      "name": "",
+      "desc": ""
+    },
+    "Ta": {
+      "name": "",
+      "desc": ""
+    },
+    "W": {
+      "name": "",
+      "desc": ""
+    },
+    "Re": {
+      "name": "",
+      "desc": ""
+    },
+    "Os": {
+      "name": "",
+      "desc": ""
+    },
+    "Ir": {
+      "name": "",
+      "desc": ""
+    },
+    "Pt": {
+      "name": "",
+      "desc": ""
+    },
+    "Au": {
+      "name": "",
+      "desc": ""
+    },
+    "Hg": {
+      "name": "",
+      "desc": ""
+    },
+    "Tl": {
+      "name": "",
+      "desc": ""
+    },
+    "Pb": {
+      "name": "",
+      "desc": ""
+    },
+    "Bi": {
+      "name": "",
+      "desc": ""
+    },
+    "Po": {
+      "name": "",
+      "desc": ""
+    },
+    "At": {
+      "name": "",
+      "desc": ""
+    },
+    "Rn": {
+      "name": "",
+      "desc": ""
+    },
+    "Fr": {
+      "name": "",
+      "desc": ""
+    },
+    "Ra": {
+      "name": "",
+      "desc": ""
+    },
+    "Rf": {
+      "name": "",
+      "desc": ""
+    },
+    "Db": {
+      "name": "",
+      "desc": ""
+    },
+    "Sg": {
+      "name": "",
+      "desc": ""
+    },
+    "Bh": {
+      "name": "",
+      "desc": ""
+    },
+    "Hs": {
+      "name": "",
+      "desc": ""
+    },
+    "Mt": {
+      "name": "",
+      "desc": ""
+    },
+    "Ds": {
+      "name": "",
+      "desc": ""
+    },
+    "Rg": {
+      "name": "",
+      "desc": ""
+    },
+    "Cn": {
+      "name": "",
+      "desc": ""
+    },
+    "Nh": {
+      "name": "",
+      "desc": ""
+    },
+    "Fl": {
+      "name": "",
+      "desc": ""
+    },
+    "Mc": {
+      "name": "",
+      "desc": ""
+    },
+    "Lv": {
+      "name": "",
+      "desc": ""
+    },
+    "Ts": {
+      "name": "",
+      "desc": ""
+    },
+    "Og": {
+      "name": "",
+      "desc": ""
+    },
+    "La": {
+      "name": "",
+      "desc": ""
+    },
+    "Ce": {
+      "name": "",
+      "desc": ""
+    },
+    "Pr": {
+      "name": "",
+      "desc": ""
+    },
+    "Nd": {
+      "name": "",
+      "desc": ""
+    },
+    "Pm": {
+      "name": "",
+      "desc": ""
+    },
+    "Sm": {
+      "name": "",
+      "desc": ""
+    },
+    "Eu": {
+      "name": "",
+      "desc": ""
+    },
+    "Gd": {
+      "name": "",
+      "desc": ""
+    },
+    "Tb": {
+      "name": "",
+      "desc": ""
+    },
+    "Dy": {
+      "name": "",
+      "desc": ""
+    },
+    "Ho": {
+      "name": "",
+      "desc": ""
+    },
+    "Er": {
+      "name": "",
+      "desc": ""
+    },
+    "Tm": {
+      "name": "",
+      "desc": ""
+    },
+    "Yb": {
+      "name": "",
+      "desc": ""
+    },
+    "Lu": {
+      "name": "",
+      "desc": ""
+    },
+    "Ac": {
+      "name": "",
+      "desc": ""
+    },
+    "Th": {
+      "name": "",
+      "desc": ""
+    },
+    "Pa": {
+      "name": "",
+      "desc": ""
+    },
+    "U": {
+      "name": "",
+      "desc": ""
+    },
+    "Np": {
+      "name": "",
+      "desc": ""
+    },
+    "Pu": {
+      "name": "",
+      "desc": ""
+    },
+    "Am": {
+      "name": "",
+      "desc": ""
+    },
+    "Cm": {
+      "name": "",
+      "desc": ""
+    },
+    "Bk": {
+      "name": "",
+      "desc": ""
+    },
+    "Cf": {
+      "name": "",
+      "desc": ""
+    },
+    "Es": {
+      "name": "",
+      "desc": ""
+    },
+    "Fm": {
+      "name": "",
+      "desc": ""
+    },
+    "Md": {
+      "name": "",
+      "desc": ""
+    },
+    "No": {
+      "name": "",
+      "desc": ""
+    },
+    "Lr": {
+      "name": "",
+      "desc": ""
+    },
+    "My": {
+      "name": "",
+      "desc": ""
+    },
+    "Ad": {
+      "name": "",
+      "desc": ""
+    },
+    "Ae": {
+      "name": "",
+      "desc": ""
+    },
+    "Vd": {
+      "name": "",
+      "desc": ""
+    },
+    "Sl": {
+      "name": "",
+      "desc": ""
+    },
+    "Dc": {
+      "name": "",
+      "desc": ""
+    },
+    "Ma": {
+      "name": "",
+      "desc": ""
+    },
+    "Sh": {
+      "name": "",
+      "desc": ""
+    }
+  },
+  "unknownDiscoverer": "",
+  "eras": {
+    "ancient": "",
+    "primordial": "",
+    "eternal": "",
+    "unknown": "",
+    "antediluvian": "",
+    "arcaneAge": "",
+    "unobserved": ""
+  },
+  "origins": {
+    "dwarvishMountains": "",
+    "dragonBones": "",
+    "aetherPlane": "",
+    "voidBetween": "",
+    "soulCrystals": "",
+    "draconicCore": "",
+    "leylineNexus": "",
+    "eventHorizon": ""
+  }
+}

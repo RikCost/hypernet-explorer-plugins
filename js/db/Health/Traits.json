@@ -10,7 +10,9 @@
       "agi": -1,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      51
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -19,7 +21,8 @@
       6
     ],
     "name": "traits.obese.name",
-    "description": "traits.obese.description"
+    "description": "traits.obese.description",
+    "category": "genetic"
   },
   {
     "id": 2,
@@ -41,11 +44,12 @@
       6
     ],
     "name": "traits.underweight.name",
-    "description": "traits.underweight.description"
+    "description": "traits.underweight.description",
+    "category": "genetic"
   },
   {
     "id": 3,
-    "icon": 306,
+    "icon": 211,
     "positive": {
       "agi": 1,
       "luk": 5
@@ -60,7 +64,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.claustrophobic.name",
-    "description": "traits.claustrophobic.description"
+    "description": "traits.claustrophobic.description",
+    "category": "mental"
   },
   {
     "id": 4,
@@ -73,7 +78,9 @@
       "def": -1,
       "mp": -1
     },
-    "skills": [],
+    "skills": [
+      119
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -82,7 +89,8 @@
       30
     ],
     "name": "traits.trigger_happy.name",
-    "description": "traits.trigger_happy.description"
+    "description": "traits.trigger_happy.description",
+    "category": "mental"
   },
   {
     "id": 5,
@@ -104,11 +112,12 @@
       37
     ],
     "name": "traits.paranoid.name",
-    "description": "traits.paranoid.description"
+    "description": "traits.paranoid.description",
+    "category": "mental"
   },
   {
     "id": 6,
-    "icon": 77,
+    "icon": 30,
     "positive": {
       "atk": 1,
       "agi": 8,
@@ -118,7 +127,9 @@
       "mat": -1,
       "mp": -1
     },
-    "skills": [],
+    "skills": [
+      55
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -129,11 +140,12 @@
       21
     ],
     "name": "traits.athletic.name",
-    "description": "traits.athletic.description"
+    "description": "traits.athletic.description",
+    "category": "physical"
   },
   {
     "id": 7,
-    "icon": 72,
+    "icon": 186,
     "positive": {
       "mat": 2,
       "mp": 4,
@@ -143,7 +155,9 @@
       "atk": -1,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      12
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -152,7 +166,8 @@
       34
     ],
     "name": "traits.genius.name",
-    "description": "traits.genius.description"
+    "description": "traits.genius.description",
+    "category": "mental"
   },
   {
     "id": 8,
@@ -174,7 +189,8 @@
       36
     ],
     "name": "traits.lucky.name",
-    "description": "traits.lucky.description"
+    "description": "traits.lucky.description",
+    "category": "genetic"
   },
   {
     "id": 9,
@@ -187,7 +203,9 @@
       "agi": -2,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      38
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -197,7 +215,8 @@
       24
     ],
     "name": "traits.narcoleptic.name",
-    "description": "traits.narcoleptic.description"
+    "description": "traits.narcoleptic.description",
+    "category": "genetic"
   },
   {
     "id": 10,
@@ -211,7 +230,9 @@
       "mdf": -1,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      42
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -221,7 +242,8 @@
       33
     ],
     "name": "traits.hot-headed.name",
-    "description": "traits.hot-headed.description"
+    "description": "traits.hot-headed.description",
+    "category": "mental"
   },
   {
     "id": 11,
@@ -235,7 +257,9 @@
       "atk": -1,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      34
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -243,11 +267,12 @@
       24
     ],
     "name": "traits.defensive.name",
-    "description": "traits.defensive.description"
+    "description": "traits.defensive.description",
+    "category": "physical"
   },
   {
     "id": 12,
-    "icon": 116,
+    "icon": 102,
     "positive": {
       "atk": 1,
       "eva": 1,
@@ -257,7 +282,10 @@
       "def": -1,
       "hp": -20
     },
-    "skills": [],
+    "skills": [
+      1040,
+      1042
+    ],
     "items": [
       8
     ],
@@ -270,7 +298,8 @@
       25
     ],
     "name": "traits.marksman.name",
-    "description": "traits.marksman.description"
+    "description": "traits.marksman.description",
+    "category": "physical"
   },
   {
     "id": 13,
@@ -290,11 +319,12 @@
       12
     ],
     "name": "traits.nearsighted.name",
-    "description": "traits.nearsighted.description"
+    "description": "traits.nearsighted.description",
+    "category": "genetic"
   },
   {
     "id": 14,
-    "icon": 3,
+    "icon": 132,
     "positive": {
       "atk": 1,
       "def": 1
@@ -312,11 +342,12 @@
       33
     ],
     "name": "traits.lombrosian_physiognomy.name",
-    "description": "traits.lombrosian_physiognomy.description"
+    "description": "traits.lombrosian_physiognomy.description",
+    "category": "genetic"
   },
   {
     "id": 67,
-    "icon": 71,
+    "icon": 67,
     "positive": {
       "agi": 2,
       "mp": 2
@@ -331,7 +362,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.hydrophobic.name",
-    "description": "traits.hydrophobic.description"
+    "description": "traits.hydrophobic.description",
+    "category": "mental"
   },
   {
     "id": 16,
@@ -345,7 +377,9 @@
       "atk": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1140
+    ],
     "items": [],
     "equipment": [],
     "switches": [
@@ -357,7 +391,8 @@
       32
     ],
     "name": "traits.silvertongue.name",
-    "description": "traits.silvertongue.description"
+    "description": "traits.silvertongue.description",
+    "category": "mental"
   },
   {
     "id": 17,
@@ -379,11 +414,12 @@
       18
     ],
     "name": "traits.vegan.name",
-    "description": "traits.vegan.description"
+    "description": "traits.vegan.description",
+    "category": "mental"
   },
   {
     "id": 18,
-    "icon": 267,
+    "icon": 256,
     "positive": {
       "mdf": 1,
       "mp": 2,
@@ -401,11 +437,12 @@
       17
     ],
     "name": "traits.vegetarian.name",
-    "description": "traits.vegetarian.description"
+    "description": "traits.vegetarian.description",
+    "category": "mental"
   },
   {
     "id": 247,
-    "icon": 15,
+    "icon": 222,
     "positive": {
       "mat": 2,
       "luk": 1,
@@ -425,11 +462,12 @@
       40
     ],
     "name": "traits.impostor_syndrome.name",
-    "description": "traits.impostor_syndrome.description"
+    "description": "traits.impostor_syndrome.description",
+    "category": "mental"
   },
   {
     "id": 20,
-    "icon": 84,
+    "icon": 294,
     "positive": {
       "hp": 30,
       "atk": 2,
@@ -441,7 +479,10 @@
       "mdf": -2,
       "luk": -2
     },
-    "skills": [],
+    "skills": [
+      73,
+      635
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -452,11 +493,12 @@
       39
     ],
     "name": "traits.vampire.name",
-    "description": "traits.vampire.description"
+    "description": "traits.vampire.description",
+    "category": "magical"
   },
   {
     "id": 21,
-    "icon": 1,
+    "icon": 8,
     "positive": {
       "agi": 2,
       "eva": 1,
@@ -478,7 +520,8 @@
       39
     ],
     "name": "traits.insomniac.name",
-    "description": "traits.insomniac.description"
+    "description": "traits.insomniac.description",
+    "category": "genetic"
   },
   {
     "id": 22,
@@ -494,8 +537,13 @@
       "agi": -1,
       "luk": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      35
+    ],
+    "items": [
+      544,
+      544
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -504,7 +552,8 @@
       40
     ],
     "name": "traits.alcoholic.name",
-    "description": "traits.alcoholic.description"
+    "description": "traits.alcoholic.description",
+    "category": "mental"
   },
   {
     "id": 23,
@@ -518,7 +567,9 @@
       "agi": -1,
       "hp": -5
     },
-    "skills": [],
+    "skills": [
+      204
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -527,7 +578,8 @@
       27
     ],
     "name": "traits.germaphobe.name",
-    "description": "traits.germaphobe.description"
+    "description": "traits.germaphobe.description",
+    "category": "mental"
   },
   {
     "id": 24,
@@ -542,7 +594,9 @@
       "mdf": -1,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      60
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -553,7 +607,8 @@
       30
     ],
     "name": "traits.adrenaline_junkie.name",
-    "description": "traits.adrenaline_junkie.description"
+    "description": "traits.adrenaline_junkie.description",
+    "category": "mental"
   },
   {
     "id": 25,
@@ -568,7 +623,9 @@
       "atk": -3,
       "mat": -1
     },
-    "skills": [],
+    "skills": [
+      210
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -581,7 +638,8 @@
       32
     ],
     "name": "traits.pacifist.name",
-    "description": "traits.pacifist.description"
+    "description": "traits.pacifist.description",
+    "category": "mental"
   },
   {
     "id": 26,
@@ -595,8 +653,15 @@
       "def": -1,
       "luk": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1714,
+      1712
+    ],
+    "items": [
+      73,
+      73,
+      80
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -604,7 +669,8 @@
       30
     ],
     "name": "traits.pyromaniac.name",
-    "description": "traits.pyromaniac.description"
+    "description": "traits.pyromaniac.description",
+    "category": "mental"
   },
   {
     "id": 27,
@@ -618,8 +684,13 @@
       "agi": -2,
       "eva": -2
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1636
+    ],
+    "items": [
+      710,
+      721
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -627,11 +698,12 @@
       28
     ],
     "name": "traits.hoarder.name",
-    "description": "traits.hoarder.description"
+    "description": "traits.hoarder.description",
+    "category": "mental"
   },
   {
     "id": 28,
-    "icon": 208,
+    "icon": 235,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -642,18 +714,21 @@
       "def": -1
     },
     "skills": [],
-    "items": [],
+    "items": [
+      805
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       27
     ],
     "name": "traits.minimalist.name",
-    "description": "traits.minimalist.description"
+    "description": "traits.minimalist.description",
+    "category": "mental"
   },
   {
     "id": 29,
-    "icon": 8,
+    "icon": 10,
     "positive": {
       "luk": 2,
       "eva": 2,
@@ -663,7 +738,9 @@
       "mdf": -2,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      1136
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -673,11 +750,12 @@
       37
     ],
     "name": "traits.compulsive_liar.name",
-    "description": "traits.compulsive_liar.description"
+    "description": "traits.compulsive_liar.description",
+    "category": "mental"
   },
   {
     "id": 30,
-    "icon": 124,
+    "icon": 305,
     "positive": {
       "mat": 2,
       "def": 1,
@@ -688,7 +766,9 @@
       "hp": -5,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      62
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -700,11 +780,12 @@
       26
     ],
     "name": "traits.perfectionist.name",
-    "description": "traits.perfectionist.description"
+    "description": "traits.perfectionist.description",
+    "category": "mental"
   },
   {
     "id": 31,
-    "icon": 224,
+    "icon": 345,
     "positive": {
       "def": 3,
       "hp": 20,
@@ -714,13 +795,16 @@
       "eva": -3,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      627
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.masochist.name",
-    "description": "traits.masochist.description"
+    "description": "traits.masochist.description",
+    "category": "mental"
   },
   {
     "id": 32,
@@ -735,7 +819,9 @@
       "def": -1,
       "mp": -3
     },
-    "skills": [],
+    "skills": [
+      72
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -745,7 +831,8 @@
       33
     ],
     "name": "traits.sociopath.name",
-    "description": "traits.sociopath.description"
+    "description": "traits.sociopath.description",
+    "category": "mental"
   },
   {
     "id": 33,
@@ -760,7 +847,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1619
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -772,11 +861,12 @@
       32
     ],
     "name": "traits.empath.name",
-    "description": "traits.empath.description"
+    "description": "traits.empath.description",
+    "category": "mental"
   },
   {
     "id": 34,
-    "icon": 68,
+    "icon": 83,
     "positive": {
       "hp": 15,
       "def": 2,
@@ -788,7 +878,9 @@
       "eva": -1
     },
     "skills": [],
-    "items": [],
+    "items": [
+      115
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -796,11 +888,12 @@
       35
     ],
     "name": "traits.technophobe.name",
-    "description": "traits.technophobe.description"
+    "description": "traits.technophobe.description",
+    "category": "mental"
   },
   {
     "id": 35,
-    "icon": 83,
+    "icon": 398,
     "positive": {
       "mat": 3,
       "agi": 1,
@@ -811,19 +904,25 @@
       "def": -1,
       "hp": -15
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1205
+    ],
+    "items": [
+      122,
+      726
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       34
     ],
     "name": "traits.tech_savvy.name",
-    "description": "traits.tech_savvy.description"
+    "description": "traits.tech_savvy.description",
+    "category": "mental"
   },
   {
     "id": 36,
-    "icon": 86,
+    "icon": 160,
     "positive": {
       "luk": 4,
       "eva": 1
@@ -832,8 +931,13 @@
       "mat": -2,
       "agi": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1405
+    ],
+    "items": [
+      346,
+      347
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -841,11 +945,12 @@
       37
     ],
     "name": "traits.superstitious.name",
-    "description": "traits.superstitious.description"
+    "description": "traits.superstitious.description",
+    "category": "mental"
   },
   {
     "id": 37,
-    "icon": 149,
+    "icon": 281,
     "positive": {
       "mat": 2,
       "mdf": 2,
@@ -865,11 +970,12 @@
       36
     ],
     "name": "traits.skeptic.name",
-    "description": "traits.skeptic.description"
+    "description": "traits.skeptic.description",
+    "category": "mental"
   },
   {
     "id": 38,
-    "icon": 241,
+    "icon": 71,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -888,7 +994,8 @@
       39
     ],
     "name": "traits.night_owl.name",
-    "description": "traits.night_owl.description"
+    "description": "traits.night_owl.description",
+    "category": "genetic"
   },
   {
     "id": 39,
@@ -913,11 +1020,12 @@
       38
     ],
     "name": "traits.early_bird.name",
-    "description": "traits.early_bird.description"
+    "description": "traits.early_bird.description",
+    "category": "genetic"
   },
   {
     "id": 40,
-    "icon": 193,
+    "icon": 220,
     "positive": {
       "atk": 1,
       "mat": 1,
@@ -930,7 +1038,9 @@
       "eva": -1
     },
     "skills": [],
-    "items": [],
+    "items": [
+      179
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -938,11 +1048,12 @@
       22
     ],
     "name": "traits.workaholic.name",
-    "description": "traits.workaholic.description"
+    "description": "traits.workaholic.description",
+    "category": "mental"
   },
   {
     "id": 41,
-    "icon": 222,
+    "icon": 183,
     "positive": {
       "mat": 3,
       "mdf": 2,
@@ -953,7 +1064,9 @@
       "atk": -1,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      45
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -962,11 +1075,12 @@
       34
     ],
     "name": "traits.photographic_memory.name",
-    "description": "traits.photographic_memory.description"
+    "description": "traits.photographic_memory.description",
+    "category": "genetic"
   },
   {
     "id": 42,
-    "icon": 240,
+    "icon": 224,
     "positive": {
       "def": 1,
       "hp": 5
@@ -981,7 +1095,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.colorblind.name",
-    "description": "traits.colorblind.description"
+    "description": "traits.colorblind.description",
+    "category": "genetic"
   },
   {
     "id": 43,
@@ -995,17 +1110,20 @@
       "mp": -2,
       "mat": -1
     },
-    "skills": [],
+    "skills": [
+      118
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.ambidextrous.name",
-    "description": "traits.ambidextrous.description"
+    "description": "traits.ambidextrous.description",
+    "category": "genetic"
   },
   {
     "id": 44,
-    "icon": 148,
+    "icon": 3,
     "positive": {
       "mdf": 5,
       "def": 2,
@@ -1016,7 +1134,9 @@
       "eva": -3,
       "agi": -2
     },
-    "skills": [],
+    "skills": [
+      301
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1025,11 +1145,12 @@
       13
     ],
     "name": "traits.blind.name",
-    "description": "traits.blind.description"
+    "description": "traits.blind.description",
+    "category": "genetic"
   },
   {
     "id": 45,
-    "icon": 159,
+    "icon": 146,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -1046,11 +1167,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.deaf.name",
-    "description": "traits.deaf.description"
+    "description": "traits.deaf.description",
+    "category": "genetic"
   },
   {
     "id": 46,
-    "icon": 183,
+    "icon": 214,
     "positive": {
       "def": 2,
       "mdf": 2,
@@ -1068,11 +1190,12 @@
       3
     ],
     "name": "traits.agoraphobic.name",
-    "description": "traits.agoraphobic.description"
+    "description": "traits.agoraphobic.description",
+    "category": "mental"
   },
   {
     "id": 47,
-    "icon": 352,
+    "icon": 353,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -1083,7 +1206,10 @@
       "mdf": -2,
       "mp": -3
     },
-    "skills": [],
+    "skills": [
+      74,
+      91
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1093,11 +1219,12 @@
       33
     ],
     "name": "traits.sadist.name",
-    "description": "traits.sadist.description"
+    "description": "traits.sadist.description",
+    "category": "mental"
   },
   {
     "id": 48,
-    "icon": 84,
+    "icon": 2,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -1118,11 +1245,12 @@
       47
     ],
     "name": "traits.hemophobic.name",
-    "description": "traits.hemophobic.description"
+    "description": "traits.hemophobic.description",
+    "category": "mental"
   },
   {
     "id": 49,
-    "icon": 143,
+    "icon": 209,
     "positive": {
       "luk": 4,
       "agi": 2,
@@ -1133,19 +1261,25 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1259
+    ],
+    "items": [
+      709,
+      709
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       28
     ],
     "name": "traits.kleptomaniac.name",
-    "description": "traits.kleptomaniac.description"
+    "description": "traits.kleptomaniac.description",
+    "category": "mental"
   },
   {
     "id": 50,
-    "icon": 75,
+    "icon": 138,
     "positive": {
       "mp": 10,
       "mdf": 3,
@@ -1156,8 +1290,12 @@
       "hp": -20,
       "agi": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      105
+    ],
+    "items": [
+      804
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -1167,7 +1305,8 @@
       40
     ],
     "name": "traits.ascetic.name",
-    "description": "traits.ascetic.description"
+    "description": "traits.ascetic.description",
+    "category": "mental"
   },
   {
     "id": 51,
@@ -1188,11 +1327,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.acrophobic.name",
-    "description": "traits.acrophobic.description"
+    "description": "traits.acrophobic.description",
+    "category": "mental"
   },
   {
     "id": 52,
-    "icon": 82,
+    "icon": 80,
     "positive": {
       "mat": 2,
       "luk": 2,
@@ -1212,11 +1352,12 @@
       45
     ],
     "name": "traits.synesthete.name",
-    "description": "traits.synesthete.description"
+    "description": "traits.synesthete.description",
+    "category": "genetic"
   },
   {
     "id": 53,
-    "icon": 146,
+    "icon": 351,
     "positive": {
       "atk": 4,
       "hp": 20,
@@ -1227,7 +1368,9 @@
       "mdf": -3,
       "eva": -2
     },
-    "skills": [],
+    "skills": [
+      194
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1237,7 +1380,8 @@
       30
     ],
     "name": "traits.berserker.name",
-    "description": "traits.berserker.description"
+    "description": "traits.berserker.description",
+    "category": "physical"
   },
   {
     "id": 54,
@@ -1252,7 +1396,10 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      5,
+      1264
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1261,11 +1408,12 @@
       53
     ],
     "name": "traits.coward.name",
-    "description": "traits.coward.description"
+    "description": "traits.coward.description",
+    "category": "mental"
   },
   {
     "id": 55,
-    "icon": 379,
+    "icon": 125,
     "positive": {
       "def": 2,
       "atk": 2,
@@ -1285,7 +1433,8 @@
       33
     ],
     "name": "traits.xenophobic.name",
-    "description": "traits.xenophobic.description"
+    "description": "traits.xenophobic.description",
+    "category": "mental"
   },
   {
     "id": 56,
@@ -1308,11 +1457,12 @@
       23
     ],
     "name": "traits.hypochondriac.name",
-    "description": "traits.hypochondriac.description"
+    "description": "traits.hypochondriac.description",
+    "category": "mental"
   },
   {
     "id": 57,
-    "icon": 190,
+    "icon": 189,
     "positive": {
       "mat": 3,
       "mp": 5,
@@ -1323,7 +1473,9 @@
       "def": -1,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      1634
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1332,7 +1484,8 @@
       34
     ],
     "name": "traits.eidetic_reader.name",
-    "description": "traits.eidetic_reader.description"
+    "description": "traits.eidetic_reader.description",
+    "category": "genetic"
   },
   {
     "id": 58,
@@ -1354,11 +1507,12 @@
       12
     ],
     "name": "traits.amblyopic.name",
-    "description": "traits.amblyopic.description"
+    "description": "traits.amblyopic.description",
+    "category": "genetic"
   },
   {
     "id": 59,
-    "icon": 132,
+    "icon": 306,
     "positive": {
       "def": 2,
       "hp": 10,
@@ -1375,11 +1529,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.prosopagnosic.name",
-    "description": "traits.prosopagnosic.description"
+    "description": "traits.prosopagnosic.description",
+    "category": "genetic"
   },
   {
     "id": 60,
-    "icon": 138,
+    "icon": 145,
     "positive": {
       "atk": 3,
       "mat": 3,
@@ -1390,7 +1545,9 @@
       "mdf": -3,
       "eva": -2
     },
-    "skills": [],
+    "skills": [
+      1213
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1400,11 +1557,12 @@
       54
     ],
     "name": "traits.megalomaniac.name",
-    "description": "traits.megalomaniac.description"
+    "description": "traits.megalomaniac.description",
+    "category": "mental"
   },
   {
     "id": 61,
-    "icon": 131,
+    "icon": 88,
     "positive": {
       "mp": 4,
       "mat": 2,
@@ -1421,7 +1579,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.albinism.name",
-    "description": "traits.albinism.description"
+    "description": "traits.albinism.description",
+    "category": "genetic"
   },
   {
     "id": 62,
@@ -1436,7 +1595,9 @@
       "eva": -2,
       "mp": -3
     },
-    "skills": [],
+    "skills": [
+      263
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1445,11 +1606,12 @@
       63
     ],
     "name": "traits.gigantism.name",
-    "description": "traits.gigantism.description"
+    "description": "traits.gigantism.description",
+    "category": "genetic"
   },
   {
     "id": 63,
-    "icon": 137,
+    "icon": 216,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -1469,11 +1631,12 @@
       62
     ],
     "name": "traits.dwarfism.name",
-    "description": "traits.dwarfism.description"
+    "description": "traits.dwarfism.description",
+    "category": "genetic"
   },
   {
     "id": 64,
-    "icon": 85,
+    "icon": 162,
     "positive": {
       "mat": 2,
       "mp": 5,
@@ -1493,11 +1656,12 @@
       24
     ],
     "name": "traits.hemophilia.name",
-    "description": "traits.hemophilia.description"
+    "description": "traits.hemophilia.description",
+    "category": "genetic"
   },
   {
     "id": 65,
-    "icon": 292,
+    "icon": 378,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -1516,11 +1680,12 @@
       6
     ],
     "name": "traits.marfan_syndrome.name",
-    "description": "traits.marfan_syndrome.description"
+    "description": "traits.marfan_syndrome.description",
+    "category": "genetic"
   },
   {
     "id": 66,
-    "icon": 352,
+    "icon": 342,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -1531,16 +1696,19 @@
       "hp": -15,
       "atk": -1
     },
-    "skills": [],
+    "skills": [
+      46
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.hypermobility.name",
-    "description": "traits.hypermobility.description"
+    "description": "traits.hypermobility.description",
+    "category": "genetic"
   },
   {
-    "id": 67,
+    "id": 19,
     "icon": 142,
     "positive": {
       "agi": 2,
@@ -1551,17 +1719,20 @@
       "eva": -1,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      122
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.polydactyly.name",
-    "description": "traits.polydactyly.description"
+    "description": "traits.polydactyly.description",
+    "category": "genetic"
   },
   {
     "id": 68,
-    "icon": 167,
+    "icon": 291,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -1578,11 +1749,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.hypertrichosis.name",
-    "description": "traits.hypertrichosis.description"
+    "description": "traits.hypertrichosis.description",
+    "category": "genetic"
   },
   {
     "id": 69,
-    "icon": 177,
+    "icon": 169,
     "positive": {
       "mdf": 3,
       "mp": 4,
@@ -1602,11 +1774,12 @@
       24
     ],
     "name": "traits.thalassemia.name",
-    "description": "traits.thalassemia.description"
+    "description": "traits.thalassemia.description",
+    "category": "genetic"
   },
   {
     "id": 70,
-    "icon": 151,
+    "icon": 158,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -1624,11 +1797,12 @@
       44
     ],
     "name": "traits.heterochromia.name",
-    "description": "traits.heterochromia.description"
+    "description": "traits.heterochromia.description",
+    "category": "genetic"
   },
   {
     "id": 71,
-    "icon": 75,
+    "icon": 297,
     "positive": {
       "def": 2,
       "eva": 2,
@@ -1649,11 +1823,12 @@
       63
     ],
     "name": "traits.sensitive.name",
-    "description": "traits.sensitive.description"
+    "description": "traits.sensitive.description",
+    "category": "mental"
   },
   {
     "id": 72,
-    "icon": 162,
+    "icon": 168,
     "positive": {
       "def": 2,
       "mdf": 2,
@@ -1673,11 +1848,12 @@
       24
     ],
     "name": "traits.sickle_cell_trait.name",
-    "description": "traits.sickle_cell_trait.description"
+    "description": "traits.sickle_cell_trait.description",
+    "category": "genetic"
   },
   {
     "id": 73,
-    "icon": 161,
+    "icon": 194,
     "positive": {
       "agi": 4,
       "eva": 3
@@ -1695,11 +1871,12 @@
       6
     ],
     "name": "traits.ehlers-danlos.name",
-    "description": "traits.ehlers-danlos.description"
+    "description": "traits.ehlers-danlos.description",
+    "category": "genetic"
   },
   {
     "id": 74,
-    "icon": 4,
+    "icon": 104,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -1710,7 +1887,9 @@
       "mdf": -2,
       "luk": -2
     },
-    "skills": [],
+    "skills": [
+      54
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1719,11 +1898,12 @@
       48
     ],
     "name": "traits.congenital_analgesia.name",
-    "description": "traits.congenital_analgesia.description"
+    "description": "traits.congenital_analgesia.description",
+    "category": "genetic"
   },
   {
     "id": 75,
-    "icon": 71,
+    "icon": 196,
     "positive": {
       "mat": 5,
       "mp": 10,
@@ -1735,13 +1915,16 @@
       "agi": -2,
       "hp": -20
     },
-    "skills": [],
+    "skills": [
+      989
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.savant_syndrome.name",
-    "description": "traits.savant_syndrome.description"
+    "description": "traits.savant_syndrome.description",
+    "category": "genetic"
   },
   {
     "id": 76,
@@ -1765,7 +1948,8 @@
       24
     ],
     "name": "traits.asthmatic.name",
-    "description": "traits.asthmatic.description"
+    "description": "traits.asthmatic.description",
+    "category": "genetic"
   },
   {
     "id": 77,
@@ -1780,7 +1964,9 @@
       "def": -1,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      4
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1789,11 +1975,12 @@
       40
     ],
     "name": "traits.adhd.name",
-    "description": "traits.adhd.description"
+    "description": "traits.adhd.description",
+    "category": "mental"
   },
   {
     "id": 78,
-    "icon": 82,
+    "icon": 247,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -1804,7 +1991,9 @@
       "eva": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      57
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1814,11 +2003,12 @@
       29
     ],
     "name": "traits.ocd.name",
-    "description": "traits.ocd.description"
+    "description": "traits.ocd.description",
+    "category": "mental"
   },
   {
     "id": 79,
-    "icon": 194,
+    "icon": 192,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -1838,11 +2028,12 @@
       57
     ],
     "name": "traits.dyslexic.name",
-    "description": "traits.dyslexic.description"
+    "description": "traits.dyslexic.description",
+    "category": "genetic"
   },
   {
     "id": 80,
-    "icon": 193,
+    "icon": 232,
     "positive": {
       "atk": 2,
       "def": 1,
@@ -1861,11 +2052,12 @@
       41
     ],
     "name": "traits.dyscalculic.name",
-    "description": "traits.dyscalculic.description"
+    "description": "traits.dyscalculic.description",
+    "category": "genetic"
   },
   {
     "id": 81,
-    "icon": 262,
+    "icon": 7,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -1875,7 +2067,9 @@
       "atk": -2,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      1135
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1884,7 +2078,8 @@
       32
     ],
     "name": "traits.charismatic.name",
-    "description": "traits.charismatic.description"
+    "description": "traits.charismatic.description",
+    "category": "mental"
   },
   {
     "id": 82,
@@ -1899,7 +2094,9 @@
       "mdf": -1,
       "hp": -5
     },
-    "skills": [],
+    "skills": [
+      1141
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1907,11 +2104,12 @@
       83
     ],
     "name": "traits.extrovert.name",
-    "description": "traits.extrovert.description"
+    "description": "traits.extrovert.description",
+    "category": "mental"
   },
   {
     "id": 83,
-    "icon": 130,
+    "icon": 234,
     "positive": {
       "mat": 2,
       "mdf": 2,
@@ -1922,7 +2120,9 @@
       "eva": -1,
       "luk": -1
     },
-    "skills": [],
+    "skills": [
+      158
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -1930,11 +2130,12 @@
       82
     ],
     "name": "traits.introvert.name",
-    "description": "traits.introvert.description"
+    "description": "traits.introvert.description",
+    "category": "mental"
   },
   {
     "id": 84,
-    "icon": 85,
+    "icon": 6,
     "positive": {
       "mdf": 3,
       "def": 2,
@@ -1955,11 +2156,12 @@
       74
     ],
     "name": "traits.chronic_pain.name",
-    "description": "traits.chronic_pain.description"
+    "description": "traits.chronic_pain.description",
+    "category": "genetic"
   },
   {
     "id": 85,
-    "icon": 410,
+    "icon": 411,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -1978,11 +2180,12 @@
       86
     ],
     "name": "traits.ambitious.name",
-    "description": "traits.ambitious.description"
+    "description": "traits.ambitious.description",
+    "category": "mental"
   },
   {
     "id": 86,
-    "icon": 1,
+    "icon": 74,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -2003,11 +2206,12 @@
       85
     ],
     "name": "traits.slothful.name",
-    "description": "traits.slothful.description"
+    "description": "traits.slothful.description",
+    "category": "mental"
   },
   {
     "id": 87,
-    "icon": 313,
+    "icon": 191,
     "positive": {
       "luk": 4,
       "agi": 1
@@ -2017,7 +2221,9 @@
       "def": -1,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      1257
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2027,7 +2233,8 @@
       88
     ],
     "name": "traits.greedy.name",
-    "description": "traits.greedy.description"
+    "description": "traits.greedy.description",
+    "category": "mental"
   },
   {
     "id": 88,
@@ -2042,7 +2249,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      13
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2050,7 +2259,8 @@
       87
     ],
     "name": "traits.generous.name",
-    "description": "traits.generous.description"
+    "description": "traits.generous.description",
+    "category": "mental"
   },
   {
     "id": 89,
@@ -2065,7 +2275,9 @@
       "agi": -1,
       "luk": -1
     },
-    "skills": [],
+    "skills": [
+      236
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2074,7 +2286,8 @@
       32
     ],
     "name": "traits.loyal.name",
-    "description": "traits.loyal.description"
+    "description": "traits.loyal.description",
+    "category": "mental"
   },
   {
     "id": 90,
@@ -2089,7 +2302,9 @@
       "mdf": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1265
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2098,11 +2313,12 @@
       33
     ],
     "name": "traits.treacherous.name",
-    "description": "traits.treacherous.description"
+    "description": "traits.treacherous.description",
+    "category": "mental"
   },
   {
     "id": 91,
-    "icon": 402,
+    "icon": 406,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -2122,7 +2338,8 @@
       92
     ],
     "name": "traits.proud.name",
-    "description": "traits.proud.description"
+    "description": "traits.proud.description",
+    "category": "mental"
   },
   {
     "id": 92,
@@ -2146,11 +2363,12 @@
       91
     ],
     "name": "traits.humble.name",
-    "description": "traits.humble.description"
+    "description": "traits.humble.description",
+    "category": "mental"
   },
   {
     "id": 93,
-    "icon": 269,
+    "icon": 258,
     "positive": {
       "hp": 25,
       "def": 2,
@@ -2161,7 +2379,9 @@
       "eva": -2,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      1069
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2172,11 +2392,12 @@
       50
     ],
     "name": "traits.gluttonous.name",
-    "description": "traits.gluttonous.description"
+    "description": "traits.gluttonous.description",
+    "category": "mental"
   },
   {
     "id": 94,
-    "icon": 270,
+    "icon": 154,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -2188,7 +2409,10 @@
       "hp": -10
     },
     "skills": [],
-    "items": [],
+    "items": [
+      177,
+      189
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2196,11 +2420,12 @@
       95
     ],
     "name": "traits.hedonist.name",
-    "description": "traits.hedonist.description"
+    "description": "traits.hedonist.description",
+    "category": "mental"
   },
   {
     "id": 95,
-    "icon": 389,
+    "icon": 161,
     "positive": {
       "def": 4,
       "mdf": 3,
@@ -2211,7 +2436,9 @@
       "eva": -1,
       "mp": -3
     },
-    "skills": [],
+    "skills": [
+      58
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2220,11 +2447,12 @@
       94
     ],
     "name": "traits.stoic.name",
-    "description": "traits.stoic.description"
+    "description": "traits.stoic.description",
+    "category": "mental"
   },
   {
     "id": 96,
-    "icon": 247,
+    "icon": 100,
     "positive": {
       "agi": 2,
       "luk": 3,
@@ -2235,7 +2463,9 @@
       "mp": -2,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      1263
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2244,11 +2474,12 @@
       44
     ],
     "name": "traits.tracker.name",
-    "description": "traits.tracker.description"
+    "description": "traits.tracker.description",
+    "category": "physical"
   },
   {
     "id": 97,
-    "icon": 288,
+    "icon": 205,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -2259,17 +2490,20 @@
       "mat": -2,
       "mp": -2
     },
-    "skills": [],
+    "skills": [
+      308
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.survivalist.name",
-    "description": "traits.survivalist.description"
+    "description": "traits.survivalist.description",
+    "category": "physical"
   },
   {
     "id": 98,
-    "icon": 189,
+    "icon": 193,
     "positive": {
       "mat": 3,
       "mdf": 2,
@@ -2280,7 +2514,10 @@
       "agi": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1144,
+      1139
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2289,7 +2526,8 @@
       77
     ],
     "name": "traits.tactician.name",
-    "description": "traits.tactician.description"
+    "description": "traits.tactician.description",
+    "category": "mental"
   },
   {
     "id": 99,
@@ -2304,7 +2542,9 @@
       "eva": -2,
       "mdf": -2
     },
-    "skills": [],
+    "skills": [
+      629
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2313,11 +2553,12 @@
       100
     ],
     "name": "traits.cursed.name",
-    "description": "traits.cursed.description"
+    "description": "traits.cursed.description",
+    "category": "magical"
   },
   {
     "id": 100,
-    "icon": 87,
+    "icon": 221,
     "positive": {
       "luk": 5,
       "mdf": 3,
@@ -2328,7 +2569,9 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      530
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2337,7 +2580,8 @@
       99
     ],
     "name": "traits.blessed.name",
-    "description": "traits.blessed.description"
+    "description": "traits.blessed.description",
+    "category": "magical"
   },
   {
     "id": 101,
@@ -2352,19 +2596,25 @@
       "def": -1,
       "mdf": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1068
+    ],
+    "items": [
+      23,
+      23
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       50
     ],
     "name": "traits.caffeine_dependent.name",
-    "description": "traits.caffeine_dependent.description"
+    "description": "traits.caffeine_dependent.description",
+    "category": "mental"
   },
   {
     "id": 102,
-    "icon": 187,
+    "icon": 167,
     "positive": {
       "agi": 1,
       "eva": 1,
@@ -2376,7 +2626,11 @@
       "mp": -2
     },
     "skills": [],
-    "items": [],
+    "items": [
+      178,
+      178,
+      178
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2385,11 +2639,12 @@
       76
     ],
     "name": "traits.nicotine_addict.name",
-    "description": "traits.nicotine_addict.description"
+    "description": "traits.nicotine_addict.description",
+    "category": "mental"
   },
   {
     "id": 103,
-    "icon": 196,
+    "icon": 182,
     "positive": {
       "luk": 4,
       "agi": 1
@@ -2399,8 +2654,14 @@
       "mdf": -2,
       "mp": -3
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1702
+    ],
+    "items": [
+      181,
+      181,
+      182
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2409,7 +2670,8 @@
       50
     ],
     "name": "traits.gambling_addict.name",
-    "description": "traits.gambling_addict.description"
+    "description": "traits.gambling_addict.description",
+    "category": "mental"
   },
   {
     "id": 104,
@@ -2425,7 +2687,10 @@
       "luk": -2
     },
     "skills": [],
-    "items": [],
+    "items": [
+      30,
+      30
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2434,11 +2699,12 @@
       50
     ],
     "name": "traits.drug_dependent.name",
-    "description": "traits.drug_dependent.description"
+    "description": "traits.drug_dependent.description",
+    "category": "mental"
   },
   {
     "id": 105,
-    "icon": 266,
+    "icon": 316,
     "positive": {
       "agi": 2,
       "eva": 2
@@ -2460,7 +2726,8 @@
       106
     ],
     "name": "traits.restrictive_eating.name",
-    "description": "traits.restrictive_eating.description"
+    "description": "traits.restrictive_eating.description",
+    "category": "mental"
   },
   {
     "id": 106,
@@ -2486,11 +2753,12 @@
       105
     ],
     "name": "traits.binge_eating.name",
-    "description": "traits.binge_eating.description"
+    "description": "traits.binge_eating.description",
+    "category": "mental"
   },
   {
     "id": 107,
-    "icon": 241,
+    "icon": 212,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2510,11 +2778,12 @@
       38
     ],
     "name": "traits.nyctophobic.name",
-    "description": "traits.nyctophobic.description"
+    "description": "traits.nyctophobic.description",
+    "category": "mental"
   },
   {
     "id": 108,
-    "icon": 177,
+    "icon": 1,
     "positive": {
       "eva": 3,
       "def": 2,
@@ -2534,11 +2803,12 @@
       53
     ],
     "name": "traits.thanatophobic.name",
-    "description": "traits.thanatophobic.description"
+    "description": "traits.thanatophobic.description",
+    "category": "mental"
   },
   {
     "id": 109,
-    "icon": 292,
+    "icon": 296,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2555,11 +2825,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.entomophobic.name",
-    "description": "traits.entomophobic.description"
+    "description": "traits.entomophobic.description",
+    "category": "mental"
   },
   {
     "id": 110,
-    "icon": 293,
+    "icon": 215,
     "positive": {
       "eva": 3,
       "agi": 2
@@ -2575,7 +2846,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.ophidiophobic.name",
-    "description": "traits.ophidiophobic.description"
+    "description": "traits.ophidiophobic.description",
+    "category": "mental"
   },
   {
     "id": 111,
@@ -2596,11 +2868,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.cynophobic.name",
-    "description": "traits.cynophobic.description"
+    "description": "traits.cynophobic.description",
+    "category": "mental"
   },
   {
     "id": 112,
-    "icon": 64,
+    "icon": 72,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -2619,11 +2892,12 @@
       26
     ],
     "name": "traits.pyrophobic.name",
-    "description": "traits.pyrophobic.description"
+    "description": "traits.pyrophobic.description",
+    "category": "mental"
   },
   {
     "id": 113,
-    "icon": 241,
+    "icon": 261,
     "positive": {
       "eva": 2,
       "mdf": 2,
@@ -2640,7 +2914,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.trypophobic.name",
-    "description": "traits.trypophobic.description"
+    "description": "traits.trypophobic.description",
+    "category": "mental"
   },
   {
     "id": 114,
@@ -2664,7 +2939,8 @@
       91
     ],
     "name": "traits.atychiphobic.name",
-    "description": "traits.atychiphobic.description"
+    "description": "traits.atychiphobic.description",
+    "category": "mental"
   },
   {
     "id": 115,
@@ -2687,11 +2963,12 @@
       83
     ],
     "name": "traits.autophobic.name",
-    "description": "traits.autophobic.description"
+    "description": "traits.autophobic.description",
+    "category": "mental"
   },
   {
     "id": 116,
-    "icon": 221,
+    "icon": 129,
     "positive": {
       "mdf": 4,
       "mp": 6,
@@ -2702,8 +2979,13 @@
       "agi": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      517,
+      524
+    ],
+    "items": [
+      264
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2711,7 +2993,8 @@
       118
     ],
     "name": "traits.devout.name",
-    "description": "traits.devout.description"
+    "description": "traits.devout.description",
+    "category": "magical"
   },
   {
     "id": 117,
@@ -2735,11 +3018,12 @@
       119
     ],
     "name": "traits.atheist.name",
-    "description": "traits.atheist.description"
+    "description": "traits.atheist.description",
+    "category": "mental"
   },
   {
     "id": 118,
-    "icon": 79,
+    "icon": 231,
     "positive": {
       "atk": 2,
       "mat": 2,
@@ -2750,8 +3034,12 @@
       "def": -1,
       "hp": -15
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      670
+    ],
+    "items": [
+      359
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2760,7 +3048,8 @@
       119
     ],
     "name": "traits.heretic.name",
-    "description": "traits.heretic.description"
+    "description": "traits.heretic.description",
+    "category": "magical"
   },
   {
     "id": 119,
@@ -2775,8 +3064,12 @@
       "atk": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1695
+    ],
+    "items": [
+      129
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2784,11 +3077,12 @@
       118
     ],
     "name": "traits.pilgrim.name",
-    "description": "traits.pilgrim.description"
+    "description": "traits.pilgrim.description",
+    "category": "magical"
   },
   {
     "id": 120,
-    "icon": 400,
+    "icon": 282,
     "positive": {
       "atk": 2,
       "agi": 1,
@@ -2799,7 +3093,9 @@
       "mp": -4,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      667
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2808,11 +3104,12 @@
       119
     ],
     "name": "traits.excommunicated.name",
-    "description": "traits.excommunicated.description"
+    "description": "traits.excommunicated.description",
+    "category": "magical"
   },
   {
     "id": 121,
-    "icon": 77,
+    "icon": 106,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -2823,7 +3120,10 @@
       "atk": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      43,
+      56
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2831,11 +3131,12 @@
       117
     ],
     "name": "traits.monk-trained.name",
-    "description": "traits.monk-trained.description"
+    "description": "traits.monk-trained.description",
+    "category": "physical"
   },
   {
     "id": 122,
-    "icon": 87,
+    "icon": 307,
     "positive": {
       "luk": 5,
       "eva": 3,
@@ -2846,7 +3147,10 @@
       "def": -2,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      1402,
+      1403
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2854,7 +3158,8 @@
       117
     ],
     "name": "traits.prophetic.name",
-    "description": "traits.prophetic.description"
+    "description": "traits.prophetic.description",
+    "category": "magical"
   },
   {
     "id": 123,
@@ -2870,7 +3175,9 @@
       "hp": -10
     },
     "skills": [],
-    "items": [],
+    "items": [
+      241
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2879,11 +3186,12 @@
       130
     ],
     "name": "traits.noble.name",
-    "description": "traits.noble.description"
+    "description": "traits.noble.description",
+    "category": "mental"
   },
   {
     "id": 124,
-    "icon": 136,
+    "icon": 140,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -2894,8 +3202,13 @@
       "mat": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1266
+    ],
+    "items": [
+      834,
+      828
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -2903,11 +3216,12 @@
       131
     ],
     "name": "traits.street_urchin.name",
-    "description": "traits.street_urchin.description"
+    "description": "traits.street_urchin.description",
+    "category": "mental"
   },
   {
     "id": 125,
-    "icon": 144,
+    "icon": 149,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -2920,18 +3234,21 @@
       "hp": -10
     },
     "skills": [],
-    "items": [],
+    "items": [
+      835
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       123
     ],
     "name": "traits.orphan.name",
-    "description": "traits.orphan.description"
+    "description": "traits.orphan.description",
+    "category": "mental"
   },
   {
     "id": 126,
-    "icon": 411,
+    "icon": 126,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -2950,11 +3267,12 @@
       127
     ],
     "name": "traits.bastard.name",
-    "description": "traits.bastard.description"
+    "description": "traits.bastard.description",
+    "category": "mental"
   },
   {
     "id": 127,
-    "icon": 210,
+    "icon": 157,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -2976,11 +3294,12 @@
       130
     ],
     "name": "traits.heir.name",
-    "description": "traits.heir.description"
+    "description": "traits.heir.description",
+    "category": "mental"
   },
   {
     "id": 128,
-    "icon": 159,
+    "icon": 197,
     "positive": {
       "luk": 3,
       "eva": 2,
@@ -2990,7 +3309,9 @@
       "hp": -5,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      3
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -2998,11 +3319,12 @@
       125
     ],
     "name": "traits.twin.name",
-    "description": "traits.twin.description"
+    "description": "traits.twin.description",
+    "category": "genetic"
   },
   {
     "id": 129,
-    "icon": 82,
+    "icon": 110,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3020,11 +3342,12 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.exiled.name",
-    "description": "traits.exiled.description"
+    "description": "traits.exiled.description",
+    "category": "mental"
   },
   {
     "id": 130,
-    "icon": 352,
+    "icon": 111,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -3044,11 +3367,12 @@
       127
     ],
     "name": "traits.slave-born.name",
-    "description": "traits.slave-born.description"
+    "description": "traits.slave-born.description",
+    "category": "mental"
   },
   {
     "id": 131,
-    "icon": 313,
+    "icon": 300,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -3060,7 +3384,9 @@
       "hp": -10
     },
     "skills": [],
-    "items": [],
+    "items": [
+      331
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -3068,11 +3394,12 @@
       130
     ],
     "name": "traits.wealthy.name",
-    "description": "traits.wealthy.description"
+    "description": "traits.wealthy.description",
+    "category": "mental"
   },
   {
     "id": 132,
-    "icon": 191,
+    "icon": 188,
     "positive": {
       "mat": 4,
       "mp": 6,
@@ -3083,8 +3410,13 @@
       "def": -1,
       "hp": -15
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1131
+    ],
+    "items": [
+      127,
+      299
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -3092,11 +3424,12 @@
       135
     ],
     "name": "traits.scholar.name",
-    "description": "traits.scholar.description"
+    "description": "traits.scholar.description",
+    "category": "mental"
   },
   {
     "id": 133,
-    "icon": 208,
+    "icon": 187,
     "positive": {
       "luk": 4,
       "agi": 1,
@@ -3107,17 +3440,22 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1428
+    ],
+    "items": [
+      387
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.merchant.name",
-    "description": "traits.merchant.description"
+    "description": "traits.merchant.description",
+    "category": "mental"
   },
   {
     "id": 134,
-    "icon": 209,
+    "icon": 338,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -3128,8 +3466,13 @@
       "mdf": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1261
+    ],
+    "items": [
+      374,
+      389
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -3137,11 +3480,12 @@
       116
     ],
     "name": "traits.criminal.name",
-    "description": "traits.criminal.description"
+    "description": "traits.criminal.description",
+    "category": "mental"
   },
   {
     "id": 135,
-    "icon": 193,
+    "icon": 230,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -3163,11 +3507,12 @@
       132
     ],
     "name": "traits.illiterate.name",
-    "description": "traits.illiterate.description"
+    "description": "traits.illiterate.description",
+    "category": "mental"
   },
   {
     "id": 136,
-    "icon": 321,
+    "icon": 131,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -3178,15 +3523,22 @@
       "mdf": -2,
       "agi": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      33,
+      65
+    ],
+    "items": [
+      324,
+      811
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       25
     ],
     "name": "traits.veteran.name",
-    "description": "traits.veteran.description"
+    "description": "traits.veteran.description",
+    "category": "physical"
   },
   {
     "id": 137,
@@ -3201,15 +3553,20 @@
       "mat": -1,
       "mp": -2
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      915
+    ],
+    "items": [
+      240
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       123
     ],
     "name": "traits.farmer.name",
-    "description": "traits.farmer.description"
+    "description": "traits.farmer.description",
+    "category": "physical"
   },
   {
     "id": 138,
@@ -3225,17 +3582,23 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      997,
+      990
+    ],
+    "items": [
+      229
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.herbalist.name",
-    "description": "traits.herbalist.description"
+    "description": "traits.herbalist.description",
+    "category": "physical"
   },
   {
     "id": 139,
-    "icon": 179,
+    "icon": 178,
     "positive": {
       "mat": 4,
       "mp": 5,
@@ -3246,19 +3609,26 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      992,
+      993
+    ],
+    "items": [
+      238,
+      884
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       34
     ],
     "name": "traits.alchemist.name",
-    "description": "traits.alchemist.description"
+    "description": "traits.alchemist.description",
+    "category": "magical"
   },
   {
     "id": 140,
-    "icon": 312,
+    "icon": 190,
     "positive": {
       "luk": 3,
       "agi": 2,
@@ -3269,17 +3639,24 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      516,
+      1628
+    ],
+    "items": [
+      159,
+      234
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.navigator.name",
-    "description": "traits.navigator.description"
+    "description": "traits.navigator.description",
+    "category": "physical"
   },
   {
     "id": 141,
-    "icon": 324,
+    "icon": 108,
     "positive": {
       "atk": 3,
       "def": 3,
@@ -3290,17 +3667,23 @@
       "eva": -1,
       "mp": -2
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      255
+    ],
+    "items": [
+      237,
+      811
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.blacksmith.name",
-    "description": "traits.blacksmith.description"
+    "description": "traits.blacksmith.description",
+    "category": "physical"
   },
   {
     "id": 142,
-    "icon": 337,
+    "icon": 195,
     "positive": {
       "agi": 4,
       "eva": 3,
@@ -3311,8 +3694,14 @@
       "hp": -15,
       "mdf": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1262,
+      1258
+    ],
+    "items": [
+      375,
+      374
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -3320,7 +3709,8 @@
       116
     ],
     "name": "traits.thief.name",
-    "description": "traits.thief.description"
+    "description": "traits.thief.description",
+    "category": "physical"
   },
   {
     "id": 143,
@@ -3336,17 +3726,23 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1093,
+      1096
+    ],
+    "items": [
+      236
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.bard.name",
-    "description": "traits.bard.description"
+    "description": "traits.bard.description",
+    "category": "mental"
   },
   {
     "id": 144,
-    "icon": 184,
+    "icon": 148,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -3356,7 +3752,9 @@
       "def": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1138
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3364,11 +3762,12 @@
       145
     ],
     "name": "traits.beautiful.name",
-    "description": "traits.beautiful.description"
+    "description": "traits.beautiful.description",
+    "category": "genetic"
   },
   {
     "id": 145,
-    "icon": 105,
+    "icon": 117,
     "positive": {
       "atk": 2,
       "def": 3,
@@ -3386,11 +3785,12 @@
       144
     ],
     "name": "traits.scarred.name",
-    "description": "traits.scarred.description"
+    "description": "traits.scarred.description",
+    "category": "genetic"
   },
   {
     "id": 146,
-    "icon": 392,
+    "icon": 379,
     "positive": {
       "atk": 2,
       "def": 1,
@@ -3410,11 +3810,12 @@
       147
     ],
     "name": "traits.tall.name",
-    "description": "traits.tall.description"
+    "description": "traits.tall.description",
+    "category": "genetic"
   },
   {
     "id": 147,
-    "icon": 137,
+    "icon": 326,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3433,11 +3834,12 @@
       146
     ],
     "name": "traits.short.name",
-    "description": "traits.short.description"
+    "description": "traits.short.description",
+    "category": "genetic"
   },
   {
     "id": 148,
-    "icon": 153,
+    "icon": 143,
     "positive": {
       "atk": 3,
       "def": 2,
@@ -3448,7 +3850,9 @@
       "mp": -2,
       "mat": -1
     },
-    "skills": [],
+    "skills": [
+      177
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3457,11 +3861,12 @@
       149
     ],
     "name": "traits.muscular.name",
-    "description": "traits.muscular.description"
+    "description": "traits.muscular.description",
+    "category": "genetic"
   },
   {
     "id": 149,
-    "icon": 152,
+    "icon": 16,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -3481,11 +3886,12 @@
       148
     ],
     "name": "traits.frail.name",
-    "description": "traits.frail.description"
+    "description": "traits.frail.description",
+    "category": "genetic"
   },
   {
     "id": 150,
-    "icon": 142,
+    "icon": 341,
     "positive": {
       "agi": 1,
       "eva": 1,
@@ -3494,7 +3900,9 @@
     "negative": {
       "atk": -1
     },
-    "skills": [],
+    "skills": [
+      39
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3502,11 +3910,12 @@
       43
     ],
     "name": "traits.left-handed.name",
-    "description": "traits.left-handed.description"
+    "description": "traits.left-handed.description",
+    "category": "genetic"
   },
   {
     "id": 151,
-    "icon": 66,
+    "icon": 327,
     "positive": {
       "agi": 4,
       "eva": 3
@@ -3515,7 +3924,9 @@
       "def": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      125
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3524,7 +3935,8 @@
       86
     ],
     "name": "traits.quick_reflexes.name",
-    "description": "traits.quick_reflexes.description"
+    "description": "traits.quick_reflexes.description",
+    "category": "physical"
   },
   {
     "id": 152,
@@ -3538,7 +3950,10 @@
       "def": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      240,
+      259
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3546,11 +3961,12 @@
       25
     ],
     "name": "traits.duelist.name",
-    "description": "traits.duelist.description"
+    "description": "traits.duelist.description",
+    "category": "physical"
   },
   {
     "id": 153,
-    "icon": 106,
+    "icon": 388,
     "positive": {
       "atk": 3,
       "def": 2,
@@ -3561,7 +3977,10 @@
       "mp": -2,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      84,
+      121
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3570,11 +3989,12 @@
       121
     ],
     "name": "traits.brawler.name",
-    "description": "traits.brawler.description"
+    "description": "traits.brawler.description",
+    "category": "physical"
   },
   {
     "id": 154,
-    "icon": 102,
+    "icon": 370,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -3584,7 +4004,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1046
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3593,11 +4015,12 @@
       44
     ],
     "name": "traits.archer.name",
-    "description": "traits.archer.description"
+    "description": "traits.archer.description",
+    "category": "physical"
   },
   {
     "id": 155,
-    "icon": 128,
+    "icon": 124,
     "positive": {
       "def": 4,
       "mdf": 2,
@@ -3608,7 +4031,9 @@
       "agi": -2,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      280
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3616,11 +4041,12 @@
       24
     ],
     "name": "traits.shield_master.name",
-    "description": "traits.shield_master.description"
+    "description": "traits.shield_master.description",
+    "category": "physical"
   },
   {
     "id": 156,
-    "icon": 339,
+    "icon": 96,
     "positive": {
       "atk": 4,
       "agi": 3,
@@ -3631,7 +4057,10 @@
       "mdf": -2,
       "hp": -20
     },
-    "skills": [],
+    "skills": [
+      1270,
+      1260
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3640,11 +4069,12 @@
       116
     ],
     "name": "traits.assassin.name",
-    "description": "traits.assassin.description"
+    "description": "traits.assassin.description",
+    "category": "physical"
   },
   {
     "id": 157,
-    "icon": 146,
+    "icon": 346,
     "positive": {
       "atk": 5,
       "hp": 25
@@ -3655,7 +4085,9 @@
       "eva": -3,
       "mp": -5
     },
-    "skills": [],
+    "skills": [
+      302
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3666,7 +4098,8 @@
       98
     ],
     "name": "traits.berserker_rage.name",
-    "description": "traits.berserker_rage.description"
+    "description": "traits.berserker_rage.description",
+    "category": "physical"
   },
   {
     "id": 158,
@@ -3681,7 +4114,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      269
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3689,11 +4124,12 @@
       51
     ],
     "name": "traits.mounted_combat.name",
-    "description": "traits.mounted_combat.description"
+    "description": "traits.mounted_combat.description",
+    "category": "physical"
   },
   {
     "id": 159,
-    "icon": 77,
+    "icon": 350,
     "positive": {
       "atk": 3,
       "agi": 3,
@@ -3703,17 +4139,21 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      101,
+      145
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.martial_artist.name",
-    "description": "traits.martial_artist.description"
+    "description": "traits.martial_artist.description",
+    "category": "physical"
   },
   {
     "id": 160,
-    "icon": 7,
+    "icon": 89,
     "positive": {
       "luk": 4,
       "mp": 4,
@@ -3723,7 +4163,9 @@
       "def": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      64
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3732,11 +4174,12 @@
       162
     ],
     "name": "traits.optimist.name",
-    "description": "traits.optimist.description"
+    "description": "traits.optimist.description",
+    "category": "mental"
   },
   {
     "id": 161,
-    "icon": 11,
+    "icon": 85,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -3755,11 +4198,12 @@
       160
     ],
     "name": "traits.pessimist.name",
-    "description": "traits.pessimist.description"
+    "description": "traits.pessimist.description",
+    "category": "mental"
   },
   {
     "id": 162,
-    "icon": 1,
+    "icon": 241,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -3770,7 +4214,9 @@
       "mdf": -2,
       "luk": -2
     },
-    "skills": [],
+    "skills": [
+      611
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3779,7 +4225,8 @@
       160
     ],
     "name": "traits.nihilist.name",
-    "description": "traits.nihilist.description"
+    "description": "traits.nihilist.description",
+    "category": "mental"
   },
   {
     "id": 163,
@@ -3803,11 +4250,12 @@
       164
     ],
     "name": "traits.idealist.name",
-    "description": "traits.idealist.description"
+    "description": "traits.idealist.description",
+    "category": "mental"
   },
   {
     "id": 164,
-    "icon": 72,
+    "icon": 332,
     "positive": {
       "def": 2,
       "mat": 2,
@@ -3826,7 +4274,8 @@
       163
     ],
     "name": "traits.pragmatist.name",
-    "description": "traits.pragmatist.description"
+    "description": "traits.pragmatist.description",
+    "category": "mental"
   },
   {
     "id": 165,
@@ -3850,11 +4299,12 @@
       164
     ],
     "name": "traits.romantic.name",
-    "description": "traits.romantic.description"
+    "description": "traits.romantic.description",
+    "category": "mental"
   },
   {
     "id": 166,
-    "icon": 85,
+    "icon": 208,
     "positive": {
       "def": 3,
       "mdf": 2,
@@ -3873,11 +4323,12 @@
       165
     ],
     "name": "traits.cynic.name",
-    "description": "traits.cynic.description"
+    "description": "traits.cynic.description",
+    "category": "mental"
   },
   {
     "id": 167,
-    "icon": 120,
+    "icon": 119,
     "positive": {
       "atk": 3,
       "mat": 2,
@@ -3888,7 +4339,9 @@
       "mp": -2,
       "luk": -1
     },
-    "skills": [],
+    "skills": [
+      247
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -3896,7 +4349,8 @@
       168
     ],
     "name": "traits.vengeful.name",
-    "description": "traits.vengeful.description"
+    "description": "traits.vengeful.description",
+    "category": "mental"
   },
   {
     "id": 168,
@@ -3919,11 +4373,12 @@
       167
     ],
     "name": "traits.forgiving.name",
-    "description": "traits.forgiving.description"
+    "description": "traits.forgiving.description",
+    "category": "mental"
   },
   {
     "id": 169,
-    "icon": 299,
+    "icon": 164,
     "positive": {
       "atk": 2,
       "agi": 2
@@ -3942,11 +4397,12 @@
       168
     ],
     "name": "traits.jealous.name",
-    "description": "traits.jealous.description"
+    "description": "traits.jealous.description",
+    "category": "mental"
   },
   {
     "id": 170,
-    "icon": 300,
+    "icon": 177,
     "positive": {
       "atk": 2,
       "agi": 2,
@@ -3966,11 +4422,12 @@
       168
     ],
     "name": "traits.spiteful.name",
-    "description": "traits.spiteful.description"
+    "description": "traits.spiteful.description",
+    "category": "mental"
   },
   {
     "id": 171,
-    "icon": 246,
+    "icon": 70,
     "positive": {
       "mdf": 3,
       "mp": 4,
@@ -3992,11 +4449,12 @@
       142
     ],
     "name": "traits.honest.name",
-    "description": "traits.honest.description"
+    "description": "traits.honest.description",
+    "category": "mental"
   },
   {
     "id": 172,
-    "icon": 304,
+    "icon": 385,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -4016,11 +4474,12 @@
       81
     ],
     "name": "traits.blunt.name",
-    "description": "traits.blunt.description"
+    "description": "traits.blunt.description",
+    "category": "mental"
   },
   {
     "id": 173,
-    "icon": 124,
+    "icon": 203,
     "positive": {
       "luk": 5,
       "mp": 4,
@@ -4030,8 +4489,12 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1094
+    ],
+    "items": [
+      382
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -4039,7 +4502,8 @@
       175
     ],
     "name": "traits.famous.name",
-    "description": "traits.famous.description"
+    "description": "traits.famous.description",
+    "category": "mental"
   },
   {
     "id": 174,
@@ -4063,11 +4527,12 @@
       175
     ],
     "name": "traits.infamous.name",
-    "description": "traits.infamous.description"
+    "description": "traits.infamous.description",
+    "category": "mental"
   },
   {
     "id": 175,
-    "icon": 247,
+    "icon": 407,
     "positive": {
       "eva": 4,
       "agi": 2,
@@ -4087,11 +4552,12 @@
       176
     ],
     "name": "traits.anonymous.name",
-    "description": "traits.anonymous.description"
+    "description": "traits.anonymous.description",
+    "category": "mental"
   },
   {
     "id": 176,
-    "icon": 368,
+    "icon": 218,
     "positive": {
       "agi": 3,
       "eva": 3,
@@ -4111,11 +4577,12 @@
       175
     ],
     "name": "traits.wanted.name",
-    "description": "traits.wanted.description"
+    "description": "traits.wanted.description",
+    "category": "mental"
   },
   {
     "id": 177,
-    "icon": 351,
+    "icon": 320,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -4126,7 +4593,9 @@
       "eva": -2,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      238
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4137,7 +4606,8 @@
       176
     ],
     "name": "traits.hero.name",
-    "description": "traits.hero.description"
+    "description": "traits.hero.description",
+    "category": "mental"
   },
   {
     "id": 178,
@@ -4160,7 +4630,8 @@
       177
     ],
     "name": "traits.disgraced.name",
-    "description": "traits.disgraced.description"
+    "description": "traits.disgraced.description",
+    "category": "mental"
   },
   {
     "id": 179,
@@ -4174,7 +4645,9 @@
       "agi": -2,
       "eva": -1
     },
-    "skills": [],
+    "skills": [
+      1715
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4182,11 +4655,12 @@
       180
     ],
     "name": "traits.cold-blooded.name",
-    "description": "traits.cold-blooded.description"
+    "description": "traits.cold-blooded.description",
+    "category": "genetic"
   },
   {
     "id": 180,
-    "icon": 64,
+    "icon": 184,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -4204,11 +4678,12 @@
       179
     ],
     "name": "traits.heat-adapted.name",
-    "description": "traits.heat-adapted.description"
+    "description": "traits.heat-adapted.description",
+    "category": "genetic"
   },
   {
     "id": 181,
-    "icon": 69,
+    "icon": 166,
     "positive": {
       "hp": 20,
       "def": 2,
@@ -4219,18 +4694,21 @@
       "mp": -2
     },
     "skills": [],
-    "items": [],
+    "items": [
+      813
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       51
     ],
     "name": "traits.mountain-born.name",
-    "description": "traits.mountain-born.description"
+    "description": "traits.mountain-born.description",
+    "category": "genetic"
   },
   {
     "id": 182,
-    "icon": 67,
+    "icon": 315,
     "positive": {
       "agi": 2,
       "eva": 2,
@@ -4241,18 +4719,21 @@
       "hp": -10
     },
     "skills": [],
-    "items": [],
+    "items": [
+      167
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
-      15
+      183
     ],
     "name": "traits.island-raised.name",
-    "description": "traits.island-raised.description"
+    "description": "traits.island-raised.description",
+    "category": "genetic"
   },
   {
     "id": 183,
-    "icon": 68,
+    "icon": 163,
     "positive": {
       "def": 3,
       "hp": 15,
@@ -4263,14 +4744,17 @@
       "mat": -1
     },
     "skills": [],
-    "items": [],
+    "items": [
+      120
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
-      15
+      182
     ],
     "name": "traits.desert_dweller.name",
-    "description": "traits.desert_dweller.description"
+    "description": "traits.desert_dweller.description",
+    "category": "genetic"
   },
   {
     "id": 184,
@@ -4285,15 +4769,20 @@
       "eva": -1,
       "luk": -1
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1587
+    ],
+    "items": [
+      136
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
       3
     ],
     "name": "traits.cave_dweller.name",
-    "description": "traits.cave_dweller.description"
+    "description": "traits.cave_dweller.description",
+    "category": "genetic"
   },
   {
     "id": 185,
@@ -4308,7 +4797,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      30
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4316,11 +4807,12 @@
       111
     ],
     "name": "traits.animal_handler.name",
-    "description": "traits.animal_handler.description"
+    "description": "traits.animal_handler.description",
+    "category": "physical"
   },
   {
     "id": 186,
-    "icon": 254,
+    "icon": 293,
     "positive": {
       "luk": 4,
       "eva": 2,
@@ -4331,17 +4823,21 @@
       "def": -1,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      1401,
+      935
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
     "incompatible": [],
     "name": "traits.beast_whisperer.name",
-    "description": "traits.beast_whisperer.description"
+    "description": "traits.beast_whisperer.description",
+    "category": "magical"
   },
   {
     "id": 187,
-    "icon": 276,
+    "icon": 288,
     "positive": {
       "mdf": 3,
       "mp": 5,
@@ -4360,11 +4856,12 @@
       188
     ],
     "name": "traits.nature_attuned.name",
-    "description": "traits.nature_attuned.description"
+    "description": "traits.nature_attuned.description",
+    "category": "magical"
   },
   {
     "id": 188,
-    "icon": 212,
+    "icon": 273,
     "positive": {
       "agi": 3,
       "eva": 2,
@@ -4374,8 +4871,12 @@
       "def": -2,
       "hp": -10
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      1208
+    ],
+    "items": [
+      149
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -4383,11 +4884,12 @@
       97
     ],
     "name": "traits.urban_native.name",
-    "description": "traits.urban_native.description"
+    "description": "traits.urban_native.description",
+    "category": "genetic"
   },
   {
     "id": 189,
-    "icon": 184,
+    "icon": 292,
     "positive": {
       "atk": 3,
       "agi": 3,
@@ -4398,8 +4900,12 @@
       "mp": -3,
       "mdf": -2
     },
-    "skills": [],
-    "items": [],
+    "skills": [
+      131
+    ],
+    "items": [
+      27
+    ],
     "equipment": [],
     "switches": [],
     "incompatible": [
@@ -4408,11 +4914,12 @@
       188
     ],
     "name": "traits.feral.name",
-    "description": "traits.feral.description"
+    "description": "traits.feral.description",
+    "category": "genetic"
   },
   {
     "id": 190,
-    "icon": 79,
+    "icon": 101,
     "positive": {
       "mat": 5,
       "mp": 10,
@@ -4423,7 +4930,9 @@
       "def": -2,
       "hp": -20
     },
-    "skills": [],
+    "skills": [
+      168
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4432,11 +4941,12 @@
       191
     ],
     "name": "traits.magically_gifted.name",
-    "description": "traits.magically_gifted.description"
+    "description": "traits.magically_gifted.description",
+    "category": "magical"
   },
   {
     "id": 191,
-    "icon": 74,
+    "icon": 17,
     "positive": {
       "atk": 4,
       "def": 4,
@@ -4447,7 +4957,9 @@
       "mp": -10,
       "mdf": -3
     },
-    "skills": [],
+    "skills": [
+      631
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4457,7 +4969,8 @@
       192
     ],
     "name": "traits.mana-starved.name",
-    "description": "traits.mana-starved.description"
+    "description": "traits.mana-starved.description",
+    "category": "magical"
   },
   {
     "id": 192,
@@ -4478,7 +4991,8 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.spell-scarred.name",
-    "description": "traits.spell-scarred.description"
+    "description": "traits.spell-scarred.description",
+    "category": "magical"
   },
   {
     "id": 193,
@@ -4493,7 +5007,9 @@
       "def": -2,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      778
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4501,11 +5017,12 @@
       100
     ],
     "name": "traits.witch-marked.name",
-    "description": "traits.witch-marked.description"
+    "description": "traits.witch-marked.description",
+    "category": "magical"
   },
   {
     "id": 194,
-    "icon": 77,
+    "icon": 71,
     "positive": {
       "mat": 4,
       "atk": 3,
@@ -4517,7 +5034,9 @@
       "luk": -3,
       "hp": -15
     },
-    "skills": [],
+    "skills": [
+      668
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4525,11 +5044,12 @@
       116
     ],
     "name": "traits.possessed.name",
-    "description": "traits.possessed.description"
+    "description": "traits.possessed.description",
+    "category": "magical"
   },
   {
     "id": 195,
-    "icon": 240,
+    "icon": 105,
     "positive": {
       "atk": 4,
       "agi": 3,
@@ -4541,7 +5061,10 @@
       "mdf": -2,
       "luk": -2
     },
-    "skills": [],
+    "skills": [
+      313,
+      309
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4549,7 +5072,8 @@
       20
     ],
     "name": "traits.lycanthrope.name",
-    "description": "traits.lycanthrope.description"
+    "description": "traits.lycanthrope.description",
+    "category": "magical"
   },
   {
     "id": 196,
@@ -4565,7 +5089,10 @@
       "def": -2,
       "hp": -20
     },
-    "skills": [],
+    "skills": [
+      1406,
+      1620
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4574,11 +5101,12 @@
       117
     ],
     "name": "traits.clairvoyant.name",
-    "description": "traits.clairvoyant.description"
+    "description": "traits.clairvoyant.description",
+    "category": "magical"
   },
   {
     "id": 197,
-    "icon": 246,
+    "icon": 204,
     "positive": {
       "atk": 2,
       "def": 2,
@@ -4588,7 +5116,9 @@
       "eva": -2,
       "agi": -1
     },
-    "skills": [],
+    "skills": [
+      1133
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4597,11 +5127,12 @@
       199
     ],
     "name": "traits.booming_voice.name",
-    "description": "traits.booming_voice.description"
+    "description": "traits.booming_voice.description",
+    "category": "genetic"
   },
   {
     "id": 198,
-    "icon": 182,
+    "icon": 201,
     "positive": {
       "eva": 3,
       "agi": 2,
@@ -4611,7 +5142,9 @@
       "atk": -2,
       "def": -1
     },
-    "skills": [],
+    "skills": [
+      1099
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4619,11 +5152,12 @@
       197
     ],
     "name": "traits.soft-spoken.name",
-    "description": "traits.soft-spoken.description"
+    "description": "traits.soft-spoken.description",
+    "category": "genetic"
   },
   {
     "id": 199,
-    "icon": 148,
+    "icon": 4,
     "positive": {
       "eva": 4,
       "agi": 3,
@@ -4645,11 +5179,12 @@
       197
     ],
     "name": "traits.mute.name",
-    "description": "traits.mute.description"
+    "description": "traits.mute.description",
+    "category": "genetic"
   },
   {
     "id": 200,
-    "icon": 191,
+    "icon": 233,
     "positive": {
       "mat": 3,
       "mp": 4,
@@ -4660,7 +5195,9 @@
       "def": -1,
       "hp": -10
     },
-    "skills": [],
+    "skills": [
+      1470
+    ],
     "items": [],
     "equipment": [],
     "switches": [],
@@ -4669,11 +5206,12 @@
       199
     ],
     "name": "traits.polyglot.name",
-    "description": "traits.polyglot.description"
+    "description": "traits.polyglot.description",
+    "category": "mental"
   },
   {
     "id": 201,
-    "icon": 132,
+    "icon": 198,
     "positive": {
       "def": 2,
       "hp": 10,
@@ -4690,6 +5228,33 @@
     "switches": [],
     "incompatible": [],
     "name": "traits.prosopometamorphopsia.name",
-    "description": "traits.prosopometamorphopsia.description"
+    "description": "traits.prosopometamorphopsia.description",
+    "category": "genetic"
+  },
+  {
+    "id": 202,
+    "icon": 116,
+    "positive": {
+      "agi": 2,
+      "atk": 1
+    },
+    "negative": {
+      "def": -2,
+      "mdf": -1
+    },
+    "skills": [
+      1037,
+      1041
+    ],
+    "items": [],
+    "equipment": [],
+    "switches": [],
+    "incompatible": [
+      25,
+      44
+    ],
+    "name": "traits.gun_fu.name",
+    "description": "traits.gun_fu.description",
+    "category": "physical"
   }
 ]

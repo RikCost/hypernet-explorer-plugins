@@ -1,0 +1,25 @@
+{
+  "no3d": "3D system unavailable",
+  "badCast": "Bad cast",
+  "lineSnapped": "Line snapped",
+  "nothingBiting": "Nothing biting",
+  "tooSlow": "Too slow",
+  "something": "Something",
+  "hint": {
+    "loading": "Loading the lake...",
+    "no3d": "3D system unavailable",
+    "aim": "WASD / arrows / drag to aim     Confirm to cast     Cancel to leave",
+    "power": "Confirm to set the cast power",
+    "casting": "Cast away...",
+    "waiting": "Waiting for a bite     WASD to look around",
+    "bite": "Confirm NOW to set the hook",
+    "reeling": "Hold Confirm to reel     release to give line",
+    "caught": "Landed it     Confirm to cast again",
+    "miss": "It got away     Confirm to cast again"
+  },
+  "meter": {
+    "power": "POWER",
+    "line": "LINE - keep it out of the red",
+    "dist": "DIST"
+  }
+}

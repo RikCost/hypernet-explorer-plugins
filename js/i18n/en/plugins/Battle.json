@@ -1,0 +1,118 @@
+{
+  "dangerWarning": {
+    "party": [
+      "This enemy is too dangerous!\nWe should flee!",
+      "This enemy is too powerful!\nWe need to run!",
+      "We're outmatched!\nWe should retreat!",
+      "This foe is beyond us!\nWe must escape!",
+      "We can't handle this enemy!\nLet's get out of here!",
+      "This creature is too strong!\nWe should run away!"
+    ],
+    "single": [
+      "This enemy is too dangerous!\nI should flee!",
+      "This enemy is too powerful!\nI need to run!",
+      "I'm outmatched!\nI should retreat!",
+      "This foe is beyond me!\nI must escape!",
+      "I can't handle this enemy!\nI need to get out of here!",
+      "This creature is too strong!\nI should run away!"
+    ]
+  },
+  "moonPhase": {
+    "newMoon": "New Moon",
+    "waxingCrescent": "Waxing Crescent",
+    "firstQuarter": "First Quarter",
+    "waxingGibbous": "Waxing Gibbous",
+    "fullMoon": "Full Moon",
+    "waningGibbous": "Waning Gibbous",
+    "lastQuarter": "Last Quarter",
+    "waningCrescent": "Waning Crescent"
+  },
+  "option": {
+    "backgroundModes": [
+      "Biome",
+      "Trippy",
+      "None"
+    ]
+  },
+  "unknownMap": "Unknown Map",
+  "healthProtection": {
+    "messages": [
+      "{actor} narrowly avoided death!",
+      "{actor} was saved by divine intervention!",
+      "{actor} clung to life with determination!",
+      "{actor} refused to give up!",
+      "{actor} survived through sheer willpower!",
+      "{actor} was protected by fate!"
+    ],
+    "reset": "Health protection reset for all actors!",
+    "available": "Available",
+    "used": "Used",
+    "status": "{actor}: Protection {status}"
+  },
+  "popup": {
+    "miss": "Miss",
+    "evaded": "Evaded"
+  },
+  "join": {
+    "friendly": "{name} joins the fight!",
+    "hostile": "{name} piles in!"
+  },
+  "rangeLabel": "Range {range}",
+  "card": {
+    "deckCount": "Deck {n}",
+    "useCard": "Use Card",
+    "passTurn": "Pass Turn"
+  },
+  "cmd": {
+    "move": "Move",
+    "defense": "Defense",
+    "skill": "Skill",
+    "skills": "Skills",
+    "basic": "Basic",
+    "reload": "Reload",
+    "run": "Run"
+  },
+  "states": {
+    "removalHeader": "Removal Conditions",
+    "atBattleEnd": "Remove at Battle End",
+    "byRestriction": "Remove by Restriction",
+    "byDamage": "Remove by Damage",
+    "byWalking": "Remove by Walking",
+    "byWalkingSteps": "{label} ({steps} steps)",
+    "statusEffects": "Status Effects",
+    "navHint": "↑↓ navigate · Esc close"
+  },
+  "spirit": {
+    "switchCommand": "Switch",
+    "selectSlot": "Select an empty slot, then choose a spirit to add.",
+    "rosterFull": "Roster is full! You cannot add more spirits.",
+    "notEnoughGold": "Not enough gold!",
+    "slot": "Slot {n}:",
+    "unknown": "- Unknown -",
+    "empty": "- Empty -",
+    "free": " (FREE)",
+    "entry": "{name} - Level: {level}{cost}"
+  },
+  "throw": {
+    "aimHelp": "Use arrow keys to aim, OK to throw, Cancel to abort",
+    "destroyed": "The item was destroyed!",
+    "missingItem": "You don't have that item!",
+    "pickUpPrompt": "Pick up item?",
+    "pickUp": "Pick up",
+    "cancel": "Cancel",
+    "pickedUp": "Picked up {item}!"
+  },
+  "mimic": {
+    "mirrored": "{actor} mirrored the enemy's abilities!",
+    "hasLearned": "{actor} has learned {skill}!",
+    "learnedFromEnemy": "{actor} learned {skill} from the enemy!",
+    "learnableSkills": "Learnable Skills:"
+  },
+  "summon": {
+    "battleOnly": "Summons can only be used in battle!",
+    "alreadyActive": "A summon is already active!",
+    "summoned": "Summoned {name}!"
+  },
+  "actorDied": "{actor} has died.",
+  "bulletHellDamage": "Total bullet hell damage: {amount}"
+}

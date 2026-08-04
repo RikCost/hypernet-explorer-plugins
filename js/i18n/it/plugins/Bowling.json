@@ -1,0 +1,13 @@
+{
+  "noThree": "THREE.JS NON CARICATO - BOWLING NON DISPONIBILE",
+  "player1": "Giocatore 1",
+  "cpuThinking": "LA CPU STUDIA I BIRILLI...",
+  "victory": "VITTORIA!",
+  "defeat": "SCONFITTA",
+  "draw": "PAREGGIO",
+  "finalScore": "Giocatore 1: {player}   {opponent}: {opponentScore}",
+  "frame": "FRAME {frame}/10  {bowler}",
+  "aimPrompt": "{bowler}: SX/DX MUOVI  SU/GIÙ ANGOLO  OK",
+  "powerPrompt": "{bowler}: OK PER FISSARE LA POTENZA",
+  "hookPrompt": "{bowler}: OK PER DARE L'EFFETTO"
+}

@@ -1,0 +1,8369 @@
+{
+  "_meta": {
+    "archetypeCount": 1044,
+    "fallbackToWholeClassCount": 9,
+    "humanoidSlotOverrides": 0,
+    "sourceFileCount": 37,
+    "unresolvedCount": 0
+  },
+  "abortionmimic": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "abyssalcrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "abyssalhorror": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "abyssalleviathan": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "abyssalseadragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "abyssalserpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "abyssaltentacler": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "acidant": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "acidbombardier": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "acidiclarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "acidicmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "acidictidecaller": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "advertisementbadger": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "aethersplicer": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "airelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amo_blick": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amo_karaokebanshee": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amo_kingslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amo_memeghost": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amo_thephantom": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "amphibian": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ancientdragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "ancientdragonep": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "ancientskeleton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "angel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "anguishphantom": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "anxietyelem": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ape": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "aqu_bubblesquid": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "aqu_bubblesquidsecond": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "aquaticelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "aquaticfish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "aquaticmantis": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "armoredbeaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "armoredknight": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "armoredporcupine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "armoredrexlord": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "ashenprowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "assassinwasp": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "azureslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "babybunny": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "backwardstree": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "bacterial": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "baptismfont": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "barbedmanticore": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "SKULL",
+    "legL": null,
+    "legR": null,
+    "torso": "RIBCAGE"
+  },
+  "barkhidebruiser": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "bascapeflame": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "basilisk": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bat": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "BODY"
+  },
+  "bear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "beast": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "beast666": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_ashendirewolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_bloodmawmawhound": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_cinderdirewolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_cinderthornhide": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_direclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_feralprowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_frosthornbeast": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_gauntripper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_holloweyedbristleback": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_holloweyedsnapper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_ironfangeddirewolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_ironfangedhornbeast": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_ironfangedmawhound": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_lonejackal": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mangyhowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mangyridgeback": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mangystalkhound": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mudcakedclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mudcakedgnasher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mudcakedprowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_mudcakedripper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packhornbeast": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packjackal": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packlynx": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packridgeback": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_packripper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_rabidbadger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_rabidlynx": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_scarredbristleback": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_scarredclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_starvingclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_stormgnasher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_stormhowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_threetailedboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_threetailedhornbeast": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bf_threetailedlynx": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bigcat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bioslave": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "MASS"
+  },
+  "bird": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "BODY"
+  },
+  "blazinginfernoelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "bloatedcarapace": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloateddronebug": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloatedgel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloatedglob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloatedmold": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloatedooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloodmawdirewolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bloodmimic": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "bloodmosquito": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "bloodwidow": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "boar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bogelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "boghatchling": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "bogleech": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "bogmutant": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "MASS"
+  },
+  "bogscalehunter": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_bonewarrior": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_cinderthrall": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_gildedlichling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_restlessrevenant": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_rottingskeleton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bon_sunkenpallbearer": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bonewarrior": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_asphaltrevenant": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_babalonpriestess": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_bullwyvern": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_celestialavatar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_celestialavatarep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_crimsonpatriarch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_dragonoftheunderworldkur": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_emperordeathstalker": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_esmeraldathedreamweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_faequeen": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_frostmonarch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_gravemonarch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_hecatetheplaguemistress": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_infernalmonarch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_liliththecorruptor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_morganathebloodweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_orphanagewarden": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_ravennatheshadowbinder": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_selenethevoidwitch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_stormdragonkingenlil": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_summercourtarchon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_supremedragongodusumgallu": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_swampleechqueen": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thebloodcountess": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thecremator": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thedreamweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thefrozenlady": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thepuppeteer": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thescarletjudge": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thesurgeon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_thetaxidermist": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_vampirelord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_venomlord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bos_wintersherald": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "boxingelemental": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "brackishooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "brackishpudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "brasssentinelmk4": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "brimstonebehemutt": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "brinewisp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "bst_alphadirewolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_alphawarg": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_arcticfox": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_arcticwolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_armoredrhinoceros": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_blackpanther": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_bloodbellcow": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_brownbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_cottonfox": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_deersprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_demonbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_direpig": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_diresabertoothalpha": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_emberclawbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_feralhyenapack": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_flyingpig": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_flyingpig2": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_foreststag": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_frostbackursid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_frostfangbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_goldenlion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_graywolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_hollowgoat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_hornedbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_icewolfpup": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_ironhoofcharger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_kodiakbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_lazycat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_madboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_maleficentape": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_manedterrorwolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_mysticpanther": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_normalpig": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_organgrindermonkey": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_panda": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_pastoralsheep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_polarbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_rabidcoyote": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_rabidhyena": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_rancorousbull": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_razorbackboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_redfox": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_reflectivetiger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_sabercat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_sabertoothalpha": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_scavengingcoyote": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_stripedtiger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_thirstycamel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_thundermawursine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_timewornowlbear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_titaniccavebear": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_titanotherealpha": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_treemonkey": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_umbrapanthera": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_wildboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_wildcat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bst_youngyeti": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "bumblebee": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "caffeinatedsquirrel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "catfish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "catican": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "catizard": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "causticcarapace": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "causticlarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "causticmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "causticslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "caveworm": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "celestialdragonanshar": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "celestialtrex": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "centaur": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "chainfury": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "chestmimic": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "chitteringhuskbeetle": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "chitteringmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "chitteringpudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "chromaticmanticore": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "chromatictick": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "chupacabra": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cindermawhound": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "cinderthroat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cinderweaver": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "clockscarab": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "cloudgiant": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "cobaltrex": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cognitivebacteria": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "col_bloodleech": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_bogbehemoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_chronos": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_crag": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_crimson": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_crumbling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_earthen": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_flower": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_frost": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_glacial": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_gorilla": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_maelstrom": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_magmaoverlord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_magmatitan": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_mammoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_mountainking": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_mountaintitan": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_ossuary": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_porphyrin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_primordial": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_quakemaw": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_radiant": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_scorched": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_storm": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_stratos": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_thunderlizard": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_totemic": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "col_war": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "colossus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "combatdrone": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "compressedair": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "constructedundead": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "coralwarcaster": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "corpseofmaat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "corvid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cracklinganimus": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "cracklingeffigy": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "cracklingelemental": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "cracklingrevenant": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "crawlinghand": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "creepingluminspore": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "creepingshade": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "crimsonjelly": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crimsonmagmadrake": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "crushingboa": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "crustacean": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "cryingtree": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "cryodrone": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "cryptsentinel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "crystalbacksceloporus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "crystalcarapace": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "crystalentity": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystalgiant": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystalhoarder": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallinebroodthing": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallinecarapace": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallinedronebug": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallinegel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallineglob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallinelarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystallineskulker": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "crystalmonarch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "crystalsiren": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "curiousrabbit": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cursedcandle": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "cyclops": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "darkelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "datadrone": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "dawnshelltortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "deathaxolotl": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "demon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "desertscorpion": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "ABDOMEN"
+  },
+  "diamondmimicep": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "diregnasher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "direrabbit": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "discobeetle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "discorddemon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "dodgerimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "doubleheadedhumanoid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "dragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "dragonfly": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "dragonmonkep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "dragonofdeathnergal": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "dragonofwisdomenki": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "dreamserpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "dreamweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "drone": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "dumpsterhead": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "dunefang": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "earthsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "earthworm": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "echowisp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "eel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "el_aiwass": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_annunaki": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_azathoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_blankemergence": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_childhoodsend": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_choronzon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_chronoconsumer": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_chronovore": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_coloroutsound": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_elderthing": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_glitch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_gulmagoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_mindmanip": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_mindoverlord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_mindtyrant": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_mordun": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_network": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_nightmare": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_nyarlathotep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_nythaggoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_qelthuzad": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_quantumarchon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_seraph": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_shalthyss": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_singularity": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_velkorthak": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_voidempress": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_vorthak": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_xothnagal": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_yellowking": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_yithoghra": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_yogsothoth": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_yogsothothep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "el_zhothaggur": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "eldergloomsporemantle": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "elderwoodguardian": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "eldritch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "electroarachnid": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "electromagneticghoul": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "elemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "elephant": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "elven": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "emberbackhellscorpion": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "embercentipede": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "emberimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "embersprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "emeraldooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "emeraldstalker": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "emotionalleech": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "enchantress": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "engorgedtick": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "entropywyrm": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "entropywyrmep": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "eris": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "es_cinderwrappedsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_cracklingspirit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_encompassingroadwarden": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_forgottensentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_frozenrevenant": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_gildedsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_grindingconstruct": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_grindingspirit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_howlingelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_howlingrevenant": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_howlingsylph": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_livingelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_livingsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_lullabywraith": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_moltencolossusspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_moltenconstruct": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_moltensentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_moltensylph": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_moltenwarden": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_obsidianconduit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_petrifiedeffigy": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_petrifiedwarden": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_quartzmonolith": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_quartzsylph": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_quartzwisp": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_radiantmonolith": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_raginganimus": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_ragingcolossusspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_ragingconduit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_searingelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_searingspirit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_surgingsylph": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_tempestcolossusspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_tempestconduit": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_tempestdjinn": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_tempestsylph": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "es_tempestwisp": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "expiredooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fairy": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fearsiphon": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "feastoffamine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fenclawbrute": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "feralbadger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ferallynx": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "feralridgeback": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fh_abyssaldevourer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_bleedingstatue": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_bonechewer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_brainswarmer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_breathingbuilding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_carrionstalker": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_crimsonharvester": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_echomaw": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_etherealdevourer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_fleshcalculator": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_geometrydevourer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_migo": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_skinballoon": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_soulharvester": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fh_womb": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fidgetsprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "fieldmouse": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "filthfiend": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "firecentipede": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "firedragonling": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "fireelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "flameelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "flamefrake": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "flametouchedhellhound": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "flameturret": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "flatwoodsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "fleshhorror": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "fleshweaverspider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "floatingeye": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "MASS"
+  },
+  "flowerpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fluxlingfurret": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "forestarcher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "forestcentaur": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "forestrat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "forestsvengeance": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "foresttreant": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "forestwitch": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "freelobster": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "frog": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "frogmonk": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "frostbacktortoise": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "frostbeetle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "frostdragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "frostelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "frostraccoon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "frostscarab": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "frostslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "frostspider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "frostsylph": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "frozenconstruct": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "frozenmonolith": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "frozensentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "fsh_abyssalsiren": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_accursedstonefish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_bloatedwhale": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_coralguardian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_crimsonfish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_deepfrosteel": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_deeponehybrid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_desperatepufferfish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_etherealtactician": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_hammerheadenforcer": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_lakelurkerserpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_luminousangler": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "fsh_megalodon": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_nightmareshark": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "fsh_parrotfishgrazer": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_reefguppy": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_reefshark": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_rubberfamiliar": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_seafoamenchantress": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_sealpup": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_sirenapprentice": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_sirenenchantress": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_sirensniper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "fsh_swordfishsovereign": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_tonnodimensionale": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_toxicanemone": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "fsh_umbilicalstrangler": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_wrathdolphin": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fsh_zombiewhale": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "fungalsnapjaw": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "galesentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "galeshelltortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "gardenfrog": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "gatorghast": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "gauntclawrunner": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "gauntlynx": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "gauntsnapper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "gelatinousdronebug": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gelatinousglob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gelatinoushuskbeetle": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gelatinousmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "geodehydra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD_ONE",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "ghost": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ghosttiger": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ghostwisp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "giantjellyfish": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "giantrat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "giantscorpion": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "giantsnail": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "giantspider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "gildedguardian": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gildedzapback": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "glacialgeist": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "glaciercrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "glacierserpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "glimmershrimp": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "glitteringbroodthing": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "glitteringcrawler": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gloomscalebasilisk": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "gloomwurm": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "gnome": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "goblin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "goldenmimic": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "goldenpudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "goldenseahorse": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "golem": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "gorgon": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "graspingshadow": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "grasshopper": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "grassslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "graveyardhaunt": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gravityworm": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "greenslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "griefcollector": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "grimoire": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "grotesqueslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "gunburger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "gutturalmaggotus": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "hairball": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "hallucigenia": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "harpybanshee": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "hellfiremammoth": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "hellhound": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "hellthorndryad": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "hivemindtermite": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "hobgoblin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "holloweyedboar": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "holographicdecoy": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "horse": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "horseshoecrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "humanoid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "humanoid_roguelite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "hydra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD_ONE",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "hydrokineticengine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "icedragonling": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "icekangaroo": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "icelemming": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "identitythief": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "infernalcerberus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "inkblotchild": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "insectoid": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "insectswarm": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "insideoutcritter": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "insideoutwhale": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "interdimensionaltourist": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "invertedangel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "invertedhunger": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "iridescentcrawler": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ironhorse": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "jellyfish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "jungleconstrictor": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "junglepredator": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "junglestalker": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "junkrat": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "juvenileicewyrm": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "kangaroo": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "kazooimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "komododragon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "krakenleviathan": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "krakenlord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "krakenspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "ladybug": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "landfillleviathan": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "leylineaneurysm": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "lich": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "lingeringspirit": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "livingtheorem": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "lizardsniper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "lostmemory": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "luckelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "luminescentmycelian": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "luminousdefender": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "luminousjellyfish": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "luminouslocustking": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "maggotslail": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "magmaant": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "magmacentipede": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "mammothcalf": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "manticore": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "SKULL",
+    "legL": null,
+    "legR": null,
+    "torso": "RIBCAGE"
+  },
+  "mar_babydoll": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "mar_backwards": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_boneorchestra": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_haunted": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_mannequin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_meatpuppet": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_phantom": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_puppetcorpse": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_stringbound": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mar_twisted": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "marionette": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "marshjawheloderma": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "marshjawstalker": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "marshmurkweb": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "marshwraith": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "maternityward": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mathematicseater": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "md_brimstonecambion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_brimstonedevilkin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_brimstonefiend": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_brimstonenixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_brimstonesprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_brimstonewhisperling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperingdevilkin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperingfiend": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperinghexweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperingnixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperingpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_caperingtrickster": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_fangedimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_gibberingfiend": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_gibberinghexweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_gibberingsprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_gibberingtrickster": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_glimmeringdevilkin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_glimmeringhexweaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_glimmeringsprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_glimmeringsuccubus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_glimmeringtrickster": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_hexingcambion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_hollowimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_hollowpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_hollowsuccubus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_hollowwhisperling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_leeringpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_leeringsprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_mockingnixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_mockingshade": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_mockingwhisperling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_pactbounddevilkin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_pactboundfiend": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_pactboundnixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_spitefulcambion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_spitefuldevilkin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_spitefulpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_spitefultormentor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphurcambion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphurgremlin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphurnixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphurshade": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphursprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_sulphurwhisperling": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_twilightgremlin": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_twilightpixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_twilightshade": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_whisperingnixie": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "md_whisperingtormentor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "memoryleech": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "mercurydragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "merfolk": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "metalelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "mianni": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "miasmalantern": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "midnighthunter": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "mimicshapedbox": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "mindflayer": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "mindflayermoth": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "mindleech": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "mindshield": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "mineral": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "minorshade": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "minotaur": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "miredragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "mirehydra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD_ONE",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "mirespider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "mischievoussprite": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "molerodent": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "moltendragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "moltenglob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "moltenjuggernaut": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "moltenmold": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "moltenpudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "moltenslag": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "monitorlizard": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "monstrousbadger": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "moonlitwendigo": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "mossscaleamphibolurus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "mossviper": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "mothshadestalker": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "motivationalfungoid": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "motivationalspeakerep": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "mrinadequate": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "mudslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "multiheadedhydra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD_ONE",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "mushroom": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "mutant": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "MASS"
+  },
+  "mutantbug": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "nervoussystem": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "neuralinterface": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "nightcursetortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "nightmarebacteria": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "nightraccoon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "nobleguardian": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "noneuclideancrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "obsidiananimus": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "obsidiandreadnought": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "obsidianelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "obsidianhellhound": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "obsidianvisionary": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "obsidianwraith": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ochrejelly": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "octopus": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "og_discordlarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_gelatinoushuskbeetle": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_gelatinousooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_gelatinouspudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_glitteringlarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_moltenmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_ochrejellyswarm": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_skitteringdronebug": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "og_swarmingmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ogre": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ophanim": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "opossum": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "orc": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "origamicrane": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "BODY"
+  },
+  "overworkedvillager": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "palettephantom": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "paperwork": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "paralyticslug": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "permafrostdragon": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "petrifiedmonolith": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "petrifiedsylph": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "petrifyinggorgon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "petrodemon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "phantomarcher": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "phantomchloroblade": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "phoenix": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "BEAK",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "CORE"
+  },
+  "pillowguardian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "pinkslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "plagueheap": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "plaguerattus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "plant": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "platinummimic": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "pocketimp": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "pregseahorse": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "primalkangaroo": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "primaloceandragonabzu": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "primalsloth": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "primordialdragonturtle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "primordialterrorrex": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "prismaticpolychromus": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "probabilityspider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "prototurret": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "psionicfenbeast": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "pumpkinslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "pyroclastphoenix": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "BEAK",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "CORE"
+  },
+  "pyroshelltortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "quagmirecreeper": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "quantumfluctuation": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "quantumfluctuationep": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quantumintellect": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "quartzcolossusspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quartzgeist": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quiveringbroodthing": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quiveringcarapace": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quiveringhivemind": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "quiveringlarva": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "rabbit": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "rabidjackrabbit": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "radiantunicorn": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "raginggeist": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "ragingsentinel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "rainbowslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "raptor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ratking": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "rattussapscream": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "reaganite": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "realitybender": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "realitywarper": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "reaper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "recursiveparadox": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "reeffish": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "reptilian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "rhinobeetle": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ribcagecrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "ritualsentinel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "robot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "roboticdefender": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "roc": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "rodent": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "rottingskeleton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "rotwoodentangler": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "rubberblob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "rubbler": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "rummagingopossum": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sacredelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "sacredkraken": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "sacredphoenix": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "BEAK",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "CORE"
+  },
+  "sandcobra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "sandslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "sandstridervaranus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sardineschool": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "sawblade": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "sb_backalleybot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_conscriptautomaton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_disgracedbot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_grizzledbot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_maskedbot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_mercenarydrone": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_renegadebot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_renegadedrone": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_salvagedautomaton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_scrapautomaton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_scrapbot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_twitchybot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_twitchydrone": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sb_twitchysapper": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "scarecrow": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "scorpion": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "scrapforged": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "searingmagmawyrm": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "seaturtle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "securitybot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "CORE"
+  },
+  "seeingslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "segmentworm": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "sentientmeme": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "sentientwound": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "seraphicemissary": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "serpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "sewerrat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "sewersslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shadowbat": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "shadowcrawler": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "shadowexecutioner": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shadowstalker": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shadowtortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "shadowwraith": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shardmaw": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shark": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": "TORSO"
+  },
+  "shellbreakerbulwark": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "shockslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "shoggoth": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "silkenenchantress": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "skeleton": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "skitteringmold": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "skullcrusherbrute": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "skulmireslime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "skunk": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "skyserpent": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "slime": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "slimeknight": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "slowturtle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "sludgycrawler": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "snail": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "sonicmoltendrakebat": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "sorrowspecter": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spectralwardstone": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spectralwisp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spherical": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spider": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "spiderhumanhybrid": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "spikeyporcupine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "spikymonster": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": null,
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "spinedlizard": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "spinescalepogona": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "spineshade": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": null,
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "spinysprinter": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": null,
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "sporeburstmyconid": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "spr_forgottenthrall": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spr_graveyardhaunt": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spr_mummifiedmourner": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spr_plaguepallbearer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "spr_sunkencharnelhound": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "squeakyturnip": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "starvinggnasher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "starvingsabercat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "steelshelltortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "stompingelephant": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "stoneguardian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "stormbanshee": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "stormcaller": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "stormdragonling": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "stormelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "stormshelltortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "surgingconstruct": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "surgingelemental": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "surveillancedrone": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "sushisnail": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "swampcrocodile": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "swampgaselemental": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "swampleviathan": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "swamprat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "swampscorpion": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "swarmingbroodthing": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "swarminghivemind": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "swarmingmirespawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "swarmingswarmling": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "sylvanbarkstalker": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "tarantula": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "taxidoggo": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "tempestpegasus": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "tempestwyvern": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "temporalbarnacle": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "temporalhornet": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "tentacledcreature": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "terraclawtortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "theviper": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "thoughtparasite": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "thunderblob": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "thunderdragonling": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "thunderelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "thundersprite": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "tiamat": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "tidalcarapacetortoise": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "tidecrab": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": "ABDOMEN"
+  },
+  "tidesculptor": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "tidesorcerer": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "timberwoodshaman": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "timeloopstalker": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "titananaconda": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "toothfairy": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "BODY"
+  },
+  "totem": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemadept": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemguardian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemicoverlord": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemicprotector": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemicsprout": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "toteminitiate": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "totemofsins": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "toxicamalgam": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "toxicghost": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "toxicooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "toxicsludge": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "toxicsprayer": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "trafficcone": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "trashcreature": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "trashling": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "tree": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "tridenthunter": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "tsunamiguardian": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "tunnelingmole": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "turret": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "turtle": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": null
+  },
+  "twilightsatyr": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "twitchingdronebug": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "twitchingooze": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "twitchingpudding": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "tyrantcrocodilian": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "u_crudeleviathan": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "u_eternallichking": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "u_forestsovereign": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "u_tidalwarden": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "umbralbasilisk": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "TALONS",
+    "legR": "TALONS",
+    "torso": "BODY"
+  },
+  "undead": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "ungulate": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "unicorn": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "vampire": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "vampirebat": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "veiledphantasm": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "velocicorn": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "velociraptor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "venomfangarcher": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "venomousdragonfly": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "venomoussnake": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "virulentslimefiend": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "voidgel": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "voidhowler": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "voidmanipulator": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "voidparasiteplant": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "voidspawn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "voidweaver": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "volcanicshark": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "volcanicwyvern": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "walkingdoor": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "waridol": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "warmachine": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wastelandbeaver": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "waterelemental": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "TORSO"
+  },
+  "waterfowl": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "waternymph": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "webweaver": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "ABDOMEN"
+  },
+  "weepingmask": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "whisperingdoor": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "whisperingwraith": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "whisperwisp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "wildrabbit": {
+    "armL": "LEFT_LEG",
+    "armR": "RIGHT_LEG",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "willowisplamp": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "windleviathan": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "wingeddemon": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wintersharbinger": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  },
+  "witch": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_arsenal": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_assault": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_battlemech": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_battlemechep": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_cogwork": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_ironbastion": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_marauder": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_tank": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wm_veteranbot": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "wolf": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "woodenflower": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": null,
+    "legR": null,
+    "torso": "BODY"
+  },
+  "woodsquirrel": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "worldserpent": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "worldtree": {
+    "armL": "LEFT_ARM",
+    "armR": "RIGHT_ARM",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "TORSO"
+  },
+  "xylomantiflorous": {
+    "armL": null,
+    "armR": null,
+    "head": null,
+    "legL": null,
+    "legR": null,
+    "torso": null
+  },
+  "youngfakehydra": {
+    "armL": null,
+    "armR": null,
+    "head": "HEAD",
+    "legL": "TAIL",
+    "legR": "TAIL",
+    "torso": null
+  },
+  "youngmagmadrake": {
+    "armL": "LEFT_WING",
+    "armR": "RIGHT_WING",
+    "head": "HEAD",
+    "legL": "LEFT_LEG",
+    "legR": "RIGHT_LEG",
+    "torso": "BODY"
+  },
+  "zephyrdjinn": {
+    "armL": null,
+    "armR": null,
+    "head": "CORE",
+    "legL": null,
+    "legR": null,
+    "torso": "CORE"
+  }
+}

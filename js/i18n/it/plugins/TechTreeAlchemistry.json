@@ -1,0 +1,74 @@
+{
+  "name": "Alchimia",
+  "blurb": "La trasmutazione ridotta a procedura di laboratorio, dall'idrogenazione chirale alla mappatura dei recettori con cui una cellula assaggia il mondo. In archivio accanto alle preparazioni che non hanno mai dato un saggio positivo.",
+  "nodes": {
+    "chem_chiral": {
+      "name": "Catalisi Chirale",
+      "desc": "Una difosfina chirale come il BINAP, chelata a rutenio o rodio, rende non equivalenti le due facce prochirali del substrato nello stato di transizione, per cui l'idrogenazione o l'ossidazione passa dalla barriera più bassa e produce un solo enantiomero con eccesso del 95-99 per cento e numeri di turnover nell'ordine delle migliaia. Il caso industriale è il mentolo, diecimila tonnellate l'anno. Poiché l'immagine speculare di un farmaco può essere inerte, antagonista o teratogena, l'eccesso enantiomerico passa da statistica di laboratorio a specifica di rilascio."
+    },
+    "chem_click": {
+      "name": "Chimica a Innesto",
+      "desc": "La catalisi con rame(I) della cicloaddizione di Huisgen unisce un'azide organica a un alchino terminale e produce il solo triazolo 1,4, con velocità superiori di sette ordini di grandezza rispetto alla reazione termica. Le condizioni sono acqua a temperatura ambiente, le rese sono quasi quantitative, di sottoprodotti non ce ne sono, e alcoli, ammine, tioli e carbossilati liberi restano intatti. Poiché nessuno dei due partner esiste in una cellula, la coppia può reagire dentro un organismo vivo; la variante con cicloottino tensionato elimina il rame e con esso la citotossicità."
+    },
+    "chem_ubiquitin": {
+      "name": "Ubiquitina e Morte Controllata",
+      "desc": "Un enzima attivante E1 carica l'ubiquitina, una proteina di 76 residui, al costo di un ATP; un trasportatore E2 la riceve, e una fra circa seicento ligasi E3 decide quale lisina del substrato la riceverà. Quattro o più unità legate attraverso la lisina 48 costituiscono il segnale di degradazione. Il proteasoma 26S lega la catena, la ricicla, srotola il substrato con un anello ATPasico e lo infila in un barile le cui proteasi a treonina lo tagliano in peptidi di sette-nove residui. Per la maggior parte delle proteine regolatrici il livello stazionario è fissato da questa velocità e non dalla trascrizione."
+    },
+    "chem_metathesis": {
+      "name": "Metatesi delle Olefine",
+      "desc": "Un alchilidene di rutenio con un carbene N-eterociclico si addiziona a un doppio legame carbonio-carbonio formando un metallaciclobutano, che si riapre lungo l'altra diagonale scambiando i frammenti alchilidenici. Il catalizzatore tollera aria, acqua, esteri, ammidi e alcoli liberi, cosa che i precedenti sistemi al molibdeno non facevano. La metatesi a chiusura d'anello converte un diene in un macrociclo di qualsiasi dimensione in un solo passaggio, liberando etilene, e si conduce in soluzione diluita per tenere il cammino intramolecolare davanti all'oligomerizzazione."
+    },
+    "chem_gfp": {
+      "name": "Proteina Fluorescente Verde",
+      "desc": "La proteina di Aequorea victoria si ripiega in un barile beta a undici filamenti con un'elica centrale, e i residui da 65 a 67 di quell'elica ciclizzano, si disidratano e si ossidano da soli formando un cromoforo p-idrossibenzilidene-imidazolinone. L'unico cofattore necessario è l'ossigeno molecolare, quindi basta il gene. Fusa in fase a qualsiasi sequenza codificante riporta livello di espressione e localizzazione subcellulare come emissione a 509 nanometri; la serie di mutanti che segue sposta l'emissione da 442 a 610 nanometri e permette di seguire due o tre proteine insieme in una cellula viva."
+    },
+    "chem_oganesson": {
+      "name": "Sintesi dell'Oganesson",
+      "desc": "Un fascio di calcio-48 di circa seimila miliardi di ioni al secondo viene indirizzato su un bersaglio di californio-249 per circa 1.080 ore. Tre atomi dell'elemento 118 si formano per fusione calda con sezione d'urto vicina a mezzo picobarn e vengono identificati in un separatore a gas dalla catena alfa correlata che segue entro pochi millisecondi e termina in fissione spontanea. Non si pesa nulla e non si fa reagire nulla: la chimica dell'elemento è estrapolata da calcoli relativistici, che prevedono un guscio chiuso destabilizzato abbastanza da renderlo un solido e non un gas nobile."
+    },
+    "chem_ribosome": {
+      "name": "Struttura del Ribosoma Mappata",
+      "desc": "Cristalli della subunità 50S di Haloarcula marismortui e della 30S di Thermus thermophilus diffrangono a 2,4 e 3,0 angstrom, con le fasi ottenute da cluster di osmio e iridio, e collocano ogni nucleotide di un complesso da 2,5 megadalton. Il centro peptidil-transferasico non contiene alcuna catena laterale proteica entro diciotto angstrom dalla reazione, quindi il legame peptidico lo forma l'RNA ribosomiale. I siti A, P ed E per i tRNA sono risolti insieme al centro di decodifica, e ogni classe di antibiotici viene localizzata nella tasca che occupa."
+    },
+    "chem_crosscoupling": {
+      "name": "Accoppiamento Incrociato al Palladio",
+      "desc": "Un centro di palladio(0) si inserisce per addizione ossidativa nel legame carbonio-alogeno di un alogenuro arilico; la transmetalazione porta il secondo frammento da un acido boronico, un organozinco o uno stannano, e l'eliminazione riduttiva forma il nuovo legame carbonio-carbonio e rigenera il palladio(0). Fosfine ingombranti e ricche di elettroni rendono i due stadi lenti abbastanza rapidi da lavorare su cloruri arilici e con cariche di catalizzatore sotto il decimo di punto percentuale. La via all'acido boronico impiega reagenti stabili all'aria e non tossici, ed è per questo che domina la chimica di processo."
+    },
+    "chem_quasicrystal": {
+      "name": "Quasicristalli",
+      "desc": "Un fuso di alluminio-manganese temprato a un milione di kelvin al secondo dà un quadro di diffrazione elettronica con riflessi netti e simmetria puntuale icosaedrica, assi di ordine cinque compresi, che nessun reticolo periodico può sostenere. Il solido ha ordine orientazionale a lungo raggio senza periodicità traslazionale: per indicizzarlo servono sei vettori di base invece di tre, e la struttura è l'analogo tridimensionale di una tassellatura di Penrose. Grani singoli stabili e di dimensione millimetrica di alluminio-rame-ferro chiudono la questione, e un campione naturale verrà poi recuperato dal meteorite di Khatyrka."
+    },
+    "chem_gpcr": {
+      "name": "Recettori Accoppiati a Proteine G",
+      "desc": "Il recettore beta-2 adrenergico viene cristallizzato legato a un agonista e a una proteina G eterotrimerica priva di nucleotide, un complesso da circa 150 kilodalton che sta insieme solo finché il nucleotide manca. La struttura risolve a 3,2 angstrom e mostra l'elica transmembrana sei ruotata di quattordici angstrom verso l'esterno, che apre la cavità intracellulare destinata alla subunità alfa della proteina G e allontana le eliche che trattengono il GDP. Circa un terzo dei farmaci in commercio agisce su questa famiglia di recettori, il cui passo di attivazione viene qui colto a metà."
+    },
+    "chem_water_memory": {
+      "name": "La Memoria dell'Acqua",
+      "desc": "La preparazione viene diluita cento volte e agitata con violenza a ogni passaggio, trenta volte di seguito, cioè un fattore di diluizione di dieci alla sessantesima: oltre il dodicesimo passaggio il numero atteso di molecole di soluto nella fiala è inferiore a uno, e il numero di Avogadro colloca l'ultima proprio al passaggio dodici. Il vettore proposto è una struttura persistente nella rete di legami a idrogeno, che la spettroscopia infrarossa al femtosecondo misura riorganizzarsi su tempi di uno-due picosecondi. Le repliche in cieco, compresa una condotta con protocollo televisivo e premio in denaro, restituiscono l'attività del solvente."
+    },
+    "chem_water_fuel": {
+      "name": "L'Auto ad Acqua",
+      "desc": "Una cella a bordo elettrolizza l'acqua, l'idrogeno viene inviato a un'aspirazione modificata e la combustione riporta l'acqua nel serbatoio. La dissociazione di una mole di acqua liquida costa 286 kilojoule e la sua combustione ne restituisce al massimo altrettanti, prima di sottrarre un sovrapotenziale di elettrolisi di circa il 20 per cento, un rendimento dell'alternatore del 50 per cento e un rendimento termico prossimo al 30 per cento. Il ciclo si chiude con una perdita di circa sei unità su sette, e le dimostrazioni che circolano vanno a batteria, con una linea di carburante nascosta, o entrambe."
+    },
+    "chem_alkaline_diet": {
+      "name": "Il Corpo Alcalino",
+      "desc": "Gli alimenti vengono classificati per il carico acido renale potenziale delle loro ceneri di combustione e scelti per spingere il siero verso l'alcalino. Il pH arterioso è regolato fra 7,35 e 7,45 dal tampone bicarbonato, dall'eliminazione respiratoria dell'anidride carbonica nell'arco di minuti e dall'escrezione renale di protoni nell'arco di ore; un pH sierico fuori dall'intervallo 6,8-7,8 non è compatibile con la vita, e nessuna dieta lo sposta. Quello che la dieta sposta è il pH urinario, entro un giorno, e le affermazioni sui tumori che vi si accompagnano sono un errore di categoria, perché l'acidità extracellulare di un tumore è un prodotto del suo metabolismo."
+    },
+    "chem_target_fabrication": {
+      "name": "Fabbricazione di Bersagli Attinidi",
+      "desc": "Quantità dell'ordine del milligrammo di un attinide che non esiste in natura vengono elettrodepositate da isopropanolo su una lamina di supporto in titanio spessa due micrometri, con densità superficiale di circa 0,3 milligrammi per centimetro quadrato. La lamina viene montata su una ruota che gira a duemila giri al minuto, così nessun punto resta sotto il fascio per più di un millisecondo. Qualche centinaio di watt di potenza di fascio finisce in uno strato più sottile di una lunghezza d'onda della luce, e il bersaglio deve reggere per mesi senza bollare, senza essere polverizzato e senza perdere materiale abbastanza da falsare la misura di sezione d'urto."
+    },
+    "chem_synchrotron": {
+      "name": "Cristallografia da Sincrotrone",
+      "desc": "Elettroni che circolano fra sei e otto giga-elettronvolt vengono fatti oscillare in un ondulatore, una schiera magnetica periodica in cui l'emissione di ogni polo si somma in fase, e il fascio di raggi X che ne risulta è dieci ordini di grandezza più brillante di un anodo rotante e sintonizzabile attraverso una soglia di assorbimento. Quel flusso è la condizione perché si possa lavorare su una cella elementare da centomila atomi, le cui riflessioni sono deboli e fitte: il cristallo viene tenuto a 100 kelvin, e il set di dati deve essere completo prima che la dose accumulata distrugga la diffrazione, cosa che avviene attorno ai trenta megagray."
+    },
+    "chem_heavy_atom": {
+      "name": "Fasatura con Atomi Pesanti",
+      "desc": "Un esperimento di diffrazione registra le intensità e perde la fase di ogni riflessione, e la densità elettronica non si può calcolare dalle sole ampiezze. Immergere il cristallo in mercurio, platino o un lantanide, oppure farlo crescere da proteina sostituita con selenometionina, introduce diffusori le cui posizioni si ricavano da mappe di Patterson di differenza; misurando ai due lati della loro soglia di assorbimento si separano le differenze anomale e dispersive, e ogni derivato restringe la distribuzione di probabilità delle fasi finché la densità diventa tracciabile. La non isomorfia fra derivato e nativo è il motivo abituale per cui un set di dati viene abbandonato."
+    },
+    "chem_membrane_protein": {
+      "name": "Stabilizzazione delle Proteine di Membrana",
+      "desc": "Tolto dal doppio strato e portato in detergente, un recettore a sette eliche transmembrana perde attività nel giro di ore e non nuclea mai un reticolo. Lo tengono insieme quattro misure: otto-dieci mutazioni puntiformi termostabilizzanti trovate per scansione ad alanina, che alzano di venti gradi la temperatura di fusione; il lisozima T4 o BRIL fusi nel terzo anello intracellulare flessibile per fornire un contatto cristallino polare; un ligando ad alta affinità legato per tutta la purificazione; e la cristallizzazione in fase cubica lipidica di monoleina, in cui la proteina resta in un doppio strato curvo mentre nuclea dalla rete lipidica."
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "weight": "Peso",
+  "value": "Valore",
+  "stealSuccess": "Hai rubato con successo",
+  "stealFailed": "Non sei riuscito a rubare",
+  "stealTitle": "Ruba",
+  "nothingNearby": "Non c'è nulla da rubare qui intorno."
+}

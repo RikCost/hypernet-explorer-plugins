@@ -1,0 +1,49 @@
+{
+  "anItem": "un oggetto",
+  "mapFallback": "Mappa {id}",
+  "homePool": {
+    "huts": "capanna",
+    "houses": "casa",
+    "villas": "villa",
+    "skyscrapers": "grattacielo"
+  },
+  "log": {
+    "work": "ha lavorato come {job} guadagnando {pay}",
+    "harvested": "ha raccolto le colture mature",
+    "animalProduce": "ha raccolto i prodotti degli animali",
+    "stole": "ha rubato {item}",
+    "caughtStealing": "sorpreso a rubare {item}",
+    "bought": "ha comprato {item} per {price}",
+    "cooked": "ha cucinato {a} con {b}",
+    "foundInContainer": "ha trovato {amount} frugando in un contenitore",
+    "rentedRoom": "ha affittato una stanza per la notte ({price})",
+    "soldHoney": "ha venduto una partita di miele e cera per {amount}",
+    "tookLoan": "ha acceso un prestito da {amount}",
+    "deposited": "ha depositato {amount} su un conto di risparmio",
+    "rentalIncome": "ha incassato {amount} di affitti",
+    "stocksGain": "ha guadagnato {amount} in borsa",
+    "stocksLoss": "ha perso {amount} in borsa",
+    "movedHome": "si è trasferito in una {home} ({saved} da parte)",
+    "reachedLevel": "ha raggiunto il livello {level}",
+    "met": "ha incontrato {name}"
+  },
+  "narrative": {
+    "noHistory": "{name} non ha ancora una storia registrata.",
+    "workShifts": "ha fatto {count} turni (l'ultimo: {last})",
+    "tendsCrops": "cura i campi con regolarità",
+    "hasMet": "ha incontrato {name}",
+    "acquainted": "conosce {names}",
+    "and": "e",
+    "cooksRegularly": "si cucina i pasti con regolarità",
+    "rentsSometimes": "affitta una stanza di tanto in tanto",
+    "keepsBees": "alleva api per arrotondare",
+    "livesOffRent": "vive degli affitti delle sue proprietà",
+    "dabblesStocks": "si diletta in borsa",
+    "wasCaught": "una volta fu sorpreso, {what}",
+    "familiarFace": "considera il giocatore un volto familiare",
+    "spokenBefore": "ha già parlato con il giocatore",
+    "summary": "{name}: {list}.",
+    "quiet": "{name} vive tranquillamente."
+  },
+  "unknownDate": "Sconosciuta"
+}

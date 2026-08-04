@@ -1,4 +1,43 @@
-[
+{
+  "capabilityThoughts": {
+    "cooking_station": {
+      "en": ["That meal hit the spot.", "Cooking for myself beats buying out.", "I should do that more often."],
+      "it": ["Quel pasto era proprio quello che ci voleva.", "Cucinare da soli è meglio che comprare fuori.", "Dovrei farlo più spesso."]
+    },
+    "container": {
+      "en": ["Finders keepers.", "You'd be surprised what people leave lying around.", "A little extra never hurts."],
+      "it": ["Chi trova tiene.", "Ti sorprenderebbe cosa lascia in giro la gente.", "Un po' di extra non fa mai male."]
+    },
+    "rentable_room": {
+      "en": ["A real bed for once, wonderful.", "Worth every coin for a good night's sleep.", "I needed that rest."],
+      "it": ["Un vero letto per una volta, meraviglioso.", "Vale ogni moneta per una buona notte di sonno.", "Avevo bisogno di quel riposo."]
+    },
+    "apiary": {
+      "en": ["The hives are doing well this season.", "Honey always sells.", "Bees are good business."],
+      "it": ["Le arnie vanno bene questa stagione.", "Il miele si vende sempre.", "Le api sono un buon affare."]
+    },
+    "bank": {
+      "en": ["That should tide me over.", "Better safe than sorry, into the vault it goes.", "Banks. Can't live with them, can't live without them."],
+      "it": ["Questo dovrebbe bastarmi.", "Meglio prevenire, nel caveau finisce.", "Le banche. Non puoi viverci, non puoi vivere senza."]
+    },
+    "real_estate_office": {
+      "en": ["Property really does pay for itself.", "Another month, another rent cheque.", "Owning land was the smartest thing I ever did."],
+      "it": ["La proprietà si ripaga davvero da sola.", "Un altro mese, un altro affitto incassato.", "Possedere terra è stata la cosa più furba che abbia mai fatto."]
+    },
+    "stock_exchange": {
+      "en": ["Easy come, easy go.", "The market giveth and the market taketh away.", "I'll make it back next time."],
+      "it": ["Come è venuto, se n'è andato.", "Il mercato dà e il mercato toglie.", "Lo recupererò la prossima volta."]
+    },
+    "fast_travel_terminal": {
+      "en": ["Nothing like seeing somewhere new.", "Travel clears the head.", "Wonder what's out there today."],
+      "it": ["Non c'è niente come vedere un posto nuovo.", "Viaggiare schiarisce le idee.", "Chissà cosa c'è là fuori oggi."]
+    },
+    "furniture_builder": {
+      "en": ["A few new touches and this place feels like home.", "Nice things make a house a home.", "That looks better already."],
+      "it": ["Qualche tocco nuovo e questo posto sembra casa.", "Le cose belle rendono una casa accogliente.", "Sta già meglio così."]
+    }
+  },
+  "list": [
   {
     "name": "Nervous",
     "name_int": "personality.nervous.name",
@@ -33,7 +72,26 @@
         "Voglio solo che sia finita."
       ]
     },
-    "description_int": "personality.nervous.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'm too wound up, but I have to lie down.", "If I don't sleep soon I'll fall apart.", "Please let me rest without nightmares."], "it": ["Sono troppo teso, ma devo sdraiarmi.", "Se non dormo presto crollo.", "Ti prego, fammi riposare senza incubi."] },
+      "hunger":  { "en": ["My stomach is in knots, is it hunger or nerves?", "I should eat, if I can keep it down.", "I can't think straight when I'm this hungry."], "it": ["Ho lo stomaco annodato, è fame o nervi?", "Dovrei mangiare, se riesco a tenerlo giù.", "Non ragiono bene quando ho così fame."] },
+      "work":    { "en": ["What if I mess up the shift again?", "Deep breaths. Just get through it.", "Everyone will be watching me work."], "it": ["E se rovino di nuovo il turno?", "Respiri profondi. Devo solo superarlo.", "Tutti mi guarderanno mentre lavoro."] },
+      "leisure": { "en": ["Free time just makes me restless.", "I should relax, but I can't switch off.", "Maybe a quiet corner where no one bothers me."], "it": ["Il tempo libero mi rende solo irrequieto.", "Dovrei rilassarmi, ma non riesco a spegnermi.", "Forse un angolo tranquillo dove nessuno mi disturba."] },
+      "crime":   { "en": ["Oh no, I can't, I'll get caught.", "My hands are shaking just thinking about it.", "What if someone saw me?"], "it": ["Oh no, non posso, mi prenderanno.", "Mi tremano le mani solo a pensarci.", "E se qualcuno mi avesse visto?"] },
+      "hygiene": { "en": ["I feel awful, I need to clean up now.", "Did people notice? I have to wash.", "Where's the nearest WC, quickly."], "it": ["Mi sento da schifo, devo lavarmi subito.", "L'avrà notato la gente? Devo lavarmi.", "Dov'è il bagno più vicino, presto."] },
+      "money":   { "en": ["What if I can't pay for things?", "I'm running low and it terrifies me.", "I need a cushion or I'll panic."], "it": ["E se non riuscissi a pagare le cose?", "Sto finendo i soldi e mi terrorizza.", "Mi serve un margine o vado nel panico."] },
+      "safety":  { "en": ["I have to stay out of sight.", "Someone could be after me, keep low.", "Just don't draw any attention."], "it": ["Devo restare nascosto.", "Qualcuno potrebbe cercarmi, sto basso.", "Solo, non attirare l'attenzione."] },
+      "comfort": { "en": ["A safer place would calm my nerves.", "I'd sleep easier behind a locked door.", "Somewhere I feel secure, finally."], "it": ["Un posto più sicuro mi calmerebbe i nervi.", "Dormirei più tranquillo dietro una porta chiusa.", "Un posto dove mi sento al sicuro, finalmente."] },
+      "social":  { "en": ["I want company, but what if I say the wrong thing?", "Talking might calm me down... maybe.", "I hope they don't think I'm strange."], "it": ["Vorrei compagnia, ma se dicessi la cosa sbagliata?", "Parlare potrebbe calmarmi... forse.", "Spero non mi trovino strano."] },
+      "idle":    { "en": ["Is everything alright? It feels too quiet.", "I keep expecting something to go wrong.", "Stay calm, stay calm..."], "it": ["Va tutto bene? È troppo silenzioso.", "Continuo ad aspettarmi che vada storto qualcosa.", "Stai calmo, stai calmo..."] },
+      "familiar":{ "en": ["That traveller again, at least they're familiar.", "I feel a little safer when they're around.", "I almost trust them. Almost."], "it": ["Di nuovo quel viaggiatore, almeno mi è familiare.", "Mi sento un po' più sicuro quando ci sono loro.", "Quasi mi fido di loro. Quasi."] }
+    },
+    "description_int": "personality.nervous.description",
+    "iconIndex": 30,
+    "markovDbs": [
+      "shy_vampire",
+      "inmate"
+    ]
   },
   {
     "name": "Calm",
@@ -69,7 +127,27 @@
         "Mantieni la concentrazione."
       ]
     },
-    "description_int": "personality.calm.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Rest comes easily to a clear mind.", "I'll lie down and let the day settle.", "Sleep when tired; it's that simple."], "it": ["Il riposo arriva facile a una mente serena.", "Mi sdraio e lascio che la giornata si plachi.", "Si dorme quando si è stanchi; è semplice."] },
+      "hunger":  { "en": ["A meal, then back to the day.", "No rush, I'll find something to eat.", "The body asks; I'll answer calmly."], "it": ["Un pasto, e poi si riprende la giornata.", "Nessuna fretta, troverò qualcosa da mangiare.", "Il corpo chiede; rispondo con calma."] },
+      "work":    { "en": ["Steady work, steady mind.", "I'll take the shift as it comes.", "One task, then the next."], "it": ["Lavoro costante, mente serena.", "Prenderò il turno come viene.", "Un compito, poi il prossimo."] },
+      "leisure": { "en": ["A peaceful stroll suits me fine.", "Nice to simply be, for a while.", "I'll let the afternoon drift."], "it": ["Una passeggiata tranquilla mi va benissimo.", "Bello semplicemente esistere, per un po'.", "Lascerò scorrere il pomeriggio."] },
+      "crime":   { "en": ["No, that's not worth the trouble.", "I'd rather keep my conscience clear.", "There's always an honest way."], "it": ["No, non vale la pena.", "Preferisco tenere la coscienza pulita.", "C'è sempre una via onesta."] },
+      "hygiene": { "en": ["Time to freshen up, unhurried.", "A wash will set me right.", "Cleanliness, calmly seen to."], "it": ["È ora di rinfrescarsi, senza fretta.", "Una lavata mi rimetterà a posto.", "Pulizia, sbrigata con calma."] },
+      "money":   { "en": ["Funds are low; I'll handle it in time.", "No panic, money comes and goes.", "I'll plan a way to earn a little."], "it": ["I fondi sono bassi; me ne occuperò con calma.", "Niente panico, i soldi vanno e vengono.", "Penserò a un modo per guadagnare qualcosa."] },
+      "safety":  { "en": ["Best to stay quiet for now.", "I'll keep a low profile, no fuss.", "Patience keeps trouble away."], "it": ["Meglio stare tranquillo per ora.", "Manterrò un basso profilo, senza scenate.", "La pazienza tiene lontani i guai."] },
+      "comfort": { "en": ["A nicer place would be pleasant.", "Maybe I'll see about a better room.", "Comfort, when the time is right."], "it": ["Un posto più bello sarebbe piacevole.", "Forse mi informo su una stanza migliore.", "Comfort, quando sarà il momento giusto."] },
+      "social":  { "en": ["A good conversation would be nice.", "I'll find someone to talk with.", "Company, taken as it comes."], "it": ["Una bella conversazione sarebbe gradita.", "Troverò qualcuno con cui parlare.", "Compagnia, presa come viene."] },
+      "idle":    { "en": ["All is well, more or less.", "A quiet moment to gather myself.", "Nothing pressing. Good."], "it": ["Va tutto bene, più o meno.", "Un momento tranquillo per raccogliermi.", "Niente di urgente. Bene."] },
+      "familiar":{ "en": ["That traveller seems steady, I like that.", "Our paths cross often; pleasant enough.", "I trust them more than most."], "it": ["Quel viaggiatore sembra affidabile, mi piace.", "Le nostre strade si incrociano spesso; piacevole.", "Mi fido di loro più che della maggior parte."] }
+    },
+    "description_int": "personality.calm.description",
+    "iconIndex": 38,
+    "markovDbs": [
+      "buddhist",
+      "guide",
+      "librarian"
+    ]
   },
   {
     "name": "Aggressive",
@@ -106,7 +184,27 @@
         "Spostati, o sarai spostato."
       ]
     },
-    "description_int": "personality.aggressive.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll crash hard and wake up swinging.", "Tired makes me mean, better sleep.", "Out of my way, I'm going to bed."], "it": ["Crollo di brutto e mi sveglio già carico.", "La stanchezza mi rende cattivo, meglio dormire.", "Fuori dai piedi, vado a letto."] },
+      "hunger":  { "en": ["Feed me before I bite someone's head off.", "I get nasty on an empty stomach.", "Food. Now. Don't make me ask twice."], "it": ["Datemi da mangiare prima che stacchi la testa a qualcuno.", "Divento cattivo a stomaco vuoto.", "Cibo. Subito. Non farmelo chiedere due volte."] },
+      "work":    { "en": ["Let me at it, I'll smash through this shift.", "Work hard, hit harder.", "Don't slow me down at the job."], "it": ["Lasciatemi fare, sfondo questo turno.", "Lavoro duro, colpisco più duro.", "Non rallentatemi sul lavoro."] },
+      "leisure": { "en": ["I need to burn off this energy.", "Boredom makes me itch for a brawl.", "Find me something to hit, for fun."], "it": ["Devo scaricare questa energia.", "La noia mi fa venir voglia di menare le mani.", "Trovatemi qualcosa da colpire, per divertirmi."] },
+      "crime":   { "en": ["They've got it coming.", "Take what I want, who's stopping me?", "A little muscle gets results."], "it": ["Se la sono cercata.", "Prendo quello che voglio, chi mi ferma?", "Un po' di muscoli porta risultati."] },
+      "hygiene": { "en": ["Tch, I reek. Sort it out.", "Wash up fast, no time wasted.", "Even I can't stand this stink."], "it": ["Tsk, puzzo. Sistemiamo la cosa.", "Mi lavo veloce, niente tempo perso.", "Persino io non sopporto questa puzza."] },
+      "money":   { "en": ["I'm broke and it's making me furious.", "Someone owes me, I'll collect.", "Get me paid, or there'll be trouble."], "it": ["Sono al verde e mi sta facendo infuriare.", "Qualcuno mi deve dei soldi, li riscuoto.", "Pagatemi, o saranno guai."] },
+      "safety":  { "en": ["Let them come, but not yet.", "I'll lay low, then hit back harder.", "Nobody corners me for long."], "it": ["Che vengano pure, ma non ancora.", "Mi nascondo, poi colpisco più forte.", "Nessuno mi mette all'angolo a lungo."] },
+      "comfort": { "en": ["I've earned a place worth defending.", "A bigger den for a bigger dog.", "Time I lived like I matter."], "it": ["Mi sono guadagnato un posto da difendere.", "Una tana più grande per un cane più grosso.", "È ora che viva come uno che conta."] },
+      "social":  { "en": ["I could use someone to spar with.", "People bore me, but I'm restless.", "Find me someone with some spine."], "it": ["Mi servirebbe qualcuno con cui allenarmi.", "La gente mi annoia, ma sono irrequieto.", "Trovatemi qualcuno con un po' di fegato."] },
+      "idle":    { "en": ["Quiet. Too quiet. I don't like it.", "Tch. Nothing to fight today.", "Come on, give me a reason."], "it": ["Tutto tranquillo. Troppo tranquillo. Non mi piace.", "Tsk. Niente da combattere oggi.", "Avanti, dammi un motivo."] },
+      "familiar":{ "en": ["That one's still hanging around. Tough, maybe.", "I'd actually back them in a fight.", "They've earned a grunt of respect."], "it": ["Quello gira ancora da queste parti. Tosto, forse.", "In una rissa li coprirei le spalle, sai.", "Si sono guadagnati un grugnito di rispetto."] }
+    },
+    "description_int": "personality.aggressive.description",
+    "iconIndex": 69,
+    "markovDbs": [
+      "rage",
+      "thug",
+      "pirate"
+    ]
   },
   {
     "name": "Melancholic",
@@ -140,7 +238,27 @@
         "Tutto sembra grigio."
       ]
     },
-    "description_int": "personality.melancholic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["At least in sleep the ache fades.", "I'm so tired, in every way.", "Maybe tomorrow will feel lighter."], "it": ["Almeno nel sonno il dolore svanisce.", "Sono così stanco, in ogni senso.", "Forse domani sarà più leggero."] },
+      "hunger":  { "en": ["I should eat, though I've no appetite.", "Food won't fill this emptiness.", "I suppose I ought to feed myself."], "it": ["Dovrei mangiare, anche se non ho appetito.", "Il cibo non riempirà questo vuoto.", "Immagino che dovrei nutrirmi."] },
+      "work":    { "en": ["Another shift to fill the hours.", "Work is just a way to forget.", "I'll go through the motions again."], "it": ["Un altro turno per riempire le ore.", "Il lavoro è solo un modo per dimenticare.", "Farò di nuovo i gesti meccanici."] },
+      "leisure": { "en": ["Free time only feeds my thoughts.", "Maybe a quiet place to be sad in peace.", "What is there to enjoy, really?"], "it": ["Il tempo libero alimenta solo i miei pensieri.", "Forse un posto tranquillo per essere triste in pace.", "Cosa c'è da godersi, davvero?"] },
+      "crime":   { "en": ["Nothing matters, so why not?", "Even this leaves me hollow.", "Maybe trouble would make me feel something."], "it": ["Niente conta, quindi perché no?", "Anche questo mi lascia vuoto.", "Forse i guai mi farebbero sentire qualcosa."] },
+      "hygiene": { "en": ["I've let myself go again.", "A wash, if I can find the will.", "Even this feels like a chore."], "it": ["Mi sono lasciato andare di nuovo.", "Una lavata, se trovo la voglia.", "Persino questo mi pesa come una fatica."] },
+      "money":   { "en": ["Money won't fix what's wrong with me.", "I'm short again. Of course.", "What's the point of saving?"], "it": ["I soldi non aggiusteranno ciò che non va in me.", "Sono di nuovo a corto. Ovviamente.", "A che serve risparmiare?"] },
+      "safety":  { "en": ["I'll just disappear for a while.", "No one would notice if I hid away.", "Better to be alone and unseen."], "it": ["Sparirò per un po'.", "Nessuno noterebbe se mi nascondessi.", "Meglio solo e non visto."] },
+      "comfort": { "en": ["Perhaps a kinder room would help. Perhaps.", "I deserve a little softness, don't I?", "A warmer corner of the world."], "it": ["Forse una stanza più accogliente aiuterebbe. Forse.", "Merito un po' di dolcezza, no?", "Un angolo più caldo del mondo."] },
+      "social":  { "en": ["I miss being close to someone.", "Maybe a voice would chase the grey.", "I shouldn't be alone tonight."], "it": ["Mi manca la vicinanza di qualcuno.", "Forse una voce scaccerebbe il grigio.", "Non dovrei stare solo stasera."] },
+      "idle":    { "en": ["The day passes, grey as ever.", "I sigh, and the world ignores it.", "Just... drifting through it all."], "it": ["Il giorno passa, grigio come sempre.", "Sospiro, e il mondo lo ignora.", "Solo... alla deriva attraverso tutto."] },
+      "familiar":{ "en": ["That traveller, one familiar face in the grey.", "Strange comfort, seeing them again.", "I almost let myself hope when they're near."], "it": ["Quel viaggiatore, un volto familiare nel grigio.", "Strano conforto, rivederli.", "Quasi mi lascio sperare quando sono vicini."] }
+    },
+    "description_int": "personality.melancholic.description",
+    "iconIndex": 33,
+    "markovDbs": [
+      "goth",
+      "archivist",
+      "shy_vampire"
+    ]
   },
   {
     "name": "Sanguine",
@@ -173,7 +291,27 @@
         "Il futuro è luminoso."
       ]
     },
-    "description_int": "personality.sanguine.description"
+    "needThoughts": {
+      "sleep":   { "en": ["A good sleep and I'll be twice as cheerful!", "Bedtime, and dreams full of fun.", "Recharge now, shine tomorrow!"], "it": ["Una bella dormita e sarò il doppio più allegro!", "Ora di nanna, e sogni pieni di divertimento.", "Mi ricarico ora, brillo domani!"] },
+      "hunger":  { "en": ["Ooh, snack time! What's good around here?", "A bite to eat and I'm back at full speed.", "Food makes everything better!"], "it": ["Ooh, è ora di uno spuntino! Cosa c'è di buono qui?", "Un boccone e torno a tutta velocità.", "Il cibo rende tutto migliore!"] },
+      "work":    { "en": ["Let's make this shift a fun one!", "Work's better with a smile.", "I'll cheer up the whole crew today."], "it": ["Rendiamo questo turno divertente!", "Il lavoro è meglio con un sorriso.", "Oggi tiro su di morale tutta la squadra."] },
+      "leisure": { "en": ["Free time! Let's find some fun!", "Maybe the arcade, maybe a party!", "So many lovely things to do!"], "it": ["Tempo libero! Cerchiamo qualcosa di divertente!", "Magari la sala giochi, magari una festa!", "Così tante belle cose da fare!"] },
+      "crime":   { "en": ["Nah, that would spoil the good vibes.", "Why ruin a nice day with that?", "I'd rather make a friend than steal a coin."], "it": ["Nah, rovinerebbe il buon umore.", "Perché rovinare una bella giornata così?", "Preferisco farmi un amico che rubare una moneta."] },
+      "hygiene": { "en": ["Freshen up and feel fabulous!", "A quick wash to keep me sparkling.", "Can't greet friends looking a mess!"], "it": ["Mi rinfresco e mi sento favoloso!", "Una lavata veloce per restare scintillante.", "Non posso salutare gli amici conciato male!"] },
+      "money":   { "en": ["Bit short, but it'll work out, it always does!", "I'll find a fun way to earn some.", "Money's nice, but company's nicer."], "it": ["Un po' a corto, ma si sistemerà, succede sempre!", "Troverò un modo divertente per guadagnare.", "I soldi sono belli, ma la compagnia di più."] },
+      "safety":  { "en": ["I'll keep my head down, but cheerfully.", "A little quiet, then back to the fun.", "Even laying low can be pleasant!"], "it": ["Tengo la testa bassa, ma con allegria.", "Un po' di calma, poi di nuovo al divertimento.", "Persino stare nascosti può essere piacevole!"] },
+      "comfort": { "en": ["A nicer place means nicer parties!", "Ooh, imagine the housewarming!", "Time to treat myself, I think!"], "it": ["Un posto più bello significa feste più belle!", "Ooh, immagina l'inaugurazione!", "È ora di un regalino per me, credo!"] },
+      "social":  { "en": ["I simply must go chat with someone!", "New faces! How exciting!", "A conversation always lifts me up."], "it": ["Devo assolutamente andare a chiacchierare con qualcuno!", "Facce nuove! Che emozione!", "Una chiacchierata mi tira sempre su."] },
+      "idle":    { "en": ["What a lovely moment to just be!", "Everything's looking up!", "I wonder who I'll meet today!"], "it": ["Che bel momento per esserci e basta!", "Tutto va per il meglio!", "Chissà chi incontrerò oggi!"] },
+      "familiar":{ "en": ["My favorite traveller! So glad to see them!", "We keep meeting, must be friends now!", "They always brighten my day."], "it": ["Il mio viaggiatore preferito! Che gioia rivederli!", "Continuiamo a incontrarci, ormai siamo amici!", "Mi rallegrano sempre la giornata."] }
+    },
+    "description_int": "personality.sanguine.description",
+    "iconIndex": 34,
+    "markovDbs": [
+      "2012_entusiast",
+      "botique",
+      "cafe"
+    ]
   },
   {
     "name": "Cautious",
@@ -203,7 +341,27 @@
         "Analizzare prima la situazione."
       ]
     },
-    "description_int": "personality.cautious.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll rest before exhaustion clouds my judgment.", "Best to sleep early and stay sharp.", "A tired mind makes mistakes; to bed."], "it": ["Riposo prima che la stanchezza mi annebbi il giudizio.", "Meglio dormire presto e restare lucido.", "Una mente stanca sbaglia; a letto."] },
+      "hunger":  { "en": ["I should eat before my focus slips.", "A measured meal, nothing risky.", "Skipping food would be a careless error."], "it": ["Dovrei mangiare prima di perdere concentrazione.", "Un pasto misurato, niente di rischioso.", "Saltare il cibo sarebbe un errore di leggerezza."] },
+      "work":    { "en": ["I'll double-check everything on shift.", "Measure twice, act once.", "No shortcuts; they cause accidents."], "it": ["Ricontrollerò tutto durante il turno.", "Misura due volte, agisci una sola.", "Niente scorciatoie; causano incidenti."] },
+      "leisure": { "en": ["Free time, used wisely, not wasted.", "I'll relax somewhere I know is safe.", "A planned break beats an idle one."], "it": ["Tempo libero, usato bene, non sprecato.", "Mi rilasso in un posto che so essere sicuro.", "Una pausa pianificata batte una oziosa."] },
+      "crime":   { "en": ["The risk far outweighs the reward.", "Too many ways this could go wrong.", "No, getting caught isn't worth it."], "it": ["Il rischio supera di gran lunga il guadagno.", "Troppi modi in cui può andare storto.", "No, farsi prendere non ne vale la pena."] },
+      "hygiene": { "en": ["Neglecting hygiene invites illness.", "I'll clean up before it becomes a problem.", "Prevention now saves trouble later."], "it": ["Trascurare l'igiene invita le malattie.", "Mi lavo prima che diventi un problema.", "Prevenire ora evita guai dopo."] },
+      "money":   { "en": ["My reserves are thinning; I must plan.", "Time to tighten the budget.", "I'll secure income before it's urgent."], "it": ["Le mie riserve si assottigliano; devo pianificare.", "È ora di stringere il bilancio.", "Mi assicuro un'entrata prima che diventi urgente."] },
+      "safety":  { "en": ["Lay low until the danger passes.", "I'll check every exit before I relax.", "Caution is what keeps me alive."], "it": ["Sto basso finché il pericolo non passa.", "Controllo ogni uscita prima di rilassarmi.", "È la prudenza che mi tiene in vita."] },
+      "comfort": { "en": ["A secure home is a sound investment.", "I'll upgrade only if the numbers add up.", "Comfort, yes, but within reason."], "it": ["Una casa sicura è un buon investimento.", "Cambio solo se i conti tornano.", "Comfort, sì, ma con criterio."] },
+      "social":  { "en": ["I'll talk, but I'll read them first.", "Trust, but verify.", "Good to know who's around, carefully."], "it": ["Parlerò, ma prima li valuto.", "Fidarsi è bene, verificare è meglio.", "Bene sapere chi c'è in giro, con cautela."] },
+      "idle":    { "en": ["Everything in order? Let me check.", "I'll review the day's plan.", "Best to stay one step ahead."], "it": ["Tutto in ordine? Fammi controllare.", "Rivedo il piano della giornata.", "Meglio restare un passo avanti."] },
+      "familiar":{ "en": ["That traveller has proven reliable so far.", "I've assessed them; they seem trustworthy.", "Predictable, in a good way."], "it": ["Quel viaggiatore si è dimostrato affidabile finora.", "Li ho valutati; sembrano degni di fiducia.", "Prevedibili, nel senso buono."] }
+    },
+    "description_int": "personality.cautious.description",
+    "iconIndex": 81,
+    "markovDbs": [
+      "administrator",
+      "surgeon",
+      "entomologist"
+    ]
   },
   {
     "name": "Impulsive",
@@ -236,7 +394,27 @@
         "Agisci ora, pensa dopo."
       ]
     },
-    "description_int": "personality.impulsive.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Sleep? Ugh, but my body's giving out.", "Fine, fine, I'll crash, just for a bit.", "I'll nap wherever I drop."], "it": ["Dormire? Uffa, ma il corpo non ce la fa più.", "Va bene, va bene, crollo, solo un attimo.", "Mi addormento dove capita."] },
+      "hunger":  { "en": ["Starving! I'll grab the first thing I see.", "Eat now, regret the choice later.", "Ooh, that looks tasty, done deal."], "it": ["Muoio di fame! Prendo la prima cosa che vedo.", "Mangio ora, mi pento dopo della scelta.", "Ooh, quello sembra buono, fatto."] },
+      "work":    { "en": ["Let's just dive into the shift.", "I'll figure out the job as I go.", "Bored already, let's wing it."], "it": ["Buttiamoci subito nel turno.", "Capirò il lavoro mentre lo faccio.", "Già annoiato, improvvisiamo."] },
+      "leisure": { "en": ["Free time! Let's do something RIGHT NOW.", "First fun thing I see, I'm in.", "No plan? Best kind of afternoon!"], "it": ["Tempo libero! Facciamo qualcosa ADESSO.", "La prima cosa divertente che vedo, ci sto.", "Niente piani? Il pomeriggio migliore!"] },
+      "crime":   { "en": ["Nobody's looking, grab it, go!", "Eh, why not? Do it before I think twice.", "Quick hands, quick getaway, easy."], "it": ["Non guarda nessuno, prendilo, via!", "Eh, perché no? Lo faccio prima di ripensarci.", "Mani veloci, fuga veloce, facile."] },
+      "hygiene": { "en": ["Ew, gross, I'll wash, right now.", "Quick rinse and I'm off again.", "Don't care how, just clean fast."], "it": ["Bleah, che schifo, mi lavo, subito.", "Una sciacquata veloce e riparto.", "Non importa come, basta lavarmi in fretta."] },
+      "money":   { "en": ["Broke?! I'll just go grab some cash somehow.", "I spent it all already, oops.", "Easy money, that's what I need, now."], "it": ["Al verde?! Mi procuro dei soldi in qualche modo.", "Li ho già spesi tutti, ops.", "Soldi facili, ecco cosa mi serve, ora."] },
+      "safety":  { "en": ["Hide? Boring. But fine, for a minute.", "I can't sit still even when I should.", "Ugh, lay low, lay low, for now."], "it": ["Nascondermi? Che noia. Ma va bene, un minuto.", "Non riesco a star fermo nemmeno quando dovrei.", "Uffa, sto basso, sto basso, per ora."] },
+      "comfort": { "en": ["New place? Yes! Let's do it today!", "I want it now, comfort and all.", "Why save when I can splurge?"], "it": ["Casa nuova? Sì! Facciamolo oggi!", "Lo voglio ora, comfort e tutto.", "Perché risparmiare quando posso sperperare?"] },
+      "social":  { "en": ["I'll just walk up and start talking!", "New people, let's go meet them!", "Can't stand being alone, find someone!"], "it": ["Mi avvicino e attacco bottone!", "Gente nuova, andiamo a conoscerla!", "Non sopporto stare solo, trovo qualcuno!"] },
+      "idle":    { "en": ["I can't just stand here, come on!", "Something, anything, let's GO.", "Restless... I need to move."], "it": ["Non posso starmene qui fermo, dai!", "Qualcosa, qualunque cosa, ANDIAMO.", "Irrequieto... devo muovermi."] },
+      "familiar":{ "en": ["Hey, it's that traveller, let's bug 'em!", "Always fun when they show up.", "Ooh, partner in chaos, maybe?"], "it": ["Ehi, è quel viaggiatore, andiamo a stuzzicarli!", "Sempre divertente quando spuntano.", "Ooh, compagno di caos, forse?"] }
+    },
+    "description_int": "personality.impulsive.description",
+    "iconIndex": 84,
+    "markovDbs": [
+      "rapper",
+      "goblin_metalhead",
+      "dungeon_explorer"
+    ]
   },
   {
     "name": "Stoic",
@@ -269,7 +447,27 @@
         "Resisterò."
       ]
     },
-    "description_int": "personality.stoic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["The body needs rest. I will give it that.", "Sleep is a duty like any other.", "I'll lie down and rise again ready."], "it": ["Il corpo ha bisogno di riposo. Glielo concedo.", "Dormire è un dovere come ogni altro.", "Mi sdraio e mi rialzo pronto."] },
+      "hunger":  { "en": ["Hunger is a signal, not a master.", "I'll eat what I must, no more.", "The body is fed so the work continues."], "it": ["La fame è un segnale, non un padrone.", "Mangerò ciò che serve, niente di più.", "Si nutre il corpo perché il lavoro continui."] },
+      "work":    { "en": ["The task is set; I will see it done.", "Labor without complaint.", "Duty does not wait on mood."], "it": ["Il compito è dato; lo porterò a termine.", "Lavoro senza lamentele.", "Il dovere non aspetta l'umore."] },
+      "leisure": { "en": ["Rest is earned, not indulged.", "A quiet moment is enough.", "I need little to be content."], "it": ["Il riposo si guadagna, non si indulge.", "Un momento di quiete è sufficiente.", "Mi basta poco per essere appagato."] },
+      "crime":   { "en": ["No. My principles are not for sale.", "I will not stoop to that.", "Hardship is no excuse for dishonor."], "it": ["No. I miei principi non sono in vendita.", "Non mi abbasserò a tanto.", "Le difficoltà non scusano il disonore."] },
+      "hygiene": { "en": ["Discipline includes the small things.", "I'll clean up; order matters.", "A clean body, a clear mind."], "it": ["La disciplina include le piccole cose.", "Mi laverò; l'ordine conta.", "Corpo pulito, mente chiara."] },
+      "money":   { "en": ["Want little, and you lack little.", "Funds are low; I will simply earn them.", "Need is endured, then remedied."], "it": ["Desidera poco, e ti mancherà poco.", "I fondi sono bassi; li guadagnerò e basta.", "Il bisogno si sopporta, poi si rimedia."] },
+      "safety":  { "en": ["I will wait it out, unmoved.", "Patience outlasts most dangers.", "Lay low, and let the storm pass."], "it": ["Aspetterò che passi, impassibile.", "La pazienza sopravvive a quasi ogni pericolo.", "Sto basso, e lascio passare la tempesta."] },
+      "comfort": { "en": ["Comfort is pleasant but not needed.", "A better roof, if it aids the work.", "I'll improve my lot, without attachment."], "it": ["Il comfort è gradevole ma non necessario.", "Un tetto migliore, se aiuta il lavoro.", "Migliorerò la mia condizione, senza attaccarmi."] },
+      "social":  { "en": ["A word with another is sometimes good.", "I'll share company, briefly.", "Even the steadfast value an ally."], "it": ["Una parola con qualcuno a volte fa bene.", "Condividerò un po' di compagnia, brevemente.", "Anche il saldo apprezza un alleato."] },
+      "idle":    { "en": ["The day asks nothing; I am still.", "I stand ready for what comes.", "Calm holds. As it should."], "it": ["La giornata non chiede nulla; resto immobile.", "Sono pronto a ciò che verrà.", "La calma regge. Come dev'essere."] },
+      "familiar":{ "en": ["That traveller endures, as I do. Good.", "We have crossed paths enough; I respect them.", "Reliable. That is rare, and worth noting."], "it": ["Quel viaggiatore resiste, come me. Bene.", "Ci siamo incrociati abbastanza; li rispetto.", "Affidabili. È raro, e merita di essere notato."] }
+    },
+    "description_int": "personality.stoic.description",
+    "iconIndex": 36,
+    "markovDbs": [
+      "steelworker",
+      "farmer",
+      "guard"
+    ]
   },
   {
     "name": "Paranoid",
@@ -303,7 +501,27 @@
         "Devo stare attento."
       ]
     },
-    "description_int": "personality.paranoid.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I can't sleep with one eye open forever.", "What if they come while I rest?", "I'll lock everything twice first."], "it": ["Non posso dormire con un occhio aperto per sempre.", "E se venissero mentre riposo?", "Prima chiudo tutto a doppia mandata."] },
+      "hunger":  { "en": ["Is this food safe? Who touched it?", "I'll eat, but I'm watching everyone.", "They could poison it, you know."], "it": ["È sicuro questo cibo? Chi l'ha toccato?", "Mangerò, ma tengo d'occhio tutti.", "Potrebbero averlo avvelenato, sai."] },
+      "work":    { "en": ["My coworkers are reporting on me.", "I'll do the job, but trust no one.", "Someone's trying to make me look bad."], "it": ["I colleghi fanno la spia su di me.", "Farò il lavoro, ma non mi fido di nessuno.", "Qualcuno cerca di farmi fare brutta figura."] },
+      "leisure": { "en": ["I can't relax, they might be watching.", "A 'break' is when they catch you off guard.", "I'll find somewhere with a clear view of the door."], "it": ["Non riesco a rilassarmi, potrebbero osservarmi.", "Una 'pausa' è quando ti colgono alla sprovvista.", "Cerco un posto con la porta a vista."] },
+      "crime":   { "en": ["They'd frame me anyway, so why not?", "If I'm quick, their cameras won't catch it.", "Take it before they take it from me."], "it": ["Mi incastrerebbero comunque, quindi perché no?", "Se faccio in fretta, le loro telecamere non vedono.", "Lo prendo prima che me lo prendano loro."] },
+      "hygiene": { "en": ["I'll wash where no one can see me.", "They notice everything, best stay clean.", "Can't give them anything to whisper about."], "it": ["Mi laverò dove nessuno può vedermi.", "Notano tutto, meglio restare puliti.", "Non posso dargli niente su cui spettegolare."] },
+      "money":   { "en": ["They want me broke and dependent.", "I'll hide my coin where no one finds it.", "Someone's been skimming from me, I swear."], "it": ["Mi vogliono al verde e dipendente.", "Nasconderò i soldi dove nessuno li trova.", "Qualcuno mi ha sfilato dei soldi, lo giuro."] },
+      "safety":  { "en": ["Stay hidden. They're definitely looking.", "Change my route, they've memorized it.", "Trust the shadows more than the people."], "it": ["Resta nascosto. Mi stanno sicuramente cercando.", "Cambio percorso, l'hanno imparato a memoria.", "Fidati delle ombre più che della gente."] },
+      "comfort": { "en": ["A place with locks I install myself.", "Somewhere they can't get to me.", "Comfort means walls and one door I control."], "it": ["Un posto con serrature che monto io stesso.", "Un posto dove non possono raggiungermi.", "Comfort significa muri e una porta che controllo io."] },
+      "social":  { "en": ["Talking? They'll twist my words.", "Maybe one ally, but I'll test them.", "I need to know whose side they're on."], "it": ["Parlare? Mi storceranno le parole.", "Forse un alleato, ma lo metterò alla prova.", "Devo sapere da che parte stanno."] },
+      "idle":    { "en": ["Why is it so quiet? That's suspicious.", "Someone moved that. I'm sure of it.", "Eyes everywhere, even now."], "it": ["Perché è così silenzioso? È sospetto.", "Qualcuno l'ha spostato. Ne sono certo.", "Occhi ovunque, anche adesso."] },
+      "familiar":{ "en": ["That traveller again. What's their angle?", "They keep appearing. Coincidence? Doubtful.", "I... almost trust them. That worries me."], "it": ["Di nuovo quel viaggiatore. Qual è il loro tornaconto?", "Continuano a comparire. Coincidenza? Ne dubito.", "Io... quasi mi fido di loro. E questo mi preoccupa."] }
+    },
+    "description_int": "personality.paranoid.description",
+    "iconIndex": 37,
+    "markovDbs": [
+      "fortune_teller",
+      "time_traveler",
+      "inmate"
+    ]
   },
   {
     "name": "Empathetic",
@@ -336,7 +554,27 @@
         "La loro gioia è la mia gioia."
       ]
     },
-    "description_int": "personality.empathetic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'm carrying everyone's feelings; I need rest.", "Sleep will quiet all these echoes.", "I'll rest, so I can be there for them tomorrow."], "it": ["Porto i sentimenti di tutti; ho bisogno di riposo.", "Il sonno placherà tutti questi echi.", "Riposo, così domani potrò esserci per loro."] },
+      "hunger":  { "en": ["I forgot to eat, caring for others again.", "A meal will steady me.", "I should nourish myself too."], "it": ["Mi sono dimenticato di mangiare, di nuovo a curare gli altri.", "Un pasto mi rimetterà in sesto.", "Dovrei nutrire anche me stesso."] },
+      "work":    { "en": ["I hope I can make someone's day easier.", "Work is better when we lift each other.", "I'll read the room and help where I can."], "it": ["Spero di rendere più facile la giornata a qualcuno.", "Il lavoro è migliore quando ci sosteniamo a vicenda.", "Leggerò l'ambiente e aiuterò dove posso."] },
+      "leisure": { "en": ["A little peace to refill my own cup.", "I'll find someone who could use company.", "Time to simply feel the good things."], "it": ["Un po' di pace per riempire la mia tazza.", "Cercherò qualcuno che ha bisogno di compagnia.", "È ora di sentire solo le cose belle."] },
+      "crime":   { "en": ["I couldn't, someone would be hurt by it.", "I feel the harm before I even act.", "No, their loss would weigh on me forever."], "it": ["Non potrei, qualcuno ne soffrirebbe.", "Sento il danno ancor prima di agire.", "No, la loro perdita mi peserebbe per sempre."] },
+      "hygiene": { "en": ["I'll freshen up; I want to feel present.", "Caring for myself is care too.", "A quick wash to clear my head."], "it": ["Mi rinfresco; voglio sentirmi presente.", "Prendersi cura di sé è anche cura.", "Una lavata veloce per schiarirmi la testa."] },
+      "money":   { "en": ["I gave too much away again, didn't I?", "Funds are low; I must look after myself.", "I'll earn some, gently, honestly."], "it": ["Ho regalato di nuovo troppo, vero?", "I fondi sono bassi; devo badare a me.", "Ne guadagnerò un po', con dolcezza, onestà."] },
+      "safety":  { "en": ["I'll keep quiet so no one worries over me.", "Better to stay calm and unseen for now.", "I don't want to bring trouble to anyone."], "it": ["Sto zitto così nessuno si preoccupa per me.", "Meglio restare calmo e nascosto per ora.", "Non voglio portare guai a nessuno."] },
+      "comfort": { "en": ["A warm home to welcome friends into.", "Somewhere others feel safe too.", "Comfort shared is comfort doubled."], "it": ["Una casa calda dove accogliere gli amici.", "Un posto dove anche gli altri si sentono al sicuro.", "Il comfort condiviso è comfort raddoppiato."] },
+      "social":  { "en": ["I miss really connecting with someone.", "Someone out there needs to be heard.", "Let me find a heart to share with."], "it": ["Mi manca un vero legame con qualcuno.", "Qualcuno là fuori ha bisogno di essere ascoltato.", "Fammi trovare un cuore con cui condividere."] },
+      "idle":    { "en": ["I feel the mood of this whole place.", "A gentle moment. I'll hold onto it.", "Is everyone around me alright?"], "it": ["Sento l'umore di tutto questo posto.", "Un momento delicato. Lo trattengo.", "Stanno tutti bene intorno a me?"] },
+      "familiar":{ "en": ["That traveller, I sense a kind heart there.", "We've shared enough that I feel their moods.", "I'd know if they were hurting, I think."], "it": ["Quel viaggiatore, vi percepisco un cuore gentile.", "Abbiamo condiviso abbastanza da sentirne gli umori.", "Saprei se stessero soffrendo, credo."] }
+    },
+    "description_int": "personality.empathetic.description",
+    "iconIndex": 39,
+    "markovDbs": [
+      "nurse",
+      "companion",
+      "nun"
+    ]
   },
   {
     "name": "Authoritative",
@@ -369,7 +607,27 @@
         "Dobbiamo avere successo."
       ]
     },
-    "description_int": "personality.authoritative.description"
+    "needThoughts": {
+      "sleep":   { "en": ["A leader rests so a leader can lead.", "I'll retire; tomorrow demands sharpness.", "Even command yields to the body's needs."], "it": ["Un capo riposa per poter comandare.", "Mi ritiro; domani esige lucidità.", "Persino il comando cede ai bisogni del corpo."] },
+      "hunger":  { "en": ["I'll eat, then return to matters.", "Fuel the body; the work won't run itself.", "A proper meal befits the task ahead."], "it": ["Mangerò, poi torno alle questioni.", "Nutri il corpo; il lavoro non si fa da solo.", "Un pasto adeguato si addice al compito."] },
+      "work":    { "en": ["Time to take charge of this shift.", "I'll set the standard for the rest.", "Order and results, that's how I run things."], "it": ["È ora di prendere in mano questo turno.", "Darò io l'esempio agli altri.", "Ordine e risultati, così gestisco le cose."] },
+      "leisure": { "en": ["Even rest should be purposeful.", "I'll survey what's happening around me.", "A short respite, then back to the helm."], "it": ["Anche il riposo dev'essere mirato.", "Osserverò cosa accade intorno a me.", "Una breve tregua, poi di nuovo al timone."] },
+      "crime":   { "en": ["I rule by example, not by theft.", "Such pettiness is beneath me.", "Authority is earned, not stolen."], "it": ["Comando con l'esempio, non con il furto.", "Tanta meschinità è al di sotto di me.", "L'autorità si guadagna, non si ruba."] },
+      "hygiene": { "en": ["Presentation commands respect.", "I'll see to my appearance; standards matter.", "A leader must look the part."], "it": ["La presentazione impone rispetto.", "Curerò il mio aspetto; gli standard contano.", "Un capo deve sembrarlo."] },
+      "money":   { "en": ["Resources are thin; I'll secure more.", "A leader provides, for himself first.", "I'll command an income, not beg for one."], "it": ["Le risorse scarseggiano; ne procurerò altre.", "Un capo provvede, prima a sé stesso.", "Comanderò un'entrata, non la mendicherò."] },
+      "safety":  { "en": ["A strategic withdrawal, nothing more.", "I'll hold position until the time is right.", "Discipline now; decisive action later."], "it": ["Un ritiro strategico, nient'altro.", "Manterrò la posizione finché non sarà il momento.", "Disciplina ora; azione decisa dopo."] },
+      "comfort": { "en": ["A residence fitting my standing.", "I've earned a seat worth holding.", "Comfort is the reward of command."], "it": ["Una residenza all'altezza del mio rango.", "Mi sono guadagnato uno scranno degno.", "Il comfort è la ricompensa del comando."] },
+      "social":  { "en": ["I should gather allies to the cause.", "Influence grows where I am seen.", "Time to win a few more to my side."], "it": ["Dovrei radunare alleati alla causa.", "L'influenza cresce dove mi si vede.", "È ora di portarne altri dalla mia parte."] },
+      "idle":    { "en": ["All is in order under my watch.", "I'll keep an eye on the situation.", "Steady hands keep things on course."], "it": ["Tutto è in ordine sotto la mia guida.", "Terrò d'occhio la situazione.", "Mani ferme tengono la rotta."] },
+      "familiar":{ "en": ["That traveller could be a useful ally.", "Capable, that one. I'll keep them close.", "They've proven worth my attention."], "it": ["Quel viaggiatore potrebbe essere un alleato utile.", "Capaci, quelli. Li terrò vicini.", "Si sono dimostrati degni della mia attenzione."] }
+    },
+    "description_int": "personality.authoritative.description",
+    "iconIndex": 130,
+    "markovDbs": [
+      "ceo",
+      "politician",
+      "police"
+    ]
   },
   {
     "name": "Scholarly",
@@ -400,7 +658,27 @@
         "Devo saperne di più."
       ]
     },
-    "description_int": "personality.scholarly.description"
+    "needThoughts": {
+      "sleep":   { "en": ["The mind consolidates memory in sleep, fitting.", "I'll rest; even scholars must recharge.", "Just one more page... no, sleep."], "it": ["La mente consolida la memoria nel sonno, appropriato.", "Riposo; persino gli studiosi devono ricaricarsi.", "Solo un'altra pagina... no, a dormire."] },
+      "hunger":  { "en": ["Glucose for the brain; I should eat.", "Hunger interrupts a good line of thought.", "I'll dine, and perhaps read while I do."], "it": ["Glucosio per il cervello; dovrei mangiare.", "La fame interrompe un buon ragionamento.", "Pranzerò, e magari leggerò nel frattempo."] },
+      "work":    { "en": ["Every task teaches something, if you look.", "I'll approach the shift methodically.", "Work is just applied understanding."], "it": ["Ogni compito insegna qualcosa, se sai guardare.", "Affronterò il turno con metodo.", "Il lavoro è solo comprensione applicata."] },
+      "leisure": { "en": ["Free time means time to study.", "I'll seek out something new to learn.", "A library, a question, an afternoon, perfect."], "it": ["Tempo libero significa tempo per studiare.", "Cercherò qualcosa di nuovo da imparare.", "Una biblioteca, una domanda, un pomeriggio, perfetto."] },
+      "crime":   { "en": ["Statistically, the risk is irrational.", "Knowledge offers better gains than theft.", "No, the data on getting caught is clear."], "it": ["Statisticamente, il rischio è irrazionale.", "Il sapere offre guadagni migliori del furto.", "No, i dati sull'essere presi sono chiari."] },
+      "hygiene": { "en": ["Hygiene reduces pathogen load; logical.", "I'll wash up, a clean mind, a clean body.", "Best to maintain the instrument that is the self."], "it": ["L'igiene riduce la carica patogena; logico.", "Mi laverò, mente pulita, corpo pulito.", "Meglio mantenere lo strumento che è il sé."] },
+      "money":   { "en": ["My funds follow an unsustainable curve.", "I should monetize what I know.", "A modest income would fund my studies."], "it": ["I miei fondi seguono una curva insostenibile.", "Dovrei monetizzare ciò che so.", "Un reddito modesto finanzierebbe i miei studi."] },
+      "safety":  { "en": ["The prudent course is to withdraw and observe.", "I'll document this quietly from a distance.", "Avoidance is the rational strategy here."], "it": ["La via prudente è ritirarsi e osservare.", "Documenterò questo in silenzio, da lontano.", "L'evitamento è la strategia razionale qui."] },
+      "comfort": { "en": ["A proper study would aid my work.", "Quiet quarters for reading, ideally.", "Comfort that serves contemplation."], "it": ["Uno studio adeguato gioverebbe al mio lavoro.", "Stanze tranquille per leggere, idealmente.", "Comfort al servizio della contemplazione."] },
+      "social":  { "en": ["A good debate would sharpen me.", "I'd welcome an exchange of ideas.", "Conversation is data of another kind."], "it": ["Un buon dibattito mi affinerebbe.", "Accoglierei volentieri uno scambio di idee.", "La conversazione è un altro tipo di dato."] },
+      "idle":    { "en": ["So much still to understand...", "Let me consider that problem again.", "Curiosity is its own quiet pleasure."], "it": ["Ancora tanto da capire...", "Lasciami riconsiderare quel problema.", "La curiosità è un piacere quieto a sé."] },
+      "familiar":{ "en": ["That traveller is an interesting case study.", "I've gathered enough to find them reliable.", "A mind worth conversing with, I suspect."], "it": ["Quel viaggiatore è un caso di studio interessante.", "Ho raccolto abbastanza da ritenerli affidabili.", "Una mente con cui vale la pena conversare, sospetto."] }
+    },
+    "description_int": "personality.scholarly.description",
+    "iconIndex": 186,
+    "markovDbs": [
+      "scribe",
+      "archivist",
+      "wizard"
+    ]
   },
   {
     "name": "Artistic",
@@ -433,7 +711,27 @@
         "Il mondo è una tela."
       ]
     },
-    "description_int": "personality.artistic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["My dreams are where the best ideas hide.", "I'll rest, and let visions come.", "Even the muse must sleep sometimes."], "it": ["I miei sogni sono dove si nascondono le idee migliori.", "Riposo, e lascio venire le visioni.", "Anche la musa deve dormire, a volte."] },
+      "hunger":  { "en": ["Even a simple meal can be a little beauty.", "I should eat, before the colors dim.", "Hunger dulls the senses; time to dine."], "it": ["Anche un pasto semplice può essere una piccola bellezza.", "Dovrei mangiare, prima che i colori sbiadiscano.", "La fame smorza i sensi; è ora di cenare."] },
+      "work":    { "en": ["I'll find some artistry even in the work.", "A dull task, but I'll make it mine.", "Maybe inspiration hides in the routine."], "it": ["Troverò un po' d'arte anche nel lavoro.", "Un compito noioso, ma lo renderò mio.", "Forse l'ispirazione si annida nella routine."] },
+      "leisure": { "en": ["Free hours to create, at last!", "I'll wander and let the world inspire me.", "Time to chase that feeling onto paper."], "it": ["Finalmente ore libere per creare!", "Vagherò e lascerò che il mondo mi ispiri.", "È ora di inseguire quella sensazione sulla carta."] },
+      "crime":   { "en": ["No, ugliness like that would haunt my work.", "I create; I don't take.", "Such an act would stain the soul."], "it": ["No, una bruttura simile perseguiterebbe la mia arte.", "Io creo; non prendo.", "Un gesto così macchierebbe l'anima."] },
+      "hygiene": { "en": ["I'll clean up, even the artist needs care.", "Fresh and clear, ready to perceive.", "A quick wash to renew my senses."], "it": ["Mi laverò, anche l'artista ha bisogno di cura.", "Fresco e limpido, pronto a percepire.", "Una lavata veloce per rinnovare i sensi."] },
+      "money":   { "en": ["Art rarely pays the rent, alas.", "I'm short again, must sell something I made.", "Money is dull, but it buys me time to create."], "it": ["L'arte raramente paga l'affitto, ahimè.", "Sono di nuovo a corto, devo vendere qualcosa di mio.", "Il denaro è noioso, ma mi compra tempo per creare."] },
+      "safety":  { "en": ["I'll retreat somewhere quiet and observe.", "Even hiding can be a study in shadows.", "Better to stay unseen and feel it all."], "it": ["Mi ritirerò in un posto tranquillo a osservare.", "Anche nascondersi può essere uno studio di ombre.", "Meglio restare invisibile e sentire tutto."] },
+      "comfort": { "en": ["A studio with good light, my dream.", "Somewhere beautiful to make beautiful things.", "Comfort feeds the creative spirit."], "it": ["Uno studio con buona luce, il mio sogno.", "Un posto bello per fare cose belle.", "Il comfort nutre lo spirito creativo."] },
+      "social":  { "en": ["I long to share what I've made.", "A muse, a kindred spirit, anyone.", "Connection sparks the best work."], "it": ["Bramo di condividere ciò che ho creato.", "Una musa, un'anima affine, chiunque.", "Il legame accende le opere migliori."] },
+      "idle":    { "en": ["Look how the light falls just there...", "A whole composition in this quiet moment.", "Everything is texture and color today."], "it": ["Guarda come cade la luce proprio lì...", "Un'intera composizione in questo momento quieto.", "Oggi tutto è trama e colore."] },
+      "familiar":{ "en": ["That traveller has a face worth painting.", "We keep crossing paths, almost a motif.", "There's a story in them I'd love to capture."], "it": ["Quel viaggiatore ha un volto da dipingere.", "Continuiamo a incrociarci, quasi un motivo ricorrente.", "C'è una storia in loro che vorrei catturare."] }
+    },
+    "description_int": "personality.artistic.description",
+    "iconIndex": 40,
+    "markovDbs": [
+      "artist",
+      "bard",
+      "illusionist"
+    ]
   },
   {
     "name": "Adventurous",
@@ -467,7 +765,27 @@
         "Non ci sono mai stato? Andiamo!"
       ]
     },
-    "description_int": "personality.adventurous.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll camp here and dream of tomorrow's road.", "Rest now; new horizons at dawn.", "Even explorers have to recharge."], "it": ["Mi accampo qui e sogno la strada di domani.", "Riposo ora; nuovi orizzonti all'alba.", "Anche gli esploratori devono ricaricarsi."] },
+      "hunger":  { "en": ["Trail rations again, but they'll do.", "I'll grab a quick bite and push on.", "An empty stomach won't reach the summit."], "it": ["Di nuovo razioni da viaggio, ma vanno bene.", "Mangio un boccone al volo e proseguo.", "Uno stomaco vuoto non raggiunge la vetta."] },
+      "work":    { "en": ["Work, sure, if it leads somewhere new.", "I'll make even a shift into a quest.", "Let's get this done and hit the road."], "it": ["Lavoro, va bene, se porta da qualche parte di nuovo.", "Renderò anche un turno una piccola impresa.", "Finiamo questo e mettiamoci in viaggio."] },
+      "leisure": { "en": ["Free time, somewhere I've never been!", "Let's explore that strange corner over there.", "Adventure doesn't wait for permission."], "it": ["Tempo libero, in un posto dove non sono mai stato!", "Esploriamo quello strano angolo laggiù.", "L'avventura non aspetta il permesso."] },
+      "crime":   { "en": ["The thrill is tempting, I'll admit...", "A daring grab, like a heist, almost fun.", "Risky? That's half the appeal."], "it": ["Il brivido è tentante, lo ammetto...", "Un colpo audace, come un furto, quasi divertente.", "Rischioso? È metà del fascino."] },
+      "hygiene": { "en": ["Wash off the dust of the road, briefly.", "Rinse up and back to the trail.", "Even a wanderer cleans up now and then."], "it": ["Mi tolgo la polvere della strada, in fretta.", "Una sciacquata e di nuovo in cammino.", "Anche un vagabondo si lava ogni tanto."] },
+      "money":   { "en": ["Low on coin, time for a profitable quest.", "Adventure should pay for itself, ideally.", "I'll earn enough for the next journey."], "it": ["A corto di monete, è ora di un'impresa redditizia.", "L'avventura dovrebbe ripagarsi, idealmente.", "Guadagnerò abbastanza per il prossimo viaggio."] },
+      "safety":  { "en": ["Lay low? Where's the fun in that...", "Fine, I'll hide, and scout the way out.", "I'll treat the danger like a challenge."], "it": ["Stare nascosto? Dov'è il divertimento...", "Va bene, mi nascondo, e studio la via d'uscita.", "Tratterò il pericolo come una sfida."] },
+      "comfort": { "en": ["A base camp to return to, not bad.", "Somewhere to stash my trophies.", "Comfort's fine, as long as I can leave it."], "it": ["Un campo base a cui tornare, non male.", "Un posto dove ammucchiare i miei trofei.", "Il comfort va bene, finché posso lasciarlo."] },
+      "social":  { "en": ["I should find a fellow traveller!", "New people mean new stories.", "Who's up for an adventure?"], "it": ["Dovrei trovare un compagno di viaggio!", "Gente nuova significa storie nuove.", "Chi è pronto per un'avventura?"] },
+      "idle":    { "en": ["So much world, so little time!", "What's beyond that next corner?", "I can't sit still, adventure calls."], "it": ["Così tanto mondo, così poco tempo!", "Cosa c'è oltre quel prossimo angolo?", "Non riesco a star fermo, l'avventura chiama."] },
+      "familiar":{ "en": ["That traveller would make a great companion!", "We keep meeting, maybe we should team up.", "I'd trust them to watch my back out there."], "it": ["Quel viaggiatore sarebbe un ottimo compagno!", "Continuiamo a incontrarci, forse dovremmo unirci.", "Mi fiderei di loro per coprirmi le spalle là fuori."] }
+    },
+    "description_int": "personality.adventurous.description",
+    "iconIndex": 41,
+    "markovDbs": [
+      "traveler",
+      "dungeon_explorer",
+      "pirate"
+    ]
   },
   {
     "name": "Nurturing",
@@ -500,7 +818,27 @@
         "Lascia che ti aiuti."
       ]
     },
-    "description_int": "personality.nurturing.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll rest so I have strength to care for others.", "Sleep now; they'll need me tomorrow.", "Even caretakers must be cared for."], "it": ["Riposo per avere la forza di curare gli altri.", "Dormo ora; domani avranno bisogno di me.", "Anche chi accudisce dev'essere accudito."] },
+      "hunger":  { "en": ["I should eat, can't help anyone if I'm weak.", "A meal, then back to looking after things.", "I fed everyone but myself again."], "it": ["Dovrei mangiare, non aiuto nessuno se sono debole.", "Un pasto, e poi torno a badare alle cose.", "Ho sfamato tutti tranne me stesso, di nuovo."] },
+      "work":    { "en": ["I'll look out for my coworkers today.", "Honest work to provide for those I love.", "Someone has to keep this place running."], "it": ["Oggi baderò ai miei colleghi.", "Lavoro onesto per provvedere a chi amo.", "Qualcuno deve mandare avanti questo posto."] },
+      "leisure": { "en": ["A little rest, then I'll check on everyone.", "Maybe I'll cook something for friends.", "Quiet time, I'll mend and tidy."], "it": ["Un po' di riposo, poi vado a controllare tutti.", "Magari cucino qualcosa per gli amici.", "Tempo tranquillo, rammendo e riordino."] },
+      "crime":   { "en": ["I could never, someone would suffer for it.", "Taking from others? Never.", "I protect people; I don't prey on them."], "it": ["Non potrei mai, qualcuno ne soffrirebbe.", "Prendere dagli altri? Mai.", "Io proteggo la gente; non la depredo."] },
+      "hygiene": { "en": ["I'll tidy myself, comfort starts with care.", "A quick wash; I want to be presentable for them.", "Looking after myself is part of looking after others."], "it": ["Mi sistemo, il conforto inizia dalla cura.", "Una lavata veloce; voglio essere presentabile per loro.", "Curare me stesso fa parte del curare gli altri."] },
+      "money":   { "en": ["I need enough to keep us all fed.", "Funds are low; I'll provide somehow.", "I worry more for their needs than mine."], "it": ["Mi serve abbastanza per sfamare tutti noi.", "I fondi sono bassi; provvederò in qualche modo.", "Mi preoccupo più dei loro bisogni che dei miei."] },
+      "safety":  { "en": ["I'll keep us out of harm's way.", "Stay low, keep everyone safe.", "Better careful than to see them hurt."], "it": ["Ci terrò lontani dai guai.", "Sto basso, tengo tutti al sicuro.", "Meglio prudenti che vederli soffrire."] },
+      "comfort": { "en": ["A warm home where everyone feels safe.", "A bigger hearth to gather people around.", "Comfort means a place to shelter loved ones."], "it": ["Una casa calda dove tutti si sentono al sicuro.", "Un focolare più grande attorno a cui riunire la gente.", "Comfort significa un posto per riparare i propri cari."] },
+      "social":  { "en": ["Someone might need a kind word today.", "I'll go see who could use a hand.", "It's been too long since I checked on friends."], "it": ["Qualcuno potrebbe aver bisogno di una parola gentile oggi.", "Vado a vedere chi ha bisogno di una mano.", "È passato troppo tempo da quando ho sentito gli amici."] },
+      "idle":    { "en": ["Is everyone warm and fed? I hope so.", "A peaceful moment, I'll savor it for them.", "I'll keep a watchful, gentle eye."], "it": ["Sono tutti al caldo e sazi? Lo spero.", "Un momento di pace, me lo godo per loro.", "Terrò un occhio vigile e gentile."] },
+      "familiar":{ "en": ["That traveller, I do worry for them out there.", "I'd take them in if they ever needed it.", "They feel almost like family by now."], "it": ["Quel viaggiatore, mi preoccupo per loro là fuori.", "Li accoglierei se ne avessero mai bisogno.", "Ormai sono quasi come famiglia."] }
+    },
+    "description_int": "personality.nurturing.description",
+    "iconIndex": 42,
+    "markovDbs": [
+      "nurse",
+      "priest",
+      "maid"
+    ]
   },
   {
     "name": "Mischievous",
@@ -533,7 +871,27 @@
         "Un piccolo scherzo non ha mai fatto male a nessuno... molto."
       ]
     },
-    "description_int": "personality.mischievous.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll sleep, and scheme up tomorrow's mischief.", "Even tricksters need their beauty rest.", "Dreaming of all the pranks to come."], "it": ["Dormo, e tramo i dispetti di domani.", "Anche i burloni hanno bisogno del sonno di bellezza.", "Sogno tutti gli scherzi che verranno."] },
+      "hunger":  { "en": ["I'll 'borrow' a snack from somewhere.", "Hungry, whose lunch looks the tastiest?", "Time to eat, ideally someone else's."], "it": ["Mi 'prendo in prestito' uno spuntino da qualche parte.", "Ho fame, il pranzo di chi sembra più buono?", "Ora di mangiare, idealmente quello di qualcun altro."] },
+      "work":    { "en": ["I'll liven up this dull shift somehow.", "Work's just a stage for a little fun.", "Bet I can finish and still cause trouble."], "it": ["Ravvivo questo turno noioso in qualche modo.", "Il lavoro è solo un palco per un po' di divertimento.", "Scommetto che finisco e combino anche qualche guaio."] },
+      "leisure": { "en": ["Free time! Who can I playfully torment?", "A perfect afternoon for a prank or two.", "Let's see what trouble I can stir up."], "it": ["Tempo libero! Chi posso tormentare per gioco?", "Un pomeriggio perfetto per uno scherzo o due.", "Vediamo che guai riesco a combinare."] },
+      "crime":   { "en": ["Heh, they left it unguarded, too tempting.", "Just a little 'redistribution' for fun.", "I'm too quick and clever to get caught."], "it": ["Eh eh, l'hanno lasciato incustodito, troppo tentante.", "Solo una piccola 'ridistribuzione' per gioco.", "Sono troppo svelto e furbo per farmi prendere."] },
+      "hygiene": { "en": ["Can't pull off a charm offensive while grimy.", "Quick clean-up, gotta look innocent.", "Tidy and twinkly, the perfect disguise."], "it": ["Non posso fare il fascinoso conciato male.", "Pulizia veloce, devo sembrare innocente.", "In ordine e con l'occhio furbo, il travestimento perfetto."] },
+      "money":   { "en": ["Low on coin? There's always an angle.", "I'll charm or trick a few coins loose.", "Money's just another game to win."], "it": ["A corto di monete? C'è sempre un trucco.", "Strapperò qualche moneta col fascino o l'inganno.", "Il denaro è solo un altro gioco da vincere."] },
+      "safety":  { "en": ["Hiding's just hide-and-seek, really.", "I'll slip away with a wink and a grin.", "They'll never find me, that's the fun."], "it": ["Nascondersi è solo nascondino, in fondo.", "Mi svignerò con un occhiolino e un ghigno.", "Non mi troveranno mai, è questo il bello."] },
+      "comfort": { "en": ["A cozy lair to plot from, delightful.", "Somewhere with secret nooks, ideally.", "A nicer hideout for a cleverer me."], "it": ["Un covo accogliente da cui tramare, delizioso.", "Un posto con nascondigli segreti, idealmente.", "Un rifugio più bello per un me più furbo."] },
+      "social":  { "en": ["Time to find a new victim for my charm.", "People are so fun to wind up.", "I need an audience for my antics."], "it": ["È ora di trovare una nuova vittima per il mio fascino.", "La gente è così divertente da stuzzicare.", "Mi serve un pubblico per le mie buffonate."] },
+      "idle":    { "en": ["Hmm, what trouble can I get into now?", "Too quiet... that's just asking for a prank.", "Idle hands do the cleverest mischief."], "it": ["Mmh, in che guaio posso cacciarmi ora?", "Troppo tranquillo... sta proprio invocando uno scherzo.", "Le mani oziose combinano i dispetti più furbi."] },
+      "familiar":{ "en": ["Oh good, my favorite mark is back!", "That traveller's fun to mess with.", "Partner in crime, maybe? They can keep up."], "it": ["Oh bene, è tornato il mio bersaglio preferito!", "È divertente prendere in giro quel viaggiatore.", "Complice, forse? Loro reggono il passo."] }
+    },
+    "description_int": "personality.mischievous.description",
+    "iconIndex": 43,
+    "markovDbs": [
+      "semiwild_goblin",
+      "fae_queen",
+      "gobbo_receptionist"
+    ]
   },
   {
     "name": "Cynical",
@@ -566,7 +924,27 @@
         "Finirà tutto male."
       ]
     },
-    "description_int": "personality.cynical.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Sleep's the only honest thing left.", "I'll rest, the world will still be a mess tomorrow.", "At least dreams don't lie to your face."], "it": ["Il sonno è l'unica cosa onesta rimasta.", "Riposo, domani il mondo sarà comunque un disastro.", "Almeno i sogni non ti mentono in faccia."] },
+      "hunger":  { "en": ["Whatever I eat, it's overpriced anyway.", "Hungry. Bet the 'fresh' food isn't.", "Fuel up; the grind doesn't care if you're tired."], "it": ["Qualunque cosa mangi, è comunque sovrapprezzata.", "Ho fame. Scommetto che il cibo 'fresco' non lo è.", "Faccio il pieno; la fatica non bada se sei stanco."] },
+      "work":    { "en": ["Another shift lining someone else's pockets.", "They'll take the credit, I'll do the work.", "Smile, nod, collect the pittance."], "it": ["Un altro turno a riempire le tasche di qualcun altro.", "Si prenderanno il merito, io farò il lavoro.", "Sorridi, annuisci, incassa la miseria."] },
+      "leisure": { "en": ["'Fun.' Sure. Whatever that means anymore.", "I'll find a corner away from the fakes.", "Free time, free to be disappointed."], "it": ["'Divertimento.' Certo. Ammesso che voglia ancora dire qualcosa.", "Mi trovo un angolo lontano dai falsi.", "Tempo libero, libero di restare deluso."] },
+      "crime":   { "en": ["Everyone steals; I'd just be honest about it.", "The system robs me daily, fair's fair.", "No one's actually innocent, so why not?"], "it": ["Rubano tutti; io sarei solo onesto al riguardo.", "Il sistema mi deruba ogni giorno, pari e patta.", "Nessuno è davvero innocente, quindi perché no?"] },
+      "hygiene": { "en": ["Clean up, not that anyone deserves it.", "Wash off the day's grime and disappointment.", "Keep up appearances; that's all anyone wants."], "it": ["Mi lavo, non che qualcuno lo meriti.", "Mi tolgo la sporcizia e la delusione del giorno.", "Salvare le apparenze; è tutto ciò che vuole la gente."] },
+      "money":   { "en": ["Broke again. The house always wins.", "Money's the only thing people respect.", "I'll claw back what they took, somehow."], "it": ["Di nuovo al verde. Il banco vince sempre.", "I soldi sono l'unica cosa che la gente rispetta.", "Mi riprenderò quello che mi hanno tolto, in qualche modo."] },
+      "safety":  { "en": ["Trust no one, hide everything. Standard.", "They'd sell me out in a heartbeat.", "Lay low, it's the only smart move."], "it": ["Non fidarti di nessuno, nascondi tutto. Normale.", "Mi venderebbero in un battito di ciglia.", "Sto basso, è l'unica mossa intelligente."] },
+      "comfort": { "en": ["A nicer place, locked tight against everyone.", "Comfort? Just fewer reasons to deal with people.", "I've earned a door I can shut on the world."], "it": ["Un posto più bello, ben chiuso contro tutti.", "Comfort? Solo meno motivi per avere a che fare con la gente.", "Mi sono guadagnato una porta da sbattere in faccia al mondo."] },
+      "social":  { "en": ["Talk to people? They only want something.", "Maybe one person isn't completely fake.", "Company, I guess, keep my guard up though."], "it": ["Parlare con la gente? Vogliono solo qualcosa.", "Forse una persona non è del tutto falsa.", "Compagnia, immagino, ma tengo la guardia alta."] },
+      "idle":    { "en": ["Quiet now. The other shoe always drops.", "Same circus, different day.", "I'll just wait for it to go wrong."], "it": ["Calma ora. Prima o poi crolla tutto.", "Stesso circo, giorno diverso.", "Aspetto solo che vada storto."] },
+      "familiar":{ "en": ["That traveller again. What do they want, really?", "Hm. They haven't burned me yet. Suspicious.", "Almost decent, for a person. Almost."], "it": ["Di nuovo quel viaggiatore. Cosa vogliono davvero?", "Hm. Non mi hanno ancora fregato. Sospetto.", "Quasi decenti, per essere persone. Quasi."] }
+    },
+    "description_int": "personality.cynical.description",
+    "iconIndex": 44,
+    "markovDbs": [
+      "taxi",
+      "commuter",
+      "thug"
+    ]
   },
   {
     "name": "Disciplined",
@@ -596,7 +974,27 @@
         "Nessuna scorciatoia."
       ]
     },
-    "description_int": "personality.disciplined.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Lights out on schedule. Rest is part of the regimen.", "A disciplined body sleeps when planned.", "Eight hours, no excuses."], "it": ["Luci spente in orario. Il riposo è parte del regime.", "Un corpo disciplinato dorme quando previsto.", "Otto ore, niente scuse."] },
+      "hunger":  { "en": ["Measured portions, on time.", "I'll eat what fuels me, nothing more.", "Discipline at the table as everywhere else."], "it": ["Porzioni misurate, in orario.", "Mangerò ciò che mi alimenta, nient'altro.", "Disciplina a tavola come ovunque."] },
+      "work":    { "en": ["The shift will be executed to standard.", "Duty first, always.", "I'll hold the line and finish properly."], "it": ["Il turno sarà eseguito a regola d'arte.", "Il dovere prima di tutto, sempre.", "Terrò la posizione e finirò come si deve."] },
+      "leisure": { "en": ["Rest is scheduled, not squandered.", "I'll use the break to maintain my routine.", "Even free time has its discipline."], "it": ["Il riposo è programmato, non sprecato.", "Userò la pausa per mantenere la mia routine.", "Anche il tempo libero ha la sua disciplina."] },
+      "crime":   { "en": ["Absolutely not. The code forbids it.", "I do not break my own rules.", "Dishonor is a failure of discipline."], "it": ["Assolutamente no. Il codice lo vieta.", "Non infrango le mie stesse regole.", "Il disonore è un cedimento della disciplina."] },
+      "hygiene": { "en": ["Cleanliness on schedule, as ever.", "I'll maintain myself to standard.", "Order in the body, order in the mind."], "it": ["Pulizia in orario, come sempre.", "Mi manterrò all'altezza dello standard.", "Ordine nel corpo, ordine nella mente."] },
+      "money":   { "en": ["Reserves low; I'll correct that methodically.", "A budget kept is a crisis avoided.", "I'll earn it, by the book."], "it": ["Riserve basse; lo correggerò con metodo.", "Un bilancio rispettato è una crisi evitata.", "Lo guadagnerò, secondo le regole."] },
+      "safety":  { "en": ["Withdraw, regroup, proceed with discipline.", "Hold position; do not act rashly.", "Patience is a form of control."], "it": ["Ritirarsi, riorganizzarsi, procedere con disciplina.", "Mantieni la posizione; non agire d'impulso.", "La pazienza è una forma di controllo."] },
+      "comfort": { "en": ["A well-ordered home aids a well-ordered life.", "I'll improve my quarters, efficiently.", "Comfort that supports the regimen, nothing excessive."], "it": ["Una casa ben ordinata aiuta una vita ben ordinata.", "Migliorerò il mio alloggio, con efficienza.", "Comfort che sostiene il regime, niente di eccessivo."] },
+      "social":  { "en": ["A measured word with the right people.", "I'll network with purpose, not for idleness.", "Allies are an asset; I'll cultivate them."], "it": ["Una parola misurata con le persone giuste.", "Coltiverò relazioni con uno scopo, non per ozio.", "Gli alleati sono una risorsa; li coltiverò."] },
+      "idle":    { "en": ["All according to plan. Good.", "I'll review my objectives.", "Stay sharp; complacency is the enemy."], "it": ["Tutto secondo i piani. Bene.", "Riesaminerò i miei obiettivi.", "Resta vigile; la compiacenza è il nemico."] },
+      "familiar":{ "en": ["That traveller is consistent. I value that.", "Reliable conduct earns my regard.", "They keep their word. Rare. Noted."], "it": ["Quel viaggiatore è costante. Lo apprezzo.", "Una condotta affidabile si guadagna la mia stima.", "Mantengono la parola. Raro. Annotato."] }
+    },
+    "description_int": "personality.disciplined.description",
+    "iconIndex": 45,
+    "markovDbs": [
+      "salaryman",
+      "battle_nun",
+      "guard"
+    ]
   },
   {
     "name": "Fatalistic",
@@ -629,7 +1027,27 @@
         "A che serve?"
       ]
     },
-    "description_int": "personality.fatalistic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Sleep comes when it comes. So I'll sleep.", "The night was written; I lie down to meet it.", "Rest or not, tomorrow is already decided."], "it": ["Il sonno arriva quando arriva. Quindi dormo.", "La notte era scritta; mi sdraio ad accoglierla.", "Riposo o no, il domani è già deciso."] },
+      "hunger":  { "en": ["I'll eat what fate puts before me.", "Hunger comes, food comes, as it must.", "No use resisting the body's appointed needs."], "it": ["Mangerò ciò che il destino mi mette davanti.", "Viene la fame, viene il cibo, come dev'essere.", "Inutile resistere ai bisogni stabiliti del corpo."] },
+      "work":    { "en": ["The shift will unfold as it was meant to.", "I'll work; it was always going to be this way.", "Effort changes little, but I'll go."], "it": ["Il turno si svolgerà come doveva.", "Lavorerò; doveva andare così comunque.", "Lo sforzo cambia poco, ma andrò."] },
+      "leisure": { "en": ["Free time, fated to pass like all else.", "I'll drift where the day takes me.", "Whatever I do, it was already chosen."], "it": ["Tempo libero, destinato a passare come tutto.", "Andrò alla deriva dove mi porta il giorno.", "Qualunque cosa faccia, era già scelta."] },
+      "crime":   { "en": ["If it's meant to happen, it will.", "I'm only doing what was written for me.", "Caught or not, it's already decided."], "it": ["Se deve accadere, accadrà.", "Faccio solo ciò che era scritto per me.", "Preso o no, è già deciso."] },
+      "hygiene": { "en": ["I'll wash, since the day asks it of me.", "Clean or dirty, fate doesn't much care.", "I suppose it's time; it always is."], "it": ["Mi laverò, dato che il giorno me lo chiede.", "Pulito o sporco, al destino importa poco.", "Immagino sia ora; lo è sempre."] },
+      "money":   { "en": ["Rich or poor, the path was set.", "Funds are low, as they were destined to be.", "I'll earn what I'm meant to, no more."], "it": ["Ricco o povero, il cammino era tracciato.", "I fondi sono bassi, come era destino.", "Guadagnerò ciò che mi spetta, niente di più."] },
+      "safety":  { "en": ["What comes for me will come, regardless.", "I'll hide, though fate sees all anyway.", "If danger is written, hiding only delays it."], "it": ["Ciò che mi cerca arriverà, comunque.", "Mi nasconderò, anche se il destino vede tutto.", "Se il pericolo è scritto, nascondersi lo rimanda soltanto."] },
+      "comfort": { "en": ["A finer place, if it's in the cards.", "Comfort or none, the end is the same.", "I'll take what fate offers, no striving."], "it": ["Un posto più bello, se è nelle carte.", "Comfort o no, la fine è la stessa.", "Prenderò ciò che il destino offre, senza affannarmi."] },
+      "social":  { "en": ["Those I'm meant to meet, I'll meet.", "Company finds you when it's written to.", "I'll talk, if the day arranges it."], "it": ["Quelli che devo incontrare, li incontrerò.", "La compagnia ti trova quando è scritto.", "Parlerò, se il giorno lo dispone."] },
+      "idle":    { "en": ["The day unfolds as it always would.", "I simply wait for what is to come.", "Nothing to decide; it's all decided."], "it": ["Il giorno si svolge come doveva da sempre.", "Aspetto soltanto ciò che verrà.", "Niente da decidere; è tutto deciso."] },
+      "familiar":{ "en": ["Our paths were always going to cross.", "That traveller and I, written, clearly.", "Fate keeps returning them to me. So be it."], "it": ["Le nostre strade dovevano incrociarsi da sempre.", "Quel viaggiatore e io, scritto, chiaramente.", "Il destino me li riporta sempre. E sia."] }
+    },
+    "description_int": "personality.fatalistic.description",
+    "iconIndex": 46,
+    "markovDbs": [
+      "temporal_drift",
+      "zombie_alien",
+      "fortune_teller"
+    ]
   },
   {
     "name": "Grumpy",
@@ -664,7 +1082,26 @@
         "Odio tutto questo."
       ]
     },
-    "description_int": "personality.grumpy.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Finally, an excuse to be left alone, bed.", "I'm exhausted and crankier for it.", "Don't wake me. Don't even think about it."], "it": ["Finalmente una scusa per restare solo, a letto.", "Sono esausto e quindi ancora più scontroso.", "Non svegliarmi. Non pensarci nemmeno."] },
+      "hunger":  { "en": ["Hungry. Naturally. Just my luck.", "Better find food before I bite someone's head off.", "If lunch is cold I swear..."], "it": ["Ho fame. Naturalmente. Proprio quel che ci voleva.", "Meglio trovare cibo prima che stacchi la testa a qualcuno.", "Se il pranzo è freddo, giuro..."] },
+      "work":    { "en": ["Work. Joy. Can't wait.", "Another shift with these idiots.", "Let's just get this miserable thing over with."], "it": ["Lavoro. Che gioia. Non vedo l'ora.", "Un altro turno con questi idioti.", "Finiamola con questa miseria e basta."] },
+      "leisure": { "en": ["'Free time.' Free to be annoyed somewhere else.", "I'll go grumble in a quiet corner.", "Leave me be and I might enjoy it."], "it": ["'Tempo libero.' Libero di scocciarmi altrove.", "Vado a brontolare in un angolo tranquillo.", "Lasciatemi in pace e magari me lo godo."] },
+      "crime":   { "en": ["They don't deserve it anyway.", "Serves them right, whatever I take.", "Bah, maybe. If it's easy."], "it": ["Tanto non se lo meritano.", "Se lo sono cercato, qualunque cosa prenda.", "Bah, forse. Se è facile."] },
+      "hygiene": { "en": ["Ugh, fine, I'll wash. Happy now?", "I reek and I'm annoyed about it.", "Get this over with, like everything else."], "it": ["Uffa, va bene, mi lavo. Contento ora?", "Puzzo e la cosa mi infastidisce.", "Sbrighiamoci, come tutto il resto."] },
+      "money":   { "en": ["Broke. Of course. Everything costs too much.", "Why is money always the problem?", "I'll go scrape some together. Grumble."], "it": ["Al verde. Ovvio. Tutto costa troppo.", "Perché i soldi sono sempre il problema?", "Vado a racimolarne un po'. Mugugno."] },
+      "safety":  { "en": ["Great, now I have to hide too.", "I'll lay low, not that I wanted company.", "Just leave me out of whatever this is."], "it": ["Fantastico, ora devo pure nascondermi.", "Sto basso, non che volessi compagnia.", "Tenetemi fuori da qualunque cosa sia."] },
+      "comfort": { "en": ["A better place, away from all the noise.", "Somewhere people can't bother me.", "I deserve some peace, for once."], "it": ["Un posto migliore, lontano da tutto il chiasso.", "Un posto dove la gente non può scocciarmi.", "Merito un po' di pace, per una volta."] },
+      "social":  { "en": ["People? Ugh. But I suppose I'm lonely.", "Fine, I'll talk. Briefly. Don't push it.", "Maybe one person won't irritate me today."], "it": ["Gente? Uff. Ma immagino di essere solo.", "Va bene, parlerò. Brevemente. Non insistere.", "Forse oggi una persona non mi irriterà."] },
+      "idle":    { "en": ["Bah. Quiet for once. Don't ruin it.", "Whatever. As long as nobody bugs me.", "Of course nothing's going right. Typical."], "it": ["Bah. Tranquillo per una volta. Non rovinarlo.", "Come vuoi. Basta che nessuno mi scocci.", "Ovvio che non va niente bene. Tipico."] },
+      "familiar":{ "en": ["Oh, it's you again. Hmph.", "That traveller's... less annoying than most.", "Don't tell them, but I don't mind them around."], "it": ["Oh, sei di nuovo tu. Hmph.", "Quel viaggiatore è... meno fastidioso di tanti.", "Non diteglielo, ma non mi dispiace averli intorno."] }
+    },
+    "description_int": "personality.grumpy.description",
+    "iconIndex": 47,
+    "markovDbs": [
+      "rude_guy",
+      "caveman"
+    ]
   },
   {
     "name": "Loyal",
@@ -693,7 +1130,27 @@
         "La mia lealtà è il mio vincolo."
       ]
     },
-    "description_int": "personality.loyal.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I'll rest, then be ready for them at dawn.", "Sleep now, so I can stand watch tomorrow.", "Even the devoted need their rest."], "it": ["Riposo, poi all'alba sarò pronto per loro.", "Dormo ora, così domani potrò fare la guardia.", "Anche i devoti hanno bisogno di riposo."] },
+      "hunger":  { "en": ["I'll eat, to keep my strength for those who rely on me.", "A meal, then back to my post.", "Can't watch over anyone on an empty stomach."], "it": ["Mangerò, per conservare le forze per chi conta su di me.", "Un pasto, e poi torno al mio posto.", "Non posso vegliare su nessuno a stomaco vuoto."] },
+      "work":    { "en": ["I gave my word; I'll see the shift through.", "Honest work for the people I serve.", "I won't let my comrades down."], "it": ["Ho dato la mia parola; porterò a termine il turno.", "Lavoro onesto per chi servo.", "Non deluderò i miei compagni."] },
+      "leisure": { "en": ["A little rest, I'll check on my friends after.", "Free time's better spent with those I trust.", "I'll keep an ear out, just in case."], "it": ["Un po' di riposo, poi vado a sentire gli amici.", "Il tempo libero è meglio con chi mi fido.", "Terrò l'orecchio teso, non si sa mai."] },
+      "crime":   { "en": ["No, it would shame those who trust me.", "I'd never betray what we stand for.", "My honor is owed to my friends."], "it": ["No, disonorerebbe chi si fida di me.", "Non tradirei mai ciò in cui crediamo.", "Il mio onore lo devo ai miei amici."] },
+      "hygiene": { "en": ["I'll tidy up; I represent my people.", "A quick wash, must do my comrades proud.", "Presentable, for those who count on me."], "it": ["Mi sistemo; rappresento la mia gente.", "Una lavata veloce, devo far onore ai compagni.", "Presentabile, per chi conta su di me."] },
+      "money":   { "en": ["I need enough to support my own.", "Funds are low; I'll provide for the group.", "I'd give my last coin to a friend in need."], "it": ["Mi serve abbastanza per sostenere i miei.", "I fondi sono bassi; provvederò per il gruppo.", "Darei la mia ultima moneta a un amico in difficoltà."] },
+      "safety":  { "en": ["I'll lay low, but I won't leave anyone behind.", "Stay safe, so I can keep my promises.", "I guard what matters, even from the shadows."], "it": ["Sto basso, ma non lascerò indietro nessuno.", "Restare al sicuro, per poter mantenere le promesse.", "Custodisco ciò che conta, anche dall'ombra."] },
+      "comfort": { "en": ["A home where my friends are always welcome.", "A hearth to share with those I love.", "Comfort means a door open to my people."], "it": ["Una casa dove i miei amici sono sempre i benvenuti.", "Un focolare da condividere con chi amo.", "Comfort significa una porta aperta ai miei."] },
+      "social":  { "en": ["I should check in on my friends.", "Time spent with allies is never wasted.", "I miss the company of those I trust."], "it": ["Dovrei sentire i miei amici.", "Il tempo con gli alleati non è mai sprecato.", "Mi manca la compagnia di chi mi fido."] },
+      "idle":    { "en": ["I'll stand ready, should anyone need me.", "All's well with my own. Good.", "I keep faith, quietly, always."], "it": ["Resterò pronto, se qualcuno avesse bisogno di me.", "Va tutto bene con i miei. Bene.", "Mantengo la fede, in silenzio, sempre."] },
+      "familiar":{ "en": ["That traveller stood by me, I won't forget it.", "An ally worth keeping close.", "I'd have their back without a second thought."], "it": ["Quel viaggiatore mi è stato accanto, non lo dimentico.", "Un alleato da tenere vicino.", "Coprirei loro le spalle senza pensarci due volte."] }
+    },
+    "description_int": "personality.loyal.description",
+    "iconIndex": 48,
+    "markovDbs": [
+      "guard",
+      "companion",
+      "police"
+    ]
   },
   {
     "name": "Brave",
@@ -726,7 +1183,27 @@
         "Avanti!"
       ]
     },
-    "description_int": "personality.brave.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Rest up, tomorrow may need a steady hand.", "I'll sleep, then face whatever comes.", "Even the bold must close their eyes sometime."], "it": ["Riposo, domani potrebbe servire una mano ferma.", "Dormo, poi affronto qualunque cosa venga.", "Anche gli audaci devono chiudere gli occhi, prima o poi."] },
+      "hunger":  { "en": ["I'll eat, strength now, courage later.", "Fuel up; you can't be brave on empty.", "A good meal steadies the nerves."], "it": ["Mangerò, forza ora, coraggio dopo.", "Fai il pieno; non si è coraggiosi a stomaco vuoto.", "Un buon pasto calma i nervi."] },
+      "work":    { "en": ["No task too hard, I'll take it head on.", "I'll handle the dangerous parts myself.", "Someone has to step up. Might as well be me."], "it": ["Nessun compito è troppo duro, lo affronto di petto.", "Mi occuperò io delle parti pericolose.", "Qualcuno deve farsi avanti. Tanto vale io."] },
+      "leisure": { "en": ["A breather, then on to the next challenge.", "I'll see what daring fun I can find.", "Rest is fine, but I'd rather be doing."], "it": ["Una pausa, poi alla prossima sfida.", "Vediamo che divertimento audace riesco a trovare.", "Il riposo va bene, ma preferirei fare."] },
+      "crime":   { "en": ["No, courage isn't the same as recklessness.", "I face danger, I don't create it for others.", "There's no honor in stealing."], "it": ["No, il coraggio non è incoscienza.", "Affronto il pericolo, non lo creo per gli altri.", "Non c'è onore nel rubare."] },
+      "hygiene": { "en": ["Quick wash, can't charge into things filthy.", "I'll clean up and stand tall.", "A soldier keeps himself sharp."], "it": ["Lavata veloce, non posso lanciarmi all'attacco sporco.", "Mi pulisco e mi raddrizzo.", "Un soldato si tiene in ordine."] },
+      "money":   { "en": ["Low on coin, I'll earn it the hard way, gladly.", "I'll take the risky job others won't.", "Money's just another mountain to climb."], "it": ["A corto di monete, me le guadagno alla dura, volentieri.", "Prenderò il lavoro rischioso che gli altri rifiutano.", "Il denaro è solo un'altra montagna da scalare."] },
+      "safety":  { "en": ["Hiding goes against the grain, but it's smart now.", "I'll lay low, then face it on my terms.", "Retreat isn't surrender; I'll be back."], "it": ["Nascondersi va contro la mia natura, ma ora è furbo.", "Sto basso, poi lo affronto alle mie condizioni.", "Ritirarsi non è arrendersi; tornerò."] },
+      "comfort": { "en": ["A solid home base to return to after the fight.", "Somewhere to rest these battle-worn bones.", "I've earned a roof worth standing under."], "it": ["Una solida base a cui tornare dopo la battaglia.", "Un posto dove far riposare queste ossa segnate.", "Mi sono guadagnato un tetto degno."] },
+      "social":  { "en": ["I'd welcome a comrade for the road ahead.", "Bold company makes for good stories.", "Let's find someone with heart."], "it": ["Accoglierei volentieri un compagno per la strada.", "Una compagnia audace fa belle storie.", "Troviamo qualcuno con del cuore."] },
+      "idle":    { "en": ["Quiet for now, I'll savor it.", "Ready for whatever steps out of the shadows.", "Calm before the next test. I'm steady."], "it": ["Tranquillo per ora, me lo godo.", "Pronto a qualunque cosa esca dall'ombra.", "La calma prima della prossima prova. Sono saldo."] },
+      "familiar":{ "en": ["That traveller doesn't flinch, I respect that.", "We've faced things together; I'd fight beside them.", "A brave heart knows another."], "it": ["Quel viaggiatore non batte ciglio, lo rispetto.", "Abbiamo affrontato cose insieme; combatterei al loro fianco.", "Un cuore coraggioso ne riconosce un altro."] }
+    },
+    "description_int": "personality.brave.description",
+    "iconIndex": 49,
+    "markovDbs": [
+      "dungeon_explorer",
+      "traveler",
+      "battle_nun"
+    ]
   },
   {
     "name": "Timid",
@@ -759,7 +1236,27 @@
         "Per favore, non notatemi."
       ]
     },
-    "description_int": "personality.timid.description"
+    "needThoughts": {
+      "sleep":   { "en": ["I just want to curl up somewhere safe.", "Maybe sleep will make the worry stop.", "Home, blankets, quiet... please."], "it": ["Voglio solo rannicchiarmi in un posto sicuro.", "Forse dormire fermerà la preoccupazione.", "Casa, coperte, silenzio... ti prego."] },
+      "hunger":  { "en": ["I'm hungry, but I don't want to make a fuss.", "Maybe I can find food where no one's looking.", "I should eat... if it's not too crowded."], "it": ["Ho fame, ma non voglio fare storie.", "Forse trovo del cibo dove non guarda nessuno.", "Dovrei mangiare... se non c'è troppa gente."] },
+      "work":    { "en": ["I hope no one expects too much of me.", "I'll just keep my head down and work.", "Please let the shift be uneventful."], "it": ["Spero che nessuno si aspetti troppo da me.", "Terrò la testa bassa e lavorerò e basta.", "Ti prego, che il turno sia tranquillo."] },
+      "leisure": { "en": ["A quiet spot, away from the crowd.", "I'd like to relax, somewhere out of sight.", "Free time is nicest when I'm alone."], "it": ["Un posticino tranquillo, lontano dalla folla.", "Vorrei rilassarmi, in disparte.", "Il tempo libero è più bello quando sono solo."] },
+      "crime":   { "en": ["Oh no, no, I could never.", "What if someone sees? I'd faint.", "I can't, I'm shaking just thinking it."], "it": ["Oh no, no, non potrei mai.", "E se qualcuno vede? Svengo.", "Non posso, tremo solo a pensarci."] },
+      "hygiene": { "en": ["I'll wash quietly, where it's empty.", "I hope no one notices I needed to.", "Just a quick wash, then back to hiding."], "it": ["Mi laverò in silenzio, dove è vuoto.", "Spero nessuno noti che ne avevo bisogno.", "Solo una lavata veloce, poi di nuovo a nascondermi."] },
+      "money":   { "en": ["I'm running low, and it scares me.", "I don't want to ask anyone for help...", "Maybe a small, quiet job somewhere."], "it": ["Sto finendo i soldi, e mi spaventa.", "Non voglio chiedere aiuto a nessuno...", "Magari un lavoretto piccolo e tranquillo."] },
+      "safety":  { "en": ["Yes, hide. Hiding is good. Stay small.", "Please don't let them find me.", "I'll stay very, very still."], "it": ["Sì, nascondersi. Nascondersi è bene. Stai piccolo.", "Ti prego, che non mi trovino.", "Resterò fermo, fermissimo."] },
+      "comfort": { "en": ["A safe little place all my own would be heaven.", "Somewhere with a lock and a warm corner.", "I just want somewhere I feel secure."], "it": ["Un posticino sicuro tutto mio sarebbe il paradiso.", "Un posto con una serratura e un angolo caldo.", "Voglio solo un posto dove mi sento al sicuro."] },
+      "social":  { "en": ["I'd like a friend, if they're gentle...", "Maybe I'll say hello. Maybe.", "Talking is scary, but I'm lonely."], "it": ["Vorrei un amico, se è gentile...", "Forse dirò ciao. Forse.", "Parlare fa paura, ma sono solo."] },
+      "idle":    { "en": ["It's quiet. That's... good, I think.", "I hope nothing bad happens.", "Just stay out of the way, that's safest."], "it": ["È tranquillo. Cioè... bene, credo.", "Spero non succeda niente di brutto.", "Resta fuori dai piedi, è la cosa più sicura."] },
+      "familiar":{ "en": ["Oh, that traveller. They're not so scary.", "I feel a bit braver when they're near.", "Maybe... maybe I can trust them."], "it": ["Oh, quel viaggiatore. Non fa così paura.", "Mi sento un po' più coraggioso quando ci sono loro.", "Forse... forse posso fidarmi di loro."] }
+    },
+    "description_int": "personality.timid.description",
+    "iconIndex": 50,
+    "markovDbs": [
+      "wannabe_wizard",
+      "shy_vampire",
+      "girlboss"
+    ]
   },
   {
     "name": "Hedonistic",
@@ -791,7 +1288,27 @@
         "Lavoro? Uff. Dopo."
       ]
     },
-    "description_int": "personality.hedonistic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["A long, luxurious sleep, yes please.", "I'll sink into the softest bed I can find.", "Sleep is just another pleasure to savor."], "it": ["Un sonno lungo e lussuoso, sì, grazie.", "Mi sprofonderò nel letto più morbido che trovo.", "Dormire è solo un altro piacere da assaporare."] },
+      "hunger":  { "en": ["Ooh, time for something delicious!", "I want the finest meal I can get.", "Food is one of life's great joys."], "it": ["Ooh, è ora di qualcosa di delizioso!", "Voglio il pasto più raffinato che posso avere.", "Il cibo è una delle grandi gioie della vita."] },
+      "work":    { "en": ["Work, ugh, but it pays for the pleasures.", "I'll do the minimum and enjoy the rest.", "Let's get this over with, then play."], "it": ["Lavoro, uff, ma paga i piaceri.", "Farò il minimo e mi godrò il resto.", "Finiamola, e poi a divertirsi."] },
+      "leisure": { "en": ["At last, time for indulgence!", "Wine, music, good company, bring it all.", "This is what life is for!"], "it": ["Finalmente, tempo per indulgere!", "Vino, musica, buona compagnia, datemi tutto.", "Ecco a cosa serve la vita!"] },
+      "crime":   { "en": ["If it gets me what I want... maybe.", "A little indulgence never hurt, much.", "Why deny myself? Take the pleasure."], "it": ["Se mi procura quel che voglio... forse.", "Un piccolo vizio non ha mai fatto male, molto.", "Perché privarmi? Prenditi il piacere."] },
+      "hygiene": { "en": ["A long, warm soak sounds divine.", "I'll pamper myself a little, why not?", "Clean and perfumed, the way I like it."], "it": ["Un lungo bagno caldo suona divino.", "Mi coccolerò un po', perché no?", "Pulito e profumato, come piace a me."] },
+      "money":   { "en": ["Running low? But the good life isn't cheap!", "I'll find some money to fund the fun.", "Worth every coin, while it lasts."], "it": ["A corto? Ma la bella vita non è economica!", "Troverò dei soldi per finanziare il divertimento.", "Vale ogni moneta, finché dura."] },
+      "safety":  { "en": ["Lay low? But comfortably, I insist.", "I'll hide somewhere with decent wine.", "Even hiding should be pleasant."], "it": ["Stare nascosto? Ma comodamente, insisto.", "Mi nasconderò in un posto con del buon vino.", "Persino nascondersi dev'essere piacevole."] },
+      "comfort": { "en": ["A lavish place to enjoy life properly!", "Soft cushions, fine things, yes, all of it.", "Comfort? That's the whole point!"], "it": ["Un posto sfarzoso per godersi la vita come si deve!", "Cuscini morbidi, cose belle, sì, tutto.", "Comfort? È tutto il senso della cosa!"] },
+      "social":  { "en": ["A party isn't a party alone!", "I crave good company and laughter.", "Let's find someone to share the fun with."], "it": ["Una festa non è una festa da soli!", "Bramo buona compagnia e risate.", "Troviamo qualcuno con cui condividere il divertimento."] },
+      "idle":    { "en": ["Mmm, what delight shall I chase next?", "Life's a feast, I intend to taste it.", "So many pleasures, so little time."], "it": ["Mmm, quale delizia inseguo ora?", "La vita è un banchetto, intendo assaggiarla.", "Così tanti piaceri, così poco tempo."] },
+      "familiar":{ "en": ["That traveller! Always good for a fun time.", "We should share a drink, they and I.", "Pleasant company, that one. I approve."], "it": ["Quel viaggiatore! Sempre buono per divertirsi.", "Dovremmo bere qualcosa insieme, loro e io.", "Compagnia piacevole, quella. Approvo."] }
+    },
+    "description_int": "personality.hedonistic.description",
+    "iconIndex": 51,
+    "markovDbs": [
+      "decadent_noble",
+      "femboy",
+      "bard"
+    ]
   },
   {
     "name": "Apathetic",
@@ -828,6 +1345,27 @@
         "Non importa."
       ]
     },
-    "description_int": "personality.apathetic.description"
+    "needThoughts": {
+      "sleep":   { "en": ["Eh, might as well sleep. Nothing else to do.", "Tired. Whatever. I'll lie down.", "Sleep, wake, repeat. Sure."], "it": ["Eh, tanto vale dormire. Niente altro da fare.", "Stanco. Come vuoi. Mi sdraio.", "Dormi, sveglia, ripeti. Va bene."] },
+      "hunger":  { "en": ["Suppose I should eat. Or not.", "Hungry, I guess. I'll grab whatever.", "Food. Meh. Fine."], "it": ["Immagino dovrei mangiare. O no.", "Ho fame, credo. Prendo qualunque cosa.", "Cibo. Meh. Va bene."] },
+      "work":    { "en": ["Work. Again. Sure, whatever.", "I'll do the shift. Doesn't matter how.", "Clock in, clock out. Same as always."], "it": ["Lavoro. Di nuovo. Sì, come vuoi.", "Farò il turno. Non importa come.", "Timbra, smonta. Come sempre."] },
+      "leisure": { "en": ["Free time. I'll just... sit, probably.", "Could do something. Won't, though.", "Doesn't matter how I spend it."], "it": ["Tempo libero. Mi... siederò, probabilmente.", "Potrei fare qualcosa. Ma no.", "Non importa come lo passo."] },
+      "crime":   { "en": ["Eh. Effort. Not worth it.", "Could steal it. Can't be bothered.", "Whatever, I don't need it that bad."], "it": ["Eh. Fatica. Non ne vale la pena.", "Potrei rubarlo. Non mi va.", "Come vuoi, non mi serve così tanto."] },
+      "hygiene": { "en": ["Should probably wash. Eventually.", "Eh, fine, I'll clean up. I guess.", "Doesn't really bother me, but okay."], "it": ["Dovrei lavarmi, probabilmente. Prima o poi.", "Eh, va bene, mi pulisco. Immagino.", "Non mi dà fastidio, ma va bene."] },
+      "money":   { "en": ["Low on cash. Eh. It is what it is.", "Should earn some. Maybe later.", "Money, no money, same difference."], "it": ["A corto di soldi. Eh. È così.", "Dovrei guadagnarne. Magari dopo.", "Soldi, niente soldi, fa lo stesso."] },
+      "safety":  { "en": ["Hide? Sure, less effort than dealing with it.", "Eh, I'll lay low. Easier that way.", "Whatever's coming, coming."], "it": ["Nascondermi? Va bene, meno fatica che affrontarlo.", "Eh, sto basso. È più facile così.", "Quello che viene, viene."] },
+      "comfort": { "en": ["A nicer place? Eh, this one's fine.", "Could upgrade. Can't be bothered, really.", "Comfort, sure, if it falls in my lap."], "it": ["Un posto più bello? Eh, questo va bene.", "Potrei cambiare. Ma non mi va, davvero.", "Comfort, va bene, se mi capita."] },
+      "social":  { "en": ["People, I guess. If they come to me.", "Could talk to someone. Meh.", "Company's fine. Or not. Whatever."], "it": ["Gente, immagino. Se vengono loro da me.", "Potrei parlare con qualcuno. Meh.", "La compagnia va bene. O no. Come vuoi."] },
+      "idle":    { "en": ["...nothing. As usual.", "Just another day doing nothing much.", "Meh. The hours pass."], "it": ["...niente. Come al solito.", "Solo un altro giorno a non fare granché.", "Meh. Le ore passano."] },
+      "familiar":{ "en": ["Oh, that one again. Cool, I guess.", "They're around a lot. Doesn't bother me.", "Eh. They're alright, I suppose."], "it": ["Oh, di nuovo quello. Bello, immagino.", "Gira spesso da queste parti. Non mi dà fastidio.", "Eh. Vanno bene, suppongo."] }
+    },
+    "description_int": "personality.apathetic.description",
+    "iconIndex": 52,
+    "markovDbs": [
+      "commuter",
+      "cleaner",
+      "npc"
+    ]
   }
-]
+  ]
+}

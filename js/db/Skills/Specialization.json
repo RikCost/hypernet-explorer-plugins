@@ -1,0 +1,7354 @@
+{
+  "levels": [
+    "Untrained",
+    "Beginner",
+    "Intermediate",
+    "Advanced",
+    "Master"
+  ],
+  "categories": [
+    "Combat",
+    "Weapons",
+    "Athletics",
+    "Arcana",
+    "Occult",
+    "Medicine",
+    "Science",
+    "Technology",
+    "Crafting",
+    "Survival",
+    "Social",
+    "Crime",
+    "Academia",
+    "Commerce",
+    "Vehicles",
+    "Arts",
+    "Culinary"
+  ],
+  "specializations": [
+    {
+      "id": 490,
+      "name": "3D Modeling and Printing",
+      "description": "Building objects as digital meshes and producing them on an additive printer.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 1,
+      "name": "Accounting",
+      "description": "Keeping and interpreting financial records: ledgers, statements and reconciliation.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "CEO": 3,
+        "Shopkeeper": 2
+      },
+      "traitStart": {
+        "workaholic": 2,
+        "ocd": 2,
+        "heir": 2,
+        "wealthy": 2,
+        "merchant": 2
+      }
+    },
+    {
+      "id": 492,
+      "name": "Acoustics",
+      "description": "The behaviour of sound in a space, and shaping rooms and materials to control it.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 2,
+      "name": "Acrobatics",
+      "description": "Controlled tumbling, vaulting and balance work in motion.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 3
+      }
+    },
+    {
+      "id": 3,
+      "name": "Acting",
+      "description": "Portraying a character convincingly for an audience or a camera.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Pro Wrestler": 2,
+        "Entertainer": 3,
+        "Mimic": 2
+      }
+    },
+    {
+      "id": 493,
+      "name": "Actuarial Science",
+      "description": "Pricing risk with statistics: mortality, claims and long-term liabilities.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "CEO": 2,
+        "Academic": 2
+      }
+    },
+    {
+      "id": 306,
+      "name": "Aerial Silks",
+      "description": "Climbing, wrapping and dropping on suspended fabric.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      }
+    },
+    {
+      "id": 494,
+      "name": "Aerobics",
+      "description": "Sustained rhythmic exercise that trains the heart and lungs.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 4,
+      "name": "Aerodynamics Theory",
+      "description": "How air behaves around a moving body: lift, drag and flow separation.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 307,
+      "name": "Agroforestry",
+      "description": "Growing crops and livestock among managed trees on the same land.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 6,
+      "name": "Aikido",
+      "description": "A Japanese art of redirecting an attacker's force into throws and joint locks.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      }
+    },
+    {
+      "id": 308,
+      "name": "Air Traffic Control",
+      "description": "Sequencing and separating aircraft by radio and radar.",
+      "stat": "INT",
+      "category": "Vehicles"
+    },
+    {
+      "id": 8,
+      "name": "Aircraft Piloting",
+      "description": "Flying a fixed-wing aircraft, from preflight checks to landing.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 309,
+      "name": "Alchemy",
+      "description": "The pre-chemical art of transmutation, distillation and the tria prima.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Witch": 2
+      },
+      "traitStart": {
+        "alchemist": 3
+      }
+    },
+    {
+      "id": 9,
+      "name": "Alcohol Tolerance",
+      "description": "Absorbing drink without losing coordination or judgement.",
+      "stat": "CON",
+      "category": "Athletics",
+      "traitStart": {
+        "alcoholic": 3
+      }
+    },
+    {
+      "id": 10,
+      "name": "Ambush Tactics",
+      "description": "Choosing ground, concealment and timing to strike first.",
+      "stat": "WIS",
+      "category": "Crime",
+      "classStart": {
+        "Commander": 2,
+        "Beast": 2,
+        "Monster": 2
+      },
+      "traitStart": {
+        "paranoid": 2,
+        "tactician": 3,
+        "feral": 2
+      }
+    },
+    {
+      "id": 618,
+      "name": "Ammunition Handloading",
+      "description": "Assembling cartridges from primer, powder, case and projectile.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 11,
+      "name": "Anatomy",
+      "description": "The structure of the body: bones, muscles, vessels and organs, and where they lie.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Combat Medic": 2,
+        "Necromancer": 2,
+        "Doctor": 3
+      }
+    },
+    {
+      "id": 12,
+      "name": "Animal Husbandry",
+      "description": "Breeding, feeding and keeping livestock in health.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 13,
+      "name": "Animal Training",
+      "description": "Conditioning an animal to work with cues, reward and repetition.",
+      "stat": "WIS",
+      "category": "Survival",
+      "traitStart": {
+        "animal_handler": 3,
+        "beast_whisperer": 2
+      }
+    },
+    {
+      "id": 495,
+      "name": "Animation",
+      "description": "Making drawn or modelled figures move frame by frame.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 14,
+      "name": "Animism",
+      "description": "Reading the world as populated by spirits, and treating with them.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 15,
+      "name": "Anthropology",
+      "description": "The comparative study of human cultures, kinship and material life.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Archaeologist": 3
+      }
+    },
+    {
+      "id": 310,
+      "name": "Antique Gunsmithing",
+      "description": "Repairing and restoring pre-modern firearms and their actions.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 725,
+      "name": "Antique Restoration",
+      "description": "Returning old objects to sound condition without erasing their age.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 16,
+      "name": "Applied Science",
+      "description": "Turning established theory into working method and apparatus.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2
+      }
+    },
+    {
+      "id": 496,
+      "name": "Appraising",
+      "description": "Judging what an object is worth, and why.",
+      "stat": "WIS",
+      "category": "Commerce",
+      "traitStart": {
+        "hoarder": 2
+      }
+    },
+    {
+      "id": 497,
+      "name": "Aquaponics",
+      "description": "Growing plants and fish in one loop, the fish waste feeding the crop.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 18,
+      "name": "Architecture",
+      "description": "Designing buildings that stand, function and can actually be built.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 19,
+      "name": "Arm Wrestling",
+      "description": "Beating another arm across a table with leverage and grip.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Wrestler": 2
+      }
+    },
+    {
+      "id": 498,
+      "name": "Armor Piercing",
+      "description": "Defeating armour: angles, penetrators and the weak seams.",
+      "stat": "DEX",
+      "category": "Combat"
+    },
+    {
+      "id": 20,
+      "name": "Armor Smithing",
+      "description": "Forming, fitting and articulating plate and mail.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Knight": 2
+      }
+    },
+    {
+      "id": 312,
+      "name": "Art Forgery",
+      "description": "Reproducing another artist's hand, materials and provenance.",
+      "stat": "DEX",
+      "category": "Crime"
+    },
+    {
+      "id": 21,
+      "name": "Art History",
+      "description": "Placing works in period, school and context.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 499,
+      "name": "Art Restoration",
+      "description": "Cleaning, consolidating and retouching damaged works.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 313,
+      "name": "Asbestos Removal",
+      "description": "Stripping friable insulation without releasing fibre.",
+      "stat": "CON",
+      "category": "Crafting"
+    },
+    {
+      "id": 860,
+      "name": "Astral Projection",
+      "description": "Separating awareness from the body and travelling without it.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 835,
+      "name": "Astrobiology",
+      "description": "The search for, and study of, life beyond Earth and its conditions.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 22,
+      "name": "Astrology",
+      "description": "Reading character and event from the positions of the planets.",
+      "stat": "PSI",
+      "category": "Occult",
+      "classStart": {
+        "Archmage": 2,
+        "Oracle": 2
+      },
+      "traitStart": {
+        "superstitious": 2,
+        "prophetic": 2
+      }
+    },
+    {
+      "id": 23,
+      "name": "Astronomy",
+      "description": "Observing and interpreting the sky: bodies, motions and distances.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Physicist": 2,
+        "Meteorologist": 2,
+        "Oracle": 2
+      }
+    },
+    {
+      "id": 314,
+      "name": "Astrophotography",
+      "description": "Photographing faint sky objects through long exposure and tracking.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 24,
+      "name": "Athletics",
+      "description": "General running, jumping and throwing ability under exertion.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Freelancer": 2,
+        "Boxer": 2,
+        "Guardian": 2,
+        "Demigod": 2,
+        "Monster": 2
+      },
+      "traitStart": {
+        "athletic": 3
+      }
+    },
+    {
+      "id": 501,
+      "name": "Auctioneering",
+      "description": "Running a sale: chant, bid spotting and closing the lot.",
+      "stat": "PSI",
+      "category": "Commerce",
+      "classStart": {
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 846,
+      "name": "Audiology",
+      "description": "Testing hearing and fitting the aids that correct it.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 502,
+      "name": "Auditing",
+      "description": "Checking accounts and processes against evidence and rule.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "CEO": 2
+      }
+    },
+    {
+      "id": 503,
+      "name": "Auto Detailing",
+      "description": "Restoring a vehicle's finish inside and out.",
+      "stat": "DEX",
+      "category": "Vehicles",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 315,
+      "name": "Avionics Repair",
+      "description": "Diagnosing and fixing aircraft electronics and instruments.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 891,
+      "name": "Axe",
+      "description": "Fighting with hand axes and their weight-forward chopping arcs.",
+      "stat": "STR",
+      "category": "Weapons",
+      "wtypeId": 4,
+      "classStart": {
+        "Freelancer": 3,
+        "Knight": 3,
+        "Berserker": 3,
+        "Paladin": 3,
+        "Ranger": 3,
+        "Scout": 3,
+        "Gladiator": 3,
+        "Guardian": 3,
+        "Bard": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Barbarian": 3,
+        "Firefighter": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Lumberjack": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "berserker_rage": 2
+      }
+    },
+    {
+      "id": 863,
+      "name": "Axe Throwing",
+      "description": "Throwing an axe for rotation and stick at a set distance.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 504,
+      "name": "Baggage Handling",
+      "description": "Moving and sorting luggage at load without damage or delay.",
+      "stat": "STR",
+      "category": "Commerce"
+    },
+    {
+      "id": 505,
+      "name": "Bail Bonding",
+      "description": "Posting surety for a defendant and recovering the risk.",
+      "stat": "PSI",
+      "category": "Crime"
+    },
+    {
+      "id": 26,
+      "name": "Baking",
+      "description": "Working dough and batter: hydration, proof and oven heat.",
+      "stat": "WIS",
+      "category": "Culinary",
+      "classStart": {
+        "Chef": 2
+      }
+    },
+    {
+      "id": 27,
+      "name": "Ballet",
+      "description": "Classical dance technique of turnout, line and set positions.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 28,
+      "name": "Ballistics",
+      "description": "The flight of a projectile, and what it does at the far end.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 506,
+      "name": "Balloon Sculpting",
+      "description": "Twisting inflated balloons into recognisable figures.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 316,
+      "name": "Banjo Playing",
+      "description": "Playing the five-string banjo, rolls and clawhammer.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 317,
+      "name": "Barrel Making",
+      "description": "Coopering staves and hoops into watertight casks.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 178,
+      "name": "Bartending",
+      "description": "Mixing drinks to spec and running a bar under pressure.",
+      "stat": "DEX",
+      "category": "Culinary",
+      "classStart": {
+        "Chef": 2
+      },
+      "traitStart": {
+        "hedonist": 2
+      }
+    },
+    {
+      "id": 30,
+      "name": "Barter",
+      "description": "Trading goods for goods, without money changing hands.",
+      "stat": "PSI",
+      "category": "Commerce",
+      "classStart": {
+        "Freelancer": 2,
+        "Mercenary": 2,
+        "Shopkeeper": 3
+      },
+      "traitStart": {
+        "greedy": 2,
+        "merchant": 3
+      }
+    },
+    {
+      "id": 318,
+      "name": "Base Building",
+      "description": "Laying out a defensible, workable settlement or camp.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 32,
+      "name": "Base Jumping",
+      "description": "Parachuting from a fixed object with almost no altitude to spare.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "traitStart": {
+        "adrenaline_junkie": 2
+      }
+    },
+    {
+      "id": 31,
+      "name": "Baseball",
+      "description": "Batting, fielding and pitching in the nine-inning game.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 319,
+      "name": "Basket Weaving",
+      "description": "Weaving prepared fibre or cane into vessels and containers.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 34,
+      "name": "Basketball",
+      "description": "Shooting, passing and defending on the court.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 507,
+      "name": "Baton Twirling",
+      "description": "Spinning and tossing a metal baton in routine.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 854,
+      "name": "Beach Combing",
+      "description": "Working a shoreline for what the tide has left.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 35,
+      "name": "Beatboxing",
+      "description": "Producing percussion and bass with the voice alone.",
+      "stat": "PSI",
+      "category": "Arts"
+    },
+    {
+      "id": 36,
+      "name": "Beekeeping",
+      "description": "Keeping hives in health and taking honey without losing the colony.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 509,
+      "name": "Bicycle Repair",
+      "description": "Truing, adjusting and rebuilding a bicycle's mechanisms.",
+      "stat": "INT",
+      "category": "Vehicles",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 37,
+      "name": "Billiards",
+      "description": "Cue control, angles and position play on the table.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 510,
+      "name": "Binding",
+      "description": "Holding a spirit, creature or force to a set of terms.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Cultist": 2,
+        "Warlock": 2
+      }
+    },
+    {
+      "id": 320,
+      "name": "Bio-Juice Extraction",
+      "description": "Rendering biological matter down to usable fluid.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 511,
+      "name": "Biochemical Engineering",
+      "description": "Designing processes that use living systems at industrial scale.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2
+      }
+    },
+    {
+      "id": 38,
+      "name": "Biokinesis",
+      "description": "Steering living tissue by will: growth, healing, change.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 39,
+      "name": "Biomancy",
+      "description": "Magic worked directly on flesh and its processes.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Witch": 2
+      }
+    },
+    {
+      "id": 840,
+      "name": "Biometric Security",
+      "description": "Identity systems built on fingerprints, irises and gait.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 512,
+      "name": "Bionic Installation",
+      "description": "Fitting powered prosthetics and implants to living tissue.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 2
+      }
+    },
+    {
+      "id": 406,
+      "name": "Bird Watching",
+      "description": "Identifying birds by sight, call and behaviour in the field.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 40,
+      "name": "Blacksmithing",
+      "description": "Forging and shaping hot iron and steel at the anvil.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Enchanter": 2
+      },
+      "traitStart": {
+        "blacksmith": 3
+      }
+    },
+    {
+      "id": 321,
+      "name": "Bladesmithing",
+      "description": "Forging, grinding and heat-treating edged blades.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 514,
+      "name": "Blogging",
+      "description": "Writing regularly for an audience that arrives on its own.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 2
+      }
+    },
+    {
+      "id": 515,
+      "name": "Blood Magic",
+      "description": "Working with blood as the price and the medium.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Vampire": 2
+      }
+    },
+    {
+      "id": 41,
+      "name": "Board Game Strategy",
+      "description": "Reading position, tempo and odds across the board.",
+      "stat": "INT",
+      "category": "Athletics",
+      "traitStart": {
+        "tactician": 2
+      }
+    },
+    {
+      "id": 516,
+      "name": "Boat Building",
+      "description": "Building hulls from frame and plank, or from moulded shell.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 42,
+      "name": "Boat Piloting",
+      "description": "Handling a powered boat in traffic, current and weather.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 517,
+      "name": "Bobsledding",
+      "description": "Driving a sled down an iced track at speed.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 864,
+      "name": "Bocce",
+      "description": "Rolling weighted balls to the jack on an uneven court.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 43,
+      "name": "Bodybuilding",
+      "description": "Training and diet aimed at muscular size and definition.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Wrestler": 2,
+        "Berserker": 2,
+        "Boxer": 2,
+        "Pro Wrestler": 2,
+        "Gladiator": 2,
+        "Guardian": 2,
+        "Barbarian": 2,
+        "Lumberjack": 2
+      },
+      "traitStart": {
+        "muscular": 2
+      }
+    },
+    {
+      "id": 322,
+      "name": "Bonsai Cultivation",
+      "description": "Keeping a tree small, healthy and shaped over years.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 518,
+      "name": "Bookbinding",
+      "description": "Sewing, gluing and casing pages into a durable book.",
+      "stat": "DEX",
+      "category": "Arcana"
+    },
+    {
+      "id": 323,
+      "name": "Boomerang Crafting",
+      "description": "Carving an airfoil that comes back.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 519,
+      "name": "Boomerang Throwing",
+      "description": "Throwing for the return, reading wind and layover.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 44,
+      "name": "Botany",
+      "description": "The classification, structure and life of plants.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 324,
+      "name": "Bouldering",
+      "description": "Short, hard climbing without rope, close to the ground.",
+      "stat": "STR",
+      "category": "Survival"
+    },
+    {
+      "id": 894,
+      "name": "Bow",
+      "description": "Shooting a bow: draw, anchor, release and range estimation.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 7,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Nun": 3,
+        "Vampire": 3,
+        "Enchanter": 3,
+        "Ice Mage": 3,
+        "Rogue": 3,
+        "Ranger": 3,
+        "Scout": 3,
+        "Oracle": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Sage": 3,
+        "Barbarian": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "archer": 3,
+        "marksman": 2
+      }
+    },
+    {
+      "id": 46,
+      "name": "Boxing",
+      "description": "Punching, guard and footwork under the boxing rules.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Brawler": 2,
+        "Boxer": 3,
+        "Wrestler": 2
+      },
+      "traitStart": {
+        "brawler": 2
+      }
+    },
+    {
+      "id": 522,
+      "name": "Brain Surgery",
+      "description": "Operating inside the skull without taking the person with it.",
+      "stat": "DEX",
+      "category": "Medicine",
+      "classStart": {
+        "Combat Medic": 2,
+        "Doctor": 2
+      }
+    },
+    {
+      "id": 47,
+      "name": "Brainwashing",
+      "description": "Breaking down and rebuilding what somebody believes.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Cultist": 3
+      }
+    },
+    {
+      "id": 523,
+      "name": "Brass Catching",
+      "description": "Recovering spent casings before they hit the ground.",
+      "stat": "DEX",
+      "category": "Combat"
+    },
+    {
+      "id": 48,
+      "name": "Breath Holding",
+      "description": "Extending apnoea by tolerance, technique and calm.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 49,
+      "name": "Brewing",
+      "description": "Mashing, boiling and fermenting grain into beer.",
+      "stat": "INT",
+      "category": "Culinary"
+    },
+    {
+      "id": 524,
+      "name": "Brewing Potions",
+      "description": "Compounding liquid preparations that carry a magical effect.",
+      "stat": "INT",
+      "category": "Culinary"
+    },
+    {
+      "id": 50,
+      "name": "Bricklaying",
+      "description": "Laying brick to line, level and bond with sound mortar joints.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 3
+      }
+    },
+    {
+      "id": 325,
+      "name": "Brickmaking",
+      "description": "Forming and firing clay into bricks of even size and hardness.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 525,
+      "name": "Broadcast Journalism",
+      "description": "Reporting to camera and microphone against a deadline.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 2
+      }
+    },
+    {
+      "id": 526,
+      "name": "Bull Riding",
+      "description": "Staying on a bucking bull for the eight seconds.",
+      "stat": "STR",
+      "category": "Vehicles"
+    },
+    {
+      "id": 326,
+      "name": "Bungee Cord Testing",
+      "description": "Load-testing elastic cord to the point it must not fail.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 51,
+      "name": "Bungee Jumping",
+      "description": "Jumping on a measured cord and surviving the rebound.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 52,
+      "name": "Butchery",
+      "description": "Breaking a carcass down into named cuts with minimal waste.",
+      "stat": "STR",
+      "category": "Culinary"
+    },
+    {
+      "id": 53,
+      "name": "Cabinetry",
+      "description": "Fine joinery: cases, drawers and doors that stay square.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 327,
+      "name": "Cable Splicing",
+      "description": "Joining cable so the join carries load or signal as well as the run.",
+      "stat": "DEX",
+      "category": "Technology"
+    },
+    {
+      "id": 528,
+      "name": "Calisthenics",
+      "description": "Strength training with body weight alone.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 527,
+      "name": "Call Center Operations",
+      "description": "Handling queued calls to script, target and temper.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 54,
+      "name": "Calligraphy",
+      "description": "Writing letterforms as a controlled, deliberate hand.",
+      "stat": "DEX",
+      "category": "Arts",
+      "classStart": {
+        "Enchanter": 2,
+        "Samurai": 2
+      }
+    },
+    {
+      "id": 328,
+      "name": "Campfire Cooking",
+      "description": "Cooking on open fire and coals, with what is carried.",
+      "stat": "WIS",
+      "category": "Culinary"
+    },
+    {
+      "id": 55,
+      "name": "Canoeing",
+      "description": "Paddling and reading water from an open boat.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 529,
+      "name": "Capoeira",
+      "description": "A Brazilian art of kicks, sweeps and evasion set to rhythm.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      }
+    },
+    {
+      "id": 56,
+      "name": "Car Driving",
+      "description": "Handling a road car: control, traffic sense and hazard reading.",
+      "stat": "DEX",
+      "category": "Vehicles",
+      "classStart": {
+        "Freelancer": 2
+      }
+    },
+    {
+      "id": 57,
+      "name": "Card Counting",
+      "description": "Tracking the remaining deck to know when the odds turn.",
+      "stat": "INT",
+      "category": "Athletics",
+      "traitStart": {
+        "gambling_addict": 2
+      }
+    },
+    {
+      "id": 58,
+      "name": "Carpentry",
+      "description": "Cutting and joining timber into structure and fitting.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 530,
+      "name": "Carpet Laying",
+      "description": "Fitting, stretching and seaming floor covering.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 59,
+      "name": "Cartography",
+      "description": "Surveying and drawing maps that can be navigated by.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Archaeologist": 2
+      }
+    },
+    {
+      "id": 531,
+      "name": "Cave Diving",
+      "description": "Diving in flooded passage, on line, with no way straight up.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 331,
+      "name": "Caving",
+      "description": "Moving safely through cave systems: rigging, squeezes and route.",
+      "stat": "CON",
+      "category": "Survival",
+      "traitStart": {
+        "cave_dweller": 2
+      }
+    },
+    {
+      "id": 185,
+      "name": "Celestial Navigation",
+      "description": "Fixing position from sun, stars and the horizon.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2,
+        "Scout": 2,
+        "Oracle": 2,
+        "Sage": 2
+      },
+      "traitStart": {
+        "pilgrim": 2
+      }
+    },
+    {
+      "id": 851,
+      "name": "Chainmail Weaving",
+      "description": "Riveting and closing rings into mail of even weave.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 532,
+      "name": "Chainsaw Operation",
+      "description": "Felling and bucking with a saw without binding or kickback.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Firefighter": 2,
+        "Lumberjack": 3
+      }
+    },
+    {
+      "id": 870,
+      "name": "Chalk Art",
+      "description": "Drawing in chalk at scale, knowing it will be washed away.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 533,
+      "name": "Charcuterie",
+      "description": "Curing, salting and fermenting meat for keeping.",
+      "stat": "WIS",
+      "category": "Culinary",
+      "classStart": {
+        "Chef": 2
+      }
+    },
+    {
+      "id": 60,
+      "name": "Cheese Making",
+      "description": "Setting curd, pressing and ageing milk into cheese.",
+      "stat": "WIS",
+      "category": "Culinary"
+    },
+    {
+      "id": 61,
+      "name": "Chemistry",
+      "description": "The composition and reactions of substances, and how to run them.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 3
+      },
+      "traitStart": {
+        "alchemist": 2
+      }
+    },
+    {
+      "id": 62,
+      "name": "Chess",
+      "description": "Opening, middlegame and endgame play on the sixty-four squares.",
+      "stat": "INT",
+      "category": "Athletics",
+      "traitStart": {
+        "genius": 2
+      }
+    },
+    {
+      "id": 534,
+      "name": "Childcare",
+      "description": "Keeping children safe, fed and occupied over long hours.",
+      "stat": "WIS",
+      "category": "Social"
+    },
+    {
+      "id": 63,
+      "name": "Chiropractic",
+      "description": "Manual adjustment of the spine and joints.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 873,
+      "name": "Chocolate Tempering",
+      "description": "Working couverture through its crystal curve for snap and shine.",
+      "stat": "DEX",
+      "category": "Culinary"
+    },
+    {
+      "id": 535,
+      "name": "Choir Singing",
+      "description": "Singing a part in tune and blend with other voices.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Nun": 2,
+        "Cleric": 2,
+        "Bard": 2,
+        "Priest": 2
+      }
+    },
+    {
+      "id": 64,
+      "name": "Chopping",
+      "description": "Splitting and felling with axe or maul, efficiently and repeatedly.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Lumberjack": 3
+      }
+    },
+    {
+      "id": 65,
+      "name": "Chronokinesis",
+      "description": "Bending the local rate of time by will.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 536,
+      "name": "Cinematography",
+      "description": "Lighting and framing a scene for the camera.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 66,
+      "name": "Clairvoyance",
+      "description": "Perceiving what is distant or hidden without the senses.",
+      "stat": "PSI",
+      "category": "Occult",
+      "classStart": {
+        "Oracle": 2
+      },
+      "traitStart": {
+        "clairvoyant": 3
+      }
+    },
+    {
+      "id": 897,
+      "name": "Claw",
+      "description": "Fighting with hand claws and their close, tearing range.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 10,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Vampire": 3,
+        "Cultist": 3,
+        "Martial Artist": 3,
+        "Berserker": 3,
+        "Brawler": 3,
+        "Pro Wrestler": 3,
+        "Rogue": 3,
+        "Warlock": 3,
+        "Gladiator": 3,
+        "Necromancer": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Hunter-Gatherer": 3,
+        "Shopkeeper": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "feral": 2
+      }
+    },
+    {
+      "id": 743,
+      "name": "Clay Shooting",
+      "description": "Breaking flying clay targets on a swinging lead.",
+      "stat": "DEX",
+      "category": "Combat"
+    },
+    {
+      "id": 538,
+      "name": "Clock and Watchmaking",
+      "description": "Building and servicing mechanical timepieces.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 539,
+      "name": "Cloud Reading",
+      "description": "Forecasting the coming hours from cloud form and movement.",
+      "stat": "WIS",
+      "category": "Science",
+      "classStart": {
+        "Meteorologist": 2
+      }
+    },
+    {
+      "id": 540,
+      "name": "CNC Machining",
+      "description": "Programming and running computer-controlled cutting machines.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 336,
+      "name": "Cob Building",
+      "description": "Building walls from clay, sand and straw, layer by layer.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 874,
+      "name": "Coffee Roasting",
+      "description": "Taking green coffee through first crack to a chosen profile.",
+      "stat": "INT",
+      "category": "Culinary"
+    },
+    {
+      "id": 68,
+      "name": "Cold Reading",
+      "description": "Producing accurate-sounding detail from cues and probability.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Illusionist": 2,
+        "Psychologist": 2,
+        "Mimic": 2
+      },
+      "traitStart": {
+        "lombrosian_physiognomy": 2,
+        "cynic": 2
+      }
+    },
+    {
+      "id": 69,
+      "name": "Cold Tolerance",
+      "description": "Working and thinking clearly in cold that would stop others.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Vampire": 2
+      }
+    },
+    {
+      "id": 71,
+      "name": "Complex Mathematics",
+      "description": "Advanced formal mathematics past routine calculation.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Archmage": 2,
+        "Sage": 2,
+        "Academic": 3,
+        "Physicist": 2
+      },
+      "traitStart": {
+        "genius": 3
+      }
+    },
+    {
+      "id": 541,
+      "name": "Composting",
+      "description": "Rotting organic waste down into usable soil at the right heat.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 72,
+      "name": "Computers",
+      "description": "Operating, configuring and troubleshooting computer systems.",
+      "stat": "INT",
+      "category": "Science",
+      "traitStart": {
+        "tech_savvy": 3
+      }
+    },
+    {
+      "id": 542,
+      "name": "Concrete Mixing",
+      "description": "Batching cement, aggregate and water to a workable, sound mix.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 544,
+      "name": "Conspiracy Theorizing",
+      "description": "Assembling scattered facts into a hidden pattern that holds together.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Cultist": 2,
+        "Sage": 2
+      }
+    },
+    {
+      "id": 545,
+      "name": "Contact Juggling",
+      "description": "Rolling and isolating a sphere across hands and body.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 74,
+      "name": "Contortion",
+      "description": "Extreme controlled flexibility of the spine and joints.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      },
+      "traitStart": {
+        "hypermobility": 3,
+        "ehlers-danlos": 2,
+        "short": 2,
+        "dwarfism": 2
+      }
+    },
+    {
+      "id": 75,
+      "name": "Cooking",
+      "description": "Preparing meals: heat, seasoning, timing and what goes with what.",
+      "stat": "WIS",
+      "category": "Culinary",
+      "classStart": {
+        "Freelancer": 2,
+        "Chef": 3
+      }
+    },
+    {
+      "id": 546,
+      "name": "Copywriting",
+      "description": "Writing text that sells, in the fewest words that work.",
+      "stat": "INT",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 2
+      }
+    },
+    {
+      "id": 337,
+      "name": "Coral Reef Restoration",
+      "description": "Propagating and replanting coral on damaged reef.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 547,
+      "name": "Corpse Butchery",
+      "description": "Dismembering a body cleanly, whatever the reason.",
+      "stat": "WIS",
+      "category": "Culinary",
+      "classStart": {
+        "Necromancer": 2,
+        "Monster": 2
+      }
+    },
+    {
+      "id": 76,
+      "name": "Cosplay",
+      "description": "Building and wearing accurate costume of a known character.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 881,
+      "name": "Counterfeiting",
+      "description": "Producing forged currency or documents that pass inspection.",
+      "stat": "DEX",
+      "category": "Crime"
+    },
+    {
+      "id": 548,
+      "name": "Couponing",
+      "description": "Stacking offers and discounts to strip a bill down.",
+      "stat": "INT",
+      "category": "Commerce"
+    },
+    {
+      "id": 549,
+      "name": "Crane Operation",
+      "description": "Lifting and placing loads by crane within sight and signal.",
+      "stat": "DEX",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 550,
+      "name": "Creative Writing",
+      "description": "Writing fiction, verse and narrative with intent.",
+      "stat": "INT",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 2
+      },
+      "traitStart": {
+        "introvert": 2
+      }
+    },
+    {
+      "id": 551,
+      "name": "Cricket",
+      "description": "Batting, bowling and fielding across the innings.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 552,
+      "name": "Crime Scene Investigation",
+      "description": "Recording, preserving and lifting evidence from a scene.",
+      "stat": "INT",
+      "category": "Crime",
+      "classStart": {
+        "Police Officer": 2
+      }
+    },
+    {
+      "id": 339,
+      "name": "Criminology",
+      "description": "The study of crime, offenders and what actually deters them.",
+      "stat": "INT",
+      "category": "Crime",
+      "classStart": {
+        "Police Officer": 2
+      }
+    },
+    {
+      "id": 77,
+      "name": "Crocheting",
+      "description": "Making fabric from a single hooked loop of yarn.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 553,
+      "name": "Crop Rotation",
+      "description": "Sequencing crops across fields to keep soil in heart.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 554,
+      "name": "Crossfit",
+      "description": "High-intensity mixed training against the clock.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 520,
+      "name": "Crowd Control",
+      "description": "Moving and holding a crowd without it turning.",
+      "stat": "STR",
+      "category": "Combat",
+      "classStart": {
+        "Guardian": 2
+      }
+    },
+    {
+      "id": 857,
+      "name": "Crowd Reading",
+      "description": "Judging mood, intent and the dangerous edge of a crowd.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 555,
+      "name": "Crowd Surfing",
+      "description": "Being carried across raised hands without going down.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 80,
+      "name": "Cryokinesis",
+      "description": "Drawing heat out of matter by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2,
+        "Ice Mage": 3,
+        "Witch": 2
+      }
+    },
+    {
+      "id": 79,
+      "name": "Cryptography",
+      "description": "Encrypting, key handling and breaking weak ciphers.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 340,
+      "name": "Cryptozoology",
+      "description": "Pursuing animals that are reported but not catalogued.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 823,
+      "name": "Crystallography",
+      "description": "Determining structure from how crystals diffract.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 556,
+      "name": "Curling",
+      "description": "Delivering and sweeping stones to the house.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 557,
+      "name": "Customer Service",
+      "description": "Handling people, complaints and returns without losing either side.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Freelancer": 2,
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 558,
+      "name": "Cybernetics",
+      "description": "Control and feedback in machines and living systems, and the joins between.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 3
+      }
+    },
+    {
+      "id": 900,
+      "name": "Cycling",
+      "description": "Riding a bicycle with efficiency, balance and traffic sense.",
+      "stat": "CON",
+      "category": "Vehicles"
+    },
+    {
+      "id": 559,
+      "name": "Dairy Production",
+      "description": "Milking, handling and processing milk at scale and in hygiene.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 848,
+      "name": "Damascus Steel Forging",
+      "description": "Forge-welding layered steel into patterned billets.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 82,
+      "name": "Dancing",
+      "description": "Moving in time and shape to music, alone or led.",
+      "stat": "DEX",
+      "category": "Social",
+      "classStart": {
+        "Entertainer": 2
+      }
+    },
+    {
+      "id": 83,
+      "name": "Data Analysis",
+      "description": "Cleaning, summarising and drawing defensible conclusions from data.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2,
+        "Meteorologist": 2
+      },
+      "traitStart": {
+        "skeptic": 2
+      }
+    },
+    {
+      "id": 561,
+      "name": "Debt Collection",
+      "description": "Recovering money owed, legally and persistently.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 562,
+      "name": "Decathlon",
+      "description": "Ten track and field events, scored as one.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 84,
+      "name": "Deception",
+      "description": "Lying convincingly, in word and in bearing.",
+      "stat": "PSI",
+      "category": "Crime",
+      "classStart": {
+        "Warlock": 2,
+        "Illusionist": 2,
+        "Mimic": 3
+      },
+      "traitStart": {
+        "silvertongue": 2,
+        "compulsive_liar": 3,
+        "sociopath": 2,
+        "treacherous": 2
+      }
+    },
+    {
+      "id": 341,
+      "name": "Deep Sea Diving",
+      "description": "Working at depth on mixed gas, with decompression discipline.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 85,
+      "name": "Demolitions",
+      "description": "Placing charges to bring structure down where it is meant to fall.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 86,
+      "name": "Dentistry",
+      "description": "Diagnosing and treating teeth, gums and the bite.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 563,
+      "name": "Dialect Coaching",
+      "description": "Teaching an accent until it survives improvisation.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Bard": 2
+      }
+    },
+    {
+      "id": 564,
+      "name": "Digital Marketing",
+      "description": "Reaching an audience through search, mail and metrics.",
+      "stat": "INT",
+      "category": "Social"
+    },
+    {
+      "id": 88,
+      "name": "Diplomacy",
+      "description": "Negotiating between parties who would rather not agree.",
+      "stat": "PSI",
+      "category": "Social",
+      "traitStart": {
+        "pacifist": 2,
+        "empath": 2,
+        "generous": 2,
+        "forgiving": 2
+      }
+    },
+    {
+      "id": 89,
+      "name": "Directing",
+      "description": "Shaping performance, staging and cut into one intended whole.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 565,
+      "name": "Direction Sense",
+      "description": "Knowing where north, the exit and the way back are.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Scout": 2
+      }
+    },
+    {
+      "id": 567,
+      "name": "Disaster Management",
+      "description": "Coordinating response, triage and supply after catastrophe.",
+      "stat": "INT",
+      "category": "Survival",
+      "classStart": {
+        "Firefighter": 2
+      }
+    },
+    {
+      "id": 568,
+      "name": "Disc Golf",
+      "description": "Throwing discs to the basket in the fewest strokes.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 569,
+      "name": "Dishwashing",
+      "description": "Clearing a service's worth of plates fast and clean.",
+      "stat": "CON",
+      "category": "Culinary"
+    },
+    {
+      "id": 570,
+      "name": "Distilling",
+      "description": "Separating spirit from wash by heat, and cutting heads from hearts.",
+      "stat": "INT",
+      "category": "Culinary",
+      "classStart": {
+        "Chef": 2
+      }
+    },
+    {
+      "id": 571,
+      "name": "Divination",
+      "description": "Reading answers out of lots, cards, entrails or smoke.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Witch": 2,
+        "Oracle": 2
+      }
+    },
+    {
+      "id": 90,
+      "name": "DJing",
+      "description": "Beatmatching and sequencing records to hold a floor.",
+      "stat": "DEX",
+      "category": "Arts",
+      "traitStart": {
+        "night_owl": 2
+      }
+    },
+    {
+      "id": 91,
+      "name": "Dodging",
+      "description": "Reading an incoming attack early enough to not be there.",
+      "stat": "DEX",
+      "category": "Combat",
+      "traitStart": {
+        "quick_reflexes": 3,
+        "gun_fu": 2,
+        "defensive": 2
+      }
+    },
+    {
+      "id": 343,
+      "name": "Dog Sledding",
+      "description": "Driving and handling a working dog team over snow.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 572,
+      "name": "Dog Walking",
+      "description": "Managing several dogs on lead without incident.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 573,
+      "name": "Doll Making",
+      "description": "Building jointed figures, from armature to face.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 574,
+      "name": "Drafting",
+      "description": "Producing dimensioned technical drawings others can build from.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 92,
+      "name": "Drawing",
+      "description": "Rendering what is seen or imagined in line and tone.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 575,
+      "name": "Dressage",
+      "description": "Riding a horse through precise schooled movements.",
+      "stat": "WIS",
+      "category": "Vehicles"
+    },
+    {
+      "id": 576,
+      "name": "Drone Piloting",
+      "description": "Flying a remote aircraft by line of sight or camera.",
+      "stat": "DEX",
+      "category": "Vehicles",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 93,
+      "name": "Druidism",
+      "description": "Old practice bound to trees, seasons and the land's own law.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Witch": 2
+      }
+    },
+    {
+      "id": 344,
+      "name": "Drum Making",
+      "description": "Building shells and heading drums to tone.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 345,
+      "name": "Dry-stone Walling",
+      "description": "Building walls that stand on fit and gravity, without mortar.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 577,
+      "name": "Drywall Installation",
+      "description": "Hanging, taping and finishing plasterboard flat.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 346,
+      "name": "E-commerce",
+      "description": "Running an online shop: listings, stock, payment and returns.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 347,
+      "name": "Earthquake Survival",
+      "description": "Acting correctly in the shaking and in the hours after.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 94,
+      "name": "Earthshaping",
+      "description": "Moving and reforming earth and stone by will.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 95,
+      "name": "Eidetic Memory",
+      "description": "Recalling detail exactly, long after seeing it once.",
+      "stat": "INT",
+      "category": "Academia",
+      "traitStart": {
+        "photographic_memory": 3
+      }
+    },
+    {
+      "id": 578,
+      "name": "Electrical Engineering",
+      "description": "Designing circuits, power systems and the machines they drive.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 96,
+      "name": "Electrical Wiring",
+      "description": "Running, terminating and testing domestic and industrial wiring.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 97,
+      "name": "Electrokinesis",
+      "description": "Directing electric current by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2
+      }
+    },
+    {
+      "id": 824,
+      "name": "Electron Microscopy",
+      "description": "Imaging matter below the wavelength of light.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 98,
+      "name": "Electronics",
+      "description": "Reading, building and repairing circuits at component level.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 3
+      }
+    },
+    {
+      "id": 349,
+      "name": "Elephant Handling",
+      "description": "Working with elephants safely, by voice, hook and habit.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 579,
+      "name": "Elevator Repair",
+      "description": "Servicing lift machinery, controls and safeties.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 99,
+      "name": "Embroidery",
+      "description": "Stitching decoration onto cloth by hand or frame.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 348,
+      "name": "EMP Device Crafting",
+      "description": "Building pulse devices that kill electronics without a bang.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 843,
+      "name": "Endocrinology",
+      "description": "The hormone systems, and what happens when they misfire.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 580,
+      "name": "Engraving",
+      "description": "Cutting line into metal, glass or stone.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 581,
+      "name": "Entomology",
+      "description": "The study of insects: identification, life cycles and control.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2
+      }
+    },
+    {
+      "id": 878,
+      "name": "Epigraphy",
+      "description": "Reading and dating inscriptions cut in hard material.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 582,
+      "name": "Escape Artistry",
+      "description": "Getting out of ropes, cuffs and boxes, quickly.",
+      "stat": "DEX",
+      "category": "Crime",
+      "classStart": {
+        "Vampire": 2,
+        "Rogue": 2
+      }
+    },
+    {
+      "id": 350,
+      "name": "Espionage",
+      "description": "Collecting protected information without being identified.",
+      "stat": "PSI",
+      "category": "Crime",
+      "classStart": {
+        "Rogue": 2,
+        "Mercenary": 2
+      }
+    },
+    {
+      "id": 583,
+      "name": "Esports",
+      "description": "Competitive videogame play at trained, timed level.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "traitStart": {
+        "adhd": 2
+      }
+    },
+    {
+      "id": 585,
+      "name": "Etiquette",
+      "description": "Knowing the expected form in any room, and using it.",
+      "stat": "PSI",
+      "category": "Social",
+      "traitStart": {
+        "noble": 2
+      }
+    },
+    {
+      "id": 586,
+      "name": "Evangelism",
+      "description": "Preaching a conviction to people who did not ask.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 461,
+      "name": "Evasion and Escape Training",
+      "description": "Breaking contact, moving unseen and getting back.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 101,
+      "name": "Event Planning",
+      "description": "Running an event's logistics, budget and schedule.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 87,
+      "name": "Excavation",
+      "description": "Digging a site in controlled layers, recording as you go.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 587,
+      "name": "Excavator Operation",
+      "description": "Working a tracked excavator with precision and stability.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 588,
+      "name": "Exorcism",
+      "description": "Driving out a possessing spirit by rite and will.",
+      "stat": "PSI",
+      "category": "Occult",
+      "classStart": {
+        "Priest": 2,
+        "Cleric": 2,
+        "Nun": 2
+      }
+    },
+    {
+      "id": 589,
+      "name": "Extreme Ironing",
+      "description": "Pressing laundry somewhere it has no business being pressed.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 102,
+      "name": "Fabrication",
+      "description": "Cutting, forming and welding raw stock into finished parts.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 103,
+      "name": "Falconry",
+      "description": "Training and hunting with birds of prey.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2
+      },
+      "traitStart": {
+        "beast_whisperer": 2
+      }
+    },
+    {
+      "id": 590,
+      "name": "Fanfiction Writing",
+      "description": "Writing new stories inside somebody else's world.",
+      "stat": "INT",
+      "category": "Social"
+    },
+    {
+      "id": 104,
+      "name": "Farming",
+      "description": "Working land and stock through the season: sowing, tending, harvest.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 3
+      },
+      "traitStart": {
+        "farmer": 3
+      }
+    },
+    {
+      "id": 105,
+      "name": "Fasting",
+      "description": "Going without food deliberately, and staying functional.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Monk": 2
+      },
+      "traitStart": {
+        "ascetic": 2
+      }
+    },
+    {
+      "id": 591,
+      "name": "Fence Building",
+      "description": "Setting posts and straining wire or rail to a true line.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 592,
+      "name": "Feng Shui",
+      "description": "Arranging a space so the flow through it is favourable.",
+      "stat": "WIS",
+      "category": "Social"
+    },
+    {
+      "id": 107,
+      "name": "Fermentation",
+      "description": "Culturing food and drink under controlled spoilage.",
+      "stat": "WIS",
+      "category": "Culinary"
+    },
+    {
+      "id": 108,
+      "name": "Figure Skating",
+      "description": "Jumps, spins and edge work on ice.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 594,
+      "name": "Film Criticism",
+      "description": "Analysing film in terms of craft, form and intent.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 595,
+      "name": "Financial Planning",
+      "description": "Mapping income, risk and time into a plan somebody can keep.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "CEO": 2
+      }
+    },
+    {
+      "id": 596,
+      "name": "Fire Dancing",
+      "description": "Performing with lit poi, staff or fans.",
+      "stat": "DEX",
+      "category": "Social",
+      "classStart": {
+        "Fire Mage": 2
+      }
+    },
+    {
+      "id": 353,
+      "name": "Fire Juggling",
+      "description": "Juggling burning props without dropping them.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Fire Mage": 2
+      }
+    },
+    {
+      "id": 109,
+      "name": "Fire Starting",
+      "description": "Getting flame from spark, friction or lens in poor conditions.",
+      "stat": "WIS",
+      "category": "Survival",
+      "traitStart": {
+        "pyromaniac": 3
+      }
+    },
+    {
+      "id": 597,
+      "name": "Firearms Cleaning",
+      "description": "Stripping, cleaning and reassembling a weapon to function.",
+      "stat": "INT",
+      "category": "Combat"
+    },
+    {
+      "id": 354,
+      "name": "Firewalking",
+      "description": "Crossing hot coals on the physics of contact time.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Firefighter": 2
+      }
+    },
+    {
+      "id": 837,
+      "name": "Firmware Reverse Engineering",
+      "description": "Pulling apart embedded code to find what it really does.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 110,
+      "name": "First Aid",
+      "description": "Keeping the injured alive and stable until better help arrives.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Doctor": 2,
+        "Nun": 2,
+        "Combat Medic": 3,
+        "Cleric": 2,
+        "Firefighter": 2,
+        "Nurse": 2,
+        "Priest": 2
+      }
+    },
+    {
+      "id": 355,
+      "name": "Fish Filleting",
+      "description": "Taking clean fillets off a fish with minimal waste.",
+      "stat": "DEX",
+      "category": "Culinary",
+      "classStart": {
+        "Hunter-Gatherer": 2
+      }
+    },
+    {
+      "id": 112,
+      "name": "Fishing",
+      "description": "Taking fish by rod, line, net or trap.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Hunter-Gatherer": 2
+      }
+    },
+    {
+      "id": 477,
+      "name": "Flag Identification",
+      "description": "Naming a nation or a signal from its flag.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 598,
+      "name": "Fleet Management",
+      "description": "Keeping a fleet of vehicles serviced, insured and moving.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "Commander": 2
+      }
+    },
+    {
+      "id": 599,
+      "name": "Flint Knapping",
+      "description": "Striking stone into edges and points by controlled fracture.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 114,
+      "name": "Flirting",
+      "description": "Signalling interest without committing to it.",
+      "stat": "PSI",
+      "category": "Social",
+      "traitStart": {
+        "extrovert": 2,
+        "beautiful": 2,
+        "romantic": 2
+      }
+    },
+    {
+      "id": 600,
+      "name": "Floral Arrangement",
+      "description": "Composing cut flowers by line, mass and lasting order.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 828,
+      "name": "Fluid Dynamics",
+      "description": "How liquids and gases move: flow, turbulence and pressure.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 601,
+      "name": "Foley Sound Design",
+      "description": "Making a scene's sounds by hand in a studio.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 115,
+      "name": "Foraging",
+      "description": "Finding and identifying edible wild food safely.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Hunter-Gatherer": 3,
+        "Wretch": 2
+      },
+      "traitStart": {
+        "nature_attuned": 2
+      }
+    },
+    {
+      "id": 357,
+      "name": "Forcefield Generation",
+      "description": "Raising a barrier of pure force.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2,
+        "Battlemage": 2,
+        "Demigod": 2
+      }
+    },
+    {
+      "id": 358,
+      "name": "Forestry",
+      "description": "Managing woodland: planting, thinning, felling and yield.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Lumberjack": 2
+      }
+    },
+    {
+      "id": 603,
+      "name": "Forklift Operation",
+      "description": "Lifting, stacking and manoeuvring loads on the truck.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 116,
+      "name": "Fortune Telling",
+      "description": "Telling a client their future in terms they will accept.",
+      "stat": "PSI",
+      "category": "Occult",
+      "classStart": {
+        "Witch": 2,
+        "Oracle": 3
+      },
+      "traitStart": {
+        "superstitious": 2,
+        "prophetic": 3
+      }
+    },
+    {
+      "id": 876,
+      "name": "Franchise Management",
+      "description": "Running outlets to a brand's standard and margin.",
+      "stat": "INT",
+      "category": "Commerce"
+    },
+    {
+      "id": 117,
+      "name": "Freediving",
+      "description": "Diving deep on one breath and coming back up.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 360,
+      "name": "Fungal Resistance",
+      "description": "The body's tolerance of spores, rot and fungal toxins.",
+      "stat": "CON",
+      "category": "Survival"
+    },
+    {
+      "id": 606,
+      "name": "Game Design",
+      "description": "Designing rules and systems that stay interesting to play.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 118,
+      "name": "Gardening",
+      "description": "Growing and maintaining ornamental and kitchen plants.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 361,
+      "name": "Gem Cutting",
+      "description": "Faceting rough stone for light return and symmetry.",
+      "stat": "DEX",
+      "category": "Crafting",
+      "classStart": {
+        "Enchanter": 2
+      }
+    },
+    {
+      "id": 119,
+      "name": "Gemology",
+      "description": "Identifying, grading and valuing gemstones.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Enchanter": 2
+      }
+    },
+    {
+      "id": 607,
+      "name": "Genealogy",
+      "description": "Tracing descent through records and their gaps.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Academic": 2
+      }
+    },
+    {
+      "id": 825,
+      "name": "Genome Sequencing",
+      "description": "Reading a genome and assembling it into a usable sequence.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 362,
+      "name": "Geocaching",
+      "description": "Finding hidden caches by coordinate and clue.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Scout": 2,
+        "Archaeologist": 2
+      }
+    },
+    {
+      "id": 120,
+      "name": "Geography",
+      "description": "Land, climate, population, and how they distribute.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 844,
+      "name": "Gerontology",
+      "description": "The medicine and care of the ageing body and mind.",
+      "stat": "WIS",
+      "category": "Medicine"
+    },
+    {
+      "id": 363,
+      "name": "Glaciology",
+      "description": "The study of ice sheets, glaciers and their movement.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Ice Mage": 2,
+        "Meteorologist": 2
+      }
+    },
+    {
+      "id": 608,
+      "name": "Glass Cutting",
+      "description": "Scoring and breaking glass to a clean intended line.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 849,
+      "name": "Glass Etching",
+      "description": "Frosting and cutting pattern into glass by acid or abrasive.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 121,
+      "name": "Glassblowing",
+      "description": "Gathering, inflating and shaping hot glass at the pipe.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 898,
+      "name": "Glove",
+      "description": "Fighting with gloved fists at close punching range.",
+      "stat": "STR",
+      "category": "Weapons",
+      "wtypeId": 11,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Knight": 3,
+        "Wrestler": 3,
+        "CEO": 3,
+        "Cultist": 3,
+        "Combat Medic": 3,
+        "Elementalist": 3,
+        "Martial Artist": 3,
+        "Berserker": 3,
+        "Acrobat": 3,
+        "Monk": 3,
+        "Brawler": 3,
+        "Boxer": 3,
+        "Pro Wrestler": 3,
+        "Rogue": 3,
+        "Paladin": 3,
+        "Ranger": 3,
+        "Gladiator": 3,
+        "Commander": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Firefighter": 3,
+        "Construction Worker": 3,
+        "Hunter-Gatherer": 3,
+        "Shopkeeper": 3,
+        "Meteorologist": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "brawler": 2
+      }
+    },
+    {
+      "id": 122,
+      "name": "Go Strategy",
+      "description": "Territory, life and death on the nineteen-line board.",
+      "stat": "INT",
+      "category": "Athletics"
+    },
+    {
+      "id": 364,
+      "name": "Gold Panning",
+      "description": "Washing gravel down to what is heavy and yellow.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 609,
+      "name": "Golemancy",
+      "description": "Making an inert body and setting it to work.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Enchanter": 2,
+        "Necromancer": 2
+      }
+    },
+    {
+      "id": 123,
+      "name": "Golf",
+      "description": "Driving, approach and putting across a course.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 877,
+      "name": "Grant Writing",
+      "description": "Writing applications that actually get funded.",
+      "stat": "INT",
+      "category": "Commerce"
+    },
+    {
+      "id": 611,
+      "name": "Graphic Design",
+      "description": "Arranging type, image and space to communicate.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 124,
+      "name": "Grappling",
+      "description": "Controlling a body at close quarters: holds, throws and locks.",
+      "stat": "STR",
+      "category": "Combat",
+      "classStart": {
+        "Wrestler": 2
+      }
+    },
+    {
+      "id": 612,
+      "name": "Grave Digging",
+      "description": "Opening and closing graves to depth, in any ground.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Wretch": 2
+      }
+    },
+    {
+      "id": 613,
+      "name": "Greenhouse Management",
+      "description": "Running heat, humidity and light under glass.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 614,
+      "name": "Grocery Shopping",
+      "description": "Provisioning well against a list, a budget and a use-by date.",
+      "stat": "INT",
+      "category": "Survival"
+    },
+    {
+      "id": 615,
+      "name": "Guerilla Warfare",
+      "description": "Fighting a stronger force by raid, terrain and withdrawal.",
+      "stat": "WIS",
+      "category": "Crime",
+      "classStart": {
+        "Commander": 2
+      }
+    },
+    {
+      "id": 896,
+      "name": "Gun",
+      "description": "Handling and shooting firearms accurately under pressure.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 9,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Nun": 3,
+        "CEO": 3,
+        "Vampire": 3,
+        "Cultist": 3,
+        "Combat Medic": 3,
+        "Enchanter": 3,
+        "Acrobat": 3,
+        "Fire Mage": 3,
+        "Ice Mage": 3,
+        "Rogue": 3,
+        "Warlock": 3,
+        "Ranger": 3,
+        "Scout": 3,
+        "Oracle": 3,
+        "Necromancer": 3,
+        "Commander": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Scientist": 3,
+        "Firefighter": 3,
+        "Police Officer": 3,
+        "Journalist": 3,
+        "Psychologist": 3,
+        "Archaeologist": 3,
+        "Nurse": 3,
+        "Physicist": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Meteorologist": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "gun_fu": 3,
+        "marksman": 3,
+        "veteran": 2
+      }
+    },
+    {
+      "id": 366,
+      "name": "Gunpowder Milling",
+      "description": "Milling and corning black powder without setting it off.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 616,
+      "name": "Gunsmithing",
+      "description": "Building, fitting and repairing firearms.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mercenary": 2
+      }
+    },
+    {
+      "id": 125,
+      "name": "Gymnastics",
+      "description": "Strength and control on floor and apparatus.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      },
+      "traitStart": {
+        "hypermobility": 2
+      }
+    },
+    {
+      "id": 367,
+      "name": "Habitat Restoration",
+      "description": "Rebuilding a damaged habitat until it holds its own species.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 126,
+      "name": "Hacking",
+      "description": "Getting into systems by flaw, misconfiguration, or the person using them.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 2
+      },
+      "traitStart": {
+        "tech_savvy": 2
+      }
+    },
+    {
+      "id": 127,
+      "name": "Haggling",
+      "description": "Talking a price down without killing the deal.",
+      "stat": "PSI",
+      "category": "Commerce",
+      "classStart": {
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 128,
+      "name": "Hairdressing",
+      "description": "Cutting, colouring and setting hair to a plan.",
+      "stat": "DEX",
+      "category": "Social"
+    },
+    {
+      "id": 617,
+      "name": "Hammer Throw",
+      "description": "Throwing the weighted wire hammer for distance.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 365,
+      "name": "Handwriting Analysis",
+      "description": "Reading a hand for authorship, forgery or state of mind.",
+      "stat": "INT",
+      "category": "Social"
+    },
+    {
+      "id": 130,
+      "name": "Hang Gliding",
+      "description": "Flying an unpowered wing on lift and terrain.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 368,
+      "name": "Harpsichord Playing",
+      "description": "Playing plucked-string keyboard, where touch cannot change volume.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 131,
+      "name": "Heat Tolerance",
+      "description": "Working in heat that would put others down.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Firefighter": 3
+      },
+      "traitStart": {
+        "heat-adapted": 3,
+        "cold-blooded": 2,
+        "desert_dweller": 2
+      }
+    },
+    {
+      "id": 890,
+      "name": "Heavy",
+      "description": "Fighting with heavy two-handed weapons and their committed swings.",
+      "stat": "STR",
+      "category": "Weapons",
+      "wtypeId": 3,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Nun": 3,
+        "Knight": 3,
+        "Enchanter": 3,
+        "Monk": 3,
+        "Fire Mage": 3,
+        "Paladin": 3,
+        "Cleric": 3,
+        "Gladiator": 3,
+        "Guardian": 3,
+        "Bard": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Sage": 3,
+        "Construction Worker": 3,
+        "Shopkeeper": 3,
+        "Farmer": 3,
+        "Priest": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "shield_master": 2
+      }
+    },
+    {
+      "id": 620,
+      "name": "Heavy Armor Training",
+      "description": "Moving, fighting and lasting in full plate and load.",
+      "stat": "STR",
+      "category": "Combat",
+      "classStart": {
+        "Guardian": 2
+      }
+    },
+    {
+      "id": 132,
+      "name": "Heavy Machinery Operation",
+      "description": "Running large plant safely on a working site.",
+      "stat": "DEX",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 369,
+      "name": "Helicopter Mechanics",
+      "description": "Maintaining rotor systems, gearboxes and turbines.",
+      "stat": "INT",
+      "category": "Vehicles"
+    },
+    {
+      "id": 133,
+      "name": "Helicopter Piloting",
+      "description": "Flying rotorcraft, including hover and autorotation.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 370,
+      "name": "Herbal Poultice Crafting",
+      "description": "Preparing herb dressings that draw, soothe or close.",
+      "stat": "WIS",
+      "category": "Medicine",
+      "classStart": {
+        "Witch": 2
+      }
+    },
+    {
+      "id": 134,
+      "name": "Herbalism",
+      "description": "Identifying and preparing plants for medicine.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Witch": 3
+      },
+      "traitStart": {
+        "herbalist": 3,
+        "nature_attuned": 2,
+        "witch-marked": 2
+      }
+    },
+    {
+      "id": 831,
+      "name": "Herpetology",
+      "description": "The study of reptiles and amphibians.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 383,
+      "name": "Hide Tanning",
+      "description": "Turning raw hide into leather that will not rot.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 622,
+      "name": "High Jump",
+      "description": "Clearing a raised bar from a running approach.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 371,
+      "name": "High-Altitude Acclimatization",
+      "description": "Adapting to thin air without falling ill.",
+      "stat": "CON",
+      "category": "Survival"
+    },
+    {
+      "id": 621,
+      "name": "Historical European Martial Arts",
+      "description": "Fighting from the surviving European fencing manuals.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Berserker": 2,
+        "Paladin": 2,
+        "Samurai": 2,
+        "Gladiator": 2,
+        "Spellblade": 2,
+        "Battlemage": 2,
+        "Barbarian": 2
+      }
+    },
+    {
+      "id": 135,
+      "name": "History",
+      "description": "What happened, in what order, and on what evidence.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Commander": 2,
+        "Sage": 3,
+        "Academic": 2,
+        "Archaeologist": 2
+      },
+      "traitStart": {
+        "scholar": 2
+      }
+    },
+    {
+      "id": 624,
+      "name": "Home Staging",
+      "description": "Dressing a property so it shows and sells.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 100,
+      "name": "Horse Riding",
+      "description": "Riding and controlling a horse at all paces.",
+      "stat": "WIS",
+      "category": "Vehicles",
+      "classStart": {
+        "Knight": 2,
+        "Samurai": 2
+      },
+      "traitStart": {
+        "mounted_combat": 3
+      }
+    },
+    {
+      "id": 856,
+      "name": "Hostage Negotiation",
+      "description": "Talking a barricaded situation down without a body.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 625,
+      "name": "Hot Air Ballooning",
+      "description": "Flying a balloon on burner, ballast and the wind you choose.",
+      "stat": "WIS",
+      "category": "Vehicles"
+    },
+    {
+      "id": 868,
+      "name": "Hovercraft Piloting",
+      "description": "Handling an air-cushion craft over land and water.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 372,
+      "name": "Hula Dancing",
+      "description": "Hawaiian dance where the hands carry the story.",
+      "stat": "DEX",
+      "category": "Social"
+    },
+    {
+      "id": 626,
+      "name": "Hula Hooping",
+      "description": "Keeping hoops turning on body and limbs.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 627,
+      "name": "Human Resources",
+      "description": "Hiring, contracts, grievance, and the paperwork of people.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "CEO": 2
+      }
+    },
+    {
+      "id": 628,
+      "name": "Hunting",
+      "description": "Tracking, stalking and taking game cleanly.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2
+      }
+    },
+    {
+      "id": 136,
+      "name": "HVAC Repair",
+      "description": "Servicing heating, ventilation and cooling plant.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 373,
+      "name": "Hydrogeology",
+      "description": "Groundwater: where it is, how it moves and what it carries.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Meteorologist": 2
+      }
+    },
+    {
+      "id": 629,
+      "name": "Hydroponics",
+      "description": "Growing crops in nutrient solution without soil.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Farmer": 2
+      }
+    },
+    {
+      "id": 137,
+      "name": "Hypnosis",
+      "description": "Inducing suggestible trance and working within it.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Vampire": 2,
+        "Cultist": 2,
+        "Illusionist": 3
+      },
+      "traitStart": {
+        "vampire": 2
+      }
+    },
+    {
+      "id": 630,
+      "name": "Hypochondriac Self-Diagnosis",
+      "description": "Finding the worst plausible explanation for any symptom.",
+      "stat": "WIS",
+      "category": "Medicine",
+      "traitStart": {
+        "hypochondriac": 2
+      }
+    },
+    {
+      "id": 861,
+      "name": "Ice Climbing",
+      "description": "Climbing frozen falls and ice on tools and crampons.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 855,
+      "name": "Ice Core Drilling",
+      "description": "Extracting and logging cores that hold the old climate.",
+      "stat": "CON",
+      "category": "Survival"
+    },
+    {
+      "id": 374,
+      "name": "Ice Fishing",
+      "description": "Fishing through cut ice, and reading the ice first.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 631,
+      "name": "Ice Sculpting",
+      "description": "Carving blocks of ice against a melting clock.",
+      "stat": "DEX",
+      "category": "Arts",
+      "classStart": {
+        "Ice Mage": 2
+      }
+    },
+    {
+      "id": 138,
+      "name": "Ice Skating",
+      "description": "Edges, balance and speed on blades.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 832,
+      "name": "Ichthyology",
+      "description": "The study of fish: species, anatomy and stocks.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 375,
+      "name": "Igloo Building",
+      "description": "Cutting and laying snow blocks into a spiral shelter.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 632,
+      "name": "Illusion Magic",
+      "description": "Making the senses report what is not there.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Witch": 2,
+        "Illusionist": 2
+      }
+    },
+    {
+      "id": 634,
+      "name": "Immunology",
+      "description": "The immune system, its defences and its mistakes.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Doctor": 2,
+        "Scientist": 2,
+        "Nurse": 2
+      }
+    },
+    {
+      "id": 635,
+      "name": "Improv Comedy",
+      "description": "Building a scene live, from nothing, with other people.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Entertainer": 2
+      }
+    },
+    {
+      "id": 376,
+      "name": "Improvised Explosives",
+      "description": "Making charges out of what is to hand, and surviving them.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mercenary": 2
+      }
+    },
+    {
+      "id": 744,
+      "name": "Industrial Arts",
+      "description": "Shop work across metal, wood and machine.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 636,
+      "name": "Injection Molding",
+      "description": "Running moulds, gates and cycles for cast plastic parts.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 184,
+      "name": "Instrument Navigation",
+      "description": "Navigating on instruments alone, without outside reference.",
+      "stat": "INT",
+      "category": "Survival",
+      "traitStart": {
+        "navigator": 3
+      }
+    },
+    {
+      "id": 637,
+      "name": "Insurance Underwriting",
+      "description": "Deciding what to cover, on what terms, at what premium.",
+      "stat": "INT",
+      "category": "Social",
+      "classStart": {
+        "CEO": 2
+      }
+    },
+    {
+      "id": 377,
+      "name": "Intelligence Gathering",
+      "description": "Collecting, sorting and weighting information into usable fact.",
+      "stat": "PSI",
+      "category": "Crime"
+    },
+    {
+      "id": 797,
+      "name": "Interface Design",
+      "description": "Laying out controls so people can use them without being told.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 141,
+      "name": "Interior Design",
+      "description": "Planning a room's function, light, colour and furniture.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 139,
+      "name": "Interrogation",
+      "description": "Getting truthful information out of someone unwilling.",
+      "stat": "PSI",
+      "category": "Crime",
+      "classStart": {
+        "Police Officer": 3,
+        "Psychologist": 2
+      }
+    },
+    {
+      "id": 140,
+      "name": "Intimidation",
+      "description": "Making someone believe the consequences of refusing.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Vampire": 2,
+        "Berserker": 2,
+        "Paladin": 2,
+        "Warlock": 2,
+        "Guardian": 2,
+        "Mercenary": 2,
+        "Barbarian": 2,
+        "Demigod": 2,
+        "Monster": 3
+      },
+      "traitStart": {
+        "berserker": 2,
+        "gigantism": 2,
+        "scarred": 2,
+        "tall": 2,
+        "infamous": 2,
+        "hot-headed": 2
+      }
+    },
+    {
+      "id": 638,
+      "name": "Investigative Journalism",
+      "description": "Digging out a story somebody is keeping.",
+      "stat": "INT",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 2
+      }
+    },
+    {
+      "id": 639,
+      "name": "Investment Banking",
+      "description": "Raising capital, pricing deals and taking a cut.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "CEO": 2
+      }
+    },
+    {
+      "id": 640,
+      "name": "Ironing",
+      "description": "Pressing cloth flat without scorching or shining it.",
+      "stat": "DEX",
+      "category": "Commerce"
+    },
+    {
+      "id": 537,
+      "name": "Janitorial Cleaning",
+      "description": "Keeping a building clean, stocked and safe overnight.",
+      "stat": "CON",
+      "category": "Commerce",
+      "traitStart": {
+        "germaphobe": 2
+      }
+    },
+    {
+      "id": 641,
+      "name": "Javelin Throw",
+      "description": "Throwing the javelin for distance on a legal release.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 642,
+      "name": "Jet Skiing",
+      "description": "Handling a personal watercraft at speed and in chop.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 643,
+      "name": "Jewelry Making",
+      "description": "Fabricating and setting jewellery from metal and stone.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 644,
+      "name": "Jigsaw Puzzles",
+      "description": "Assembling cut pictures by edge, colour and shape.",
+      "stat": "INT",
+      "category": "Athletics"
+    },
+    {
+      "id": 70,
+      "name": "Joke Telling",
+      "description": "Timing, setup and delivery that lands the punchline.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Entertainer": 2
+      }
+    },
+    {
+      "id": 142,
+      "name": "Journalism",
+      "description": "Reporting: sourcing, checking, and writing it straight.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Journalist": 3
+      }
+    },
+    {
+      "id": 645,
+      "name": "Jousting",
+      "description": "Riding at another rider with a lance and staying seated.",
+      "stat": "STR",
+      "category": "Combat",
+      "classStart": {
+        "Knight": 3,
+        "Paladin": 2
+      }
+    },
+    {
+      "id": 143,
+      "name": "Judo",
+      "description": "Throws, holds and chokes from the Japanese grappling art.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      }
+    },
+    {
+      "id": 144,
+      "name": "Juggling",
+      "description": "Keeping objects in the air in pattern.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "traitStart": {
+        "ambidextrous": 2
+      }
+    },
+    {
+      "id": 145,
+      "name": "Karate",
+      "description": "Striking art of blocks, punches and kicks from set forms.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      },
+      "traitStart": {
+        "martial_artist": 2
+      }
+    },
+    {
+      "id": 646,
+      "name": "Kart Racing",
+      "description": "Racing light karts on line, brake and momentum.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 146,
+      "name": "Kayaking",
+      "description": "Paddling a closed boat, including roll and rough water.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 380,
+      "name": "Kelp Farming",
+      "description": "Growing and harvesting kelp on line at sea.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 148,
+      "name": "Kendo",
+      "description": "Japanese fencing with the shinai, in armour and rule.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Samurai": 3
+      }
+    },
+    {
+      "id": 149,
+      "name": "Kickboxing",
+      "description": "Punching and kicking under the full-contact rules.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 381,
+      "name": "Kintsugi Repair",
+      "description": "Rejoining broken pottery in gold, leaving the break visible.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 647,
+      "name": "Kite Flying",
+      "description": "Launching, flying and landing kites in changing wind.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 150,
+      "name": "Knitting",
+      "description": "Making fabric on needles from continuous yarn.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 151,
+      "name": "Knot Tying",
+      "description": "Choosing and tying the knot that will hold, and untie after.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 152,
+      "name": "Krav Maga",
+      "description": "Practical Israeli close combat aimed at ending it fast.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2,
+        "Brawler": 2
+      }
+    },
+    {
+      "id": 382,
+      "name": "Labyrinth Navigation",
+      "description": "Keeping orientation and route inside a deliberate maze.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 649,
+      "name": "Lacrosse",
+      "description": "Cradling, passing and shooting with the netted stick.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 153,
+      "name": "Landscaping",
+      "description": "Grading, planting and hard landscaping to a design.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 650,
+      "name": "Laser Tag",
+      "description": "Infrared skirmish play: cover, angles and hit avoidance.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 651,
+      "name": "Lassoing",
+      "description": "Throwing and closing a rope loop on a moving target.",
+      "stat": "DEX",
+      "category": "Survival"
+    },
+    {
+      "id": 652,
+      "name": "Laundry Management",
+      "description": "Sorting, washing and turning around volume laundry.",
+      "stat": "CON",
+      "category": "Commerce"
+    },
+    {
+      "id": 155,
+      "name": "Law",
+      "description": "The statutes, procedure and argument that decide a case.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 521,
+      "name": "Lawn Bowls",
+      "description": "Rolling biased bowls to the jack across the green.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 653,
+      "name": "Lawn Care",
+      "description": "Mowing, feeding and repairing turf through the year.",
+      "stat": "CON",
+      "category": "Survival"
+    },
+    {
+      "id": 156,
+      "name": "Leadership",
+      "description": "Getting a group to act together, and keep acting.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Knight": 2,
+        "Paladin": 2,
+        "Commander": 3,
+        "Demigod": 3
+      },
+      "traitStart": {
+        "megalomaniac": 2,
+        "charismatic": 2,
+        "ambitious": 2,
+        "noble": 2,
+        "heir": 2,
+        "veteran": 2,
+        "hero": 2
+      }
+    },
+    {
+      "id": 157,
+      "name": "Leatherworking",
+      "description": "Cutting, stitching and finishing leather goods.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 654,
+      "name": "Lifeguarding",
+      "description": "Watching water, spotting trouble early and getting people out.",
+      "stat": "WIS",
+      "category": "Medicine"
+    },
+    {
+      "id": 888,
+      "name": "Light",
+      "description": "Fighting with light, quick weapons that trade reach for speed.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 1,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "CEO": 3,
+        "Vampire": 3,
+        "Cultist": 3,
+        "Combat Medic": 3,
+        "Enchanter": 3,
+        "Brawler": 3,
+        "Fire Mage": 3,
+        "Rogue": 3,
+        "Warlock": 3,
+        "Ranger": 3,
+        "Gladiator": 3,
+        "Necromancer": 3,
+        "Spellblade": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Barbarian": 3,
+        "Doctor": 3,
+        "Chef": 3,
+        "Journalist": 3,
+        "Psychologist": 3,
+        "Nurse": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "assassin": 2
+      }
+    },
+    {
+      "id": 655,
+      "name": "Light Armor Training",
+      "description": "Fighting in light armour and keeping the mobility it is for.",
+      "stat": "DEX",
+      "category": "Combat"
+    },
+    {
+      "id": 158,
+      "name": "Lightfooted",
+      "description": "Moving quietly and lightly, leaving little to hear or track.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 656,
+      "name": "Lighting Design",
+      "description": "Lighting a stage or set for mood, focus and visibility.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 833,
+      "name": "Limnology",
+      "description": "The study of lakes, rivers and their inland ecology.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 657,
+      "name": "Line Dancing",
+      "description": "Dancing set choreographed steps in formation.",
+      "stat": "DEX",
+      "category": "Social"
+    },
+    {
+      "id": 159,
+      "name": "Linguistics",
+      "description": "The structure of language: sound, grammar and change.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Sage": 2,
+        "Academic": 2,
+        "Archaeologist": 2
+      },
+      "traitStart": {
+        "polyglot": 3
+      }
+    },
+    {
+      "id": 160,
+      "name": "Lip Reading",
+      "description": "Reading speech from the mouth without hearing it.",
+      "stat": "WIS",
+      "category": "Social"
+    },
+    {
+      "id": 161,
+      "name": "Lockpicking",
+      "description": "Opening locks by tension and feel, without the key.",
+      "stat": "DEX",
+      "category": "Crime",
+      "classStart": {
+        "Rogue": 2
+      },
+      "traitStart": {
+        "criminal": 2,
+        "thief": 2
+      }
+    },
+    {
+      "id": 862,
+      "name": "Log Rolling",
+      "description": "Staying upright on a spinning floating log.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 384,
+      "name": "Loom Weaving",
+      "description": "Warping and weaving cloth on a loom.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 164,
+      "name": "Lucid Dreaming",
+      "description": "Becoming aware inside a dream and acting deliberately in it.",
+      "stat": "PSI",
+      "category": "Occult"
+    },
+    {
+      "id": 659,
+      "name": "Lumberjacking",
+      "description": "Felling, limbing and moving timber in the woods.",
+      "stat": "STR",
+      "category": "Survival",
+      "classStart": {
+        "Lumberjack": 3
+      }
+    },
+    {
+      "id": 660,
+      "name": "Lye Making",
+      "description": "Leaching wood ash into caustic lye, safely.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 385,
+      "name": "Machine Learning",
+      "description": "Training statistical models to do a task from data.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 2
+      }
+    },
+    {
+      "id": 661,
+      "name": "Macrame",
+      "description": "Knotting cord into patterned textile without needle or loom.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 165,
+      "name": "Magic Theory",
+      "description": "The formal principles under a working: correspondence, cost and limit.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Enchanter": 3,
+        "Fire Mage": 2,
+        "Ice Mage": 2,
+        "Warlock": 3,
+        "Archmage": 3,
+        "Necromancer": 3,
+        "Spellblade": 2,
+        "Battlemage": 3,
+        "Mana Cyborg": 2
+      },
+      "traitStart": {
+        "magically_gifted": 3,
+        "witch-marked": 2
+      }
+    },
+    {
+      "id": 166,
+      "name": "Magus",
+      "description": "The full practice of a trained magician, not one school of it.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 167,
+      "name": "Maintenance",
+      "description": "Keeping a building or machine running through routine care.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 168,
+      "name": "Makeup Artistry",
+      "description": "Painting a face for camera, stage or effect.",
+      "stat": "DEX",
+      "category": "Social"
+    },
+    {
+      "id": 663,
+      "name": "Mantra Chanting",
+      "description": "Sustained repetition of a formula for effect on mind or world.",
+      "stat": "CON",
+      "category": "Occult"
+    },
+    {
+      "id": 387,
+      "name": "Manual Tooling",
+      "description": "Working a lathe, mill and file by hand to a tolerance.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 664,
+      "name": "Map Reading",
+      "description": "Turning a map and terrain into a route and a position.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 388,
+      "name": "Maple Syruping",
+      "description": "Tapping, collecting and boiling sap to syrup.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 169,
+      "name": "Marathon Running",
+      "description": "Running the distance on pace, fuel and pacing discipline.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 170,
+      "name": "Marine Biology",
+      "description": "The life of the sea, from plankton to reef and whale.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 389,
+      "name": "Marine Navigation",
+      "description": "Charting and holding a course at sea by fix and dead reckoning.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 795,
+      "name": "Martial Arts Tricking",
+      "description": "Acrobatic kicks and flips performed as display.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      }
+    },
+    {
+      "id": 665,
+      "name": "Masonry",
+      "description": "Cutting and laying stone into wall, arch and course.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 822,
+      "name": "Mass Spectrometry",
+      "description": "Identifying substances by ionising them and weighing the fragments.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 172,
+      "name": "Massage Therapy",
+      "description": "Working soft tissue for pain, mobility and circulation.",
+      "stat": "WIS",
+      "category": "Medicine"
+    },
+    {
+      "id": 390,
+      "name": "Matchmaking",
+      "description": "Introducing two people who will actually suit each other.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 391,
+      "name": "Meat Curing",
+      "description": "Preserving meat with salt, smoke, nitrate and time.",
+      "stat": "WIS",
+      "category": "Culinary"
+    },
+    {
+      "id": 666,
+      "name": "Mechanical Engineering",
+      "description": "Designing machines, mechanisms and the loads they carry.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 173,
+      "name": "Mechanics",
+      "description": "Diagnosing and repairing engines and drivetrains.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mechanic": 3
+      }
+    },
+    {
+      "id": 667,
+      "name": "Mediation",
+      "description": "Bringing two sides to an agreement neither dictated.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Psychologist": 2
+      }
+    },
+    {
+      "id": 668,
+      "name": "Medical Billing",
+      "description": "Coding treatment and getting it paid.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Nurse": 2
+      }
+    },
+    {
+      "id": 174,
+      "name": "Meditation",
+      "description": "Sustained attention practice, and the settling that follows.",
+      "stat": "WIS",
+      "category": "Occult",
+      "classStart": {
+        "Nun": 2,
+        "Monk": 3,
+        "Cleric": 2,
+        "Samurai": 2,
+        "Oracle": 2,
+        "Priest": 2
+      },
+      "traitStart": {
+        "ascetic": 2,
+        "introvert": 2,
+        "stoic": 2,
+        "monk-trained": 2
+      }
+    },
+    {
+      "id": 175,
+      "name": "Mental Math",
+      "description": "Calculating accurately in the head, quickly.",
+      "stat": "INT",
+      "category": "Science",
+      "traitStart": {
+        "savant_syndrome": 3
+      }
+    },
+    {
+      "id": 670,
+      "name": "Metal Detecting",
+      "description": "Sweeping ground and reading signal before digging.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 176,
+      "name": "Metalworking",
+      "description": "Cutting, forming and joining metal stock.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 393,
+      "name": "Meteorite Hunting",
+      "description": "Finding and recognising fallen space rock in the field.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 177,
+      "name": "Meteorology",
+      "description": "Reading and forecasting weather from data and sky.",
+      "stat": "WIS",
+      "category": "Science",
+      "classStart": {
+        "Meteorologist": 3
+      }
+    },
+    {
+      "id": 671,
+      "name": "Microbiology",
+      "description": "The study of bacteria, viruses and what they do to a host.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2
+      }
+    },
+    {
+      "id": 672,
+      "name": "Mime",
+      "description": "Telling a story in gesture and body alone.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 395,
+      "name": "Miniature Golf",
+      "description": "Putting through obstacles on a short built course.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 673,
+      "name": "Miniature Painting",
+      "description": "Painting small figures at high detail.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 674,
+      "name": "Mining",
+      "description": "Extracting ore and stone, and knowing what is worth extracting.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 675,
+      "name": "Model Rocketry",
+      "description": "Building and flying small rockets on recovery and stability.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 396,
+      "name": "Molecular Gastronomy",
+      "description": "Cooking on chemistry: gels, foams and phase changes.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Chef": 2
+      }
+    },
+    {
+      "id": 882,
+      "name": "Money Laundering",
+      "description": "Passing dirty money through clean books.",
+      "stat": "INT",
+      "category": "Crime"
+    },
+    {
+      "id": 867,
+      "name": "Monorail Operation",
+      "description": "Driving and dispatching a monorail on schedule.",
+      "stat": "INT",
+      "category": "Vehicles"
+    },
+    {
+      "id": 179,
+      "name": "Morse Code",
+      "description": "Sending and reading code by key, light or sound.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 397,
+      "name": "Mosaics",
+      "description": "Setting tesserae into image and pattern.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 676,
+      "name": "Motocross",
+      "description": "Racing motorcycles over dirt, jumps and ruts.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 180,
+      "name": "Motorcycle Riding",
+      "description": "Riding and controlling a motorcycle on road and lean.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 181,
+      "name": "Mountaineering",
+      "description": "Climbing high ground with route, weather and altitude judgement.",
+      "stat": "CON",
+      "category": "Survival",
+      "traitStart": {
+        "mountain-born": 3
+      }
+    },
+    {
+      "id": 182,
+      "name": "Muay Thai",
+      "description": "Thai striking with fists, elbows, knees and shins.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      }
+    },
+    {
+      "id": 677,
+      "name": "Mural Painting",
+      "description": "Painting at architectural scale, on a wall that stays.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 398,
+      "name": "Mushroom Cultivation",
+      "description": "Growing edible fungi on prepared substrate.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 183,
+      "name": "Music Composition",
+      "description": "Writing music: line, harmony and structure.",
+      "stat": "INT",
+      "category": "Arts",
+      "traitStart": {
+        "synesthete": 2
+      }
+    },
+    {
+      "id": 399,
+      "name": "Mutagen Crafting",
+      "description": "Compounding agents that rewrite living tissue.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 678,
+      "name": "Mutational Adaptation",
+      "description": "Surviving change to your own body and turning it to use.",
+      "stat": "CON",
+      "category": "Medicine"
+    },
+    {
+      "id": 830,
+      "name": "Mycology",
+      "description": "The study of fungi: identification, ecology and toxicity.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 400,
+      "name": "Nanotechnology",
+      "description": "Engineering matter at the scale of molecules.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mana Cyborg": 2
+      }
+    },
+    {
+      "id": 679,
+      "name": "Naturopathy",
+      "description": "Treating illness with diet, herbs and regimen.",
+      "stat": "WIS",
+      "category": "Medicine",
+      "classStart": {
+        "Nun": 2,
+        "Cleric": 2
+      }
+    },
+    {
+      "id": 186,
+      "name": "Negotiation",
+      "description": "Reaching terms both sides will sign and keep.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "CEO": 2
+      },
+      "traitStart": {
+        "silvertongue": 3
+      }
+    },
+    {
+      "id": 401,
+      "name": "Neon Sign Making",
+      "description": "Bending and filling glass tube into lit sign.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 680,
+      "name": "Netmaking",
+      "description": "Knotting and repairing nets to gauge.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 681,
+      "name": "Network Administration",
+      "description": "Running networks: routing, addressing, uptime and access.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 402,
+      "name": "Neurohacking",
+      "description": "Intervening directly in a nervous system to change how it runs.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 682,
+      "name": "Neurology",
+      "description": "The nervous system, its diseases and their diagnosis.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Doctor": 2
+      }
+    },
+    {
+      "id": 187,
+      "name": "Nimble",
+      "description": "Quickness of hand and foot in tight, awkward moments.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 683,
+      "name": "Nuclear Physics",
+      "description": "The nucleus: decay, fission, fusion and cross-sections.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2,
+        "Physicist": 2
+      }
+    },
+    {
+      "id": 879,
+      "name": "Numismatics",
+      "description": "The study and collecting of coins and their issue.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 188,
+      "name": "Nursing",
+      "description": "Bedside care, observation and the practical side of medicine.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Nurse": 3
+      }
+    },
+    {
+      "id": 342,
+      "name": "Nutrition",
+      "description": "What food does in the body, and what a diet lacks.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Chef": 2
+      },
+      "traitStart": {
+        "vegetarian": 2,
+        "vegan": 2
+      }
+    },
+    {
+      "id": 404,
+      "name": "Oboe Playing",
+      "description": "Playing the oboe, reed making included.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 684,
+      "name": "Obstacle Course Racing",
+      "description": "Running a course of climbs, carries and crawls.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 405,
+      "name": "Oceanography",
+      "description": "The physics, chemistry and circulation of the sea.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 685,
+      "name": "Oil Drilling",
+      "description": "Drilling, casing and controlling a well.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 686,
+      "name": "Opera Singing",
+      "description": "Singing trained classical repertoire without amplification.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Bard": 2
+      }
+    },
+    {
+      "id": 687,
+      "name": "Optometry",
+      "description": "Testing sight and prescribing correction.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Doctor": 2
+      }
+    },
+    {
+      "id": 189,
+      "name": "Orienteering",
+      "description": "Racing between control points on map and compass.",
+      "stat": "WIS",
+      "category": "Survival",
+      "traitStart": {
+        "pilgrim": 2
+      }
+    },
+    {
+      "id": 190,
+      "name": "Origami",
+      "description": "Folding paper into form without cutting.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 688,
+      "name": "Packing",
+      "description": "Fitting what is needed into what will actually carry.",
+      "stat": "STR",
+      "category": "Commerce"
+    },
+    {
+      "id": 191,
+      "name": "Pain Tolerance",
+      "description": "Staying functional through pain that would stop others.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Berserker": 2,
+        "Brawler": 2,
+        "Boxer": 2,
+        "Barbarian": 2,
+        "Wretch": 2,
+        "Monster": 2
+      },
+      "traitStart": {
+        "masochist": 3,
+        "congenital_analgesia": 3,
+        "stoic": 2,
+        "berserker_rage": 2,
+        "lycanthrope": 2
+      }
+    },
+    {
+      "id": 689,
+      "name": "Paintball",
+      "description": "Marker skirmish: cover, angles and suppression.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 192,
+      "name": "Painting",
+      "description": "Working in paint: colour, value and surface.",
+      "stat": "DEX",
+      "category": "Arts",
+      "traitStart": {
+        "synesthete": 2
+      }
+    },
+    {
+      "id": 407,
+      "name": "Paleobotany",
+      "description": "Fossil plants, and the climates they record.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Archaeologist": 2
+      }
+    },
+    {
+      "id": 690,
+      "name": "Paleontology",
+      "description": "Excavating and interpreting fossils and the life they came from.",
+      "stat": "INT",
+      "category": "Survival",
+      "classStart": {
+        "Archaeologist": 2
+      }
+    },
+    {
+      "id": 193,
+      "name": "Pankration",
+      "description": "Ancient Greek all-in fighting: striking and grappling together.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 408,
+      "name": "Paper Mache",
+      "description": "Building form from paste and layered paper.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 691,
+      "name": "Paper Making",
+      "description": "Pulping, forming and drying sheets by hand.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 880,
+      "name": "Papyrology",
+      "description": "Reading and conserving texts written on papyrus.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 194,
+      "name": "Parachuting",
+      "description": "Jumping, canopy control and landing.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 692,
+      "name": "Paragliding",
+      "description": "Flying a foot-launched canopy on thermals and ridge lift.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 409,
+      "name": "Paramedicine",
+      "description": "Emergency medicine in the field, before hospital.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Combat Medic": 2
+      }
+    },
+    {
+      "id": 195,
+      "name": "Parkour",
+      "description": "Moving through built terrain by vault, climb and drop.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 410,
+      "name": "Parquet Flooring",
+      "description": "Laying patterned wood flooring true and tight.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 826,
+      "name": "Particle Physics",
+      "description": "The fundamental particles and the forces between them.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 693,
+      "name": "Pastry Baking",
+      "description": "Laminating, piping and baking fine pastry.",
+      "stat": "DEX",
+      "category": "Culinary",
+      "classStart": {
+        "Chef": 2
+      }
+    },
+    {
+      "id": 411,
+      "name": "Pearl Diving",
+      "description": "Diving for oysters on breath, and shucking for pearl.",
+      "stat": "CON",
+      "category": "Survival"
+    },
+    {
+      "id": 196,
+      "name": "Pen Spinning",
+      "description": "Rotating a pen through the fingers in patterns.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 412,
+      "name": "Perfumery",
+      "description": "Blending top, heart and base notes into a scent that lasts.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 853,
+      "name": "Permaculture Design",
+      "description": "Designing a growing system that mostly maintains itself.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 696,
+      "name": "Pest Control",
+      "description": "Identifying, excluding and eliminating infestation.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 413,
+      "name": "Pewter Casting",
+      "description": "Melting and casting pewter into moulds.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 197,
+      "name": "Pharmacology",
+      "description": "What drugs do, at what dose, and what they do together.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Doctor": 2,
+        "Nurse": 2
+      }
+    },
+    {
+      "id": 198,
+      "name": "Pharmacy Dispensing",
+      "description": "Filling prescriptions accurately and checking interactions.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 199,
+      "name": "Philosophy",
+      "description": "Argument about knowledge, being, ethics and mind.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Sage": 2
+      },
+      "traitStart": {
+        "atheist": 2,
+        "scholar": 2,
+        "nihilist": 2
+      }
+    },
+    {
+      "id": 697,
+      "name": "Phlebotomy",
+      "description": "Drawing blood cleanly and labelling it correctly.",
+      "stat": "DEX",
+      "category": "Medicine",
+      "classStart": {
+        "Nurse": 2
+      }
+    },
+    {
+      "id": 201,
+      "name": "Photography",
+      "description": "Exposure, focus and composition, in camera.",
+      "stat": "DEX",
+      "category": "Arts",
+      "classStart": {
+        "Journalist": 2
+      }
+    },
+    {
+      "id": 200,
+      "name": "Photokinesis",
+      "description": "Bending and generating light by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2
+      }
+    },
+    {
+      "id": 414,
+      "name": "Phrenology",
+      "description": "Reading character from the bumps of the skull, as the old books had it.",
+      "stat": "INT",
+      "category": "Occult",
+      "classStart": {
+        "Cultist": 2,
+        "Warlock": 2
+      }
+    },
+    {
+      "id": 202,
+      "name": "Physics",
+      "description": "Matter, energy, motion and the laws they obey.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Scientist": 2,
+        "Physicist": 3
+      }
+    },
+    {
+      "id": 415,
+      "name": "Phytoremediation",
+      "description": "Cleaning contaminated ground with plants that take up the poison.",
+      "stat": "INT",
+      "category": "Survival"
+    },
+    {
+      "id": 698,
+      "name": "Pickleball",
+      "description": "Paddle play on a short court with a perforated ball.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 203,
+      "name": "Pickpocketing",
+      "description": "Lifting from a person without them registering it.",
+      "stat": "DEX",
+      "category": "Crime",
+      "classStart": {
+        "Rogue": 2
+      },
+      "traitStart": {
+        "kleptomaniac": 3,
+        "street_urchin": 2,
+        "thief": 2
+      }
+    },
+    {
+      "id": 416,
+      "name": "Picture Framing",
+      "description": "Cutting, mounting and glazing work for display.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 700,
+      "name": "Pigeon Racing",
+      "description": "Breeding, training and timing homing pigeons.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 205,
+      "name": "Pilates",
+      "description": "Controlled core conditioning through set movement.",
+      "stat": "WIS",
+      "category": "Athletics"
+    },
+    {
+      "id": 701,
+      "name": "Pipe Bending",
+      "description": "Bending pipe and conduit to angle without kinking it.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 417,
+      "name": "Pipelaying",
+      "description": "Laying, jointing and bedding pipe to fall.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 702,
+      "name": "Pixel Art",
+      "description": "Drawing at the level of the individual pixel.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 418,
+      "name": "Planetarium Operation",
+      "description": "Running a dome projector and the show that goes with it.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 419,
+      "name": "Plastering",
+      "description": "Floating and finishing plaster flat and hard.",
+      "stat": "DEX",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 206,
+      "name": "Playing Bass",
+      "description": "Holding the low end in time with the drums.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 207,
+      "name": "Playing Drums",
+      "description": "Keeping and shaping time on a kit.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 208,
+      "name": "Playing Guitar",
+      "description": "Playing guitar: chords, lead and tone.",
+      "stat": "DEX",
+      "category": "Arts",
+      "classStart": {
+        "Bard": 2
+      },
+      "traitStart": {
+        "bard": 2
+      }
+    },
+    {
+      "id": 209,
+      "name": "Playing Piano",
+      "description": "Playing piano with both hands, reading or by ear.",
+      "stat": "DEX",
+      "category": "Arts",
+      "traitStart": {
+        "polydactyly": 2
+      }
+    },
+    {
+      "id": 210,
+      "name": "Playing Violin",
+      "description": "Bowing and stopping the violin in tune.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 211,
+      "name": "Plumbing",
+      "description": "Running, jointing and testing water and waste.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 845,
+      "name": "Podiatry",
+      "description": "Treating feet, gait and the problems they cause upstream.",
+      "stat": "DEX",
+      "category": "Medicine"
+    },
+    {
+      "id": 212,
+      "name": "Poetry",
+      "description": "Writing verse that earns its line breaks.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Bard": 2
+      },
+      "traitStart": {
+        "romantic": 2
+      }
+    },
+    {
+      "id": 213,
+      "name": "Poison Resistance",
+      "description": "A body that has learned to survive doses that should not be survived.",
+      "stat": "CON",
+      "category": "Athletics",
+      "classStart": {
+        "Vampire": 2
+      }
+    },
+    {
+      "id": 214,
+      "name": "Poker",
+      "description": "Betting, reading and folding across the hand.",
+      "stat": "PSI",
+      "category": "Athletics",
+      "traitStart": {
+        "lucky": 2,
+        "gambling_addict": 2
+      }
+    },
+    {
+      "id": 420,
+      "name": "Poker Face",
+      "description": "Giving nothing away in the face, under pressure.",
+      "stat": "PSI",
+      "category": "Crime"
+    },
+    {
+      "id": 704,
+      "name": "Pole Vaulting",
+      "description": "Clearing a bar on a planted, loaded pole.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 705,
+      "name": "Police Sketching",
+      "description": "Drawing a usable likeness from a witness description.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 706,
+      "name": "Political Science",
+      "description": "How power, institutions and voting actually behave.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Sage": 2
+      }
+    },
+    {
+      "id": 421,
+      "name": "Polygraph Operation",
+      "description": "Running and interpreting a polygraph, for what that is worth.",
+      "stat": "INT",
+      "category": "Occult",
+      "classStart": {
+        "Police Officer": 2
+      }
+    },
+    {
+      "id": 707,
+      "name": "Pool Cleaning",
+      "description": "Keeping a pool balanced, filtered and clear.",
+      "stat": "CON",
+      "category": "Commerce"
+    },
+    {
+      "id": 215,
+      "name": "Pottery",
+      "description": "Throwing, trimming and firing clay vessels.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 278,
+      "name": "Power Throwing",
+      "description": "Throwing heavy objects hard, with the whole body behind it.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 216,
+      "name": "Powerlifting",
+      "description": "Maximal strength in the squat, bench and deadlift.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Wrestler": 2
+      },
+      "traitStart": {
+        "gigantism": 2,
+        "muscular": 2
+      }
+    },
+    {
+      "id": 279,
+      "name": "Precision Throwing",
+      "description": "Hitting a small target with a thrown object at range.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 710,
+      "name": "Primitive Fire Making",
+      "description": "Making fire by friction alone, with prepared materials.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 217,
+      "name": "Programming",
+      "description": "Writing, structuring and debugging code.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 711,
+      "name": "Project Management",
+      "description": "Scope, schedule and people, held together to delivery.",
+      "stat": "INT",
+      "category": "Commerce",
+      "traitStart": {
+        "workaholic": 2
+      }
+    },
+    {
+      "id": 895,
+      "name": "Projectile",
+      "description": "Fighting with thrown and launched weapons at range.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 8,
+      "classStart": {
+        "Freelancer": 3,
+        "Elementalist": 3,
+        "Ice Mage": 3,
+        "Rogue": 3,
+        "Warlock": 3,
+        "Ranger": 3,
+        "Scout": 3,
+        "Guardian": 3,
+        "Bard": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Construction Worker": 3,
+        "Academic": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "marksman": 2
+      }
+    },
+    {
+      "id": 712,
+      "name": "Prop Making",
+      "description": "Building convincing objects for stage or camera.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 425,
+      "name": "Prosthetics Design",
+      "description": "Designing limbs and devices that a body can actually use.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 713,
+      "name": "Psychiatry",
+      "description": "Diagnosing and treating mental illness, medication included.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Psychologist": 2
+      }
+    },
+    {
+      "id": 426,
+      "name": "Psychoanalysis",
+      "description": "Reading the unconscious through talk, dream and slip.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Psychologist": 3
+      },
+      "traitStart": {
+        "empath": 2,
+        "sensitive": 2
+      }
+    },
+    {
+      "id": 714,
+      "name": "Psychology",
+      "description": "How people think, learn and behave, and how that is tested.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 709,
+      "name": "Public Relations",
+      "description": "Managing what is said about a client, and by whom.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 218,
+      "name": "Public Speaking",
+      "description": "Holding a room from the front, with structure and voice.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Nun": 2,
+        "CEO": 2,
+        "Pro Wrestler": 2,
+        "Cleric": 2,
+        "Gladiator": 2,
+        "Commander": 2,
+        "Bard": 2,
+        "Journalist": 2,
+        "Priest": 2,
+        "Demigod": 2
+      },
+      "traitStart": {
+        "megalomaniac": 2,
+        "charismatic": 3,
+        "extrovert": 2,
+        "famous": 2,
+        "booming_voice": 2
+      }
+    },
+    {
+      "id": 715,
+      "name": "Puppetry",
+      "description": "Giving a puppet weight, focus and life.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 219,
+      "name": "Pyrokinesis",
+      "description": "Igniting and steering fire by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2,
+        "Fire Mage": 3
+      }
+    },
+    {
+      "id": 716,
+      "name": "Qi Gong",
+      "description": "Coordinated posture, breath and intent as a practice.",
+      "stat": "WIS",
+      "category": "Athletics",
+      "classStart": {
+        "Monk": 2
+      }
+    },
+    {
+      "id": 717,
+      "name": "Quality Assurance",
+      "description": "Testing to find the failure before the customer does.",
+      "stat": "INT",
+      "category": "Commerce",
+      "traitStart": {
+        "perfectionist": 2,
+        "ocd": 2
+      }
+    },
+    {
+      "id": 427,
+      "name": "Quantum Computing",
+      "description": "Computing on superposition and interference rather than bits alone.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Physicist": 2
+      }
+    },
+    {
+      "id": 836,
+      "name": "Quantum Cryptography",
+      "description": "Key exchange that a measurement would give away.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 428,
+      "name": "Quilling",
+      "description": "Rolling and shaping paper strips into relief design.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 718,
+      "name": "Quilting",
+      "description": "Piecing and stitching layered cloth into quilts.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 719,
+      "name": "Racquetball",
+      "description": "Fast enclosed-court play off every wall.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 720,
+      "name": "Radiation Management",
+      "description": "Working with sources safely: shielding, dose and time.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 429,
+      "name": "Radio Astronomy",
+      "description": "Observing the sky at radio wavelengths.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Physicist": 2
+      }
+    },
+    {
+      "id": 220,
+      "name": "Radio Operation",
+      "description": "Working a radio set: bands, procedure and traffic.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 721,
+      "name": "Radio Scavenging",
+      "description": "Pulling working parts and signal out of dead equipment.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 842,
+      "name": "Radiology",
+      "description": "Producing and reading medical images.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 821,
+      "name": "Raman Spectroscopy",
+      "description": "Identifying substances by how they scatter laser light.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 221,
+      "name": "Rapping",
+      "description": "Writing and delivering rhymed verse in time.",
+      "stat": "PSI",
+      "category": "Arts"
+    },
+    {
+      "id": 430,
+      "name": "Raptor Rehabilitation",
+      "description": "Treating and releasing injured birds of prey.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 431,
+      "name": "Reading Micro-expressions",
+      "description": "Catching the expression that shows before it is controlled.",
+      "stat": "PSI",
+      "category": "Crime",
+      "classStart": {
+        "Psychologist": 2
+      }
+    },
+    {
+      "id": 722,
+      "name": "Real Estate Appraisal",
+      "description": "Valuing property against comparables and condition.",
+      "stat": "INT",
+      "category": "Commerce"
+    },
+    {
+      "id": 432,
+      "name": "Redsmithing",
+      "description": "Working copper and its alloys at the bench.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 723,
+      "name": "Refereeing",
+      "description": "Officiating a game consistently, and being obeyed.",
+      "stat": "WIS",
+      "category": "Athletics"
+    },
+    {
+      "id": 724,
+      "name": "Resin Casting",
+      "description": "Mixing and casting resin without bubbles or heat damage.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 338,
+      "name": "Resuscitation",
+      "description": "Restarting breathing and circulation.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Nurse": 2
+      }
+    },
+    {
+      "id": 726,
+      "name": "Retail Management",
+      "description": "Running a shop floor: stock, staff and takings.",
+      "stat": "PSI",
+      "category": "Commerce",
+      "classStart": {
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 727,
+      "name": "Rhythmic Gymnastics",
+      "description": "Apparatus work with ribbon, hoop, ball and clubs.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 728,
+      "name": "Robotics",
+      "description": "Building machines that sense, decide and move.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Mechanic": 2,
+        "Mana Cyborg": 2
+      }
+    },
+    {
+      "id": 224,
+      "name": "Rock Climbing",
+      "description": "Roped climbing on rock: technique, protection and rope work.",
+      "stat": "STR",
+      "category": "Survival",
+      "classStart": {
+        "Firefighter": 2,
+        "Lumberjack": 2,
+        "Beast": 2
+      },
+      "traitStart": {
+        "mountain-born": 2
+      }
+    },
+    {
+      "id": 435,
+      "name": "Roller Derby",
+      "description": "Blocking, jamming and skating in a pack.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Pro Wrestler": 2
+      }
+    },
+    {
+      "id": 225,
+      "name": "Roller Skating",
+      "description": "Balance, speed and stops on wheels.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 226,
+      "name": "Roofing",
+      "description": "Covering and flashing a roof so it stays watertight.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 729,
+      "name": "Rope Making",
+      "description": "Laying fibre into rope of even twist and strength.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 730,
+      "name": "Rowing",
+      "description": "Driving a boat with oars, in rhythm and in crew.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 228,
+      "name": "Rugby",
+      "description": "Contact, handling and set piece in the running game.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 610,
+      "name": "Rumormongering",
+      "description": "Starting a story that will travel and stick.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 731,
+      "name": "Runecrafting",
+      "description": "Cutting and charging runes so they hold what is put in them.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Archmage": 2,
+        "Elementalist": 2,
+        "Spellblade": 2
+      }
+    },
+    {
+      "id": 437,
+      "name": "Runic Translation",
+      "description": "Reading runic inscription and knowing which futhark it is.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Enchanter": 2,
+        "Archmage": 2
+      }
+    },
+    {
+      "id": 732,
+      "name": "RV Driving",
+      "description": "Driving a large motorhome: length, height and weight.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 883,
+      "name": "Safecracking",
+      "description": "Opening a safe by manipulation, drilling or the owner's habits.",
+      "stat": "DEX",
+      "category": "Crime"
+    },
+    {
+      "id": 434,
+      "name": "Sail Rigging",
+      "description": "Setting up standing and running rigging correctly.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 229,
+      "name": "Sailing",
+      "description": "Working a boat under sail on wind, tide and trim.",
+      "stat": "WIS",
+      "category": "Vehicles",
+      "traitStart": {
+        "navigator": 2,
+        "island-raised": 2
+      }
+    },
+    {
+      "id": 438,
+      "name": "Sailmaking",
+      "description": "Cutting and sewing sails that hold their shape.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 733,
+      "name": "Sales",
+      "description": "Finding the need, matching it and closing.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Shopkeeper": 2
+      }
+    },
+    {
+      "id": 869,
+      "name": "Sand Sculpture",
+      "description": "Packing and carving sand into form before it dries.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 734,
+      "name": "Sandblasting",
+      "description": "Stripping and texturing surfaces with abrasive under pressure.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 838,
+      "name": "Satellite Uplink Operation",
+      "description": "Aligning a dish and holding a link to a satellite.",
+      "stat": "INT",
+      "category": "Technology"
+    },
+    {
+      "id": 820,
+      "name": "Saxophone",
+      "description": "Playing the saxophone: reed, breath and phrasing.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 735,
+      "name": "Scaffolding",
+      "description": "Erecting and tying scaffold that will take the load.",
+      "stat": "STR",
+      "category": "Crafting",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 736,
+      "name": "Scrapbooking",
+      "description": "Composing photographs and ephemera into kept pages.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 439,
+      "name": "Scrimshaw",
+      "description": "Engraving and inking designs into bone or ivory.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 737,
+      "name": "Scroll Scribing",
+      "description": "Writing a working onto a scroll so it will fire when read.",
+      "stat": "DEX",
+      "category": "Arcana",
+      "classStart": {
+        "Enchanter": 2,
+        "Archmage": 2
+      }
+    },
+    {
+      "id": 230,
+      "name": "Scuba Diving",
+      "description": "Diving on compressed air with buoyancy and gas discipline.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 440,
+      "name": "Scythe Mowing",
+      "description": "Mowing standing grass with a scythe, and peening the blade.",
+      "stat": "STR",
+      "category": "Survival"
+    },
+    {
+      "id": 441,
+      "name": "Search and Rescue",
+      "description": "Finding missing people and getting them out alive.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Scout": 2,
+        "Firefighter": 2
+      }
+    },
+    {
+      "id": 738,
+      "name": "Search Engine Optimization",
+      "description": "Getting a page to rank on what people actually search.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 231,
+      "name": "Seduction",
+      "description": "Drawing someone in deliberately, and knowing when it is working.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Vampire": 3
+      },
+      "traitStart": {
+        "beautiful": 2
+      }
+    },
+    {
+      "id": 442,
+      "name": "Seismology",
+      "description": "Recording and interpreting ground movement and earthquakes.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Physicist": 2,
+        "Meteorologist": 2
+      }
+    },
+    {
+      "id": 233,
+      "name": "Sewing",
+      "description": "Joining cloth by hand or machine to a seam that holds.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 740,
+      "name": "Sheep Shearing",
+      "description": "Taking a fleece off in one piece without cutting the sheep.",
+      "stat": "DEX",
+      "category": "Survival"
+    },
+    {
+      "id": 741,
+      "name": "Shelter Building",
+      "description": "Building shelter from terrain and materials at hand.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 444,
+      "name": "Shepherding",
+      "description": "Moving, grazing and guarding a flock.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 742,
+      "name": "Shipping",
+      "description": "Freight, manifests, customs and getting cargo there.",
+      "stat": "INT",
+      "category": "Commerce"
+    },
+    {
+      "id": 234,
+      "name": "Shoemaking",
+      "description": "Lasting, sewing and soling footwear.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 746,
+      "name": "Show Jumping",
+      "description": "Riding a course of fences clear and inside the time.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 865,
+      "name": "Shuffleboard",
+      "description": "Sliding weighted discs to scoring zones.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 887,
+      "name": "Siege Engineering",
+      "description": "Building and using engines that take fortifications down.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 238,
+      "name": "Sign Language",
+      "description": "Signed conversation, with its own grammar and space.",
+      "stat": "DEX",
+      "category": "Social",
+      "traitStart": {
+        "deaf": 3,
+        "mute": 3
+      }
+    },
+    {
+      "id": 747,
+      "name": "Sign Spinning",
+      "description": "Throwing and spinning an advertising board for attention.",
+      "stat": "DEX",
+      "category": "Commerce"
+    },
+    {
+      "id": 448,
+      "name": "Silkworm Breeding",
+      "description": "Raising silkworms and reeling their cocoons.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 239,
+      "name": "Silversmithing",
+      "description": "Raising, soldering and finishing silver.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 240,
+      "name": "Singing",
+      "description": "Pitch, breath and tone with the trained voice.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Bard": 3,
+        "Entertainer": 2
+      },
+      "traitStart": {
+        "bard": 2,
+        "booming_voice": 2
+      }
+    },
+    {
+      "id": 241,
+      "name": "Skateboarding",
+      "description": "Riding, balance and tricks on a board.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 748,
+      "name": "Skydiving",
+      "description": "Freefall stability, canopy and landing.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "traitStart": {
+        "adrenaline_junkie": 2
+      }
+    },
+    {
+      "id": 749,
+      "name": "Slacklining",
+      "description": "Balancing and walking flat webbing under tension.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 750,
+      "name": "Sledding",
+      "description": "Steering and braking a sled downhill.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 242,
+      "name": "Sleep Deprivation",
+      "description": "Functioning after the sleep the body was owed.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 243,
+      "name": "Sleight of Hand",
+      "description": "Doing something with the hands nobody sees.",
+      "stat": "DEX",
+      "category": "Crime",
+      "classStart": {
+        "Rogue": 2,
+        "Illusionist": 2,
+        "Wretch": 2,
+        "Mimic": 2
+      },
+      "traitStart": {
+        "ambidextrous": 2,
+        "kleptomaniac": 2
+      }
+    },
+    {
+      "id": 450,
+      "name": "Snake Handling",
+      "description": "Handling snakes, venomous ones included, without being bitten.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Beast": 2
+      }
+    },
+    {
+      "id": 751,
+      "name": "Snorkeling",
+      "description": "Surface diving and swimming on mask and snorkel.",
+      "stat": "WIS",
+      "category": "Athletics"
+    },
+    {
+      "id": 246,
+      "name": "Snowboarding",
+      "description": "Edges, carving and terrain on a board.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 752,
+      "name": "Snowmobiling",
+      "description": "Riding a snowmobile over deep snow and ice.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 451,
+      "name": "Snowplow Operation",
+      "description": "Clearing roads of snow without taking the road with it.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 753,
+      "name": "Snowshoeing",
+      "description": "Travelling over deep snow without sinking.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 754,
+      "name": "Soap Making",
+      "description": "Saponifying fat with lye into cured soap.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 247,
+      "name": "Soccer",
+      "description": "Ball control, passing and shooting in the eleven-a-side game.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 248,
+      "name": "Sociology",
+      "description": "How societies, classes and institutions actually behave.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Academic": 2
+      }
+    },
+    {
+      "id": 756,
+      "name": "Softball",
+      "description": "Batting, pitching and fielding in the underhand game.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 757,
+      "name": "Software Testing",
+      "description": "Designing tests that find real defects, not just pass.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 834,
+      "name": "Soil Science",
+      "description": "Soil structure, chemistry and fertility.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 249,
+      "name": "Soldering",
+      "description": "Joining metal and electronics with filler and controlled heat.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 250,
+      "name": "Sound Engineering",
+      "description": "Recording, mixing and reinforcing sound.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 901,
+      "name": "Spacecraft Piloting",
+      "description": "Handling a ship in space: burns, orbit and setting down.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 251,
+      "name": "Spatial Manipulation",
+      "description": "Folding distance and volume by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2
+      }
+    },
+    {
+      "id": 899,
+      "name": "Spear",
+      "description": "Fighting with the spear: reach, thrust and set.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 12,
+      "classStart": {
+        "Freelancer": 3,
+        "Nun": 3,
+        "Knight": 3,
+        "Vampire": 3,
+        "Combat Medic": 3,
+        "Enchanter": 3,
+        "Fire Mage": 3,
+        "Paladin": 3,
+        "Gladiator": 3,
+        "Guardian": 3,
+        "Spellblade": 3,
+        "Bard": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Hunter-Gatherer": 3,
+        "Shopkeeper": 3,
+        "Priest": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "mounted_combat": 2
+      }
+    },
+    {
+      "id": 452,
+      "name": "Spearfishing",
+      "description": "Taking fish underwater with sling or gun on breath.",
+      "stat": "DEX",
+      "category": "Survival"
+    },
+    {
+      "id": 253,
+      "name": "Speed Reading",
+      "description": "Reading fast without losing what was on the page.",
+      "stat": "INT",
+      "category": "Academia",
+      "traitStart": {
+        "eidetic_reader": 3
+      }
+    },
+    {
+      "id": 759,
+      "name": "Speed Skating",
+      "description": "Long, low blade work at racing pace.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 453,
+      "name": "Speed Stacking",
+      "description": "Stacking and unstacking cups against the clock.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 227,
+      "name": "Speedcubing",
+      "description": "Solving twisty puzzles by algorithm at speed.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 254,
+      "name": "Speedrunning",
+      "description": "Completing a game by the fastest route known, and finding faster ones.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 73,
+      "name": "Spell Concentration",
+      "description": "Holding a working together while being hit, moved or distracted.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 3,
+        "Fire Mage": 2,
+        "Ice Mage": 2,
+        "Archmage": 2,
+        "Spellblade": 2,
+        "Battlemage": 2
+      }
+    },
+    {
+      "id": 255,
+      "name": "Spellcraft",
+      "description": "Constructing and casting a spell from its components.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Archmage": 2
+      }
+    },
+    {
+      "id": 760,
+      "name": "Spinning Yarn",
+      "description": "Drafting and twisting fibre into yarn on wheel or spindle.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 106,
+      "name": "Sport Fencing",
+      "description": "Foil, epee and sabre under competition rules.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Knight": 2,
+        "Spellblade": 2
+      },
+      "traitStart": {
+        "left-handed": 2,
+        "duelist": 3
+      }
+    },
+    {
+      "id": 761,
+      "name": "Sports Coaching",
+      "description": "Training athletes, and getting a team to play as one.",
+      "stat": "PSI",
+      "category": "Athletics"
+    },
+    {
+      "id": 847,
+      "name": "Sports Medicine",
+      "description": "Treating and preventing the injuries sport causes.",
+      "stat": "WIS",
+      "category": "Medicine"
+    },
+    {
+      "id": 257,
+      "name": "Sprinting",
+      "description": "Maximum speed over short distance, from the start.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 762,
+      "name": "Squash",
+      "description": "Fast enclosed-court racquet play off the front wall.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 893,
+      "name": "Staff",
+      "description": "Fighting with the staff and its two-ended leverage.",
+      "stat": "INT",
+      "category": "Weapons",
+      "wtypeId": 6,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Nun": 3,
+        "Vampire": 3,
+        "Cultist": 3,
+        "Combat Medic": 3,
+        "Elementalist": 3,
+        "Enchanter": 3,
+        "Acrobat": 3,
+        "Monk": 3,
+        "Brawler": 3,
+        "Fire Mage": 3,
+        "Ice Mage": 3,
+        "Paladin": 3,
+        "Cleric": 3,
+        "Oracle": 3,
+        "Necromancer": 3,
+        "Guardian": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Sage": 3,
+        "Academic": 3,
+        "Shopkeeper": 3,
+        "Priest": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      }
+    },
+    {
+      "id": 763,
+      "name": "Stained Glass Making",
+      "description": "Cutting, leading and soldering coloured glass into panel.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 764,
+      "name": "Stand-up Paddleboarding",
+      "description": "Standing and paddling a board on open water.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 258,
+      "name": "Statistics",
+      "description": "Sampling, inference and knowing what a number does not say.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Academic": 2,
+        "Meteorologist": 2
+      },
+      "traitStart": {
+        "skeptic": 2
+      }
+    },
+    {
+      "id": 456,
+      "name": "Steadicam Operation",
+      "description": "Carrying a stabilised camera and walking a shot smooth.",
+      "stat": "CON",
+      "category": "Arts"
+    },
+    {
+      "id": 765,
+      "name": "Stealth Kills",
+      "description": "Ending a fight before it starts, from behind.",
+      "stat": "DEX",
+      "category": "Combat",
+      "classStart": {
+        "Rogue": 2
+      }
+    },
+    {
+      "id": 245,
+      "name": "Stealth Movement",
+      "description": "Moving unseen and unheard past attention.",
+      "stat": "DEX",
+      "category": "Crime",
+      "classStart": {
+        "Rogue": 3,
+        "Scout": 2
+      },
+      "traitStart": {
+        "thief": 2,
+        "short": 2,
+        "assassin": 3,
+        "anonymous": 2,
+        "wanted": 2,
+        "soft-spoken": 2
+      }
+    },
+    {
+      "id": 745,
+      "name": "Stenography",
+      "description": "Taking speech down verbatim at speaking speed.",
+      "stat": "DEX",
+      "category": "Commerce"
+    },
+    {
+      "id": 457,
+      "name": "Stilt Walking",
+      "description": "Walking, turning and working at height on stilts.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 259,
+      "name": "Stock Trading",
+      "description": "Buying and selling securities on analysis and nerve.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "CEO": 2
+      },
+      "traitStart": {
+        "greedy": 2,
+        "wealthy": 2
+      }
+    },
+    {
+      "id": 766,
+      "name": "Stone Cutting",
+      "description": "Splitting and dressing stone to dimension.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 458,
+      "name": "Stone Skipping",
+      "description": "Throwing a flat stone for the maximum number of bounces.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 260,
+      "name": "Stormshaping",
+      "description": "Calling and steering weather by will.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 459,
+      "name": "Street Magic",
+      "description": "Close-up conjuring with no stage and no angles.",
+      "stat": "DEX",
+      "category": "Arcana",
+      "classStart": {
+        "Vampire": 2,
+        "Rogue": 2,
+        "Illusionist": 3,
+        "Mimic": 2
+      }
+    },
+    {
+      "id": 767,
+      "name": "Street Sweeping",
+      "description": "Clearing streets by machine and by hand.",
+      "stat": "CON",
+      "category": "Commerce"
+    },
+    {
+      "id": 261,
+      "name": "Streetwise",
+      "description": "Reading a city's rules: who to ask, where not to go.",
+      "stat": "WIS",
+      "category": "Crime",
+      "classStart": {
+        "Freelancer": 2,
+        "Police Officer": 2,
+        "Shopkeeper": 2,
+        "Wretch": 3
+      },
+      "traitStart": {
+        "street_urchin": 2,
+        "orphan": 2,
+        "slave-born": 2,
+        "criminal": 2,
+        "urban_native": 2
+      }
+    },
+    {
+      "id": 262,
+      "name": "Structural Engineering",
+      "description": "Sizing structure so it carries load and stays standing.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Construction Worker": 2
+      }
+    },
+    {
+      "id": 768,
+      "name": "Stunt Driving",
+      "description": "Slides, jumps and precision driving on a mark.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 769,
+      "name": "Submarine Piloting",
+      "description": "Handling a submersible on trim, depth and ballast.",
+      "stat": "INT",
+      "category": "Vehicles"
+    },
+    {
+      "id": 263,
+      "name": "Sumo Wrestling",
+      "description": "Driving an opponent out of the ring, or down inside it.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Wrestler": 2,
+        "Pro Wrestler": 2,
+        "Gladiator": 2
+      }
+    },
+    {
+      "id": 770,
+      "name": "Supply Chain Management",
+      "description": "Keeping parts and stock moving from supplier to shelf.",
+      "stat": "INT",
+      "category": "Commerce",
+      "classStart": {
+        "Commander": 2
+      }
+    },
+    {
+      "id": 264,
+      "name": "Surfing",
+      "description": "Reading, catching and riding a wave.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 265,
+      "name": "Surgery",
+      "description": "Operating: opening, repairing and closing a living body.",
+      "stat": "DEX",
+      "category": "Medicine",
+      "classStart": {
+        "Combat Medic": 2,
+        "Doctor": 2
+      }
+    },
+    {
+      "id": 771,
+      "name": "Surveying",
+      "description": "Measuring land and setting out levels and boundaries.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Archaeologist": 2
+      }
+    },
+    {
+      "id": 266,
+      "name": "Survival",
+      "description": "Staying alive outdoors: water, shelter, fire, food.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2,
+        "Scout": 2,
+        "Hunter-Gatherer": 2,
+        "Beast": 3
+      },
+      "traitStart": {
+        "survivalist": 3,
+        "exiled": 2,
+        "desert_dweller": 2,
+        "feral": 2
+      }
+    },
+    {
+      "id": 872,
+      "name": "Sushi Preparation",
+      "description": "Rice, cutting and handling raw fish to standard.",
+      "stat": "DEX",
+      "category": "Culinary"
+    },
+    {
+      "id": 267,
+      "name": "Swimming",
+      "description": "Efficient strokes and staying safe in open water.",
+      "stat": "CON",
+      "category": "Athletics",
+      "traitStart": {
+        "island-raised": 2
+      }
+    },
+    {
+      "id": 889,
+      "name": "Sword",
+      "description": "Fighting with the sword: guard, cut and thrust.",
+      "stat": "STR",
+      "category": "Weapons",
+      "wtypeId": 2,
+      "classStart": {
+        "Freelancer": 3,
+        "Knight": 3,
+        "Elementalist": 3,
+        "Enchanter": 3,
+        "Paladin": 3,
+        "Samurai": 3,
+        "Gladiator": 3,
+        "Guardian": 3,
+        "Spellblade": 3,
+        "Bard": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Sage": 3,
+        "Barbarian": 3,
+        "Shopkeeper": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      },
+      "traitStart": {
+        "duelist": 2,
+        "mounted_combat": 2
+      }
+    },
+    {
+      "id": 462,
+      "name": "Sword Swallowing",
+      "description": "Passing a blade down the throat without injury.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 772,
+      "name": "Synchronized Swimming",
+      "description": "Figures and lifts performed in time, mostly underwater.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 773,
+      "name": "Table Tennis",
+      "description": "Spin, placement and speed across the table.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 268,
+      "name": "Taekwondo",
+      "description": "Korean striking art built on fast, high kicks.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 2
+      }
+    },
+    {
+      "id": 775,
+      "name": "Tai Chi",
+      "description": "Slow internal form practised for balance, health and structure.",
+      "stat": "WIS",
+      "category": "Athletics",
+      "classStart": {
+        "Monk": 2
+      }
+    },
+    {
+      "id": 774,
+      "name": "Tailgating",
+      "description": "Running a car-park party properly, food and all.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 269,
+      "name": "Tailoring",
+      "description": "Cutting and fitting garments to a body.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 776,
+      "name": "Tallow Rendering",
+      "description": "Rendering animal fat clean for candles, soap and cooking.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 270,
+      "name": "Tango",
+      "description": "Close partner dance of lead, pause and walk.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 271,
+      "name": "Tarot Reading",
+      "description": "Laying and interpreting the cards for a querent.",
+      "stat": "PSI",
+      "category": "Occult",
+      "classStart": {
+        "Witch": 2,
+        "Oracle": 2
+      }
+    },
+    {
+      "id": 778,
+      "name": "Tattoo Artistry",
+      "description": "Putting ink in skin: line, shade and healing.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 272,
+      "name": "Taxidermy",
+      "description": "Skinning, mounting and posing an animal to look alive.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 463,
+      "name": "Tea Leaf Reading",
+      "description": "Reading the shapes left in the cup.",
+      "stat": "PSI",
+      "category": "Occult"
+    },
+    {
+      "id": 779,
+      "name": "Tear Gas Tolerance",
+      "description": "Keeping working in gas that is designed to stop you.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 273,
+      "name": "Technomancy",
+      "description": "Working magic through machines and code.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 274,
+      "name": "Telekinesis",
+      "description": "Moving objects at a distance by will.",
+      "stat": "PSI",
+      "category": "Arcana",
+      "classStart": {
+        "Elementalist": 2
+      }
+    },
+    {
+      "id": 780,
+      "name": "Telemarketing",
+      "description": "Selling by telephone to people who did not call.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 275,
+      "name": "Telepathy",
+      "description": "Reading and sending thought without speech.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 781,
+      "name": "Teleportation",
+      "description": "Moving from one place to another without crossing the gap.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 464,
+      "name": "Telescope Making",
+      "description": "Grinding, figuring and mounting optics that hold a star.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 276,
+      "name": "Tennis",
+      "description": "Serve, groundstrokes and court movement.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 45,
+      "name": "Tenpin Bowling",
+      "description": "Line, hook and spare shooting on the lanes.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 465,
+      "name": "Teratology",
+      "description": "The study of malformation: what goes wrong in development, and how.",
+      "stat": "INT",
+      "category": "Science",
+      "classStart": {
+        "Necromancer": 2
+      }
+    },
+    {
+      "id": 466,
+      "name": "Terrarium Building",
+      "description": "Building a closed planted vessel that keeps itself.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 782,
+      "name": "Thatching",
+      "description": "Roofing in reed or straw so it sheds water for decades.",
+      "stat": "WIS",
+      "category": "Crafting"
+    },
+    {
+      "id": 277,
+      "name": "Theology",
+      "description": "Doctrine, scripture and the arguments inside a faith.",
+      "stat": "INT",
+      "category": "Occult",
+      "classStart": {
+        "Nun": 3,
+        "Cultist": 2,
+        "Paladin": 2,
+        "Cleric": 3,
+        "Priest": 3
+      },
+      "traitStart": {
+        "blessed": 2,
+        "devout": 3,
+        "heretic": 2
+      }
+    },
+    {
+      "id": 469,
+      "name": "Thermite Crafting",
+      "description": "Mixing metal oxide and fuel into a charge that cuts steel.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 827,
+      "name": "Thermodynamics",
+      "description": "Heat, work and what cannot be got back.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 871,
+      "name": "Throat Singing",
+      "description": "Producing two or more tones at once with one voice.",
+      "stat": "PSI",
+      "category": "Arts"
+    },
+    {
+      "id": 783,
+      "name": "Tightrope Walking",
+      "description": "Crossing a tensioned wire on balance alone.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      }
+    },
+    {
+      "id": 784,
+      "name": "Tiling",
+      "description": "Setting, spacing and grouting tile flat and level.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 470,
+      "name": "Tinsmithing",
+      "description": "Cutting, forming and seaming sheet tin.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 471,
+      "name": "Topiary",
+      "description": "Clipping living shrubs into held shapes.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 280,
+      "name": "Torture",
+      "description": "Inflicting pain to a purpose, and what that is actually worth.",
+      "stat": "PSI",
+      "category": "Crime",
+      "classStart": {
+        "Cultist": 2,
+        "Warlock": 2,
+        "Necromancer": 2
+      },
+      "traitStart": {
+        "sociopath": 2,
+        "sadist": 3
+      }
+    },
+    {
+      "id": 785,
+      "name": "Touch Typing",
+      "description": "Typing accurately at speed without looking.",
+      "stat": "DEX",
+      "category": "Technology",
+      "classStart": {
+        "Freelancer": 2
+      }
+    },
+    {
+      "id": 786,
+      "name": "Tour Guiding",
+      "description": "Leading a group and holding their attention while walking.",
+      "stat": "PSI",
+      "category": "Social"
+    },
+    {
+      "id": 788,
+      "name": "Toxicology",
+      "description": "Poisons: dose, effect, detection and antidote.",
+      "stat": "INT",
+      "category": "Medicine",
+      "classStart": {
+        "Combat Medic": 2,
+        "Doctor": 2
+      }
+    },
+    {
+      "id": 281,
+      "name": "Tracking",
+      "description": "Following sign left by people and animals.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2,
+        "Scout": 3,
+        "Hunter-Gatherer": 2,
+        "Beast": 2
+      },
+      "traitStart": {
+        "tracker": 3,
+        "lycanthrope": 2
+      }
+    },
+    {
+      "id": 789,
+      "name": "Tractor Driving",
+      "description": "Driving and operating a tractor and its implements.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 790,
+      "name": "Train Conducting",
+      "description": "Running a train's schedule, signals and passengers.",
+      "stat": "INT",
+      "category": "Vehicles"
+    },
+    {
+      "id": 791,
+      "name": "Trampolining",
+      "description": "Height, shape and control off the bed.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Acrobat": 2
+      }
+    },
+    {
+      "id": 282,
+      "name": "Translation",
+      "description": "Carrying meaning between languages, not just words.",
+      "stat": "INT",
+      "category": "Academia",
+      "traitStart": {
+        "polyglot": 2
+      }
+    },
+    {
+      "id": 283,
+      "name": "Trapping",
+      "description": "Setting, placing and checking traps for game.",
+      "stat": "WIS",
+      "category": "Survival",
+      "classStart": {
+        "Ranger": 2,
+        "Hunter-Gatherer": 2
+      }
+    },
+    {
+      "id": 792,
+      "name": "Trash Collection",
+      "description": "Working a collection round: route, lift and load.",
+      "stat": "STR",
+      "category": "Commerce",
+      "classStart": {
+        "Wretch": 2
+      }
+    },
+    {
+      "id": 793,
+      "name": "Tree Climbing",
+      "description": "Ascending trees on rope and spurs, safely.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Beast": 2
+      }
+    },
+    {
+      "id": 886,
+      "name": "Trench Warfare Tactics",
+      "description": "Holding, raiding and living in fixed lines.",
+      "stat": "WIS",
+      "category": "Combat"
+    },
+    {
+      "id": 794,
+      "name": "Triathlon",
+      "description": "Swim, bike and run, with the transitions between.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 796,
+      "name": "Triple Jump",
+      "description": "Hop, step and jump off a single run-up.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 285,
+      "name": "Truck Driving",
+      "description": "Driving heavy goods vehicles: load, brakes and hours.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 472,
+      "name": "Truffle Hunting",
+      "description": "Finding truffles with a trained dog and a good nose.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 473,
+      "name": "Typography",
+      "description": "Setting type: face, size, spacing and rhythm.",
+      "stat": "INT",
+      "category": "Academia"
+    },
+    {
+      "id": 474,
+      "name": "UFOlogy",
+      "description": "Collecting and assessing reports of unidentified craft.",
+      "stat": "INT",
+      "category": "Academia",
+      "classStart": {
+        "Cultist": 2
+      }
+    },
+    {
+      "id": 798,
+      "name": "Ultimate Frisbee",
+      "description": "Disc handling, cuts and defence in the running game.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 286,
+      "name": "Unarmed Combat",
+      "description": "Fighting with the body alone: strikes, clinch and control.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Martial Artist": 3,
+        "Monk": 2,
+        "Brawler": 3
+      },
+      "traitStart": {
+        "monk-trained": 2,
+        "brawler": 2,
+        "martial_artist": 2
+      }
+    },
+    {
+      "id": 460,
+      "name": "Underwater Welding",
+      "description": "Welding at depth, where electricity and water meet.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 799,
+      "name": "Unicycling",
+      "description": "Riding, turning and idling on one wheel.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 287,
+      "name": "Upholstery",
+      "description": "Stripping, padding and covering furniture frames.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 476,
+      "name": "Urban Exploration",
+      "description": "Getting into disused structures, and back out.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 288,
+      "name": "Urban Planning",
+      "description": "Zoning, transport and how a city grows or chokes.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 787,
+      "name": "Vehicle Towing",
+      "description": "Recovering and towing vehicles safely and legally.",
+      "stat": "STR",
+      "category": "Vehicles"
+    },
+    {
+      "id": 800,
+      "name": "Ventriloquism",
+      "description": "Speaking without visible movement, and placing the voice.",
+      "stat": "DEX",
+      "category": "Social",
+      "classStart": {
+        "Illusionist": 2,
+        "Entertainer": 2,
+        "Mimic": 2
+      }
+    },
+    {
+      "id": 801,
+      "name": "Veterinary Medicine",
+      "description": "Diagnosing and treating animals that cannot say where it hurts.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 478,
+      "name": "Viaduct Engineering",
+      "description": "Designing and building long elevated spans.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 289,
+      "name": "Video Editing",
+      "description": "Cutting footage into sequence, pace and sense.",
+      "stat": "INT",
+      "category": "Arts"
+    },
+    {
+      "id": 290,
+      "name": "Video Gaming",
+      "description": "Playing videogames well: reflex, systems and pattern.",
+      "stat": "DEX",
+      "category": "Athletics",
+      "classStart": {
+        "Freelancer": 2
+      }
+    },
+    {
+      "id": 479,
+      "name": "Vintage Car Restoration",
+      "description": "Rebuilding an old car to running, original condition.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 850,
+      "name": "Violin Making",
+      "description": "Carving, graduating and varnishing violins.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 803,
+      "name": "Voice Acting",
+      "description": "Acting with the voice alone, to picture or page.",
+      "stat": "PSI",
+      "category": "Social",
+      "classStart": {
+        "Entertainer": 2
+      }
+    },
+    {
+      "id": 829,
+      "name": "Volcanology",
+      "description": "Volcanoes: their behaviour, warning signs and products.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 804,
+      "name": "Volleyball",
+      "description": "Serve, set, spike and block over the net.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 292,
+      "name": "Wakeboarding",
+      "description": "Riding and jumping the wake behind a boat.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 805,
+      "name": "Wand Making",
+      "description": "Selecting, turning and pairing wood into a working wand.",
+      "stat": "INT",
+      "category": "Arcana",
+      "classStart": {
+        "Fire Mage": 2,
+        "Ice Mage": 2,
+        "Battlemage": 2
+      }
+    },
+    {
+      "id": 480,
+      "name": "Water Dowsing",
+      "description": "Finding water with a rod, and the confidence to dig there.",
+      "stat": "PSI",
+      "category": "Occult"
+    },
+    {
+      "id": 806,
+      "name": "Water Polo",
+      "description": "Swimming, holding position and shooting in the water game.",
+      "stat": "CON",
+      "category": "Athletics"
+    },
+    {
+      "id": 294,
+      "name": "Water Skiing",
+      "description": "Riding skis behind a boat, on a wake and across it.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 222,
+      "name": "Weapon Reloading",
+      "description": "Reloading fast and correctly, without looking at it.",
+      "stat": "DEX",
+      "category": "Combat",
+      "traitStart": {
+        "trigger_happy": 2
+      }
+    },
+    {
+      "id": 807,
+      "name": "Weaponsmithing",
+      "description": "Making weapons that balance, hold an edge and take use.",
+      "stat": "INT",
+      "category": "Crafting"
+    },
+    {
+      "id": 809,
+      "name": "Web Development",
+      "description": "Building sites and web applications, front and back.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 295,
+      "name": "Weightlifting",
+      "description": "The snatch and the clean and jerk, done technically.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Berserker": 2,
+        "Barbarian": 2
+      }
+    },
+    {
+      "id": 296,
+      "name": "Welding",
+      "description": "Fusing metal with a sound, load-bearing bead.",
+      "stat": "INT",
+      "category": "Crafting",
+      "classStart": {
+        "Mechanic": 2
+      }
+    },
+    {
+      "id": 810,
+      "name": "Well Digging",
+      "description": "Sinking and lining a well to reliable water.",
+      "stat": "STR",
+      "category": "Crafting"
+    },
+    {
+      "id": 811,
+      "name": "Wheelchair Racing",
+      "description": "Racing a track chair on push technique and line.",
+      "stat": "STR",
+      "category": "Athletics"
+    },
+    {
+      "id": 892,
+      "name": "Whip",
+      "description": "Fighting with the whip: reach, crack and entanglement.",
+      "stat": "DEX",
+      "category": "Weapons",
+      "wtypeId": 5,
+      "classStart": {
+        "Freelancer": 3,
+        "Witch": 3,
+        "Nun": 3,
+        "Knight": 3,
+        "CEO": 3,
+        "Vampire": 3,
+        "Elementalist": 3,
+        "Enchanter": 3,
+        "Acrobat": 3,
+        "Monk": 3,
+        "Gladiator": 3,
+        "Bard": 3,
+        "Illusionist": 3,
+        "Battlemage": 3,
+        "Mercenary": 3,
+        "Archaeologist": 3,
+        "Mechanic": 3,
+        "Shopkeeper": 3,
+        "Entertainer": 3,
+        "Demigod": 3,
+        "Wretch": 3,
+        "Mimic": 3,
+        "Monster": 3,
+        "Mana Cyborg": 3
+      }
+    },
+    {
+      "id": 297,
+      "name": "Whittling",
+      "description": "Cutting small objects from wood with a knife alone.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 482,
+      "name": "Wig Making",
+      "description": "Ventilating and dressing hair into wigs that pass.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 859,
+      "name": "Wild Shape Attunement",
+      "description": "Holding a borrowed animal form without losing yourself in it.",
+      "stat": "PSI",
+      "category": "Arcana"
+    },
+    {
+      "id": 852,
+      "name": "Wilderness First Response",
+      "description": "Emergency medicine hours from any road.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 483,
+      "name": "Wind Turbine Repair",
+      "description": "Servicing turbines up-tower, in the weather.",
+      "stat": "INT",
+      "category": "Science"
+    },
+    {
+      "id": 812,
+      "name": "Window Washing",
+      "description": "Cleaning glass streak-free, at height if needed.",
+      "stat": "DEX",
+      "category": "Commerce"
+    },
+    {
+      "id": 298,
+      "name": "Windsurfing",
+      "description": "Sailing a board on rig, trim and stance.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 758,
+      "name": "Wine Tasting",
+      "description": "Assessing wine by sight, nose and palate, and naming it.",
+      "stat": "WIS",
+      "category": "Culinary"
+    },
+    {
+      "id": 299,
+      "name": "Winemaking",
+      "description": "Crushing, fermenting and ageing grapes into wine.",
+      "stat": "INT",
+      "category": "Culinary"
+    },
+    {
+      "id": 484,
+      "name": "Wire Making",
+      "description": "Drawing metal down into wire of even gauge.",
+      "stat": "DEX",
+      "category": "Crafting"
+    },
+    {
+      "id": 300,
+      "name": "Woodcarving",
+      "description": "Cutting figure and relief into wood with chisel and gouge.",
+      "stat": "DEX",
+      "category": "Crafting",
+      "classStart": {
+        "Lumberjack": 2
+      }
+    },
+    {
+      "id": 301,
+      "name": "Wrestling",
+      "description": "Takedowns, control and pins on the mat.",
+      "stat": "STR",
+      "category": "Athletics",
+      "classStart": {
+        "Wrestler": 3,
+        "Brawler": 2,
+        "Pro Wrestler": 3,
+        "Gladiator": 2
+      }
+    },
+    {
+      "id": 814,
+      "name": "X-Ray Operation",
+      "description": "Positioning, exposing and shielding for a usable radiograph.",
+      "stat": "INT",
+      "category": "Medicine"
+    },
+    {
+      "id": 485,
+      "name": "Xylophone Playing",
+      "description": "Playing tuned bars with mallets, in time.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 304,
+      "name": "Yo-Yo",
+      "description": "String tricks, sleep and return on the yo-yo.",
+      "stat": "DEX",
+      "category": "Athletics"
+    },
+    {
+      "id": 487,
+      "name": "Yodeling",
+      "description": "Singing across the break between chest and head voice, fast.",
+      "stat": "PSI",
+      "category": "Arts"
+    },
+    {
+      "id": 303,
+      "name": "Yoga",
+      "description": "Postures, breath and attention held together.",
+      "stat": "WIS",
+      "category": "Athletics",
+      "classStart": {
+        "Monk": 2
+      }
+    },
+    {
+      "id": 817,
+      "name": "Zamboni Operation",
+      "description": "Resurfacing ice evenly, in one pass, before the next period.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 866,
+      "name": "Zeppelin Piloting",
+      "description": "Flying a rigid airship on ballast, trim and slow decisions.",
+      "stat": "DEX",
+      "category": "Vehicles"
+    },
+    {
+      "id": 818,
+      "name": "Zine Making",
+      "description": "Writing, laying out and photocopying a small self-published magazine.",
+      "stat": "DEX",
+      "category": "Arts"
+    },
+    {
+      "id": 819,
+      "name": "Zookeeping",
+      "description": "Feeding, enriching and managing captive animals.",
+      "stat": "WIS",
+      "category": "Survival"
+    },
+    {
+      "id": 305,
+      "name": "Zoology",
+      "description": "The study of animals: classification, anatomy and behaviour.",
+      "stat": "INT",
+      "category": "Science"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "planets": {
+    "sub_mercurian": {
+      "description": "Monde rocheux très rudimentaire, croûte plus fine, atmosphère minimale."
+    },
+    "mercurian": {
+      "description": "Semblable à Mercure, sans air, cratérisé, riche en fer."
+    },
+    "sub_earth": {
+      "description": "Plus petit que la Terre, mais encore géologiquement actif."
+    },
+    "earth_like": {
+      "description": "Rocheux, avec tectonique des plaques, eau liquide et air respirable."
+    },
+    "super_earth": {
+      "description": "Grand monde rocheux ; gravité plus forte, atmosphère plus épaisse."
+    },
+    "mini_neptune": {
+      "description": "Petite enveloppe riche en glaces autour d'un noyau rocheux."
+    },
+    "ice": {
+      "description": "Surface gelée ; possible océan souterrain."
+    },
+    "ocean": {
+      "description": "Océan liquide global, très peu de masses terrestres."
+    },
+    "lava_ocean": {
+      "description": "Surface partiellement fondue, atmosphère de vapeur."
+    },
+    "desert": {
+      "description": "Monde sec, végétation rare ou totalement absente."
+    },
+    "rainforest": {
+      "description": "Jungles épaisses, fortes précipitations, biomasse élevée."
+    },
+    "tundra": {
+      "description": "Froid, vie végétale limitée, dominé par le pergélisol."
+    },
+    "acid_ocean": {
+      "description": "Mers d'acide sulfurique ou chlorhydrique, ciels corrosifs."
+    },
+    "gas_giant": {
+      "description": "Immense enveloppe d'hydrogène et d'hélium, aucune surface solide."
+    },
+    "hot_jupiter": {
+      "description": "Orbite extrêmement près de son étoile, températures brûlantes."
+    },
+    "warm_jupiter": {
+      "description": "Plus proche de son étoile que Jupiter, mais plus éloignée qu'un Jupiter chaud."
+    },
+    "cold_jupiter": {
+      "description": "Loin de son étoile, atmosphère profondément froide."
+    },
+    "ice_giant": {
+      "description": "Riche en volatils comme l'eau et l'ammoniac ; épais manteau glacé."
+    },
+    "ringed_gas_giant": {
+      "description": "Anneaux proéminents, dizaines de lunes."
+    },
+    "puffy": {
+      "description": "Densité extrêmement faible, gonflée par le chauffage stellaire."
+    },
+    "chthonian": {
+      "description": "Noyau dénudé d'une géante gazeuse, volcanique, riche en métaux."
+    },
+    "mega_iron": {
+      "description": "Presque uniquement fer/nickel, densité élevée, magnétique."
+    },
+    "carbon": {
+      "description": "Graphite et hydrocarbures dominants ; mers semblables à du goudron."
+    },
+    "diamond": {
+      "description": "La haute pression transforme l'enveloppe de carbone en couche de diamant."
+    },
+    "magma_planet": {
+      "description": "La surface est un bain de magma global, éruptions constantes."
+    },
+    "plasma": {
+      "description": "Atmosphère ionisée, luit sous le vent stellaire."
+    },
+    "magnetar": {
+      "description": "Champ magnétique ultra-puissant, environnement de radiation exotique."
+    },
+    "quark_planet": {
+      "description": "Noyau hypothétique de matière étrange, super-dense."
+    },
+    "rogue": {
+      "description": "Errante, froide, sans étoile hôte."
+    },
+    "habitable": {
+      "description": "Dans la zone habitable, climat stable, eau liquide."
+    },
+    "dwarf": {
+      "description": "Petit corps glacé/rocheux, comme Pluton ou Cérès."
+    },
+    "centaur": {
+      "description": "Hybride glace-roche entre les orbites de Jupiter et Neptune."
+    },
+    "planetesimal": {
+      "description": "Brique de formation des planètes, petit amas de roche et de glace."
+    },
+    "c_type_asteroid": {
+      "description": "Carboné, sombre, composition primitive."
+    },
+    "s_type_asteroid": {
+      "description": "Silicates et nickel-fer, surface plus brillante."
+    },
+    "m_type_asteroid": {
+      "description": "Métallique, surtout des fragments de noyau nickel-fer."
+    },
+    "trojan_asteroid": {
+      "description": "Co-orbital aux points de Lagrange d'une planète plus grande."
+    },
+    "comet": {
+      "description": "Boule de neige sale : glace, poussière, développe une queue près d'une étoile."
+    },
+    "short_period_comet": {
+      "description": "Orbite de moins de 200 ans, visiteuse fréquente."
+    },
+    "long_period_comet": {
+      "description": "Orbite de plus de 200 ans, venue du lointain nuage d'Oort."
+    }
+  }
+}

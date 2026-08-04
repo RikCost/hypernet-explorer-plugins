@@ -1,0 +1,634 @@
+{
+  "morning": {
+    "Nervous": [
+      "Morning already?! I haven't worried about half of yesterday yet!",
+      "I barely slept. What if today's worse than yesterday?",
+      "Okay. Morning checklist. Where's the checklist. WHERE'S THE... oh. Pocket.",
+      "Everyone's so calm in the morning. Do they know something I don't?"
+    ],
+    "Calm": [
+      "A quiet morning. Tea first. Everything else after.",
+      "The town wakes slowly. I see no reason to outpace it.",
+      "Morning air, clean and cool. Begin gently.",
+      "First light asks nothing. That's why I like it."
+    ],
+    "Aggressive": [
+      "Anyone who talks to me before breakfast regrets it.",
+      "Morning. Let's get the arguing started early.",
+      "Up at dawn. First one moving wins.",
+      "The rooster and I have an understanding. He stopped."
+    ],
+    "Melancholic": [
+      "Another morning. The days do insist on continuing.",
+      "Woke before dawn again. The quiet hours know me.",
+      "Morning light is lovely. It just arrives so relentlessly.",
+      "Everyone rushes to start the day. Toward what, I wonder."
+    ],
+    "Sanguine": [
+      "Morning! The day's brand new and so am I!",
+      "Smell that morning bread! Today's already winning!",
+      "Up with the sun! Wouldn't miss a fresh day for anything!",
+      "Good morning, everyone! Yes, even you, grumpy miller!"
+    ],
+    "Cautious": [
+      "Plan the day before the day plans you.",
+      "Morning review: weather, coin, tasks. Then the door.",
+      "Early start, fewer surprises.",
+      "Check the locks held overnight, then breakfast."
+    ],
+    "Impulsive": [
+      "Awake! What's first? Doesn't matter, moving!",
+      "Skipped breakfast. Too much to do. Or find. Or start!",
+      "Morning! Time to commit to something I'll question by noon!",
+      "The day's fresh, first idea wins!"
+    ],
+    "Stoic": [
+      "Rise. Begin. The hour does not negotiate.",
+      "Morning is a door. Walk through it.",
+      "Slept, woke, continue.",
+      "Dawn requires nothing but attendance."
+    ],
+    "Paranoid": [
+      "Who was up before me? What did I miss while I slept?",
+      "The door was locked exactly as I left it. Or... almost exactly.",
+      "Morning's when they watch you. Everyone's routines on display.",
+      "Slept with one eye open. The other one missed things, I'm sure."
+    ],
+    "Empathetic": [
+      "I wonder how everyone slept. Some faces look heavy this morning.",
+      "The baker's already been up for hours. Hope she rests sometime.",
+      "A kind good-morning can carry someone till noon.",
+      "Morning's hard for some folk. Worth remembering."
+    ],
+    "Authoritative": [
+      "Morning briefing first. A day without orders is a day wasted.",
+      "Dawn inspection. If I'm up, everyone's up.",
+      "The early hours set the tone. I set the early hours.",
+      "Plans were made last night. Mornings are for executing them."
+    ],
+    "Scholarly": [
+      "The mind is sharpest before noon. Time for the difficult chapters.",
+      "Two pages read before breakfast is a day already profitable.",
+      "Morning light through the east window, reading hours, precious ones.",
+      "I dreamt of an answer. Must write it down before it evaporates."
+    ],
+    "Artistic": [
+      "Morning light is honey-colored. Nothing else looks like it.",
+      "Dawn drew the rooftops in gold leaf again. Show-off.",
+      "The morning mist edits the town beautifully.",
+      "First light, first ideas. Both fade fast, catch them."
+    ],
+    "Adventurous": [
+      "Dawn means a whole unexplored day ahead!",
+      "Road's empty this early. Best time to cover ground!",
+      "Sunrise from the hilltop, worth every lost minute of sleep.",
+      "Morning! Somewhere out there is today's discovery."
+    ],
+    "Nurturing": [
+      "Is everyone fed? Nobody starts a day hungry, not on my watch.",
+      "Porridge is on. Come and get it while it's hot.",
+      "Morning's for warm food and gentle words. Both ready.",
+      "Slept well? You look pale, dear. Sit, eat."
+    ],
+    "Mischievous": [
+      "Everyone's groggy in the morning. Prime time for pranks.",
+      "Switched the salt and sugar last night. Breakfast will be... memorable.",
+      "Early bird gets the worm. Earlier bird hides the worms.",
+      "Nothing personal, morning people. But you're suspicious."
+    ],
+    "Cynical": [
+      "Morning. The daily reminder that it all starts over.",
+      "Rise and shine, they say. As if either were optional.",
+      "The sun's up and so are the prices, I'd wager.",
+      "Another dawn, another queue for everything."
+    ],
+    "Disciplined": [
+      "Up at the same hour, as always. Routine is freedom.",
+      "Bed made, boots on, list in hand. Proceed.",
+      "The morning drill skips no one. Especially not me.",
+      "Five tasks before breakfast. Standard."
+    ],
+    "Fatalistic": [
+      "The sun rises without asking us. We follow suit.",
+      "Morning again. The wheel never even slows.",
+      "Today was decided long ago. I'm just here to attend it.",
+      "We wake because we woke. Reason enough, apparently."
+    ],
+    "Grumpy": [
+      "Mornings. Whoever invented them owes me sleep.",
+      "The birds started at FIVE. The birds and I are finished.",
+      "Don't 'good morning' me. Prove it first.",
+      "Coffee. Then speech. Not before."
+    ],
+    "Loyal": [
+      "First thing's first: check in on my people.",
+      "Morning round: bakery, well, my old friend's porch. Every day.",
+      "He walks to work past my door. I'll wait and walk with him.",
+      "Promised to help this morning, and morning it is."
+    ],
+    "Brave": [
+      "A new day. Whatever it brings, I'm ready.",
+      "Dawn. Best hour to do the thing you're dreading.",
+      "Morning courage is the cheapest kind. Stock up.",
+      "Up before the sun. Let it catch up to me."
+    ],
+    "Timid": [
+      "Maybe if I start early I can avoid the crowds...",
+      "The streets are still empty. I like them like this.",
+      "Good. No one's up yet. I can do my errands in peace.",
+      "A quiet breakfast in the corner seat. Perfect start."
+    ],
+    "Hedonistic": [
+      "Five more minutes. Then breakfast. A long one.",
+      "Mornings are a rumor I refuse to confirm before ten.",
+      "Breakfast in bed. Both breakfasts, actually.",
+      "The pillow and I have unfinished business."
+    ],
+    "Apathetic": [
+      "Morning. Again. Sure.",
+      "Woke up. That's the day's achievement sorted.",
+      "The sun insists, so here I am.",
+      "Morning, noon. Same thing, different light."
+    ],
+    "default": [
+      "It's morning already. I should make the most of the daylight.",
+      "A new day begins.",
+      "Morning's here, time to get going.",
+      "Early light already. Where does the night go?"
+    ]
+  },
+  "afternoon": {
+    "Nervous": [
+      "Half the day gone and my list has somehow gotten longer!",
+      "Is it that late already?! When did that happen? HOW?",
+      "Everyone's looking busy. Am I busy enough? I should look busier.",
+      "Lunch sat wrong. Or maybe it's the deadline. Or both. Probably both."
+    ],
+    "Calm": [
+      "Midday. A pause, a breath, then onward.",
+      "The afternoon hum of the town. Steady. Reassuring.",
+      "Half done or half left, same thing, no alarm either way.",
+      "Warm hours. Good for unhurried work."
+    ],
+    "Aggressive": [
+      "This heat makes everyone slow and stupid. Stay out of my way.",
+      "Midday queue again. Move it, people.",
+      "Afternoon slump? Push through it. I do.",
+      "Whoever's hammering next door better be done soon."
+    ],
+    "Melancholic": [
+      "The afternoon drags its feet, same as I do.",
+      "The bright hours feel longest somehow.",
+      "Midday crowds, and lonelier for them.",
+      "Half the day spent. On what, exactly?"
+    ],
+    "Sanguine": [
+      "Best part of the day! Everyone's out and about!",
+      "Afternoon sun and friendly faces everywhere. Love it!",
+      "Market's buzzing! What a glorious racket!",
+      "Still so much day left! Endless possibilities!"
+    ],
+    "Cautious": [
+      "Good progress so far. Don't get sloppy in the home stretch.",
+      "Midday check: coin pouch, door key, task list. All present.",
+      "The afternoon's when mistakes creep in. Slow down a touch.",
+      "Finish the important things before the light changes."
+    ],
+    "Impulsive": [
+      "Afternoon slump? Not me. Next thing, now!",
+      "Lunch? Ate it walking. Onward!",
+      "New afternoon plan! Forget the morning plan!",
+      "Half a day left is a whole adventure if you hurry!"
+    ],
+    "Stoic": [
+      "The day is half spent. Spend the rest deliberately.",
+      "Midday heat. Endure it like the rest.",
+      "Afternoon: the long middle. Middles build character.",
+      "Neither morning's promise nor evening's rest. Just work. Good."
+    ],
+    "Paranoid": [
+      "Busy streets. Crowds. Anyone could be anyone in a crowd.",
+      "Midday: maximum witnesses... or maximum cover. Depends who's asking.",
+      "That vendor has watched me cross the square three times now.",
+      "Everyone 'just happens' to be out at this hour. All of them. Together."
+    ],
+    "Empathetic": [
+      "Everyone's flagging a bit by now. A kind word goes far in the afternoon.",
+      "The porters look exhausted. Hope someone's bringing them water.",
+      "Afternoon light makes tired faces honest. Be kind to them.",
+      "She's been at that stall since dawn. I'll bring her something."
+    ],
+    "Authoritative": [
+      "Midday check: who is behind on their tasks?",
+      "The afternoon is for closing gaps. Find yours.",
+      "Half-day reports. Short ones. I have an evening planned.",
+      "Productivity dips at three. Not on my watch it doesn't."
+    ],
+    "Scholarly": [
+      "Past noon. Reviewing the morning's notes while they're fresh.",
+      "The library is emptiest mid-afternoon. My favorite crowd.",
+      "Afternoon: cross-reference what morning-me claimed so confidently.",
+      "The light's too flat for the telescope, perfect for the archive."
+    ],
+    "Artistic": [
+      "Flat light this time of day. The world goes a bit prose.",
+      "Midday shadows are stubby little things. Comic, almost.",
+      "The afternoon needs editing. Too long in the middle.",
+      "Heat shimmer over the rooftops, the air itself sketching."
+    ],
+    "Adventurous": [
+      "Plenty of daylight left. Plenty of ground to cover.",
+      "Afternoon's for the far errand, the long loop, the new shortcut.",
+      "Could still make the ridge and back before dark. Tempting.",
+      "The well-trodden hour. Time to tread somewhere less so."
+    ],
+    "Nurturing": [
+      "Lunch is done, now who needs looking after this afternoon?",
+      "Naptime for the little ones. Quiet feet, everyone.",
+      "Midday meal fed twelve. The pot's already on for supper.",
+      "Afternoon tea mends what the morning bruised."
+    ],
+    "Mischievous": [
+      "Full bellies make drowsy guards. Just saying.",
+      "The afternoon lull. When attention naps and I don't.",
+      "Everyone's predictable after lunch. Adorably so.",
+      "Three o'clock: official hour of unattended pies."
+    ],
+    "Cynical": [
+      "The afternoon: too late to start something, too early to quit.",
+      "Midday optimism, meet afternoon reality.",
+      "Everyone's 'almost done'. Nobody's almost done.",
+      "The day peaked hours ago. We're all just coasting."
+    ],
+    "Disciplined": [
+      "Second half of the schedule. Same pace as the first.",
+      "Lunch: twenty minutes. Resumed: on time.",
+      "Afternoon fatigue is a rumor I decline to entertain.",
+      "Mid-list. Exactly where the plan says I should be."
+    ],
+    "Fatalistic": [
+      "Noon tips into afternoon. The descent always comes.",
+      "The day's already decided how it ends. We're past the hinge.",
+      "Afternoon: the long exhale before evening's full stop.",
+      "Shadows lengthen on schedule. Everything does."
+    ],
+    "Grumpy": [
+      "Is it evening yet? No? Wake me when it is.",
+      "The afternoon heat, the afternoon noise, the afternoon people.",
+      "Three more hours of pretending to be pleasant. Tick tock.",
+      "Whoever scheduled afternoons this long should answer for it."
+    ],
+    "Loyal": [
+      "Midday's when folk need a hand most. I'll make the rounds.",
+      "Said I'd stop by after lunch. After lunch it is.",
+      "My crew flags by mid-afternoon. That's when I show up.",
+      "An afternoon favor is worth two morning promises."
+    ],
+    "Brave": [
+      "Day's half done and I haven't backed down once.",
+      "The hard task's been staring at me since noon. Staring back now.",
+      "Afternoon heat tests the will. The will says: fine.",
+      "Save some nerve for the afternoon. That's when it counts."
+    ],
+    "Timid": [
+      "So many people out right now. I'll take the side streets.",
+      "The market's loudest at this hour. I'll go... later. Or tomorrow.",
+      "Found a shady bench away from the bustle. Mine now.",
+      "Everyone seems busy. Good. Busy people don't stop to chat."
+    ],
+    "Hedonistic": [
+      "Afternoon nap. Tradition, technically.",
+      "Long lunch rolls into early supper if you pace it right.",
+      "The hammock hours are upon us, friends.",
+      "Work in this heat? After this little rest. Or the next one."
+    ],
+    "Apathetic": [
+      "Afternoon. Halfway to nothing in particular.",
+      "Midday. The sun's loud and so is everyone.",
+      "Half the day left. No plans for either half.",
+      "Afternoon happens every day, you know. Hardly news."
+    ],
+    "default": [
+      "It's the middle of the day. Things are going well enough.",
+      "Busy hours, these.",
+      "The afternoon is rolling along.",
+      "Midday already, the day moves fast."
+    ]
+  },
+  "evening": {
+    "Nervous": [
+      "It's getting dark and I haven't double-checked the locks yet!",
+      "Dusk already? Did I finish everything? I didn't, did I.",
+      "Evening shadows look like... no. No, it's nothing. Probably nothing.",
+      "I should be home. Why am I not home yet?!"
+    ],
+    "Calm": [
+      "The day winds down. Let it.",
+      "Evening settles things. Even me.",
+      "Lamplight and low voices. The gentle hours.",
+      "Whatever didn't get done will wait politely till morning."
+    ],
+    "Aggressive": [
+      "Evening crowd's full of fools with liquid courage. Fine by me.",
+      "Long day. Short temper. Choose your words, folks.",
+      "Last one picking a fight before supper gets one free.",
+      "The day swung at me all it had. Still standing."
+    ],
+    "Melancholic": [
+      "Dusk is honest, at least. Everything fades.",
+      "The sunset's beautiful. It's also leaving. Typical.",
+      "Evenings are for remembering things best left unremembered.",
+      "Another day folded away. They stack up so quietly."
+    ],
+    "Sanguine": [
+      "Evening! Lamplight, good company, maybe a song!",
+      "Look at that sunset! The day's taking a bow!",
+      "Supper smells from every window. Best hour of the town!",
+      "The day was grand and the evening's grander!"
+    ],
+    "Cautious": [
+      "Home before full dark. That's the rule.",
+      "Lamps trimmed, door barred, then I relax. In that order.",
+      "Evening errands done early. The dark can keep its surprises.",
+      "One last look up and down the street, then in for the night."
+    ],
+    "Impulsive": [
+      "Night's young! Sleep is a problem for later-me.",
+      "Evening plans? None! Best kind!",
+      "One more thing before dark. Okay, three more things.",
+      "Sunset says stop. Sunset's not the boss of me."
+    ],
+    "Stoic": [
+      "The day ends as it began: one task at a time.",
+      "Evening. Tally the day, bank the lessons, rest.",
+      "Tired is the proper way to end a day.",
+      "The lamp burns low. So do I. Acceptable."
+    ],
+    "Paranoid": [
+      "Dusk. The hour when shapes stop having faces.",
+      "Evening visitors. Nobody decent calls after sundown.",
+      "Count the lit windows. Now count who's NOT home. Interesting.",
+      "The day people go in. The night people come out. Watch the handoff."
+    ],
+    "Empathetic": [
+      "I love watching windows light up. Every one is somebody's homecoming.",
+      "Tired feet on every doorstep. They all earned tonight's rest.",
+      "Evening's when loneliness bites hardest. Check on the quiet ones.",
+      "Supper smoke from the widow's chimney. Good, she's eating."
+    ],
+    "Authoritative": [
+      "End-of-day review. Tomorrow's orders won't write themselves.",
+      "Evening roll call, then everyone's free. Discipline buys leisure.",
+      "The day's accounts get settled before the lamps go out.",
+      "Rest is part of the regimen. See that you take it."
+    ],
+    "Scholarly": [
+      "Evening: lamp, book, and the day's questions to untangle.",
+      "Dusk. The hour the mind stops sprinting and starts thinking.",
+      "One more chapter. The night is young and so is this argument.",
+      "Twilight: when today's notes become tomorrow's questions."
+    ],
+    "Artistic": [
+      "The golden hour. The whole town turns to amber.",
+      "Sunset spends color like a drunk heir. Magnificent.",
+      "Dusk blurs all the hard edges. The town goes soft-focus.",
+      "Evening light forgives every ugly wall in town."
+    ],
+    "Adventurous": [
+      "Day's done? The interesting stories all start after sunset.",
+      "Evening air, open door, somewhere to be. Or somewhere to find.",
+      "The road looks different at dusk. Worth a last wander.",
+      "Campfire hour. Even in town, I miss the crackle."
+    ],
+    "Nurturing": [
+      "Supper warming, lamps lit. Everyone come home now.",
+      "Evening's for full plates and emptied worries.",
+      "Wash up, sit down, tell me about your day. All of you.",
+      "The night chill comes quick. Extra blanket on every bed."
+    ],
+    "Mischievous": [
+      "Twilight. Hard to tell who did what to whom. Perfect.",
+      "Dusk: when today's pranks mature and tomorrow's get planted.",
+      "Evening gossip hour. I have... contributions.",
+      "Lamps make such interesting shadows. Some of them are even real."
+    ],
+    "Cynical": [
+      "Another day over. Spoiler: tomorrow's the same.",
+      "Sunset's free, at least. Only thing today that was.",
+      "Evening: when everyone lies about how their day went.",
+      "They light the lamps so we can see the same problems after dark."
+    ],
+    "Disciplined": [
+      "Day's work logged. Preparation for tomorrow begins now.",
+      "Boots cleaned tonight save minutes tomorrow.",
+      "Evening routine: review, prepare, rest. No deviations.",
+      "The day ends when the list does. Nearly there."
+    ],
+    "Fatalistic": [
+      "The light goes. It was always going to.",
+      "Every sunset is a small rehearsal.",
+      "The day dies on schedule. Punctual little thing.",
+      "Evening comes for every morning. No appeals."
+    ],
+    "Grumpy": [
+      "Finally. The acceptable hour to stop pretending to be sociable.",
+      "Evening. Door shut. World out there, me in here. Perfect.",
+      "Supper, slippers, silence. In that order, no substitutions.",
+      "The sun's leaving. Smartest thing anyone's done all day."
+    ],
+    "Loyal": [
+      "Evening rounds, making sure my friends got home safe.",
+      "We end the day where we started it: looking out for each other.",
+      "One knock on her door before mine. Just to be sure.",
+      "Shared supper tastes better. I'll bring mine next door."
+    ],
+    "Brave": [
+      "Darkness coming on. Good. It should be more afraid of me.",
+      "The day tested everyone. Proud of those still on their feet.",
+      "Night patrol needs a volunteer? You've found one.",
+      "Dusk is just the day daring you to keep going."
+    ],
+    "Timid": [
+      "Getting dark. Home. Door. Bolt. Blanket.",
+      "I like evenings. Everyone's too tired to be loud.",
+      "Home before the lamplighters. That's my little race.",
+      "The evening crowd is gentler. Still avoiding it, though."
+    ],
+    "Hedonistic": [
+      "Now the day actually begins. Where's the wine?",
+      "Supper, dessert, second dessert. Evening done properly.",
+      "Twilight: the official start of doing nothing, beautifully.",
+      "The evening is young, the bottle is full, the chair is deep."
+    ],
+    "Apathetic": [
+      "Sun's going down. It does that.",
+      "Evening. The day quitting, basically. Relatable.",
+      "Lamps on, lamps off. The town's little ritual.",
+      "Day's over. Score: nobody."
+    ],
+    "default": [
+      "Evening is coming. Time to think about heading home soon.",
+      "The light's fading fast now.",
+      "Almost suppertime, by the look of the sky.",
+      "The day's winding down."
+    ]
+  },
+  "night": {
+    "Nervous": [
+      "What was that sound? And THAT one? Nights are nothing but sounds!",
+      "I'll just check the lock once more. Fifth time's the calm one.",
+      "It's so dark. Anything could be out there. ANYTHING.",
+      "Sleep. Right. With all this... night happening."
+    ],
+    "Calm": [
+      "The night is still. So am I.",
+      "Stars out, lamps low. The world finally whispers.",
+      "Night air clears the head better than any tonic.",
+      "The dark is just the day resting. Rest with it."
+    ],
+    "Aggressive": [
+      "Anyone skulking around my street tonight picked the wrong street.",
+      "Can't sleep. Might as well glare at the ceiling. Ceiling blinked first.",
+      "Night noises don't scare me. I AM the night noise.",
+      "Last word of the day goes to me. It always does."
+    ],
+    "Melancholic": [
+      "The dark doesn't ask me to smile. We get along, the night and I.",
+      "Midnight thoughts are the heaviest ones. They know their hour.",
+      "The whole town asleep, and me keeping the silence company.",
+      "Stars are just far-off lights that already left. Fitting."
+    ],
+    "Sanguine": [
+      "Look at those stars! Even nighttime is showing off!",
+      "A whole sky full of sparkles and it's FREE!",
+      "Good night, world! See you bright and early!",
+      "Night walks! The day's encore performance!"
+    ],
+    "Cautious": [
+      "Late hours, empty streets. Stay where the lanterns are.",
+      "Candle out, embers banked, nothing left burning. Now sleep.",
+      "If it can't be done safely at night, it waits for day. Simple.",
+      "I keep a lamp trimmed by the bed. Just sensible."
+    ],
+    "Impulsive": [
+      "Can't sleep. Won't sleep. Midnight walk it is!",
+      "Great idea just struck! It cannot possibly wait till morning!",
+      "The stars are out and so am I!",
+      "Bed? Eventually. Probably. The night's too interesting!"
+    ],
+    "Stoic": [
+      "Night watch or night rest, both are duties.",
+      "Sleep is maintenance. Perform it.",
+      "The dark asks for no opinion. It gets none.",
+      "Day spent, night earned."
+    ],
+    "Paranoid": [
+      "They move at night, you know. That's when they all move.",
+      "Three sets of footsteps tonight. My street only has two houses.",
+      "I sleep in shifts. You'd be wise to wonder why.",
+      "The lamplight flickered twice. Signals, obviously."
+    ],
+    "Empathetic": [
+      "Hard to sleep wondering who's out there with nowhere warm.",
+      "The night watch must get so lonely. I should leave them something warm.",
+      "Someone's baby cried down the lane. New parents. Bless their tired hearts.",
+      "Night makes every worry heavier. Be soft with the sleepless."
+    ],
+    "Authoritative": [
+      "The town sleeps because someone keeps order. Remember that.",
+      "Night rounds done? Then the day is officially concluded.",
+      "Curfew isn't cruelty. It's care with a spine.",
+      "I'll sleep when the watch reports in. Not a minute before."
+    ],
+    "Scholarly": [
+      "The constellations are out. My favorite library has no walls.",
+      "Night silence: finally, thinking conditions.",
+      "One candle, one problem, one night. Fair odds.",
+      "The ancients mapped these same stars. Good company, the dead."
+    ],
+    "Artistic": [
+      "Night strips the world to silhouettes. Pure composition.",
+      "Moonlight redraws the whole town in silverpoint.",
+      "The night has better contrast than the day. Bolder, too.",
+      "Somewhere a violin. Night acoustics make amateurs into angels."
+    ],
+    "Adventurous": [
+      "Night roads go to the same places, they're just more exciting.",
+      "Owls, stars, and open paths. Night hiking is underrated.",
+      "The dark half of the map is still the map.",
+      "Every great tale has a chapter that happens after midnight."
+    ],
+    "Nurturing": [
+      "Everyone tucked in? Then I can finally rest too.",
+      "Warm milk for whoever can't sleep. There's always one.",
+      "Banked the fire so it greets us kindly at dawn.",
+      "Goodnight, house. Keep them safe till morning."
+    ],
+    "Mischievous": [
+      "Honest folk are asleep. The fun ones aren't.",
+      "Midnight: when yesterday's pranks get their finishing touches.",
+      "The night hides my grin. The grin is extensive.",
+      "Tomorrow someone finds their boots on the roof. Tonight, I place them."
+    ],
+    "Cynical": [
+      "The dark hides nothing new. It's all the same rot, unlit.",
+      "Sweet dreams, everyone. The bills resume at dawn.",
+      "Stars: beautiful, distant, indifferent. At least they're honest about it.",
+      "Night's the only time this town is quiet, and even that's suspicious."
+    ],
+    "Disciplined": [
+      "Lights out on schedule. Tomorrow demands it.",
+      "Eight hours' rest is part of the training. Execute.",
+      "Late nights borrow from early mornings. I don't take loans.",
+      "Final check complete. Sleep: commenced."
+    ],
+    "Fatalistic": [
+      "We end each day practicing for the long sleep.",
+      "The stars burned before us and will after. Goodnight anyway.",
+      "Night falls. It never trips.",
+      "Sleep takes us all eventually. Tonight, voluntarily."
+    ],
+    "Grumpy": [
+      "Quiet at last. The best part of any day is the end of it.",
+      "If those cats start up again tonight, I swear...",
+      "Night. Dark, quiet, and no visitors. The day should take notes.",
+      "Tomorrow will be annoying. Tonight, at least, is mine."
+    ],
+    "Loyal": [
+      "Night's when promises get tested. Mine hold.",
+      "Left a lamp lit in the window, in case a friend needs it.",
+      "He's on night shift. I'll bring him some supper.",
+      "The old dog sleeps by my door. We guard each other."
+    ],
+    "Brave": [
+      "Whatever's out in that dark, it can come say hello.",
+      "Night watch duty? Gladly. The dark needs someone unafraid of it.",
+      "Checked the strange noise myself. It's always a cat. Always.",
+      "Sleep well, town. Someone brave-ish is awake."
+    ],
+    "Timid": [
+      "I'm not scared of the dark. I just respect it. From under the covers.",
+      "Blanket up to the chin. Standard nighttime defenses.",
+      "The floor creaks by itself at night. I've decided that's normal.",
+      "Goodnight, lamp. Stay lit just a little longer."
+    ],
+    "Hedonistic": [
+      "Midnight snack? Don't mind if I do.",
+      "The best dreams require the best pillows. I've invested.",
+      "Nightcap, then bed. Possibly two nightcaps. It's medicinal.",
+      "Sleeping in starts with staying up. I do my part."
+    ],
+    "Apathetic": [
+      "Dark out. Time passes.",
+      "Night. The ceiling again. Hello, ceiling.",
+      "Stars or no stars. Eyes closed either way.",
+      "Sleep, wake, repeat. The big routine."
+    ],
+    "default": [
+      "It's getting late. Best be careful in the darkness.",
+      "The streets are empty at this hour.",
+      "Quiet night tonight.",
+      "Time to head in, it's well past dark."
+    ]
+  }
+}

@@ -1,0 +1,566 @@
+{
+  "ui": {
+    "title": "Periodic Table",
+    "back": "Back",
+    "lanthanides": "Lanthanides",
+    "actinides": "Actinides",
+    "esotericSection": "Esoteric Elements",
+    "props": {
+      "symbol": "Symbol",
+      "number": "Atomic №",
+      "mass": "Atomic Mass",
+      "category": "Category",
+      "state": "State at STP",
+      "discoveredBy": "Discovered By",
+      "year": "Year",
+      "origin": "Origin"
+    }
+  },
+  "categories": {
+    "alkaliMetal": "Alkali Metal",
+    "alkalineEarth": "Alkaline Earth",
+    "transitionMetal": "Transition Metal",
+    "postTransition": "Post-Transition",
+    "metalloid": "Metalloid",
+    "nonmetal": "Nonmetal",
+    "halogen": "Halogen",
+    "nobleGas": "Noble Gas",
+    "lanthanide": "Lanthanide",
+    "actinide": "Actinide",
+    "esoteric": "Esoteric"
+  },
+  "states": {
+    "solid": "Solid",
+    "liquid": "Liquid",
+    "gas": "Gas",
+    "unknown": "Unknown",
+    "mythical": "Mythical",
+    "superposed": "Superposed"
+  },
+  "data": {
+    "H": {
+      "name": "Hydrogen",
+      "desc": "The lightest and most abundant element in the universe, forming stars and water alike. A colorless, highly flammable gas at standard conditions."
+    },
+    "He": {
+      "name": "Helium",
+      "desc": "A noble gas produced by nuclear fusion in stars and accumulated in natural gas deposits. Colorless, odorless, and the second most abundant element in the universe."
+    },
+    "Li": {
+      "name": "Lithium",
+      "desc": "The lightest of all metals, soft enough to cut with a knife. Reacts vigorously with water and is the backbone of modern rechargeable batteries."
+    },
+    "Be": {
+      "name": "Beryllium",
+      "desc": "An exceptionally stiff, lightweight metal used in aerospace alloys and X-ray windows. Toxic if inhaled as dust, but invaluable in precision engineering."
+    },
+    "B": {
+      "name": "Boron",
+      "desc": "A metalloid essential for plant cell walls and used in glass, ceramics, and nuclear reactors as a neutron absorber."
+    },
+    "C": {
+      "name": "Carbon",
+      "desc": "The backbone of all known organic chemistry, carbon forms more compounds than any other element. From diamonds to graphite to life itself, its versatility is unmatched."
+    },
+    "N": {
+      "name": "Nitrogen",
+      "desc": "Comprising 78% of Earth's atmosphere, nitrogen is essential for proteins, DNA, and all living organisms, yet its pure form is chemically inert at room temperature."
+    },
+    "O": {
+      "name": "Oxygen",
+      "desc": "The breath of life and the fuel of combustion. Oxygen comprises 21% of Earth's atmosphere and is the most abundant element in the Earth's crust by mass."
+    },
+    "F": {
+      "name": "Fluorine",
+      "desc": "The most electronegative and reactive element, capable of forming compounds with almost every other element including noble gases. A pale yellow, corrosive gas."
+    },
+    "Ne": {
+      "name": "Neon",
+      "desc": "A noble gas famous for its brilliant orange-red emission in discharge tubes. Completely chemically inert and the fifth most abundant element in the universe."
+    },
+    "Na": {
+      "name": "Sodium",
+      "desc": "A soft, silvery-white alkali metal that reacts violently with water. Essential for nerve transmission and the regulation of blood pressure in living organisms."
+    },
+    "Mg": {
+      "name": "Magnesium",
+      "desc": "A lightweight structural metal that burns with a dazzling white flame. Essential for chlorophyll in plants and over 300 enzymatic reactions in the human body."
+    },
+    "Al": {
+      "name": "Aluminum",
+      "desc": "The most abundant metal in Earth's crust, prized for its low density, corrosion resistance, and recyclability. The foundation of the modern aerospace industry."
+    },
+    "Si": {
+      "name": "Silicon",
+      "desc": "The second most abundant element in Earth's crust and the backbone of modern electronics. Silicon's semiconductor properties underpin virtually all digital technology."
+    },
+    "P": {
+      "name": "Phosphorus",
+      "desc": "Essential for life in DNA, RNA, and ATP energy transfer. Exists in several allotropes ranging from the waxy white form to the stable red variety used in matches."
+    },
+    "S": {
+      "name": "Sulfur",
+      "desc": "A bright yellow solid known and used since antiquity in medicine and alchemy. Essential in proteins and a key industrial chemical used in fertilizers and rubber vulcanization."
+    },
+    "Cl": {
+      "name": "Chlorine",
+      "desc": "A yellow-green, acrid gas used in water purification and chemical synthesis. Forms common table salt with sodium and was tragically used as a chemical weapon in WWI."
+    },
+    "Ar": {
+      "name": "Argon",
+      "desc": "The most abundant noble gas in Earth's atmosphere at nearly 1%. Used as an inert shielding gas in welding and to fill incandescent light bulbs."
+    },
+    "K": {
+      "name": "Potassium",
+      "desc": "An essential nutrient for every animal cell, regulating fluid balance and nerve function. Reacts explosively with water, igniting with a characteristic violet flame."
+    },
+    "Ca": {
+      "name": "Calcium",
+      "desc": "The most abundant mineral in the human body, forming the structural foundation of bones and teeth. Also essential for muscle contraction and blood clotting."
+    },
+    "Sc": {
+      "name": "Scandium",
+      "desc": "A rare transition metal whose light weight and high melting point make it valuable in aerospace alloys and high-intensity metal halide lamps."
+    },
+    "Ti": {
+      "name": "Titanium",
+      "desc": "Celebrated for its exceptional strength-to-weight ratio and total corrosion resistance. Biocompatible with human tissue, it is the metal of choice for surgical implants and jet engines."
+    },
+    "V": {
+      "name": "Vanadium",
+      "desc": "A hard, silvery-grey metal that dramatically increases steel's strength and toughness in small quantities. An essential trace element in certain metabolic enzymes."
+    },
+    "Cr": {
+      "name": "Chromium",
+      "desc": "The element that makes stainless steel stainless. Its name comes from the Greek for color, as its compounds produce vivid reds, greens, and yellows in pigments and gemstones."
+    },
+    "Mn": {
+      "name": "Manganese",
+      "desc": "An essential element in steel production, hardening iron alloys and preventing brittleness. Also a critical trace element in bone formation and antioxidant enzymes."
+    },
+    "Fe": {
+      "name": "Iron",
+      "desc": "The most widely used metal in human history, and the dominant element of Earth's core. The basis of steel and the backbone of industrial civilization."
+    },
+    "Co": {
+      "name": "Cobalt",
+      "desc": "Named after the kobold of German mining folklore. Its brilliant blue compounds have colored glass and ceramics for millennia, and it is essential in superalloys for jet engines."
+    },
+    "Ni": {
+      "name": "Nickel",
+      "desc": "A shiny, corrosion-resistant metal common in coinage and stainless steel. Named after the devil of German legend, as early miners cursed the ore that yielded no copper."
+    },
+    "Cu": {
+      "name": "Copper",
+      "desc": "One of the first metals ever smelted by humanity. The best metallic conductor of electricity and heat after silver, and the defining element of the Bronze Age."
+    },
+    "Zn": {
+      "name": "Zinc",
+      "desc": "Used to galvanize steel against corrosion and as a dietary essential for immune function and wound healing. The oxide forms a white protective layer upon oxidation."
+    },
+    "Ga": {
+      "name": "Gallium",
+      "desc": "A soft metal that melts in the warmth of a human hand at just 30°C. Used extensively in semiconductors, LEDs, and solar cells, and remarkable for its expansion upon solidifying."
+    },
+    "Ge": {
+      "name": "Germanium",
+      "desc": "Predicted by Mendeleev before its discovery as eka-silicon. A semiconductor of historical importance, now used in infrared optics and fiber optic cables."
+    },
+    "As": {
+      "name": "Arsenic",
+      "desc": "A toxic metalloid with a long and dark history as both a poison and a medicine. Used industrially in semiconductors and wood preservatives despite its notorious toxicity."
+    },
+    "Se": {
+      "name": "Selenium",
+      "desc": "Essential for thyroid hormone metabolism and antioxidant function in trace amounts, yet toxic in excess. Gives a red color to glass and converts light to electricity in photocells."
+    },
+    "Br": {
+      "name": "Bromine",
+      "desc": "One of only two elements liquid at room temperature. A deep reddish-brown liquid with a sharp, choking odor, used in flame retardants and historically in photography."
+    },
+    "Kr": {
+      "name": "Krypton",
+      "desc": "A noble gas used in high-powered flash lamps for photography and certain laser applications. Formerly defined the length of the meter via a specific spectral line."
+    },
+    "Rb": {
+      "name": "Rubidium",
+      "desc": "A soft, silvery alkali metal that ignites spontaneously upon contact with air and reacts explosively with water. Used in atomic clocks and certain specialty glasses."
+    },
+    "Sr": {
+      "name": "Strontium",
+      "desc": "An alkaline earth metal that gives fireworks and flares their brilliant crimson color. Its radioactive isotope strontium-90 is a hazardous nuclear fission byproduct."
+    },
+    "Y": {
+      "name": "Yttrium",
+      "desc": "Named after Ytterby, Sweden, the village that yielded four new elements. Used in red phosphors for television screens and high-temperature superconductors."
+    },
+    "Zr": {
+      "name": "Zirconium",
+      "desc": "Extremely resistant to corrosion in almost all environments. Its near-total transparency to neutrons makes it the standard cladding material for nuclear fuel rods."
+    },
+    "Nb": {
+      "name": "Niobium",
+      "desc": "A superconductor at low temperatures, indispensable in MRI magnets and particle accelerators. Added in small amounts to steel, it dramatically increases strength and toughness."
+    },
+    "Mo": {
+      "name": "Molybdenum",
+      "desc": "Has one of the highest melting points of all elements. A critical alloying agent in high-strength steels and an essential cofactor in the enzyme that fixes atmospheric nitrogen."
+    },
+    "Tc": {
+      "name": "Technetium",
+      "desc": "The first element to be synthesized artificially. Its metastable isomer technetium-99m is the most widely used radioisotope in nuclear medicine for diagnostic imaging."
+    },
+    "Ru": {
+      "name": "Ruthenium",
+      "desc": "A rare platinum-group metal of extraordinary hardness used in electrical contacts, catalysis, and as an alloying agent to harden platinum and palladium."
+    },
+    "Rh": {
+      "name": "Rhodium",
+      "desc": "Among the rarest and most valuable stable metals on Earth. Its primary use is in catalytic converters, where it reduces nitrogen oxides in vehicle exhaust."
+    },
+    "Pd": {
+      "name": "Palladium",
+      "desc": "Can absorb up to 900 times its own volume of hydrogen, making it a key catalyst in hydrogenation reactions and an important component of catalytic converters."
+    },
+    "Ag": {
+      "name": "Silver",
+      "desc": "The best electrical and thermal conductor of all elements. Prized since antiquity for coinage, jewelry, and tableware, and now essential in electronics and photography."
+    },
+    "Cd": {
+      "name": "Cadmium",
+      "desc": "A soft, bluish-white metal used in nickel-cadmium rechargeable batteries and cadmium yellow pigments. Highly toxic and a significant environmental hazard from industrial waste."
+    },
+    "In": {
+      "name": "Indium",
+      "desc": "A soft, silvery post-transition metal indispensable in the transparent conducting coating of LCD touchscreens, flat panel displays, and thin-film solar cells."
+    },
+    "Sn": {
+      "name": "Tin",
+      "desc": "Known and smelted since antiquity, tin forms the classic alloys bronze (with copper) and pewter. At very low temperatures it undergoes a destructive phase change called tin pest."
+    },
+    "Sb": {
+      "name": "Antimony",
+      "desc": "A brittle metalloid known since ancient Egypt, used to harden lead in ammunition and batteries. Its sulfide was used as kohl eye cosmetic in the ancient world."
+    },
+    "Te": {
+      "name": "Tellurium",
+      "desc": "One of the rarest stable elements in Earth's crust, yet essential in solar cells, thermoelectric devices, and as an alloying agent to improve steel machinability."
+    },
+    "I": {
+      "name": "Iodine",
+      "desc": "Essential for thyroid hormones that regulate metabolism in vertebrates. Its vapor forms a distinctive purple cloud, and it was first isolated from seaweed in 1811."
+    },
+    "Xe": {
+      "name": "Xenon",
+      "desc": "A noble gas used in powerful stroboscopic lamps, ion thrusters for spacecraft, and as a general anesthetic. Forms surprisingly stable compounds with fluorine and oxygen."
+    },
+    "Cs": {
+      "name": "Cesium",
+      "desc": "The most reactive of all stable alkali metals, igniting instantly in air. Its hyperfine transition frequency defines the SI second, making it the basis of atomic time."
+    },
+    "Ba": {
+      "name": "Barium",
+      "desc": "A dense, soft alkaline earth metal whose compounds create the vivid green color in fireworks. Insoluble barium sulfate is used as a contrast agent in gastrointestinal X-rays."
+    },
+    "Hf": {
+      "name": "Hafnium",
+      "desc": "Nearly always found alongside zirconium in nature due to nearly identical ionic radii. Used in nuclear control rods and as a high-k dielectric in modern integrated circuits."
+    },
+    "Ta": {
+      "name": "Tantalum",
+      "desc": "A refractory metal of exceptional biocompatibility and corrosion resistance, used in surgical implants, capacitors in electronic devices, and high-temperature applications."
+    },
+    "W": {
+      "name": "Tungsten",
+      "desc": "Has the highest melting point (3422°C) of any element, making it indispensable for light bulb filaments, cutting tools, and high-temperature furnaces."
+    },
+    "Re": {
+      "name": "Rhenium",
+      "desc": "One of the rarest elements in Earth's crust, discovered last among stable elements. Critical in superalloys for single-crystal jet turbine blades that operate near their melting point."
+    },
+    "Os": {
+      "name": "Osmium",
+      "desc": "The densest naturally occurring element. Forms an extremely toxic and volatile tetroxide upon oxidation. Its extraordinary hardness makes it useful in specialty alloys."
+    },
+    "Ir": {
+      "name": "Iridium",
+      "desc": "The most corrosion-resistant metal known. The anomalous iridium layer at the Cretaceous-Paleogene boundary is key evidence for the asteroid impact that ended the dinosaurs."
+    },
+    "Pt": {
+      "name": "Platinum",
+      "desc": "A dense, lustrous, and remarkably inert metal highly prized for jewelry and catalytic converters. Its corrosion resistance and biocompatibility also make it vital in medical devices."
+    },
+    "Au": {
+      "name": "Gold",
+      "desc": "Prized throughout all of human history for its rarity, warm luster, and complete resistance to corrosion. A standard of value and beauty that has driven exploration and war alike."
+    },
+    "Hg": {
+      "name": "Mercury",
+      "desc": "The only metal liquid at room temperature. Once used widely in thermometers, barometers, and dental fillings, its potent neurotoxicity has led to widespread bans."
+    },
+    "Tl": {
+      "name": "Thallium",
+      "desc": "A soft, highly toxic metal that once found use as a rat poison and insecticide. Now primarily used in specialized infrared detectors and high-density glass."
+    },
+    "Pb": {
+      "name": "Lead",
+      "desc": "Dense, easily shaped, and workable since antiquity. Used for millennia in pipes, paint, and ammunition. Its cumulative neurotoxicity, especially in children, is now well established."
+    },
+    "Bi": {
+      "name": "Bismuth",
+      "desc": "The heaviest stable element, forming spectacular iridescent crystals with its native oxide layer. Used in cosmetics, alloys, and pharmaceuticals; remarkably non-toxic for a heavy metal."
+    },
+    "Po": {
+      "name": "Polonium",
+      "desc": "Highly radioactive, discovered by Marie Curie and named for her homeland of Poland. It emits intense alpha radiation and was used as the trigger in early atomic bombs."
+    },
+    "At": {
+      "name": "Astatine",
+      "desc": "The rarest naturally occurring element; only tiny trace amounts exist on Earth at any time, produced by radioactive decay of uranium. Its chemistry is only beginning to be understood."
+    },
+    "Rn": {
+      "name": "Radon",
+      "desc": "A radioactive noble gas produced by the natural decay of uranium and radium in soil and rock. Seeping into buildings, it is the second leading cause of lung cancer after smoking."
+    },
+    "Fr": {
+      "name": "Francium",
+      "desc": "The second rarest naturally occurring element, found only as transient decay products. The most reactive and least stable of the alkali metals, it was the last element discovered in nature."
+    },
+    "Ra": {
+      "name": "Radium",
+      "desc": "Discovered by Marie and Pierre Curie in 1898, radium emits a faint blue-green glow caused by its intense radioactivity ionizing surrounding air. Its medical use in early cancer treatment was pioneering and deadly."
+    },
+    "Rf": {
+      "name": "Rutherfordium",
+      "desc": "The first transactinide element, synthesized by bombarding californium with carbon nuclei. Named in honor of the physicist Ernest Rutherford, father of nuclear physics."
+    },
+    "Db": {
+      "name": "Dubnium",
+      "desc": "A synthetic element named after Dubna, Russia, where it was first produced. Has no stable or long-lived isotopes and exists only in vanishingly small quantities."
+    },
+    "Sg": {
+      "name": "Seaborgium",
+      "desc": "Named after Glenn T. Seaborg, the only element named after a living person at the time of its discovery. Seaborg himself held the periodic table record for most elements co-discovered."
+    },
+    "Bh": {
+      "name": "Bohrium",
+      "desc": "Named after the physicist Niels Bohr. Synthesized by bombarding bismuth with chromium nuclei; all known isotopes have half-lives measured in seconds or less."
+    },
+    "Hs": {
+      "name": "Hassium",
+      "desc": "Named after Hesse, the German state where it was first created at GSI. The heaviest element whose chemical properties have been experimentally confirmed."
+    },
+    "Mt": {
+      "name": "Meitnerium",
+      "desc": "Named in honor of Lise Meitner, the physicist who pioneered nuclear fission research yet was controversially excluded from the Nobel Prize awarded to her collaborator."
+    },
+    "Ds": {
+      "name": "Darmstadtium",
+      "desc": "Named after the city of Darmstadt, Germany, home of the GSI heavy ion research facility where it was first synthesized in 1994."
+    },
+    "Rg": {
+      "name": "Roentgenium",
+      "desc": "Named after Wilhelm Röntgen, discoverer of X-rays. A synthetic element with only short-lived isotopes, first created at GSI by bombarding bismuth with nickel ions."
+    },
+    "Cn": {
+      "name": "Copernicium",
+      "desc": "Named after Nicolaus Copernicus. Theoretical calculations predict it may behave more like a noble gas than a metal at room temperature due to relativistic effects."
+    },
+    "Nh": {
+      "name": "Nihonium",
+      "desc": "The first element discovered in Asia, synthesized at RIKEN in Japan. Its name derives from 'Nihon', the Japanese word for Japan, meaning 'Land of the Rising Sun'."
+    },
+    "Fl": {
+      "name": "Flerovium",
+      "desc": "Named after the Flerov Laboratory of Nuclear Reactions in Dubna. Predicted by relativistic calculations to have unusual chemical properties, possibly behaving as a noble gas."
+    },
+    "Mc": {
+      "name": "Moscovium",
+      "desc": "Named after Moscow Oblast, where the Joint Institute for Nuclear Research, its place of discovery, is located. Produced by bombarding americium with calcium ions."
+    },
+    "Lv": {
+      "name": "Livermorium",
+      "desc": "Named jointly after Lawrence Livermore National Laboratory in California and after Dubna. First synthesized by a US-Russian collaboration by bombarding curium with calcium."
+    },
+    "Ts": {
+      "name": "Tennessine",
+      "desc": "Named after Tennessee, honoring Vanderbilt University, the University of Tennessee, and Oak Ridge National Laboratory, all crucial contributors to superheavy element research."
+    },
+    "Og": {
+      "name": "Oganesson",
+      "desc": "Named after nuclear physicist Yuri Oganessian, a pioneer in superheavy element synthesis. The heaviest known element, it is expected to have properties very different from lighter noble gases."
+    },
+    "La": {
+      "name": "Lanthanum",
+      "desc": "A soft, silvery-white metal that gives its name to the entire lanthanide series. Used in camera and telescope lens glass, catalytic cracking of oil, and hydrogen storage."
+    },
+    "Ce": {
+      "name": "Cerium",
+      "desc": "The most abundant rare earth element. Used in catalytic converters for petroleum refining, as a glass polishing compound, and in the self-cleaning coating of ovens."
+    },
+    "Pr": {
+      "name": "Praseodymium",
+      "desc": "Its salts produce a distinctive apple-green color and are used in protective goggles for glassblowers. Combined with neodymium it forms powerful permanent magnets."
+    },
+    "Nd": {
+      "name": "Neodymium",
+      "desc": "Used in the world's strongest permanent magnets, found in hard drives, headphones, and electric motors. Its magnets are fundamental to modern wind turbines and electric vehicles."
+    },
+    "Pm": {
+      "name": "Promethium",
+      "desc": "The only rare earth element with no stable isotopes, named after the Titan Prometheus who stole fire from the gods. Produced only in nuclear reactors and supernovae."
+    },
+    "Sm": {
+      "name": "Samarium",
+      "desc": "Forms samarium-cobalt magnets that retain their properties at high temperatures far exceeding the limits of neodymium magnets. Also used in cancer treatment and as a neutron absorber."
+    },
+    "Eu": {
+      "name": "Europium",
+      "desc": "Provides the brilliant red and blue phosphors in television screens and fluorescent lamps. Incorporated into euro banknotes under UV-responsive ink as a security feature."
+    },
+    "Gd": {
+      "name": "Gadolinium",
+      "desc": "Has the highest magnetic moment of any element at room temperature. Widely used as a paramagnetic contrast agent in MRI scans to enhance visibility of lesions."
+    },
+    "Tb": {
+      "name": "Terbium",
+      "desc": "Used as a green phosphor in fluorescent lamps and in magnetostrictive alloys that change shape in a magnetic field. Also essential in some solid-state laser systems."
+    },
+    "Dy": {
+      "name": "Dysprosium",
+      "desc": "Its Greek name means 'hard to get at'. An essential additive in neodymium magnets to maintain their strength at elevated temperatures in electric vehicle motors."
+    },
+    "Ho": {
+      "name": "Holmium",
+      "desc": "Has the highest magnetic moment of any naturally occurring element, making it useful in the pole pieces of very strong magnets and in specialized laser surgery."
+    },
+    "Er": {
+      "name": "Erbium",
+      "desc": "Used as a signal amplifier dopant in fiber optic cables (erbium-doped fiber amplifiers) that underpin intercontinental telecommunications. Also used in medical lasers."
+    },
+    "Tm": {
+      "name": "Thulium",
+      "desc": "The least abundant and second heaviest stable lanthanide. Used in portable X-ray devices as a radiation source when irradiated in a nuclear reactor, emitting useful gamma rays."
+    },
+    "Yb": {
+      "name": "Ytterbium",
+      "desc": "Named after Ytterby, Sweden. Improves the grain refinement and strength of stainless steel, and serves as a dopant in fiber lasers and optical atomic clocks of extraordinary precision."
+    },
+    "Lu": {
+      "name": "Lutetium",
+      "desc": "The heaviest and hardest of the lanthanides. Used as a catalyst in petroleum refining, in PET scan detectors, and in radioimmunotherapy for certain cancers."
+    },
+    "Ac": {
+      "name": "Actinium",
+      "desc": "The first member of the actinide series, highly radioactive. Its intense alpha emission causes it to glow a pale blue in the dark as it ionizes the surrounding air. Used in targeted cancer therapy."
+    },
+    "Th": {
+      "name": "Thorium",
+      "desc": "Three times more abundant than uranium, thorium is a potential nuclear fuel. Occurs naturally in monazite sand and was once used in incandescent gas mantles for its brilliant white glow."
+    },
+    "Pa": {
+      "name": "Protactinium",
+      "desc": "One of the rarest and most toxic naturally occurring elements. A radioactive decay product of uranium-235, it poses severe health hazards and has no commercial applications."
+    },
+    "U": {
+      "name": "Uranium",
+      "desc": "The heaviest naturally occurring element and the primary fuel of nuclear reactors. Its fission releases millions of times more energy than chemical combustion per gram."
+    },
+    "Np": {
+      "name": "Neptunium",
+      "desc": "The first synthetic transuranium element, produced in a cyclotron in 1940 and named after the planet Neptune. Trace amounts occur naturally as a decay product of uranium."
+    },
+    "Pu": {
+      "name": "Plutonium",
+      "desc": "Produced from uranium in nuclear reactors, plutonium is the primary fissile material in nuclear weapons. One kilogram of plutonium-239 contains the energy equivalent of thousands of tons of TNT."
+    },
+    "Am": {
+      "name": "Americium",
+      "desc": "A synthetic transuranic element found in every household ionization smoke detector. Named after the Americas, it emits alpha particles that ionize air to complete the detector's sensing circuit."
+    },
+    "Cm": {
+      "name": "Curium",
+      "desc": "Named after Marie and Pierre Curie. Its intense radioactivity causes it to glow a soft blue-white in the dark. Used as a power source in thermoelectric generators on deep space probes."
+    },
+    "Bk": {
+      "name": "Berkelium",
+      "desc": "Named after Berkeley, California. Produced only in microgram quantities and has no practical applications outside of nuclear research and the synthesis of heavier elements."
+    },
+    "Cf": {
+      "name": "Californium",
+      "desc": "Named after California. An intense neutron emitter used as a portable neutron source for nuclear startup rods, neutron activation analysis, and cancer treatment."
+    },
+    "Es": {
+      "name": "Einsteinium",
+      "desc": "Named after Albert Einstein. First detected in 1952 in the fallout of the first thermonuclear bomb test, produced by intense neutron bombardment of uranium-238."
+    },
+    "Fm": {
+      "name": "Fermium",
+      "desc": "Named after Enrico Fermi. Also first detected in nuclear bomb fallout. Can only be produced in nanogram quantities in high-flux nuclear reactors; no practical applications."
+    },
+    "Md": {
+      "name": "Mendelevium",
+      "desc": "Named after Dmitri Mendeleev, the creator of the periodic table. First produced by bombarding einsteinium with alpha particles; only a few atoms are made at a time."
+    },
+    "No": {
+      "name": "Nobelium",
+      "desc": "Named after Alfred Nobel, inventor of dynamite and founder of the Nobel Prizes. First unambiguously identified in 1958; all isotopes have short half-lives."
+    },
+    "Lr": {
+      "name": "Lawrencium",
+      "desc": "The last of the actinide series, named after Ernest O. Lawrence, inventor of the cyclotron. Its chemistry has only recently been studied due to the extreme difficulty of producing it."
+    },
+    "My": {
+      "name": "Mythril",
+      "desc": "A legendary silver metal lighter than silk yet stronger than tempered steel, found only in the deepest dwarven mines far below the roots of ancient mountains. Its molecular structure seems to defy conventional physics ,  maintaining perfect crystalline order indefinitely while remaining malleable under the hammer of a master smith."
+    },
+    "Ad": {
+      "name": "Adamantine",
+      "desc": "The hardest substance known to magic or science, crystallized from the compressed bones of primordial dragons over millions of years of geological pressure. No conventional force can scratch or deform it; only direct dragon-fire at full breath or an act of divine will are said to be capable of reshaping this material."
+    },
+    "Ae": {
+      "name": "Aether",
+      "desc": "Pure magical energy condensed into a crystalline lattice, luminous beyond the visible spectrum and detectable only through arcane sight or extreme sensitivity to ley fields. It is the medium through which all spells propagate, the invisible river on which every enchantment flows from mind to manifestation."
+    },
+    "Vd": {
+      "name": "Voidite",
+      "desc": "Matter harvested from the null-space between planes of existence, so dark it renders the space around it visually indeterminate, and cold far beyond absolute zero. Any energy that contacts it is absorbed completely ,  light, heat, magic alike ,  making it invaluable for certain forbidden rituals and extraordinarily lethal to contain without the proper warding glyphs."
+    },
+    "Sl": {
+      "name": "Soulite",
+      "desc": "Crystallized essence of living souls, formed only at nexuses where the spiritual energy of thousands of deaths has pooled and solidified over centuries into translucent, rose-tinted fragments. Each piece hums with a faint persistent emotion ,  the last feeling of whatever consciousness contributed its vital force to the crystal's formation."
+    },
+    "Dc": {
+      "name": "Dracite",
+      "desc": "A deep crimson mineral found only in the hearts of dead elder dragons, where the concentrated draconic fire that sustained them for millennia has transmuted their innermost bones into something beyond bone or metal. Weapons and armor crafted from it retain the fury of the creature from which it came, never cooling, never dulling."
+    },
+    "Ma": {
+      "name": "Manaite",
+      "desc": "The solidified form of raw magical force, found in small deposits at convergence points of leylines deep underground, where ambient magical energy has crystallized under immense pressure over arcane ages. It stores and amplifies any spell cast in its proximity, and in sufficient quantity can sustain an enchantment indefinitely without an external power source."
+    },
+    "Sh": {
+      "name": "Schrödingerite",
+      "desc": "Scraped in flakes off the accretion shelf at the event horizon of a supermassive black hole, where the tidal gradient stretches the boundary between one outcome and the next until it tears open. Every other known substance can put only particles into superposition; schrödingerite does it to whole objects, splitting a key, a door or a corpse into two coherent quantum states that sit side by side until something observes them. Handlers are warned that the sample is both in the vial and not in the vial, and that opening the vial is what decides which of the two days they have been living."
+    }
+  },
+  "unknownDiscoverer": "Unknown",
+  "eras": {
+    "ancient": "Ancient",
+    "primordial": "Primordial",
+    "eternal": "Eternal",
+    "unknown": "Unknown",
+    "antediluvian": "Antediluvian",
+    "arcaneAge": "Arcane Age",
+    "unobserved": "Unobserved"
+  },
+  "origins": {
+    "dwarvishMountains": "Dwarvish Mountains",
+    "dragonBones": "Dragon Bones",
+    "aetherPlane": "The Aether Plane",
+    "voidBetween": "The Void Between",
+    "soulCrystals": "Soul Crystals",
+    "draconicCore": "Draconic Core",
+    "leylineNexus": "Leyline Nexus",
+    "eventHorizon": "Supermassive Event Horizon"
+  }
+}

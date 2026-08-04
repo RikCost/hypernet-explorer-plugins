@@ -1,0 +1,45 @@
+{
+  "msg": {
+    "noUnderstand": "",
+    "cantTalkNow": "",
+    "silenced": "",
+    "enraged": "",
+    "confused": "",
+    "sleeping": "",
+    "frozen": "",
+    "friendlier": "",
+    "surrender": "",
+    "refuseSurrender": "",
+    "enragedAfterInsult": "",
+    "notFriendlyEnough": "",
+    "toBeImplemented": "",
+    "partyFull": "",
+    "joined": "",
+    "stoneThrown": "",
+    "petSuccess": "",
+    "petFail": "",
+    "petRefuse": ""
+  },
+  "choices": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "opinion": "",
+  "navHint": "",
+  "recruit": {
+    "askToFollow": "",
+    "adoptAsPet": ""
+  },
+  "pet": {
+    "refusesToFollow": "",
+    "wontApproach": "",
+    "follower": "",
+    "pet": "",
+    "joined": ""
+  }
+}

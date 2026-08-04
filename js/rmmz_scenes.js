@@ -3199,6 +3199,16 @@ Scene_Battle.prototype.terminate = function() {
     $gameTroop.onBattleEnd();
     AudioManager.stopMe();
 
+    // Stop every live Effekseer instance BEFORE releasing effects, otherwise
+    // handles left over from battle animations dereference a freed effect
+    // (WASM "invalid index into function table") on the next update()/destroy().
+    if (this._spriteset && this._spriteset.removeAllAnimations) {
+        this._spriteset.removeAllAnimations();
+    }
+    if (Graphics.effekseer) {
+        Graphics.effekseer.stopAll();
+    }
+
     // Clear managers to prevent stuck resources when starting next battle
     ImageManager.clear();
     EffectManager.clear();

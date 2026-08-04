@@ -1,0 +1,61 @@
+{
+  "monthAbbr": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
+  "dayAbbr": [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ],
+  "loadError": "Error: could not load recipe data.",
+  "stillFermenting": "Still fermenting... Come back later.",
+  "missingLine": "{item} ×{need} (have {have})",
+  "missing": "Missing: {list}",
+  "started": "Brewing started: {recipe}",
+  "itemNumbered": "Item#{id} ×{qty}",
+  "units": "{min}–{max} units",
+  "stage": {
+    "primary": "Primary Fermentation",
+    "secondary": "Secondary Fermentation",
+    "conditioning": "Conditioning",
+    "ready": "Ready to Harvest!"
+  },
+  "ui": {
+    "ready": "Ready!",
+    "loadingRecipes": "Loading recipes...",
+    "barrel": "Barrel",
+    "status": "Status",
+    "state": "State",
+    "empty": "Empty",
+    "selectRecipeHint": "Select a recipe on the left and press OK to begin brewing.",
+    "beginBrewing": "Begin Brewing",
+    "exit": "Exit",
+    "harvest": "Harvest",
+    "fermenting": "Fermenting…",
+    "fermentingTitle": "Fermenting",
+    "recipe": "Recipe",
+    "stage": "Stage",
+    "timeRemaining": "Time Remaining",
+    "started": "Started",
+    "expectedOutput": "Expected Output",
+    "back": "Back",
+    "brewery": "Brewery",
+    "recipes": "Recipes",
+    "ingredients": "Ingredients"
+  }
+}

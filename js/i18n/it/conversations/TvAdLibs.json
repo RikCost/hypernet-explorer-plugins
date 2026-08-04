@@ -1,0 +1,109 @@
+{
+  "serious": [
+    "Bene. {Aspettiamo ancora quella dichiarazione|Quella dichiarazione non è ancora arrivata|Da loro ancora niente}. {La leggeremo appena arriva|Ve la leggiamo appena ce l'abbiamo|Appena entra, va in onda}.",
+    "{Abbiamo contattato|Abbiamo chiesto a|Abbiamo girato la domanda a} {faction} per un commento. {Ancora niente|Non ci hanno richiamato|Nemmeno una parola, per ora}.",
+    "Quella cifra è stata corretta. {Ce l'avevo qui un minuto fa|Un attimo, la nuova è da qualche parte|È sull'altro foglio, aspettate}.",
+    "{Abbiamo chiesto chiarimenti|Siamo tornati a chiedere|Abbiamo scritto per chiedere}. Quello che è tornato indietro {era una lettera prestampata|erano due paragrafi di niente|non chiariva niente}.",
+    "La redazione {insiste perché lo dica|tiene molto che lo dica|vuole che resti agli atti} che {non abbiamo verificato niente di tutto questo|niente di tutto questo è verificato|non una parola di questo è verificata}.",
+    "I numeri sono {invariati|quelli della settimana scorsa|gli stessi di martedì}, {per quel che vale|se questo vi dice qualcosa|il che qui non stupisce nessuno}.",
+    "Una rettifica da prima: {era il sei, non il nove|il nome è Vaughan, con la A|avevamo detto quaranta. Erano quattordici}. {Scusate|Ce ne scusiamo|È colpa mia, scusate}.",
+    "{L'abbiamo girata a|L'abbiamo portata a} {faction} {questo pomeriggio|prima della trasmissione|poco fa}. {Hanno chiesto la domanda per iscritto|Hanno detto che ci faranno sapere|Ci stanno pensando}.",
+    "{È|Questa è} la seconda versione della serata che va nell'altra direzione. {Restano agli atti tutte e due|Le teniamo tutte e due|Le mandiamo in onda entrambe finché qualcuno non dimostra una delle due}."
+  ],
+  "solemn": [
+    "Questo silenzio non lo riempiamo. {Usatelo come volete|Prendetelo come vi serve|È vostro}.",
+    "L'elenco è più lungo dell'ora che abbiamo. {Ripartiamo da dove ci siamo fermati la settimana scorsa|Non arriviamo mai in fondo|Non ci siamo mai arrivati, in fondo}.",
+    "Alcuni sono {solo iniziali, ormai|ridotti a iniziali|soltanto iniziali}, {e leggiamo anche le iniziali|quindi leggiamo le iniziali|e le iniziali si leggono uguale}.",
+    "{Un momento, per favore|Un minuto di silenzio|Un attimo di silenzio}. {Sforeremo, e va bene così|Più di quanto preveda la scaletta|La scaletta può aspettare}.",
+    "Da qualche parte un fascicolo si chiude. {Da qualche altra parte se ne apre uno|Un altro si apre altrove|E uno si apre dove non dovrebbe}.",
+    "{Una signora ci ha scritto di sua sorella|È arrivata una lettera su un padre|Una donna ci ha scritto del suo vicino di casa}. {L'ho letta due volte prima della trasmissione|L'abbiamo letta e riletta|È stata letta due volte, qui dentro}. {Resta con noi|Non la leggeremo|Non va in onda}.",
+    "Un nome letto piano è {tutto il lavoro|quasi tutto il mestiere|il mestiere per intero}, {quindi andiamo piano|quindi ci prendiamo il tempo|e non abbiamo fretta}.",
+    "{Con la lettera è arrivata una fotografia|Hanno mandato una fotografia|C'era anche una fotografia}. {No|Non la mostriamo|Non verrà mostrata}.",
+    "{Nessuno di noi in studio ne conosceva uno|Non ne conoscevamo nemmeno uno|Qui dentro non li conosceva nessuno}. {Li leggiamo lo stesso|Li leggiamo comunque|Non è un motivo per andare di fretta}."
+  ],
+  "wry": [
+    "{Straordinario|Notevole|Ma bene}. {Davvero|No, davvero|Sinceramente}. {Le parole le ho già usate tutte in questa trasmissione|Non ho più parole per queste cose|Un'altra non ce l'ho}.",
+    "{Qualcuno|Qualcun altro} è pagato per crederci, e {non sono io|non l'hanno chiesto a me|non è nessuno in questa stanza}.",
+    "{Andrei a controllare|Si potrebbe controllare|Potreste andare a controllare}, {però è controllando che si finisce in un elenco|e poi finite in un elenco|ma è così che la gente finisce negli elenchi}.",
+    "{Meraviglioso|Splendido|Che bello}. {Dodici anni che faccio questo mestiere|Ho una laurea, sapete|Non sono mai stato più occupato di così}.",
+    "{Che sicurezza|Molta sicurezza, tutto questo|Sicuro di sé, glielo concedo}. {Di prove, però, neanche l'ombra|Nessuna prova, ma sicurissimo|Le prove sono poche. La sicurezza no}.",
+    "Il contratto dice che devo leggerlo. {Alla mia coscienza non l'ha chiesto nessuno|La mia coscienza non è nel contratto|Il contratto non dice che devo pensarlo}.",
+    "{Mi dicono|Mi hanno detto|A quanto pare} che è la posizione ufficiale. {Be'. È una posizione|È di sicuro una posizione|Una posizione, in un certo modo, lo è}.",
+    "{Ci si potrebbe informare|Qualcuno potrebbe informarsi|Varrebbe la pena approfondire}. {Non lo faremo|Non lo farà nessuno|Non sarò io}.",
+    "{Non scrivete, per favore|Non serve che scriviate|Non scriveteci per questo}. {Tanto lo farete|Lo fate sempre|L'ultima volta quattrocento lettere}."
+  ],
+  "zany": [
+    "IL CAPO STUDIO SI È {DIMESSO A METÀ FRASE|ALZATO E SE N'È ANDATO|LICENZIATO NEL MEZZO DI UNA FRASE}!",
+    "Abbiamo perso una telecamera! SE N'È ANDATA! {SULLE GAMBE|AVEVA LE GAMBE|GAMBE! AVEVA LE GAMBE!}",
+    "Un premio! Per {nessuno|nessuno al mondo}! {Assegnato subito|Consegnato immediatamente|Dato via adesso}!",
+    "{BOING|CLANG|TONF}! {Ecco il budget che se ne va|Quello era il budget|Quello era il budget che usciva dalla porta}!",
+    "{Qualcuno|Qualcun altro} in cabina sta urlando! {Non è in scaletta|Non è previsto! Abbiamo controllato|Abbiamo controllato la scaletta e NON C'È}!",
+    "PIÙ FORTE! PIÙ VELO - no. {Non più veloce|Mai più veloce|Non più veloce, scusate}. Ottanta è ottanta!",
+    "{LA SCENOGRAFIA SI MUOVE|LA SCENOGRAFIA SI È SPOSTATA|QUALCOSA HA SPOSTATO LA SCENOGRAFIA}! {NESSUNO|NON UNO} SE NE ASSUME LA RESPONSABILITÀ!",
+    "{APPLAUSI|BATTETE LE MANI}! {IL PUBBLICO È UN NASTRO DEL 1996|NON ABBIAMO PUBBLICO|NON C'È NESSUN PUBBLICO}! {APPLAUDITE DA CASA|APPLAUDITE LO STESSO|APPLAUSI COMUNQUE}!",
+    "{Mi hanno appena consegnato|Mi hanno dato|Mi è stato messo in mano} {un panino|una banana|una coppetta} {e se ne sono andati|al posto del copione|senza alcuna spiegazione}!"
+  ],
+  "urgent": [
+    "State fuori dalle strade {se non riuscite a tenervi sotto gli ottanta|se non riuscite a tenere giù l'ago|a meno che non riusciate a tenere la velocità bassa}.",
+    "Ci dicono che il confine è {più vicino di quanto dicessimo un'ora fa|più vicino di quanto risultasse nell'ultimo bollettino|in movimento, e viene da questa parte}.",
+    "Non andate a vedere. {È più veloce di voi|È andando a vedere che la gente si fa male|Qualunque cosa sia, è più rapida di uno sguardo}.",
+    "I soccorsi sono stati allertati. {Nessuna risposta|Non ci hanno richiamato|La linea con loro è occupata}.",
+    "Ci stanno dicendo di continuare a trasmettere, quindi {è quello che facciamo|continuiamo|andiamo avanti}.",
+    "Se sentite questa voce {siete ancora nel raggio|il trasmettitore vi prende ancora|siete dentro la copertura}. Restateci.",
+    "{Bussate ai vicini|Andate a vedere se i vicini stanno bene|Suonate alla porta accanto}, {poi rientrate|poi restate dentro|e poi state in casa}.",
+    "{Non è un'esercitazione|Non si tratta di un'esercitazione}. {Avevamo detto che forse lo era. Non lo è|Adesso non lo dice più nessuno|Abbiamo smesso di dire che forse lo era}.",
+    "{Torcia, acqua, documenti, radio|Acqua, torcia, documenti|Documenti, acqua, una torcia}. {Vicino alla porta|In una borsa vicino alla porta|Metteteli in una borsa vicino alla porta}. {Stasera, non domani|Adesso, per favore|Fatelo adesso}."
+  ],
+  "cryptic": [
+    "...lo spazio fra due fotogrammi è {dove abita|dove aspetta|dove si tiene}...",
+    "...{qualcuno|qualcun altro} sta leggendo queste parole ad alta voce {un po' più avanti di noi|più avanti lungo la strada|prima che ci arriviamo}...",
+    "...vi hanno dato un numero. {Era quello basso|Il numero era troppo basso|Vi hanno dato il numero basso}...",
+    "...il segnale si piega attorno alla cosa che non vuole nominare...",
+    "...contate i secondi. {Ce ne sarà uno di troppo|Uno sarà in più|Ne conterete uno più di quanti dovrebbero essercene}...",
+    "...l'antenna non è sul tetto. {Salite a controllare|Nessuno sale a controllare|Non salirete a controllare}...",
+    "...questa battuta l'avete già sentita. {Su questa sedia|Da noi|Qui, da noi}...",
+    "...{qualcosa tiene il tempo|c'è qualcosa che tiene il tempo|qualcuno tiene il tempo} {sotto la portante|dietro la portante|sotto il segnale}..."
+  ],
+  "weird": [
+    "Qualcosa in regia {fa quello che fanno le mie mani, con un attimo di ritardo|copia le mie mani|segue le mie mani un secondo dopo}.",
+    "{Adesso c'è una seconda sedia|È comparsa una seconda sedia|Abbiamo due sedie}, {e non l'ho portata dentro io|e lo dico perché resti agli atti|e nessuno dice di chi sia}.",
+    "L'orologio {segna lo stesso minuto dall'inizio dell'ora|non si muove e io continuo a guardarlo|segna lo stesso minuto di quando abbiamo cominciato}.",
+    "{Il monitor dietro di me|La mia immagine nel monitor|Quello che si vede su quel monitor} è {in ritardo di circa un secondo|in ritardo|un secondo indietro rispetto a me}, {e non è così che funzionano i monitor|il che non può succedere|e non so come sia possibile}.",
+    "Il nastro ha un ritmo, nel fruscio. {Lungo, lungo, corto|Tre lunghi, due corti}. {Lo faceva anche ieri sera|Come ieri notte|Tutte le sere di questa settimana}.",
+    "{Non guardate dietro la telecamera|Nessuno guardi dietro la telecamera|Dietro la telecamera non c'è niente, e per favore non andate a controllare}.",
+    "{C'è una seconda voce sul mio microfono|C'è qualcos'altro su questo microfono|Il microfono ha preso qualcun altro}. {Sono io, e non sto dicendo niente|È la mia voce|Sembra la mia}.",
+    "{Ho smesso di contare le porte in quel corridoio|Ho rinunciato a contare le porte là fuori|Ogni volta conto un numero diverso di porte}. {Cambiava sempre|Il numero continuava a muoversi|A ogni passaggio viene un numero diverso}."
+  ],
+  "light": [
+    "{Questa mi ha tirato su|Ecco, questa mi ha proprio tirato su|Mi ha rimesso di buonumore, questa}.",
+    "{Ci è arrivata una lettera deliziosa|È arrivata una bella lettera|Bella lettera, stamattina}. {Scritta sul retro di uno scontrino|Quasi tutta leggibile|La parte centrale si legge}!",
+    "{Salutiamo la troupe|Un saluto alla troupe|Salutate la troupe}. {Alcuni sono qui dalle cinque di stamattina|Sono qui dall'alba|Qui dall'alba, poveretti}.",
+    "{Che carino, no|È carino, vero|Oh, questo SÌ che è carino}? {Io lo trovo carino|Carino|A me piace}.",
+    "Respirate con me. Dentro... e fuori... {e ancora|ed ecco fatto|bravi}.",
+    "{Qualcuno ha portato i biscotti|Ci sono biscotti in regia|Sono comparsi dei biscotti}. {Quelli buoni|I frollini|Non quelli buoni, ma va bene lo stesso}!",
+    "{Un po' di sole sul parcheggio|Fuori si è schiarito|C'è il sole sopra lo studio}. {Io lo prendo come un segno|Lo prendiamo come un segno|Lo prendiamo tutti come un segno di qualcosa}.",
+    "{Mettetevi comodi|Sedetevi|Accomodatevi} mentre facciamo questa parte. {Non c'è fretta|Non c'è nessuna fretta|Qui non c'è niente di urgente}.",
+    "{Scusate, dov'ero rimasto|Allora, dov'ero rimasto|Dov'ero rimasto}? {È andata|No, è andata|Sparita del tutto}. {Mi tornerà in mente|Ci torniamo dopo|Fa niente}."
+  ],
+  "earnest": [
+    "Scrivete anche la data. {Le date si spostano, qui fuori|Le date derivano|Le date scappano, e poi non collocate più niente}.",
+    "Se di stasera vi resta una riga sola, {che sia la prossima|fate che sia la prossima|la prossima è quella giusta}.",
+    "Questa è la parte che tutti saltano. {Non fatelo|Non saltatela|Vi chiedo di non saltarla}.",
+    "Prendete appunti. {Gli appunti di solito ci sopravvivono|La carta si azzera più lentamente delle persone|Gli appunti durano più di noi}.",
+    "Questa parte conta, quindi {la dico due volte|ditela con me|ve la dico due volte}. Questa parte conta.",
+    "Capire {non è ricordare|non tiene come tiene la memoria}, {ma è il secondo miglior ancoraggio|ma tiene meglio del niente|ed è quello che abbiamo}.",
+    "{Ripetetelo ad alta voce una volta|Ripetetevelo|Ditelo una volta a voce} prima di andare avanti. {So come suona. Aiuta|Aiuta davvero|Aiuta}.",
+    "{Nessuno è nato sapendo questa roba|Niente di tutto questo è istinto|Non dovete già saperlo}. {Qualcuno ha dovuto impararlo per primo|L'ha imparato qualcuno prima di voi|Si impara, tutto quanto}.",
+    "{Avete una penna|Una penna, se ce l'avete|Andate a prendere una penna}? {Su, aspetto|Aspetto|Tanto stiamo sforando, tempo ne ho}."
+  ],
+  "unsettling": [
+    "Dai nostri registri risulta che {guardavate anche ieri sera|non è la prima volta che vedete questa puntata|avete già visto questa trasmissione}.",
+    "Gli applausi sono registrati. {Il pubblico è un nastro del 1996|Anche il pubblico, ci dicono|Anche il pubblico, a quanto ci risulta}.",
+    "{Per favore non spegnete l'apparecchio durante questa parte|Preferiremmo che lasciaste acceso per questo pezzo|Non spegnete adesso}.",
+    "{Il contratto dice che devo definirlo di routine|Siamo obbligati a chiamarlo normale|Devo pronunciare qui la parola 'ordinario'}.",
+    "Gli applausi sono partiti {prima della battuta|un secondo in anticipo|prima della fine della frase}. {Là fuori non c'è nessuno|Non c'è pubblico|Non abbiamo pubblico}.",
+    "Il vostro apparecchio è caldo. {Era caldo prima che lo accendeste|È caldo da prima che lo accendeste}.",
+    "{Sul gobbo c'è una riga che nessuno in questo edificio ha scritto|Qualcuno ha messo una riga sul gobbo|Il gobbo ha una riga che non abbiamo scritto noi}. {Troppo tardi, l'ho letta|L'ho letta prima di vederla|Ormai l'ho letta}.",
+    "{Grazie di essere rimasti|Grazie di non aver cambiato canale|Grazie di essere ancora lì}. {Qualcuno se ne accorge|Ce ne accorgiamo|Viene notato}."
+  ]
+}

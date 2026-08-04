@@ -1,0 +1,43 @@
+{
+  "title": "Token Exchange",
+  "banner": "TOKEN EXCHANGE",
+  "tagline": "Arcade currency terminal, no commission",
+  "rate": "1 token = €{price}",
+  "atPar": "Buy and sell at par.",
+  "wallet": "WALLET",
+  "tokensHeld": "TOKENS HELD",
+  "buyTokens": "BUY TOKENS",
+  "sellTokens": "SELL TOKENS",
+  "tokensToBuy": "Tokens to buy",
+  "tokensToSell": "Tokens to sell",
+  "max": "MAX",
+  "youPay": "YOU PAY",
+  "youGive": "YOU GIVE",
+  "youReceive": "YOU RECEIVE",
+  "confirm": "CONFIRM EXCHANGE",
+  "hint": "Pick a direction, set an amount, then confirm.",
+  "affordable": {
+    "one": "Affordable: {count} token at €{price} each",
+    "other": "Affordable: {count} tokens at €{price} each"
+  },
+  "held": {
+    "one": "Held: {count} token worth €{worth}",
+    "other": "Held: {count} tokens worth €{worth}"
+  },
+  "tokenCount": {
+    "one": "{count} token",
+    "other": "{count} tokens"
+  },
+  "statusBuying": "Buying: euros leave the wallet, tokens arrive in the bag.",
+  "statusSelling": "Selling: tokens leave the bag, euros return to the wallet.",
+  "notEnoughEuros": "Not enough euros for that.",
+  "notEnoughTokens": "You do not hold that many tokens.",
+  "bought": {
+    "one": "Bought {count} token for €{total}.",
+    "other": "Bought {count} tokens for €{total}."
+  },
+  "sold": {
+    "one": "Sold {count} token for €{total}.",
+    "other": "Sold {count} tokens for €{total}."
+  }
+}

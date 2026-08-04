@@ -1,0 +1,48 @@
+{
+  "menuCommand": "",
+  "title": "",
+  "back": "",
+  "repLevel": {
+    "exalted": "",
+    "revered": "",
+    "honored": "",
+    "friendly": "",
+    "neutral": "",
+    "unfriendly": "",
+    "hostile": "",
+    "hated": "",
+    "nemesis": ""
+  },
+  "relation": {
+    "allied": "",
+    "friendly": "",
+    "neutral": "",
+    "unfriendly": "",
+    "hostile": "",
+    "unknown": ""
+  },
+  "perk": {
+    "basicServices": "",
+    "discount10": "",
+    "uncommonItems": "",
+    "discount25": "",
+    "rareItems": "",
+    "battleSupport": "",
+    "discount40": "",
+    "exclusiveItems": "",
+    "specialQuests": "",
+    "safeHouses": "",
+    "servicesUnavailable": "",
+    "refuseInteract": "",
+    "suspiciousGuards": "",
+    "dangerousTerritory": "",
+    "attackOnSight": "",
+    "bountyHunters": "",
+    "alliesTurn": ""
+  },
+  "selectTitle": "",
+  "selectHint": "",
+  "councilLeaders": "",
+  "independent": "",
+  "diplomaticAgreements": ""
+}

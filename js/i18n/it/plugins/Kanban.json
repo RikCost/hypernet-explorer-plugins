@@ -1,0 +1,40 @@
+{
+  "resolved": "Risolto",
+  "failed": "Fallite",
+  "urgent": "URGENTE",
+  "reward": "Ricompensa: ",
+  "readyToCollect": "Pronta da riscuotere",
+  "objectives": "obiettivi",
+  "anyOrder": "(in qualsiasi ordine)",
+  "inOrder": "(in ordine)",
+  "progress": "Avanzamento",
+  "postedBy": "Affisso da ",
+  "objectives2": "Obiettivi",
+  "terms": "Condizioni",
+  "log": "Registro",
+  "close": "Chiudi",
+  "toDo": "Da Fare",
+  "inProgress": "In Corso",
+  "done": "Risolto",
+  "noQuests": "Nessuna missione",
+  "colShiftMoveCardOk": "↑↓ · ←→ col · Shift+←→ sposta · OK dettagli · Esc chiudi",
+  "back": "Indietro",
+  "questLog": "Registro Missioni",
+  "appName": "Task Master",
+  "questCompleted": "Incarico completato!",
+  "questFailed": "Incarico fallito.",
+  "columnTitles": [
+    "Da Fare",
+    "In Corso",
+    "Risolto",
+    "Fallite"
+  ],
+  "showOnMapAt": "Mostra sulla mappa ({x}, {y}) · Shift",
+  "notify": {
+    "newQuest": "Nuovo incarico: {title}",
+    "newQuestUnknown": "Nuovo incarico: ???",
+    "questUpdated": "Incarico aggiornato: {title}",
+    "questComplete": "Incarico concluso: {title}",
+    "questFailed": "Incarico fallito: {title}"
+  }
+}

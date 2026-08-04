@@ -1,0 +1,90 @@
+{
+  "name": "Physique",
+  "blurb": "La matière, l'énergie et l'espace-temps sous la mesure, des condensats à lumière lente à une résonance scalaire à 125 GeV. La précision est fixée par l'appareillage, et l'appareillage se bâtit à partir de la nomenclature des matériaux.",
+  "nodes": {
+    "phys_attosecond": {
+      "name": "Impulsions Lumineuses Attosecondes",
+      "desc": "Génération d'harmoniques élevées. Un champ moteur femtoseconde ionise l'argon ou le néon par effet tunnel, accélère l'électron libéré pendant un demi-cycle optique et le fait recollisionner avec l'ion parent ; la recombinaison émet les harmoniques impaires du fondamental jusqu'à une coupure fixée par l'énergie pondéromotrice. Les harmoniques sont mutuellement verrouillées en phase : filtrer quelque vingt électronvolts de bande autour de la coupure laisse donc une salve unique d'environ 250 attosecondes. L'unité atomique de temps vaut 24 attosecondes, et une pompe-sonde sous ce chiffre ne moyenne plus le mouvement électronique qu'elle est censée enregistrer."
+    },
+    "phys_slowlight": {
+      "name": "Condensats à Lumière Lente",
+      "desc": "Un laser de couplage ouvre une fenêtre de transparence dans un condensat de Bose-Einstein de sodium à 450 nanokelvins, et la dispersion normale abrupte à travers cette fenêtre donne un indice de groupe voisin de dix millions : l'impulsion sonde traverse le nuage à quelque 17 mètres par seconde, comprimée à une longueur bien inférieure à celle du nuage. Éteindre le faisceau de couplage de façon adiabatique transpose l'impulsion sur une cohérence de spin de l'état fondamental, où elle est retenue jusqu'à une milliseconde ; rétablir le faisceau régénère l'impulsion avec son amplitude et sa phase intactes."
+    },
+    "phys_neutrino": {
+      "name": "Oscillation des Neutrinos",
+      "desc": "L'observatoire de Sudbury renferme une kilotonne d'eau lourde à deux kilomètres sous terre et sépare trois voies de réaction : le courant chargé, sensible aux seuls neutrinos électroniques, le courant neutre, également sensible aux trois saveurs, et la diffusion élastique. Le taux en courant neutre donne un flux total de bore 8 de 5,09 millions par centimètre carré et par seconde, en accord avec le modèle solaire standard, tandis que le taux en courant chargé n'en explique qu'un tiers. Le solde arrive en neutrinos muoniques et tauiques, et un changement de saveur en vol exige un écart de masse non nul entre les états propres."
+    },
+    "phys_graphene": {
+      "name": "Isolement du Graphène",
+      "desc": "Le clivage répété de graphite pyrolytique au ruban adhésif laisse sur une plaquette de silicium coiffée de 300 nanomètres d'oxyde des paillettes d'un atome d'épaisseur, où une couche unique devient visible au microscope optique grâce à quelques pour cent de contraste d'interférence. Le transport sur ces paillettes donne une dispersion linéaire de vitesse de Fermi voisine du million de mètres par seconde, une mobilité à température ambiante supérieure à 10 000 centimètres carrés par volt seconde, et des plateaux de Hall à des facteurs de remplissage quatre fois n plus un demi, la suite attendue de fermions de Dirac sans masse."
+    },
+    "phys_teleport": {
+      "name": "Téléportation Quantique d'Atomes",
+      "desc": "Trois ions de béryllium ou de calcium reposent dans un piège linéaire segmenté. L'état à transférer est écrit sur l'ion un, les ions deux et trois sont intriqués, et une mesure conjointe sur les ions un et deux projette ce couple sur l'un des quatre états de Bell ; le résultat sur deux bits choisit laquelle de quatre rotations s'applique à l'ion trois, qui porte alors l'état d'origine. La fidélité est de 0,75 à 0,78 contre une borne classique de 0,66, et la séquence tourne en quatre millisecondes environ. L'état d'entrée est détruit par la mesure qui le lit, et seuls les deux bits classiques traversent le piège."
+    },
+    "phys_metamaterial": {
+      "name": "Camouflage par Métamatériau",
+      "desc": "Dix cylindres concentriques portent des résonateurs à anneau fendu au pas d'un dixième de la longueur d'onde en espace libre, si bien qu'à 8,5 gigahertz le réseau se comporte comme un milieu continu dont la perméabilité effective est graduée de zéro sur la face interne à l'unité sur l'externe. La prescription de l'optique de transformation achemine l'onde autour du cylindre caché et lui restitue son front de phase en aval. La cartographie du champ montre une ombre résiduelle et quelques pour cent de réflexion : les résonateurs sont dissipatifs, et le dessin ne tient que sur une bande relative d'environ un pour cent."
+    },
+    "phys_topological": {
+      "name": "Isolants Topologiques",
+      "desc": "Dans l'antimoniure de bismuth, et plus proprement dans le séléniure de bismuth, le couplage spin-orbite inverse l'ordre des bandes de conduction et de valence, et le changement de l'invariant Z2 entre cristal et vide impose un nombre impair de cônes de Dirac sans gap à la surface. La photoémission résolue en angle résout un cône unique dont le spin est verrouillé perpendiculairement à l'impulsion. Une rétrodiffusion élastique vers l'impulsion opposée devrait renverser ce spin : elle est donc interdite au premier ordre. Le volume reste isolant et le canal de surface survit à un désordre non magnétique qui localiserait un métal bidimensionnel ordinaire."
+    },
+    "phys_spintronics": {
+      "name": "Magnétorésistance Géante",
+      "desc": "Dans un multicouche fer-chrome, les deux films ferromagnétiques se couplent antiparallèlement à travers un espaceur de chrome d'environ un nanomètre, et un champ de quelques dizaines de millitestas les aligne. Le libre parcours moyen d'un électron de conduction dépend de l'orientation, parallèle ou antiparallèle, de son spin par rapport à l'aimantation locale : la résistance de l'empilement chute jusqu'à de moitié à 4,2 kelvins et d'une dizaine de pour cent à température ambiante. Des têtes de lecture bâties d'abord sur le multicouche puis sur des jonctions tunnel magnétiques portent la densité surfacique au-delà de 100 gigabits par pouce carré."
+    },
+    "phys_dark_energy": {
+      "name": "Univers en Accélération Confirmé",
+      "desc": "Les supernovæ de type Ia sont standardisées par la relation largeur-luminosité, qui lie la magnitude absolue au maximum au taux de déclin de la courbe de lumière à environ 0,15 magnitude près. Jusqu'au décalage vers le rouge un, elles apparaissent 0,2 à 0,3 magnitude plus faibles que ne l'autorise une expansion en décélération, et ni une poussière grise ni une évolution des progéniteurs ne reproduit ce déficit avec la dépendance en décalage exigée. Combiné au fond micro-onde et à l'échelle acoustique baryonique, l'ajustement donne une géométrie plate, une densité de matière de 0,27 et une composante d'équation d'état moins un à un dixième près pour le reste."
+    },
+    "phys_superconductor": {
+      "name": "Supraconducteurs à Base de Fer",
+      "desc": "L'oxyarséniure de lanthane et de fer dopé au fluor devient supraconducteur à 26 kelvins, et remplacer la terre rare porte la température critique à 55 kelvins dans le composé au samarium. L'appariement se fait dans les plans fer-arsenic, avec des poches de trous et d'électrons sur des feuillets distincts de la surface de Fermi et un gap sans nœud sur chaque feuillet mais qui change de signe entre eux. Les composés parents sont des métaux antiferromagnétiques dont l'ordre est supprimé par dopage, et le dôme supraconducteur s'ouvre là où cet ordre se referme ; les champs critiques supérieurs dépassent 50 teslas avec peu d'anisotropie."
+    },
+    "phys_lhc": {
+      "name": "Premier Faisceau au LHC",
+      "desc": "La machine occupe le tunnel du LEP, long de 26,7 kilomètres : 1 232 dipôles à 8,3 teslas courbent deux faisceaux de protons contrarotatifs, 392 quadripôles les focalisent, et seize cavités radiofréquence à 400 mégahertz tiennent la structure en paquets. Chaque faisceau porte 2 808 paquets d'environ 115 milliards de protons espacés de 25 nanosecondes, soit quelque 360 mégajoules d'énergie stockée par faisceau aux sept téraélectronvolts nominaux. Le faisceau est enfilé autour de l'anneau dans les deux sens dès la première tentative ; neuf jours plus tard une interconnexion d'aimant défectueuse se vaporise, 53 aimants sont endommagés et l'anneau reste à l'arrêt quatorze mois."
+    },
+    "phys_quantum_machine": {
+      "name": "La Première Machine Quantique",
+      "desc": "Un résonateur acoustique à ondes de volume de 40 micromètres de côté, dont le mode dilatationnel est à 6 gigahertz, est refroidi dans un réfrigérateur à dilution à 25 millikelvins, où l'occupation thermique de ce mode tombe sous 0,07 phonon. Un qubit de phase accordé en résonance échange avec lui un quantum unique en une dizaine de nanosecondes puis le reprend, et la tomographie qui suit montre le résonateur dans une superposition de zéro et un phonon. L'oscillateur contient de l'ordre de dix mille milliards d'atomes ; l'état survit quelque six nanosecondes."
+    },
+    "phys_ftl_neutrino": {
+      "name": "L'Anomalie Supraluminique",
+      "desc": "Des neutrinos muoniques sont chronométrés sur les 730 kilomètres du CERN au Gran Sasso contre des horloges au césium asservies par GPS, et le maximum d'arrivée tombe 60,7 nanosecondes en avance, à 6,9 statistiques et 7,4 systématiques près, soit un excès relatif de 25 parties par million sur la vitesse de la lumière. Le budget systématique est dominé par la chaîne de fibres qui porte le signal d'horloge à l'horloge maîtresse du détecteur. La métrologie trouve ensuite un connecteur mal enfoncé, valant 73 nanosecondes, et une dérive d'oscillateur de signe opposé ; corrigée, la vitesse est compatible avec c. Eris avouera plus tard le connecteur."
+    },
+    "phys_higgs": {
+      "name": "Découverte du Boson de Higgs",
+      "desc": "ATLAS et CMS analysent chacun environ cinq femtobarns inverses à sept téraélectronvolts et cinq de plus à huit, et chacun rapporte un excès dans les voies à deux photons et à quatre leptons à 125,3 gigaélectronvolts, de signification locale 5,0 et 4,9 écarts types. La largeur observée est compatible avec la résolution du détecteur, les ajustements de spin-parité favorisent zéro-plus, et les intensités du signal dans les voies deux photons, ZZ, WW et tau-tau s'accordent avec un scalaire dont le couplage à chaque particule croît comme la masse de celle-ci. Les deux collaborations gardent leurs analyses en aveugle l'une de l'autre jusqu'au séminaire commun."
+    },
+    "phys_emdrive": {
+      "name": "L'EmDrive",
+      "desc": "Un tronc de cône en cuivre scellé est excité sur un mode transverse électrique près de 2,45 gigahertz et donnerait quelques dizaines de micronewtons par kilowatt, attribués à une pression de radiation inégale sur les plaques d'extrémité large et étroite. La conservation de la quantité de mouvement interdit toute poussée nette issue d'une cavité fermée, et le chiffre annoncé se situe trois ordres de grandeur sous la résolution des pendules ayant servi à l'obtenir. Des reprises sur balance de torsion à dix micropascals reproduisent le signal, puis le reproduisent avec le magnétron désaccordé : il suit la dilatation thermique du support et la force de Lorentz sur le câble d'alimentation non blindé dans le champ terrestre."
+    },
+    "phys_coldfusion": {
+      "name": "Le Catalyseur d'Énergie",
+      "desc": "De la poudre de nickel chargée d'hydrogène et chauffée par un élément résistif est présentée comme un réacteur de fusion nickel-cuivre de gain six ou mieux. La sortie est déduite de l'enthalpie d'une boucle vapeur dont le titre n'est jamais mesuré : l'eau entraînée peut donc gonfler le chiffre d'un facteur plusieurs, et les essais ultérieurs se lisent sur une caméra thermique réglée sur une émissivité supposée. La puissance d'entrée est comptée en amont d'un boîtier de commande que l'inventeur garde scellé. Aucun flux de neutrons au-dessus du fond, aucune raie d'annihilation à 511 kiloélectronvolts et aucun décalage isotopique dans la charge usée n'est jamais produit, et la charge n'est jamais analysée par un laboratoire indépendant."
+    },
+    "phys_electric_universe": {
+      "name": "Théorie de l'Univers Électrique",
+      "desc": "Une cosmologie où les étoiles sont des anodes dans une décharge luminescente galactique, la gravité un faible résidu de l'électrostatique, et où cratères, canyons et jets cométaires sont des marques d'usinage électrique. Soutenir la luminosité solaire par un courant externe exige près d'un trillion d'ampères ; un courant de cette taille rayonnerait une signature synchrotron qu'aucun relevé du ciel entier n'enregistre à aucune fréquence, et défléchirait les magnétomètres des sondes de plusieurs ordres de grandeur au-delà de ce qu'ils lisent. Le modèle ne dérive aucune séquence principale, aucune durée de vie stellaire et aucun motif d'abondances, et n'énonce aucun nombre qu'une mesure pourrait réfuter."
+    },
+    "phys_sc_magnets": {
+      "name": "Aimants Dipolaires Supraconducteurs",
+      "desc": "Chaque dipôle est une masse froide de quinze mètres tenant les deux ouvertures de faisceau dans une même culasse de fer, bobinée en deux couches de câble Rutherford fait de filaments de niobium-titane de six micromètres dans une matrice de cuivre. À 8,3 teslas et 11 850 ampères, la force de Lorentz sur la bobine atteint quelque 340 tonnes par mètre : l'enroulement est donc précontraint dans des colliers en acier austénitique au montage et ne doit pas se relâcher en se contractant au refroidissement. Les harmoniques de champ intégrées sont spécifiées à quelques unités sur dix mille ; chaque aimant est mesuré à chaud et à froid sur son propre banc, calé, et ce n'est qu'ensuite qu'on lui assigne une place dans l'anneau."
+    },
+    "phys_cryogenics": {
+      "name": "Cryogénie Près du Zéro Absolu",
+      "desc": "Le niobium-titane ne porte la densité de courant nominale qu'en dessous de neuf kelvins environ à 8,3 teslas, et la marge avant transition résistive est une fraction de kelvin. L'anneau baigne donc dans de l'hélium superfluide à 1,9 kelvin, dont la conductivité thermique effective vaut quelque mille fois celle du cuivre et qui étale un dépôt local avant qu'il ne fasse basculer un aimant. L'inventaire est de 96 tonnes d'hélium sur huit secteurs indépendants, servis par des groupes frigorifiques de 2,4 kilowatts à 1,8 kelvin. La protection contre le quench doit évacuer environ un gigajoule par secteur, en détournant le courant vers des résistances de décharge et en allumant des réchauffeurs qui étalent la transition sur toute la bobine."
+    },
+    "phys_detectors": {
+      "name": "Les Détecteurs ATLAS et CMS",
+      "desc": "Les deux expériences sont bâties en coquilles concentriques autour d'un point de croisement : pixels et pistes de silicium pour le trajectographe, puis calorimétrie électromagnétique et hadronique, puis chambres à muons hors de la culasse de retour. ATLAS fait 46 mètres de long sur 25 de large, avec un solénoïde mince de deux teslas et un tore à noyau d'air pour le système à muons ; CMS est plus petit, plus lourd avec ses 14 000 tonnes, et place chaque couche à l'intérieur d'un solénoïde de 3,8 teslas. À eux deux ils lisent quelque cent millions de voies. Les paquets se croisent toutes les 25 nanosecondes et chaque croisement laisse vingt interactions superposées ou plus : chaque voie est donc datée autant que mesurée, et chaque impact est affecté à un vertex reconstruit à quelques dizaines de micromètres."
+    },
+    "phys_grid": {
+      "name": "Le Déclenchement et la Grille",
+      "desc": "Quarante mégahertz de croisements de paquets doivent se réduire à quelques centaines d'événements écrits par seconde. Un premier niveau bâti sur une électronique spécifique tient chaque voie dans un pipeline pendant 2,5 microsecondes tandis que des données grossières de calorimètre et de muons produisent une acceptation à latence fixe vers 100 kilohertz ; une ferme de processeurs de série exécute ensuite une reconstruction partielle sur les événements acceptés et les taille d'un facteur plusieurs centaines de plus. Ce qui survit, quelque 300 mégaoctets par seconde, est écrit sur bande au CERN et répliqué sur une grille en paliers d'environ 170 centres de calcul dans 42 pays, où sont produites la reconstruction complète et les échantillons simulés."
+    }
+  }
+}

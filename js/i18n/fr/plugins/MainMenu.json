@@ -1,0 +1,169 @@
+{
+  "cmd": {
+    "sandbox": "",
+    "backpack": "",
+    "equip": "",
+    "skills": "",
+    "status": "",
+    "specializations": "",
+    "biologics": "",
+    "dynamics": "",
+    "thinker": "",
+    "pets": "",
+    "workforce": "",
+    "worldMap": "",
+    "vehicles": "",
+    "wait": "",
+    "cooking": "",
+    "build": "",
+    "training": "",
+    "research": "",
+    "questLog": "",
+    "bestiary": "",
+    "archive": "",
+    "factions": "",
+    "assets": "",
+    "hypernet": "",
+    "multiplayer": "",
+    "save": "",
+    "preferences": "",
+    "tools": "",
+    "resign": "",
+    "returnToShip": "",
+    "teleportToShip": "",
+    "returnToWorldMap": ""
+  },
+  "dynamics": {
+    "roster": "",
+    "rosterSub": "",
+    "wiki": "",
+    "wikiHint": "",
+    "history": "",
+    "historyHint": "",
+    "inactiveHint": "",
+    "inactiveTitle": "",
+    "inactiveEmpty": "",
+    "inactiveWorldHint": "",
+    "inactiveFull": "",
+    "inactiveSince": "",
+    "rejoined": "",
+    "cannotRejoin": "",
+    "lastMember": "",
+    "partyEmpty": "",
+    "isLeader": "",
+    "cannotRetire": "",
+    "nowInactive": "",
+    "back": "",
+    "title": "",
+    "rosterTitle": "",
+    "noMembers": "",
+    "historyTitle": "",
+    "historySub": {
+      "one": "",
+      "other": ""
+    }
+  },
+  "roster": {
+    "travelling": "",
+    "inactive": "",
+    "departed": "",
+    "dead": "",
+    "joined": "",
+    "died": "",
+    "retired": "",
+    "travellingWithYou": "",
+    "dateUnrecorded": "",
+    "partyLeader": "",
+    "follower": "",
+    "pet": "",
+    "classless": "",
+    "none": "",
+    "left": "",
+    "levelAbbr": "",
+    "thatMember": "",
+    "following": "",
+    "setActive": "",
+    "repair": "",
+    "leader": "",
+    "makeLeader": "",
+    "confirm": "",
+    "cancel": "",
+    "setInactive": "",
+    "empathize": "",
+    "noRecords": ""
+  },
+  "need": {
+    "hunger": "",
+    "sleep": "",
+    "hygiene": "",
+    "social": "",
+    "fun": ""
+  },
+  "place": {
+    "unknownLand": "",
+    "worldWilderness": "",
+    "proceduralSector": "",
+    "localSector": ""
+  },
+  "reproduction": {
+    "none": "",
+    "testicles": "",
+    "uterus": "",
+    "oviparous": "",
+    "plant": "",
+    "mitosis": "",
+    "unknown": ""
+  },
+  "gender": {
+    "male": "",
+    "female": "",
+    "nonBinary": "",
+    "cocoon": "",
+    "fluid": ""
+  },
+  "weather": {
+    "clear": ""
+  },
+  "page": {
+    "tools": "",
+    "pets": "",
+    "vehicles": ""
+  },
+  "vital": {
+    "hp": "",
+    "mp": "",
+    "ap": ""
+  },
+  "label": {
+    "location": "",
+    "worldCoordinates": "",
+    "sector": "",
+    "timeDate": "",
+    "weather": "",
+    "currentCash": "",
+    "currentBounty": "",
+    "armyUpkeep": "",
+    "rowColumn": ""
+  },
+  "travel": {
+    "goUp": "",
+    "goDown": "",
+    "toggleMinimap": "",
+    "openMap": "",
+    "resume": "",
+    "worldMapTitle": ""
+  },
+  "pets": {
+    "release": "",
+    "none": ""
+  },
+  "vehicles": {
+    "spawn": "",
+    "noFuelNeeded": "",
+    "none": ""
+  },
+  "tools": {
+    "hexphone": "",
+    "alchemistryKit": ""
+  }
+}

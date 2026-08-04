@@ -1,0 +1,22 @@
+{
+  "genre": {
+    "Auto": "",
+    "Battle": "",
+    "Dungeon": "",
+    "Exploration": "",
+    "Village": "",
+    "City": "",
+    "Cave": "",
+    "Desert": "",
+    "Ice": "",
+    "Digital": "",
+    "Eldritch": "",
+    "Industrial": "",
+    "Ethereal": ""
+  },
+  "play": "",
+  "pause": "",
+  "stop": "",
+  "procSynth": "",
+  "playing": ""
+}

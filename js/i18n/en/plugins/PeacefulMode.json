@@ -1,0 +1,324 @@
+{
+  "idle": {
+    "aquaticfish": [
+      "{name} is swimming happily.",
+      "{name} blows a string of bubbles."
+    ],
+    "abyssalleviathan": [
+      "{name} drifts in the dark, paying you no mind.",
+      "{name} lets out a low, distant rumble."
+    ],
+    "amphibian": [
+      "{name} sits in a damp patch, blinking slowly.",
+      "{name} croaks softly to itself."
+    ],
+    "frog": [
+      "{name} ribbits contentedly.",
+      "{name} hops in a little circle."
+    ],
+    "octopus": [
+      "{name} curls its tentacles and watches you.",
+      "{name} changes colour, unbothered."
+    ],
+    "crustacean": [
+      "{name} clacks its claws idly.",
+      "{name} skitters sideways and waits."
+    ],
+    "snail": [
+      "{name} inches along, leaving a glistening trail.",
+      "{name} retreats halfway into its shell."
+    ],
+    "turtle": [
+      "{name} tucks in and basks lazily.",
+      "{name} yawns and settles down."
+    ],
+    "serpent": [
+      "{name} coils up and flicks its tongue.",
+      "{name} sways gently, watching."
+    ],
+    "reptilian": [
+      "{name} suns itself, perfectly still.",
+      "{name} blinks one slow eye at you."
+    ],
+    "insectoid": [
+      "{name} is buzzing around.",
+      "{name} rubs its forelimbs together."
+    ],
+    "insectswarm": [
+      "{name} drones in a lazy cloud.",
+      "{name} swirls about without purpose."
+    ],
+    "spider": [
+      "{name} fusses with a strand of silk.",
+      "{name} taps a leg and waits."
+    ],
+    "spiderhumanhybrid": [
+      "{name} spins thread between its fingers, distracted.",
+      "{name} clicks its fangs softly."
+    ],
+    "scorpion": [
+      "{name} lowers its tail and rests.",
+      "{name} clicks its pincers and stays put."
+    ],
+    "segmentworm": [
+      "{name} ripples slowly through the dirt.",
+      "{name} burrows a little and waits."
+    ],
+    "bird": [
+      "{name} preens its feathers.",
+      "{name} chirps a few idle notes."
+    ],
+    "bat": [
+      "{name} hangs upside down, half asleep.",
+      "{name} flutters lazily in place."
+    ],
+    "bacterial": [
+      "{name} divides quietly, ignoring you.",
+      "{name} pulses with a faint glow."
+    ],
+    "beast": [
+      "{name} sniffs the air and yawns.",
+      "{name} scratches itself and lies down."
+    ],
+    "rabbit": [
+      "{name} twitches its nose and nibbles.",
+      "{name} grooms its long ears."
+    ],
+    "horse": [
+      "{name} swishes its tail and grazes.",
+      "{name} snorts softly."
+    ],
+    "elephant": [
+      "{name} flaps its ears and stands calmly.",
+      "{name} trumpets a low, gentle note."
+    ],
+    "hellhound": [
+      "{name} pants, embers drifting from its jaws, but stays put.",
+      "{name} circles once and lies down."
+    ],
+    "bird_of_prey": [
+      "{name} watches from above, unmoving.",
+      "{name} ruffles its feathers."
+    ],
+    "plant": [
+      "{name} sways in an unfelt breeze.",
+      "{name} turns its leaves toward the light."
+    ],
+    "tree": [
+      "{name} creaks softly and stays rooted.",
+      "{name} rustles its branches."
+    ],
+    "mushroom": [
+      "{name} releases a puff of harmless spores.",
+      "{name} sits quietly in the damp."
+    ],
+    "scarecrow": [
+      "{name} sags on its post, lifeless.",
+      "{name} flaps in the wind."
+    ],
+    "slime": [
+      "{name} jiggles and gurgles.",
+      "{name} wobbles in place."
+    ],
+    "spherical": [
+      "{name} rolls back and forth gently.",
+      "{name} hums to itself."
+    ],
+    "ghost": [
+      "{name} drifts and moans faintly.",
+      "{name} flickers, paying you no heed."
+    ],
+    "undead": [
+      "{name} shuffles aimlessly.",
+      "{name} groans and stands still."
+    ],
+    "skeleton": [
+      "{name} rattles its bones and waits.",
+      "{name} idly taps its ribs."
+    ],
+    "constructedundead": [
+      "{name} twitches with borrowed life, but does nothing.",
+      "{name} creaks and settles."
+    ],
+    "vampire": [
+      "{name} examines its nails, bored.",
+      "{name} watches you with mild curiosity."
+    ],
+    "voidspawn": [
+      "{name} ripples with quiet static.",
+      "{name} stares into nothing."
+    ],
+    "demon": [
+      "{name} smirks but makes no move.",
+      "{name} flicks its tail, uninterested."
+    ],
+    "wingeddemon": [
+      "{name} folds its wings and waits.",
+      "{name} hovers lazily."
+    ],
+    "angel": [
+      "{name} hums a soft, distant hymn.",
+      "{name} watches over you, serene."
+    ],
+    "ophanim": [
+      "{name} turns slowly, rings of light spinning.",
+      "{name} glows with calm radiance."
+    ],
+    "fairy": [
+      "{name} flits about, giggling.",
+      "{name} sprinkles harmless sparkles."
+    ],
+    "elemental": [
+      "{name} shimmers in place.",
+      "{name} pulses gently."
+    ],
+    "fireelemental": [
+      "{name} crackles and flickers warmly.",
+      "{name} dances like a campfire."
+    ],
+    "waterelemental": [
+      "{name} ripples and laps quietly.",
+      "{name} swirls in a calm eddy."
+    ],
+    "thunderelemental": [
+      "{name} sparks softly, harmlessly.",
+      "{name} crackles with idle static."
+    ],
+    "stormelemental": [
+      "{name} swirls a gentle gust around itself.",
+      "{name} rumbles faintly."
+    ],
+    "darkelemental": [
+      "{name} smoulders with shadow, but stays put.",
+      "{name} drifts in a quiet gloom."
+    ],
+    "sacredelemental": [
+      "{name} glows with a soft, peaceful light.",
+      "{name} hums serenely."
+    ],
+    "metalelemental": [
+      "{name} clinks and settles.",
+      "{name} reflects the light, unmoving."
+    ],
+    "crystalentity": [
+      "{name} chimes faintly.",
+      "{name} refracts the light, still."
+    ],
+    "golem": [
+      "{name} stands like a statue.",
+      "{name} grinds softly and waits."
+    ],
+    "robot": [
+      "{name} idles with a low electronic hum.",
+      "{name} blinks a status light, standing by."
+    ],
+    "drone": [
+      "{name} hovers in place, scanning lazily.",
+      "{name} beeps once and waits."
+    ],
+    "roboticdefender": [
+      "{name} holds position, weapons lowered.",
+      "{name} cycles a quiet diagnostic."
+    ],
+    "turret": [
+      "{name} swivels idly, targeting nothing.",
+      "{name} powers down its barrel."
+    ],
+    "mineral": [
+      "{name} sits inert.",
+      "{name} glitters quietly."
+    ],
+    "chestmimic": [
+      "{name} sits there looking exactly like a harmless chest.",
+      "{name} creaks its lid and stays put."
+    ],
+    "trashcreature": [
+      "{name} rummages through itself, muttering.",
+      "{name} rattles and settles into a heap."
+    ],
+    "dragon": [
+      "{name} folds its wings and watches you, unimpressed.",
+      "{name} exhales a lazy wisp of smoke."
+    ],
+    "hydra": [
+      "{name}'s heads bicker quietly among themselves.",
+      "{name} coils up and rests."
+    ],
+    "phoenix": [
+      "{name} preens its glowing feathers.",
+      "{name} smoulders warmly, at peace."
+    ],
+    "unicorn": [
+      "{name} grazes calmly, horn lowered.",
+      "{name} tosses its mane and watches."
+    ],
+    "manticore": [
+      "{name} licks a paw and lies down.",
+      "{name} flicks its tail, uninterested."
+    ],
+    "minotaur": [
+      "{name} paws the ground but does not charge.",
+      "{name} snorts and stays put."
+    ],
+    "centaur": [
+      "{name} stamps a hoof and waits.",
+      "{name} lowers its bow, at ease."
+    ],
+    "gorgon": [
+      "{name}'s snakes hiss softly, then settle.",
+      "{name} averts its gaze, harmless."
+    ],
+    "goblin": [
+      "{name} fidgets and mutters to itself.",
+      "{name} pokes at the ground, bored."
+    ],
+    "gnome": [
+      "{name} tinkers with a little gadget.",
+      "{name} hums a working tune."
+    ],
+    "elven": [
+      "{name} stands gracefully, unconcerned.",
+      "{name} regards you with calm eyes."
+    ],
+    "ogre": [
+      "{name} scratches its belly and yawns.",
+      "{name} grunts and sits down."
+    ],
+    "armoredknight": [
+      "{name} rests on its blade, visor down.",
+      "{name} stands at quiet attention."
+    ],
+    "humanoid": [
+      "{name} shifts its weight and waits.",
+      "{name} looks around, unbothered."
+    ],
+    "doubleheadedhumanoid": [
+      "{name}'s two heads chat quietly with each other.",
+      "{name} shrugs all of its shoulders."
+    ],
+    "mutant": [
+      "{name} twitches oddly, but stays put.",
+      "{name} mumbles to itself."
+    ],
+    "totem": [
+      "{name} stands silent and watchful.",
+      "{name} hums a low, ancient note."
+    ],
+    "tentacledcreature": [
+      "{name} waves its tendrils lazily.",
+      "{name} curls in on itself and waits."
+    ],
+    "spikymonster": [
+      "{name} bristles, then relaxes its spines.",
+      "{name} rolls into a ball and rests."
+    ],
+    "default": [
+      "{name} watches you calmly, making no move.",
+      "{name} stays where it is, at peace.",
+      "{name} seems content to be left alone."
+    ]
+  },
+  "cmd": {
+    "talk": "Talk"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "boot": {
+    "stage": "FASE {stage}/{total}\n{pct}%"
+  },
+  "hud": {
+    "score": "PUNTEGGIO: {score}",
+    "noScores": "ANCORA NESSUN PUNTEGGIO",
+    "lives": "VITE: {lives}",
+    "level": "LIVELLO: {level}",
+    "hiScore": "RECORD: {score}",
+    "time": "TEMPO: {time}"
+  }
+}

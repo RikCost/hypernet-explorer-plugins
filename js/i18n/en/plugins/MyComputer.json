@@ -1,0 +1,14 @@
+{
+  "myComputer": "My Computer",
+  "myDocuments": "My Documents",
+  "desktop": "Desktop",
+  "back": "Back",
+  "address": "Address:",
+  "go": "Go",
+  "systemTasks": "System Tasks",
+  "vfsError": "VFS Error: Filesystem unavailable",
+  "dirInvalid": "Directory \"{path}\" is invalid or empty.",
+  "cannotOpen": "File Explorer: Unable to open \"{file}\". Notepad is missing.",
+  "unsupportedType": "File Explorer: File type not supported.",
+  "dirNotFound": "Address Bar: Directory \"{path}\" not found."
+}

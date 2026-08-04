@@ -1,0 +1,24 @@
+{
+  "name": {
+    "hysteria": "Il {disease} di {place}, {year}",
+    "medical": "Epidemia di {disease}, {place} {year}"
+  },
+  "log": {
+    "firstCases": "Primi casi registrati a {place}.",
+    "reaches": "Raggiunge {place} (da {from}).",
+    "declaredOver": "Dichiarata conclusa. {cases} casi, {dead} morti."
+  },
+  "news": {
+    "hysteria": "{disease} si diffonde a {place}; le autorità invitano alla calma.",
+    "medical": "Focolaio di {disease} confermato a {place}. Eurodemics alza il livello di allerta."
+  },
+  "caught": "{actor} ha contratto {disease}.",
+  "caughtFrom": "{actor} ha contratto {disease} da {source}.",
+  "undated": "senza data",
+  "begins": "{name} ha inizio.",
+  "bulletin": {
+    "header": "Bollettino Eurodemics, {date}",
+    "totals": "{active} focolai attivi in {towns} città; {infected} malati, {dead} morti.",
+    "line": "  {name} ({kind}), {infected} malati in {towns} città."
+  }
+}

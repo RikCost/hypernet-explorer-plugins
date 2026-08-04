@@ -1,0 +1,365 @@
+{
+  "scale": {
+    "system": "",
+    "galaxy": "",
+    "localGroup": "",
+    "supercluster": "",
+    "filaments": "",
+    "observable": "",
+    "universe": "",
+    "unknown": "",
+    "planet": "",
+    "cluster": "",
+    "web": "",
+    "webNode": "",
+    "unnamedGalaxy": "",
+    "proceduralGalaxy": "",
+    "starSystem": "",
+    "milkyWay": "",
+    "near": ""
+  },
+  "sky": {
+    "european": "",
+    "chinese": "",
+    "hint": "",
+    "hintPad": ""
+  },
+  "cluster": {
+    "virgo": "",
+    "hydra": "",
+    "centaurus": "",
+    "pavoIndus": ""
+  },
+  "travel": {
+    "yourDestination": "",
+    "arrivedAt": "",
+    "timeToArrival": "",
+    "lyRemaining": ""
+  },
+  "bodyType": {
+    "Dark + emission nebula": "",
+    "Dark nebula": "",
+    "Dark nebula (Bok globule)": "",
+    "Dark nebula silhouette": "",
+    "Emission + reflection nebula": "",
+    "Emission nebula": "",
+    "Emission nebula (Pillars of Creation)": "",
+    "Emission nebula (SNR-like arc)": "",
+    "Emission/reflection nebula (H II region)": "",
+    "Planetary nebula": "",
+    "Reflection nebula": "",
+    "Supernova remnant": "",
+    "barred spiral galaxy": "",
+    "cosmological horizon": "",
+    "dwarf irregular galaxy": "",
+    "galaxy cluster": "",
+    "galaxy group": "",
+    "gravitational anomaly": "",
+    "higher-dimensional anomaly": "",
+    "spiral galaxy": "",
+    "rich galaxy cluster": "",
+    "elliptical galaxy": ""
+  },
+  "row": {
+    "type": "",
+    "diameter": "",
+    "members": "",
+    "stars": "",
+    "distance": "",
+    "currentLocation": "",
+    "starType": "",
+    "starClass": "",
+    "mass": "",
+    "radius": "",
+    "temperature": "",
+    "planets": "",
+    "memberOf": "",
+    "companions": "",
+    "feedingOn": "",
+    "chartedFor": "",
+    "megastructure": "",
+    "dyson": "",
+    "dysonAbandoned": "",
+    "orbit": "",
+    "period": "",
+    "atmosphere": "",
+    "yes": "",
+    "no": "",
+    "breathableAir": "",
+    "life": "",
+    "detected": "",
+    "moons": "",
+    "oreBody": "",
+    "units": "",
+    "condition": ""
+  },
+  "unnamedGalaxy": "",
+  "unit": {
+    "mly": "",
+    "thousandLy": "",
+    "billionStars": "",
+    "galaxies": ""
+  },
+  "hud": {
+    "centreTheViewOnYour": "",
+    "sweepEverySystemWithin500": "",
+    "quantumBridgeToTheSelected": "",
+    "plotACourseHomeMilky": "",
+    "quantumBridgeStraightHomeCosts": "",
+    "plotACourseToThis": "",
+    "quantumBridgeStraightIntoOrbit": "",
+    "cutTheBodyApartWith": "",
+    "openTheServicingBay": "",
+    "zoomTo": "",
+    "starSystem": "",
+    "catalog": "",
+    "home": "",
+    "returnToEarth": "",
+    "ebBridge": "",
+    "engines": "",
+    "warpSpeed": "",
+    "hyperfluxBurn": "",
+    "stop": "",
+    "fuel": "",
+    "hyperfluxReserve": "",
+    "hyperflux": "",
+    "schrD": "",
+    "mapFuel": "",
+    "refuel": "",
+    "orbit": "",
+    "chooseLandingSite": "",
+    "cancel": "",
+    "servicingBay": "",
+    "stripMining": "",
+    "cutLasers": "",
+    "zoom": "",
+    "enterSystem": "",
+    "travelHere": "",
+    "currentLocation": "",
+    "parkedInOrbit": "",
+    "openSchrDingerBohrBridge": "",
+    "flyHere": "",
+    "landHere": "",
+    "stripMine": "",
+    "serviceTelescope": "",
+    "serviced": "",
+    "repair": "",
+    "close": "",
+    "landingGridHelp": "",
+    "refuelTooltip": "",
+    "orbitHint": "",
+    "nothingCatalogued": "",
+    "rechargesIn": "",
+    "nominal": "",
+    "mineProgress": "",
+    "ship": "",
+    "scanForBiosignatures": "",
+    "sbBridge": "",
+    "setCourse": "",
+    "parkInOrbit": "",
+    "stopRefuel": "",
+    "harvestSchrDingerite": "",
+    "serviceEverythingAffordable": "",
+    "critical": ""
+  },
+  "hubblePart": {
+    "DF-224 Computer": {
+      "label": "",
+      "note": ""
+    },
+    "Thermal Blanket": {
+      "label": "",
+      "note": ""
+    },
+    "Aperture Door": {
+      "label": "",
+      "note": ""
+    },
+    "High-Gain Antenna": {
+      "label": "",
+      "note": ""
+    },
+    "Battery Bank": {
+      "label": "",
+      "note": ""
+    },
+    "Solar Array (Starboard)": {
+      "label": "",
+      "note": ""
+    },
+    "Solar Array (Port)": {
+      "label": "",
+      "note": ""
+    },
+    "Reaction Wheels": {
+      "label": "",
+      "note": ""
+    },
+    "Gyroscope Assembly": {
+      "label": "",
+      "note": ""
+    },
+    "Fine Guidance Sensor": {
+      "label": "",
+      "note": ""
+    },
+    "NICMOS Cooler": {
+      "label": "",
+      "note": ""
+    },
+    "STIS Spectrograph": {
+      "label": "",
+      "note": ""
+    },
+    "WFPC2 Camera": {
+      "label": "",
+      "note": ""
+    },
+    "Corrective Optics (COSTAR)": {
+      "label": "",
+      "note": ""
+    },
+    "Secondary Mirror": {
+      "label": "",
+      "note": ""
+    },
+    "Primary Mirror": {
+      "label": "",
+      "note": ""
+    }
+  },
+  "hubbleQuest": {
+    "title": "",
+    "giver": "",
+    "body": "",
+    "objectives": "",
+    "terms": [
+      "",
+      "",
+      ""
+    ],
+    "reward": "",
+    "log": {
+      "opened": "",
+      "serviced": "",
+      "servicedMany": "",
+      "complete": ""
+    }
+  },
+  "core": {
+    "noSpaceports": "",
+    "cancel": "",
+    "theStar": "",
+    "refuellingFrom": "",
+    "distanceLy": "",
+    "coursePlotted": "",
+    "mayRunOut": "",
+    "alreadyRefuelling": "",
+    "tankFull": "",
+    "noStarInRange": ""
+  },
+  "hint": {
+    "cockpit": "",
+    "planet": "",
+    "system": "",
+    "galaxy": "",
+    "galaxyFocus": "",
+    "cluster": "",
+    "web": "",
+    "outer": "",
+    "modeLine": ""
+  },
+  "hintPad": {
+    "cockpit": "",
+    "planet": "",
+    "system": "",
+    "galaxy": "",
+    "galaxyFocus": "",
+    "cluster": "",
+    "web": "",
+    "outer": "",
+    "modeLine": ""
+  },
+  "service": {
+    "hubbleName": "",
+    "bayTitle": "",
+    "footer": "",
+    "operational": "",
+    "belowLimit": {
+      "one": "",
+      "other": ""
+    },
+    "condition": "",
+    "partRestored": "",
+    "notEnoughMaterials": "",
+    "serviced": {
+      "one": "",
+      "other": ""
+    },
+    "nothingSpared": ""
+  },
+  "mining": {
+    "lasersCut": "",
+    "nothingLeft": "",
+    "lasersHot": "",
+    "leftBody": "",
+    "fuelOut": "",
+    "bodyStripped": "",
+    "strippedToBedrock": ""
+  },
+  "catalog": {
+    "starSub": "",
+    "star": "",
+    "companion": "",
+    "donor": "",
+    "life": "",
+    "moonOf": ""
+  },
+  "tab": {
+    "current": "",
+    "currentEmpty": "",
+    "systemBodies": "",
+    "objects": "",
+    "objectsEmpty": "",
+    "galaxies": "",
+    "clusters": "",
+    "anomalies": "",
+    "nebulae": "",
+    "starSystems": "",
+    "bookmarks": "",
+    "bookmarksEmpty": "",
+    "bookmarkedBodies": "",
+    "biosignatures": "",
+    "biosignaturesEmpty": "",
+    "lifeBearing": "",
+    "spaceports": "",
+    "spaceportsEmpty": "",
+    "landingSites": "",
+    "patrons": "",
+    "patronsEmpty": "",
+    "patronWorlds": ""
+  },
+  "scan": {
+    "worldsFound": {
+      "one": "",
+      "other": ""
+    },
+    "hubbleOnline": "",
+    "newCount": "",
+    "loggedInCatalog": ""
+  },
+  "refuel": {
+    "refuel": "",
+    "stop": "",
+    "refuelling": "",
+    "onArrival": "",
+    "courseSet": "",
+    "drawingFrom": "",
+    "tankFull": "",
+    "docked": "",
+    "inSystem": "",
+    "nearest": "",
+    "mayBeOutOfRange": "",
+    "noneInRange": ""
+  }
+}

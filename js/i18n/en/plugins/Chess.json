@@ -1,0 +1,84 @@
+{
+  "menuCommand": "Chess Game",
+  "mode": "Mode: {mode}",
+  "modeNormal": "Normal Chess",
+  "modeChaos": "Chaos Chess",
+  "cheatMeterTitle": "CHEAT METER",
+  "cheatMeterGain": "Cheat Meter +{gain}! ({meter}/{max})",
+  "cheatModeOn": "CHEAT MODE ACTIVATED! You can make 3 illegal moves! ",
+  "cheatModeOff": "Cheat mode exhausted. Back to legal moves only!",
+  "cheatModeLeft": "CHEAT MODE: {moves} moves left ",
+  "pressShift": "Press SHIFT to activate!",
+  "chargeHint": "Capture pieces to charge!",
+  "blackStuck": "Black has no valid moves! White wins!",
+  "blackPlays": "Black plays: {move}",
+  "blackPlaysNormally": "Black plays normally: {move}",
+  "whitePlays": "White plays: {move}",
+  "whiteCheats": "White cheats: {move} ",
+  "multiMoveStep": "\"{index} of {total}!\" {move}",
+  "whiteWiped": "All white pieces destroyed! Black wins!",
+  "blackWiped": "All black pieces destroyed! White wins!",
+  "chaosPiece": {
+    "bomb": "a Bomb",
+    "egg": "an Egg",
+    "mushroom": "a Mushroom",
+    "chest": "a Treasure Chest",
+    "fish": "a Fish",
+    "campfire": "a Campfire",
+    "stew": "a Bowl of Stew",
+    "jug": "a Jug",
+    "candle": "a Candle",
+    "soda": "a Fizzy Soda"
+  },
+  "taunt": {
+    "colorChange": [
+      "\"That's MINE now!\" Black steals your {piece} at {square}! ",
+      "\"Color correction!\" Black corrupts your {piece} to join the dark side! Mwahahaha! ",
+      "\"Whoops, did I do that?\" Black 'accidentally' converts your {piece} to black! ",
+      "\"Rules are for losers!\" Black brazenly steals your {piece} with dark magic! ",
+      "\"Thanks for the donation!\" Black laughs as your {piece} switches sides! "
+    ],
+    "relocate": [
+      "\"I'll just move this for you!\" Black rudely relocates your {piece} to {square}! ",
+      "\"Oops, butterfingers!\" Black 'helpfully' moves your {piece} to a terrible square! ",
+      "\"Let me fix that strategy!\" Black teleports your {piece} somewhere useless! ",
+      "\"Trust me, this is better!\" Black arrogantly repositions your {piece}! What a jerk! ",
+      "\"Playing both sides now!\" Black cheekily moves your {piece} like it's his own! "
+    ],
+    "transform": [
+      "\"Abracadabra!\" Black transforms {from} into {to}! \"Magic is so convenient!\" ",
+      "\"Upgrade time!\" Black mockingly 'improves' {from} to {to}! The audacity! ",
+      "\"Shape-shifting is legal, right?\" Black grins as {from} becomes {to}! ",
+      "\"I don't like that piece!\" Black petulantly changes {from} to {to}! ",
+      "\"Plot twist!\" Black dramatically transforms {from} into {to}! So theatrical! "
+    ],
+    "spawnPiece": [
+      "\"Rise, my minion!\" Black necromances a {piece} at {square}! \"Death is optional!\" ",
+      "\"Surprise reinforcements!\" Black smuggles in a {piece}! \"I ordered extra pieces!\" ",
+      "\"Did I mention my army?\" Black casually spawns a {piece} from thin air! Cheater! ",
+      "\"Backup plan activated!\" Black materializes a {piece}! \"Always have a Plan B!\" ",
+      "\"Free piece Friday!\" Black grins as a {piece} appears! \"Buy one, get one free!\" "
+    ],
+    "spawnChaos": [
+      "\"Meet my friend!\" Black summons {piece} at {square}! \"He's house-trained!\" ",
+      "\"I collect these!\" Black proudly places {piece} on the board! \"Limited edition!\" ",
+      "\"Emotional support piece!\" Black introduces {piece}! \"For when regular pieces aren't enough!\" ",
+      "\"Why be boring?\" Black spawns {piece} with a flourish! \"Chess needs more personality!\" ",
+      "\"Secret weapon deployed!\" Black unleashes {piece}! \"You didn't see this coming!\" "
+    ],
+    "drain": [
+      "\"Yoink! That's mine now!\" Black drains {amount} cheat energy! \"Finders keepers!\" ",
+      "\"Energy vampire mode!\" Black sucks away {amount} cheat points! \"Delicious!\" ",
+      "\"Sharing is caring!\" Black steals {amount} cheat meter! \"Thanks for the donation!\" ",
+      "\"Power drain engaged!\" Black zaps {amount} energy! \"I needed that more than you!\" ",
+      "\"Oops, did I do that?\" Black 'accidentally' absorbs {amount} cheat points! So smug! "
+    ],
+    "multiMove": [
+      "\"Time is a social construct!\" Black takes {moves} moves at once! ",
+      "\"Double-dipping!\" Black greedily makes {moves} moves! \"My turn, my rules!\" ",
+      "\"Speedrun mode!\" Black blitzes {moves} moves in a row! \"Efficiency!\" ",
+      "\"Combo attack!\" Black chains {moves} moves together! \"Is this legal? Who cares!\" ",
+      "\"Why wait?\" Black impatiently makes {moves} moves! \"Patience is overrated!\" "
+    ]
+  }
+}

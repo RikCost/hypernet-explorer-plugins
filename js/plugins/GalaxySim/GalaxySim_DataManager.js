@@ -1,0 +1,2001 @@
+/*:
+ * @target MZ
+ * @plugindesc GalaxySim Data Manager Module - Star system data management and ship travel
+ * @author Omni-Lex + Nocoldiz
+ * @url
+ * @help
+ * ============================================================================
+ * GalaxySim Data Manager Module
+ * ============================================================================
+ * This module handles all star system data management:
+ * - Loading hardcoded systems from DataManager
+ * - Procedural system generation
+ * - Player ship position and travel logic
+ * - System queries and distance calculations
+ *
+ * LOAD ORDER: Must load AFTER GalaxySim_Math.js
+ *
+ * DEPENDENCIES:
+ * - DataManager.js
+ * - GalaxySim_Math.js
+ */
+
+(() => {
+  "use strict";
+
+  // Set true (or run a playtest) to emit the verbose save/load payload logs.
+  const DEBUG = false;
+  const dlog = (...a) => {
+    if (DEBUG || (typeof $gameTemp !== "undefined" && $gameTemp && $gameTemp.isPlaytest && $gameTemp.isPlaytest())) {
+      console.log(...a);
+    }
+  };
+
+  // Check dependencies
+  if (!window.GalaxySim || !window.GalaxySim.Math) {
+    throw new Error("GalaxySim_DataManager requires GalaxySim_Math to be loaded first");
+  }
+
+
+  // Import from Math module
+  const { RandomGenerator, MAP_RADIUS, SYSTEM_DENSITY, KLY_TO_LY,
+    GALAXY_TYPE_SPIRAL, GALAXY_TYPE_ELLIPTICAL, GALAXY_TYPE_IRREGULAR,
+    GALAXY_TYPE_DWARF_SPHEROIDAL } = window.GalaxySim.Math;
+  const { STAR_COLORS, PLANET_COLORS } = window.GalaxySim.Math;
+
+  // Import from GalaxyData
+  const STAR_TYPES = window.GalaxySim.StarTypes;
+  const PLANET_TYPES = window.GalaxySim.PlanetTypes;
+  const SYSTEMS = window.GalaxySim.Systems;
+
+  // Where a brand-new ship starts: in space, orbiting Earth (see parkAtHomeOrbit).
+  const HOME_SYSTEM_NAME = "Sol";     // i18n-ignore: system id
+  const HOME_PLANET_NAME = "Earth";   // i18n-ignore: planet id
+
+  // ============================================================================
+  // Lazy galaxy field constants
+  // ----------------------------------------------------------------------------
+  // The star map only stores ~92 procedural systems inside a 130 ly bubble.
+  // To make the whole disk explorable, additional systems are generated on
+  // demand in light-year "chunks" around the camera as the player zooms in.
+  // Generation is deterministic (seeded from proceduralSeed + chunk coords), so
+  // nothing needs saving -- the same chunk always yields the same stars. The
+  // disk geometry constants mirror GalaxySim_Scene3D_Cosmos GAL.* so lazy stars
+  // sit in the same galactic frame as the decorative Milky Way.
+  // ============================================================================
+  const LAZY_CHUNK_LY = 64;          // disk-plane cell size (ly)
+  const LAZY_BASE_PER_CHUNK = 4;     // systems per chunk at the Sun's density
+  const LAZY_CHUNK_CACHE = 256;      // generated chunks kept in memory (LRU)
+  const MATERIALIZED_LAZY_CACHE = 128; // materialized lazy systems kept in this.systems (LRU)
+  const GALAXY_SYSTEM_COUNT = 220;   // travelable systems generated per procedural (non-Milky-Way) galaxy
+  const GAL_SUN_R_LY = 26000;        // Sun distance from the galactic core
+  const GAL_DISK_RADIUS_LY = 52000;  // visible disk radius
+  const GAL_DISK_SCALE_LY = 9000;    // radial density scale length
+  const GAL_THIN_DISK_H_LY = 250;    // vertical scatter (thin disk)
+
+  // ============================================================================
+  // Ship fuels (see GalaxySim_Core header).
+  //   - Variable 95 ("fuel"): the classic tank, spent only when the ship moves
+  //     on the RPG world map (never touched by galaxy-scale travel now).
+  //   - Hyperflux: powers galaxy-scale sublight travel between systems. Litres,
+  //     capped at 92 000.
+  //   - Schrodingerite: a whole-unit exotic charge that fuels the SB-Bridge
+  //     instant warp to any selected system, however far. Capped at 92.
+  // Hyperflux / Schrodingerite live on playerShip so they persist with the star
+  // map save blob (toJSON) rather than consuming RPG variable slots.
+  // ============================================================================
+  const HYPERFLUX_MAX = 92000;
+  const SCHRODINGERITE_MAX = 92;
+  // Hyperflux/second gained while parked in orbit of a main-sequence star and
+  // actively refuelling - about 5 minutes real time for a full empty tank.
+  const REFUEL_RATE_PER_SEC = 300;
+  // The seven Morgan-Keenan main-sequence classes (see StarTypes.json). With
+  // the exotic star roster (remnants, brown dwarfs, protostars, theoretical
+  // objects, rogue planets...) this is now a whitelist: only an ordinary
+  // fusing star can power a refuel, everything else can't.
+  const MAIN_SEQUENCE_TYPES = new Set(["O", "B", "A", "F", "G", "K", "M"]);
+  // How far the auto-refuel search sweeps the lazy field: rings of disk-plane
+  // chunks around the ship (see generateLazyChunk / LAZY_CHUNK_LY). Ordinary
+  // fusing stars are the bulk of the population, so ring 0-1 nearly always
+  // hits; the rest of the budget covers the sparse outer disk.
+  const REFUEL_SEARCH_RINGS = 6;
+
+  // Compact accretors that can be found actively feeding on a donor star, and
+  // the rare/luminous donor classes they strip. A "feeding" system renders the
+  // donor + a mass-transfer stream in the system view (Scene3D_Bodies).
+  const FEEDING_ACCRETOR_TYPES = new Set([
+    "BLACK_HOLE", "NEUTRON_STAR", "PULSAR", "MAGNETAR", "QUARK_STAR",
+  ]);
+  const FEEDING_DONOR_TYPES = [
+    "RED_GIANT", "RED_SUPERGIANT", "WOLF_RAYET", "CARBON_STAR", "HYPERGIANT",
+  ];
+  // Companion classes for procedural multi-star (binary/trinary/quaternary)
+  // systems, weighted roughly by how common each class is as a bound partner.
+  const COMPANION_TYPES = [
+    "M", "M", "M", "M", "K", "K", "K", "G", "G", "F", "A", "B",
+    "WHITE_DWARF", "L", "T", "RED_GIANT",
+  ];
+  // Types that never receive stellar modifiers (no companions, no Dyson
+  // shells, no feeding donors of their own).
+  const NO_MODIFIER_TYPES = new Set(["ROGUE_PLANET", "SUPERMASSIVE_BLACK_HOLE"]);
+  // Chance a procedural main-sequence star hides an abandoned Dyson sphere.
+  const ABANDONED_DYSON_CHANCE = 0.0006;
+  // Schrödingerite harvested from a black hole per visit, and how long (in
+  // game-minutes) the SAME black hole takes to recharge before it can be
+  // harvested again.
+  const SCHRODINGERITE_HARVEST_AMOUNT = 3;
+  const SCHRODINGERITE_HARVEST_COOLDOWN_MIN = 7 * 24 * 60; // one game week
+
+  // ============================================================================
+  // Procedural Name Generators
+  // ============================================================================
+
+  function generateProceduralGalaxyName(x, y, rng) {
+    const catalogPrefixes = [
+      'NGC', 'IC', 'UGC', 'PGC', 'SDSS', '2MASS', 'ESO', 'UGPS',
+      'WISE', 'MCG', 'CGCG', 'LEDA', 'APG', 'VCC'
+    ];
+
+    const catalogType = rng.random();
+
+    if (catalogType < 0.3) {
+      const prefix = catalogPrefixes[Math.floor(rng.random() * catalogPrefixes.length)];
+      const number = Math.floor(rng.random() * 9999) + 1;
+      return `${prefix} ${number}`;
+    } else if (catalogType < 0.5) {
+      const prefix = catalogPrefixes[Math.floor(rng.random() * catalogPrefixes.length)];
+      const ra1 = Math.floor(rng.random() * 24).toString().padStart(2, '0');
+      const ra2 = Math.floor(rng.random() * 60).toString().padStart(2, '0');
+      const ra3 = (rng.random() * 60).toFixed(2).padStart(5, '0');
+      const decSign = rng.random() > 0.5 ? '+' : '-';
+      const dec1 = Math.floor(rng.random() * 90).toString().padStart(2, '0');
+      const dec2 = Math.floor(rng.random() * 60).toString().padStart(2, '0');
+      const dec3 = (rng.random() * 60).toFixed(1).padStart(4, '0');
+      return `${prefix} J${ra1}${ra2}${ra3}${decSign}${dec1}${dec2}${dec3}`;
+    } else {
+      const prefix = catalogPrefixes[Math.floor(rng.random() * catalogPrefixes.length)];
+      const sign = rng.random() > 0.5 ? '+' : '-';
+      const part1 = Math.floor(rng.random() * 15) + 1;
+      const part2 = Math.floor(rng.random() * 99) + 1;
+      const part3 = Math.floor(rng.random() * 999) + 1;
+      return `${prefix}${sign}${part1.toString().padStart(2, '0')}-${part2.toString().padStart(2, '0')}-${part3.toString().padStart(3, '0')}`;
+    }
+  }
+
+  // i18n-ignore-start: catalogue designations. Constellation names are
+  // Latin and stay Latin in every language; the direction / feature words
+  // are the naming grammar of a designation, not a sentence, and match the
+  // convention the rest of the star map already uses (see Scene3D_Cosmos).
+  function generateProceduralSuperclusterName(x, y, rng) {
+    const realConstellations = [
+      'Pisces', 'Cetus', 'Sculptor', 'Fornax', 'Eridanus',
+      'Hydra', 'Centaurus', 'Perseus', 'Coma', 'Corona Borealis',
+      'Hercules', 'Leo', 'Bootes', 'Aquarius', 'Pegasus',
+      'Indus', 'Pavo', 'Phoenix', 'Horologium', 'Reticulum',
+      'Draco', 'Ursa', 'Lynx', 'Gemini', 'Cancer',
+      'Virgo', 'Libra', 'Scorpius', 'Sagittarius', 'Capricorn',
+      'Taurus', 'Orion', 'Canis', 'Lepus', 'Columba'
+    ];
+
+    const directions = [
+      'Northern', 'Southern', 'Eastern', 'Western',
+      'Upper', 'Lower', 'Central', 'Outer',
+      'Near', 'Far', 'Inner', 'Peripheral'
+    ];
+
+    const features = [
+      'Great', 'Grand', 'Major', 'Greater', 'Vast',
+      'Extended', 'Massive', 'Giant', 'Complex'
+    ];
+
+    const typeRoll = rng.random();
+
+    if (typeRoll < 0.35) {
+      const constellation = realConstellations[Math.floor(rng.random() * realConstellations.length)];
+      return `${constellation} Supercluster`;
+    } else if (typeRoll < 0.65) {
+      const direction = directions[Math.floor(rng.random() * directions.length)];
+      const feature = features[Math.floor(rng.random() * features.length)];
+      return `${direction} ${feature} Supercluster`;
+    } else {
+      const prefixes = ['SDSS-C', 'SCL', 'MSC', 'GSC', 'Abell', 'Shapley'];
+      const prefix = prefixes[Math.floor(rng.random() * prefixes.length)];
+      const number = Math.floor(rng.random() * 9999) + 1000;
+      return `${prefix} ${number}`;
+    }
+  }
+  // i18n-ignore-end
+
+  // i18n-ignore-start: catalogue designations. Constellation names are
+  // Latin and stay Latin in every language; the direction / feature words
+  // are the naming grammar of a designation, not a sentence, and match the
+  // convention the rest of the star map already uses (see Scene3D_Cosmos).
+  function generateGalaxyGroupName(x, y, rng) {
+    const directions = [
+      'Northern', 'Southern', 'Eastern', 'Western',
+      'Upper', 'Lower', 'Central', 'Outer',
+      'Near', 'Far', 'Inner', 'Peripheral'
+    ];
+
+    const features = [
+      'Void', 'Arm', 'Stream', 'Cloud', 'Arc',
+      'Filament', 'Wall', 'Bridge', 'Tail', 'Spur',
+      'Cluster', 'Chain', 'Loop', 'Knot'
+    ];
+
+    const typeRoll = rng.random();
+
+    if (typeRoll < 0.4) {
+      const direction = directions[Math.floor(rng.random() * directions.length)];
+      const feature = features[Math.floor(rng.random() * features.length)];
+      return `${direction} ${feature} Group`;
+    } else if (typeRoll < 0.7) {
+      const number = Math.floor(rng.random() * 999) + 1;
+      return `Galaxy Group ${number}`;
+    } else {
+      const consonants = 'BCDFGHJKLMNPQRSTVWXYZ';
+      const vowels = 'AEIOU';
+      let name = '';
+      const length = Math.floor(rng.random() * 3) + 4;
+      for (let i = 0; i < length; i++) {
+        if (i % 2 === 0) {
+          name += consonants[Math.floor(rng.random() * consonants.length)];
+        } else {
+          name += vowels[Math.floor(rng.random() * vowels.length)];
+        }
+      }
+      return `${name.charAt(0) + name.slice(1).toLowerCase()} Group`;
+    }
+  }
+  // i18n-ignore-end
+
+  // i18n-ignore-start: catalogue designations. Constellation names are
+  // Latin and stay Latin in every language; the direction / feature words
+  // are the naming grammar of a designation, not a sentence, and match the
+  // convention the rest of the star map already uses (see Scene3D_Cosmos).
+  function generateSuperclusterName(x, y, rng) {
+    const realConstellations = [
+      'Pisces', 'Cetus', 'Sculptor', 'Fornax', 'Eridanus',
+      'Hydra', 'Centaurus', 'Perseus', 'Coma', 'Corona Borealis',
+      'Hercules', 'Leo', 'Bootes', 'Aquarius', 'Pegasus',
+      'Indus', 'Pavo', 'Phoenix', 'Horologium', 'Reticulum'
+    ];
+
+    const typeRoll = rng.random();
+
+    if (typeRoll < 0.5) {
+      const constellation = realConstellations[Math.floor(rng.random() * realConstellations.length)];
+      return `${constellation} Supercluster`;
+    } else if (typeRoll < 0.75) {
+      const directions = ['Northern', 'Southern', 'Eastern', 'Western', 'Central'];
+      const features = ['Great', 'Grand', 'Major', 'Greater', 'Vast'];
+      const direction = directions[Math.floor(rng.random() * directions.length)];
+      const feature = features[Math.floor(rng.random() * features.length)];
+      return `${direction} ${feature} Supercluster`;
+    } else {
+      const prefixes = ['Sloan', 'SDSS', 'SCL', 'MSC', 'GSC'];
+      const prefix = prefixes[Math.floor(rng.random() * prefixes.length)];
+      const number = Math.floor(rng.random() * 999) + 1;
+      return `${prefix}-${number}`;
+    }
+  }
+  // i18n-ignore-end
+
+  function generateProceduralLocalGroup(supercluster) {
+    const rng = new RandomGenerator(`cosmic_web_${supercluster.x}_${supercluster.y}`);   // i18n-ignore: rng seed
+    const galaxies = [];
+
+    const sectorRadius = 100000 * KLY_TO_LY;
+    const targetCount = 1000 + Math.floor(rng.random() * 1500);
+
+    let safetyCounter = 0;
+
+    const getCosmicWebDensity = (x, y) => {
+      let freq = 0.00004;
+      let amplitude = 1.0;
+      let noiseSum = 0;
+      let maxVal = 0;
+
+      const warpX = Math.sin(x * freq * 0.5);
+      const warpY = Math.cos(y * freq * 0.5);
+
+      const wx = x + (warpX * 0.2 * sectorRadius);
+      const wy = y + (warpY * 0.2 * sectorRadius);
+
+      for (let i = 0; i < 3; i++) {
+        const nx = wx * freq + (i * 13.2);
+        const ny = wy * freq + (i * 57.8);
+
+        let signal = 1.0 - Math.abs(Math.sin(nx) * Math.cos(ny));
+        signal = Math.pow(signal, 2);
+
+        noiseSum += signal * amplitude;
+        maxVal += amplitude;
+
+        freq *= 2.1;
+        amplitude *= 0.5;
+      }
+
+      let normalized = noiseSum / maxVal;
+      return Math.pow(normalized, 6);
+    };
+
+    while (galaxies.length < targetCount && safetyCounter < targetCount * 20) {
+      safetyCounter++;
+
+      const angle = rng.random() * Math.PI * 2;
+      const dist = Math.sqrt(rng.random()) * sectorRadius;
+
+      const candX = supercluster.x + Math.cos(angle) * dist;
+      const candY = supercluster.y + Math.sin(angle) * dist;
+
+      const density = getCosmicWebDensity(candX, candY);
+
+      if (rng.random() > (density + 0.005)) {
+        continue;
+      }
+
+      const typeRoll = rng.random();
+      let type, radius, mass;
+
+      if (density > 0.85 && typeRoll < 0.6) {
+        type = GALAXY_TYPE_ELLIPTICAL;
+        radius = (60 + rng.random() * 100) * KLY_TO_LY;
+        mass = 1e12 + rng.random() * 5e12;
+      } else if (density > 0.4) {
+        if (typeRoll < 0.7) {
+          type = GALAXY_TYPE_SPIRAL;
+          radius = (25 + rng.random() * 60) * KLY_TO_LY;
+          mass = 5e10 + rng.random() * 8e11;
+        } else {
+          type = GALAXY_TYPE_ELLIPTICAL;
+          radius = (20 + rng.random() * 40) * KLY_TO_LY;
+          mass = 1e10 + rng.random() * 1e11;
+        }
+      } else {
+        type = rng.random() < 0.5 ? GALAXY_TYPE_DWARF_SPHEROIDAL : GALAXY_TYPE_IRREGULAR;
+        radius = (2 + rng.random() * 8) * KLY_TO_LY;
+        mass = 1e7 + rng.random() * 1e9;
+      }
+
+      galaxies.push({
+        name: generateProceduralGalaxyName(candX, candY, rng),
+        x: candX,
+        y: candY,
+        radius: radius,
+        type: type,
+        mass: mass,
+        color: {
+          r: 200 + Math.floor(rng.random() * 55),
+          g: density > 0.7 ? 150 + Math.floor(rng.random() * 50) : 180 + Math.floor(rng.random() * 75),
+          b: density > 0.7 ? 100 + Math.floor(rng.random() * 50) : 200 + Math.floor(rng.random() * 55)
+        },
+        supercluster: supercluster
+      });
+    }
+
+    return galaxies;
+  }
+
+  // ============================================================================
+  // Star Map Data Manager
+  // ============================================================================
+
+  class StarMapDataManager {
+    constructor() {
+      this.systems = new Map();
+      this.hardcodedSystems = new Set();
+      this.currentSystem = "Sol";   // i18n-ignore: system id
+      this.proceduralSeed = 12345;
+      this.proceduralGenerated = false;
+      // this.loadSystems(); // Lazy loaded on first request
+
+      this.playerShip = {
+        currentSystem: "Sol",   // i18n-ignore: system id
+        currentPlanet: null,
+        // Set while the ship is parked in orbit of a star/black hole (as
+        // opposed to currentPlanet, which covers planet/moon orbit). Mutually
+        // exclusive with currentPlanet - entering either clears the other.
+        parkedBody: null,
+        position: null,
+        targetSystem: null,
+        targetPlanet: null,
+        isMoving: false,
+        departureTime: null,
+        departurePosition: null,
+        targetPosition: null,
+        travelDistance: 0,
+        orbitRadius: 0.5,
+        // Exotic fuels (see HYPERFLUX_MAX / SCHRODINGERITE_MAX). Start full.
+        hyperflux: HYPERFLUX_MAX,
+        schrodingerite: SCHRODINGERITE_MAX,
+        // True while parked at a main-sequence star and actively refuelling
+        // (see startRefuel/stopRefuel/tickRefuel).
+        isRefueling: false,
+        // Set by beginAutoRefuel: the pumps engage by themselves once the
+        // plotted course reaches the fusing star it was aimed at.
+        autoRefuelOnArrival: false,
+      };
+
+      this.initializeShipPosition();
+      // Default start: in space, in low orbit of Earth, so a <Biome: Space> map
+      // always has the body it orbits outside the windows. Character-creation
+      // scenarios that begin somewhere else (the crash-landed origin, which
+      // strands the party on another planet) re-park the ship afterwards.
+      this.parkAtHomeOrbit();
+    }
+
+    initializeShipPosition() {
+      const sol = this.getSystem(HOME_SYSTEM_NAME);
+      if (sol) {
+        this.playerShip.position = { ...sol.position };
+      } else {
+        this.playerShip.position = { x: 0, y: 0, z: 0 };
+      }
+    }
+
+    // Park the ship at its factory berth (Earth orbit). Written straight onto
+    // the ship rather than through teleportToPlanetOrbit so it is safe to call
+    // from the constructor, before $gameVariables exists.
+    parkAtHomeOrbit() {
+      const sol = this.getSystem(HOME_SYSTEM_NAME);
+      const home = sol && (sol.planets || []).find((p) => p.name === HOME_PLANET_NAME);
+      if (!home) return false;
+      this.playerShip.currentSystem = sol.name;
+      this.playerShip.currentPlanet = home.name;
+      this.playerShip.parkedBody = null;
+      this.currentSystem = sol.name;
+      this.playerShip.position = { ...sol.position };
+      return true;
+    }
+
+    // Normal (non-warp) course to a SPECIFIC star of an N-ary system: same
+    // flight as startTravelToSystem, but arrival parks the ship in orbit of
+    // that star (primary, companion or feeding donor) instead of the default
+    // free drift at the system centre.
+    startTravelToStar(targetSystemName, starName) {
+      if (!this.getStarInSystem(targetSystemName, starName)) return false;
+      if (!this.startTravelToSystem(targetSystemName)) return false;
+      this.playerShip.targetStar = starName || null;
+      return true;
+    }
+
+    startTravelToSystem(targetSystemName) {
+      const targetSystem = this.getSystem(targetSystemName);
+      if (!targetSystem) return false;
+
+      this.playerShip.targetSystem = targetSystemName;
+      this.playerShip.targetPlanet = null;
+      this.playerShip.targetStar = null;
+      this.playerShip.isMoving = true;
+      this.playerShip.departureTime = Date.now();
+      this.playerShip.lastFuelTime = this.playerShip.departureTime;
+      this.playerShip.departurePosition = { ...this.playerShip.position };
+      this.playerShip.targetPosition = { ...targetSystem.position };
+      $gameVariables.setValue(97, targetSystemName);
+
+      const dx = this.playerShip.targetPosition.x - this.playerShip.departurePosition.x;
+      const dy = this.playerShip.targetPosition.y - this.playerShip.departurePosition.y;
+      const dz = this.playerShip.targetPosition.z - this.playerShip.departurePosition.z;
+      this.playerShip.travelDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      return true;
+    }
+
+    startTravelToPlanet(targetSystemName, targetPlanetName) {
+      const targetSystem = this.getSystem(targetSystemName);
+      if (!targetSystem) return false;
+
+      const planet = (targetSystem.planets || []).find((p) => p.name === targetPlanetName);
+      if (!planet) return false;
+
+      this.playerShip.targetSystem = targetSystemName;
+      this.playerShip.targetPlanet = targetPlanetName;
+      this.playerShip.isMoving = true;
+      this.playerShip.departureTime = Date.now();
+      this.playerShip.lastFuelTime = this.playerShip.departureTime;
+      this.playerShip.departurePosition = { ...this.playerShip.position };
+      $gameVariables.setValue(97, targetSystemName);
+
+      const MIN_VISUAL_WORLD_RADIUS = 0.15;
+      const RADIUS_SCALE_FACTOR = 0.01;
+      const worldRadius = MIN_VISUAL_WORLD_RADIUS + targetSystem.radius * RADIUS_SCALE_FACTOR;
+      const MIN_PIXEL_SIZE = 2;
+      const starPixelRadius = Math.max(MIN_PIXEL_SIZE, worldRadius);
+
+      const orbitRadiusWorld = planet.orbitRadius || 1;
+      const angle = planet.phase || 0;
+
+      const isEccentric = planet.type === "rogue" || planet.type === "comet" ||
+        planet.type === "short_period_comet" || planet.type === "long_period_comet";
+
+      let planetX, planetY;
+
+      if (isEccentric) {
+        const eccentricity = 0.6;
+        const a = orbitRadiusWorld;
+        const b = a * Math.sqrt(1 - eccentricity * eccentricity);
+        const c_offset = a * eccentricity;
+
+        planetX = targetSystem.position.x + c_offset + Math.cos(angle) * a;
+        planetY = targetSystem.position.y + Math.sin(angle) * b;
+      } else {
+        planetX = targetSystem.position.x + Math.cos(angle) * orbitRadiusWorld;
+        planetY = targetSystem.position.y + Math.sin(angle) * orbitRadiusWorld;
+      }
+
+      this.playerShip.targetPosition = {
+        x: planetX,
+        y: planetY,
+        z: targetSystem.position.z,
+      };
+
+      const dx = this.playerShip.targetPosition.x - this.playerShip.departurePosition.x;
+      const dy = this.playerShip.targetPosition.y - this.playerShip.departurePosition.y;
+      const dz = this.playerShip.targetPosition.z - this.playerShip.departurePosition.z;
+      this.playerShip.travelDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      return true;
+    }
+
+    stopTravel(userStopped = true) {
+      this.playerShip.isMoving = false;
+      this.playerShip.targetSystem = null;
+      this.playerShip.targetPlanet = null;
+      this.playerShip.targetStar = null;
+      this.playerShip.departureTime = null;
+      this.playerShip.lastFuelTime = null;
+      this.playerShip.departurePosition = null;
+      this.playerShip.targetPosition = null;
+      if (userStopped) {
+        this.playerShip.stoppedMidTravel = true;
+        // A course the player abandoned no longer hands off to the pumps.
+        this.playerShip.autoRefuelOnArrival = false;
+      }
+    }
+
+    updateShipPosition() {
+      if (!this.playerShip.isMoving || !this.playerShip.departureTime) {
+        return;
+      }
+
+      const speedMultiplier = $gameVariables.value(94) || 1;
+      const currentTime = Date.now();
+      const elapsedSeconds = (currentTime - this.playerShip.departureTime) / 1000;
+
+      const baseSpeed = 1;
+      const distanceTraveled = elapsedSeconds * baseSpeed * speedMultiplier;
+      const maxProgress = 0.95;
+      // Zero-distance travel would make progress NaN; treat it as an instant arrival.
+      const progress = this.playerShip.travelDistance > 0
+        ? Math.min(distanceTraveled / this.playerShip.travelDistance, maxProgress)
+        : maxProgress;
+
+      const dx = this.playerShip.targetPosition.x - this.playerShip.departurePosition.x;
+      const dy = this.playerShip.targetPosition.y - this.playerShip.departurePosition.y;
+      const dz = this.playerShip.targetPosition.z - this.playerShip.departurePosition.z;
+
+      this.playerShip.position = {
+        x: this.playerShip.departurePosition.x + dx * progress,
+        y: this.playerShip.departurePosition.y + dy * progress,
+        z: this.playerShip.departurePosition.z + dz * progress,
+      };
+
+      // Galaxy-scale sublight travel burns Hyperflux (not the map-fuel var 95).
+      // Drain from the per-frame delta, not the total elapsed-since-departure
+      // (the latter compounds because it is subtracted from already-decremented
+      // fuel). Faster warp speeds cost quadratically more, so the slider trades
+      // arrival time for Hyperflux.
+      const lastFuelTime = this.playerShip.lastFuelTime || this.playerShip.departureTime;
+      const deltaSeconds = Math.max(0, (currentTime - lastFuelTime) / 1000);
+      this.playerShip.lastFuelTime = currentTime;
+      const fuelConsumed = deltaSeconds * speedMultiplier * speedMultiplier * 0.01;
+      const fuelValue = this.getHyperflux();
+      this.setHyperflux(fuelValue - fuelConsumed);
+
+      if (progress >= maxProgress) {
+        // Ship has arrived
+        this.playerShip.currentSystem = this.playerShip.targetSystem;
+        this.currentSystem = this.playerShip.targetSystem;
+
+        if (this.playerShip.targetPlanet) {
+          this.playerShip.currentPlanet = this.playerShip.targetPlanet;
+          this.playerShip.parkedBody = null;
+        } else if (this.playerShip.targetStar) {
+          // Arrival aimed at a specific star of the system (see
+          // startTravelToStar): park in its orbit.
+          this.playerShip.currentPlanet = null;
+          const rec = this.getStarInSystem(
+            this.playerShip.currentSystem, this.playerShip.targetStar);
+          this.playerShip.parkedBody = {
+            kind: (rec && (rec.type === "BLACK_HOLE" || rec.type === "SUPERMASSIVE_BLACK_HOLE"))
+              ? "blackhole" : "star",
+            name: this.playerShip.targetStar,
+            system: this.playerShip.currentSystem,
+          };
+        } else {
+          this.playerShip.currentPlanet = null;
+          this.playerShip.parkedBody = null;
+        }
+
+        this.playerShip.stoppedMidTravel = false;
+        $gameVariables.setValue(96, this.playerShip.currentSystem);
+        const autoRefuel = !!this.playerShip.autoRefuelOnArrival;
+        this.stopTravel(false);
+        // An auto-refuel course (see beginAutoRefuel) starts the pumps the
+        // moment the ship settles into the star's orbit.
+        if (autoRefuel) {
+          this.playerShip.autoRefuelOnArrival = false;
+          this.startRefuel();
+        }
+      }
+
+      if (this.getHyperflux() <= 0) {
+        this.stopTravel(true);
+      }
+    }
+
+    // ---- Fuel accessors ---------------------------------------------------
+    getHyperflux() {
+      const v = this.playerShip.hyperflux;
+      return (typeof v === "number" && isFinite(v)) ? v : HYPERFLUX_MAX;
+    }
+    setHyperflux(v) {
+      this.playerShip.hyperflux = Math.max(0, Math.min(HYPERFLUX_MAX, v || 0));
+      return this.playerShip.hyperflux;
+    }
+    getSchrodingerite() {
+      const v = this.playerShip.schrodingerite;
+      return (typeof v === "number" && isFinite(v)) ? Math.floor(v) : SCHRODINGERITE_MAX;
+    }
+    setSchrodingerite(v) {
+      this.playerShip.schrodingerite =
+        Math.max(0, Math.min(SCHRODINGERITE_MAX, Math.floor(v || 0)));
+      return this.playerShip.schrodingerite;
+    }
+
+    // Instantly relocate the ship to a target system (SB-Bridge warp). Consumes
+    // no fuel itself -- the caller checks/decrements Schrodingerite -- and works
+    // for any resolvable system regardless of distance or galaxy.
+    teleportToSystem(targetSystemName) {
+      const targetSystem = this.getSystem(targetSystemName);
+      if (!targetSystem) return false;
+      this.stopTravel(false);
+      this.playerShip.currentSystem = targetSystemName;
+      this.playerShip.currentPlanet = null;
+      this.playerShip.parkedBody = null;
+      this.currentSystem = targetSystemName;
+      this.playerShip.position = { ...targetSystem.position };
+      this.playerShip.stoppedMidTravel = false;
+      $gameVariables.setValue(96, targetSystemName);
+      return true;
+    }
+
+    // Instantly relocate the ship into orbit of a specific planet (SB-Bohr
+    // bridge). The system view re-places the ship on the planet each frame from
+    // currentPlanet, so setting the state is enough. Fuel is handled by caller.
+    teleportToPlanetOrbit(systemName, planetName) {
+      const sys = this.getSystem(systemName);
+      if (!sys) return false;
+      const planet = (sys.planets || []).find((p) => p.name === planetName);
+      if (!planet) return false;
+      this.stopTravel(false);
+      this.playerShip.currentSystem = systemName;
+      this.playerShip.currentPlanet = planetName;
+      this.playerShip.parkedBody = null;
+      this.currentSystem = systemName;
+      this.playerShip.position = { ...sys.position };
+      this.playerShip.stoppedMidTravel = false;
+      $gameVariables.setValue(96, systemName);
+      return true;
+    }
+
+    // Resolve a named star inside a system: the primary itself, a companion
+    // star of an N-ary system, or the donor star of a feeding X-ray binary.
+    getStarInSystem(systemName, starName) {
+      const sys = this.getSystem(systemName);
+      if (!sys) return null;
+      if (!starName || starName === sys.name) return sys;
+      if (sys.feeding && sys.feeding.donor && sys.feeding.donor.name === starName) {
+        return sys.feeding.donor;
+      }
+      return (sys.companions || []).find((c) => c.name === starName) || null;
+    }
+
+    // Park the ship in orbit of the system's own star (or the black hole that
+    // stands in for one) - the star-scale equivalent of teleportToPlanetOrbit.
+    // Mutually exclusive with currentPlanet: parking at the star means not
+    // orbiting any of its planets. In an N-ary system any individual star
+    // (companion or feeding donor included) is a valid `starName` target.
+    parkAtStar(systemName, starName) {
+      const sys = this.getSystem(systemName);
+      if (!sys) return false;
+      const rec = this.getStarInSystem(systemName, starName) || sys;
+      this.stopTravel(false);
+      this.playerShip.currentSystem = systemName;
+      this.playerShip.currentPlanet = null;
+      this.playerShip.parkedBody = {
+        kind: (rec.type === "BLACK_HOLE" || rec.type === "SUPERMASSIVE_BLACK_HOLE") ? "blackhole" : "star",
+        name: rec.name || sys.name,
+        system: systemName,
+      };
+      this.currentSystem = systemName;
+      this.playerShip.position = { ...sys.position };
+      this.playerShip.stoppedMidTravel = false;
+      $gameVariables.setValue(96, systemName);
+      return true;
+    }
+
+    // ------------------------------------------------------------------------
+    // Refuelling: only while parked in orbit of a main-sequence star (O, B, A,
+    // F, G, K, M - the seven ordinary stellar classes). White dwarfs, neutron
+    // stars and both black-hole types are exotic remnants the ship can't draw
+    // Hyperflux from.
+    // ------------------------------------------------------------------------
+    isMainSequenceStar(sys) {
+      return !!sys && MAIN_SEQUENCE_TYPES.has(sys.type);
+    }
+
+    canRefuel() {
+      const ship = this.playerShip;
+      if (!ship || ship.isMoving || !ship.parkedBody || ship.parkedBody.kind !== "star") return false;
+      if (this.getHyperflux() >= HYPERFLUX_MAX) return false;
+      // parkedBody.system is set when parked at a companion/donor star of an
+      // N-ary system; older saves (and primary parks) fall back to the name.
+      const rec = this.getStarInSystem(
+        ship.parkedBody.system || ship.parkedBody.name, ship.parkedBody.name);
+      return this.isMainSequenceStar(rec);
+    }
+
+    startRefuel() {
+      if (!this.canRefuel()) return false;
+      this.playerShip.isRefueling = true;
+      return true;
+    }
+
+    stopRefuel() {
+      this.playerShip.isRefueling = false;
+    }
+
+    // Called once per frame from the scene loop with the real-time delta
+    // (seconds) - a no-op unless actively refuelling under still-valid
+    // conditions (still parked at the same main-sequence star, not moving).
+    tickRefuel(deltaSeconds) {
+      const ship = this.playerShip;
+      if (!ship || !ship.isRefueling) return;
+      if (!this.canRefuel()) { ship.isRefueling = false; return; }
+      this.setHyperflux(this.getHyperflux() + REFUEL_RATE_PER_SEC * Math.max(0, deltaSeconds || 0));
+      if (this.getHyperflux() >= HYPERFLUX_MAX) ship.isRefueling = false;
+    }
+
+    // ------------------------------------------------------------------------
+    // Auto-refuel routing: find the nearest star the ship can actually drink
+    // from and plot the course there (see planRefuel / beginAutoRefuel). Used by
+    // the HUD's Refuel button and the "Refuel" plugin command.
+    // ------------------------------------------------------------------------
+
+    // Every star of a system that can power a refuel: the primary itself, any
+    // companion of an N-ary system, and the donor of a feeding X-ray binary.
+    // Entries are { star, rec } where `star` is the name to pass to
+    // parkAtStar/startTravelToStar (null = the system's own primary).
+    refuelStarsInSystem(sys) {
+      if (!sys) return [];
+      const out = [];
+      if (this.isMainSequenceStar(sys)) out.push({ star: null, rec: sys });
+      (sys.companions || []).forEach((c) => {
+        if (this.isMainSequenceStar(c)) out.push({ star: c.name, rec: c });
+      });
+      const donor = sys.feeding && sys.feeding.donor;
+      if (donor && this.isMainSequenceStar(donor)) out.push({ star: donor.name, rec: donor });
+      return out;
+    }
+
+    systemHasRefuelStar(sys) {
+      return this.refuelStarsInSystem(sys).length > 0;
+    }
+
+    /**
+     * Nearest system holding a refuellable star, measured from the ship (or
+     * `opts.from`). Only systems sharing the ship's coordinate frame are
+     * considered: a procedural galaxy's interior uses its own local origin, so
+     * comparing its systems against the Milky Way's would be meaningless.
+     * @param {{from?:object, excludeSystem?:string}} [opts]
+     * @returns {?{systemName:string, starName:?string, starType:string,
+     *   distance:number}}
+     */
+    findNearestRefuelStar(opts) {
+      opts = opts || {};
+      const ship = this.playerShip;
+      const from = opts.from || (ship && ship.position) || { x: 0, y: 0, z: 0 };
+      let best = null;
+      const consider = (sys) => {
+        if (!sys || !sys.position || sys.name === opts.excludeSystem) return;
+        const stars = this.refuelStarsInSystem(sys);
+        if (!stars.length) return;
+        const dx = sys.position.x - from.x;
+        const dy = sys.position.y - from.y;
+        const dz = (sys.position.z || 0) - (from.z || 0);
+        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (best && d >= best.distance) return;
+        best = {
+          systemName: sys.name,
+          starName: stars[0].star,
+          starType: stars[0].rec.type,
+          distance: d,
+        };
+      };
+
+      // Inside a procedural galaxy only that galaxy's own systems are reachable
+      // in this frame (names "GX.<seed>.<i>", see generateGalaxySystems).
+      const cur = (ship && ship.currentSystem) || this.currentSystem;
+      if (typeof cur === "string" && cur.startsWith("GX.")) {
+        const seed = parseInt(cur.split(".")[1], 10);
+        if (!Number.isFinite(seed)) return null;
+        this.generateGalaxySystems(seed).forEach(consider);
+        return best;
+      }
+
+      // Milky Way: the static/procedural catalog inside the bubble first...
+      this.getAllSystems().forEach((sys) => {
+        if (!String(sys.name).startsWith("GX.")) consider(sys);
+      });
+      // ...then the lazy field in expanding rings of chunks around the ship, so
+      // a ship stranded out in the sparse disk still finds something to burn.
+      const cx0 = Math.floor(from.x / LAZY_CHUNK_LY);
+      const cz0 = Math.floor((from.y || 0) / LAZY_CHUNK_LY);
+      for (let ring = 0; ring <= REFUEL_SEARCH_RINGS; ring++) {
+        // Anything found closer than this ring's inner edge can't be beaten.
+        if (best && best.distance <= ring * LAZY_CHUNK_LY) break;
+        for (let dx = -ring; dx <= ring; dx++) {
+          for (let dz = -ring; dz <= ring; dz++) {
+            if (Math.max(Math.abs(dx), Math.abs(dz)) !== ring) continue;
+            this.generateLazyChunk(cx0 + dx, cz0 + dz).forEach(consider);
+          }
+        }
+      }
+      return best;
+    }
+
+    /**
+     * What the ship should do to top its Hyperflux up from where it is now.
+     * @returns {{status:string, starName:?string, starType:?string,
+     *   systemName:?string, distance:number, estFuel:number, shortFuel:boolean}}
+     *   status: "full"       tank already full
+     *           "refuelling" pumps already running
+     *           "here"       parked at a usable star: just engage
+     *           "local"      a usable star in this very system: short hop
+     *           "travel"     nearest usable star is in another system
+     *           "none"       nothing refuellable within search range
+     */
+    planRefuel() {
+      const ship = this.playerShip;
+      const none = {
+        status: "none", starName: null, starType: null, systemName: null,
+        distance: 0, estFuel: 0, shortFuel: false,
+      };
+      if (!ship) return none;
+      if (ship.isRefueling) {
+        const rec = ship.parkedBody && this.getStarInSystem(
+          ship.parkedBody.system || ship.parkedBody.name, ship.parkedBody.name);
+        return {
+          ...none, status: "refuelling",
+          starName: (ship.parkedBody && ship.parkedBody.name) || null,
+          starType: (rec && rec.type) || null,
+          systemName: ship.currentSystem || null,
+        };
+      }
+      if (this.getHyperflux() >= HYPERFLUX_MAX) return { ...none, status: "full" };
+
+      // Already parked at a fusing star: nothing to plot.
+      if (this.canRefuel()) {
+        const rec = this.getStarInSystem(
+          ship.parkedBody.system || ship.parkedBody.name, ship.parkedBody.name);
+        return {
+          ...none, status: "here",
+          starName: ship.parkedBody.name,
+          starType: (rec && rec.type) || null,
+          systemName: ship.currentSystem || null,
+        };
+      }
+
+      // The star of the system the ship is already in wins over any neighbour.
+      const here = this.getSystem(ship.currentSystem);
+      const local = this.refuelStarsInSystem(here)[0];
+      if (local && !ship.isMoving) {
+        return {
+          ...none, status: "local",
+          starName: local.star || (here && here.name) || null,
+          starType: local.rec.type,
+          systemName: here.name,
+        };
+      }
+
+      const near = this.findNearestRefuelStar();
+      if (!near) return none;
+      // Burn estimate for the hop: the drain is speed^2 * 0.01 per second over
+      // distance / speed seconds, i.e. distance * speed * 0.01 (see
+      // updateShipPosition), so warp speed trades arrival time for Hyperflux.
+      const speed = ($gameVariables && $gameVariables.value(94)) || 1;
+      const estFuel = near.distance * speed * 0.01;
+      return {
+        status: "travel",
+        starName: near.starName || near.systemName,
+        starType: near.starType,
+        systemName: near.systemName,
+        distance: near.distance,
+        estFuel,
+        shortFuel: estFuel > this.getHyperflux(),
+      };
+    }
+
+    /**
+     * Act on planRefuel: engage the pumps if the ship is already parked at a
+     * fusing star, otherwise auto-plot the course to the nearest one and arm
+     * the arrival hand-off (autoRefuelOnArrival, see updateShipPosition).
+     * @returns {object} the plan, with `started` / `plotted` set
+     */
+    beginAutoRefuel() {
+      const plan = this.planRefuel();
+      plan.started = false;
+      plan.plotted = false;
+      if (plan.status === "here") {
+        plan.started = this.startRefuel();
+        return plan;
+      }
+      if (plan.status === "local" || plan.status === "travel") {
+        const ok = this.startTravelToStar(plan.systemName, plan.starName) ||
+          this.startTravelToSystem(plan.systemName);
+        if (ok) {
+          // Arrival parks in the fuel star's orbit even if the star lookup fell
+          // through to a plain system course.
+          this.playerShip.targetStar = plan.starName || this.playerShip.targetStar;
+          this.playerShip.autoRefuelOnArrival = true;
+          plan.plotted = true;
+        }
+      }
+      return plan;
+    }
+
+    // ------------------------------------------------------------------------
+    // Schrödingerite harvesting: only while parked at a black hole, gated by a
+    // once-per-game-week-per-hole cooldown so it can't be farmed by repeatedly
+    // parking/unparking. Cooldown timestamps (in game-minutes, variable 114)
+    // are keyed by black hole system name and persisted on $gameSystem, same
+    // convention as the bookmark store (_bookmarks).
+    // ------------------------------------------------------------------------
+    _schrodingeriteHarvestStore() {
+      if (!$gameSystem._bhSchrodingeriteHarvest) $gameSystem._bhSchrodingeriteHarvest = {};
+      return $gameSystem._bhSchrodingeriteHarvest;
+    }
+
+    schrodingeriteCooldownRemaining(name) {
+      if (!name) return 0;
+      const last = this._schrodingeriteHarvestStore()[name];
+      if (last == null) return 0;
+      const now = ($gameVariables && $gameVariables.value(114)) || 0;
+      return Math.max(0, SCHRODINGERITE_HARVEST_COOLDOWN_MIN - (now - last));
+    }
+
+    canHarvestSchrodingerite() {
+      const ship = this.playerShip;
+      if (!ship || ship.isMoving || !ship.parkedBody || ship.parkedBody.kind !== "blackhole") return false;
+      return this.schrodingeriteCooldownRemaining(ship.parkedBody.name) <= 0;
+    }
+
+    harvestSchrodingerite() {
+      if (!this.canHarvestSchrodingerite()) return false;
+      const name = this.playerShip.parkedBody.name;
+      const now = ($gameVariables && $gameVariables.value(114)) || 0;
+      this._schrodingeriteHarvestStore()[name] = now;
+      this.setSchrodingerite(this.getSchrodingerite() + SCHRODINGERITE_HARVEST_AMOUNT);
+      return true;
+    }
+
+    recalculateDepartureOnSpeedChange() {
+      if (!this.playerShip.isMoving || !this.playerShip.departureTime) {
+        return;
+      }
+
+      this.playerShip.departurePosition = {
+        x: this.playerShip.position.x,
+        y: this.playerShip.position.y,
+        z: this.playerShip.position.z,
+      };
+
+      this.playerShip.departureTime = Date.now();
+      this.playerShip.lastFuelTime = this.playerShip.departureTime;
+
+      const remainingDx = this.playerShip.targetPosition.x - this.playerShip.position.x;
+      const remainingDy = this.playerShip.targetPosition.y - this.playerShip.position.y;
+      const remainingDz = this.playerShip.targetPosition.z - this.playerShip.position.z;
+      this.playerShip.travelDistance = Math.sqrt(
+        remainingDx * remainingDx + remainingDy * remainingDy + remainingDz * remainingDz
+      );
+    }
+
+    updateShipAtPlanet() {
+      // If ship is stationary at a planet, keep it centered on the planet as it moves
+      if (this.playerShip.isMoving || !this.playerShip.currentPlanet) {
+        return;
+      }
+
+      const currentSystem = this.getSystem(this.playerShip.currentSystem);
+      if (!currentSystem) return;
+
+      const planet = currentSystem.planets.find((p) => p.name === this.playerShip.currentPlanet);
+      if (!planet || !planet.orbitRadius) {
+        // If no planet found, center on star
+        this.playerShip.position = {
+          x: currentSystem.position.x,
+          y: currentSystem.position.y,
+          z: currentSystem.position.z,
+        };
+        return;
+      }
+
+      // Get the planet's current position
+      const time = Date.now() * 0.0001;
+      const basePhase = planet.basePhase || 0;
+      const planetAngle = basePhase + time * (planet.orbitSpeed || 1);
+      const planetOrbitRadius = planet.orbitRadius || 1;
+
+      const isEccentric = planet.type === "rogue" || planet.type === "comet" ||
+        planet.type === "short_period_comet" || planet.type === "long_period_comet";
+
+      let planetX, planetY;
+
+      if (isEccentric) {
+        const eccentricity = 0.6;
+        const a = planetOrbitRadius;
+        const b = a * Math.sqrt(1 - eccentricity * eccentricity);
+        const c_offset = a * eccentricity;
+        planetX = currentSystem.position.x + c_offset + Math.cos(planetAngle) * a;
+        planetY = currentSystem.position.y + Math.sin(planetAngle) * b;
+      } else {
+        planetX = currentSystem.position.x + Math.cos(planetAngle) * planetOrbitRadius;
+        planetY = currentSystem.position.y + Math.sin(planetAngle) * planetOrbitRadius;
+      }
+
+      // Update planet's phase for rendering
+      planet.phase = planetAngle;
+
+      // Place ship at planet's center (overlay)
+      this.playerShip.position = {
+        x: planetX,
+        y: planetY,
+        z: currentSystem.position.z,
+      };
+    }
+
+    updateShipOrbit() {
+      const currentSystem = this.getSystem(this.playerShip.currentSystem);
+      if (!currentSystem) return;
+
+      const time = Date.now() * 0.0002;
+      const orbitRadius = this.playerShip.orbitRadius;
+
+      if (this.playerShip.currentPlanet) {
+        const planet = currentSystem.planets.find((p) => p.name === this.playerShip.currentPlanet);
+        if (planet && planet.orbitRadius) {
+          const planetAngle = planet.phase || 0;
+          const planetOrbitRadius = planet.orbitRadius || 1;
+
+          const isEccentric = planet.type === "rogue" || planet.type === "comet" ||
+            planet.type === "short_period_comet" || planet.type === "long_period_comet";
+
+          let planetX, planetY;
+
+          if (isEccentric) {
+            const eccentricity = 0.6;
+            const a = planetOrbitRadius;
+            const b = a * Math.sqrt(1 - eccentricity * eccentricity);
+            const c_offset = a * eccentricity;
+
+            planetX = currentSystem.position.x + c_offset + Math.cos(planetAngle) * a;
+            planetY = currentSystem.position.y + Math.sin(planetAngle) * b;
+          } else {
+            planetX = currentSystem.position.x + Math.cos(planetAngle) * planetOrbitRadius;
+            planetY = currentSystem.position.y + Math.sin(planetAngle) * planetOrbitRadius;
+          }
+
+          const orbitAngle = time * 4;
+          this.playerShip.position = {
+            x: planetX + Math.cos(orbitAngle) * orbitRadius,
+            y: planetY + Math.sin(orbitAngle) * orbitRadius,
+            z: currentSystem.position.z,
+          };
+        }
+      } else {
+        const orbitAngle = time;
+        this.playerShip.position = {
+          x: currentSystem.position.x + Math.cos(orbitAngle) * orbitRadius * 2,
+          y: currentSystem.position.y + Math.sin(orbitAngle) * orbitRadius * 2,
+          z: currentSystem.position.z,
+        };
+      }
+    }
+
+    getShipPosition() {
+      return this.playerShip.position;
+    }
+
+    isShipMoving() {
+      return this.playerShip.isMoving;
+    }
+
+    getTargetSystem() {
+      return this.playerShip.targetSystem;
+    }
+
+    loadSystems() {
+      Object.keys(SYSTEMS).forEach((key) => {
+        const systemData = SYSTEMS[key];
+        const system = {
+          name: systemData.name,
+          type: systemData.type,
+          color: STAR_COLORS[systemData.type] || "#ffffff",
+          position: systemData.position,
+          mass: systemData.mass,
+          radius: systemData.radius,
+          temperature: systemData.temperature,
+          luminosity: systemData.luminosity || this.calculateLuminosity(systemData),
+          binary: systemData.binary || false,
+          // Authored companion stars ({ name, type, mass, radius, temperature,
+          // orbitRadius(AU) }): each is a selectable, travelable arrival target.
+          companions: this._normalizeCompanions(systemData.companions),
+          // Dyson shell around the star: "active" (Zeta Reticuli) or "abandoned".
+          dyson: systemData.dyson || null,
+          // X-ray binary: a compact object stripping a donor star.
+          feeding: this._normalizeFeeding(systemData.feeding),
+          // ROGUE_PLANET systems: the type of the lone dark world itself.
+          planetType: systemData.planetType || null,
+          // Drawn debris belts ({ innerAu, outerAu, count, thickness, gapsAu }):
+          // the asteroid and Kuiper belts (see Scene3DBodies.buildSystem).
+          belts: systemData.belts || null,
+          hardcoded: true,
+          planets: [],
+        };
+
+        if (systemData.planets && systemData.planets.length > 0) {
+          systemData.planets.forEach((planet, index) => {
+            const planetTypeData = PLANET_TYPES[planet.type];
+
+            const newPlanet = {
+              name: planet.name || `${system.name} ${String.fromCharCode(65 + index)}`,
+              type: planet.type,
+              color: PLANET_COLORS[planet.type] || "#888888",
+              orbitRadius: planet.orbitRadius,
+              radius: planet.radius || 1.0,
+              mass: planet.mass,
+              period: Math.sqrt(Math.pow(planet.orbitRadius, 3) / system.mass) * 365,
+              // An authored phase pins a body to a spot on its orbit (a
+              // co-orbital riding beside Earth, a Counter-Earth behind the Sun);
+              // everything else is scattered.
+              phase: typeof planet.phase === "number"
+                ? planet.phase : Math.random() * Math.PI * 2,
+              atmosphere: planet.atmosphere !== false,
+              // Hand-authored landing spots ({ name, mapId, x, y }): a planet with
+              // any gets a star marker and a location list in its orbit panel.
+              landingLocations: planet.landingLocations || null,
+              // Flavour + special-body flags carried straight from the data:
+              //   note        one paragraph shown on the selection panel
+              //   artificial  built, not formed: "probe" | "teapot" |
+              //               "monolith" | "telescope" (see Renderer3D)
+              //   probeStyle  which spacecraft an artificial probe is modelled on
+              //   hubble      carries a servicing state (GalaxySim.Hubble)
+              //   noLanding   nothing to put a landing party on
+              //   debris      orbital debris shell, e.g. "kessler"
+              note: planet.note || null,
+              artificial: planet.artificial || null,
+              probeStyle: planet.probeStyle || null,
+              hubble: !!planet.hubble,
+              noLanding: !!planet.noLanding,
+              debris: planet.debris || null,
+              moons: [],
+            };
+
+            if (planet.moons && planet.moons.length > 0) {
+              planet.moons.forEach((moon, moonIndex) => {
+                const planetMassInSolar = newPlanet.mass / 333000.0;
+
+                newPlanet.moons.push({
+                  name: moon.name || `${newPlanet.name} ${String.fromCharCode(97 + moonIndex)}`,
+                  type: moon.type,
+                  color: PLANET_COLORS[moon.type] || "#888888",
+                  orbitRadius: moon.orbitRadius,
+                  radius: moon.radius || 0.27,
+                  mass: moon.mass,
+                  period: Math.sqrt(Math.pow(moon.orbitRadius, 3) / planetMassInSolar) * 365,
+                  phase: typeof moon.phase === "number"
+                    ? moon.phase : Math.random() * Math.PI * 2,
+                  atmosphere: moon.atmosphere === true,
+                  landingLocations: moon.landingLocations || null,
+                  note: moon.note || null,
+                });
+              });
+            }
+
+            system.planets.push(newPlanet);
+          });
+        }
+
+        this.systems.set(systemData.name, system);
+        this.hardcodedSystems.add(systemData.name);
+      });
+
+      this.generateFamousNebulaSystems();
+
+      console.log(`Loaded ${this.systems.size} hardcoded star systems from GalaxyData`);
+    }
+
+    // ------------------------------------------------------------------------
+    // Stellar modifiers: companion stars (binary .. quaternary), feeding
+    // compact objects and abandoned Dyson shells. Shared by the hardcoded
+    // loader (which normalizes authored data) and every procedural generator
+    // (which rolls them from its own deterministic rng).
+    // ------------------------------------------------------------------------
+    _makeCompanionStar(name, type, rng, orbitRadius) {
+      const d = STAR_TYPES[type] || STAR_TYPES.M;
+      return {
+        name,
+        type,
+        color: STAR_COLORS[type] || "#ffffff",
+        mass: rng.range(d.mass[0], d.mass[1]),
+        radius: rng.range(d.radius[0], d.radius[1]),
+        temperature: rng.range(d.temp[0], d.temp[1]),
+        orbitRadius,
+      };
+    }
+
+    _normalizeCompanions(companions) {
+      if (!companions || !companions.length) return null;
+      return companions.map((c) => ({
+        name: c.name,
+        type: c.type,
+        color: STAR_COLORS[c.type] || "#ffffff",
+        mass: c.mass || 0.5,
+        radius: c.radius || 0.5,
+        temperature: c.temperature || 4000,
+        orbitRadius: c.orbitRadius || 20,
+      }));
+    }
+
+    _normalizeFeeding(feeding) {
+      if (!feeding || !feeding.donor) return null;
+      const d = feeding.donor;
+      return {
+        donor: {
+          name: d.name,
+          type: d.type,
+          color: STAR_COLORS[d.type] || "#ffffff",
+          mass: d.mass || 10,
+          radius: d.radius || 10,
+          temperature: d.temperature || 10000,
+          orbitRadius: d.orbitRadius || 0.5,
+        },
+      };
+    }
+
+    // Roll companions / feeding donors / derelict Dyson shells for a freshly
+    // generated procedural system. Deterministic: consumes only the caller's
+    // seeded rng. ROGUE_PLANET systems are lone dark worlds and skip all of it.
+    _applyStellarModifiers(system, rng) {
+      if (!system || NO_MODIFIER_TYPES.has(system.type)) return system;
+
+      // Compact accretors: a share are caught actively feeding on a rare star.
+      if (FEEDING_ACCRETOR_TYPES.has(system.type)) {
+        if (!system.feeding && rng.random() < 0.35) {
+          const donorType = FEEDING_DONOR_TYPES[rng.int(0, FEEDING_DONOR_TYPES.length - 1)];
+          system.feeding = {
+            donor: this._makeCompanionStar(
+              system.name + " Donor", donorType, rng, rng.range(0.3, 1.2)),   // i18n-ignore: body id
+          };
+          system.binary = true;
+        }
+        return system;
+      }
+
+      // Multi-star systems: ~22% get a companion, each with a decent chance of
+      // one more (trinary/quaternary), on widening orbits.
+      if (!system.companions) {
+        const letters = ["B", "C", "D"];
+        const comps = [];
+        let orbit = rng.range(12, 30);
+        let chance = system.binary ? 1 : 0.22; // honor a pre-rolled binary flag
+        for (let i = 0; i < letters.length; i++) {
+          if (rng.random() >= chance) break;
+          const type = COMPANION_TYPES[rng.int(0, COMPANION_TYPES.length - 1)];
+          comps.push(this._makeCompanionStar(system.name + " " + letters[i], type, rng, orbit));
+          orbit *= rng.range(1.8, 2.6);
+          chance = 0.3;
+        }
+        if (comps.length) system.companions = comps;
+      }
+      system.binary = !!(system.companions && system.companions.length);
+
+      // A vanishingly rare derelict megastructure around ordinary stars.
+      if (!system.dyson && MAIN_SEQUENCE_TYPES.has(system.type) &&
+          rng.random() < ABANDONED_DYSON_CHANCE) {
+        system.dyson = "abandoned";
+      }
+      return system;
+    }
+
+    // ROGUE_PLANET "systems" have no star at all: pick what kind of lone dark
+    // world it is, and make sure nothing orbits it.
+    _finishRoguePlanet(system, rng) {
+      const kinds = ["gas_giant", "ice_giant", "rocky", "ice"];
+      system.planetType = system.planetType || kinds[rng.int(0, kinds.length - 1)];
+      system.planets = [];
+      system.binary = false;
+      return system;
+    }
+
+    // ------------------------------------------------------------------------
+    // Famous real-world nebulae (see GalaxySim_Scene3D_Cosmos.FAMOUS_NEBULAE):
+    // a handful get a couple of named, hardcoded stars registered here so the
+    // Catalog's "Star Systems" list, travel and picking all treat them like
+    // any other star. Entries with an `anchorStar` (Orion Nebula <-> Hatsya,
+    // Horsehead <-> Alnitak, ...) already have that star in Systems.json, but
+    // may still carry extra starsSpec entries (embedded protostars) generated
+    // around the anchor's position. Idempotent: safe to call more than once
+    // (e.g. a save that already ran this once).
+    // ------------------------------------------------------------------------
+    generateFamousNebulaSystems() {
+      const cosmos = window.GalaxySim && window.GalaxySim.Scene3DCosmos;
+      if (!cosmos || !cosmos.FAMOUS_NEBULAE || !cosmos.galLB) return;
+      cosmos.FAMOUS_NEBULAE.forEach((spec) => {
+        if (!spec.starsSpec || !spec.starsSpec.length) return;
+        const anchor = spec.anchorStar ? this.systems.get(spec.anchorStar) : null;
+        const center = (anchor && anchor.position) || cosmos.galLB(spec.l, spec.b, spec.d);
+        const jitter = (spec.size || 20) * 0.5;
+        const rng = new RandomGenerator("NEB:" + spec.name);
+        spec.starsSpec.forEach((star) => {
+          if (this.systems.has(star.name)) return;
+          const position = {
+            x: center.x + (rng.random() - 0.5) * jitter,
+            y: center.y + (rng.random() - 0.5) * jitter,
+            z: center.z + (rng.random() - 0.5) * jitter * 0.6,
+          };
+          const sys = {
+            name: star.name,
+            type: star.type,
+            color: STAR_COLORS[star.type] || "#ffffff",
+            position,
+            mass: star.mass,
+            radius: star.radius,
+            temperature: star.temperature,
+            luminosity: this.calculateLuminosity({ mass: star.mass, radius: star.radius }),
+            binary: false,
+            hardcoded: true,
+            nebula: spec.name,
+            planets: [],
+          };
+          this.systems.set(star.name, sys);
+          this.hardcodedSystems.add(star.name);
+        });
+      });
+    }
+
+    generateProceduralSystems() {
+      if (this.proceduralGenerated) {
+        console.log("Procedural systems already generated, skipping...");
+        return;
+      }
+      
+      if (this.systems.size === 0) this.loadSystems();
+
+      const MOON_INVALID_PLANET_TYPES = new Set([
+        "gas_giant", "hot_jupiter", "warm_jupiter", "cold_jupiter", "ice_giant",
+        "ringed_gas_giant", "magnetar", "comet", "short_period_comet", "long_period_comet",
+        "asteroid", "c_type_asteroid", "s_type_asteroid", "m_type_asteroid", "trojan_asteroid",
+      ]);
+
+      const moonTypePool = Object.keys(PLANET_TYPES).filter((type) => !MOON_INVALID_PLANET_TYPES.has(type));
+      const rng = new RandomGenerator(this.proceduralSeed);
+
+      const volume = (4 / 3) * Math.PI * Math.pow(MAP_RADIUS, 3);
+      const numProceduralSystems = Math.floor(volume * SYSTEM_DENSITY);
+
+      console.log(`Generating ${numProceduralSystems} procedural systems for the first time...`);
+
+      // freq * 20000 with a floor of 1 keeps the common classes dominant while
+      // guaranteeing every rare/theoretical type at least a sliver of the pool
+      // (at * 1000, anything under freq 0.0005 rounded to zero and could
+      // never spawn at all).
+      const starTypePool = [];
+      Object.keys(STAR_TYPES).forEach((type) => {
+        const count = Math.max(1, Math.round(STAR_TYPES[type].freq * 20000));
+        for (let i = 0; i < count; i++) {
+          starTypePool.push(type);
+        }
+      });
+
+      // Distribute stars in a flattened galactic disk rather than a uniform
+      // sphere: x/y fill the disk plane (uniform by area), while z is a thin
+      // gaussian-ish scatter around the plane (scale height ~6% of the radius).
+      // This reads as a believable lens in true 3D instead of a round blob,
+      // and leaves the 2D fallback (which only uses x/y) unchanged.
+      const DISK_SCALE_HEIGHT = MAP_RADIUS * 0.06;
+      for (let i = 0; i < numProceduralSystems; i++) {
+        const theta = rng.random() * Math.PI * 2;
+        const rPlane = Math.sqrt(rng.random()) * MAP_RADIUS;
+
+        const x = rPlane * Math.cos(theta);
+        const y = rPlane * Math.sin(theta);
+        // Sum of three uniforms ~ approx normal; thin the disk slightly toward
+        // the rim so it tapers like a real galactic plane.
+        const gaussian = (rng.random() + rng.random() + rng.random() - 1.5) / 1.5;
+        const edgeTaper = 1 - 0.5 * (rPlane / MAP_RADIUS);
+        const z = gaussian * DISK_SCALE_HEIGHT * edgeTaper;
+
+        let tooClose = false;
+        for (const [name, system] of this.systems) {
+          const dx = system.position.x - x;
+          const dy = system.position.y - y;
+          const dz = (system.position.z || 0) - z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          if (dist < 2) {
+            tooClose = true;
+            break;
+          }
+        }
+        if (tooClose) continue;
+
+        const starType = starTypePool[rng.int(0, starTypePool.length - 1)];
+        const starData = STAR_TYPES[starType];
+
+        const mass = rng.range(starData.mass[0], starData.mass[1]);
+        const radius = rng.range(starData.radius[0], starData.radius[1]);
+        const temperature = rng.range(starData.temp[0], starData.temp[1]);
+
+        const namePrefix = starType === "ROGUE_PLANET" ? "Rogue" : starType;   // i18n-ignore: designation prefix
+        const system = {
+          name: `${namePrefix}-${i.toString().padStart(4, "0")}`,
+          type: starType,
+          color: STAR_COLORS[starType],
+          position: { x, y, z },
+          mass: mass,
+          radius: radius,
+          temperature: temperature,
+          luminosity: this.calculateLuminosity({ mass, radius }),
+          binary: false,
+          hardcoded: false,
+          planets: [],
+        };
+        if (starType === "ROGUE_PLANET") this._finishRoguePlanet(system, rng);
+        else this._applyStellarModifiers(system, rng);
+
+        if (starType !== "ROGUE_PLANET" && rng.random() < 0.3) {
+          const numPlanets = rng.int(1, 8);
+          const planetTypes = Object.keys(PLANET_TYPES);
+
+          for (let p = 0; p < numPlanets; p++) {
+            const planetType = planetTypes[rng.int(0, planetTypes.length - 1)];
+            const planetData = PLANET_TYPES[planetType];
+
+            const planet = {
+              name: `${system.name} ${String.fromCharCode(97 + p)}`,
+              type: planetType,
+              color: PLANET_COLORS[planetType] || "#888888",
+              orbitRadius: rng.range(0.1, 10) * (p + 1) * 0.4,
+              radius: rng.range(0.5, 3),
+              mass: rng.range(planetData.minMass, planetData.maxMass),
+              period: 0,
+              phase: rng.random() * Math.PI * 2,
+              atmosphere: rng.random() < 0.5,
+              moons: [],
+            };
+
+            planet.period = Math.sqrt(Math.pow(planet.orbitRadius, 3) / system.mass) * 365;
+
+            const moonChance = 0.1 + planet.mass / 20.0;
+
+            if (rng.random() < moonChance && moonTypePool.length > 0) {
+              const numMoons = rng.int(1, 4);
+              let lastMoonOrbit = rng.range(0.001, 0.003);
+
+              for (let m = 0; m < numMoons; m++) {
+                const moonType = moonTypePool[rng.int(0, moonTypePool.length - 1)];
+                const moonData = PLANET_TYPES[moonType];
+
+                const moonOrbitRadius = lastMoonOrbit + rng.range(0.001, 0.004);
+                lastMoonOrbit = moonOrbitRadius;
+
+                const moonMass = rng.range(moonData.minMass, moonData.maxMass) * 0.05;
+                const moonRadius = rng.range(0.1, 0.4);
+                const planetMassInSolar = planet.mass / 333000.0;
+
+                const moon = {
+                  name: `${planet.name} ${String.fromCharCode(97 + m)}`,
+                  type: moonType,
+                  color: PLANET_COLORS[moonType] || "#888888",
+                  orbitRadius: moonOrbitRadius,
+                  radius: moonRadius,
+                  mass: moonMass,
+                  period: Math.sqrt(Math.pow(moonOrbitRadius, 3) / planetMassInSolar) * 365,
+                  phase: rng.random() * Math.PI * 2,
+                  atmosphere: false,
+                };
+                planet.moons.push(moon);
+              }
+            }
+
+            system.planets.push(planet);
+          }
+        }
+
+        this.systems.set(system.name, system);
+      }
+
+      this.proceduralGenerated = true;
+      console.log(`Total systems: ${this.systems.size} (${this.hardcodedSystems.size} hardcoded, ${this.systems.size - this.hardcodedSystems.size} procedural)`);
+    }
+
+    generateSingleProceduralSystem(x, y, z, name, rng) {
+      const MOON_INVALID_PLANET_TYPES = new Set([
+        "gas_giant", "hot_jupiter", "warm_jupiter", "cold_jupiter", "ice_giant",
+        "ringed_gas_giant", "magnetar", "comet", "short_period_comet", "long_period_comet",
+        "asteroid", "c_type_asteroid", "s_type_asteroid", "m_type_asteroid", "trojan_asteroid",
+      ]);
+
+      const moonTypePool = Object.keys(PLANET_TYPES).filter((type) => !MOON_INVALID_PLANET_TYPES.has(type));
+
+      const starTypePool = [];
+      Object.keys(STAR_TYPES).forEach((type) => {
+        const count = Math.max(1, Math.round(STAR_TYPES[type].freq * 20000));
+        for (let i = 0; i < count; i++) {
+          starTypePool.push(type);
+        }
+      });
+
+      const starType = starTypePool[rng.int(0, starTypePool.length - 1)];
+      const starData = STAR_TYPES[starType];
+
+      const mass = rng.range(starData.mass[0], starData.mass[1]);
+      const radius = rng.range(starData.radius[0], starData.radius[1]);
+      const temperature = rng.range(starData.temp[0], starData.temp[1]);
+
+      const system = {
+        name: name,
+        type: starType,
+        color: STAR_COLORS[starType],
+        position: { x, y, z },
+        mass: mass,
+        radius: radius,
+        temperature: temperature,
+        luminosity: this.calculateLuminosity({ mass, radius }),
+        binary: false,
+        hardcoded: false,
+        planets: [],
+      };
+      if (starType === "ROGUE_PLANET") this._finishRoguePlanet(system, rng);
+      else this._applyStellarModifiers(system, rng);
+
+      if (starType !== "ROGUE_PLANET" && rng.random() < 0.3) {
+        const numPlanets = rng.int(1, 8);
+        const planetTypes = Object.keys(PLANET_TYPES);
+
+        for (let p = 0; p < numPlanets; p++) {
+          const planetType = planetTypes[rng.int(0, planetTypes.length - 1)];
+          const planetData = PLANET_TYPES[planetType];
+
+          const planet = {
+            name: `${system.name} ${String.fromCharCode(98 + p)}`,
+            type: planetType,
+            color: PLANET_COLORS[planetType] || "#888888",
+            orbitRadius: rng.range(0.1, 10) * (p + 1) * 0.4,
+            radius: rng.range(0.5, 3),
+            mass: rng.range(planetData.minMass, planetData.maxMass),
+            period: 0,
+            phase: rng.random() * Math.PI * 2,
+            atmosphere: rng.random() < 0.5,
+            moons: [],
+          };
+
+          planet.period = Math.sqrt(Math.pow(planet.orbitRadius, 3) / system.mass) * 365;
+
+          const moonChance = 0.1 + planet.mass / 20.0;
+
+          if (rng.random() < moonChance && moonTypePool.length > 0) {
+            const numMoons = rng.int(1, 4);
+            let lastMoonOrbit = rng.range(0.001, 0.003);
+
+            for (let m = 0; m < numMoons; m++) {
+              const moonType = moonTypePool[rng.int(0, moonTypePool.length - 1)];
+              const moonData = PLANET_TYPES[moonType];
+
+              const moonOrbitRadius = lastMoonOrbit + rng.range(0.001, 0.004);
+              lastMoonOrbit = moonOrbitRadius;
+
+              const moonMass = rng.range(moonData.minMass, moonData.maxMass) * 0.05;
+              const moonRadius = rng.range(0.1, 0.4);
+              const planetMassInSolar = planet.mass / 333000.0;
+
+              const moon = {
+                name: `${planet.name} ${String.fromCharCode(97 + m)}`,
+                type: moonType,
+                color: PLANET_COLORS[moonType] || "#888888",
+                orbitRadius: moonOrbitRadius,
+                radius: moonRadius,
+                mass: moonMass,
+                period: Math.sqrt(Math.pow(moonOrbitRadius, 3) / planetMassInSolar) * 365,
+                phase: rng.random() * Math.PI * 2,
+                atmosphere: false,
+              };
+              planet.moons.push(moon);
+            }
+          }
+
+          system.planets.push(planet);
+        }
+      }
+
+      return system;
+    }
+
+    // ------------------------------------------------------------------------
+    // Lazy galaxy field: deterministic on-demand systems across the whole disk.
+    // ------------------------------------------------------------------------
+
+    _lazyStarTypePool() {
+      if (this._starTypePoolCache) return this._starTypePoolCache;
+      const pool = [];
+      Object.keys(STAR_TYPES).forEach((type) => {
+        const count = Math.max(1, Math.round(STAR_TYPES[type].freq * 20000));
+        for (let i = 0; i < count; i++) pool.push(type);
+      });
+      this._starTypePoolCache = pool.length ? pool : Object.keys(STAR_TYPES);
+      return this._starTypePoolCache;
+    }
+
+    _makeLazyStar(name, x, y, z, rng) {
+      const pool = this._lazyStarTypePool();
+      const starType = pool[rng.int(0, pool.length - 1)];
+      const starData = STAR_TYPES[starType];
+      const mass = rng.range(starData.mass[0], starData.mass[1]);
+      const radius = rng.range(starData.radius[0], starData.radius[1]);
+      const temperature = rng.range(starData.temp[0], starData.temp[1]);
+      const star = {
+        name,
+        type: starType,
+        color: STAR_COLORS[starType] || "#ffffff",
+        position: { x, y, z },
+        mass, radius, temperature,
+        luminosity: this.calculateLuminosity({ mass, radius }),
+        binary: false,
+        hardcoded: false,
+        lazy: true,
+        _materialized: false,
+        planets: [],
+      };
+      // Deterministic (same rng stream), so a regenerated chunk always yields
+      // the same companions / feeding donors / derelict shells.
+      if (starType === "ROGUE_PLANET") this._finishRoguePlanet(star, rng);
+      else this._applyStellarModifiers(star, rng);
+      return star;
+    }
+
+    // Deterministic star-only systems for one disk-plane chunk (cached, LRU).
+    // Planets are generated only when a system is entered (materializeLazySystem)
+    // so building a chunk stays cheap even across a dense field.
+    generateLazyChunk(cx, cz) {
+      if (!this._lazyChunks) this._lazyChunks = new Map();
+      const key = cx + "," + cz;
+      const cached = this._lazyChunks.get(key);
+      if (cached) return cached;
+
+      const rng = new RandomGenerator("LZ:" + this.proceduralSeed + ":" + cx + ":" + cz);
+      const x0 = cx * LAZY_CHUNK_LY;
+      const y0 = cz * LAZY_CHUNK_LY;
+      const ccx = x0 + LAZY_CHUNK_LY / 2;
+      const ccy = y0 + LAZY_CHUNK_LY / 2;
+      const RgcCentre = Math.sqrt((GAL_SUN_R_LY + ccx) ** 2 + ccy * ccy);
+      let density = Math.min(6, Math.exp(-(RgcCentre - GAL_SUN_R_LY) / GAL_DISK_SCALE_LY));
+      const count = RgcCentre > GAL_DISK_RADIUS_LY
+        ? 0
+        : Math.round(LAZY_BASE_PER_CHUNK * density * (0.5 + rng.random()));
+
+      const systems = [];
+      for (let i = 0; i < count; i++) {
+        // Always consume x/y/h in the same order so culling never desyncs the
+        // RNG stream -- the chunk regenerates identically every time.
+        const x = x0 + rng.random() * LAZY_CHUNK_LY;
+        const y = y0 + rng.random() * LAZY_CHUNK_LY;
+        const h = (rng.random() + rng.random() + rng.random() - 1.5) / 1.5;
+        const z = h * GAL_THIN_DISK_H_LY;
+        const Rgc = Math.sqrt((GAL_SUN_R_LY + x) ** 2 + y * y);
+        // Skip the inner bubble (static catalog covers it) and the disk rim.
+        if (Math.sqrt(x * x + y * y) < MAP_RADIUS || Rgc > GAL_DISK_RADIUS_LY) continue;
+        systems.push(this._makeLazyStar("LZ." + cx + "." + cz + "." + i, x, y, z, rng));
+      }
+
+      this._lazyChunks.set(key, systems);
+      if (this._lazyChunks.size > LAZY_CHUNK_CACHE) {
+        this._lazyChunks.delete(this._lazyChunks.keys().next().value);
+      }
+      return systems;
+    }
+
+    // Generate planets/moons (deterministic from the system name) for a planet
+    // count of 1-8, mirroring generateSingleProceduralSystem.
+    _populatePlanets(system, rng) {
+      const MOON_INVALID = new Set([
+        "gas_giant", "hot_jupiter", "warm_jupiter", "cold_jupiter", "ice_giant",
+        "ringed_gas_giant", "magnetar", "comet", "short_period_comet", "long_period_comet",
+        "asteroid", "c_type_asteroid", "s_type_asteroid", "m_type_asteroid", "trojan_asteroid",
+      ]);
+      const moonTypePool = Object.keys(PLANET_TYPES).filter((t) => !MOON_INVALID.has(t));
+      const planetTypes = Object.keys(PLANET_TYPES);
+      const numPlanets = rng.int(1, 8);
+      for (let p = 0; p < numPlanets; p++) {
+        const planetType = planetTypes[rng.int(0, planetTypes.length - 1)];
+        const planetData = PLANET_TYPES[planetType];
+        const planet = {
+          name: `${system.name} ${String.fromCharCode(98 + p)}`,
+          type: planetType,
+          color: PLANET_COLORS[planetType] || "#888888",
+          orbitRadius: rng.range(0.1, 10) * (p + 1) * 0.4,
+          radius: rng.range(0.5, 3),
+          mass: rng.range(planetData.minMass, planetData.maxMass),
+          period: 0,
+          phase: rng.random() * Math.PI * 2,
+          atmosphere: rng.random() < 0.5,
+          moons: [],
+        };
+        planet.period = Math.sqrt(Math.pow(planet.orbitRadius, 3) / system.mass) * 365;
+        const moonChance = 0.1 + planet.mass / 20.0;
+        if (rng.random() < moonChance && moonTypePool.length > 0) {
+          const numMoons = rng.int(1, 4);
+          let lastMoonOrbit = rng.range(0.001, 0.003);
+          for (let m = 0; m < numMoons; m++) {
+            const moonType = moonTypePool[rng.int(0, moonTypePool.length - 1)];
+            const moonData = PLANET_TYPES[moonType];
+            const moonOrbitRadius = lastMoonOrbit + rng.range(0.001, 0.004);
+            lastMoonOrbit = moonOrbitRadius;
+            const planetMassInSolar = planet.mass / 333000.0;
+            planet.moons.push({
+              name: `${planet.name} ${String.fromCharCode(97 + m)}`,
+              type: moonType,
+              color: PLANET_COLORS[moonType] || "#888888",
+              orbitRadius: moonOrbitRadius,
+              radius: rng.range(0.1, 0.4),
+              mass: rng.range(moonData.minMass, moonData.maxMass) * 0.05,
+              period: Math.sqrt(Math.pow(moonOrbitRadius, 3) / planetMassInSolar) * 365,
+              phase: rng.random() * Math.PI * 2,
+              atmosphere: false,
+            });
+          }
+        }
+        system.planets.push(planet);
+      }
+    }
+
+    // Promote a lazy system to a full, travelable one: generate its planets and
+    // register it in the systems map (kept for the session; never serialized, so
+    // saves stay lean -- it regenerates identically from its name on reload).
+    materializeLazySystem(system) {
+      if (!system || system._materialized) return system;
+      system._materialized = true;
+      const rng = new RandomGenerator("LZplanets:" + system.name);
+      // A rogue planet IS the body: nothing orbits it.
+      if (system.type !== "ROGUE_PLANET" && rng.random() < 0.7) {
+        this._populatePlanets(system, rng);
+      }
+      this.systems.set(system.name, system);
+      // Track materialized lazy systems and evict the oldest (LRU-ish) so a long
+      // tour of the galaxy doesn't grow this.systems unbounded. Lazy systems
+      // regenerate identically from their name, so eviction is lossless.
+      if (!this._materializedLazy) this._materializedLazy = new Set();
+      this._materializedLazy.delete(system.name);
+      this._materializedLazy.add(system.name);
+      while (this._materializedLazy.size > MATERIALIZED_LAZY_CACHE) {
+        const oldest = this._materializedLazy.values().next().value;
+        this._materializedLazy.delete(oldest);
+        if (oldest === this.currentSystem) {
+          this._materializedLazy.add(oldest); // keep the active system resident
+          break;
+        }
+        this.systems.delete(oldest);
+      }
+      return system;
+    }
+
+    // Rebuild a single lazy system from its "LZ.cx.cz.i" name (regenerates its
+    // chunk and finds the matching entry).
+    _regenerateLazySystem(name) {
+      const parts = String(name).split(".");
+      if (parts.length < 4 || parts[0] !== "LZ") return null;
+      const cx = parseInt(parts[1], 10);
+      const cz = parseInt(parts[2], 10);
+      if (!Number.isFinite(cx) || !Number.isFinite(cz)) return null;
+      const chunk = this.generateLazyChunk(cx, cz);
+      return chunk.find((s) => s.name === name) || null;
+    }
+
+    // ------------------------------------------------------------------------
+    // Procedural (non-Milky-Way) galaxy interiors: a real, travelable set of
+    // star systems for whatever named galaxy the player flies into, so the
+    // same target/travel/SB-Bridge machinery that drives the Milky Way works
+    // unmodified out there too. Deterministic from the galaxy's seed and
+    // registered into `this.systems` under a "GX.<seed>.<i>" name so getSystem
+    // regenerates them on demand (never serialized, same convention as the
+    // lazy field - identical seed always yields identical systems).
+    // ------------------------------------------------------------------------
+    generateGalaxySystems(seed, radius) {
+      if (!this._galaxySystemsCache) this._galaxySystemsCache = new Map();
+      const key = String(seed);
+      const cached = this._galaxySystemsCache.get(key);
+      if (cached) return cached;
+
+      const rng = new RandomGenerator("GX:" + seed);
+      // Falls back to the exact same seed-derived radius buildProceduralGalaxy
+      // uses (Rdisk = 1500 + seed%700), so a caller that only knows the name -
+      // getSystem() regenerating a whole galaxy from a "GX.<seed>.<i>" name on
+      // save-restore, before that galaxy's view has been built this session -
+      // reconstructs identical positions rather than a mismatched default.
+      const R = radius != null ? radius : (1500 + (Math.abs(seed) % 700));
+      const list = [];
+      for (let i = 0; i < GALAXY_SYSTEM_COUNT; i++) {
+        const name = "GX." + seed + "." + i;
+        const th = rng.random() * Math.PI * 2;
+        const rr = Math.pow(rng.random(), 0.6) * R;
+        const x = Math.cos(th) * rr;
+        const y = (rng.random() - 0.5) * R * 0.05;
+        const z = Math.sin(th) * rr;
+        const sys = this.generateSingleProceduralSystem(x, y, z, name, rng);
+        list.push(sys);
+        this.systems.set(name, sys);
+      }
+      this._galaxySystemsCache.set(key, list);
+      return list;
+    }
+
+    // Rebuild a whole procedural galaxy's system list from a "GX.<seed>.<i>"
+    // name (used by getSystem when a save restores mid-flight out there).
+    _regenerateGalaxySystem(name) {
+      const parts = String(name).split(".");
+      if (parts.length < 3 || parts[0] !== "GX") return null;
+      const seed = parseInt(parts[1], 10);
+      if (!Number.isFinite(seed)) return null;
+      this.generateGalaxySystems(seed);
+      return this.systems.get(name) || null;
+    }
+
+    // Every procedural (non-Milky-Way) galaxy also gets its own central
+    // supermassive black hole, a real travelable "system" (name "GX.<seed>.BH")
+    // sitting at that galaxy's own local origin - the same position
+    // buildProceduralGalaxy puts its decorative hole mesh, so the two coincide
+    // and the hole is a normal, clickable star-pickable like any other system.
+    // Deterministic + cached, same convention as generateGalaxySystems.
+    getGalaxyBlackHole(seed) {
+      const name = "GX." + seed + ".BH";
+      const existing = this.systems.get(name);
+      if (existing) return existing;
+      const rng = new RandomGenerator("GXBH:" + seed);
+      const mass = 1e5 * Math.pow(10, rng.random() * 3); // 100k - 100M solar masses
+      const sys = {
+        name,
+        type: "SUPERMASSIVE_BLACK_HOLE",
+        mass,
+        radius: 0.05 + rng.random() * 0.1,
+        temperature: null,
+        position: { x: 0, y: 0, z: 0 },
+        planets: [],
+        color: STAR_COLORS.SUPERMASSIVE_BLACK_HOLE || "#442200",
+      };
+      this.systems.set(name, sys);
+      return sys;
+    }
+
+    toJSON() {
+      const data = {
+        currentSystem: this.currentSystem,
+        proceduralSeed: this.proceduralSeed,
+        playerShip: this.playerShip,
+      };
+      dlog("StarMapDataManager.toJSON: Saving data", data);
+      return data;
+    }
+
+    fromJSON(data) {
+      if (!data) {
+        dlog("StarMapDataManager.fromJSON: No save data provided");
+        return;
+      }
+
+      dlog("StarMapDataManager.fromJSON: Loading save data", data);
+
+      this.currentSystem = data.currentSystem || "Sol";   // i18n-ignore: system id
+      this.proceduralSeed = data.proceduralSeed || 12345;
+
+      if (data.playerShip) {
+        this.playerShip = {
+          ...this.playerShip,
+          ...data.playerShip,
+        };
+        dlog("StarMapDataManager.fromJSON: Loaded playerShip", this.playerShip);
+      }
+
+      this.proceduralGenerated = false;
+      // The lazy field is keyed on proceduralSeed; drop the cache so it
+      // regenerates against the restored seed.
+      this._lazyChunks = null;
+      dlog("StarMapDataManager.fromJSON: Restoration complete");
+    }
+
+    calculateLuminosity(systemData) {
+      const M = systemData.mass || 1;
+      const R = systemData.radius || 1;
+      return Math.pow(M, 3.5) * Math.pow(R, 2) * 0.001;
+    }
+
+    getSystem(name) {
+      if (this.systems.size === 0) this.loadSystems();
+      const s = this.systems.get(name);
+      if (s) return s;
+      // Lazy systems aren't in the map until visited; regenerate on demand so
+      // travel / ship placement / save-restore all resolve them by name.
+      if (typeof name === "string" && name.startsWith("LZ.")) {
+        const lazy = this._regenerateLazySystem(name);
+        if (lazy) return this.materializeLazySystem(lazy);
+      }
+      if (typeof name === "string" && name.startsWith("GX.")) {
+        const parts = name.split(".");
+        if (parts.length === 3 && parts[2] === "BH") {
+          const seed = parseInt(parts[1], 10);
+          return Number.isFinite(seed) ? this.getGalaxyBlackHole(seed) : undefined;
+        }
+        return this._regenerateGalaxySystem(name) || undefined;
+      }
+      return undefined;
+    }
+
+    getAllSystems() {
+      if (this.systems.size === 0) this.loadSystems();
+      return Array.from(this.systems.values());
+    }
+
+    getSystemsInRadius(centerX, centerY, radius) {
+      return this.getAllSystems().filter((system) => {
+        const dx = system.position.x - centerX;
+        const dy = system.position.y - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        return dist <= radius;
+      });
+    }
+
+    setCurrentSystem(name) {
+      if (this.systems.has(name)) {
+        this.currentSystem = name;
+        console.log(`Current system set to: ${name}`);
+      } else if (typeof name === "string" && (name.startsWith("LZ.") || name.startsWith("GX."))) {
+        // Lazy/galaxy systems aren't generated until entered; still record them
+        // as current so var 96 (written by the caller) stays in sync with
+        // currentSystem. getSystem() regenerates the body by name on demand.
+        this.currentSystem = name;
+        console.log(`Current system set to: ${name}`);
+      }
+    }
+  }
+
+  // ============================================================================
+  // Export to namespace
+  // ============================================================================
+
+  window.GalaxySim.DataManager = StarMapDataManager;
+  // Exposed so the 3D scene's lazy star field maps world coords to chunks with
+  // the exact same cell size used here.
+  StarMapDataManager.LAZY_CHUNK_LY = LAZY_CHUNK_LY;
+  // Fuel caps, exposed so the HUD can draw gauges against them.
+  StarMapDataManager.HYPERFLUX_MAX = HYPERFLUX_MAX;
+  StarMapDataManager.SCHRODINGERITE_MAX = SCHRODINGERITE_MAX;
+  window.GalaxySim.NameGenerators = {
+    generateProceduralGalaxyName,
+    generateProceduralSuperclusterName,
+    generateGalaxyGroupName,
+    generateSuperclusterName,
+    generateProceduralLocalGroup,
+  };
+
+})();

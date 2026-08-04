@@ -1,0 +1,22 @@
+{
+  "need": {
+    "hunger": "Hunger",
+    "sleep": "Sleep",
+    "hygiene": "Hygiene",
+    "social": "Social",
+    "leisure": "Fun"
+  },
+  "category": {
+    "materials": "Materials",
+    "item": "Item",
+    "food": "Food",
+    "tools": "Tools"
+  },
+  "rarity": {
+    "Common": "Common",
+    "Uncommon": "Uncommon",
+    "Rare": "Rare",
+    "Epic": "Epic",
+    "Legendary": "Legendary"
+  }
+}

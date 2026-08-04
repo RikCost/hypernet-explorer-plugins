@@ -1,0 +1,18 @@
+{
+  "biome": {
+    "0": "Pale Vestibule",
+    "1": "Eye Garden",
+    "2": "Neon Lattice",
+    "3": "Mercury Sea",
+    "4": "Static Maze",
+    "5": "Candy Viscera",
+    "6": "Inverted Dunes",
+    "7": "Number Static"
+  },
+  "caption": "  -  double-tap SPACE to fly  -  touch an entity to shift  -  Esc: wake",
+  "wakeUp": "Pinch cheeks (wake up)",
+  "keepDreaming": "Keep dreaming",
+  "dreamThins": "The dream thins...",
+  "youWokeUp": "You woke up",
+  "willNotForm": "You dream, but the world will not form..."
+}

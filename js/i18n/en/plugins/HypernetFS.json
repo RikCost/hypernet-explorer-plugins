@@ -1,0 +1,5 @@
+{
+  "welcomeTxt": "Welcome to HypernetOS v2.0!\n\nThis is a highly advanced, fully modular alchemical operating system running inside RPG Maker MZ.\n\nHere, you can run multiple applications simultaneously, configure custom options inside the Control Panel, view hardware specifications that mirror your party's stats, and manage text files in a virtual directory.\n\nDouble-click a text file to launch Notepad!",
+  "pocketsTxt": "DATA POCKETS - EYES ONLY\n-------------------------------\nElements:\n1:Physical, 2:Fire, 3:Ice, 4:Thunder, 5:Water, 6:Petro, 7:Wind, 8:Sacred, 9:Cursed\n\nNotes on soul frequency:\nSoul Tendency (Var 53) shifts market values and stock behaviors.\nIntimidation (Var 90) influences trade metrics.\n\nSecure all data cores!",
+  "diaryTxt": "Entry 882:\nWe have integrated the modular Hexphone receiver architecture as an extension of the HypernetOS core.\n\nThe virtual file system binds seamlessly to the game save system, meaning any modifications here persist permanently."
+}

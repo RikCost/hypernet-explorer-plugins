@@ -1,0 +1,84 @@
+{
+  "title": "Skills",
+  "back": "Back",
+  "recent": "Recent",
+  "unit": {
+    "ap": "AP"
+  },
+  "cost": {
+    "mp": "{n} MP",
+    "ap": "{n} AP"
+  },
+  "discipline": {
+    "basic": "Basic Discipline",
+    "standard": "Standard Discipline"
+  },
+  "section": {
+    "damage": "Damage",
+    "skillEffects": "Skill Effects",
+    "classifications": "Classifications"
+  },
+  "role": {
+    "offensive": {
+      "name": "Offensive",
+      "description": "Skills that deal damage.\nStrike down your foes."
+    },
+    "healing": {
+      "name": "Healing",
+      "description": "Restore HP and cure ailments.\nMend yourself and allies."
+    },
+    "support": {
+      "name": "Support",
+      "description": "Buffs, debuffs and utility.\nShift the tide of battle."
+    }
+  },
+  "option": {
+    "skillCategorization": "Skill Categorization",
+    "categoryModes": [
+      "Role",
+      "School",
+      "Off"
+    ]
+  },
+  "cmd": {
+    "favourites": "Favourites",
+    "levelUp": "Level Up",
+    "use": "Use",
+    "favourite": "Favourite",
+    "unfavourite": "Unfavourite",
+    "cancel": "Cancel"
+  },
+  "action": {
+    "useSkill": "[ Use Skill ]",
+    "favourite": "[ Favourite ]",
+    "unfavourite": "[ Unfavourite ]",
+    "back": "[ Back ]"
+  },
+  "info": {
+    "type": "Type:",
+    "scale": "Scale:",
+    "basic": "Basic",
+    "none": "None",
+    "effect": "Effect:",
+    "hpDmg": "HP Damage",
+    "mpDmg": "MP Damage",
+    "hpHeal": "HP Recover",
+    "mpHeal": "MP Recover",
+    "hpDrain": "HP Drain",
+    "mpDrain": "MP Drain",
+    "buffs": "Buffs",
+    "debuffs": "Debuffs",
+    "state": "State"
+  },
+  "target": {
+    "title": "Target Companion",
+    "prompt": "Channeling {skill}. Select the target companion:",
+    "allCompanions": "All Party Companions"
+  },
+  "empty": {
+    "title": "Grimoire Codicil",
+    "hint": "Select a skill from the list on the left to inspect its elemental scale, use cost, and alchemical actions.",
+    "section": "No skills cataloged under this section.",
+    "category": "No skills cataloged in this category."
+  }
+}

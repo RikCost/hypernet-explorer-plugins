@@ -1,0 +1,142 @@
+{
+  "lore": {
+    "1": "",
+    "5": "",
+    "6": "",
+    "10": "",
+    "11": "",
+    "13": ""
+  },
+  "emBank": {
+    "0": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "1": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "2": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "3": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "4": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "emBackstory": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "emLabel": {
+    "needHunger": "",
+    "needSleep": "",
+    "needHygiene": "",
+    "needSocial": "",
+    "needLeisure": "",
+    "restTitle": "",
+    "sleep": "",
+    "wait": "",
+    "sleepHowLong": "",
+    "waitHowLong": "",
+    "wakeup": "",
+    "dream": "",
+    "menuWorkforce": "",
+    "menuWait": "",
+    "menuThinker": "",
+    "menuBestiary": "",
+    "menuTraining": "",
+    "menuBiologics": "",
+    "menuResign": ""
+  },
+  "camper": "",
+  "theBeast": "",
+  "noCharacterToSave": "",
+  "presetUpdated": "",
+  "presetSaved": "",
+  "noMemberAtPosition": "",
+  "partyCannotBeEmpty": "",
+  "leaderCannotLeave": "",
+  "cannotLeaveNow": "",
+  "memberRetired": "",
+  "retiredLore": "",
+  "retiredLoreDated": "",
+  "theParty": "",
+  "companion": "",
+  "unknownClass": "",
+  "statsExplanation": "",
+  "stat": {
+    "str": {
+      "label": "",
+      "desc": ""
+    },
+    "con": {
+      "label": "",
+      "desc": ""
+    },
+    "dex": {
+      "label": "",
+      "desc": ""
+    },
+    "int": {
+      "label": "",
+      "desc": ""
+    },
+    "wis": {
+      "label": "",
+      "desc": ""
+    },
+    "psi": {
+      "label": "",
+      "desc": ""
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "zoom": "Zoom: {pct}%",
+  "controls": "Zoom: Wheel | Pan: Drag/Arrows | Q/W/E: Abilities | TAB: Hide/Show Sidebar",
+  "playerArmy": "Player Army: {count}",
+  "enemyArmy": "Enemy Army: {count}",
+  "rallyBanner": "RALLY! +20 Morale ({count} troops rallied)",
+  "healBanner": "HEAL! +25% HP to {count} troops",
+  "inspireBanner": "INSPIRE! +50% Attack & Max Morale!",
+  "clickSquad": "Click squad\nto command",
+  "ability": {
+    "rally": "Rally Troops",
+    "heal": "Heal Squad",
+    "inspire": "Inspire"
+  },
+  "command": {
+    "hold": "Hold",
+    "attack": "Attack",
+    "defend": "Defend",
+    "retreat": "Retreat"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Fisica",
+  "blurb": "Materia, energia e spaziotempo sotto misura, dai condensati a luce lenta a una risonanza scalare a 125 GeV. La precisione la fissa l'apparato, e l'apparato si costruisce con la distinta dei materiali.",
+  "nodes": {
+    "phys_attosecond": {
+      "name": "Impulsi di Luce ad Attosecondi",
+      "desc": "Generazione di armoniche di ordine elevato. Un campo di guida al femtosecondo ionizza per effetto tunnel argon o neon, accelera l'elettrone liberato per mezzo ciclo ottico e lo fa ricollidere con lo ione di partenza; la ricombinazione emette armoniche dispari della fondamentale fino a un taglio fissato dall'energia ponderomotrice. Le armoniche hanno fasi mutuamente agganciate, per cui filtrando una ventina di elettronvolt di banda attorno al taglio resta un singolo impulso di circa 250 attosecondi. L'unità atomica di tempo vale 24 attosecondi, e sotto quel valore il pump-probe smette di mediare sul moto elettronico che dovrebbe registrare."
+    },
+    "phys_slowlight": {
+      "name": "Condensati a Luce Lenta",
+      "desc": "Un laser di accoppiamento apre una finestra di trasparenza in un condensato di Bose-Einstein di sodio a 450 nanokelvin, e la forte dispersione normale entro quella finestra produce un indice di gruppo prossimo a dieci milioni: l'impulso di sonda attraversa la nube a circa 17 metri al secondo, compresso a una lunghezza ben inferiore a quella della nube stessa. Spegnendo adiabaticamente il fascio di accoppiamento l'impulso viene trasferito su una coerenza di spin dello stato fondamentale, dove resta fino a un millisecondo; ripristinando il fascio l'impulso viene rigenerato con ampiezza e fase intatte."
+    },
+    "phys_neutrino": {
+      "name": "Oscillazione dei Neutrini",
+      "desc": "L'osservatorio di Sudbury contiene una kilotonnellata di acqua pesante a due chilometri di profondità e separa tre canali di reazione: corrente carica, sensibile ai soli neutrini elettronici, corrente neutra, sensibile in egual misura a tutti e tre i sapori, e diffusione elastica. Il conteggio a corrente neutra dà un flusso totale di boro-8 di 5,09 milioni per centimetro quadrato al secondo, in accordo con il modello solare standard, mentre quello a corrente carica ne rende conto per un terzo. Il resto arriva come neutrini muonici e tauonici, e il cambio di sapore in volo richiede una differenza di massa non nulla fra gli autostati."
+    },
+    "phys_graphene": {
+      "name": "Isolamento del Grafene",
+      "desc": "Sfaldature ripetute di grafite pirolitica con nastro adesivo lasciano scaglie spesse un atomo su un wafer di silicio ricoperto da 300 nanometri di ossido, dove un singolo strato diventa visibile al microscopio ottico grazie a un contrasto di interferenza di pochi punti percentuali. Il trasporto sulle scaglie dà una dispersione lineare con velocità di Fermi prossima al milione di metri al secondo, mobilità a temperatura ambiente superiore a 10.000 centimetri quadrati per volt secondo e plateau di Hall a fattori di riempimento quattro volte n più un mezzo, la sequenza attesa per fermioni di Dirac privi di massa."
+    },
+    "phys_teleport": {
+      "name": "Teletrasporto Quantistico di Atomi",
+      "desc": "Tre ioni di berillio o di calcio stanno in una trappola lineare segmentata. Lo stato da trasferire viene scritto sullo ione uno, gli ioni due e tre vengono posti in entanglement e una misura congiunta su uno e due proietta quella coppia su uno dei quattro stati di Bell; l'esito a due bit seleziona quale delle quattro rotazioni applicare allo ione tre, che assume così lo stato di partenza. La fedeltà è di 0,75-0,78 contro un limite classico di 0,66 e la sequenza dura circa quattro millisecondi. Lo stato di ingresso viene distrutto dalla misura che lo legge, e attraverso la trappola passano solo i due bit classici."
+    },
+    "phys_metamaterial": {
+      "name": "Occultamento a Metamateriali",
+      "desc": "Dieci cilindri concentrici portano risonatori ad anello aperto con passo pari a un decimo della lunghezza d'onda in aria, così che a 8,5 gigahertz la schiera si comporti come un mezzo continuo con permeabilità efficace graduata da zero sulla faccia interna a uno su quella esterna. La prescrizione dell'ottica di trasformazione devia l'onda attorno al cilindro nascosto e ne ricostruisce il fronte di fase a valle. La mappatura di campo mostra un'ombra residua e qualche punto percentuale di riflessione: i risonatori sono dissipativi e il progetto regge su una banda frazionaria di circa l'uno per cento."
+    },
+    "phys_topological": {
+      "name": "Isolanti Topologici",
+      "desc": "Nell'antimoniuro di bismuto, e in modo più pulito nel seleniuro di bismuto, l'accoppiamento spin-orbita inverte l'ordinamento delle bande di conduzione e di valenza, e il salto dell'invariante Z2 fra cristallo e vuoto impone un numero dispari di coni di Dirac privi di gap sulla superficie. La fotoemissione risolta in angolo risolve un cono singolo con lo spin bloccato perpendicolarmente al momento. La retrodiffusione elastica verso il momento opposto dovrebbe invertire quello spin, quindi è proibita al primo ordine: il volume resta isolante e il canale superficiale sopravvive al disordine non magnetico che localizzerebbe un metallo bidimensionale ordinario."
+    },
+    "phys_spintronics": {
+      "name": "Magnetoresistenza Gigante",
+      "desc": "In una multistrato ferro-cromo i due film ferromagnetici si accoppiano in configurazione antiparallela attraverso uno spaziatore di cromo spesso circa un nanometro, e un campo di qualche decina di millitesla li allinea. Il cammino libero medio di un elettrone di conduzione dipende dal fatto che il suo spin sia parallelo o antiparallelo alla magnetizzazione locale, per cui la resistenza della pila cala fino alla metà a 4,2 kelvin e di circa il dieci per cento a temperatura ambiente. Le testine di lettura costruite prima sulla multistrato e poi su giunzioni magnetiche a tunnel portano la densità areale oltre i 100 gigabit per pollice quadrato."
+    },
+    "phys_dark_energy": {
+      "name": "Universo in Accelerazione Confermato",
+      "desc": "Le supernove di tipo Ia vengono standardizzate con la relazione ampiezza-luminosità, che lega la magnitudine assoluta al picco al tasso di declino della curva di luce entro circa 0,15 magnitudini. Fino a redshift uno risultano più deboli di 0,2-0,3 magnitudini rispetto a qualunque espansione in decelerazione, e né la polvere grigia né l'evoluzione dei progenitori riproducono il deficit con la dipendenza dal redshift richiesta. In combinazione con il fondo a microonde e la scala acustica barionica, il fit dà geometria piatta, densità di materia 0,27 e una componente con equazione di stato pari a meno uno entro un decimo a coprire il resto."
+    },
+    "phys_superconductor": {
+      "name": "Superconduttori a Base di Ferro",
+      "desc": "L'ossido di lantanio ferro arseniuro drogato con fluoro diventa superconduttore a 26 kelvin, e sostituendo la terra rara la temperatura critica sale a 55 kelvin nel composto al samario. L'accoppiamento avviene nei piani ferro-arsenico, con tasche di lacune e di elettroni su fogli distinti della superficie di Fermi e una gap priva di nodi su ciascun foglio ma di segno opposto fra i due. I composti di partenza sono metalli antiferromagnetici il cui ordine viene soppresso dal drogaggio, e la cupola superconduttiva si apre dove quell'ordine si chiude; i campi critici superiori superano i 50 tesla con scarsa anisotropia."
+    },
+    "phys_lhc": {
+      "name": "Primo Fascio all'LHC",
+      "desc": "La macchina occupa il tunnel LEP di 26,7 chilometri: 1.232 dipoli a 8,3 tesla curvano due fasci di protoni controrotanti, 392 quadrupoli li focalizzano e sedici cavità a radiofrequenza da 400 megahertz ne mantengono la struttura a pacchetti. Ogni fascio porta 2.808 pacchetti da circa 115 miliardi di protoni distanziati di 25 nanosecondi, per circa 360 megajoule di energia immagazzinata per fascio ai sette tera-elettronvolt di progetto. Il fascio viene fatto girare in entrambe le direzioni al primo tentativo; nove giorni dopo un'interconnessione difettosa fra magneti vaporizza, 53 magneti restano danneggiati e l'anello resta fermo quattordici mesi."
+    },
+    "phys_quantum_machine": {
+      "name": "La Prima Macchina Quantistica",
+      "desc": "Un risonatore acustico a film sottile largo 40 micrometri, con il modo dilatazionale a 6 gigahertz, viene raffreddato in un refrigeratore a diluizione fino a 25 millikelvin, dove l'occupazione termica di quel modo scende sotto 0,07 fononi. Un qubit di fase portato in risonanza scambia con esso un singolo quanto in una decina di nanosecondi e lo riprende indietro, e la tomografia successiva mostra il risonatore in una sovrapposizione di zero e un fonone. L'oscillatore contiene dell'ordine di diecimila miliardi di atomi; lo stato sopravvive circa sei nanosecondi."
+    },
+    "phys_ftl_neutrino": {
+      "name": "L'Anomalia Superluminale",
+      "desc": "I neutrini muonici vengono cronometrati sui 730 chilometri fra CERN e Gran Sasso contro orologi al cesio disciplinati da GPS, e il massimo degli arrivi cade in anticipo di 60,7 nanosecondi, con 6,9 statistici e 7,4 sistematici, un eccesso relativo di 25 parti per milione sulla velocità della luce. Il bilancio degli errori sistematici è dominato dalla catena in fibra che porta il segnale di tempo all'orologio principale del rivelatore. La metrologia successiva trova un connettore allentato, che vale 73 nanosecondi, e una deriva dell'oscillatore di segno opposto; con le correzioni la velocità è compatibile con c. Eris ammetterà più tardi di aver toccato il connettore."
+    },
+    "phys_higgs": {
+      "name": "Scoperta del Bosone di Higgs",
+      "desc": "ATLAS e CMS analizzano ciascuno circa cinque femtobarn inversi a sette tera-elettronvolt e altri cinque a otto, e ciascuno riporta un eccesso nei canali a due fotoni e a quattro leptoni a 125,3 giga-elettronvolt, con significatività locale di 5,0 e 4,9 deviazioni standard. La larghezza osservata è compatibile con la risoluzione dei rivelatori, i fit di spin-parità favoriscono zero-più, e le intensità di segnale nei canali a due fotoni, ZZ, WW e tau-tau concordano con uno scalare il cui accoppiamento a ciascuna particella scala con la massa di quella particella. Le due collaborazioni tengono le rispettive analisi in cieco l'una rispetto all'altra fino al seminario congiunto."
+    },
+    "phys_emdrive": {
+      "name": "L'EmDrive",
+      "desc": "Un tronco di cono in rame sigillato viene eccitato su un modo elettrico trasverso vicino a 2,45 gigahertz e si riporta produca qualche decina di micronewton per kilowatt, attribuiti a una pressione di radiazione diversa sulla base larga e su quella stretta. La conservazione della quantità di moto vieta una spinta netta da una cavità chiusa, e il valore dichiarato sta tre ordini di grandezza sotto la risoluzione dei pendoli usati per ottenerlo. Prove su bilancia di torsione a dieci micropascal riproducono il segnale, e poi lo riproducono con il magnetron fuori sintonia: segue la dilatazione termica del supporto e la forza di Lorentz sul cavo di alimentazione non schermato nel campo terrestre."
+    },
+    "phys_coldfusion": {
+      "name": "Il Catalizzatore di Energia",
+      "desc": "Polvere di nichel caricata con idrogeno e scaldata da una resistenza viene presentata come un reattore a fusione nichel-rame con guadagno pari o superiore a sei. La potenza in uscita è dedotta dall'entalpia di un circuito a vapore di cui non si misura mai il titolo, per cui l'acqua trascinata può gonfiare il dato di alcune volte, e le prove successive vengono lette con una termocamera impostata su un'emissività assunta. La potenza in ingresso è misurata a monte di una centralina che l'inventore tiene sigillata. Non vengono mai prodotti flusso neutronico sopra il fondo, riga di annichilazione a 511 kilo-elettronvolt o spostamento isotopico nella carica esausta, e la carica non viene mai analizzata da un laboratorio indipendente."
+    },
+    "phys_electric_universe": {
+      "name": "Teoria dell'Universo Elettrico",
+      "desc": "Una cosmologia in cui le stelle sono anodi in una scarica a bagliore galattica, la gravità è un residuo debole dell'elettrostatica e crateri, canyon e getti cometari sono segni di lavorazione elettrica. Sostenere la luminosità solare con una corrente esterna richiederebbe qualcosa come un miliardo di miliardi di ampere; una corrente di quelle dimensioni irradierebbe una firma di sincrotrone che nessuna survey su tutto il cielo registra a nessuna frequenza, e devierebbe i magnetometri delle sonde di ordini di grandezza più di quanto misurino. Il modello non ricava né sequenza principale, né tempi di vita stellari, né abbondanze, e non enuncia alcun numero che una misura possa falsificare."
+    },
+    "phys_sc_magnets": {
+      "name": "Magneti Dipolari Superconduttori",
+      "desc": "Ogni dipolo è una massa fredda lunga quindici metri che porta entrambe le aperture di fascio dentro un unico giogo di ferro, avvolta in due strati di cavo Rutherford fatto di filamenti di niobio-titanio da sei micrometri in matrice di rame. A 8,3 tesla e 11.850 ampere la forza di Lorentz sulla bobina raggiunge circa 340 tonnellate al metro, per cui l'avvolgimento viene precaricato in collari di acciaio austenitico al montaggio e non deve allentarsi mentre si contrae al raffreddamento. Le armoniche di campo integrate sono specificate a poche unità su diecimila; ogni magnete viene misurato a caldo e a freddo sul proprio banco, spessorato, e solo allora assegnato a una posizione nell'anello."
+    },
+    "phys_cryogenics": {
+      "name": "Criogenia Vicino allo Zero Assoluto",
+      "desc": "Il niobio-titanio porta la densità di corrente di progetto solo sotto i nove kelvin circa a 8,3 tesla, e il margine rispetto alla transizione resistiva è una frazione di kelvin. L'anello viene quindi immerso in elio superfluido a 1,9 kelvin, la cui conducibilità termica efficace è circa mille volte quella del rame e che diffonde un deposito locale prima che possa far transire un magnete. L'inventario è di 96 tonnellate di elio su otto settori indipendenti, serviti da unità di refrigerazione da 2,4 kilowatt a 1,8 kelvin. La protezione da quench deve smaltire circa un gigajoule per settore, deviando la corrente su resistori di scarico e attivando riscaldatori che distribuiscono la transizione su tutta la bobina."
+    },
+    "phys_detectors": {
+      "name": "I Rivelatori ATLAS e CMS",
+      "desc": "Entrambi gli esperimenti sono costruiti a gusci concentrici attorno a un punto di incrocio: pixel e strip di silicio per il tracciamento, poi calorimetria elettromagnetica e adronica, poi camere a muoni all'esterno del giogo di ritorno. ATLAS è lungo 46 metri e largo 25, con un solenoide sottile da due tesla e un toroide in aria per il sistema a muoni; CMS è più piccolo, più pesante con 14.000 tonnellate, e racchiude ogni strato dentro un solenoide da 3,8 tesla. Insieme leggono circa cento milioni di canali. I pacchetti si incrociano ogni 25 nanosecondi e ogni incrocio lascia venti o più interazioni sovrapposte, per cui ogni canale viene cronometrato oltre che misurato e ogni colpo viene assegnato a un vertice ricostruito con precisione di decine di micrometri."
+    },
+    "phys_grid": {
+      "name": "Il Trigger e la Griglia",
+      "desc": "Quaranta megahertz di incroci di pacchetti vanno ridotti a qualche centinaio di eventi scritti al secondo. Un primo livello costruito con elettronica dedicata trattiene ogni canale in una pipeline per 2,5 microsecondi mentre i dati grossolani di calorimetro e muoni producono un accept a latenza fissa a circa 100 kilohertz; una farm di processori commerciali esegue poi una ricostruzione parziale sugli eventi accettati e li taglia di un ulteriore fattore di qualche centinaio. Ciò che sopravvive, circa 300 megabyte al secondo, viene scritto su nastro al CERN e replicato su una griglia a livelli di circa 170 centri di calcolo in 42 paesi, dove si producono la ricostruzione completa e i campioni simulati."
+    }
+  }
+}

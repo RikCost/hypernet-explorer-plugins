@@ -1,0 +1,17 @@
+{
+  "placeholder": "Scrivi un nome...",
+  "ui": {
+    "soulIndex": "INDICE ANIMA",
+    "cognition": "COGNIZIONE",
+    "matrix": "MATRICE",
+    "stable": "STABILE",
+    "synchronizeIdentity": "SINCRONIZZA IDENTITÀ",
+    "uppercase": "MAIUSCOLE",
+    "lowercase": "minuscole",
+    "symbols": "SIMBOLI",
+    "abort": "ANNULLA",
+    "default": "PREDEFINITO",
+    "confirm": "CONFERMA",
+    "backspace": "CANCELLA"
+  }
+}

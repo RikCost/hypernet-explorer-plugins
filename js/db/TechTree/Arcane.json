@@ -1,0 +1,460 @@
+{
+  "id": "Arcane",
+  "icon": 79,
+  "accent": "#6a3d9a",
+  "real": false,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "arc_leyline",
+      "phase": "Rediscovery",
+      "requires": [],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 80
+        },
+        {
+          "id": 859,
+          "qty": 80
+        },
+        {
+          "id": 861,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "mmp": 15
+      }
+    },
+    {
+      "id": "arc_tradeoff",
+      "phase": "Rediscovery",
+      "requires": [
+        "arc_leyline"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 100
+        },
+        {
+          "id": 866,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mdf": 1,
+        "mmp": 10
+      }
+    },
+    {
+      "id": "arc_distillation",
+      "phase": "Rediscovery",
+      "requires": [
+        "arc_leyline"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 80
+        },
+        {
+          "id": 871,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 849,
+        "qty": 10
+      }
+    },
+    {
+      "id": "arc_dead_flats",
+      "phase": "Foundation",
+      "requires": [
+        "arc_tradeoff"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 140
+        },
+        {
+          "id": 859,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "arc_names_power",
+      "phase": "Foundation",
+      "requires": [
+        "arc_distillation"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 120
+        },
+        {
+          "id": 860,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "arc_fidelity",
+      "phase": "First Working",
+      "requires": [
+        "arc_dead_flats"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 100
+        },
+        {
+          "id": 849,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 685,
+        "qty": 1
+      }
+    },
+    {
+      "id": "arc_charge",
+      "phase": "First Working",
+      "requires": [
+        "arc_distillation"
+      ],
+      "materials": [
+        {
+          "id": 850,
+          "qty": 120
+        },
+        {
+          "id": 866,
+          "qty": 140
+        },
+        {
+          "id": 849,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mmp": 15
+      },
+      "reward": {
+        "kind": "item",
+        "id": 850,
+        "qty": 10
+      }
+    },
+    {
+      "id": "arc_dream_prep",
+      "phase": "Sympathy",
+      "requires": [
+        "arc_fidelity"
+      ],
+      "materials": [
+        {
+          "id": 850,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 160
+        },
+        {
+          "id": 858,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mmp": 20
+      }
+    },
+    {
+      "id": "arc_sympathetic",
+      "phase": "Sympathy",
+      "requires": [
+        "arc_fidelity",
+        "arc_charge"
+      ],
+      "materials": [
+        {
+          "id": 860,
+          "qty": 180
+        },
+        {
+          "id": 861,
+          "qty": 160
+        },
+        {
+          "id": 849,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "arc_geomancy_porphyrin",
+      "phase": "High Ritual",
+      "requires": [
+        "arc_sympathetic",
+        "arc_names_power"
+      ],
+      "materials": [
+        {
+          "id": 870,
+          "qty": 260
+        },
+        {
+          "id": 849,
+          "qty": 220
+        },
+        {
+          "id": 860,
+          "qty": 180
+        },
+        {
+          "id": 871,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "atk": 3,
+        "mat": 2
+      }
+    },
+    {
+      "id": "arc_convokation",
+      "phase": "High Ritual",
+      "requires": [
+        "arc_dream_prep",
+        "arc_seventytwo_seals"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 280
+        },
+        {
+          "id": 850,
+          "qty": 180
+        },
+        {
+          "id": 860,
+          "qty": 240
+        },
+        {
+          "id": 866,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 3,
+        "atk": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 691,
+        "qty": 1
+      }
+    },
+    {
+      "id": "arc_metamagic",
+      "phase": "Sublimation",
+      "requires": [
+        "arc_geomancy_porphyrin",
+        "arc_imagination_discipline"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 450
+        },
+        {
+          "id": 850,
+          "qty": 300
+        },
+        {
+          "id": 866,
+          "qty": 300
+        },
+        {
+          "id": 865,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 5,
+        "mmp": 40
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 322,
+        "qty": 1
+      }
+    },
+    {
+      "id": "arc_crystal_healing",
+      "phase": "False Lead",
+      "requires": [
+        "arc_leyline"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 160
+        },
+        {
+          "id": 861,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "arc_talking_board",
+      "phase": "False Lead",
+      "requires": [
+        "arc_distillation"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 859,
+          "qty": 140
+        },
+        {
+          "id": 860,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "arc_spirit_photography",
+      "phase": "False Lead",
+      "requires": [
+        "arc_charge"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 850,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 160
+        },
+        {
+          "id": 852,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "arc_seventytwo_seals",
+      "phase": "High Ritual",
+      "requires": [
+        "arc_sympathetic"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 200
+        },
+        {
+          "id": 860,
+          "qty": 200
+        },
+        {
+          "id": 861,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "arc_imagination_discipline",
+      "phase": "Sublimation",
+      "requires": [
+        "arc_convokation"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 240
+        },
+        {
+          "id": 850,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mmp": 25,
+        "mat": 2
+      }
+    }
+  ]
+}

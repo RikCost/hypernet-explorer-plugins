@@ -1,0 +1,13 @@
+{
+  "title": "Travel Journal",
+  "pages": "Pages",
+  "back": "Back",
+  "newPage": "New Page",
+  "deletePage": "Tear Out Page",
+  "editorHint": "Type to write • Esc for pages",
+  "listHint": "Enter to open • Esc to close",
+  "emptyPage": "Page",
+  "emptyPreview": "(empty page)",
+  "emptyList": "No pages yet.",
+  "untitled": "Untitled"
+}

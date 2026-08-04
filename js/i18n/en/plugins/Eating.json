@@ -1,0 +1,7 @@
+{
+  "selectFood": "Select food for party members ({selected}/{total})",
+  "current": "Current: {who}",
+  "allSelected": "All selected",
+  "confirm": "Confirm",
+  "cancel": "Cancel"
+}

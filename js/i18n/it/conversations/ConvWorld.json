@@ -1,0 +1,63 @@
+{
+  "topic": {
+    "crimeWave": [
+      "Terzo furto con scasso nella mia via questo mese. Chiudi bene le porte.",
+      "Guardie a ogni angolo, adesso. Era ora, con tutti questi ladri.",
+      "Non giro più per {group} dopo il tramonto. Non di questi tempi.",
+      "Dicono che il giro di vite stia funzionando. Io dico: tieniti stretta la borsa.",
+      "Tutti conoscono qualcuno che è stato derubato ultimamente. Tutti."
+    ],
+    "boom": [
+      "Lavoro ovunque guardi! {group} non vedeva tempi così da anni.",
+      "Mio cugino è stato assunto il giorno stesso che l'ha chiesto. Il giorno stesso!",
+      "I soldi scorrono a {group}. Perfino i mendicanti fanno gli schizzinosi.",
+      "Se non trovi lavoro in questa stagione, non lo stai cercando.",
+      "Gli affitti salgono insieme ai bei tempi. C'è sempre un rovescio."
+    ],
+    "bust": [
+      "Metà delle botteghe della mia via sono al buio ormai. Tempi duri.",
+      "Nessuno assume a {group}. Nessuno.",
+      "Ho visto tre amici perdere il lavoro questa stagione. Tre.",
+      "Quando il lavoro si prosciuga, la gente si dispera. Si sente nell'aria.",
+      "Stringi la cinghia. Questa crisi non ha ancora finito con {group}."
+    ],
+    "festival": [
+      "Ci vai a {festival}? Ci vanno tutti.",
+      "Le strade odorano di frittelle e olio di lampada. Adoro {festival}.",
+      "La settimana più bella dell'anno, {festival}! Occhio alle tasche nella calca, però.",
+      "Ho ballato fino all'alba ieri notte. {festival} viene solo una volta all'anno."
+    ],
+    "epidemic": [
+      "Copriti la bocca. Gira {epidemic}.",
+      "Due case nel mio vicolo sono sbarrate per {epidemic}. Stanne alla larga.",
+      "I mercati sono mezzi vuoti. Nessuno vuole prendersi {epidemic}.",
+      "Lavati le mani, forestiero. A {epidemic} non importa chi sei."
+    ],
+    "headline": [
+      "Hai sentito? {headline}",
+      "Non si parla d'altro: {headline}",
+      "Le notizie dicono: {headline}, che tempi ci tocca vivere."
+    ],
+    "outlaw": [
+      "Quella faccia mi dice qualcosa... non c'era un avviso di taglia?",
+      "Sta' attento. Ultimamente girano tipi ricercati.",
+      "La guardia va in giro mostrando un ritratto. Ti somigliava parecchio, forestiero."
+    ],
+    "market": {
+      "bullish": [
+        "Il mio agente dice che il petrolio da qui può solo salire. Comprano tutti.",
+        "Perfino gli scaricatori di porto adesso giocano in borsa. Bei tempi."
+      ],
+      "bearish": [
+        "Ho venduto le azioni prima che non valessero più niente. Il mercato è marcio.",
+        "Non mettere i tuoi risparmi in borsa adesso. Fidati."
+      ]
+    }
+  },
+  "fallback": {
+    "group": "città",
+    "festival": "la festa",
+    "epidemic": "una malattia",
+    "headline": "strane notizie da lontano"
+  }
+}

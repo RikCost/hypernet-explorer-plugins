@@ -1,0 +1,17 @@
+{
+  "placeholder": "Enter name...",
+  "ui": {
+    "soulIndex": "SOUL INDEX",
+    "cognition": "COGNITION",
+    "matrix": "MATRIX",
+    "stable": "STABLE",
+    "synchronizeIdentity": "SYNCHRONIZE IDENTITY",
+    "uppercase": "UPPERCASE",
+    "lowercase": "lowercase",
+    "symbols": "SYMBOLS",
+    "abort": "ABORT",
+    "default": "DEFAULT",
+    "confirm": "CONFIRM",
+    "backspace": "BACKSPACE"
+  }
+}

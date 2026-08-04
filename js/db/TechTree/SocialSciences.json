@@ -1,0 +1,483 @@
+{
+  "id": "SocialSciences",
+  "icon": 84,
+  "accent": "#a0522d",
+  "real": true,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "soc_asymmetric",
+      "year": 2001,
+      "requires": [],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 80
+        },
+        {
+          "id": 852,
+          "qty": 60
+        },
+        {
+          "id": 859,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "soc_prospect",
+      "year": 2002,
+      "requires": [
+        "soc_asymmetric"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 100
+        },
+        {
+          "id": 853,
+          "qty": 100
+        },
+        {
+          "id": 852,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "soc_social_graph",
+      "year": 2004,
+      "requires": [
+        "soc_prospect"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 854,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "agi": 1
+      },
+      "reward": {
+        "kind": "item",
+        "id": 852,
+        "qty": 10
+      }
+    },
+    {
+      "id": "soc_collective",
+      "year": 2005,
+      "requires": [
+        "soc_social_graph"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 140
+        },
+        {
+          "id": 859,
+          "qty": 120
+        },
+        {
+          "id": 852,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "soc_microfinance",
+      "year": 2006,
+      "requires": [
+        "soc_prospect"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 140
+        },
+        {
+          "id": 868,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "soc_smartphone",
+      "year": 2007,
+      "requires": [
+        "soc_mobile_web"
+      ],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 220
+        },
+        {
+          "id": 852,
+          "qty": 200
+        },
+        {
+          "id": 854,
+          "qty": 240
+        },
+        {
+          "id": 853,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 854,
+        "qty": 10
+      }
+    },
+    {
+      "id": "soc_gfc",
+      "year": 2008,
+      "requires": [
+        "soc_asymmetric"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 180
+        },
+        {
+          "id": 852,
+          "qty": 160
+        },
+        {
+          "id": 859,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "soc_nudge",
+      "year": 2008,
+      "requires": [
+        "soc_prospect"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 140
+        },
+        {
+          "id": 852,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "soc_commons",
+      "year": 2009,
+      "requires": [
+        "soc_microfinance",
+        "soc_collective"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 859,
+          "qty": 180
+        },
+        {
+          "id": 858,
+          "qty": 160
+        },
+        {
+          "id": 868,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "soc_big_data",
+      "year": 2010,
+      "requires": [
+        "soc_cloud",
+        "soc_nudge"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 260
+        },
+        {
+          "id": 851,
+          "qty": 180
+        },
+        {
+          "id": 852,
+          "qty": 220
+        },
+        {
+          "id": 854,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "soc_networked_movement",
+      "year": 2011,
+      "requires": [
+        "soc_big_data",
+        "soc_commons"
+      ],
+      "materials": [
+        {
+          "id": 861,
+          "qty": 260
+        },
+        {
+          "id": 852,
+          "qty": 240
+        },
+        {
+          "id": 853,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 856,
+        "qty": 8
+      }
+    },
+    {
+      "id": "soc_mooc",
+      "year": 2012,
+      "requires": [
+        "soc_video_platform"
+      ],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 300
+        },
+        {
+          "id": 853,
+          "qty": 300
+        },
+        {
+          "id": 852,
+          "qty": 260
+        },
+        {
+          "id": 854,
+          "qty": 220
+        }
+      ],
+      "buffs": {
+        "mat": 3,
+        "luk": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 394,
+        "qty": 1
+      }
+    },
+    {
+      "id": "soc_the_secret",
+      "year": 2006,
+      "requires": [
+        "soc_prospect"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 140
+        },
+        {
+          "id": 866,
+          "qty": 100
+        },
+        {
+          "id": 859,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "soc_vaccine_panic",
+      "year": 2010,
+      "requires": [
+        "soc_collective"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 160
+        },
+        {
+          "id": 869,
+          "qty": 120
+        },
+        {
+          "id": 862,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "soc_precognition",
+      "year": 2011,
+      "requires": [
+        "soc_nudge"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 853,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 120
+        },
+        {
+          "id": 866,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "soc_mobile_web",
+      "year": 2006,
+      "requires": [
+        "soc_social_graph"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 854,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      }
+    },
+    {
+      "id": "soc_cloud",
+      "year": 2009,
+      "requires": [
+        "soc_smartphone"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 240
+        },
+        {
+          "id": 852,
+          "qty": 220
+        },
+        {
+          "id": 854,
+          "qty": 180
+        },
+        {
+          "id": 863,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "soc_video_platform",
+      "year": 2011,
+      "requires": [
+        "soc_networked_movement"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 200
+        },
+        {
+          "id": 853,
+          "qty": 200
+        },
+        {
+          "id": 867,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      }
+    }
+  ]
+}

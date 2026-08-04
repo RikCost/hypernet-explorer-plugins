@@ -1,0 +1,32 @@
+{
+  "genre": {
+    "ComigoGames": "ComigoGames",
+    "Moogify": "Moogify",
+    "Nocoldiz": "Nocoldiz",
+    "Old/Classic": "Classici",
+    "RandomMind": "RandomMind",
+    "TallBeard": "TallBeard",
+    "Battle": "Battaglia",
+    "Town": "Città",
+    "Field": "Campagna",
+    "Dungeon": "Sotterraneo",
+    "Theme": "Tema",
+    "Boss": "Boss",
+    "Menu": "Menu",
+    "Emotional": "Emotivo",
+    "Upbeat": "Allegro",
+    "Misc": "Varie"
+  },
+  "noMusicFound": "Nessuna musica trovata",
+  "onAirInfo": "IN ONDA • Genere: {genre} • Qualità: {quality}",
+  "onAirStereo": "IN ONDA • TRASMISSIONE STEREO",
+  "stationsUpdated": "Stazioni radio aggiornate!",
+  "scanFailed": "Scansione radio fallita: controlla la console per i dettagli",
+  "volumeSet": "Volume della radio impostato al {volume}%",
+  "receiver": "RICEVITORE RADIO",
+  "closeRadio": "Chiudi la radio",
+  "magicEye": "OCCHIO MAGICO",
+  "volume": "VOLUME",
+  "scan": "SCANSIONE",
+  "tuning": "SINTONIA"
+}

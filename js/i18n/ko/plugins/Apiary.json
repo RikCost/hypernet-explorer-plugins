@@ -1,0 +1,61 @@
+{
+  "action": {
+    "harvest": "",
+    "simulate": "",
+    "exit": ""
+  },
+  "caste": {
+    "eggs": "",
+    "larvae": "",
+    "pupae": "",
+    "workers": "",
+    "nurses": "",
+    "guards": "",
+    "foragers": "",
+    "builders": "",
+    "scouts": "",
+    "drones": ""
+  },
+  "resource": {
+    "honey": "",
+    "pollen": "",
+    "royalJelly": "",
+    "wax": "",
+    "propolis": "",
+    "water": ""
+  },
+  "queenHealth": "",
+  "eggsLaid": "",
+  "noQueen": "",
+  "threats": "",
+  "secure": "",
+  "harvested": "",
+  "notEnoughHoney": "",
+  "simulatedDay": "",
+  "simulatedHours": "",
+  "honeyProduced": "",
+  "currentPopulation": "",
+  "ui": {
+    "back": "",
+    "apiary": "",
+    "colony": "",
+    "state": "",
+    "mood": "",
+    "efficiency": "",
+    "queen": "",
+    "environment": "",
+    "season": "",
+    "weather": "",
+    "temp": "",
+    "flowers": "",
+    "population": "",
+    "total": "",
+    "resources": "",
+    "statistics": "",
+    "births": "",
+    "deaths": "",
+    "honeyProduced": "",
+    "enemiesRepelled": "",
+    "swarms": ""
+  }
+}

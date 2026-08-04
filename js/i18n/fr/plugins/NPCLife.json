@@ -1,0 +1,86 @@
+{
+  "partsUnknown": "",
+  "jobFallback": "",
+  "moveReason": {
+    "bornHere": "",
+    "lookingForWork": "",
+    "followingFamily": "",
+    "chasingLove": "",
+    "fleeingTrouble": "",
+    "freshStart": "",
+    "cheapHousing": "",
+    "fallingOut": "",
+    "changeOfAir": ""
+  },
+  "marital": {
+    "married": "",
+    "dating": "",
+    "divorced": "",
+    "widowed": "",
+    "single": ""
+  },
+  "outcome": {
+    "broke up": "",
+    "divorced": "",
+    "abandoned": "",
+    "wasAbandoned": "",
+    "widowed": ""
+  },
+  "event": {
+    "moved": "",
+    "convictedSentenced": "",
+    "convicted": "",
+    "arrestedNotConvicted": "",
+    "arrestedReleased": "",
+    "caughtCommitting": "",
+    "caughtRedHanded": "",
+    "releasedFromPrison": "",
+    "servedAndReleased": "",
+    "retired": "",
+    "changedJob": "",
+    "foundWork": "",
+    "lostJob": "",
+    "married": "",
+    "divorced": "",
+    "brokeUpWith": "",
+    "wasAbandonedBy": "",
+    "abandonedPartner": "",
+    "startedSeeing": "",
+    "bought": "",
+    "worldviewShifted": ""
+  },
+  "bio": {
+    "noLife": "",
+    "header": "",
+    "hasLivedIn": "",
+    "settledIn": "",
+    "neverLeft": "",
+    "inPrison": "",
+    "retired": {
+      "one": "",
+      "other": ""
+    },
+    "worksAs": "",
+    "betweenJobs": "",
+    "pastWork": "",
+    "pastJob": "",
+    "marriedTo": "",
+    "seeing": "",
+    "formerPartner": "",
+    "cleanRecord": "",
+    "criminalRecord": "",
+    "convictionCount": {
+      "one": "",
+      "other": ""
+    },
+    "sentenceCount": {
+      "one": "",
+      "other": ""
+    },
+    "unsolved": {
+      "one": "",
+      "other": ""
+    },
+    "standing": ""
+  }
+}

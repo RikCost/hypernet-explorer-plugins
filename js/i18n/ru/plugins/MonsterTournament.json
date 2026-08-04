@@ -1,0 +1,27 @@
+{
+  "stat": "",
+  "fighter": "",
+  "uses": "",
+  "no3d": "",
+  "chooseFighter": "",
+  "fighterOf": "",
+  "doubleBet": "",
+  "noTokens": "",
+  "placeBet": "",
+  "wins": "",
+  "defeated": "",
+  "eliminated": "",
+  "youLost": "",
+  "champion": "",
+  "youWon": "",
+  "skillAttack": "",
+  "skillFinish": "",
+  "ui": {
+    "hintCycle": "",
+    "bet": "",
+    "hintBet": "",
+    "hintConfirm": "",
+    "keepCurrentBet": "",
+    "hintChoose": ""
+  }
+}

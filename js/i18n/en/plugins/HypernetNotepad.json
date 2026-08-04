@@ -1,0 +1,13 @@
+{
+  "appName": "Notepad",
+  "untitled": "Untitled",
+  "windowTitle": "Notepad - {file}",
+  "menuFileTail": "ile",
+  "menuEdit": "<u>E</u>dit",
+  "menuFormat": "<u>F</u>ormat",
+  "menuHelp": "<u>H</u>elp",
+  "save": "Save",
+  "exit": "Exit",
+  "savePrompt": "Enter a filename to save in C:/Documents:",
+  "writeError": "System Error: Unable to write to Virtual File System."
+}

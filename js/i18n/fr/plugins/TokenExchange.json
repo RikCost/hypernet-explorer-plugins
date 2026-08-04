@@ -1,0 +1,43 @@
+{
+  "title": "",
+  "banner": "",
+  "tagline": "",
+  "rate": "",
+  "atPar": "",
+  "wallet": "",
+  "tokensHeld": "",
+  "buyTokens": "",
+  "sellTokens": "",
+  "tokensToBuy": "",
+  "tokensToSell": "",
+  "max": "",
+  "youPay": "",
+  "youGive": "",
+  "youReceive": "",
+  "confirm": "",
+  "hint": "",
+  "affordable": {
+    "one": "",
+    "other": ""
+  },
+  "held": {
+    "one": "",
+    "other": ""
+  },
+  "tokenCount": {
+    "one": "",
+    "other": ""
+  },
+  "statusBuying": "",
+  "statusSelling": "",
+  "notEnoughEuros": "",
+  "notEnoughTokens": "",
+  "bought": {
+    "one": "",
+    "other": ""
+  },
+  "sold": {
+    "one": "",
+    "other": ""
+  }
+}

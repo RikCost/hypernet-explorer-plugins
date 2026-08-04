@@ -1,0 +1,26 @@
+{
+  "tokenExchange": "",
+  "availableTokens": "",
+  "buyTokens": "",
+  "sellTokens": "",
+  "exit": "",
+  "amount": "",
+  "cost": "",
+  "earnings": "",
+  "yes": "",
+  "no": "",
+  "insufficientGold": "",
+  "insufficientTokens": "",
+  "msg": {
+    "notConfigured": "",
+    "error": "",
+    "rate": "",
+    "max": "",
+    "bought": "",
+    "sold": ""
+  },
+  "confirm": {
+    "buy": "",
+    "sell": ""
+  }
+}

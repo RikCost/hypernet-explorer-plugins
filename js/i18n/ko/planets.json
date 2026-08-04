@@ -1,0 +1,124 @@
+{
+  "planets": {
+    "sub_mercurian": {
+      "description": "얇은 지각을 가진 바위 행성으로, 대기가 거의 없음."
+    },
+    "mercurian": {
+      "description": "수성과 유사한, 대기가 없고 크레이터로 뒤덮인 철이 풍부한 행성."
+    },
+    "sub_earth": {
+      "description": "지구보다 작지만 여전히 지질 활동이 존재하는 행성."
+    },
+    "earth_like": {
+      "description": "판 구조 운동이 있고 액체 물과 호흡 가능한 대기를 가진 암석 행성."
+    },
+    "super_earth": {
+      "description": "큰 암석 행성으로, 높은 중력과 두꺼운 대기를 가짐."
+    },
+    "mini_neptune": {
+      "description": "암석 핵 위에 작은 얼음·가스 외피가 있는 행성."
+    },
+    "ice": {
+      "description": "표면이 얼어 있으며, 지하에 바다가 존재할 가능성이 있음."
+    },
+    "ocean": {
+      "description": "대륙이 거의 없는 전 행성 규모의 액체 바다."
+    },
+    "lava_ocean": {
+      "description": "부분적으로 용융된 표면과 증기 대기를 가진 행성."
+    },
+    "desert": {
+      "description": "건조한 행성으로, 식생이 거의 없거나 전혀 없음."
+    },
+    "rainforest": {
+      "description": "울창한 정글과 강한 강수량, 높은 생물량을 가진 행성."
+    },
+    "tundra": {
+      "description": "추운 기후로 식생이 제한적이며 영구동토가 지배적인 행성."
+    },
+    "acid_ocean": {
+      "description": "황산 또는 염산으로 이루어진 바다와 부식성 대기를 가진 행성."
+    },
+    "gas_giant": {
+      "description": "거대한 수소-헬륨 대기를 가진 행성으로, 고체 표면이 없음."
+    },
+    "hot_jupiter": {
+      "description": "별에 매우 가까이 공전하여 극도로 뜨거운 가스 행성."
+    },
+    "warm_jupiter": {
+      "description": "목성보다 별에 가깝지만, 핫 주피터보다는 먼 가스 행성."
+    },
+    "cold_jupiter": {
+      "description": "별에서 멀리 떨어져 있어 매우 차가운 대기를 가진 가스 행성."
+    },
+    "ice_giant": {
+      "description": "물, 암모니아 등 휘발성 물질이 풍부한 얼음층을 가진 행성."
+    },
+    "ringed_gas_giant": {
+      "description": "뚜렷한 고리를 가지고 있으며 다수의 위성을 가진 가스 행성."
+    },
+    "puffy": {
+      "description": "항성 복사열로 인해 매우 낮은 밀도로 팽창한 행성."
+    },
+    "chthonian": {
+      "description": "가스가 제거된 가스 행성의 핵으로, 화산 활동이 있는 금속질 행성."
+    },
+    "mega_iron": {
+      "description": "거의 순수한 철과 니켈로 이루어진 고밀도의 자기장을 가진 행성."
+    },
+    "carbon": {
+      "description": "탄소 기반 지형으로 이루어져 있으며 타르 같은 바다가 존재할 수 있음."
+    },
+    "diamond": {
+      "description": "고압 환경으로 인해 탄소가 다이아몬드 구조로 변한 행성."
+    },
+    "magma_planet": {
+      "description": "표면 전체가 용암으로 덮여 있으며 지속적인 화산 활동이 있는 행성."
+    },
+    "plasma": {
+      "description": "이온화된 대기를 가지며 항성풍에 의해 빛나는 행성."
+    },
+    "magnetar": {
+      "description": "초강력 자기장을 가진 극단적인 방사선 환경의 행성."
+    },
+    "quark_planet": {
+      "description": "가설적인 이상 물질 핵을 가진 초고밀도 행성."
+    },
+    "rogue": {
+      "description": "항성 없이 우주를 떠도는 차가운 행성."
+    },
+    "habitable": {
+      "description": "생명 거주 가능 구역에 위치하며 안정적인 기후와 액체 물을 가진 행성."
+    },
+    "dwarf": {
+      "description": "명왕성이나 세레스와 같은 작은 얼음 또는 암석 천체."
+    },
+    "centaur": {
+      "description": "목성과 해왕성 궤도 사이에 있는 얼음-암석 혼합 천체."
+    },
+    "planetesimal": {
+      "description": "행성 형성의 기본 단위가 되는 작은 암석 또는 얼음 덩어리."
+    },
+    "c_type_asteroid": {
+      "description": "탄소가 풍부한 어두운 원시적 조성을 가진 소행성."
+    },
+    "s_type_asteroid": {
+      "description": "규산염과 니켈-철로 이루어진 밝은 표면의 소행성."
+    },
+    "m_type_asteroid": {
+      "description": "니켈-철로 이루어진 금속성 핵 파편 소행성."
+    },
+    "trojan_asteroid": {
+      "description": "큰 행성의 라그랑주 점에서 함께 공전하는 소행성."
+    },
+    "comet": {
+      "description": "얼음과 먼지로 이루어진 '더러운 눈덩이'로, 항성 근처에서 꼬리를 형성함."
+    },
+    "short_period_comet": {
+      "description": "공전 주기가 200년 미만으로 자주 나타나는 혜성."
+    },
+    "long_period_comet": {
+      "description": "공전 주기가 200년 이상인 오르트 구름 기원의 혜성."
+    }
+  }
+}

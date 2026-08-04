@@ -1,0 +1,14 @@
+{
+  "needDivingSuit": "You need a diving suit",
+  "returnToWorldMap": "Return to world map",
+  "goToSurface": "Go to the surface",
+  "goUnderground": "Go underground",
+  "toggleWorldMap": "Toggle world map",
+  "openWorldMap": "Open world map",
+  "cancel": "Cancel",
+  "visit": "Visit {place}",
+  "makeCamp": "Make a camp",
+  "icebushBlocked": "The fields around Icebush are infested with Petrodemons and Neurofog, why don't you take the Hypermetro like any sane human being",
+  "stop": "Stop",
+  "worldMapMenu": "World map"
+}

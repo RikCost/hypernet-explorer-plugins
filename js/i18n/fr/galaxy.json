@@ -1,0 +1,85 @@
+{
+  "galaxy": {
+    "milky_way": {
+      "name": "Voie lactée"
+    },
+    "andromeda_m31": {
+      "name": "Andromède (M31)"
+    },
+    "triangulum_m33": {
+      "name": "Galaxie du Triangle (M33)"
+    },
+    "large_magellanic_cloud": {
+      "name": "Grand Nuage de Magellan"
+    },
+    "small_magellanic_cloud": {
+      "name": "Petit Nuage de Magellan"
+    },
+    "m32": {
+      "name": "M32"
+    },
+    "m110_ngc_205": {
+      "name": "M110 (NGC 205)"
+    },
+    "ngc_6822": {
+      "name": "NGC 6822"
+    },
+    "ic_10": {
+      "name": "IC 10"
+    },
+    "sagittarius_dwarf": {
+      "name": "Naine du Sagittaire"
+    },
+    "fornax_dwarf": {
+      "name": "Naine du Fourneau"
+    },
+    "sculptor_dwarf": {
+      "name": "Naine du Sculpteur"
+    },
+    "leo_i": {
+      "name": "Lion I"
+    },
+    "leo_ii": {
+      "name": "Lion II"
+    },
+    "ursa_minor_dwarf": {
+      "name": "Naine de la Petite Ourse"
+    },
+    "draco_dwarf": {
+      "name": "Naine du Dragon"
+    },
+    "carina_dwarf": {
+      "name": "Naine de la Carène"
+    },
+    "sextans_dwarf": {
+      "name": "Naine du Sextant"
+    },
+    "ic_1613": {
+      "name": "IC 1613"
+    },
+    "wlm": {
+      "name": "WLM"
+    },
+    "phoenix_dwarf": {
+      "name": "Naine du Phénix"
+    },
+    "ngc_3109": {
+      "name": "NGC 3109"
+    },
+    "antlia_dwarf": {
+      "name": "Naine de la Machine pneumatique"
+    },
+    "leo_a": {
+      "name": "Lion A"
+    },
+    "aquarius_dwarf": {
+      "name": "Naine du Verseau"
+    },
+    "tucana_dwarf": {
+      "name": "Naine du Toucan"
+    },
+    "pegasus_dwarf": {
+      "name": "Naine de Pégase"
+    }
+  }
+}

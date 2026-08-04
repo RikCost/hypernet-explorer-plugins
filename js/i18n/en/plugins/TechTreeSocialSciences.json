@@ -1,0 +1,78 @@
+{
+  "name": "Social Sciences",
+  "blurb": "People, markets and crowds as measured objects: identification strategies, effect sizes and the sampling that produced them. The era's favourite delusions are filed here too, with the design faults that produced those.",
+  "nodes": {
+    "soc_asymmetric": {
+      "name": "Markets with Asymmetric Information",
+      "desc": "Three models of exchange in which one party is better informed than the other. Under adverse selection a uniform price is set from the average quality, sellers of above-average goods withdraw, the average falls and the market unravels toward its worst segment. Under signalling the uninformed party infers quality from an observable action that is cheaper for the high type, so a credential separates the types by being costly and need not be productive. Under screening the informed party is sorted by the menu of contracts it is offered, as with a deductible. None of the three separating equilibria is Pareto efficient."
+    },
+    "soc_prospect": {
+      "name": "Prospect Theory in Economics",
+      "desc": "Choice is modelled over gains and losses from a reference point instead of over final wealth. The value function is concave above the reference point, convex below it and steeper below by a factor near 2.25, so an identical prospect is accepted when framed as a gain and refused when framed as a loss. Probabilities enter through a weighting function that overweights outcomes below about 0.35 and underweights the rest, which reproduces simultaneous demand for insurance and lottery tickets. The parameters are estimated from choice data and replicate across populations, and the framing effect survives incentives and expertise."
+    },
+    "soc_social_graph": {
+      "name": "The Social Graph",
+      "desc": "Affiliation is stored as a graph with typed edges and attribute vectors on the nodes, and queried by traversal instead of by join, so degree distribution, clustering coefficient, path length and community partition of a whole population become computable in a single pass. Measured on such a graph, the mean geodesic between two members runs between four and five, degree is heavy-tailed with a cut-off imposed by the interface, and homophily is strong enough that unstated attributes are recoverable from neighbours alone. The same adjacency that supports the query supports the inference."
+    },
+    "soc_collective": {
+      "name": "Collective Intelligence",
+      "desc": "An encyclopaedia written under open editing, with full revision history, a per-page discussion record and a revert that costs one click against the several minutes a defacement costs. That cost asymmetry, together with watchlists concentrated on high-traffic pages, keeps the median time to revert vandalism under two minutes. A blinded comparison of forty-two science entries against a printed encyclopaedia finds four serious errors in each and about three minor errors per article against a printed 2.9. Accuracy is unevenly distributed: it tracks traffic, and the long tail of low-traffic pages is unaudited."
+    },
+    "soc_microfinance": {
+      "name": "Microfinance",
+      "desc": "Uncollateralised loans of tens of dollars are extended to borrowers with no credit history, underwritten by joint liability within groups of five, weekly repayment meetings and the promise of a larger loan on completion. Group liability transfers screening and enforcement to the borrowers, who know each other's prospects better than the lender does. Reported recovery runs above 95 percent at rates far below the informal moneylender's. Randomised evaluations later find durable effects on business investment and on the timing of consumption, and no measurable effect on household income, schooling or health."
+    },
+    "soc_smartphone": {
+      "name": "The Smartphone Era",
+      "desc": "A capacitive multitouch panel, an ARM system on a chip, a packet data radio held permanently attached, satellite positioning, an accelerometer and a camera in a device carried against the body, with a signed application channel above them. The sensor set means location, orientation, motion and proximity are logged continuously at metre and second resolution; the permanent radio means the log is not local. Attention becomes a metered quantity because the device can measure it, and the population sampled is whoever holds one."
+    },
+    "soc_gfc": {
+      "name": "Systemic Risk Laid Bare",
+      "desc": "Mortgage pools are tranched into securities whose senior ratings rest on an assumed default correlation, calibrated on a national price series that contains no nationwide decline. The exposure is then insured through credit default swaps written by a handful of counterparties and held off balance sheet in conduits funded overnight. When realised correlation approaches one the tranching provides no protection, the funding rolls over daily against collateral that is being marked down, and the loss is transmitted through the counterparties instead of being dispersed. The diversification was an artefact of the estimation window."
+    },
+    "soc_nudge": {
+      "name": "Nudge and Choice Architecture",
+      "desc": "Defaults, ordering, salience and framing are treated as design parameters of the choice environment, on the finding that they move aggregate behaviour while leaving the option set unchanged. Switching pension enrolment from opt-in to opt-out raises participation from around 40 percent to above 90 in the first year of tenure; the same switch on organ donor registration accounts for most of the spread between national rates. The mechanism operates on the cost of deliberation, so the effect is largest where attention is scarcest, and it decays where the decision is repeated and consequential."
+    },
+    "soc_commons": {
+      "name": "Governing the Commons",
+      "desc": "Field studies of irrigation systems, inshore fisheries, pastures and forests document common-pool resources governed durably without state allocation or private title. The cases that persist share eight design principles: clearly defined boundaries and membership, rules matched to local conditions, collective choice over those rules by the appropriators, monitoring carried out by the appropriators themselves, sanctions graduated by the severity of the offence, cheap local conflict resolution, recognition of the right to organise, and nesting within larger units. The tragedy of the commons is thereby demoted from a theorem to one outcome among several."
+    },
+    "soc_big_data": {
+      "name": "Big Data and the Quantified Self",
+      "desc": "Clickstreams, location traces, transaction records and sensor logs are joined on shared identifiers and fitted with regression and classification models. Sparse behavioural traces predict individual attributes at accuracies that self-report does not reach, since the trace is continuous and unprompted: a few hundred page endorsements are enough to recover political orientation, sexual orientation and substance use above 80 percent. Re-identification is the standing failure mode, because a handful of location points or a short viewing history is unique in a population of millions, and consent is collected once for a purpose defined afterwards."
+    },
+    "soc_networked_movement": {
+      "name": "Networked Social Movements",
+      "desc": "Coordination shifts from standing organisations onto mobile messaging and public feeds. The cost of calling an assembly falls to near zero, the interval between call and gathering drops from weeks to hours, and there is no committee whose arrest ends the mobilisation. The same topology carries costs that show up later: no mechanism exists for aggregating demands or authorising a negotiator, so the movement scales in numbers without scaling in capacity, and the public graph that assembles it is also a membership list readable from outside."
+    },
+    "soc_mooc": {
+      "name": "Open Online Education",
+      "desc": "A course is packaged as segmented recorded video, automatically graded assessment and calibrated peer review, so the marginal cost of an additional student approaches zero and a single enrolment reaches six figures. Measured completion sits between four and ten percent, and the enrolled population skews toward those already holding a degree. The binding constraint moves from lecture hall capacity to feedback: automatic grading covers what can be machine-checked, peer review covers the rest at a reliability that has to be estimated and corrected for."
+    },
+    "soc_the_secret": {
+      "name": "The Law of Attraction",
+      "desc": "A protocol of visualisation, affirmation and gratitude, on a stated mechanism of vibrational resonance by which thought attracts a matching outcome. The proposition is constructed so that no observation can bear on it: a success confirms the mechanism, a failure is attributed to insufficient purity of intent or to residual negative thought, and the practitioner is instructed not to attend to contrary evidence. The same attribution rule assigns the cause of illness, bereavement and poverty to the person carrying them, and that assignment is the operative content of the doctrine."
+    },
+    "soc_vaccine_panic": {
+      "name": "The Vaccine-Autism Panic",
+      "desc": "A case series of twelve children reports bowel findings and developmental regression, and proposes a temporal link to a combined vaccine. The design carries no control group and cannot support a causal claim at any sample size. Investigation establishes that the subjects were recruited through a solicitor preparing litigation, that the lead author held an undisclosed payment and a competing patent, and that the clinical records do not match the published timelines; the paper is retracted and the licence withdrawn. Cohort and case-control studies covering more than ten million children find no association, and the coverage lost re-establishes endemic measles transmission for years."
+    },
+    "soc_precognition": {
+      "name": "Feeling the Future",
+      "desc": "Nine experiments reverse the order of standard paradigms, testing whether a stimulus presented after a response can affect it, and report retroactive priming and reversed practice effects at an average effect size near 0.2. The analyses are specified after the data are seen, several dependent measures are collected and the reported one is selected, and the stopping rule is not fixed. Three independent direct replications return null. The episode moves preregistration, a priori power analysis and the publication of null results out of methodological argument and into standard practice."
+    },
+    "soc_mobile_web": {
+      "name": "The Mobile Web",
+      "desc": "Pages are rebuilt for a radio link with a round trip of several hundred milliseconds and for a pointer a centimetre wide. Payload is trimmed to kilobytes and requests are cut, since latency dominates bandwidth; layout reflows into a single fluid column at the viewport width; touch targets are sized to about nine millimetres, since a fingertip has no hover state and no pixel precision. Sessions become short, frequent, interrupted and geographically located, which changes what the traffic logs measure as much as it changes the page."
+    },
+    "soc_cloud": {
+      "name": "Cloud Computing",
+      "desc": "Compute is sold as hypervisor-isolated virtual machines and object storage, metered by the hour and provisioned through an API in minutes. Capacity moves from a capital project with a procurement cycle of quarters to an operating expense with a cycle of minutes, and it releases as fast as it is taken. The measurable consequence is on the failed attempt: a trial that would have needed a purchase order now costs the price of an afternoon, so the number of attempts rises and the selection of what gets built changes with it."
+    },
+    "soc_video_platform": {
+      "name": "Ubiquitous Video Streaming",
+      "desc": "A file is transcoded once into a ladder of bitrates, cut into segments of a few seconds, cached at edge nodes near the viewer and delivered over ordinary HTTP so that it traverses any firewall, with the client switching rungs as the measured throughput changes. Upload is open, so the catalogue is not commissioned. The marginal cost of one more viewer approaches zero and a lecture, a broadcast, a surveillance clip and a home recording become the same class of object, indexed together and ranked by the same measure of retained attention."
+    }
+  }
+}

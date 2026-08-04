@@ -1,0 +1,12 @@
+{
+  "complete": "WFC Map generation complete!",
+  "width": "Width: {value}",
+  "height": "Height: {value}",
+  "targetMapId": "Target Map ID: {value}",
+  "useSpecificPattern": "Use Specific Pattern: {value}",
+  "patternMapId": "Pattern Map ID: {value}",
+  "fallbackTileId": "Fallback Tile ID: {value}",
+  "generate": "Generate Map",
+  "yes": "Yes",
+  "no": "No"
+}

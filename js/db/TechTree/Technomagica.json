@@ -1,0 +1,463 @@
+{
+  "id": "Technomagica",
+  "icon": 190,
+  "accent": "#1f8a70",
+  "real": false,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "tm_leyline_tap",
+      "phase": "Prototype",
+      "requires": [],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 100
+        },
+        {
+          "id": 863,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mmp": 15
+      }
+    },
+    {
+      "id": "tm_sanctified_microchip",
+      "phase": "Prototype",
+      "requires": [
+        "tm_leyline_tap"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 180
+        },
+        {
+          "id": 849,
+          "qty": 120
+        },
+        {
+          "id": 866,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "tm_compiler",
+      "phase": "Toolchain",
+      "requires": [
+        "tm_sanctified_microchip"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 200
+        },
+        {
+          "id": 853,
+          "qty": 180
+        },
+        {
+          "id": 849,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "tm_regression",
+      "phase": "Toolchain",
+      "requires": [
+        "tm_sanctified_microchip"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 160
+        },
+        {
+          "id": 850,
+          "qty": 80
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "tm_aether_battery",
+      "phase": "Power",
+      "requires": [
+        "tm_compiler",
+        "tm_regression"
+      ],
+      "materials": [
+        {
+          "id": 854,
+          "qty": 300
+        },
+        {
+          "id": 850,
+          "qty": 220
+        },
+        {
+          "id": 851,
+          "qty": 160
+        },
+        {
+          "id": 852,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "mmp": 25
+      },
+      "reward": {
+        "kind": "item",
+        "id": 850,
+        "qty": 8
+      }
+    },
+    {
+      "id": "tm_thaumic_processor",
+      "phase": "Power",
+      "requires": [
+        "tm_aether_battery"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 280
+        },
+        {
+          "id": 857,
+          "qty": 220
+        },
+        {
+          "id": 849,
+          "qty": 200
+        },
+        {
+          "id": 850,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 4
+      }
+    },
+    {
+      "id": "tm_spell_forge",
+      "phase": "Platform",
+      "requires": [
+        "tm_ci_pipeline"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 400
+        },
+        {
+          "id": 852,
+          "qty": 450
+        },
+        {
+          "id": 849,
+          "qty": 350
+        },
+        {
+          "id": 850,
+          "qty": 240
+        },
+        {
+          "id": 857,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "mat": 5,
+        "mmp": 20
+      },
+      "reward": {
+        "kind": "armor",
+        "id": 430,
+        "qty": 1
+      }
+    },
+    {
+      "id": "tm_dead_repo_fork",
+      "phase": "Platform",
+      "requires": [
+        "tm_spell_forge"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 340
+        },
+        {
+          "id": 849,
+          "qty": 300
+        },
+        {
+          "id": 850,
+          "qty": 200
+        },
+        {
+          "id": 866,
+          "qty": 220
+        }
+      ],
+      "buffs": {
+        "mat": 4
+      }
+    },
+    {
+      "id": "tm_wired_grimoire",
+      "phase": "Deployment",
+      "requires": [
+        "tm_dead_repo_fork"
+      ],
+      "materials": [
+        {
+          "id": 857,
+          "qty": 260
+        },
+        {
+          "id": 849,
+          "qty": 340
+        },
+        {
+          "id": 866,
+          "qty": 260
+        },
+        {
+          "id": 850,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "mat": 5,
+        "mmp": 30
+      },
+      "reward": {
+        "kind": "item",
+        "id": 1420,
+        "qty": 1
+      }
+    },
+    {
+      "id": "tm_forbidden_codex",
+      "phase": "Classified",
+      "requires": [
+        "tm_containment"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 550
+        },
+        {
+          "id": 849,
+          "qty": 500
+        },
+        {
+          "id": 850,
+          "qty": 340
+        },
+        {
+          "id": 865,
+          "qty": 180
+        },
+        {
+          "id": 857,
+          "qty": 240
+        }
+      ],
+      "buffs": {
+        "mat": 6,
+        "atk": 3
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 321,
+        "qty": 1
+      }
+    },
+    {
+      "id": "tm_emf_ghost",
+      "phase": "Vaporware",
+      "requires": [
+        "tm_leyline_tap"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 852,
+          "qty": 140
+        },
+        {
+          "id": 854,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "tm_orgone",
+      "phase": "Vaporware",
+      "requires": [
+        "tm_aether_battery"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 850,
+          "qty": 140
+        },
+        {
+          "id": 863,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "tm_radionics",
+      "phase": "Vaporware",
+      "requires": [
+        "tm_compiler"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 852,
+          "qty": 160
+        },
+        {
+          "id": 860,
+          "qty": 120
+        },
+        {
+          "id": 849,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "tm_signing_authority",
+      "phase": "Platform",
+      "requires": [
+        "tm_thaumic_processor"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 220
+        },
+        {
+          "id": 849,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "tm_ci_pipeline",
+      "phase": "Platform",
+      "requires": [
+        "tm_signing_authority"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 260
+        },
+        {
+          "id": 851,
+          "qty": 200
+        },
+        {
+          "id": 849,
+          "qty": 180
+        },
+        {
+          "id": 850,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 4
+      }
+    },
+    {
+      "id": "tm_containment",
+      "phase": "Classified",
+      "requires": [
+        "tm_wired_grimoire"
+      ],
+      "materials": [
+        {
+          "id": 849,
+          "qty": 220
+        },
+        {
+          "id": 850,
+          "qty": 180
+        },
+        {
+          "id": 866,
+          "qty": 160
+        },
+        {
+          "id": 857,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 3,
+        "mat": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "cmd": {
+    "sandbox": "Sandbox",
+    "backpack": "Backpack",
+    "equip": "Equip",
+    "skills": "Skills",
+    "status": "Status",
+    "specializations": "Specializations",
+    "biologics": "Biologics",
+    "dynamics": "Dynamics",
+    "thinker": "Thinker",
+    "pets": "Pets",
+    "workforce": "Workforce",
+    "worldMap": "World Map",
+    "vehicles": "Vehicles",
+    "wait": "Wait",
+    "cooking": "Cooking",
+    "build": "Build",
+    "training": "Training",
+    "research": "Research",
+    "questLog": "Quest Log",
+    "bestiary": "Bestiary",
+    "archive": "Archive",
+    "factions": "Factions",
+    "assets": "Assets",
+    "hypernet": "Hypernet",
+    "multiplayer": "Multiplayer",
+    "save": "Save",
+    "preferences": "Preferences",
+    "tools": "Tools",
+    "resign": "Resign",
+    "returnToShip": "Return to Ship",
+    "teleportToShip": "Teleport to Ship",
+    "returnToWorldMap": "Return to world map"
+  },
+  "dynamics": {
+    "roster": "Roster",
+    "rosterSub": "{count} travelling, set inactive or change leader",
+    "wiki": "Wiki",
+    "wikiHint": "Party entries in the encyclopedia",
+    "history": "History",
+    "historyHint": "Everyone who ever travelled with you",
+    "inactiveHint": "Inactive members leave the road here. They wait on the bench below for every savegame of this world, and can be called back or played as characters in character creation. The leader stays: hand the party over first to bench them.",
+    "inactiveTitle": "Inactive",
+    "inactiveEmpty": "Nobody is waiting on the bench in this world.",
+    "inactiveWorldHint": "Everyone benched anywhere in this world waits here. Calling one back takes them off the bench for good, in every savegame.",
+    "inactiveFull": "Three travellers is all the road allows: set someone inactive before calling anyone back.",
+    "inactiveSince": "Inactive since {date}",
+    "rejoined": "{name} takes the road again.",
+    "cannotRejoin": "{name} cannot rejoin right now.",
+    "lastMember": "The last member standing cannot be set inactive.",
+    "partyEmpty": "Someone has to keep travelling: the party cannot be left empty.",
+    "isLeader": "{name} leads the party. Make someone else leader first.",
+    "cannotRetire": "{name} cannot be set inactive right now.",
+    "nowInactive": "{name} is now inactive and can be picked as a character in this world.",
+    "back": "Back",
+    "title": "Party Dynamics",
+    "rosterTitle": "Roster",
+    "noMembers": "No party members found.",
+    "historyTitle": "Roster History",
+    "historySub": {
+      "one": "{count} former member on record",
+      "other": "{count} former members on record"
+    }
+  },
+  "roster": {
+    "travelling": "Travelling",
+    "inactive": "Inactive",
+    "departed": "Departed",
+    "dead": "Dead",
+    "joined": "Joined {date}",
+    "died": "Died {date}",
+    "retired": "Retired {date}",
+    "travellingWithYou": "Travelling with you",
+    "dateUnrecorded": "Date unrecorded",
+    "partyLeader": " · party leader",
+    "follower": "Follower",
+    "pet": "Pet",
+    "classless": "Classless",
+    "none": "None",
+    "left": "Left {date}",
+    "levelAbbr": "Lv.",
+    "thatMember": "That member",
+    "following": "Following",
+    "setActive": "Set Active",
+    "repair": "Repair",
+    "leader": "Leader",
+    "makeLeader": "Make Leader",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "setInactive": "Set Inactive",
+    "empathize": "Empathize",
+    "noRecords": "No roster records yet."
+  },
+  "need": {
+    "hunger": "Hunger",
+    "sleep": "Sleep",
+    "hygiene": "Hygiene",
+    "social": "Social",
+    "fun": "Fun"
+  },
+  "place": {
+    "unknownLand": "Unknown Land",
+    "worldWilderness": "World Wilderness",
+    "proceduralSector": "Procedural Sector",
+    "localSector": "Local Sector"
+  },
+  "reproduction": {
+    "none": "None",
+    "testicles": "Testicles (Male)",
+    "uterus": "Uterus (Female)",
+    "oviparous": "Oviparous (Egg)",
+    "plant": "Plant (Spores)",
+    "mitosis": "Mitosis (Asexual)",
+    "unknown": "Unknown"
+  },
+  "gender": {
+    "male": "Male",
+    "female": "Female",
+    "nonBinary": "Non-binary",
+    "cocoon": "Cocoon",
+    "fluid": "Fluid"
+  },
+  "weather": {
+    "clear": "Clear"
+  },
+  "page": {
+    "tools": "Tools",
+    "pets": "Pets &amp; Followers",
+    "vehicles": "Vehicles"
+  },
+  "vital": {
+    "hp": "HP",
+    "mp": "MP",
+    "ap": "AP"
+  },
+  "label": {
+    "location": "Location:",
+    "worldCoordinates": "World Coordinates:",
+    "sector": "Sector:",
+    "timeDate": "Time & Date:",
+    "weather": "Weather:",
+    "currentCash": "Current Cash:",
+    "currentBounty": "Current Bounty:",
+    "armyUpkeep": "Army Upkeep:",
+    "rowColumn": "Row {row}, Column {col}"
+  },
+  "travel": {
+    "goUp": "Go to the surface",
+    "goDown": "Go underground",
+    "toggleMinimap": "Toggle world map",
+    "openMap": "Open world map",
+    "resume": "Resume adventure",
+    "worldMapTitle": "World map"
+  },
+  "pets": {
+    "release": "Release",
+    "none": "No pets or followers recruited yet. Ask an enemy to join as a pet or follower during battle."
+  },
+  "vehicles": {
+    "spawn": "Spawn",
+    "noFuelNeeded": "No fuel needed",
+    "none": "No vehicles owned. Acquire a vehicle's summoning item to add it here."
+  },
+  "tools": {
+    "hexphone": "Hexphone",
+    "alchemistryKit": "Alchemistry Kit"
+  }
+}

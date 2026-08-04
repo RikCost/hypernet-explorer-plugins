@@ -1,0 +1,11 @@
+{
+  "errorName": "Error",
+  "unknownName": "Unknown",
+  "error": "[ERROR] {message}",
+  "checkParams": "Please check plugin parameters.",
+  "noDatabases": "[ERROR] No dialogue databases available!",
+  "databaseMissing": "[ERROR] Text database \"{id}\" not found.",
+  "allDatabases": "All Databases Combined",
+  "combined": "Combined: {list}",
+  "seeded": "Seeded: {list}"
+}

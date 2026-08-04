@@ -1,0 +1,27 @@
+{
+  "stat": "Stat",
+  "fighter": "Fighter",
+  "uses": "{user} uses {skill}!",
+  "no3d": "3D system unavailable - cannot open tournament",
+  "chooseFighter": "Monster Tournament - Choose Your Fighter",
+  "fighterOf": "Fighter {index} / {total}",
+  "doubleBet": "Double your bet (+{bet})",
+  "noTokens": "No tokens available!",
+  "placeBet": "{name} - Place Your Bet",
+  "wins": "{name} WINS!",
+  "defeated": "{name} was defeated...",
+  "eliminated": "{name} was eliminated",
+  "youLost": "You lost {tokens} tokens",
+  "champion": "CHAMPION: {name}!",
+  "youWon": "You won {tokens} tokens!",
+  "skillAttack": "Attack",
+  "skillFinish": "Finish",
+  "ui": {
+    "hintCycle": "&#9664; &#9654;  Cycle&nbsp;&nbsp;&nbsp;Enter  Select&nbsp;&nbsp;&nbsp;Esc  Exit",
+    "bet": "Bet:",
+    "hintBet": "&#9664; &#9654;  &plusmn;1&nbsp;&nbsp;&nbsp;&#9650; &#9660;  &plusmn;10",
+    "hintConfirm": "Enter  Confirm&nbsp;&nbsp;&nbsp;Esc  Cancel",
+    "keepCurrentBet": "Keep current bet",
+    "hintChoose": "&#9650; &#9660;  Choose&nbsp;&nbsp;&nbsp;Enter  Confirm"
+  }
+}

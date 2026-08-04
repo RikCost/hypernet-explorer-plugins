@@ -1,0 +1,34 @@
+{
+  "script": {
+    "latin": "Latin",
+    "latinExt": "Latin Ext",
+    "cyrillic": "Cyrillic",
+    "japanese": "Japanese",
+    "pinyin": "Pinyin (Sim)",
+    "zhuyin": "Zhuyin (Trad)",
+    "hangul": "Hangul (Kor)",
+    "symbols": "Symbols"
+  },
+  "btn": {
+    "halfWidth": "Half Width",
+    "fullWidth": "Full Width",
+    "clearBuffer": "Clear buffer",
+    "nextPage": "Next Page",
+    "defaultName": "Default Name",
+    "insertSpace": "Insert Space",
+    "backspace": "Backspace",
+    "clearInput": "Clear Input",
+    "prevPage": "Prev Page"
+  },
+  "incantation": "✦ Incantation Spelling: \"{text}\"",
+  "ui": {
+    "yourNameIs": "Your name is",
+    "space": "Space",
+    "backspace": "Backspace",
+    "synchronizeName": "Synchronize Name",
+    "translationLayers": "Codex Translation Layers",
+    "modifiersNavigation": "Modifiers & Navigation",
+    "abort": "Abort",
+    "continue": "Continue"
+  }
+}

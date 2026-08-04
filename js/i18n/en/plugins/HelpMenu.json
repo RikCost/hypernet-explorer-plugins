@@ -1,0 +1,18 @@
+{
+  "archive": "Archive",
+  "archiveEntry": "Archive Entry",
+  "general": "General",
+  "lore": "Lore",
+  "states": "States",
+  "elements": "Elements",
+  "hints": "Hints",
+  "selectATopicToStart": "Select a topic to start reading...",
+  "back": "Back",
+  "on": "ON",
+  "off": "OFF",
+  "worldMapHints": "World Map Hints",
+  "enableOrDisableRealTime": "Enable or disable real-time tutorial messages, compass quest targets, and written context tips during gameplay.",
+  "configureWorldMapHintsAnd": "Configure world map hints and real-time navigation alerts on the right page.",
+  "noCodexEntriesFoundIn": "No codex entries found in this category...",
+  "command": "Help"
+}

@@ -1,0 +1,18 @@
+{
+  "pullToSpin": "",
+  "noTokens": "",
+  "notEnoughTokens": "",
+  "jackpot": "",
+  "pair": "",
+  "noMatch": "",
+  "ui": {
+    "title": "",
+    "subtitle": "",
+    "pressSpin": "",
+    "tokens": "",
+    "bet": "",
+    "lastWin": "",
+    "spin": "",
+    "hint": ""
+  }
+}

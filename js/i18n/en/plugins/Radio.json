@@ -1,0 +1,32 @@
+{
+  "genre": {
+    "ComigoGames": "ComigoGames",
+    "Moogify": "Moogify",
+    "Nocoldiz": "Nocoldiz",
+    "Old/Classic": "Old/Classic",
+    "RandomMind": "RandomMind",
+    "TallBeard": "TallBeard",
+    "Battle": "Battle",
+    "Town": "Town",
+    "Field": "Field",
+    "Dungeon": "Dungeon",
+    "Theme": "Theme",
+    "Boss": "Boss",
+    "Menu": "Menu",
+    "Emotional": "Emotional",
+    "Upbeat": "Upbeat",
+    "Misc": "Misc"
+  },
+  "noMusicFound": "No Music Found",
+  "onAirInfo": "ON AIR • Genre: {genre} • Quality: {quality}",
+  "onAirStereo": "ON AIR • STEREO TRANSMISSION",
+  "stationsUpdated": "Radio stations updated!",
+  "scanFailed": "Radio scan failed - check console for details",
+  "volumeSet": "Radio volume set to {volume}%",
+  "receiver": "RADIO RECEIVER",
+  "closeRadio": "Close Radio",
+  "magicEye": "MAGIC EYE",
+  "volume": "VOLUME",
+  "scan": "SCAN",
+  "tuning": "TUNING"
+}

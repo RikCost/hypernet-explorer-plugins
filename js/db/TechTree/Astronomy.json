@@ -1,0 +1,505 @@
+{
+  "id": "Astronomy",
+  "icon": 88,
+  "accent": "#5b4b8a",
+  "real": true,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "astro_wmap",
+      "year": 2003,
+      "requires": [],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 120
+        },
+        {
+          "id": 852,
+          "qty": 100
+        },
+        {
+          "id": 854,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mmp": 20
+      }
+    },
+    {
+      "id": "astro_mars_rovers",
+      "year": 2004,
+      "requires": [
+        "astro_wmap"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 180
+        },
+        {
+          "id": 856,
+          "qty": 140
+        },
+        {
+          "id": 854,
+          "qty": 160
+        },
+        {
+          "id": 852,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mhp": 20
+      }
+    },
+    {
+      "id": "astro_deep_impact",
+      "year": 2005,
+      "requires": [
+        "astro_wmap"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 160
+        },
+        {
+          "id": 864,
+          "qty": 120
+        },
+        {
+          "id": 851,
+          "qty": 80
+        },
+        {
+          "id": 856,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "atk": 2
+      }
+    },
+    {
+      "id": "astro_titan",
+      "year": 2005,
+      "requires": [
+        "astro_mars_rovers"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 200
+        },
+        {
+          "id": 856,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 100
+        },
+        {
+          "id": 867,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mhp": 25
+      }
+    },
+    {
+      "id": "astro_pluto",
+      "year": 2006,
+      "requires": [
+        "astro_wmap"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 80
+        },
+        {
+          "id": 863,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "astro_stardust",
+      "year": 2006,
+      "requires": [
+        "astro_deep_impact"
+      ],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 180
+        },
+        {
+          "id": 856,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 120
+        },
+        {
+          "id": 864,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "astro_exo_image",
+      "year": 2008,
+      "requires": [
+        "astro_titan"
+      ],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 260
+        },
+        {
+          "id": 853,
+          "qty": 180
+        },
+        {
+          "id": 851,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 163,
+        "qty": 1
+      }
+    },
+    {
+      "id": "astro_water_moon",
+      "year": 2009,
+      "requires": [
+        "astro_titan"
+      ],
+      "materials": [
+        {
+          "id": 871,
+          "qty": 160
+        },
+        {
+          "id": 863,
+          "qty": 200
+        },
+        {
+          "id": 854,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "mhp": 25
+      }
+    },
+    {
+      "id": "astro_kepler",
+      "year": 2009,
+      "requires": [
+        "astro_photometry",
+        "astro_pluto"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 220
+        },
+        {
+          "id": 854,
+          "qty": 300
+        },
+        {
+          "id": 867,
+          "qty": 280
+        },
+        {
+          "id": 853,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "astro_dawn_vesta",
+      "year": 2011,
+      "requires": [
+        "astro_stardust"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 200
+        },
+        {
+          "id": 865,
+          "qty": 120
+        },
+        {
+          "id": 854,
+          "qty": 260
+        },
+        {
+          "id": 856,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      }
+    },
+    {
+      "id": "astro_habitable",
+      "year": 2011,
+      "requires": [
+        "astro_kepler"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 160
+        },
+        {
+          "id": 850,
+          "qty": 80
+        },
+        {
+          "id": 867,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "luk": 3
+      },
+      "reward": {
+        "kind": "item",
+        "id": 850,
+        "qty": 5
+      }
+    },
+    {
+      "id": "astro_curiosity",
+      "year": 2012,
+      "requires": [
+        "astro_kepler",
+        "astro_rtg",
+        "astro_skycrane"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 500
+        },
+        {
+          "id": 851,
+          "qty": 300
+        },
+        {
+          "id": 854,
+          "qty": 600
+        },
+        {
+          "id": 863,
+          "qty": 400
+        },
+        {
+          "id": 856,
+          "qty": 350
+        },
+        {
+          "id": 865,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mhp": 35,
+        "agi": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 696,
+        "qty": 1
+      }
+    },
+    {
+      "id": "astro_face_mars",
+      "year": 2001,
+      "requires": [
+        "astro_wmap"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 867,
+          "qty": 140
+        },
+        {
+          "id": 853,
+          "qty": 100
+        },
+        {
+          "id": 861,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "astro_nibiru",
+      "year": 2012,
+      "requires": [
+        "astro_pluto"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 120
+        },
+        {
+          "id": 860,
+          "qty": 100
+        },
+        {
+          "id": 867,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "astro_ancient_astronauts",
+      "year": 2010,
+      "requires": [
+        "astro_exo_image"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 140
+        },
+        {
+          "id": 863,
+          "qty": 160
+        },
+        {
+          "id": 860,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "astro_photometry",
+      "year": 2008,
+      "requires": [
+        "astro_exo_image"
+      ],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 180
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 852,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "astro_rtg",
+      "year": 2010,
+      "requires": [
+        "astro_water_moon"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 200
+        },
+        {
+          "id": 864,
+          "qty": 160
+        },
+        {
+          "id": 854,
+          "qty": 240
+        },
+        {
+          "id": 871,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mhp": 25
+      }
+    },
+    {
+      "id": "astro_skycrane",
+      "year": 2011,
+      "requires": [
+        "astro_dawn_vesta"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 220
+        },
+        {
+          "id": 856,
+          "qty": 180
+        },
+        {
+          "id": 854,
+          "qty": 200
+        },
+        {
+          "id": 852,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      }
+    }
+  ]
+}

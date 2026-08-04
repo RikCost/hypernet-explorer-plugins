@@ -1,0 +1,337 @@
+{
+  "bumperIn": [
+    "{Two minutes|Ninety seconds|A minute and a half}. {Somebody|Someone} has {paid for|bought|leased} them and we {are not|aren't} {brave|foolish|solvent} enough to argue.",
+    "The next voice you hear has {bought the right to it|paid for the right to it|purchased its slot fairly}.",
+    "{Before we go on|Before we continue|Just before we go further}: {faction} have something they {would like|would very much like|would dearly like} you to own.",
+    "{Sponsors|Advertisers|The people who pay for us}. Ours. Briefly.",
+    "{We'll be right back|We will be back|Back with you in two minutes} after this {word|message|paid announcement} from {faction}.",
+    "Back in {a moment|a minute|two minutes}. First, the {people paying for the aerial|people who pay for the aerial|ones keeping this transmitter warm}.",
+    "This next part is {not our fault|none of our doing|nothing to do with us}. This next part is {sold|paid for|somebody else's money talking}.",
+    "A {short break|brief interruption|paid interval}, brought to you by {faction}.",
+    "{Hold that thought|Keep hold of that thought|Park that thought}. {Somebody|Someone} bought the next {ninety seconds|two minutes|little while}.",
+    "{Stay tuned|Keep the set on|Leave the dial where it is}. The signal has been {leased|sublet|rented out from under us}.",
+    "{We are obliged|We are contractually obliged|Our licence obliges us} to sell you something now. {Do try|Try|Please try} to enjoy it.",
+    "{Advertising|A sponsored interval|Commerce}. It pays for the {aerial|transmitter|studio heating}, so we let it happen."
+  ],
+  "pitch": [
+    "{item}, {price}. {Carried by|Kept by|Standard issue for} every {job} worth the licence.",
+    "{item}. {price}. It {will not|won't} {reset|revert|come undone}. {That is the entire|That's the entire|That is the whole|That is the full} pitch.",
+    "The {category} range {starts at|opens at|begins at} {price}. It starts with {item}.",
+    "{faction} have {item} in the {place} depot at {price} while the depot {lasts|holds|is still standing}.",
+    "{item} - {price} - and you may {stop thinking about|forget about|put out of mind} {phenomenon} for {one whole afternoon|an entire afternoon|a good few hours}.",
+    "{Ask yourself|Consider|Work out} what {price} is worth. Then look at {item} and ask again.",
+    "{item}. {price}. Indexed, bonded, and {almost certainly|all but certainly|very probably} legal in {realm}.",
+    "For {price}, {item}. For nothing, {the feeling of having waited too long|the sense that you left it too late|regret, at no charge}.",
+    "{item}. Base price {price}. {faction} {would like|would very much like} you to want one.",
+    "{Tired of|Sick of|Had enough of} {phenomenon}? {item}, {only|just|a mere} {price}, {will not|won't} help - but {you will|you'll} own it.",
+    "{New from|Fresh out of|Newly indexed by} {faction}: {item}. {price}. {Loop-stable|Reset-proof|Bubble-rated}, {allegedly|reportedly|supposedly}.",
+    "{item}, {price}, {shipped|sent|carried} by pigeon where the bubbles make roads {pointless|meaningless|a waste of diesel}.",
+    "Every {job} in {place} {carries|keeps|swears by} {item}. {price}. Do you?",
+    "{item} - {price} at base price, {more|dearer|a good deal more} once {faction} finish {adjusting|revising|reinterpreting} the market.",
+    "Own {item} for {price} and tell {person} you {thought of it first|got there first|had the idea first}.",
+    "{item}. {price}. Guaranteed {adj}. Guarantee {not honoured|void|suspended} {inside a bubble|inside a loop bubble|inside one of the bubbles}.",
+    "One {item}, {price}, {catalogued and indexed|logged and indexed|filed and cross-indexed} by {faction} before you even opened the box.",
+    "{item} at {price}. The {adj} choice for anyone who {intends to still exist|plans on existing|expects to still be here} tomorrow.",
+    "{item}. {price}. {Nobody|No one} needs one. {Everybody|Everyone} within reach of this aerial is buying one.",
+    "{Stocked|Held|Carried} in {place} at {price}: {item}. {Ask for it by name|Ask at the counter|Ask, and keep asking}."
+  ],
+  "smallprint": [
+    "Base price {shown|quoted|listed}. Local {faction} levies, tithes and indexing fees are extra.",
+    "Product may arrive before {it is|it's} ordered. This {is not|isn't} {grounds for return|a fault|our concern}.",
+    "Not {rated|certified|approved} for use on a live leyline. Nothing is.",
+    "{faction} {do not|don't} warrant that the product will {exist on arrival|survive the journey|still be there}, only that it left.",
+    "Guarantee runs for one loop, which is {either a day or forever|a day, or forever, depending|twenty-four hours or the rest of your life}.",
+    "Price shown is base price. {faction} reserve the right to {remember|recall} it differently.",
+    "Offer void {inside a bubble|inside a loop bubble|inside one of the bubbles}, above 80 km/h, and in {dimension}.",
+    "Not evaluated by the Guild. Not blessed by the Vatican. {Not our problem|Not our concern|No business of ours}.",
+    "{faction} accept payment in {currency, favours, or memories of comparable weight|coin, favours, or memories of equivalent weight|money, obligations, or memory of similar heft}.",
+    "Delivery {within|inside|in} one loop. A loop is twenty-four hours, {if time is behaving|when time behaves|assuming time cooperates}.",
+    "Terms {indexed|held|filed} by {faction}. You agreed by {watching|not turning the set off|remaining in the room}.",
+    "{Do not exceed|Do not go above|Never exceed} 80 km/h while carrying this product. The nearest bubble is {closer than it looks|nearer than it looks|closer than the map admits}.",
+    "Contains {no memories|nothing memory-bearing|no recovered memory} of {somebody|someone} else. {Probably|In all likelihood|As far as anyone checked}.",
+    "Returns accepted {within one loop|inside one loop} of purchase, or the {version|edition|copy} of you that bought it, whichever comes first."
+  ],
+  "bumperOut": [
+    "{Sponsor satisfied|Sponsor paid|Sponsor content}. {Programme|Broadcast} resumed. Dignity pending.",
+    "There. {Paid for|Settled|Squared away}. Now, where were we?",
+    "Back in the room, and back to something {less commercial and more alarming|cheaper and far worse|not for sale and much bleaker}.",
+    "{That's the money|That is the money|That's the commerce} out of the way.",
+    "And {we're back|we are back|we have you back}. Where were we? Right. {Nowhere good|Nowhere pleasant|Somewhere grim}.",
+    "That was a message. This is the {programme|show|broadcast}. The difference is {shrinking|narrowing|harder to find every week}.",
+    "Right - back to it, before {anyone else buys the aerial|somebody buys the rest of the hour|the next sponsor turns up}.",
+    "We now return you to {whatever this was|whatever it was we were doing|the programme, loosely defined}.",
+    "The sponsor is {finished with us|done with us|satisfied}. {For now|For the moment|Until the next break}.",
+    "{Money spent|Money made|Accounts settled}. {Programme|Broadcast} resumes, unimproved.",
+    "{Right|Anyway|So}. That was paid for and this is not."
+  ],
+  "bumperInNotice": [
+    "The next {ninety seconds|two minutes|minute} {belong|belongs} to {faction}. {We took the money|The money was taken|We cashed it} {and we would take it again|and we would take it twice|before we read the wording}.",
+    "{Before we go on|Just before we continue|One moment}: {faction} have bought a minute to tell you {what to think|what to believe|where you stand}.",
+    "{faction} {have|has} something to say and {the licence says we carry it|our licence obliges us to carry it|the disclosure rules say we carry it}.",
+    "A {paid announcement|bought minute|purchased interval} from {faction}. {This channel's own view|Our own position|What we think} {is not included|comes at extra cost|will not be broadcast}.",
+    "{Stay where you are|Do not touch the dial|Leave the set alone}. {faction} {are|is} {addressing|about to address|speaking to} {everybody in range of this aerial|the region|this transmitter's region}.",
+    "{We are not asked to agree with the next part|Agreement was not in the contract|Nobody asked us what we thought of the next part}. {We were paid to broadcast it, and nothing else|We were paid to broadcast it|The fee covers transmission only}.",
+    "{Now|And now}, a {word|message|notice} from {faction}. {Comment is not permitted|We may not comment|We have been asked not to comment}.",
+    "{This next minute|The next minute|What follows} was {bought|purchased|taken} by {faction} {at the going rate|at full rate|for an obscene amount of money}.",
+    "{faction} {have|has} {taken|leased|requisitioned} the aerial. {We get it back shortly|It comes back to us shortly|We are promised it back}.",
+    "The following is {carried|broadcast|transmitted} {under the disclosure rules|because the rules require it|as required}. {faction} {are|is} paying, and you are {being addressed|the audience|the target}.",
+    "{Hold on|One moment|Sit still}. {faction} {would like a word|want a word|have a word for you}, and {they have paid for it|the word is paid for|it is already paid for}."
+  ],
+  "propagandaTag": [
+    "A {message|notice|paid announcement} from {sponsor}.",
+    "{sponsor} paid for that {minute|ninety seconds|announcement}. {We are obliged to tell you so|The licence obliges us to say so|We have to say so out loud}.",
+    "That was {sponsor}, {speaking for themselves|in their own words|entirely in their own words}.",
+    "Broadcast on behalf of {sponsor}. {This channel|The station|This aerial} {holds no position|takes no view|is not paid to agree}.",
+    "{sponsor}. {Paid in advance|Paid in full|Paid in coin, cleared}.",
+    "The above was {bought|purchased|leased} by {sponsor} and is {not|in no way} the view of {anyone standing in this studio|the presenters|this transmitter}.",
+    "{sponsor} {reminds you|would remind you|asks us to remind you} that {they are watching this channel too|they watch this channel as well|they are also in the audience}.",
+    "{Approved|Cleared|Indexed} for broadcast: {sponsor}, {this week's wording|current wording|wording as of this morning}.",
+    "You have been {addressed|spoken to|reached} by {sponsor}. {There is no reply channel|The set does not answer back|Do not answer the set}.",
+    "{sponsor}, {paying for this aerial since|on this aerial since|buying this slot since} {1992|1996|1999|2000}.",
+    "{sponsor} {accepts no correspondence|does not take letters|reads no letters} {on this matter|about this|about any of it}."
+  ],
+  "propaganda": {
+    "vatican_naguka_mission": {
+      "sponsor": "the Sacred Vatican Empire",
+      "lines": [
+        "Beneath your feet live {four million|six million|uncounted} souls who have {never|not once} heard the Word. The Naguka mission wants {catechists|missionaries|brothers and sisters} who can {sing|preach|make themselves heard} over a drum.",
+        "They came up out of the Kola shaft with {spears|axes|hymns of their own} and no baptism. {The Empire|Rome|His Holiness} says: {baptise them|bring them in|save them}. {Not|And not} shoot them.",
+        "Goblin catechism. {Twelve weeks|One season|Forty days}, {board and lodging found|full board|a bed and a bowl} at the Empire's expense. Bring {patience|a strong stomach|earplugs}. Bring {no arcane focus|nothing arcane|no leyline work}.",
+        "Every {converted|baptised|received} Naguka is a soul saved{, and an army the Empire will never have to conscript|, and a soldier nobody had to call up|}. {We only say the first part aloud|The leaflet stops at the first part|The second part is not in the leaflet}.",
+        "{Do not|Don't} be {afraid|frightened|put off} by the corpse paint. Underneath it there is a face {like yours|much like yours|closer to yours than you would like}, and the Church {has ruled|has decided|has declared} that it can be saved.",
+        "The Empire is the only power on this Earth that {will speak to|deigns to speak to|has an embassy with} the Naguka. {Every other flag|Everyone else|Every other power on the map} sends {artillery|ordnance|the army}.",
+        "They are {human|our cousins|of Adam}, {whatever the Guild's pamphlets say|whatever you have been told|whatever your parish thinks}. An orc is {proof|the proof|proof enough} of it, and {an orc can be baptised|orcs are baptised weekly|we baptise orcs on Sundays}."
+      ]
+    },
+    "vatican_antichrist": {
+      "sponsor": "the Sacred Vatican Empire",
+      "lines": [
+        "Jenna of Northpoint is not the {reincarnation|second coming|returning Christ}. Jenna of Northpoint is the Antichrist. {His Holiness Peter II|The throne of Peter|Rome} has {ruled|said so|declared it} and {will not|shall not} {say it twice|be asked again}.",
+        "{Report|Hand in|Surrender} any {pamphlet|tract|cassette|leaflet} bearing the Northpoint {sign|seal|star} to {your parish|the nearest chapel|any priest}. {Do not|Don't} read it {first|to the end|aloud in the house}.",
+        "They {heal the sick|are said to heal the sick|are reported to have healed}. {So does the tempter|The tempter does too|Read your scripture: so does the tempter}.",
+        "{A state of war exists|The Empire is at war|Rome is at war} with Northpoint. {There is no third position|Neutrality is a position, and it is the wrong one|You are already on one side of this}.",
+        "Anyone {sheltering|housing|feeding} the {claimant|Northpoint claimant|false Christ} {forfeits|loses|surrenders} the sacraments in {every diocese|all dioceses|every parish} of the Empire.",
+        "{The Father is dead|The Father aspect is dead|The Father has been dead since the last night of 2001} and {the miracles have thinned|the sacraments answer slowly|half of what we could do, we cannot}. {Northpoint's miracles have not thinned at all|Northpoint's have not|Theirs work every time}. {Ask yourself who is paying for them|Ask yourself where that power comes from|Ask whose power that is}."
+      ]
+    },
+    "umbra_excidii": {
+      "sponsor": "the Umbra Excidii",
+      "lines": [
+        "Sacred magic and technomancy are lawful. {Everything else|Arcane practice|Anything drawn out of a leyline} {ends at the stake|is a pyre with your name on it|is a fire waiting for a name}.",
+        "Does your neighbour's {shed|cellar|allotment} {hum|smell of oil|glow} after dark? {Oil is where the leylines well up|The oil under your street is not only oil|Leylines rise where the oil is}. {Tell your parish|Call the number on your screen|Speak to any priest}.",
+        "We were {arcane practitioners|leyline casters|damned} once as well. {The Empire found us a use|Rome found a use for us|We were offered a choice and a uniform}. {There is one open to you too|The same choice is open to you|It is still open}.",
+        "{Denunciation|A report|Reporting} is {anonymous|confidential}, {free|without charge}, and {credited as penance|worth an indulgence|counted as an act of contrition}.",
+        "{We know|The Empire knows|Rome knows} {how it starts|how these things start}: {one candle|a borrowed book|one word said backwards}, {a bad night|a hard winter|a bad harvest}, {and a leyline under the house|and a leyline running under the floor}. {Come to us before your neighbours do|Come in on your own feet|The stake is for those who wait}."
+      ]
+    },
+    "kola_hordes": {
+      "sponsor": "the Kola containment committee",
+      "lines": [
+        "{A new|Another|A fresh} horde came up the Kola Superdeep Borehole {this week|in the last eight days|overnight}. {Estimated|Counted|Best guess}: {nine|twelve|forty|a hundred and six} thousand{ and climbing|, and the count is behind| and still rising}.",
+        "The shaft is twelve kilometres deep and it {is not|isn't} a shaft any more. {They widened it, and it is a road|It has been a road since 1970|It is a road, and it runs both ways}.",
+        "{The Kola cap|Finnmark|The northern line|Northern Norway} is {advised|instructed|asked} to {move south of the line|withdraw south|go south} and {leave the herds|leave the livestock|leave the cattle where they are}.",
+        "{Corpse paint|Paint on the face|Black paint on the face} {means|is|signals} a war band, and a war band {does not negotiate|does not stop for flags|does not read your papers}. {Do not wave|Do not approach|Do not photograph them}.",
+        "{Harm one Naguka|Strike one of them|Kill one goblin} and {the whole species knows by nightfall|the species knows within the hour|every one of them knows, everywhere}. {The collective unconscious is documented fact|This is not superstition|That is not a figure of speech}.",
+        "{The line holds|We hold the cap|The committee holds the line}. {We have held it since 1970|Thirty-one years and holding|We have held it a good while now}. {Please do not go north to look|Sightseers are not recovered|We do not recover sightseers}.",
+        "{Sound|The noise|What you can hear} from the shaft {is not machinery|is not drilling|is not the pumps}. {It is a drum|The drums start about a week before they do|It is a drum, and it is getting nearer}."
+      ]
+    },
+    "eris_statute": {
+      "sponsor": "the throne at the top of the Tower",
+      "lines": [
+        "{Today's|This morning's|The current} {statute|legal code|schedule of offences} is {in force|binding|effective} {as of now|from this moment|retroactively}. {Yesterday's|Last night's} {has been withdrawn|is void|never existed}.",
+        "{New|Newly created|Created within the hour} offences: {whistling indoors|owing a favour and remembering it|being the tallest person in a room|arriving early|the colour orange|owning two of anything}. {Sentencing at Her discretion|Tariff to be decided when She sees you|Penalty: whatever She thinks of it by then}.",
+        "{Acquitted|Cleared|Found innocent} {yesterday|last week|in the spring}? {That has been reopened|The case is open again|The verdict has been reconsidered}. {She slept on it|She thought about it|She changed Her mind}.",
+        "{You cannot appeal|There is no appeal|Appeals are not heard}. {There is nobody above the bench|The bench is the top of it|The throne hears no appeals} {since 2001|since the throne was taken|any more}.",
+        "{A crime requires a witness|If you are seen doing it, it is a crime|The moment somebody sees you, the bounty exists}. {No witness, no bounty|Unseen is unindicted|The law is a spectator sport}.",
+        "{Justice|The law|The bench} is {administered|handed down|dealt out} {chaotically and arbitrarily|by mood|as it comes}. {This is the official wording|That is the official wording, not a complaint|We are quoting, not editorialising}.",
+        "{The judicial ghosts|Her ghosts|The ghosts} {travel in a straight line|do not turn corners|go straight, always}. {Doors|Walls|Front doors} {are not part of the calculation|do not enter into it|are not considered}.",
+        "{Her Radiance|The goddess|She} {wishes it known|would like it known|has asked us to say} that {She is fair|the system is fair|the bench is impartial}, and that {anyone who says otherwise will find out how fair|the next person to say otherwise gets a demonstration|the wording of this notice is itself now law}."
+      ],
+      "tags": [
+        "{Issued|Handed down|Pronounced} from the throne at the top of the Tower. {Corrections will be retroactive|Amendments apply backwards|This wording may already have changed}.",
+        "A {notice|ruling|statement} from the bench. {It was true when we read it|It was accurate at the start of this sentence|Accuracy is not guaranteed past this full stop}.",
+        "{Broadcast|Carried|Transmitted} on behalf of the reigning deity. {We were not asked|Consent was not sought|Refusal was not an option on the form}."
+      ]
+    },
+    "collective_downline": {
+      "sponsor": "the Hypercapitalist Collective",
+      "lines": [
+        "{Clean water|Uncut water|Water with nothing in it} is {a Collective product|ours|available from us}. {Everything else out of a tap|What comes out of your tap|The rest of it} is {cut|thinned|extended} with {something cheerful|LSD|something the tap does not declare}.",
+        "{Bring in two|Sign up two|Recruit two} and {you keep a percentage of everything they move|their movement pays you forever|you are on the sunny side of the pyramid}. {Bring in none|Recruit nobody|Sign nobody} and {you are what everyone else is standing on|you are the base|you are somebody else's percentage}.",
+        "{We buy memories|Memories bought|The memory desk is open}. {Good price|Fair price|Above the going rate} for {a first day at work|a wedding|a name you no longer use|the smell of a house you grew up in}. {Payment cleared same loop|Cash on the counter|Paid before you can regret it}.",
+        "{Stuck in a bubble|Living the same day|Inside a loop}? {We sell the way out|The exit is a product|Exits are in stock}. {Ask for the escape brokerage|Ask at any bonded warehouse|Terms at any depot}.",
+        "Our people {do not reset|are loop-immune|hold their own day} {standing still|at a dead stop|without moving a metre}. {That is not magic|No magic involved|It is not sorcery}. {That is thirty years above 80 km/h|That is what three decades at speed does|That is mileage}.",
+        "{We trade in anything|Anything is tradeable|There is nothing we will not take}: {water, memory, obligation, grief|goods, memories, favours, feelings|hours, promises, water, regret}. {Bring it to a depot|Every depot buys|The counter is always open}."
+      ]
+    },
+    "archive_disclosure": {
+      "sponsor": "the Archive Foundation",
+      "lines": [
+        "{Everything|All of it|The whole record} {must be public|belongs in the open|goes in the index}. {Your messages|Your correspondence|What is on your phone} {are|is} part of everything.",
+        "At the {checkpoint|survey point|road station}, {hand over the phone|surrender the handset|present the device}. {It is read, indexed and returned|We read it, index it and give it back|You get it back, and so does everybody else}.",
+        "{Nothing is deleted|We delete nothing|Deletion is the only crime}. {A thing that is not written down did not happen|What is not indexed did not happen|The unindexed did not occur}.",
+        "{The Collective|The Collective's memory desk|The pyramid} sells you {your own memory back|memories they bought off you|what you already told somebody once}. {We give it away|We publish it free|We hand it over for nothing}. {Consider which of us is the enemy|Draw your own conclusions|Work out who to be frightened of}.",
+        "{Volunteer|Enlist|Sign on} as {an archivist|a redactor|a field cataloguer}. {Boots, clipboard and a rifle|Clipboard, boots and a rifle|A rifle and a very full clipboard} {provided|issued|found}.",
+        "{Two billion people died in one night|Two billion in one night|On 31 December 1999 two billion people died} and {most of them are a number|the greater part of them are a number|nearly all of them are just a number}. {Give us their names|Bring us the names|Names to any Foundation office}. {A name is the whole of the work|The name is the work|That is the entire job}."
+      ]
+    },
+    "guild_licensing": {
+      "sponsor": "the Mage Guild",
+      "lines": [
+        "{Casting on a live leyline|Standing on a leyline and casting|Working directly off a leyline} without {a licence|training|a warrant} {breaks it|snaps it|kills it}. {A broken leyline does not come back|Broken leylines do not heal|Nothing grows back}.",
+        "{The Law of CamelCase is not up for discussion|CamelCase is not a style, it is the law|Say it joined and capitalised}. {Separate the words|Put a space in it|Say it as two words} and the universe {takes it for a transcendental|reads it as a transcendental|hands you a god's invoice}. {It starts with your vocal cords|You lose the vocal cords first|The vocal cords go first}.",
+        "{Badly written grimoires|Misspelled spells|Bad lines in a book} {infect the words around them|copy themselves through the page|spread}. {Burn the book|Burn it|Burn it and stand upwind}. {Do not leave it beside anything you like|Do not shelve it next to anything you value|It eats what you leave next to it}.",
+        "{Register|Declare|Licence} your practice at {any Guild office|the nearest Guild house|the disciplinary bench}. {Hedge-mages welcome|Unschooled practitioners welcome|The college of hedge-mages will see you}. {The bench is less welcoming|The bench is the alternative|The alternative is the bench}.",
+        "{We came out of hiding for you|We stopped hiding for a reason|The Guild came into the open after the apocalypses}. {Extradimensional threats|The horrors the Squishing brings up|Whatever comes through} {are our work|are handled by us|are ours to handle}. {Ring us|Do not handle it yourself|Do not be brave}."
+      ]
+    },
+    "guild_crowley": {
+      "sponsor": "the Crowley current of the Guild",
+      "lines": [
+        "{The past does not vacate|The past holds its seat|A pillar sits until he chooses otherwise}. {Sir Aleister sits because nobody can make him stand|He sits because no one in the Guild can move him|The seat is held, and it stays held}.",
+        "{Magic was democratised in 1904|We opened magic to everyone at the start of the century|The Ritual put magic in reach of everyone} {by us|by our current|by the past pillar}, {and the traditionalists have been trying to close it again ever since|and the present has been narrowing it ever since|and there are those who would take it back}.",
+        "{Ask the Lady|Ask the present pillar|Ask Lady Thatcher} {what happened in New York|about New York|who catalysed the devices}. {Ask twice|Ask again when she has finished not answering|Note what she says}.",
+        "{He knows spells the gods do not|There are workings he holds that no god has|He knows words the gods have not heard}. {That is why the seat holds|That is the whole argument|That is the entire case}.",
+        "{Come to the Golden Dawn remnant|We are still what we were|The Order did not die when it went public}. {Bring your own candles|Bring nothing|Bring what you already know}."
+      ]
+    },
+    "guild_thatcher": {
+      "sponsor": "the Thatcherite traditionalists",
+      "lines": [
+        "{The Lady revealed magic to the world|We showed the world what magic was|The Falklands settled the question} {on live television|in front of every set on Earth|with the fleet still in frame}. {You are welcome|Nobody has thanked us since|We have had no thanks for it}.",
+        "{A pillar serves fifty years and stands down|Fifty years, then you stand down|The term is fifty years}. {One pillar has not|One of them will not|The past has overstayed by a lifetime}. {Draw the obvious conclusion|Count the years yourself|Do the arithmetic}.",
+        "{Discipline|Order|A licence and a ledger} is what keeps a leyline whole. {The other current calls that timidity|They call this timidity|The Crowley people call it cowardice}. {We call it the reason your village still has a leyline|We call it why your village can still cast|Ask your village}.",
+        "{Okeanus was not a crime|The spell was not a crime|We did what was needed} and {the fleet is still on the seabed|it is still on the seabed|the water did what it was told}.",
+        "{The present holds the Guild together|Somebody has to run it while the past sulks|Somebody has to do the work}. {It is not the past and it is not the future|It has never been the other two|It is us}."
+      ]
+    },
+    "esoteric_heavy": {
+      "sponsor": "Esoteric Heavy Industries",
+      "lines": [
+        "{Brooms|Fusion reactors|Kettles|Reactor cores}. {Same catalogue|One catalogue|The same catalogue, the same page}. {Same warranty|The warranty does not distinguish|The warranty is identical}.",
+        "{An EHI object does not reset|Our goods do not care about the loop|Nothing we make resets}. {Carry it under 80 km/h all day|Sit still with it for a century|Leave it in a bubble for a year} and {it stays as it was|it does not revert|it is exactly where you left it}.",
+        "{Nobody has seen the factories|The factories have never been seen|No one has been inside a factory of ours}. {Nobody has seen the workers|No worker has ever been photographed|There are no photographs of the staff}. {The goods are in the warehouse when nobody is looking|Stock appears in the warehouse when the room is empty|Look away, and the stock is there}.",
+        "{Ask your supplier for the mark|Look for the mark|The mark is on the underside}. {Accept nothing that resets|If it resets, it is not ours|A reset is proof of a counterfeit}.",
+        "{We have no complaints department|Complaints are not received|There is no complaints department}. {There have been no complaints|Nobody has complained|The record shows none}."
+      ]
+    },
+    "esa_volunteers": {
+      "sponsor": "the European Space Agency",
+      "lines": [
+        "{Volunteers wanted|We are taking volunteers|Volunteers, still}. {No cost|Free of charge|Not one euro} to {you|the volunteer|the family}. {Training provided|Training found|Two weeks of training}.",
+        "{The new rockets are armour|The vehicle is armour with a seat in it|We build them out of armour} {all the way down|layer on layer|and very little else}. {They are meant to be destroyed|Destruction is the design|They are designed to be taken apart} {by the debris|by the belt|on the way up}, {slowly enough|just slowly enough|slowly enough that the crew reach orbit}.",
+        "{Professor Hack|Margherita Hack|The director} {says it plainly|puts it plainly|will tell you herself}: {the sky is closed|orbit is shut|the belt is a meat grinder}. {It will not open by itself|Somebody has to open it|It opens when we open it}.",
+        "{Report to GreenWitch|Taranto or GreenWitch|Report to the Apulian spaceport at Taranto}. {Bring nothing|Bring next of kin details|Bring a name for the plaque}.",
+        "{Since 1999 the debris has grown|The belt thickens every year|The cloud has thickened since the Y2K event}. {Every year we wait it thickens|Wait and it worsens|It does not clear on its own}. {We are not waiting|We have stopped waiting|Waiting has been tried}.",
+        "{Nine launches in ten|Most launches|The greater part of our launches} {do not come back|end badly|do not return}. {We publish the figure|The figure is published|We do not hide the figure}. {The queue is still four months long|The queue is still long|People still queue}."
+      ]
+    },
+    "truckers_society": {
+      "sponsor": "the Trucker's Society",
+      "lines": [
+        "{Somebody has to carry it|The load does not move itself|Nothing moves unless somebody moves it}. {Grain, post, medicine, people|Grain, post, medicine, names|Water, post, medicine, the dead}. {In and out of the bubbles|Across the boundaries|Between one loop and the next}.",
+        "{No signal crosses a boundary|Nothing electronic crosses a boundary|No phone, no spell, no thought goes in or out of a bubble}. {A pigeon does|A pigeon can|Pigeons manage it}, {at ninety km/h with a tailwind|with a USB on its leg|and so does a driver who knows the road}.",
+        "{Respect the convoy|Do not cut a convoy|Never cut into a convoy}. {The middle truck is carrying somebody's whole town|One of those trailers is a town's year|You do not know which trailer matters}.",
+        "{We are hiring|The Society is taking on|Drivers wanted}: {drivers, dispatchers, boundary readers|drivers and night dispatchers|drivers, and people who can read a boundary}. {An Anoki phone is issued with the keys|You get an Anoki phone with the keys|The phone comes with the keys}.",
+        "{Every road is one road|All roads are the same road|There is only one road and you are on it}. {Drive it with respect|Treat it accordingly|Behave yourself on it}."
+      ]
+    },
+    "rule_of_eighty": {
+      "sponsor": "the boundary survey office",
+      "lines": [
+        "{80 km/h|Eighty|The number is eighty}. {Above it, the nearest bubble takes you|Go above it and the nearest bubble has you|Cross it and you are pulled to the nearest boundary}. {The nearest bubble is nearer than the map admits|The map is out of date|Maps are printed slower than boundaries move}.",
+        "{Inside a bubble the rule inverts|Once inside, the rule is upside down|In a bubble it works the other way}: {under eighty and you loop forever|stay slow and stay forever|slow is how you stay}. {Out is above eighty, outward|The only exit is outward, above eighty|Point outward and pass eighty}.",
+        "{Check the atlas before you set off|Read the atlas|Look at the atlas}, {and check its printing date|and check the date on it|and then check how old it is}. {We survey faster than they print|Printing is slower than the drift|The drift is faster than the presses}.",
+        "{No liminal engine, no speed|Without a liminal engine you keep it under eighty|If your vehicle has no liminal engine, eighty is your ceiling}. {A fitted engine ignores all of this|A fitted engine makes the rule somebody else's problem|With one fitted, none of this applies}.",
+        "{Above eighty, death is permanent|Speed makes dying permanent|Over eighty you only die once}. {Inside a bubble, at any other speed, it is not|Below it, in a bubble, you are back tomorrow|Under eighty, in a bubble, tomorrow is the same day and so are you}.",
+        "{Boundaries drift|They move|A boundary is not a fixed thing}. {One moved four kilometres inland this month|One took a village last month|One took a stretch of the M6 in the spring}. {Report a drift to any survey office|Tell us if you see one move|Report drift}."
+      ]
+    },
+    "mahyem_signal": {
+      "sponsor": "the Naguka hordes",
+      "lines": [
+        "{THIS IS NOT YOUR CHANNEL NOW|WE HAVE THE TOWER NOW|THE AERIAL IS OURS FOR ONE MINUTE}. {WE PAID|WE PAID WITH GOLD FROM DOWN THERE|WE PAID YOU, IT IS FAIR}.",
+        "{THE MAHYEM ARE GODS|MAHYEM IS GOD|THE BAND IS GODS}. {YOU CANNOT KILL THEM|YOU TRIED, THEY ARE STILL SINGING|EVERY GOVERNMENT TRIED. THE SONG IS STILL PLAYING}. {ONE GOBLIN BELIEVES, THEY LIVE|WHILE ONE OF US BELIEVES, THEY LIVE}.",
+        "{WE ARE NOT MONSTER|WE ARE PEOPLE|WE ARE COUSIN OF YOU}. {WE LIVED UNDER, YOU LIVED OVER|YOU HAD SUN, WE HAD STONE}. {IT IS NOT FAIR|THAT WAS NOT FAIR|WE THINK ABOUT IT A LOT}.",
+        "{PAINT IS NOT FOR SCARE|THE PAINT IS FOR THE MUSIC|THE PAINT IS RESPECT}. {IT IS FOR THE BAND|IT IS FOR THEM|WE WEAR IT FOR THEM}. {IT IS ALSO FOR SCARE|IT WORKS FOR SCARE TOO|BUT ALSO YES, FOR SCARE}.",
+        "{HURT ONE OF US, ALL OF US KNOW|TOUCH ONE, EVERY ONE KNOWS|WE ARE ONE HEAD WITH MANY BODY}. {THIS IS NOT THREAT|IT IS JUST HOW WE ARE MADE|IT IS ONLY TRUE}.",
+        "{THE PRIEST CAME DOWN WITH WATER|THE VATICAN MAN CAME WITH WATER|A MAN CAME WITH A BOOK AND WATER}. {HE WAS NICE|HE SANG BADLY|HE WAS KIND, HIS SINGING WAS BAD}. {WE ARE STILL THINKING|WE HAVE NOT DECIDED|WE WILL TELL YOU WHEN WE DECIDE}."
+      ],
+      "tags": [
+        "{THAT WAS US|THAT WAS THE HORDE|WE SAID IT}. {GIVE THE AERIAL BACK NOW|YOU CAN HAVE THE BOX BACK|WE GO NOW}.",
+        "{Transmission origin: below|Source: the borehole|Origin of signal: under your feet}. {The Society will not carry a reply|There is no reply channel|Do not attempt to answer}."
+      ]
+    },
+    "verden_enclaves": {
+      "sponsor": "the Verden enclaves",
+      "lines": [
+        "{We are not the Naguka|The Naguka are not us|We are told apart by the skin, and by the sentences}. {They are human underneath|They are your cousins|They are of your species}. {We are not|We are not, at all|We are something else entirely}.",
+        "{A severed Verden limb|A cut limb planted in earth|An arm in the ground} {becomes a Verden|grows into one of us|is a person in eight months}. {Please do not tidy them away|Do not sweep them up|Do not bin what you find at the clinic}.",
+        "{We had all of this|We had your technology and more|We were the most advanced people in ninety-two dimensions} {and we threw it into our sun|and we put it in the star|and we gave it to the star}. {We no longer remember why|Nobody now remembers why|The reason did not survive the crossing}.",
+        "{We read the goblin unconscious|We can hear the Naguka thinking|We hear their collective mind}. {Read only|We cannot write to it|We can listen and nothing more}. {Every government asks|Every government asks anyway|They ask us every year}.",
+        "{Your technology is beautiful|We find your machines beautiful|Your machines are wonderful} and {you appear not to notice|you seem not to see it|you have stopped looking at them}."
+      ]
+    },
+    "britannia_loyalty": {
+      "sponsor": "Britannia",
+      "lines": [
+        "{The Protectorate is Britannia|The Atlantic Protectorate is Britannia|The west coast of America is Britannia}. {It always was|It always has been|It has never been anything else}. {A map that says otherwise is a map printed by somebody with an interest|Any other map is somebody's opinion|Other maps are sold at a discount for a reason}.",
+        "{The Crown backed the Guild when nobody would|We funded the Order when it was still a secret|Britannia paid for the Order}. {The Order is why the world knows magic is real|That is why any of you can cast at all|You are welcome}.",
+        "{Report to your ward|Registration at your ward office|Ward registration is not optional} {for arrivals from the Midwest|for arrivals from Cascadia|for anyone crossing from the free states}. {It is quick|It takes an hour|It is quicker than the alternative}.",
+        "{Loyalty|Standing to|The anthem} {costs nothing|is free|is not taxed}. {The alternative is priced by the ward|The alternative has a price list|The other thing has a tariff}.",
+        "{Wimbledon|Every town of Britannia|This island} {has given the world more than it can name|has given more than the world admits|has already given enough}. {Ask what it gave in 2001|Ask what was given on the last day of 2001|Ask who was given up, and to whom}."
+      ]
+    },
+    "ecb_draghi": {
+      "sponsor": "the European Central Bank",
+      "lines": [
+        "{Do not burn banknotes|Never burn a banknote|Burning currency is not a protest}. {It is not a protest|It is not economics|It is not a gesture}. {It is a theology|It is worship, backwards|It is deicide, in small change}.",
+        "{The name on the note|The signature on the note|The name printed on your fifty} {appears more often than the name of God|is written more times than God's is in every bible ever printed|is the most written name in the world}. {That is not a boast|That is arithmetic|That is a matter of record}.",
+        "{The security strip is FantaBlack|There is FantaBlack in the strip|The strip holds scrapings from the Tower}. {Your money does not reset in a bubble|Cash survives a loop|Notes come out of a bubble unchanged}. {Nothing else in your pocket does|Nothing else you carry does|Your watch does not}.",
+        "{The market does not sleep|The engine does not stop|It runs whether anyone is watching}. {It has no body to rest|There is no body to rest|Bodies were given up for this}.",
+        "{Report counterfeit to any branch|Take counterfeit to a branch|Counterfeit notes to any branch}. {A false note is a false name|A forged note is a forged name|A wrong name is the only real crime here}, {and names are power|and a name is power|and you know what names are}."
+      ]
+    },
+    "midwest_freedom": {
+      "sponsor": "the Independent States of the Midwest",
+      "lines": [
+        "{The middle is free|The Midwest is free|The centre of the continent answers to nobody}. {Cascadia takes the east|Cascadia has the east|The east belongs to Cascadia}, {Britannia holds the west|the west is Britannia's|the Protectorate has the west}, {and the middle belongs to itself|and the middle is its own|and we belong to us}.",
+        "{President Clinton|The President|The office of the President} {sends greetings|sends its greetings|extends greetings} to {every free state|the free states|whoever is still free}, {and to nobody in a protectorate|and to nobody flying somebody else's flag|and to nobody else}.",
+        "{Route 666 is open|The 666 runs|The road is open} {from end to end|the whole way|all three Americas}, {and we do not stop anybody on it|and we stop nobody|and nobody is searched}. {Compare the crossings north|Try crossing north|Ask a driver about the northern crossings}.",
+        "{Independence was never granted|Nobody gave us independence|It was never given}. {It was declared|We declared it|We took it}, {and it has never been recognised|and it has not been recognised since|and it stands unrecognised}. {It stands anyway|It stands regardless|It stands}.",
+        "{Come and farm|There is land|The land is here}. {Bring nothing|Bring a plough|Bring your own water}. {Nobody will ask what you did before|No one asks about before|We ask no questions about before}."
+      ]
+    },
+    "petrodemon_committee": {
+      "sponsor": "the petrodemon negotiating committee",
+      "lines": [
+        "{A petrodemon cannot be killed on a leyline|On a live leyline they do not die|Near a leyline they simply come back}. {Break the leyline first|You would have to break the leyline|The leyline goes first}, {and then bring an army|and then bring an army anyway|and then it takes an army}.",
+        "{Contract, do not fight|Sign, do not shoot|Negotiation is cheaper}. {They can move a leyline|They redirect the leylines|A redirected leyline is what your region is buying}. {No army can do that|An army cannot do that|Nothing else can}.",
+        "{They are made of oil and they are awake|Sentient oil|The oil is thinking}. {The dinosaurs were natural practitioners|The power in it is dinosaur|Something old was bound into those molecules}, {and it never left the molecules|and it stayed|and it is still in there}.",
+        "{Mattei tried it alone in 1962|A man tried this alone in 1962|Enrico Mattei tried, alone}. {His plane came down|The plane came down|He did not land}. {The committee exists so that nobody negotiates alone|That is why there is a committee|Nobody negotiates alone now}.",
+        "{Terms are per region|Terms are agreed per region|Each region negotiates its own}. {Payment is not always money|Money is not always the payment|What they take is not always money}."
+      ]
+    },
+    "ttd_public_health": {
+      "sponsor": "the Guild's school of sympathetic practice",
+      "lines": [
+        "{Thought-transmitted diseases|TTDs|The TTDs} {do not travel by air|are not airborne|do not need air}. {They travel by attention|Attention carries them|You catch them by listening}.",
+        "{A paper dam|Tinfoil, one layer, around the head|The mental dam} {holds|works|is enough}. {It looks ridiculous|Yes, it looks ridiculous|It is a foolish-looking thing}. {The people laughing at you on the street are the untreated|Note who is laughing|The ones laughing are the symptom}.",
+        "{Symptoms|First signs|Early signs}: {a tune you cannot place|a phrase in somebody else's voice|a word you did not learn}, {repeating|coming back|arriving again at night}. {Present at any clinic|Go to a clinic|See a hedge-mage, today}.",
+        "{Do not repeat what you have caught|Say nothing you suspect came from outside|Repeating it is transmission}. {Writing it down is transmission too|Writing it counts|The page carries it as well}.",
+        "{This notice has been checked|This wording has been cleared|The wording was tested} and {carries nothing|is clean|carries no load}. {We checked it three times|Checked three times|Three separate readings}."
+      ]
+    },
+    "pigeon_post": {
+      "sponsor": "the pigeon post cooperative",
+      "lines": [
+        "{No spell, no phone and no thought|Nothing electronic, mental or magical|Not one signal} {crosses a bubble boundary|goes in or out of a bubble|makes it across a boundary}. {A bird does|A bird can|A bird does it every day}.",
+        "{Ninety to a hundred km/h with a tailwind|Peaks of a hundred km/h with the wind|A hundred, downwind}. {Above eighty, and therefore out|Fast enough to leave|That is over the line, which is the point}. {A USB stick weighs nothing|The stick weighs nothing|Four grams of stick}.",
+        "{Rates by the gram|Priced by the gram|We charge by weight}. {Delivery inside one loop|One loop, door to door|Within a loop, guaranteed} {where the loop is behaving|when time behaves|assuming the day holds}.",
+        "{Do not eat the post|Please do not eat the birds|The birds are not livestock}. {The Foundation lists some of them as staff|Some of them are Foundation staff|One of them outranks you}.",
+        "{We have carried|The cooperative has carried|We have flown} {wills, diagnoses, elopements and one confession|last words, diagnoses, wedding dates|court papers, love letters, and worse}. {Nothing has been read|We read none of it|Nothing was opened}. {The Archive would like a word about that|The Foundation objects to that|The archivists take a different view}."
+      ]
+    }
+  }
+}

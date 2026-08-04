@@ -1,0 +1,1268 @@
+{
+  "furniture": {
+    "wooden_chair": {
+      "name": "",
+      "description": ""
+    },
+    "category": {
+      "seating": "",
+      "tables": "",
+      "storage": "",
+      "beds": "",
+      "lighting": "",
+      "workstations": "",
+      "decoration": "",
+      "appliances": "",
+      "entertainment": "",
+      "nature": "",
+      "structures": "",
+      "dungeon": "",
+      "farm": "",
+      "industrial": "",
+      "camping": "",
+      "beach": "",
+      "supermarket": "",
+      "gym": ""
+    },
+    "leather_armchair": {
+      "name": "",
+      "description": ""
+    },
+    "tech_chair": {
+      "name": "",
+      "description": ""
+    },
+    "crystal_throne": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_bench": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_table": {
+      "name": "",
+      "description": ""
+    },
+    "glass_table": {
+      "name": "",
+      "description": ""
+    },
+    "tech_desk": {
+      "name": "",
+      "description": ""
+    },
+    "alchemy_table": {
+      "name": "",
+      "description": ""
+    },
+    "dining_table": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_chest": {
+      "name": "",
+      "description": ""
+    },
+    "metal_locker": {
+      "name": "",
+      "description": ""
+    },
+    "quantum_storage": {
+      "name": "",
+      "description": ""
+    },
+    "bookshelf": {
+      "name": "",
+      "description": ""
+    },
+    "crystal_display": {
+      "name": "",
+      "description": ""
+    },
+    "simple_bed": {
+      "name": "",
+      "description": ""
+    },
+    "luxury_bed": {
+      "name": "",
+      "description": ""
+    },
+    "tech_pod": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_torch": {
+      "name": "",
+      "description": ""
+    },
+    "crystal_lamp": {
+      "name": "",
+      "description": ""
+    },
+    "neon_light": {
+      "name": "",
+      "description": ""
+    },
+    "chandelier": {
+      "name": "",
+      "description": ""
+    },
+    "crafting_bench": {
+      "name": "",
+      "description": ""
+    },
+    "tech_workstation": {
+      "name": "",
+      "description": ""
+    },
+    "arcane_altar": {
+      "name": "",
+      "description": ""
+    },
+    "chemistry_station": {
+      "name": "",
+      "description": ""
+    },
+    "plant_pot": {
+      "name": "",
+      "description": ""
+    },
+    "holographic_display": {
+      "name": "",
+      "description": ""
+    },
+    "statue": {
+      "name": "",
+      "description": ""
+    },
+    "aquarium": {
+      "name": "",
+      "description": ""
+    },
+    "mirror": {
+      "name": "",
+      "description": ""
+    },
+    "rug": {
+      "name": "",
+      "description": ""
+    },
+    "refrigerator": {
+      "name": "",
+      "description": ""
+    },
+    "cooking_stove": {
+      "name": "",
+      "description": ""
+    },
+    "recycler": {
+      "name": "",
+      "description": ""
+    },
+    "teleporter": {
+      "name": "",
+      "description": ""
+    },
+    "television": {
+      "name": "",
+      "description": ""
+    },
+    "arcade_machine": {
+      "name": "",
+      "description": ""
+    },
+    "pool_table": {
+      "name": "",
+      "description": ""
+    },
+    "ping_pong_table": {
+      "name": "",
+      "description": ""
+    },
+    "dartboard": {
+      "name": "",
+      "description": ""
+    },
+    "jukebox": {
+      "name": "",
+      "description": ""
+    },
+    "billiards_balls_set": {
+      "name": "",
+      "description": ""
+    },
+    "gaming_console": {
+      "name": "",
+      "description": ""
+    },
+    "virtual_reality_headset": {
+      "name": "",
+      "description": ""
+    },
+    "foosball_table": {
+      "name": "",
+      "description": ""
+    },
+    "blackjack_table": {
+      "name": "",
+      "description": ""
+    },
+    "roulette_table": {
+      "name": "",
+      "description": ""
+    },
+    "slot_machine": {
+      "name": "",
+      "description": ""
+    },
+    "karaoke_machine": {
+      "name": "",
+      "description": ""
+    },
+    "movie_projector": {
+      "name": "",
+      "description": ""
+    },
+    "dance_floor": {
+      "name": "",
+      "description": ""
+    },
+    "bowling_lane": {
+      "name": "",
+      "description": ""
+    },
+    "plant": {
+      "name": "",
+      "description": ""
+    },
+    "flowers": {
+      "name": "",
+      "description": ""
+    },
+    "tree": {
+      "name": "",
+      "description": ""
+    },
+    "rock": {
+      "name": "",
+      "description": ""
+    },
+    "pile_of_bones": {
+      "name": "",
+      "description": ""
+    },
+    "fence": {
+      "name": "",
+      "description": ""
+    },
+    "bridge": {
+      "name": "",
+      "description": ""
+    },
+    "stairs": {
+      "name": "",
+      "description": ""
+    },
+    "ladder": {
+      "name": "",
+      "description": ""
+    },
+    "rails": {
+      "name": "",
+      "description": ""
+    },
+    "window_1x1": {
+      "name": "",
+      "description": ""
+    },
+    "window_2x1": {
+      "name": "",
+      "description": ""
+    },
+    "window_2x2": {
+      "name": "",
+      "description": ""
+    },
+    "sign": {
+      "name": "",
+      "description": ""
+    },
+    "vase": {
+      "name": "",
+      "description": ""
+    },
+    "clock": {
+      "name": "",
+      "description": ""
+    },
+    "grandfather_clock": {
+      "name": "",
+      "description": ""
+    },
+    "world_globe": {
+      "name": "",
+      "description": ""
+    },
+    "world_map": {
+      "name": "",
+      "description": ""
+    },
+    "prayer_rug": {
+      "name": "",
+      "description": ""
+    },
+    "trash_pile": {
+      "name": "",
+      "description": ""
+    },
+    "barrel": {
+      "name": "",
+      "description": ""
+    },
+    "pile_of_books": {
+      "name": "",
+      "description": ""
+    },
+    "candle": {
+      "name": "",
+      "description": ""
+    },
+    "pentagram": {
+      "name": "",
+      "description": ""
+    },
+    "stage_lights": {
+      "name": "",
+      "description": ""
+    },
+    "pipe": {
+      "name": "",
+      "description": ""
+    },
+    "motor_engine": {
+      "name": "",
+      "description": ""
+    },
+    "piano": {
+      "name": "",
+      "description": ""
+    },
+    "guitar": {
+      "name": "",
+      "description": ""
+    },
+    "electric_guitar": {
+      "name": "",
+      "description": ""
+    },
+    "harp": {
+      "name": "",
+      "description": ""
+    },
+    "crib": {
+      "name": "",
+      "description": ""
+    },
+    "radio": {
+      "name": "",
+      "description": ""
+    },
+    "wc": {
+      "name": "",
+      "description": ""
+    },
+    "shower": {
+      "name": "",
+      "description": ""
+    },
+    "pc": {
+      "name": "",
+      "description": ""
+    },
+    "christmas_tree": {
+      "name": "",
+      "description": ""
+    },
+    "warrior_statue": {
+      "name": "",
+      "description": ""
+    },
+    "baseball_bat": {
+      "name": "",
+      "description": ""
+    },
+    "crt_monitor": {
+      "name": "",
+      "description": ""
+    },
+    "desktop_computer_2001": {
+      "name": "",
+      "description": ""
+    },
+    "keyboard_mouse": {
+      "name": "",
+      "description": ""
+    },
+    "dial_up_modem": {
+      "name": "",
+      "description": ""
+    },
+    "landline_phone": {
+      "name": "",
+      "description": ""
+    },
+    "printer_inkjet": {
+      "name": "",
+      "description": ""
+    },
+    "fax_machine": {
+      "name": "",
+      "description": ""
+    },
+    "vcr_player": {
+      "name": "",
+      "description": ""
+    },
+    "dvd_player": {
+      "name": "",
+      "description": ""
+    },
+    "cable_box": {
+      "name": "",
+      "description": ""
+    },
+    "game_console_ps1": {
+      "name": "",
+      "description": ""
+    },
+    "game_console_n64": {
+      "name": "",
+      "description": ""
+    },
+    "dreamcast_console": {
+      "name": "",
+      "description": ""
+    },
+    "crt_television": {
+      "name": "",
+      "description": ""
+    },
+    "stereo_boombox": {
+      "name": "",
+      "description": ""
+    },
+    "zip_drive": {
+      "name": "",
+      "description": ""
+    },
+    "beanbag_chair": {
+      "name": "",
+      "description": ""
+    },
+    "futon": {
+      "name": "",
+      "description": ""
+    },
+    "metal_shelving": {
+      "name": "",
+      "description": ""
+    },
+    "loft_bed": {
+      "name": "",
+      "description": ""
+    },
+    "bunk_bed": {
+      "name": "",
+      "description": ""
+    },
+    "water_cooler": {
+      "name": "",
+      "description": ""
+    },
+    "desk_lamp": {
+      "name": "",
+      "description": ""
+    },
+    "floor_lamp": {
+      "name": "",
+      "description": ""
+    },
+    "lava_lamp": {
+      "name": "",
+      "description": ""
+    },
+    "movie_poster": {
+      "name": "",
+      "description": ""
+    },
+    "band_poster": {
+      "name": "",
+      "description": ""
+    },
+    "sports_poster": {
+      "name": "",
+      "description": ""
+    },
+    "neon_sign": {
+      "name": "",
+      "description": ""
+    },
+    "string_lights": {
+      "name": "",
+      "description": ""
+    },
+    "tapestry": {
+      "name": "",
+      "description": ""
+    },
+    "picture_frame": {
+      "name": "",
+      "description": ""
+    },
+    "cubicle_divider": {
+      "name": "",
+      "description": ""
+    },
+    "filing_cabinet": {
+      "name": "",
+      "description": ""
+    },
+    "office_desk": {
+      "name": "",
+      "description": ""
+    },
+    "office_chair": {
+      "name": "",
+      "description": ""
+    },
+    "bulletin_board": {
+      "name": "",
+      "description": ""
+    },
+    "whiteboard": {
+      "name": "",
+      "description": ""
+    },
+    "bathtub": {
+      "name": "",
+      "description": ""
+    },
+    "sink": {
+      "name": "",
+      "description": ""
+    },
+    "cabinet": {
+      "name": "",
+      "description": ""
+    },
+    "counter": {
+      "name": "",
+      "description": ""
+    },
+    "microwave": {
+      "name": "",
+      "description": ""
+    },
+    "dishwasher": {
+      "name": "",
+      "description": ""
+    },
+    "washing_machine": {
+      "name": "",
+      "description": ""
+    },
+    "dryer": {
+      "name": "",
+      "description": ""
+    },
+    "vhs_collection": {
+      "name": "",
+      "description": ""
+    },
+    "dvd_collection": {
+      "name": "",
+      "description": ""
+    },
+    "cd_collection": {
+      "name": "",
+      "description": ""
+    },
+    "comic_book_stack": {
+      "name": "",
+      "description": ""
+    },
+    "magazine_rack": {
+      "name": "",
+      "description": ""
+    },
+    "incense_burner": {
+      "name": "",
+      "description": ""
+    },
+    "terrarium": {
+      "name": "",
+      "description": ""
+    },
+    "pinball_machine": {
+      "name": "",
+      "description": ""
+    },
+    "floor_cushion": {
+      "name": "",
+      "description": ""
+    },
+    "floor_pillow_stack": {
+      "name": "",
+      "description": ""
+    },
+    "glass_shelves": {
+      "name": "",
+      "description": ""
+    },
+    "low_table": {
+      "name": "",
+      "description": ""
+    },
+    "stereo_speaker": {
+      "name": "",
+      "description": ""
+    },
+    "barn": {
+      "name": "",
+      "description": ""
+    },
+    "windmill": {
+      "name": "",
+      "description": ""
+    },
+    "silo": {
+      "name": "",
+      "description": ""
+    },
+    "chicken_coop": {
+      "name": "",
+      "description": ""
+    },
+    "pig_pen": {
+      "name": "",
+      "description": ""
+    },
+    "stable": {
+      "name": "",
+      "description": ""
+    },
+    "beehive": {
+      "name": "",
+      "description": ""
+    },
+    "vegetable_garden": {
+      "name": "",
+      "description": ""
+    },
+    "hay_bales": {
+      "name": "",
+      "description": ""
+    },
+    "water_trough": {
+      "name": "",
+      "description": ""
+    },
+    "scarecrow": {
+      "name": "",
+      "description": ""
+    },
+    "farm_fence": {
+      "name": "",
+      "description": ""
+    },
+    "crop_field": {
+      "name": "",
+      "description": ""
+    },
+    "fruit_tree": {
+      "name": "",
+      "description": ""
+    },
+    "garden_shed": {
+      "name": "",
+      "description": ""
+    },
+    "milking_station": {
+      "name": "",
+      "description": ""
+    },
+    "feed_trough": {
+      "name": "",
+      "description": ""
+    },
+    "irrigation_system": {
+      "name": "",
+      "description": ""
+    },
+    "factory_furnace": {
+      "name": "",
+      "description": ""
+    },
+    "assembly_line": {
+      "name": "",
+      "description": ""
+    },
+    "conveyor_belt": {
+      "name": "",
+      "description": ""
+    },
+    "industrial_crane": {
+      "name": "",
+      "description": ""
+    },
+    "hydraulic_press": {
+      "name": "",
+      "description": ""
+    },
+    "storage_tank": {
+      "name": "",
+      "description": ""
+    },
+    "refinery_tower": {
+      "name": "",
+      "description": ""
+    },
+    "heavy_machinery": {
+      "name": "",
+      "description": ""
+    },
+    "electric_generator": {
+      "name": "",
+      "description": ""
+    },
+    "air_compressor": {
+      "name": "",
+      "description": ""
+    },
+    "control_panel": {
+      "name": "",
+      "description": ""
+    },
+    "safety_barrier": {
+      "name": "",
+      "description": ""
+    },
+    "chemical_vat": {
+      "name": "",
+      "description": ""
+    },
+    "robotic_arm": {
+      "name": "",
+      "description": ""
+    },
+    "welding_station": {
+      "name": "",
+      "description": ""
+    },
+    "laser_cutter": {
+      "name": "",
+      "description": ""
+    },
+    "3d_printer": {
+      "name": "",
+      "description": ""
+    },
+    "industrial_oven": {
+      "name": "",
+      "description": ""
+    },
+    "sorting_machine": {
+      "name": "",
+      "description": ""
+    },
+    "vacuum_chamber": {
+      "name": "",
+      "description": ""
+    },
+    "packaging_unit": {
+      "name": "",
+      "description": ""
+    },
+    "quality_scanner": {
+      "name": "",
+      "description": ""
+    },
+    "industrial_duct": {
+      "name": "",
+      "description": ""
+    },
+    "power_distribution": {
+      "name": "",
+      "description": ""
+    },
+    "tent": {
+      "name": "",
+      "description": ""
+    },
+    "campfire": {
+      "name": "",
+      "description": ""
+    },
+    "sleeping_bag": {
+      "name": "",
+      "description": ""
+    },
+    "camping_lantern": {
+      "name": "",
+      "description": ""
+    },
+    "camping_stove": {
+      "name": "",
+      "description": ""
+    },
+    "camping_chair": {
+      "name": "",
+      "description": ""
+    },
+    "cooler": {
+      "name": "",
+      "description": ""
+    },
+    "picnic_table": {
+      "name": "",
+      "description": ""
+    },
+    "camping_backpack": {
+      "name": "",
+      "description": ""
+    },
+    "water_container": {
+      "name": "",
+      "description": ""
+    },
+    "bedroll": {
+      "name": "",
+      "description": ""
+    },
+    "hammock": {
+      "name": "",
+      "description": ""
+    },
+    "tent_cabin": {
+      "name": "",
+      "description": ""
+    },
+    "camping_rope": {
+      "name": "",
+      "description": ""
+    },
+    "campsite_marker": {
+      "name": "",
+      "description": ""
+    },
+    "food_storage": {
+      "name": "",
+      "description": ""
+    },
+    "camping_tent_dome": {
+      "name": "",
+      "description": ""
+    },
+    "camping_cot": {
+      "name": "",
+      "description": ""
+    },
+    "camping_grill": {
+      "name": "",
+      "description": ""
+    },
+    "camping_lantern_led": {
+      "name": "",
+      "description": ""
+    },
+    "camping_shelter": {
+      "name": "",
+      "description": ""
+    },
+    "shopping_cart": {
+      "name": "",
+      "description": ""
+    },
+    "shopping_basket": {
+      "name": "",
+      "description": ""
+    },
+    "checkout_counter": {
+      "name": "",
+      "description": ""
+    },
+    "cash_register": {
+      "name": "",
+      "description": ""
+    },
+    "display_shelf": {
+      "name": "",
+      "description": ""
+    },
+    "refrigerated_display": {
+      "name": "",
+      "description": ""
+    },
+    "freezer_unit": {
+      "name": "",
+      "description": ""
+    },
+    "product_display_stand": {
+      "name": "",
+      "description": ""
+    },
+    "price_sign": {
+      "name": "",
+      "description": ""
+    },
+    "shopping_aisle": {
+      "name": "",
+      "description": ""
+    },
+    "automatic_door": {
+      "name": "",
+      "description": ""
+    },
+    "customer_service_desk": {
+      "name": "",
+      "description": ""
+    },
+    "mannequin_display": {
+      "name": "",
+      "description": ""
+    },
+    "department_sign": {
+      "name": "",
+      "description": ""
+    },
+    "stocking_shelf": {
+      "name": "",
+      "description": ""
+    },
+    "security_gate": {
+      "name": "",
+      "description": ""
+    },
+    "produce_stand": {
+      "name": "",
+      "description": ""
+    },
+    "deli_counter": {
+      "name": "",
+      "description": ""
+    },
+    "bakery_display": {
+      "name": "",
+      "description": ""
+    },
+    "conveyor_checkout": {
+      "name": "",
+      "description": ""
+    },
+    "store_directory": {
+      "name": "",
+      "description": ""
+    },
+    "lighting_fixture": {
+      "name": "",
+      "description": ""
+    },
+    "dungeon_torch": {
+      "name": "",
+      "description": ""
+    },
+    "stone_pillar": {
+      "name": "",
+      "description": ""
+    },
+    "iron_bars": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_door": {
+      "name": "",
+      "description": ""
+    },
+    "iron_door": {
+      "name": "",
+      "description": ""
+    },
+    "prison_cell": {
+      "name": "",
+      "description": ""
+    },
+    "torture_rack": {
+      "name": "",
+      "description": ""
+    },
+    "iron_chain": {
+      "name": "",
+      "description": ""
+    },
+    "skull_pile": {
+      "name": "",
+      "description": ""
+    },
+    "bone_altar": {
+      "name": "",
+      "description": ""
+    },
+    "spikes": {
+      "name": "",
+      "description": ""
+    },
+    "stone_grate": {
+      "name": "",
+      "description": ""
+    },
+    "stone_statue": {
+      "name": "",
+      "description": ""
+    },
+    "dark_altar": {
+      "name": "",
+      "description": ""
+    },
+    "treasure_chest": {
+      "name": "",
+      "description": ""
+    },
+    "stone_coffin": {
+      "name": "",
+      "description": ""
+    },
+    "dungeon_chest": {
+      "name": "",
+      "description": ""
+    },
+    "stone_wall": {
+      "name": "",
+      "description": ""
+    },
+    "hanging_chains": {
+      "name": "",
+      "description": ""
+    },
+    "sword_rack": {
+      "name": "",
+      "description": ""
+    },
+    "shield_wall": {
+      "name": "",
+      "description": ""
+    },
+    "dungeon_banner": {
+      "name": "",
+      "description": ""
+    },
+    "treadmill": {
+      "name": "",
+      "description": ""
+    },
+    "weight_bench": {
+      "name": "",
+      "description": ""
+    },
+    "dumbbell_rack": {
+      "name": "",
+      "description": ""
+    },
+    "barbell_rack": {
+      "name": "",
+      "description": ""
+    },
+    "squat_rack": {
+      "name": "",
+      "description": ""
+    },
+    "cable_machine": {
+      "name": "",
+      "description": ""
+    },
+    "leg_press": {
+      "name": "",
+      "description": ""
+    },
+    "chest_press": {
+      "name": "",
+      "description": ""
+    },
+    "lat_pulldown": {
+      "name": "",
+      "description": ""
+    },
+    "leg_extension": {
+      "name": "",
+      "description": ""
+    },
+    "ab_crunch_machine": {
+      "name": "",
+      "description": ""
+    },
+    "rowing_machine": {
+      "name": "",
+      "description": ""
+    },
+    "stationary_bike": {
+      "name": "",
+      "description": ""
+    },
+    "elliptical_machine": {
+      "name": "",
+      "description": ""
+    },
+    "punching_bag": {
+      "name": "",
+      "description": ""
+    },
+    "speed_bag": {
+      "name": "",
+      "description": ""
+    },
+    "pull_up_bar": {
+      "name": "",
+      "description": ""
+    },
+    "parallel_bars": {
+      "name": "",
+      "description": ""
+    },
+    "gym_mat": {
+      "name": "",
+      "description": ""
+    },
+    "gym_mirror": {
+      "name": "",
+      "description": ""
+    },
+    "gym_locker": {
+      "name": "",
+      "description": ""
+    },
+    "shower_stall": {
+      "name": "",
+      "description": ""
+    },
+    "gym_bleachers": {
+      "name": "",
+      "description": ""
+    },
+    "foam_roller": {
+      "name": "",
+      "description": ""
+    },
+    "resistance_bands_rack": {
+      "name": "",
+      "description": ""
+    },
+    "medicine_ball_rack": {
+      "name": "",
+      "description": ""
+    },
+    "gym_clock": {
+      "name": "",
+      "description": ""
+    },
+    "beach_umbrella": {
+      "name": "",
+      "description": ""
+    },
+    "beach_chair": {
+      "name": "",
+      "description": ""
+    },
+    "sand_castle": {
+      "name": "",
+      "description": ""
+    },
+    "sailboat": {
+      "name": "",
+      "description": ""
+    },
+    "beach_hut": {
+      "name": "",
+      "description": ""
+    },
+    "surfboard": {
+      "name": "",
+      "description": ""
+    },
+    "beach_ball": {
+      "name": "",
+      "description": ""
+    },
+    "beach_towel_rack": {
+      "name": "",
+      "description": ""
+    },
+    "beach_cooler": {
+      "name": "",
+      "description": ""
+    },
+    "lifeguard_stand": {
+      "name": "",
+      "description": ""
+    },
+    "beach_sign": {
+      "name": "",
+      "description": ""
+    },
+    "beach_anchor": {
+      "name": "",
+      "description": ""
+    },
+    "wooden_dock": {
+      "name": "",
+      "description": ""
+    },
+    "beach_pier": {
+      "name": "",
+      "description": ""
+    },
+    "buoy": {
+      "name": "",
+      "description": ""
+    },
+    "beach_lounge": {
+      "name": "",
+      "description": ""
+    },
+    "sand_bucket": {
+      "name": "",
+      "description": ""
+    },
+    "sand_shovel": {
+      "name": "",
+      "description": ""
+    },
+    "beach_shower": {
+      "name": "",
+      "description": ""
+    },
+    "beach_bar": {
+      "name": "",
+      "description": ""
+    },
+    "tiki_torch": {
+      "name": "",
+      "description": ""
+    },
+    "palm_tree": {
+      "name": "",
+      "description": ""
+    },
+    "beach_volleyball_net": {
+      "name": "",
+      "description": ""
+    },
+    "beach_cabana": {
+      "name": "",
+      "description": ""
+    },
+    "rowboat": {
+      "name": "",
+      "description": ""
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "name": "Alchemistry",
+  "blurb": "Transmutation reduced to bench procedure, from chiral hydrogenation to the mapping of the receptors a cell tastes the world with. Filed alongside the preparations that never returned a positive assay.",
+  "nodes": {
+    "chem_chiral": {
+      "name": "Chiral Catalysis",
+      "desc": "A chiral diphosphine such as BINAP, chelated to ruthenium or rhodium, makes the two prochiral faces of a substrate inequivalent in the transition state, so hydrogenation or oxidation proceeds through the lower barrier and delivers one enantiomer at 95 to 99 percent excess with turnover numbers in the thousands. The industrial case is menthol at ten thousand tonnes a year. Since the mirror image of a drug can be inert, antagonistic or teratogenic, enantiomeric excess passes from a laboratory statistic to a release specification."
+    },
+    "chem_click": {
+      "name": "Click Chemistry",
+      "desc": "Copper(I) catalysis of the Huisgen cycloaddition joins an organic azide to a terminal alkyne and gives the 1,4-triazole alone, at rates seven orders of magnitude above the thermal reaction. The conditions are water at room temperature, yields are near quantitative, the only by-product is nothing, and alcohols, amines, thiols and free carboxylates are left untouched. Because neither partner occurs in a cell, the pair can be reacted inside a living organism; the strained-cyclooctyne variant drops the copper and with it the cytotoxicity."
+    },
+    "chem_ubiquitin": {
+      "name": "Ubiquitin and Controlled Death",
+      "desc": "An E1 activating enzyme charges ubiquitin, a 76-residue protein, at the cost of one ATP; an E2 carrier accepts it, and one of some six hundred E3 ligases decides which substrate lysine receives it. Four or more units linked through lysine 48 constitute the degradation signal. The 26S proteasome binds the chain, recycles it, unfolds the substrate with an ATPase ring and feeds the chain into a barrel whose threonine proteases cut it to peptides of seven to nine residues. For most regulatory proteins the steady-state level is set by this rate and not by transcription."
+    },
+    "chem_metathesis": {
+      "name": "Olefin Metathesis",
+      "desc": "A ruthenium alkylidene carrying an N-heterocyclic carbene adds across a carbon-carbon double bond to a metallacyclobutane, which retro-cleaves along the other diagonal and exchanges the alkylidene fragments. The catalyst tolerates air, water, esters, amides and free alcohols, which the earlier molybdenum systems did not. Ring-closing metathesis converts a diene into a macrocycle of any size in one step, releasing ethylene, and the reaction runs in dilute solution to keep the intramolecular path ahead of oligomerisation."
+    },
+    "chem_gfp": {
+      "name": "Green Fluorescent Protein",
+      "desc": "The protein from Aequorea victoria folds into an eleven-strand beta barrel with a central helix, and residues 65 to 67 of that helix cyclise, dehydrate and oxidise on their own into a p-hydroxybenzylidene-imidazolinone chromophore. Molecular oxygen is the only cofactor required, so the gene is sufficient. Fused in frame to any coding sequence it reports expression level and subcellular location as emission at 509 nanometres; the mutant series that follows shifts the emission from 442 to 610 nanometres and permits two or three proteins to be watched at once in one live cell."
+    },
+    "chem_oganesson": {
+      "name": "Synthesis of Oganesson",
+      "desc": "A calcium-48 beam of about six trillion ions per second is driven into a californium-249 target for some 1,080 hours. Three atoms of element 118 are formed by hot fusion at a cross section near half a picobarn and identified in a gas-filled separator from the correlated alpha chain that follows within milliseconds, ending in spontaneous fission. Nothing is weighed and nothing is reacted: the chemistry of the element is extrapolated from relativistic calculations, which predict that the closed shell is destabilised enough for it to be a solid rather than a noble gas."
+    },
+    "chem_ribosome": {
+      "name": "Ribosome Structure Mapped",
+      "desc": "Crystals of the 50S subunit from Haloarcula marismortui and of the 30S from Thermus thermophilus diffract to 2.4 and 3.0 angstroms, phased with osmium and iridium clusters, and place every nucleotide of a 2.5 megadalton assembly. The peptidyl transferase centre contains no protein side chain within eighteen angstroms of the reaction, so the peptide bond is made by ribosomal RNA. The A, P and E tRNA sites are resolved along with the decoding centre, and each antibiotic class is located in the pocket it occupies."
+    },
+    "chem_crosscoupling": {
+      "name": "Palladium Cross-Coupling",
+      "desc": "A palladium(0) centre inserts oxidatively into the carbon-halogen bond of an aryl halide; transmetalation delivers the second fragment from a boronic acid, an organozinc or an organostannane, and reductive elimination forms the new carbon-carbon bond and regenerates the palladium(0). Bulky electron-rich phosphines make the two slow steps fast enough for aryl chlorides and for catalyst loadings below a tenth of a percent. The boronic acid route uses reagents that are air-stable and non-toxic, which is why it dominates process chemistry."
+    },
+    "chem_quasicrystal": {
+      "name": "Quasicrystals",
+      "desc": "An aluminium-manganese melt quenched at a million kelvin per second gives an electron diffraction pattern of sharp spots with icosahedral point symmetry, including five-fold axes that no periodic lattice can carry. The solid has long-range orientational order without translational periodicity: indexing takes six basis vectors instead of three, and the structure is a three-dimensional analogue of a Penrose tiling. Stable, millimetre-sized single grains of aluminium-copper-iron settle the case, and a natural specimen is later recovered from the Khatyrka meteorite."
+    },
+    "chem_gpcr": {
+      "name": "G-Protein-Coupled Receptors",
+      "desc": "The beta-2 adrenergic receptor is crystallised bound to an agonist and to a nucleotide-free heterotrimeric G protein, a complex of some 150 kilodaltons held together only while the nucleotide is absent. The structure resolves at 3.2 angstroms and shows transmembrane helix six swung fourteen angstroms outward, opening the intracellular cavity that receives the G protein alpha subunit and prising apart the helices that hold GDP. Roughly a third of marketed drugs act on this receptor family, whose activation step is here caught between states."
+    },
+    "chem_water_memory": {
+      "name": "The Memory of Water",
+      "desc": "The preparation is diluted a hundredfold and shaken violently at each step, thirty times over, which is a dilution factor of ten to the sixtieth: past the twelfth step the expected number of solute molecules in the vial is below one, and Avogadro's number puts the last of them at step twelve. The proposed carrier is a persistent structure in the hydrogen-bond network, which femtosecond infrared spectroscopy measures rearranging on a timescale of one to two picoseconds. Blinded replications, including one run under a televised protocol with a prize attached, return the activity of the solvent."
+    },
+    "chem_water_fuel": {
+      "name": "The Water-Fuelled Car",
+      "desc": "An onboard cell electrolyses water, the hydrogen is fed to a modified intake, and combustion returns the water to the tank. Dissociation of one mole of liquid water costs 286 kilojoules and its combustion returns at most the same 286, before an electrolyser overpotential of some 20 percent, an alternator efficiency of 50 percent and a thermal efficiency near 30 percent are taken out. The cycle closes at a loss of roughly six units in every seven, and the demonstrations that circulate are running on the battery, a hidden fuel line, or both."
+    },
+    "chem_alkaline_diet": {
+      "name": "The Alkaline Body",
+      "desc": "Foods are ranked by the potential renal acid load of their combustion ash and selected to drive serum toward the alkaline. Arterial pH is regulated between 7.35 and 7.45 by the bicarbonate buffer, by respiratory clearance of carbon dioxide within minutes and by renal proton excretion within hours; a serum pH outside 6.8 to 7.8 is not compatible with life, and no diet moves it. What the diet does move is urine pH, within a day, and the tumour claims attached to it are a category error, since the extracellular acidity of a tumour is a product of its metabolism."
+    },
+    "chem_target_fabrication": {
+      "name": "Actinide Target Fabrication",
+      "desc": "Milligram quantities of an actinide that does not occur in nature are electrodeposited from isopropanol onto a titanium backing foil two micrometres thick, at a surface density of about 0.3 milligrams per square centimetre. The foil is mounted on a wheel turning at two thousand revolutions per minute so no point stays under the beam for more than a millisecond. A few hundred watts of beam power are deposited in a layer thinner than a wavelength of light, and the target must run for months without blistering, sputtering away or losing enough material to spoil the cross-section measurement."
+    },
+    "chem_synchrotron": {
+      "name": "Synchrotron Crystallography",
+      "desc": "Electrons circulating at six to eight giga-electronvolts are made to oscillate in an undulator, a periodic magnet array in which the emission from every pole adds coherently, and the resulting X-ray beam is ten orders of magnitude brighter than a rotating anode and tunable across an absorption edge. That flux is the precondition for a unit cell of a hundred thousand atoms, whose reflections are weak and closely spaced: the crystal is held at 100 kelvin, and the dataset must be complete before the accumulated dose destroys the diffraction, which it does at about thirty megagray."
+    },
+    "chem_heavy_atom": {
+      "name": "Heavy-Atom Phasing",
+      "desc": "A diffraction experiment records intensities and loses the phase of every reflection, and the electron density cannot be computed from amplitudes alone. Soaking the crystal in mercury, platinum or a lanthanide, or growing it from selenomethionine-substituted protein, introduces scatterers whose positions are found from difference Patterson maps; measuring either side of their absorption edge separates the anomalous and dispersive differences, and each derivative narrows the phase probability until the density can be traced. Non-isomorphism between derivative and native is the usual reason a dataset is abandoned."
+    },
+    "chem_membrane_protein": {
+      "name": "Membrane Protein Stabilization",
+      "desc": "Removed from the bilayer into detergent, a seven-transmembrane receptor loses activity within hours and never nucleates a lattice. Four measures hold it: eight to ten thermostabilising point mutations found by alanine scanning, which raise the melting point by twenty degrees; T4 lysozyme or BRIL fused into the flexible third intracellular loop to supply a polar crystal contact; a high-affinity ligand bound throughout purification; and crystallisation in a lipidic cubic phase of monoolein, in which the protein stays in a curved bilayer while nucleating from the lipid mesh."
+    }
+  }
+}

@@ -1605,8 +1605,8 @@
   "Skab/!$Engineer": [
     "Engineer"
   ],
-  "Skab/!$EvenSpellblade": [
-    "EvenSpellblade"
+  "Skab/!$ElvenSpellblade": [
+    "ElvenSpellblade"
   ],
   "Skab/!$ExoticMerchant": [
     "ExoticMerchant"
@@ -2546,5 +2546,479 @@
   ],
   "Skab/!$Yogi": [
     "Yogi"
+  ],
+  "Skab/!$1": [
+    "1"
+  ],
+  "Skab/!$2": [
+    "2"
+  ],
+  "Skab/!$3": [
+    "3"
+  ],
+  "Skab/!$4": [
+    "4"
+  ],
+  "Skab/!$5": [
+    "5"
+  ],
+  "Skab/!$6": [
+    "6"
+  ],
+  "Skab/!$7": [
+    "7"
+  ],
+  "Skab/!$8": [
+    "8"
+  ],
+  "Skab/!$Adept": [
+    "Adept"
+  ],
+  "Skab/!$Admiral": [
+    "Admiral"
+  ],
+  "Skab/!$ArcaneWizard": [
+    "ArcaneWizard"
+  ],
+  "Skab/!$ArchivistDoctor": [
+    "ArchivistDoctor"
+  ],
+  "Skab/!$ArchivistTrickster": [
+    "ArchivistTrickster"
+  ],
+  "Skab/!$BotCamera": [
+    "BotCamera"
+  ],
+  "Skab/!$BotCrustal": [
+    "BotCrustal"
+  ],
+  "Skab/!$BotGolem": [
+    "BotGolem"
+  ],
+  "Skab/!$BotMarionette": [
+    "BotMarionette"
+  ],
+  "Skab/!$BotPuppet": [
+    "BotPuppet"
+  ],
+  "Skab/!$BotReinforced": [
+    "BotReinforced"
+  ],
+  "Skab/!$BotSteampunk": [
+    "BotSteampunk"
+  ],
+  "Skab/!$CatGuard": [
+    "CatGuard"
+  ],
+  "Skab/!$CatMonk": [
+    "CatMonk"
+  ],
+  "Skab/!$CrazedMadman": [
+    "CrazedMadman"
+  ],
+  "Skab/!$CyclopBrute": [
+    "CyclopBrute"
+  ],
+  "Skab/!$CyclopFisherman": [
+    "CyclopFisherman"
+  ],
+  "Skab/!$DarkWitch": [
+    "DarkWitch"
+  ],
+  "Skab/!$DesertDancer": [
+    "DesertDancer"
+  ],
+  "Skab/!$DesertMonk": [
+    "DesertMonk"
+  ],
+  "Skab/!$DesertNecromancer": [
+    "DesertNecromancer"
+  ],
+  "Skab/!$DesertScout": [
+    "DesertScout"
+  ],
+  "Skab/!$DesertWitch": [
+    "DesertWitch"
+  ],
+  "Skab/!$DevilHero": [
+    "DevilHero"
+  ],
+  "Skab/!$DevilTrainer": [
+    "DevilTrainer"
+  ],
+  "Skab/!$DevilVIllager": [
+    "DevilVIllager"
+  ],
+  "Skab/!$DevilWarrior": [
+    "DevilWarrior"
+  ],
+  "Skab/!$DogArcanist": [
+    "DogArcanist"
+  ],
+  "Skab/!$DogKnight": [
+    "DogKnight"
+  ],
+  "Skab/!$DogNoble": [
+    "DogNoble"
+  ],
+  "Skab/!$DwarvenArtificier": [
+    "DwarvenArtificier"
+  ],
+  "Skab/!$DwarvenDrunk": [
+    "DwarvenDrunk"
+  ],
+  "Skab/!$DwarvenExplorer": [
+    "DwarvenExplorer"
+  ],
+  "Skab/!$DwarvenGuard": [
+    "DwarvenGuard"
+  ],
+  "Skab/!$DwarvenMajor": [
+    "DwarvenMajor"
+  ],
+  "Skab/!$DwarvenMiner": [
+    "DwarvenMiner"
+  ],
+  "Skab/!$DwarvenSage": [
+    "DwarvenSage"
+  ],
+  "Skab/!$DwarvenSinger": [
+    "DwarvenSinger"
+  ],
+  "Skab/!$DwarvenValkirie": [
+    "DwarvenValkirie"
+  ],
+  "Skab/!$DwarvenWarrior": [
+    "DwarvenWarrior"
+  ],
+  "Skab/!$DwarvenWitch": [
+    "DwarvenWitch"
+  ],
+  "Skab/!$ElephantKnight": [
+    "ElephantKnight"
+  ],
+  "Skab/!$ElephantMascotte": [
+    "ElephantMascotte"
+  ],
+  "Skab/!$ElephantMonk": [
+    "ElephantMonk"
+  ],
+  "Skab/!$ElephantWeird": [
+    "ElephantWeird"
+  ],
+  "Skab/!$Em": [
+    "Em"
+  ],
+  "Skab/!$ExoticAbstracter": [
+    "ExoticAbstracter"
+  ],
+  "Skab/!$ExoticBlank": [
+    "ExoticBlank"
+  ],
+  "Skab/!$ExoticCalamari": [
+    "ExoticCalamari"
+  ],
+  "Skab/!$Exoticerson": [
+    "Exoticerson"
+  ],
+  "Skab/!$ExoticGhost": [
+    "ExoticGhost"
+  ],
+  "Skab/!$ExoticGod": [
+    "ExoticGod"
+  ],
+  "Skab/!$ExoticHorror": [
+    "ExoticHorror"
+  ],
+  "Skab/!$ExoticScreamer": [
+    "ExoticScreamer"
+  ],
+  "Skab/!$ExoticSlime": [
+    "ExoticSlime"
+  ],
+  "Skab/!$ExoticSpacer": [
+    "ExoticSpacer"
+  ],
+  "Skab/!$ExoticSpawn": [
+    "ExoticSpawn"
+  ],
+  "Skab/!$Exoticstronaut": [
+    "Exoticstronaut"
+  ],
+  "Skab/!$ExoticWorm": [
+    "ExoticWorm"
+  ],
+  "Skab/!$ForestIdiot": [
+    "ForestIdiot"
+  ],
+  "Skab/!$GnomeAccountant": [
+    "GnomeAccountant"
+  ],
+  "Skab/!$GnomeArtist": [
+    "GnomeArtist"
+  ],
+  "Skab/!$GnomeChef": [
+    "GnomeChef"
+  ],
+  "Skab/!$GnomeGuard": [
+    "GnomeGuard"
+  ],
+  "Skab/!$GnomeMercenary": [
+    "GnomeMercenary"
+  ],
+  "Skab/!$GnomeNoble": [
+    "GnomeNoble"
+  ],
+  "Skab/!$GnomePirate": [
+    "GnomePirate"
+  ],
+  "Skab/!$GnomePrincess": [
+    "GnomePrincess"
+  ],
+  "Skab/!$GnomeSinger": [
+    "GnomeSinger"
+  ],
+  "Skab/!$GnomeSniper": [
+    "GnomeSniper"
+  ],
+  "Skab/!$GnomeTrader": [
+    "GnomeTrader"
+  ],
+  "Skab/!$GnomeVillager": [
+    "GnomeVillager"
+  ],
+  "Skab/!$GoatBard": [
+    "GoatBard"
+  ],
+  "Skab/!$GoatBride": [
+    "GoatBride"
+  ],
+  "Skab/!$HolyKnight": [
+    "HolyKnight"
+  ],
+  "Skab/!$InsectoidMantis": [
+    "InsectoidMantis"
+  ],
+  "Skab/!$Islander": [
+    "Islander"
+  ],
+  "Skab/!$KingsHand": [
+    "KingsHand"
+  ],
+  "Skab/!$LazyKnight": [
+    "LazyKnight"
+  ],
+  "Skab/!$MercenaryWarrior": [
+    "MercenaryWarrior"
+  ],
+  "Skab/!$Monk": [
+    "Monk"
+  ],
+  "Skab/!$NobleSinger": [
+    "NobleSinger"
+  ],
+  "Skab/!$NordicArtist": [
+    "NordicArtist"
+  ],
+  "Skab/!$NordicFarmer": [
+    "NordicFarmer"
+  ],
+  "Skab/!$NordicKnight": [
+    "NordicKnight"
+  ],
+  "Skab/!$NordicSergeant": [
+    "NordicSergeant"
+  ],
+  "Skab/!$NordicWarrior": [
+    "NordicWarrior"
+  ],
+  "Skab/!$OgreBrute": [
+    "OgreBrute"
+  ],
+  "Skab/!$OgreMalformed": [
+    "OgreMalformed"
+  ],
+  "Skab/!$OgreVillager": [
+    "OgreVillager"
+  ],
+  "Skab/!$OgreWitch": [
+    "OgreWitch"
+  ],
+  "Skab/!$OldMercenary": [
+    "OldMercenary"
+  ],
+  "Skab/!$OldNun": [
+    "OldNun"
+  ],
+  "Skab/!$OperaGoddess": [
+    "OperaGoddess"
+  ],
+  "Skab/!$OrcBerserker": [
+    "OrcBerserker"
+  ],
+  "Skab/!$PunkVillager": [
+    "PunkVillager"
+  ],
+  "Skab/!$PunkWitch": [
+    "PunkWitch"
+  ],
+  "Skab/!$RabbitThief": [
+    "RabbitThief"
+  ],
+  "Skab/!$RabbitWizard": [
+    "RabbitWizard"
+  ],
+  "Skab/!$Sheepman": [
+    "Sheepman"
+  ],
+  "Skab/!$StoicWarrior": [
+    "StoicWarrior"
+  ],
+  "Skab/!$SunsetKnight": [
+    "SunsetKnight"
+  ],
+  "Skab/!$UndeadConstruct": [
+    "UndeadConstruct"
+  ],
+  "Skab/!$UndeadRevenant": [
+    "UndeadRevenant"
+  ],
+  "Skab/!$UndeadSage": [
+    "UndeadSage"
+  ],
+  "Skab/!$UndeadSkeleton": [
+    "UndeadSkeleton"
+  ],
+  "Skab/!$VampireArcanist": [
+    "VampireArcanist"
+  ],
+  "Skab/!$VikingPaladin": [
+    "VikingPaladin"
+  ],
+  "Skab/!$VillageInventor": [
+    "VillageInventor"
+  ],
+  "Skab/!$VykingRaider": [
+    "VykingRaider"
+  ],
+  "Skab/!$WastelanderPunk": [
+    "WastelanderPunk"
+  ],
+  "Skab/!$11": [
+    "11"
+  ],
+  "Skab/!$14": [
+    "14"
+  ],
+  "Skab/!$19": [
+    "19"
+  ],
+  "Skab/!$21": [
+    "21"
+  ],
+  "Skab/!$28": [
+    "28"
+  ],
+  "Skab/!$32": [
+    "32"
+  ],
+  "Skab/!$33": [
+    "33"
+  ],
+  "Skab/!$46": [
+    "46"
+  ],
+  "Skab/!$49": [
+    "49"
+  ],
+  "Skab/!$59": [
+    "59"
+  ],
+  "Skab/!$AleisteirCrowleyArcane": [
+    "AleisteirCrowleyArcane"
+  ],
+  "Skab/!$AleisterCrowley": [
+    "AleisterCrowley"
+  ],
+  "Skab/!$Andreotti": [
+    "Andreotti"
+  ],
+  "Skab/!$AndreottiArcane": [
+    "AndreottiArcane"
+  ],
+  "Skab/!$AndreottiPope": [
+    "AndreottiPope"
+  ],
+  "Skab/!$AndreottiSitting": [
+    "AndreottiSitting"
+  ],
+  "Skab/!$Berlusconi": [
+    "Berlusconi"
+  ],
+  "Skab/!$BillClinton": [
+    "BillClinton"
+  ],
+  "Skab/!$Ciampi": [
+    "Ciampi"
+  ],
+  "Skab/!$DivingSuiteMoving": [
+    "DivingSuiteMoving"
+  ],
+  "Skab/!$DivingSuiteStill": [
+    "DivingSuiteStill"
+  ],
+  "Skab/!$ElonMusk": [
+    "ElonMusk"
+  ],
+  "Skab/!$EM": [
+    "EM"
+  ],
+  "Skab/!$GeorgeWBush": [
+    "GeorgeWBush"
+  ],
+  "Skab/!$KofiAnnan": [
+    "KofiAnnan"
+  ],
+  "Skab/!$MargheritaHack": [
+    "MargheritaHack"
+  ],
+  "Skab/!$MargheritaHackEVA": [
+    "MargheritaHackEVA"
+  ],
+  "Skab/!$MargheritaHackSpace": [
+    "MargheritaHackSpace"
+  ],
+  "Skab/!$MarioDraghi": [
+    "MarioDraghi"
+  ],
+  "Skab/!$MarioDraghiAscended": [
+    "MarioDraghiAscended"
+  ],
+  "Skab/!$OperaSinger": [
+    "OperaSinger"
+  ],
+  "Skab/!$Ratzinger": [
+    "Ratzinger"
+  ],
+  "Skab/!$RatzingerAngelus": [
+    "RatzingerAngelus"
+  ],
+  "Skab/!$RichardBenson": [
+    "RichardBenson"
+  ],
+  "Skab/!$RichardBensonGuitar": [
+    "RichardBensonGuitar"
+  ],
+  "Skab/!$RitaLeviMontalcini": [
+    "RitaLeviMontalcini"
+  ],
+  "Skab/!$RitaLeviMontalciniScientist": [
+    "RitaLeviMontalciniScientist"
+  ],
+  "Skab/!$VillageSpritist": [
+    "VillageSpritist"
+  ],
+  "Skab/!$$DivingSuite": [
+    "$DivingSuite"
   ]
 }

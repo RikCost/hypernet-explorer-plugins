@@ -1,0 +1,68 @@
+{
+  "mapFallback": "",
+  "shopkeeperFallback": "",
+  "frontier": "",
+  "placeOfCountry": "",
+  "placeSettlement": "",
+  "thought": {
+    "flee": {
+      "named": [
+        "",
+        "",
+        ""
+      ],
+      "anon": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "disdain": {
+      "named": [
+        "",
+        "",
+        ""
+      ],
+      "anon": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "distrust": {
+      "named": [
+        "",
+        "",
+        ""
+      ],
+      "anon": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "greet": {
+      "stranger": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "warm": [
+        "",
+        "",
+        ""
+      ],
+      "polite": [
+        "",
+        ""
+      ],
+      "cold": [
+        "",
+        "...",
+        ""
+      ]
+    }
+  }
+}

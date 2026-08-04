@@ -1,0 +1,124 @@
+{
+  "planets": {
+    "sub_mercurian": {
+      "description": "Mondo roccioso essenziale, crosta sottile, atmosfera minima."
+    },
+    "mercurian": {
+      "description": "Simile a Mercurio, senza atmosfera, craterizzato, ricco di ferro."
+    },
+    "sub_earth": {
+      "description": "Più piccolo della Terra ma ancora geologicamente attivo."
+    },
+    "earth_like": {
+      "description": "Roccioso con tettonica a placche, acqua liquida, aria respirabile."
+    },
+    "super_earth": {
+      "description": "Grande mondo roccioso; gravità elevata, atmosfera più densa."
+    },
+    "mini_neptune": {
+      "description": "Piccolo involucro ricco di ghiacci su un nucleo roccioso."
+    },
+    "ice": {
+      "description": "Superficie ghiacciata; possibile oceano sotterraneo."
+    },
+    "ocean": {
+      "description": "Oceano liquido globale, terre emerse minime."
+    },
+    "lava_ocean": {
+      "description": "Superficie parzialmente fusa, atmosfera di vapore."
+    },
+    "desert": {
+      "description": "Mondo arido, vegetazione rada o del tutto assente."
+    },
+    "rainforest": {
+      "description": "Fitte giungle, precipitazioni intense, biomassa elevata."
+    },
+    "tundra": {
+      "description": "Freddo, flora limitata, dominato dal permafrost."
+    },
+    "acid_ocean": {
+      "description": "Mari di acido solforico o cloridrico, cieli corrosivi."
+    },
+    "gas_giant": {
+      "description": "Enorme involucro di idrogeno ed elio, nessuna superficie solida."
+    },
+    "hot_jupiter": {
+      "description": "Orbita estremamente vicino alla sua stella, temperature roventi."
+    },
+    "warm_jupiter": {
+      "description": "Più interno di Giove ma più esterno di un gioviano caldo."
+    },
+    "cold_jupiter": {
+      "description": "Lontano dalla sua stella, atmosfera profonda e gelida."
+    },
+    "ice_giant": {
+      "description": "Ricco di volatili come acqua e ammoniaca; spesso mantello ghiacciato."
+    },
+    "ringed_gas_giant": {
+      "description": "Anelli imponenti, decine di lune."
+    },
+    "puffy": {
+      "description": "Densità estremamente bassa, gonfiato dal riscaldamento stellare."
+    },
+    "chthonian": {
+      "description": "Nucleo di gigante gassoso denudato, vulcanico, ricco di metalli."
+    },
+    "mega_iron": {
+      "description": "Quasi puro ferro/nichel, densità elevata, magnetico."
+    },
+    "carbon": {
+      "description": "Dominano grafite e idrocarburi; mari simili a catrame."
+    },
+    "diamond": {
+      "description": "L'alta pressione trasforma il guscio di carbonio in uno strato di diamante."
+    },
+    "magma_planet": {
+      "description": "La superficie è un bagno di magma globale, eruzioni costanti."
+    },
+    "plasma": {
+      "description": "Atmosfera ionizzata, brilla sotto il vento stellare."
+    },
+    "magnetar": {
+      "description": "Campo ultramagnetico, ambiente di radiazioni esotiche."
+    },
+    "quark_planet": {
+      "description": "Ipotetico nucleo di materia strana, superdenso."
+    },
+    "rogue": {
+      "description": "Errante, freddo, privo di stella madre."
+    },
+    "habitable": {
+      "description": "Nella zona abitabile, clima stabile, acqua liquida."
+    },
+    "dwarf": {
+      "description": "Piccolo corpo ghiacciato o roccioso, come Plutone o Cerere."
+    },
+    "centaur": {
+      "description": "Ibrido di ghiaccio e roccia tra le orbite di Giove e Nettuno."
+    },
+    "planetesimal": {
+      "description": "Mattone dei pianeti, minuscolo grumo di roccia e ghiaccio."
+    },
+    "c_type_asteroid": {
+      "description": "Carbonaceo, scuro, composizione primitiva."
+    },
+    "s_type_asteroid": {
+      "description": "Silicati e ferro-nichel, superficie più luminosa."
+    },
+    "m_type_asteroid": {
+      "description": "Metallico, per lo più frammenti di nuclei di ferro-nichel."
+    },
+    "trojan_asteroid": {
+      "description": "Co-orbitante nei punti di Lagrange di un pianeta più grande."
+    },
+    "comet": {
+      "description": "Palla di neve sporca: ghiaccio e polvere, sviluppa una coda vicino alla stella."
+    },
+    "short_period_comet": {
+      "description": "Orbita in meno di 200 anni, visitatore frequente."
+    },
+    "long_period_comet": {
+      "description": "Orbita in oltre 200 anni, dalla lontana nube di Oort."
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "name": "Alchimie",
+  "blurb": "La transmutation ramenée à une procédure de paillasse, de l'hydrogénation chirale à la cartographie des récepteurs par lesquels une cellule goûte le monde. Classée aux côtés des préparations qui n'ont jamais rendu un dosage positif.",
+  "nodes": {
+    "chem_chiral": {
+      "name": "Catalyse Chirale",
+      "desc": "Une diphosphine chirale telle que le BINAP, chélatée au ruthénium ou au rhodium, rend inéquivalentes dans l'état de transition les deux faces prochirales d'un substrat : l'hydrogénation ou l'oxydation emprunte alors la barrière la plus basse et livre un seul énantiomère à 95 ou 99 pour cent d'excès, avec des nombres de rotation de l'ordre du millier. Le cas industriel est le menthol, dix mille tonnes par an. Comme l'image miroir d'un médicament peut être inerte, antagoniste ou tératogène, l'excès énantiomérique passe du statut de statistique de laboratoire à celui de spécification de libération."
+    },
+    "chem_click": {
+      "name": "Chimie Clic",
+      "desc": "La catalyse au cuivre(I) de la cycloaddition de Huisgen soude un azoture organique à un alcyne terminal et ne donne que le triazole 1,4, à des vitesses sept ordres de grandeur au-dessus de la réaction thermique. Les conditions sont l'eau à température ambiante, les rendements sont quasi quantitatifs, l'unique sous-produit est le néant, et les alcools, amines, thiols et carboxylates libres restent intacts. Comme aucun des deux partenaires n'existe dans une cellule, le couple peut réagir à l'intérieur d'un organisme vivant ; la variante à cyclooctyne contraint se passe du cuivre et, avec lui, de la cytotoxicité."
+    },
+    "chem_ubiquitin": {
+      "name": "L'Ubiquitine et la Mort Contrôlée",
+      "desc": "Une enzyme d'activation E1 charge l'ubiquitine, protéine de 76 résidus, au prix d'un ATP ; un transporteur E2 la reçoit, et l'une des quelque six cents ligases E3 décide quelle lysine du substrat en héritera. Quatre unités ou plus liées par la lysine 48 constituent le signal de dégradation. Le protéasome 26S fixe la chaîne, la recycle, déplie le substrat au moyen d'un anneau ATPase et engage la chaîne dans un tonneau dont les protéases à thréonine la découpent en peptides de sept à neuf résidus. Pour la plupart des protéines régulatrices, le niveau à l'équilibre est fixé par cette vitesse et non par la transcription."
+    },
+    "chem_metathesis": {
+      "name": "Métathèse des Oléfines",
+      "desc": "Un alkylidène de ruthénium porteur d'un carbène N-hétérocyclique s'additionne à travers une double liaison carbone-carbone pour donner un métallacyclobutane, qui se rompt en retour selon l'autre diagonale et échange les fragments alkylidènes. Le catalyseur tolère l'air, l'eau, les esters, les amides et les alcools libres, ce que ne faisaient pas les anciens systèmes au molybdène. La métathèse cyclisante convertit un diène en macrocycle de n'importe quelle taille en une seule étape, avec libération d'éthylène, et la réaction se conduit en solution diluée pour garder la voie intramoléculaire devant l'oligomérisation."
+    },
+    "chem_gfp": {
+      "name": "Protéine Fluorescente Verte",
+      "desc": "La protéine d'Aequorea victoria se replie en un tonneau bêta à onze brins traversé d'une hélice centrale, et les résidus 65 à 67 de cette hélice se cyclisent, se déshydratent et s'oxydent d'eux-mêmes en un chromophore p-hydroxybenzylidène-imidazolinone. Le dioxygène est le seul cofacteur requis : le gène suffit donc. Fusionnée dans le cadre de lecture à n'importe quelle séquence codante, elle rapporte le niveau d'expression et la localisation subcellulaire par une émission à 509 nanomètres ; la série de mutants qui suit déplace l'émission de 442 à 610 nanomètres et permet de suivre deux ou trois protéines à la fois dans une même cellule vivante."
+    },
+    "chem_oganesson": {
+      "name": "Synthèse de l'Oganesson",
+      "desc": "Un faisceau de calcium 48 d'environ six mille milliards d'ions par seconde est projeté sur une cible de californium 249 pendant quelque 1 080 heures. Trois atomes de l'élément 118 se forment par fusion chaude, à une section efficace voisine du demi-picobarn, et sont identifiés dans un séparateur rempli de gaz à la chaîne alpha corrélée qui suit en quelques millisecondes et s'achève par une fission spontanée. Rien n'est pesé et rien ne réagit : la chimie de l'élément est extrapolée de calculs relativistes, qui prédisent une couche fermée assez déstabilisée pour en faire un solide plutôt qu'un gaz noble."
+    },
+    "chem_ribosome": {
+      "name": "Structure du Ribosome Cartographiée",
+      "desc": "Des cristaux de la sous-unité 50S de Haloarcula marismortui et de la 30S de Thermus thermophilus diffractent à 2,4 et 3,0 angströms, phasés par des amas d'osmium et d'iridium, et situent chaque nucléotide d'un assemblage de 2,5 mégadaltons. Le centre peptidyltransférase ne compte aucune chaîne latérale protéique à moins de dix-huit angströms de la réaction : la liaison peptidique est donc faite par l'ARN ribosomique. Les sites A, P et E de l'ARNt sont résolus avec le centre de décodage, et chaque classe d'antibiotiques est située dans la poche qu'elle occupe."
+    },
+    "chem_crosscoupling": {
+      "name": "Couplage Croisé au Palladium",
+      "desc": "Un centre palladium(0) s'insère par addition oxydante dans la liaison carbone-halogène d'un halogénure d'aryle ; la transmétallation apporte le second fragment depuis un acide boronique, un organozincique ou un organostannique, et l'élimination réductrice forme la nouvelle liaison carbone-carbone en régénérant le palladium(0). Des phosphines encombrées et riches en électrons rendent les deux étapes lentes assez rapides pour les chlorures d'aryle et pour des charges catalytiques sous le dixième de pour cent. La voie à l'acide boronique emploie des réactifs stables à l'air et non toxiques, ce qui explique sa domination en chimie de procédé."
+    },
+    "chem_quasicrystal": {
+      "name": "Quasi-cristaux",
+      "desc": "Un bain d'aluminium-manganèse trempé à un million de kelvins par seconde donne un cliché de diffraction électronique fait de taches nettes à symétrie ponctuelle icosaédrique, axes d'ordre cinq compris, qu'aucun réseau périodique ne peut porter. Le solide possède un ordre orientationnel à longue portée sans périodicité de translation : l'indexation demande six vecteurs de base au lieu de trois, et la structure est l'analogue tridimensionnel d'un pavage de Penrose. Des monograins stables d'aluminium-cuivre-fer de taille millimétrique tranchent la question, et un spécimen naturel sera plus tard extrait de la météorite de Khatyrka."
+    },
+    "chem_gpcr": {
+      "name": "Récepteurs Couplés aux Protéines G",
+      "desc": "Le récepteur bêta-2 adrénergique est cristallisé lié à un agoniste et à une protéine G hétérotrimérique dépourvue de nucléotide, complexe de quelque 150 kilodaltons qui ne tient que tant que le nucléotide est absent. La structure se résout à 3,2 angströms et montre l'hélice transmembranaire six basculée de quatorze angströms vers l'extérieur, ouvrant la cavité intracellulaire qui reçoit la sous-unité alpha de la protéine G et écartant les hélices qui retiennent le GDP. Près d'un tiers des médicaments commercialisés agit sur cette famille de récepteurs, dont l'étape d'activation est ici saisie entre deux états."
+    },
+    "chem_water_memory": {
+      "name": "La Mémoire de l'Eau",
+      "desc": "La préparation est diluée au centième et agitée violemment à chaque étape, trente fois de suite, soit un facteur de dilution de dix puissance soixante : passé la douzième étape, le nombre attendu de molécules de soluté dans le flacon tombe sous l'unité, et le nombre d'Avogadro situe la dernière d'entre elles à l'étape douze. Le porteur proposé est une structure persistante du réseau de liaisons hydrogène, que la spectroscopie infrarouge femtoseconde mesure en train de se réarranger sur une échelle d'une à deux picosecondes. Les réplications en aveugle, dont une menée sous protocole télévisé avec un prix à la clé, rendent l'activité du solvant."
+    },
+    "chem_water_fuel": {
+      "name": "La Voiture à Eau",
+      "desc": "Une cellule embarquée électrolyse l'eau, l'hydrogène est envoyé à une admission modifiée, et la combustion rend l'eau au réservoir. La dissociation d'une mole d'eau liquide coûte 286 kilojoules et sa combustion en rend au mieux les mêmes 286, avant qu'on ôte une surtension d'électrolyseur d'environ 20 pour cent, un rendement d'alternateur de 50 pour cent et un rendement thermique voisin de 30 pour cent. Le cycle se referme sur une perte d'environ six unités sur sept, et les démonstrations qui circulent tournent sur la batterie, sur une conduite de carburant dissimulée, ou sur les deux."
+    },
+    "chem_alkaline_diet": {
+      "name": "Le Corps Alcalin",
+      "desc": "Les aliments sont classés selon la charge acide rénale potentielle de leurs cendres de combustion et choisis pour pousser le sérum vers l'alcalin. Le pH artériel est réglé entre 7,35 et 7,45 par le tampon bicarbonate, par l'élimination respiratoire du dioxyde de carbone en quelques minutes et par l'excrétion rénale de protons en quelques heures ; un pH sérique hors de 6,8 à 7,8 n'est pas compatible avec la vie, et aucun régime ne l'y déplace. Ce que le régime déplace, c'est le pH urinaire, en un jour, et les allégations tumorales qui s'y greffent sont une erreur de catégorie, puisque l'acidité extracellulaire d'une tumeur est un produit de son métabolisme."
+    },
+    "chem_target_fabrication": {
+      "name": "Fabrication de Cibles d'Actinides",
+      "desc": "Des quantités de l'ordre du milligramme d'un actinide absent de la nature sont électrodéposées depuis l'isopropanol sur une feuille de titane de deux micromètres d'épaisseur, à une densité surfacique d'environ 0,3 milligramme par centimètre carré. La feuille est montée sur une roue tournant à deux mille tours par minute, de sorte qu'aucun point ne reste sous le faisceau plus d'une milliseconde. Quelques centaines de watts de puissance de faisceau se déposent dans une couche plus mince qu'une longueur d'onde de lumière, et la cible doit tenir des mois sans cloquer, sans se pulvériser ni perdre assez de matière pour gâter la mesure de section efficace."
+    },
+    "chem_synchrotron": {
+      "name": "Cristallographie sur Synchrotron",
+      "desc": "Des électrons circulant à six ou huit giga-électronvolts sont mis à osciller dans un onduleur, réseau magnétique périodique où l'émission de chaque pôle s'ajoute en cohérence, et le faisceau de rayons X qui en résulte est dix ordres de grandeur plus brillant qu'une anode tournante et accordable de part et d'autre d'un seuil d'absorption. Ce flux est la condition d'une maille de cent mille atomes, dont les réflexions sont faibles et serrées : le cristal est maintenu à 100 kelvins, et le jeu de données doit être complet avant que la dose accumulée ne détruise la diffraction, ce qu'elle fait vers trente mégagrays."
+    },
+    "chem_heavy_atom": {
+      "name": "Phasage par Atomes Lourds",
+      "desc": "Une expérience de diffraction enregistre des intensités et perd la phase de chaque réflexion : la densité électronique ne peut être calculée à partir des seules amplitudes. Tremper le cristal dans le mercure, le platine ou un lanthanide, ou le faire croître à partir d'une protéine substituée à la sélénométhionine, introduit des diffuseurs dont les positions se trouvent par cartes de Patterson de différence ; mesurer de part et d'autre de leur seuil d'absorption sépare les différences anomales et dispersives, et chaque dérivé resserre la probabilité de phase jusqu'à ce que la densité soit traçable. La non-isomorphie entre dérivé et natif est la raison habituelle de l'abandon d'un jeu de données."
+    },
+    "chem_membrane_protein": {
+      "name": "Stabilisation des Protéines Membranaires",
+      "desc": "Retiré de la bicouche vers un détergent, un récepteur à sept segments transmembranaires perd son activité en quelques heures et n'amorce jamais de réseau. Quatre mesures le retiennent : huit à dix mutations ponctuelles thermostabilisantes trouvées par balayage à l'alanine, qui relèvent le point de fusion de vingt degrés ; le lysozyme T4 ou BRIL fusionné dans la troisième boucle intracellulaire souple pour fournir un contact cristallin polaire ; un ligand de haute affinité lié tout au long de la purification ; et une cristallisation en phase cubique lipidique de monooléine, où la protéine demeure dans une bicouche courbée tout en s'amorçant depuis le maillage lipidique."
+    }
+  }
+}

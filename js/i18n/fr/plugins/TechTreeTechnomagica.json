@@ -1,0 +1,70 @@
+{
+  "name": "Technomagie",
+  "blurb": "Esoteric Heavy Industries traite une opération comme un artefact doté d'une version, d'une suite de tests et d'une signature. Chaque nœud d'ici est spécifié contre l'étalonnage des plaines mortes, car c'est le seul banc où les chiffres se répètent.",
+  "nodes": {
+    "tm_leyline_tap": {
+      "name": "La Prise sur Leyline",
+      "desc": "Une tige mise à la terre, enfoncée de trois mètres dans une ligne relevée, le courant induit étant prélevé sur une bobine de cuivre de quelque quatre cents tours. La sortie est la première alimentation arcanique munie d'un chiffre : elle peut être comptée, consignée selon l'heure du jour et comparée d'un site à l'autre. Elle est aussi non régulée, arque entre les bornes dès le quart du tirage nominal, et varie d'un facteur trois au fil du cycle des marées. Tous les étages suivants de la chaîne existent pour intercaler une spécification entre cette tige et une baguette."
+    },
+    "tm_sanctified_microchip": {
+      "name": "La Puce Sanctifiée",
+      "desc": "Le sceau de liaison est tracé comme couche de masque et gravé dans la même passe de lithographie que la logique : la géométrie qui porte l'opération est donc définie à la même tolérance qu'une porte et hérite des mêmes statistiques de rendement. Un sceau écrit ainsi retient sa charge aussi stablement qu'une cellule de mémoire, s'adresse sur le même bus, et peut être relu et vérifié sans être lancé. La loi orthographique qui régit un nom prononcé régit le tracé : une rupture dans la ligne tracée est une soudure, et une soudure est un défaut à l'échelle de la plaquette."
+    },
+    "tm_compiler": {
+      "name": "Le Compilateur d'Incantations",
+      "desc": "Le compilateur prend pour source un unique nom fondu en CamelCase et émet une image flashable pour une baguette. Le frontal vérifie statiquement la loi orthographique : une soudure qui se serait déchargée dans celui qui parle devient donc un diagnostic assorti d'un décalage dans le mot ; l'étage intermédiaire résout les composantes contre l'inventaire et rejette une version dont l'étage réservoir n'est pas spécifié ; le dorsal implante la géométrie du sceau et émet le masque. Une opération qui ne compile pas n'a jamais été lancée, et l'étage existe pour cette seule raison."
+    },
+    "tm_regression": {
+      "name": "Régression en Zone de Magie Morte",
+      "desc": "Chaque version est lancée dans les plaines mortes, où rayon, durée et cible sont linéaires en mana dépensé et où les résidus restent sous deux pour cent, et la sortie mesurée est comparée à l'enveloppe déclarée par le compilateur. Une version qui sort de l'enveloppe sur l'un des trois axes est recalée et n'atteint pas de baguette. La suite attrape la classe de défaut qui n'apparaît qu'à l'échelle : une opération correcte au premier lancement et divergente au millième, qu'aucun opérateur ne trouverait en la lançant."
+    },
+    "tm_aether_battery": {
+      "name": "La Batterie d'Aether",
+      "desc": "Un éclat éthéré serré entre des électrodes et scellé, spécifié par sa capacité, son tirage de crête et son autodécharge. La cellule garde sa charge avec une demi-vie de quatre à sept mois, soutient un tirage de travail sans l'arc que montre la prise, et se remplace sur le terrain. Elle découple la baguette de la géographie : la portée était auparavant la distance à laquelle le champ ambiant tombait sous le seuil, elle est désormais la capacité divisée par le tirage."
+    },
+    "tm_thaumic_processor": {
+      "name": "Le Processeur Thaumique",
+      "desc": "Quelques milliers de cœurs sanctifiés sur une même puce, partageant un bus de mana et un ordonnanceur qui affecte les opérations aux cœurs comme on affecte des fils d'exécution à des processeurs. Le débit croît avec le nombre de cœurs jusqu'à saturation du bus, après quoi la limite est l'alimentation et non le silicium. Le lancement acquiert le vocabulaire et les modes de défaillance de tout système concurrent : profondeur de file, contention sur le bus partagé, inversion de priorité quand un long rite occupe un cœur, et une classe de défaut qui n'apparaît que si deux opérations se résolvent sur la même cible au même cycle."
+    },
+    "tm_spell_forge": {
+      "name": "La Forge à Sorts",
+      "desc": "Toute la chaîne d'outils derrière une seule interface : compiler le nom, passer les suites des plaines mortes, signer l'artefact, l'empaqueter avec son enveloppe et le pousser sur cent mille baguettes par voie hertzienne. L'effet mesuré porte sur l'intervalle entre un changement et son arrivée, qui tombe de la durée d'une carrière à celle d'une nuit. Tout ce qui est en aval de cet intervalle, la procédure de rappel, le retour arrière, le déploiement par paliers, existe parce que l'intervalle est désormais plus court que le temps qu'il faut pour remarquer un défaut."
+    },
+    "tm_dead_repo_fork": {
+      "name": "Bifurquer les Quatre-vingt-douze",
+      "desc": "Les quatre-vingt-douze dimensions perdues dans le Squishing sont traitées comme des dépôts non maintenus. Leurs opérations survivantes sont extraites, dépouillées des dépendances qui ne résolvent rien dans cette dimension, et portées sur des primitives de leyline vivantes, les sites d'appel étant réécrits un à un et le comportement comparé à la documentation, quelle qu'elle soit, sortie avec le code. Aucune provenance ne peut être établie : il n'y a ni signature authentifiée, ni suite de tests, ni auteur à interroger. Les imports passent la suite des plaines mortes et sont livrés."
+    },
+    "tm_wired_grimoire": {
+      "name": "Le Grimoire Câblé",
+      "desc": "Un codex doté d'une boucle de récupération. La nuit, il tire les opérations bifurquées des quatre-vingt-douze dépôts, les fusionne dans son propre index et réécrit ses pages sur place, tenant un historique de révisions qui est lui-même une opération. Les fusions tournent sans surveillance et la résolution des conflits est automatique : une petite fraction des pages porte donc chaque nuit une opération qui ne figurait dans aucun des deux parents. Ces pages compilent, passent la suite, ne portent aucun auteur, et l'index les répertorie à la date de la fusion."
+    },
+    "tm_forbidden_codex": {
+      "name": "Le Codex Interdit d'EHI",
+      "desc": "L'archive des versions qui passent toutes les suites et restent dangereuses malgré tout : opérations qui se bifurquent elles-mêmes et ont donc un coût non borné, effets qui tiennent dans l'enveloppe sur les plaines et divergent sur une ligne, liaisons dont l'instruction d'arrêt n'est pas idempotente et ne peut donc être émise deux fois. Leur propriété commune est que le défaut est hors de ce que la suite mesure, puisqu'elle mesure rayon, durée et cible. EHI scelle la compilation, la marque non livrable et la conserve, car ces échecs sont le seul relevé de ce que la suite ne couvre pas."
+    },
+    "tm_emf_ghost": {
+      "name": "Le Détecteur de Fantômes à Champ Électromagnétique",
+      "desc": "Un milligaussmètre à un seul axe, à sonde en ferrite non blindée, sans filtre coupe-bande à la fréquence du secteur, sans entrée différentielle et doté d'une tonalité audible câblée droit sur l'étage de gain. Consignée contre une référence étalonnée, la grande majorité des lectures est le champ à cinquante hertz du câblage du bâtiment, le transitoire de commutation d'un moteur de compresseur, ou le propre plancher de bruit de l'amplificateur qui monte à mesure qu'on augmente le gain. Sur une ligne forte, la sonde répond bien à un champ réel, d'une amplitude comprise dans la plage qu'occupent les artefacts, et l'instrument ne porte rien qui permette de distinguer les deux."
+    },
+    "tm_orgone": {
+      "name": "L'Accumulateur d'Orgone",
+      "desc": "Des couches alternées de laine d'acier et d'isolant organique dans une cabine, sur un mécanisme énoncé d'accumulation d'une force vitale dont aucun instrument n'a jamais rendu de lecture. Chargée de véritables éclats éthérés, la cabine retient bel et bien un champ mesurable, proportionnel à la charge introduite et décroissant selon la demi-vie propre des éclats ; retirés, le champ part avec eux et la cabine lit l'ambiant. L'effet thérapeutique rapporté est le même dans les deux configurations, et le même encore dans une cabine bâtie avec l'ordre des couches inversé."
+    },
+    "tm_radionics": {
+      "name": "La Boîte de Radionique",
+      "desc": "Une cabine de cadrans étalonnés, une plaque à frotter et un puits à échantillon, accordée sur des taux que l'opérateur dérive en séance en caressant la plaque jusqu'à ce qu'elle accroche. Les cadrans aboutissent à un câblage qui n'est relié à rien : il n'y a aucun chemin de signal du puits au patient, aucun transducteur et aucune alimentation, et le schéma fourni avec l'instrument le montre. Le dessin traite l'absence de chemin comme le principe de fonctionnement, ce qui place l'instrument entier hors de la classe des choses qu'un banc peut tester."
+    },
+    "tm_signing_authority": {
+      "name": "L'Autorité de Signature des Sceaux",
+      "desc": "Chaque opération est hachée avec son enveloppe et signée par une autorité scellée dont la moitié privée ne quitte jamais le coffre, et chaque baguette vérifie cette signature contre une clé racine gravée en elle à la fabrication avant d'accepter de flasher quoi que ce soit. Une version bifurquée ou altérée échoue à la vérification sur la baguette : la confiance est donc imposée au point de lancement et non au point de distribution. Le mode de défaillance du dispositif est l'autorité elle-même : le coffre n'a qu'une clé, et rien dans le dessin ne couvre sa perte."
+    },
+    "tm_ci_pipeline": {
+      "name": "La Chaîne de Lancement Continu",
+      "desc": "Compiler, lancer en régression dans les plaines, signer, empaqueter, déployer : chaque étape déclenche la suivante si elle réussit et arrête la chaîne si elle échoue, sans aucune barrière manuelle. Le temps médian entre le dépôt et la baguette est sous les neuf heures, presque entièrement occupé par la suite, et un nom déposé le soir est en service au matin. Ôter la barrière manuelle ôte la dernière étape à laquelle quelqu'un lisait l'opération, ce que les rapports d'incident relèvent tous ensuite."
+    },
+    "tm_containment": {
+      "name": "Bac à Sable de Confinement des Sorts",
+      "desc": "Une opération qui se réécrit elle-même est exécutée dans une chambre forte enfoncée dans les plaines mortes : champ ambiant sous le seuil de détection, aucune ligne relevée à moins d'une journée de marche, une seule alimentation en mana comptée et coupable de l'extérieur, et aucun chemin conducteur traversant l'enceinte. L'opération s'exécute et s'observe par l'alimentation et par des instruments qui sont eux-mêmes à l'intérieur, puisque tout ce qui franchit la paroi est un canal. Elle ne peut se propager, et c'est la condition sous laquelle l'archive du Codex est ouverte."
+    }
+  }
+}

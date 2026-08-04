@@ -1,0 +1,194 @@
+{
+  "need": {
+    "sleep": [
+      "I really need to rest...",
+      "I can barely keep my eyes open.",
+      "Home is calling me.",
+      "Just a few more steps and then I'll sleep."
+    ],
+    "hunger": [
+      "My stomach is growling...",
+      "I could really eat something right now.",
+      "Is there a vending machine nearby?",
+      "I need to find food."
+    ],
+    "work": [
+      "Time for another shift.",
+      "At least the pay is steady.",
+      "I should get to work.",
+      "Another day, another coin."
+    ],
+    "leisure": [
+      "Nice day for a stroll.",
+      "Maybe I'll check out the arcade.",
+      "I wonder what's happening around here.",
+      "I have some free time, what should I do?"
+    ],
+    "crime": [
+      "Nobody's watching...",
+      "Just this once.",
+      "I need the money more than they do.",
+      "If I'm quick, no one will notice."
+    ],
+    "hygiene": [
+      "I really need to wash up.",
+      "I feel grimy, where's the nearest sink?",
+      "A trip to the WC wouldn't hurt.",
+      "I should clean myself up a bit."
+    ],
+    "money": [
+      "I'm running low on funds.",
+      "I should figure out how to make some money.",
+      "Things are getting expensive...",
+      "I need to top up my wallet."
+    ],
+    "safety": [
+      "I should keep a low profile for a while.",
+      "Better stash this somewhere safe.",
+      "I don't want any trouble right now.",
+      "Best to lay low until things cool down."
+    ],
+    "comfort": [
+      "I could use a nicer place to stay.",
+      "Maybe it's time to upgrade my living situation.",
+      "A proper bed would be nice for once.",
+      "I've saved enough, why not treat myself?"
+    ],
+    "social": [
+      "I should go meet some new people.",
+      "It's been a while since I had a good conversation.",
+      "I wonder who's around today.",
+      "Maybe I'll run into someone interesting."
+    ],
+    "null": [
+      "..."
+    ]
+  },
+  "crimeIntent": [
+    "That {item} would look better in my pocket...",
+    "I really want that {item}.",
+    "Nobody would miss one {item}, right?",
+    "If I'm quick, that {item} is mine.",
+    "Just one {item}. They'll never notice."
+  ],
+  "crimeSuccess": [
+    "Got the {item}. Walk natural. Walk natural.",
+    "One {item}, free of charge.",
+    "That was almost too easy.",
+    "This {item} is mine now."
+  ],
+  "crimeCaught": [
+    "They saw me take the {item}...",
+    "I shouldn't have grabbed that {item}.",
+    "Great. Now there's a price on my head.",
+    "Lay low. Lay low. Lay low."
+  ],
+  "itemBuy": {
+    "cheap": [
+      "A fine little {item}, and barely cost a thing.",
+      "This {item} will do nicely.",
+      "Can't go wrong with a cheap {item}.",
+      "Happy with my {item}.",
+      "Just what I needed, a {item}."
+    ],
+    "pricey": [
+      "This {item} cost me, but it's worth it.",
+      "A {item} like this doesn't come cheap.",
+      "I splurged on a {item}. No regrets.",
+      "Quality {item}. You get what you pay for.",
+      "An expensive {item}, but I deserve it."
+    ]
+  },
+  "itemBrowse": {
+    "cheap": [
+      "This {item} is cheap enough to tempt me.",
+      "A {item}, hm. Maybe another day.",
+      "Not bad, this {item}.",
+      "I could use a {item} like that.",
+      "That {item} catches my eye."
+    ],
+    "pricey": [
+      "That {item} is far too dear for me.",
+      "A {item} at that price? Highway robbery.",
+      "I can only admire a {item} like that.",
+      "Lovely {item}, shame about the price.",
+      "Who can afford a {item} these days?"
+    ]
+  },
+  "itemDisposition": {
+    "greedy": [
+      "I want more.",
+      "Mine, all mine.",
+      "Never enough."
+    ],
+    "frugal": [
+      "Still, I should save my coin.",
+      "Do I really need it?",
+      "A penny saved..."
+    ],
+    "vain": [
+      "I'll be the envy of the street.",
+      "Looks matter.",
+      "Only the finest for me."
+    ],
+    "generous": [
+      "Perhaps I'll gift it to someone.",
+      "Sharing is its own reward.",
+      "Someone could use this."
+    ]
+  },
+  "familiar": [
+    "I wonder if I'll see that traveller again.",
+    "That person has been around a lot lately.",
+    "I almost feel like I know them.",
+    "Strange how we keep crossing paths.",
+    "I trust them more than most strangers."
+  ],
+  "capability": {
+    "cooking_station": [
+      "That meal hit the spot.",
+      "Cooking for myself beats buying out.",
+      "I should do that more often."
+    ],
+    "container": [
+      "Finders keepers.",
+      "You'd be surprised what people leave lying around.",
+      "A little extra never hurts."
+    ],
+    "rentable_room": [
+      "A real bed for once, wonderful.",
+      "Worth every coin for a good night's sleep.",
+      "I needed that rest."
+    ],
+    "apiary": [
+      "The hives are doing well this season.",
+      "Honey always sells.",
+      "Bees are good business."
+    ],
+    "bank": [
+      "That should tide me over.",
+      "Better safe than sorry, into the vault it goes.",
+      "Banks. Can't live with them, can't live without them."
+    ],
+    "real_estate_office": [
+      "Property really does pay for itself.",
+      "Another month, another rent cheque.",
+      "Owning land was the smartest thing I ever did."
+    ],
+    "stock_exchange": [
+      "Easy come, easy go.",
+      "The market giveth and the market taketh away.",
+      "I'll make it back next time."
+    ],
+    "fast_travel_terminal": [
+      "Nothing like seeing somewhere new.",
+      "Travel clears the head.",
+      "Wonder what's out there today."
+    ],
+    "furniture_builder": [
+      "A few new touches and this place feels like home.",
+      "Nice things make a house a home.",
+      "That looks better already."
+    ]
+  }
+}

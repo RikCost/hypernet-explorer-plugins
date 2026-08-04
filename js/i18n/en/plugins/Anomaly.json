@@ -1,0 +1,3212 @@
+{
+  "ui": {
+    "investigate": "Investigate",
+    "resume": "Resume Investigation",
+    "close": "Log Off",
+    "investigateHint": "Send the away team down to whatever is signalling",
+    "where": "{planet} - {system}",
+    "signalRow": "Signal",
+    "signalUnread": "anomalous, unresolved",
+    "signalLost": "The signal breaks up before anything can be made of it."
+  },
+  "reward": {
+    "artifact": "Recovered: {name}.",
+    "gear": "Recovered: {name}.",
+    "materials": "Aboard: {list}.",
+    "gold": "Sold on: {amount} EUR.",
+    "schrodingerite": "Schrodingerite: {units} unit(s).",
+    "exp": "Experience: {exp}.",
+    "harm": "The away team comes back {pct}% down.",
+    "heal": "Everyone comes back whole. Nobody can say why.",
+    "battle": "It is not going to let anyone leave."
+  },
+  "relic": {
+    "nameTemplate": "{prefix} {noun} of {of}",
+    "description": "Lifted off {planet}. Nothing on file explains it.",
+    "prefix": [
+      "Sealed",
+      "Weeping",
+      "Patient",
+      "Unlit",
+      "Folded",
+      "Recursive",
+      "Borrowed",
+      "Unfinished",
+      "Listening",
+      "Hollow",
+      "Grieving",
+      "Obedient"
+    ],
+    "noun": [
+      "Reliquary",
+      "Lens",
+      "Spindle",
+      "Codex",
+      "Anchor",
+      "Chorus",
+      "Key",
+      "Ledger",
+      "Seed",
+      "Mask",
+      "Compass",
+      "Bell"
+    ]
+  },
+  "tokens": {
+    "instrument": [
+      "the survey drone",
+      "the hand scanner",
+      "the sample kit",
+      "the suit telemetry"
+    ],
+    "maker": [
+      "whoever built it",
+      "the ones who left",
+      "the previous tenants",
+      "something with hands"
+    ],
+    "wrongness": [
+      "the readings run backwards for a second",
+      "the clocks disagree by four minutes",
+      "everyone's ears pop at once",
+      "the shadows fall the wrong way"
+    ],
+    "tone": [
+      "a low tone, just under hearing",
+      "a pattern that repeats every nine seconds",
+      "a voice run through too much rock",
+      "counting, in a base nobody uses"
+    ]
+  },
+  "biomes": {
+    "AlienAcidOcean": {
+      "label": "acid ocean world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the etched shore",
+          "the yellow shallows",
+          "the vent field"
+        ],
+        "ground": [
+          "stone eaten into lace",
+          "crystal scum along the tideline",
+          "a beach of dissolved shell"
+        ],
+        "hazard": [
+          "the vapour off the water",
+          "a seal giving up under the suit's arm",
+          "spray that pits the visor"
+        ],
+        "remnant": [
+          "a hull with the paint gone",
+          "a ladder rusted to lace",
+          "a case that held out longer than its owner"
+        ],
+        "sound": [
+          "a constant fizzing",
+          "bubbles surfacing in threes",
+          "the hiss of the suit scrubbers"
+        ]
+      }
+    },
+    "AlienCTypeAsteroid": {
+      "label": "carbonaceous asteroid",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the dark face",
+          "the regolith pond",
+          "the split"
+        ],
+        "ground": [
+          "carbon dust that eats the light",
+          "clay older than the star",
+          "ground that sticks to the gloves"
+        ],
+        "hazard": [
+          "dust in every seal",
+          "a surface that gives no landmarks",
+          "charge building on the regolith"
+        ],
+        "remnant": [
+          "a sample tube left standing",
+          "a hatch flush with the ground",
+          "scratches in a hand's pattern"
+        ],
+        "sound": [
+          "dust against the visor, endlessly",
+          "the suit's own noise, and nothing else",
+          "a scrape from under the regolith"
+        ]
+      }
+    },
+    "AlienCarbon": {
+      "label": "carbon world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the graphite terrace",
+          "the tar sea",
+          "the soot plain"
+        ],
+        "ground": [
+          "graphite that takes a print",
+          "soot over hard black rock",
+          "tar that remembers a boot"
+        ],
+        "hazard": [
+          "dust that gets into everything",
+          "a crust over tar",
+          "a sky that gives no light back"
+        ],
+        "remnant": [
+          "a hand pressed into the tar",
+          "a black pillar out of the plain",
+          "a drilling rig sunk to the deck"
+        ],
+        "sound": [
+          "footsteps and no echo",
+          "tar moving very slowly",
+          "a single tap, answered"
+        ]
+      }
+    },
+    "AlienCentaur": {
+      "label": "centaur",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the sunward face",
+          "the vent field",
+          "the shadow side"
+        ],
+        "ground": [
+          "dirty ice",
+          "a crust of tar and frost",
+          "gravel held down by nothing much"
+        ],
+        "hazard": [
+          "a vent opening under the boots",
+          "an orbit nobody has solved",
+          "the body shedding as it warms"
+        ],
+        "remnant": [
+          "a claw anchor driven into the ice",
+          "a cable running over the horizon",
+          "a shelter cut into the shadow side"
+        ],
+        "sound": [
+          "the vents, hissing on a schedule",
+          "ice shifting under the crust",
+          "a carrier wave with no message"
+        ]
+      }
+    },
+    "AlienChthonian": {
+      "label": "stripped core",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the bare core face",
+          "the stripped scarp",
+          "the metal plain"
+        ],
+        "ground": [
+          "the inside of a planet, outdoors",
+          "metal with a grain to it",
+          "rock that was never meant to be seen"
+        ],
+        "hazard": [
+          "a magnetic field that pulls tools out of hands",
+          "the star, close and unfiltered",
+          "ground still cooling after an age"
+        ],
+        "remnant": [
+          "a shaft that predates the stripping",
+          "a vault door standing free",
+          "a machine grown into the metal"
+        ],
+        "sound": [
+          "metal conducting a sound from far away",
+          "a hum that is in the ground, not the air",
+          "your own heartbeat, amplified"
+        ]
+      }
+    },
+    "AlienColdJupiter": {
+      "label": "cold giant",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the ammonia snow deck",
+          "the dark belt",
+          "the pole vortex"
+        ],
+        "ground": [
+          "snow that falls upwards in the updraught",
+          "cloud the colour of old ivory",
+          "a dark that swallows the lamps"
+        ],
+        "hazard": [
+          "cold that stiffens the seals",
+          "the vortex pulling to the pole",
+          "a night eleven hours long"
+        ],
+        "remnant": [
+          "a probe frozen mid-transmission",
+          "a lamp still burning on a dead relay",
+          "a hatch left open"
+        ],
+        "sound": [
+          "snow on the hull, very quiet",
+          "a long note from the pole",
+          "the mic finding nothing at all"
+        ]
+      }
+    },
+    "AlienComet": {
+      "label": "comet",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the active vent",
+          "the neck",
+          "the tail root"
+        ],
+        "ground": [
+          "ice going straight to vapour",
+          "black crust over white ice",
+          "a surface leaving as you stand on it"
+        ],
+        "hazard": [
+          "a jet that will take a person with it",
+          "the ground sublimating underfoot",
+          "a nucleus due to split"
+        ],
+        "remnant": [
+          "a harpoon line gone slack",
+          "a lander wedged in the neck",
+          "an instrument still logging"
+        ],
+        "sound": [
+          "the vents letting go, one at a time",
+          "ice tearing above the neck",
+          "a sigh through the tail"
+        ]
+      }
+    },
+    "AlienDesert": {
+      "label": "desert world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the dune sea",
+          "the dry wash",
+          "the wind-cut mesa"
+        ],
+        "ground": [
+          "sand with glass in it",
+          "a crust that breaks like biscuit",
+          "stone polished by a million years of wind"
+        ],
+        "hazard": [
+          "a storm on the horizon and closing",
+          "water running out faster than planned",
+          "the dune moving overnight"
+        ],
+        "remnant": [
+          "a spar of metal standing out of the sand",
+          "a well with a lid on it",
+          "a road going under the dunes"
+        ],
+        "sound": [
+          "sand hissing across the visor",
+          "the dunes booming as they slide",
+          "wind with a note in it"
+        ]
+      }
+    },
+    "AlienDiamond": {
+      "label": "diamond world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the diamond scarp",
+          "the light well",
+          "the clear plain"
+        ],
+        "ground": [
+          "crystal you can see forty metres into",
+          "facets the size of a house",
+          "a floor that scatters every lamp"
+        ],
+        "hazard": [
+          "edges that open a suit at a touch",
+          "light coming from six directions",
+          "your own reflection, out of step"
+        ],
+        "remnant": [
+          "a shape cut into the crystal, from inside",
+          "a body held in the clear rock",
+          "a lens ground by somebody's hand"
+        ],
+        "sound": [
+          "a chime whenever anything touches",
+          "the crystal carrying voices sideways",
+          "a note that will not stop"
+        ]
+      }
+    },
+    "AlienDwarf": {
+      "label": "dwarf planet",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the bright spot",
+          "the crater floor",
+          "the ice ridge"
+        ],
+        "ground": [
+          "salt crust over ice",
+          "dust that hangs where it is kicked",
+          "ice with something dark under it"
+        ],
+        "hazard": [
+          "gravity too light to trust a step to",
+          "a horizon two hundred metres away",
+          "the crust venting when warmed"
+        ],
+        "remnant": [
+          "a lander with the legs folded",
+          "a bore hole with the cap still on",
+          "a flag with no country on it"
+        ],
+        "sound": [
+          "nothing, and the suit pumps",
+          "ice cracking as the lamps warm it",
+          "a click every twelve seconds"
+        ]
+      }
+    },
+    "AlienEarthLike": {
+      "label": "Earth-like world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the terraced valley",
+          "the treeline",
+          "the shallow bay"
+        ],
+        "ground": [
+          "turf that is nearly grass",
+          "river shingle",
+          "soil that smells right"
+        ],
+        "hazard": [
+          "weather coming in fast",
+          "water nobody has tested",
+          "whatever cut those trails"
+        ],
+        "remnant": [
+          "a fence line running to the sea",
+          "a field laid out in squares",
+          "a doorframe with no house"
+        ],
+        "sound": [
+          "birdsong that repeats too exactly",
+          "wind through leaves",
+          "running water, somewhere below"
+        ]
+      }
+    },
+    "AlienGasGiant": {
+      "label": "gas giant",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the belt boundary",
+          "the white oval",
+          "the ammonia deck"
+        ],
+        "ground": [
+          "cloud tops running like rivers",
+          "a storm wider than a continent",
+          "nothing at all, for eleven thousand kilometres"
+        ],
+        "hazard": [
+          "winds that do not care about the capsule",
+          "lightning bigger than the ship",
+          "a descent with no bottom to it"
+        ],
+        "remnant": [
+          "a station tethered to nothing",
+          "a drogue chute still deploying",
+          "a hull section riding the belt"
+        ],
+        "sound": [
+          "wind, and the capsule complaining",
+          "thunder with no gap in it",
+          "a whistle rising as you fall"
+        ]
+      }
+    },
+    "AlienHabitable": {
+      "label": "garden world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the meadow",
+          "the orchard rows",
+          "the still lake"
+        ],
+        "ground": [
+          "grass cut short by something",
+          "soil turned over recently",
+          "a path kept clear"
+        ],
+        "hazard": [
+          "how much of this was arranged",
+          "air so good the suit argues",
+          "the feeling of being counted"
+        ],
+        "remnant": [
+          "a bench facing the water",
+          "a gate with no fence",
+          "a row of stones with names on them"
+        ],
+        "sound": [
+          "insects, on cue",
+          "wind that arrives when needed",
+          "a hush like a held breath"
+        ]
+      }
+    },
+    "AlienHotJupiter": {
+      "label": "hot Jupiter",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the day-side furnace",
+          "the terminator jet",
+          "the iron rain layer"
+        ],
+        "ground": [
+          "cloud glowing from below",
+          "air at the colour of a filament",
+          "a sky that never cools"
+        ],
+        "hazard": [
+          "a jet stream at four kilometres a second",
+          "metal condensing on the hull",
+          "heat with nowhere to go"
+        ],
+        "remnant": [
+          "a shield tile from no known ship",
+          "a probe flying a perfect circle",
+          "a wing with the paint boiled off"
+        ],
+        "sound": [
+          "a roar that flattens the mic",
+          "iron rain on the hull",
+          "the hull ringing at one note"
+        ]
+      }
+    },
+    "AlienIce": {
+      "label": "ice world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the pressure ridge",
+          "the blue crevasse",
+          "the ice plain"
+        ],
+        "ground": [
+          "ice hard as rock",
+          "rime over old snow",
+          "a crust that gives underfoot"
+        ],
+        "hazard": [
+          "cold that finds every seam",
+          "a crevasse under fresh snow",
+          "the ice shifting without warning"
+        ],
+        "remnant": [
+          "a hut under two metres of ice",
+          "a flag frozen mid-snap",
+          "a hole cut and never filled"
+        ],
+        "sound": [
+          "ice groaning a long way off",
+          "the crunch of every step",
+          "a note held under the ice"
+        ]
+      }
+    },
+    "AlienIceGiant": {
+      "label": "ice giant",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the methane haze",
+          "the diamond layer",
+          "the dark equator"
+        ],
+        "ground": [
+          "a blue that goes all the way down",
+          "haze with crystal falling through it",
+          "air heavy with methane"
+        ],
+        "hazard": [
+          "diamond hail on the capsule",
+          "pressure doubling every few minutes",
+          "a wind with no direction to it"
+        ],
+        "remnant": [
+          "a collector still hanging in the haze",
+          "a tether cut clean at both ends",
+          "a capsule with the ports painted over"
+        ],
+        "sound": [
+          "crystal ticking off the hull",
+          "a hiss that changes pitch with depth",
+          "something answering the sounder"
+        ]
+      }
+    },
+    "AlienLavaOcean": {
+      "label": "lava ocean world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the black shore",
+          "the cooling crust",
+          "the fire fountain"
+        ],
+        "ground": [
+          "crust thin enough to see through",
+          "cooled rope lava",
+          "stone that is red underneath"
+        ],
+        "hazard": [
+          "a crust that flexes when you stand on it",
+          "the heat gradient in one step",
+          "a fountain going up without warning"
+        ],
+        "remnant": [
+          "a probe half swallowed",
+          "a rail line running into the fire",
+          "a hand-shaped hollow in the rock"
+        ],
+        "sound": [
+          "a roar with no edges",
+          "crust splitting like ice",
+          "the suit warning tone"
+        ]
+      }
+    },
+    "AlienLongPeriodComet": {
+      "label": "long-period comet",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the first-light face",
+          "the untouched ice",
+          "the far side"
+        ],
+        "ground": [
+          "ice that has never been warm",
+          "frost from before the planets",
+          "a surface nothing has ever landed on"
+        ],
+        "hazard": [
+          "a first thaw happening now",
+          "an orbit that will not come back inside a life",
+          "cold that has had ten million years to settle"
+        ],
+        "remnant": [
+          "something that came in with the ice",
+          "a shape under the frost, not a rock",
+          "a marker older than the system"
+        ],
+        "sound": [
+          "the ice waking up",
+          "a crack running away into the dark",
+          "a voice that has been waiting"
+        ]
+      }
+    },
+    "AlienMTypeAsteroid": {
+      "label": "metal asteroid",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the cut face",
+          "the nickel seam",
+          "the mine mouth"
+        ],
+        "ground": [
+          "metal with saw marks in it",
+          "a floor that was machined, not formed",
+          "nickel iron, polished by vacuum"
+        ],
+        "hazard": [
+          "edges left by whoever cut here",
+          "a shaft that goes further than the survey says",
+          "metal holding a charge"
+        ],
+        "remnant": [
+          "a cutting head still in the rock",
+          "a shift board with names on it",
+          "an airlock cycled from the inside"
+        ],
+        "sound": [
+          "metal carrying a knock a long way",
+          "machinery running somewhere below",
+          "a saw note, very faint"
+        ]
+      }
+    },
+    "AlienMagmaPlanet": {
+      "label": "magma world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the caldera rim",
+          "the lava tube",
+          "the ash plain"
+        ],
+        "ground": [
+          "ash over hot stone",
+          "basalt still creaking",
+          "a floor that glows in the cracks"
+        ],
+        "hazard": [
+          "gas coming up through the ash",
+          "a roof of rock over a live tube",
+          "heat the suit cannot dump"
+        ],
+        "remnant": [
+          "a shaft cut straight down",
+          "a heat exchanger nobody came back for",
+          "a stair carved into the tube wall"
+        ],
+        "sound": [
+          "a deep tearing, far below",
+          "ash falling on the helmet",
+          "something breathing in the tube"
+        ]
+      }
+    },
+    "AlienMagnetar": {
+      "label": "magnetar surface",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal"
+      ],
+      "tokens": {
+        "place": [
+          "the field line",
+          "the crust fault",
+          "the flare scar"
+        ],
+        "ground": [
+          "crust under a field that reorders atoms",
+          "matter squeezed out of shape",
+          "a surface no landing party can stand on"
+        ],
+        "hazard": [
+          "a field that unwrites the ship's memory",
+          "a starquake due at any moment",
+          "physics itself, at this range"
+        ],
+        "remnant": [
+          "a probe stretched into a line",
+          "a signal older than the ship",
+          "a message repeating on the field lines"
+        ],
+        "sound": [
+          "the whole radio band, singing",
+          "a pulse exactly on the second",
+          "a voice inside the pulse"
+        ]
+      }
+    },
+    "AlienMegaIron": {
+      "label": "iron world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the dense plain",
+          "the magnet ridge",
+          "the ore canyon"
+        ],
+        "ground": [
+          "iron with a mirror finish",
+          "ore so pure it rings",
+          "a floor that holds the boots"
+        ],
+        "hazard": [
+          "gravity out of all proportion to the size",
+          "every ferrous thing being pulled",
+          "a compass with an opinion"
+        ],
+        "remnant": [
+          "a mine head with the cage still down",
+          "rail cut straight for sixty kilometres",
+          "a foundry gone cold"
+        ],
+        "sound": [
+          "the ground carrying every footfall",
+          "a bell note when anything is dropped",
+          "hammering, in time"
+        ]
+      }
+    },
+    "AlienMercurian": {
+      "label": "cratered iron world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the crater chain",
+          "the scarp",
+          "the pole shadow"
+        ],
+        "ground": [
+          "cratered iron",
+          "dust that has not moved in an age",
+          "rock with a magnetic pull to it"
+        ],
+        "hazard": [
+          "the swing from day heat to night cold",
+          "micrometeorite fall",
+          "the pole shadow's cold"
+        ],
+        "remnant": [
+          "a rover on its side",
+          "bootprints going the wrong way",
+          "a drill collar left standing"
+        ],
+        "sound": [
+          "iron ringing under a boot",
+          "the suit radio hissing",
+          "a slow tick in the helmet"
+        ]
+      }
+    },
+    "AlienMiniNeptune": {
+      "label": "mini-Neptune",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the haze deck",
+          "the shear layer",
+          "the pressure floor"
+        ],
+        "ground": [
+          "cloud with nothing under it",
+          "a haze the lamps cannot cut",
+          "air thick enough to swim"
+        ],
+        "hazard": [
+          "a capsule hull at its rated depth",
+          "the shear between decks",
+          "no floor to stop on"
+        ],
+        "remnant": [
+          "a probe still falling, forty years down",
+          "a balloon envelope gone slack",
+          "a beacon holding depth by itself"
+        ],
+        "sound": [
+          "wind past the hull, constant",
+          "the hull talking to itself",
+          "thunder from underneath"
+        ]
+      }
+    },
+    "AlienOcean": {
+      "label": "ocean world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the drifting raft of weed",
+          "the shelf edge",
+          "the calm patch"
+        ],
+        "ground": [
+          "swell under the boat",
+          "water clear to forty metres",
+          "a sea with no shore in it"
+        ],
+        "hazard": [
+          "the depth under the hull",
+          "a swell building out of nothing",
+          "whatever keeps the water clear"
+        ],
+        "remnant": [
+          "a buoy still on station",
+          "a mast standing in open water",
+          "a net full of nothing"
+        ],
+        "sound": [
+          "water against the hull",
+          "something big breathing out",
+          "clicks answering each other"
+        ]
+      }
+    },
+    "AlienPlanetesimal": {
+      "label": "planetesimal",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the rubble saddle",
+          "the impact scar",
+          "the loose end"
+        ],
+        "ground": [
+          "rubble held together by habit",
+          "boulders resting on nothing",
+          "gravel that answers a footfall"
+        ],
+        "hazard": [
+          "a body that comes apart when pushed",
+          "boulders drifting once disturbed",
+          "no gravity worth the name"
+        ],
+        "remnant": [
+          "a net thrown over the rubble",
+          "a charge set and never fired",
+          "a claim marker with a name scratched out"
+        ],
+        "sound": [
+          "rubble grinding through the boots",
+          "nothing, until something moves",
+          "a tap on the far side"
+        ]
+      }
+    },
+    "AlienPlasma": {
+      "label": "plasma world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the ion sheath",
+          "the arc column",
+          "the glow front"
+        ],
+        "ground": [
+          "matter with the electrons stripped off",
+          "light with a texture to it",
+          "a surface that is only a colour"
+        ],
+        "hazard": [
+          "charge finding every conductor aboard",
+          "instruments reading their own reflection",
+          "an arc jumping to the capsule"
+        ],
+        "remnant": [
+          "a wreck held in the field, undecayed",
+          "a shape that keeps its outline in the arc",
+          "a hull with every circuit fused"
+        ],
+        "sound": [
+          "a crackle that follows the ship",
+          "radio screaming across every band",
+          "a hum that rises when spoken to"
+        ]
+      }
+    },
+    "AlienPuffy": {
+      "label": "puffy world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the outer envelope",
+          "the escaping tail",
+          "the thin heart"
+        ],
+        "ground": [
+          "a world you can fly straight through",
+          "gas barely holding itself together",
+          "a body with less substance than a cloud"
+        ],
+        "hazard": [
+          "a planet that is leaving in real time",
+          "a tail streaming past the ports",
+          "no density to brake against"
+        ],
+        "remnant": [
+          "a beacon adrift in the envelope",
+          "a sail spread in the outflow",
+          "a wreck being carried away with the atmosphere"
+        ],
+        "sound": [
+          "a thin whistle, going",
+          "the outflow past the hull",
+          "a signal getting quieter every hour"
+        ]
+      }
+    },
+    "AlienQuarkPlanet": {
+      "label": "quark world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal"
+      ],
+      "tokens": {
+        "place": [
+          "the surface, such as it is",
+          "the fold",
+          "the shear boundary"
+        ],
+        "ground": [
+          "matter with no atoms in it",
+          "a floor a centimetre thick and heavier than a moon",
+          "something that will not resolve in the scope"
+        ],
+        "hazard": [
+          "a tide that finds the difference between head and feet",
+          "matter deciding what your matter should be",
+          "a surface at the wrong scale to touch"
+        ],
+        "remnant": [
+          "an object holding station where nothing can",
+          "a scar in the surface, deliberate",
+          "a shape that is the same size from every distance"
+        ],
+        "sound": [
+          "nothing, at a volume you can feel",
+          "the instruments refusing to agree",
+          "a tone below every instrument's floor"
+        ]
+      }
+    },
+    "AlienRainforest": {
+      "label": "rainforest world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the canopy gap",
+          "the buttress roots",
+          "the flooded floor"
+        ],
+        "ground": [
+          "leaf litter a metre deep",
+          "roots that move if watched",
+          "mud that holds a print"
+        ],
+        "hazard": [
+          "everything here having a use for meat",
+          "spores thick enough to see",
+          "the light going in four minutes"
+        ],
+        "remnant": [
+          "a wall the forest has taken back",
+          "a stair under the roots",
+          "a face carved where nobody would see it"
+        ],
+        "sound": [
+          "everything calling at once, then nothing",
+          "water off the leaves",
+          "one call that is not an animal"
+        ]
+      }
+    },
+    "AlienRingedGasGiant": {
+      "label": "ringed giant",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the ring shadow",
+          "the shepherd gap",
+          "the cloud deck under the rings"
+        ],
+        "ground": [
+          "cloud barred with ring shadow",
+          "light that arrives in stripes",
+          "a sky with a line drawn through it"
+        ],
+        "hazard": [
+          "ring material coming down as rain",
+          "the gap closing on the capsule",
+          "shepherd debris at closing speed"
+        ],
+        "remnant": [
+          "a mirror array strung across the gap",
+          "a hull polished by ring dust",
+          "a marker buoy inside the rings"
+        ],
+        "sound": [
+          "dust against the hull like rain",
+          "a rhythm the rings keep",
+          "radio noise in a rising scale"
+        ]
+      }
+    },
+    "AlienRogue": {
+      "label": "starless world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the frozen sea",
+          "the lamp circle",
+          "the black plain"
+        ],
+        "ground": [
+          "ice with no sun to have made it",
+          "frozen air lying like snow",
+          "ground that has never had a shadow"
+        ],
+        "hazard": [
+          "dark with nothing behind it",
+          "the lamps being the only light this world has known",
+          "cold measured against nothing"
+        ],
+        "remnant": [
+          "a light left on",
+          "a door in the ice",
+          "a signal aimed at an empty sky"
+        ],
+        "sound": [
+          "the deadest quiet in the catalogue",
+          "your own breathing, too loud",
+          "one knock, from below"
+        ]
+      }
+    },
+    "AlienSTypeAsteroid": {
+      "label": "stony asteroid",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the sunlit ridge",
+          "the boulder garden",
+          "the crater lip"
+        ],
+        "ground": [
+          "silicate gravel",
+          "bare stone, sharp as the day it broke",
+          "dust in long rays from the crater"
+        ],
+        "hazard": [
+          "edges that cut a glove",
+          "a spin that puts the sun where it should not be",
+          "nothing to hold on to"
+        ],
+        "remnant": [
+          "a piton line running over the ridge",
+          "a beacon still on its tripod",
+          "a core sample laid out in order"
+        ],
+        "sound": [
+          "stone under the boots, and radio",
+          "a ping from the beacon",
+          "gravel falling somewhere it should not"
+        ]
+      }
+    },
+    "AlienShortPeriodComet": {
+      "label": "short-period comet",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the worn face",
+          "the old vent scar",
+          "the dust lag"
+        ],
+        "ground": [
+          "a crust thickened by too many passes",
+          "ice that has been out and back a thousand times",
+          "dust lying where the ice used to be"
+        ],
+        "hazard": [
+          "a body running out of what it is made of",
+          "vents that fire on the old schedule",
+          "crust with nothing under it"
+        ],
+        "remnant": [
+          "a plaque from a visit nobody logged",
+          "an anchor from an earlier orbit",
+          "supplies cached for a return"
+        ],
+        "sound": [
+          "the same vent hissing on time",
+          "dust settling with nowhere to settle",
+          "a countdown, in an old format"
+        ]
+      }
+    },
+    "AlienSubEarth": {
+      "label": "small rocky world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the dry riverbed",
+          "the low hills",
+          "the wind scarp"
+        ],
+        "ground": [
+          "thin red soil",
+          "gravel with nothing living in it",
+          "cracked hardpan"
+        ],
+        "hazard": [
+          "air too thin to breathe",
+          "the wind picking up grit",
+          "a gravity light enough to trip you"
+        ],
+        "remnant": [
+          "a low wall of stacked stone",
+          "a post with nothing on it",
+          "a cut channel that once carried water"
+        ],
+        "sound": [
+          "wind and nothing else",
+          "grit against the visor",
+          "a hum with no source"
+        ]
+      }
+    },
+    "AlienSubMercurian": {
+      "label": "burnt inner world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the terminator line",
+          "the slag basin",
+          "the day-side flats"
+        ],
+        "ground": [
+          "glazed rock",
+          "iron grit",
+          "stone cooked to glass"
+        ],
+        "hazard": [
+          "the heat coming up through the boots",
+          "the unfiltered light",
+          "a suit cooling loop at its limit"
+        ],
+        "remnant": [
+          "a mast melted at the base",
+          "a shadow burnt into the rock",
+          "a cairn nobody could have built recently"
+        ],
+        "sound": [
+          "nothing, and the suit fans working",
+          "rock ticking as it cools",
+          "static off the day side"
+        ]
+      }
+    },
+    "AlienSuperEarth": {
+      "label": "heavy world",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the pressure flats",
+          "the long ridge",
+          "the sink"
+        ],
+        "ground": [
+          "stone packed hard by its own weight",
+          "layered rock, flat as a floor",
+          "dust that will not lift"
+        ],
+        "hazard": [
+          "gravity that makes a fall final",
+          "air pressed thick as syrup",
+          "a suit servo giving out"
+        ],
+        "remnant": [
+          "a doorway built low and wide",
+          "a ramp instead of a stair",
+          "a machine sunk into its own footings"
+        ],
+        "sound": [
+          "everything an octave too low",
+          "the ground taking the sound away",
+          "a boom that arrives late"
+        ]
+      }
+    },
+    "AlienTrojanAsteroid": {
+      "label": "trojan asteroid",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the trailing camp",
+          "the balance point",
+          "the dust shoal"
+        ],
+        "ground": [
+          "red dust that has never been disturbed",
+          "ice and tar in equal measure",
+          "ground that has held one position for an age"
+        ],
+        "hazard": [
+          "a swarm of neighbours at the same point",
+          "nothing to fall towards",
+          "a horizon full of other rocks"
+        ],
+        "remnant": [
+          "a mooring line strung between two rocks",
+          "a camp laid out for more people than came back",
+          "a chart pinned to the rock"
+        ],
+        "sound": [
+          "radio chatter from rocks that are empty",
+          "the swarm ticking on the sounder",
+          "a hail on the common channel"
+        ]
+      }
+    },
+    "AlienTundra": {
+      "label": "tundra world",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the frost steppe",
+          "the thaw pool",
+          "the boulder field"
+        ],
+        "ground": [
+          "frozen moss",
+          "ground that gives and then does not",
+          "stones sorted into rings"
+        ],
+        "hazard": [
+          "the wind with nothing to break it",
+          "thaw opening under the boots",
+          "a night that arrives early"
+        ],
+        "remnant": [
+          "a stone marker taller than a man",
+          "a hearth with the ash still in it",
+          "a track worn into the moss"
+        ],
+        "sound": [
+          "wind and one animal call",
+          "meltwater under the surface",
+          "a drum, or the blood in your ears"
+        ]
+      }
+    },
+    "AlienWarmJupiter": {
+      "label": "warm giant",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "the calm band",
+          "the cloud canyon",
+          "the long anticyclone"
+        ],
+        "ground": [
+          "cloud in orderly rows",
+          "a haze that takes the light gently",
+          "air warm enough to open a visor in"
+        ],
+        "hazard": [
+          "the calm ending without notice",
+          "a downdraught with no floor",
+          "the temptation to go lower"
+        ],
+        "remnant": [
+          "a habitat riding the calm band",
+          "a mooring mast with nothing moored",
+          "a windsock, still turning"
+        ],
+        "sound": [
+          "wind with a lull in it",
+          "the capsule creaking companionably",
+          "a chord, held"
+        ]
+      }
+    }
+  },
+  "scenarios": {
+    "bloom": {
+      "title": "The Bloom",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Something is growing at {place}, in a pattern, and the pattern is a spiral that closes on a point rather than opening from one.\nIt is the only living thing the sweep has found here, it covers nine hectares, and {instrument} says it has doubled since the ship made orbit.",
+          "choices": [
+            {
+              "text": "Walk to the centre of the spiral.",
+              "to": "a"
+            },
+            {
+              "text": "Take a sample from the edge.",
+              "to": "b"
+            },
+            {
+              "text": "Burn a firebreak and watch what it does.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The growth gets denser and quieter towards the middle. At the centre it has grown around something that it did not grow, and has been careful about it.",
+          "choices": [
+            {
+              "text": "Cut it out.",
+              "to": "a1"
+            },
+            {
+              "text": "Leave it and log the position.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The sample fights the knife. It is not tough; it is unwilling.\nIn the tube it goes on moving, and by the time the team is back at the lander it has arranged itself into the same spiral, one centimetre across.",
+          "choices": [
+            {
+              "text": "Keep it aboard.",
+              "to": "b1"
+            },
+            {
+              "text": "Put it back where it came from.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The firebreak burns a clean line across the spiral's arm.\nThe growth does not try to cross it. It goes round, in both directions, and meets itself behind the away team in under four minutes.",
+          "choices": [
+            {
+              "text": "Stand and fight it back to the lander.",
+              "to": "c1"
+            },
+            {
+              "text": "Drop everything and run.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "It comes free in a wet handful of stems and what is inside has been kept alive, on purpose, by something with no reason to keep anything alive.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The team backs out along its own trail. Behind them the spiral closes over the gap at walking pace, and the centre is exactly where it was, and exactly as hidden.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Sealed, monitored, and worth a great deal to the right laboratory. The ship's biology bay is a livelier place than it was, and nobody sleeps quite as well.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "It is taken back and set down at the edge, and the whole spiral shifts a metre towards the lander and then stops, which everyone agrees to record as wind.\nSomething is left on {ground} where the sample lay.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "It is not a plant and it does not burn a second time.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "Everyone gets aboard. The sample kits, the cutter and one boot do not.\n{leader} is last up the ladder and does not look back, and says afterwards that it was not chasing them, it was seeing them off.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "castaway": {
+      "title": "Somebody Is Still Talking",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The transmission is a voice, in a language the ship's tables get to eighty per cent of, and it is asking for help by name. Not the ship's name. {leader}'s.\nThe source is a shelter at {place}, dug in against {hazard} and holding pressure.",
+          "choices": [
+            {
+              "text": "Knock.",
+              "to": "a"
+            },
+            {
+              "text": "Cut the power to the shelter first.",
+              "to": "b"
+            },
+            {
+              "text": "Ask it how it knows the name.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The door cycles before anyone touches it. Inside is one room, one chair, one light, and a person in a suit two generations out of date sitting with their back to the door.\nThey do not turn around. They say they have been practising this for a long time.",
+          "choices": [
+            {
+              "text": "Sit down and listen.",
+              "to": "a1"
+            },
+            {
+              "text": "Turn the chair around.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The team traces the feed and pulls it. The shelter goes dark; the voice does not stop.\nIt has not been using the shelter's power for a very long time. It is being polite.",
+          "choices": [
+            {
+              "text": "Go in anyway.",
+              "to": "b1"
+            },
+            {
+              "text": "Strip the shelter for parts and leave.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The question gets a long pause, which is the first honest thing in the exchange.\nThen: it does not know the name. It knows the shape of whoever is listening, and it fits a name to it. It has been fitting names to listeners since before this world had an atmosphere.",
+          "choices": [
+            {
+              "text": "Ask what it wants.",
+              "to": "c1"
+            },
+            {
+              "text": "Stop transmitting. Walk away.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "It takes an hour. They were on a survey that never filed, they have been alone since before the party was born, and they are not asking to be rescued. They are asking to be remembered.\nThey give {leader} everything they have left, which is not much, and it is more than the ship deserves.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The suit is empty and has been empty for a very long time, and the voice keeps talking out of the chair, out of the walls, out of the away team's own helmets.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Inside is thirty years of somebody's handwriting on every flat surface, and at the end of it, in the last clear space by the door, an apology addressed to whoever came.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Good hardware, well maintained, and the team is up and away in ninety minutes. The voice is still on the band when the ship makes its burn out of orbit.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "c1": {
+          "text": "It wants what it has always wanted, and it explains this at length, and none of it survives the trip back up as anything the crew can repeat. What survives is in {leader}'s hands, and nobody remembers being handed it.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "The band goes quiet. The team walks back across {ground} in a silence that everybody is grateful for, and the shelter does not call after them, which is somehow the unkindest part.",
+          "outcome": {
+            "kind": "none",
+            "mag": "small",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "derelict": {
+      "title": "The Wreck at {place}",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The signal is a distress carrier, and it has been running long enough that {a|nobody expects an answer|the power that made it should have failed twice over}. It comes from {place}: a hull, broken across the middle, with {remnant} beside it.\n{leader} takes the away team down. Up close the wreck is older than the transmission, and the transmission is older than anyone aboard.",
+          "choices": [
+            {
+              "text": "Cut into the pressure hull.",
+              "to": "a"
+            },
+            {
+              "text": "Follow the cable running out of the wreck.",
+              "to": "b"
+            },
+            {
+              "text": "Strip the wreck and leave.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Inside, the crew compartment is dry and tidy and everything is stowed. Nobody left in a hurry. There are no bodies.\nA locker at the back has been sealed from the outside, and {sound} is coming from behind it.",
+          "choices": [
+            {
+              "text": "Open the locker.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the log recorder and go.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The cable runs out over {ground} for two kilometres and ends at a mast driven into the surface, still powered, still aimed at a point in the sky where there is nothing to aim at.\n{wrongness}.",
+          "choices": [
+            {
+              "text": "Cut the mast down and take the core.",
+              "to": "b1"
+            },
+            {
+              "text": "Point the mast at the ship and listen.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The team works the wreck the way a wreck is meant to be worked: panels off, cells out, anything with a serial number into the bags. It goes quickly.\nHalfway through, {instrument} shows a second heat source under the hull.",
+          "choices": [
+            {
+              "text": "Dig it out.",
+              "to": "c1"
+            },
+            {
+              "text": "Take what is in the bags and lift.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "The seal gives. Whatever the crew shut in there had been waiting with the patience of a thing that does not need to breathe, and it comes out at {leader} first.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "The recorder comes out with its casing intact. Two hundred hours of watch reports, and then one voice, on the last day, saying that the ship is not where the ship thinks it is.\nNobody opens the locker. The team is back aboard inside the hour.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "The core comes out of the mast in one piece, heavier than it has any business being, and the distress carrier stops the moment it is clear of the housing. The silence afterwards is the loudest thing on the recording.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Turned around, the mast plays back the last eleven seconds of everything the away team has said, in their own voices, before they have finished saying it.\n{leader} calls the walk short. The team comes up shaken and one of them will not talk about it.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "Under the hull is a reactor the size of a barrel, still lit, still governed, and salvage of that quality does not come along twice in a career.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "The bags come up heavy with cells, plate and cable. Nobody looks at the second heat source again, and the ship is out of the system before anybody decides they should have.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "descent": {
+      "title": "The Descent",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There is no ground to land on. The signal comes from a fixed depth in {place}, holding station in an atmosphere that should have carried anything away in an hour.\n{leader} takes the capsule down. {ground} closes over the ports at nine kilometres.",
+          "choices": [
+            {
+              "text": "Match its depth and hold.",
+              "to": "a"
+            },
+            {
+              "text": "Go below it and look up.",
+              "to": "b"
+            },
+            {
+              "text": "Grapple it and haul it up.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "At depth it resolves out of the haze: a structure, not a wreck, built to float here, with lights on in a pattern that is not for navigation.\nThere is a dock. It is the right size.",
+          "choices": [
+            {
+              "text": "Dock.",
+              "to": "a1"
+            },
+            {
+              "text": "Photograph everything and climb out.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Below it the pressure is at the capsule's rating and the view up is worth it: the thing is not floating. It is standing on a column of something that goes down past the capsule, past the sounder's range, past any floor this world has.",
+          "choices": [
+            {
+              "text": "Follow the column down.",
+              "to": "b1"
+            },
+            {
+              "text": "Take a sample of the column and go.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The grapple takes hold on the second pass. Whatever it is masses far less than it should and comes up easily for six kilometres.\nAt six kilometres it stops coming, and the winch keeps running, and the cable keeps paying in.",
+          "choices": [
+            {
+              "text": "Keep winching.",
+              "to": "c1"
+            },
+            {
+              "text": "Cut the cable.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "The dock takes the capsule like it was built for it, because it was. Inside there is air, and gravity, and a single corridor with a door at the end of it, and the door opens for {leader} and for nobody else.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "Two hundred frames of a floating city that nobody will believe, and a rise back through {hazard} that takes eleven hours and costs a heat shield.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "The capsule goes past its rating on the way to finding out what the column stands on. It comes back up with two ports crazed, one crew member's ribs gone, and the answer, which nobody has been able to write down.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "medium",
+            "exp": 20
+          }
+        },
+        "b2": {
+          "text": "The sample arm comes back with three grams of the column in the pot, and the pot weighs eleven kilos, and it is still cooling.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "What comes up on the end of the cable is not what the grapple took hold of.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "The cutter takes the cable and the capsule goes up like a cork. Snagged in the last metre of cable, still attached, is a plate of something that will not scratch.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "furnace": {
+      "title": "Something Lives In The Heat",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The heat here is enough to end an unprotected argument in under a second, and the signal is coming from the hottest point on the survey.\nWhatever is transmitting is not sheltering from {hazard}. It is using it.",
+          "choices": [
+            {
+              "text": "Go in with the suit at full cooling.",
+              "to": "a"
+            },
+            {
+              "text": "Send the drone in and stay out.",
+              "to": "b"
+            },
+            {
+              "text": "Wait for the cool phase.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Eleven minutes of endurance, and at the end of it, in the middle of {place}, there is a shape that the heat is going around.\nIt is aware of the away team. It has been waiting for the temperature to bring somebody.",
+          "choices": [
+            {
+              "text": "Reach out to it.",
+              "to": "a1"
+            },
+            {
+              "text": "Get out while the suit still holds.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The drone lasts four minutes, which is three and a half more than expected, and sends back a picture of {remnant} standing in the fire, unmarked.\nThen something takes the drone. Gently. The signal ends without breaking up.",
+          "choices": [
+            {
+              "text": "Go and get the drone back.",
+              "to": "b1"
+            },
+            {
+              "text": "Log it as lost.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The cool phase comes eleven hours later and lasts forty minutes, and the team walks in over ground that is merely lethal.\nThe source is a cavity, and the cavity is lined, and the lining is not natural.",
+          "choices": [
+            {
+              "text": "Strip the lining.",
+              "to": "c1"
+            },
+            {
+              "text": "Get inside the cavity.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "The glove does not burn. Something is put into it, deliberately, by something with no hands, and {leader} walks out of the heat carrying an object that is cold.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "The suit holds all the way out and fails in the airlock, which is the best possible place for a suit to fail. The scans taken on the way are worth the replacement.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "The drone is at the edge of the heat, set down facing outwards, with its recorder full and its casing packed with something that should not exist at that temperature.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "The loss goes in the log with the rest of the year's losses. The four minutes of footage get quietly copied by three separate people before the ship reaches the next system.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "It peels off in sheets, light as foil, and every sheet holds temperature like it has an opinion about it. There is enough here to line a ship.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "The cavity is occupied, and the cool phase is not a phase. It is a habit, and the away team has just walked into the middle of it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "graveyard": {
+      "title": "The Long Anchorage",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There are eleven ships here, moored to {place} in a neat row, all of them different, none of them from any registry the ship carries.\nThey are not wrecks. They are parked, and somebody swept {ground} between them.",
+          "choices": [
+            {
+              "text": "Board the oldest.",
+              "to": "a"
+            },
+            {
+              "text": "Board the newest.",
+              "to": "b"
+            },
+            {
+              "text": "Find out who does the sweeping.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The oldest is stone, or something that has become stone, and its hatch is a hole cut by hand from the outside.\nThe inside is one room, and the room is a nest, and it has been used since long after the ship stopped flying.",
+          "choices": [
+            {
+              "text": "Search the nest.",
+              "to": "a1"
+            },
+            {
+              "text": "Wait outside for whatever lives there.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The newest has been here eleven years by its own clock and its hull is in better order than the party's own ship.\nThe crew log ends on the day they arrived, mid-sentence, in the middle of a supply count.",
+          "choices": [
+            {
+              "text": "Take the ship's stores.",
+              "to": "b1"
+            },
+            {
+              "text": "Try to bring the ship back up.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The sweeping is done at a set hour, and the away team is in cover for it.\nWhat comes out to sweep is small, and old, and does the whole anchorage in ninety minutes, and stops at each ship to check the mooring line.",
+          "choices": [
+            {
+              "text": "Offer it a mooring line of your own.",
+              "to": "c1"
+            },
+            {
+              "text": "Follow it home.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Under the bedding there are four hundred small objects, sorted by size, and every one of them came off a different ship. The best of them is the last one in the row.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "It comes home at the end of its round and it is not pleased to find the door open.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Eleven years of stores, packed by people who knew what they were doing, and the away team takes as much as the lander will lift.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The reactor lights on the third try and the ship comes up all the way, every board green, and then it will not release the moorings, and nothing on any panel explains why.\nIt is put back to sleep. It goes willingly.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "It takes the line, tests it, coils it properly, and moors the lander with it, and then it hands {leader} the thing it has been carrying since the first ship arrived.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "Home is a hole under the anchorage, and inside it is every mooring line that has ever failed, spliced back together, and the tools that did the splicing.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "hollow": {
+      "title": "It Is Not Solid",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The mass is wrong. The body is the size the catalogue says and weighs a third of what it should, and the survey pulse comes back off an inside face.\nThere is a way in at {place}: a shaft, straight, cut, with {remnant} at the collar.",
+          "choices": [
+            {
+              "text": "Go down the shaft.",
+              "to": "a"
+            },
+            {
+              "text": "Sound the whole body first.",
+              "to": "b"
+            },
+            {
+              "text": "Blow the shaft wider and send the drone.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Four hundred metres of shaft, and then it opens out. The inside of the body is a single space with a floor curving up on all sides, and it is not empty.\nThere is weather in here. There should not be weather in here.",
+          "choices": [
+            {
+              "text": "Cross to the middle.",
+              "to": "a1"
+            },
+            {
+              "text": "Keep to the wall and map it.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Sounding takes a day and turns up the shape of it: chambers, and passages between chambers, and one chamber that returns nothing at all, as though the pulse goes in and stays.\n{wrongness}.",
+          "choices": [
+            {
+              "text": "Open the silent chamber.",
+              "to": "b1"
+            },
+            {
+              "text": "Mine the ones that answered.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The charge opens the collar and the drone goes down with the light on. It sends back eleven minutes of an interior nobody will ever be allowed to visit, and then its telemetry ends mid-frame, without any of the usual warnings.",
+          "choices": [
+            {
+              "text": "Go down after it.",
+              "to": "c1"
+            },
+            {
+              "text": "Sell the footage and never come back.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "At the middle is the thing the whole body was built around, hanging at the centre of gravity, turning slowly, and it lets {leader} take one piece of itself without any argument at all.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The map takes six hours and is worth every minute: a complete interior survey of an artificial world, with the machinery of it laid bare along the wall like an anatomy.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "It is not a chamber. It is an occupant, and it has been folded into that space for longer than the body has been in this orbit, and it unfolds.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "The answering chambers are stores, and the stores are full, and whoever packed them expected to come back for them.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "The drone is forty metres down, undamaged, and pointing back up the shaft. Something set it down carefully, and put something next to it, and left.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "Eleven minutes of the inside of a hollow world sells for what a small moon sells for. The buyer does not give a name and does not haggle, which is its own kind of answer.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "mirror": {
+      "title": "The Second Team",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The signal is the away team's own suit telemetry, five channels, correct headers, correct crew names, and it is being received from {place} eleven minutes before the away team lands there.\n{leader} lands anyway.",
+          "choices": [
+            {
+              "text": "Follow the other team's tracks.",
+              "to": "a"
+            },
+            {
+              "text": "Set up and wait for them to arrive.",
+              "to": "b"
+            },
+            {
+              "text": "Talk to them on the suit channel.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The tracks are the away team's own boots, in the away team's own sizes, laid down in {ground} before the lander touched.\nThey lead away from the landing site, do everything the team is about to do, and stop.",
+          "choices": [
+            {
+              "text": "Walk to where they stop.",
+              "to": "a1"
+            },
+            {
+              "text": "Do something the tracks did not do.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "They arrive on schedule, from the direction the telemetry said, five of them, in the same suits, walking the way the away team walks.\nThey stop forty metres out and wait to be spoken to.",
+          "choices": [
+            {
+              "text": "Trade with them.",
+              "to": "b1"
+            },
+            {
+              "text": "Do not let them any closer.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The channel is open both ways and the voice on it is {leader}'s, half a second early, getting every word right before it is said.\nIt asks the away team not to come to {place}. It is very calm about it.",
+          "choices": [
+            {
+              "text": "Ask what happens there.",
+              "to": "c1"
+            },
+            {
+              "text": "Go there.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Where they stop there is a cache, packed by people with the same hands, and a note in {leader}'s handwriting that says only: it is worth it, take it, do not stay.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "{leader} sits down in {ground} and refuses to move for four minutes, out of spite.\nIt works. The tracks stop being ahead of them. Everything since landing has to be done again, properly, and the team is tired in a way sleep does not touch.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 20
+          }
+        },
+        "b1": {
+          "text": "They trade fairly, and hard, and they know exactly what the team can spare, which is the most frightening thing about the whole exchange.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "They come closer.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "armor",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "It tells them. It takes four minutes and the team does not go, and on the walk back the voice thanks them, once, and stops half a second before it should.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "At {place} there is nothing but {remnant} and a very clear view, and everybody comes back, and the count is right, and the ship's log will record that the count was right.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 18
+          }
+        }
+      }
+    },
+    "predator": {
+      "title": "Something Has Been Waiting",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "The signal is a transponder, ship-standard, on a frequency nobody has used in decades, and it is moving. Slowly, over {ground}, in a line that will cross the away team's path.\nIt stops when the team stops. It has done this before.",
+          "choices": [
+            {
+              "text": "Set an ambush and wait for it.",
+              "to": "a"
+            },
+            {
+              "text": "Circle round and come at it from behind.",
+              "to": "b"
+            },
+            {
+              "text": "Broadcast on the same frequency.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Two hours in cover at {place}. The transponder comes on at last light and it is being carried, not worn, by something the size of a lander leg that moves like it has all the time in the world.\nIt is dragging a net, and the net is full.",
+          "choices": [
+            {
+              "text": "Take the shot.",
+              "to": "a1"
+            },
+            {
+              "text": "Let it pass and follow the net.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Coming at it from behind works, in that the team gets to see it before it sees them.\nIt is sitting in a scrape it has made for itself, and it is surrounded by suit helmets, arranged in a circle, all facing inwards.",
+          "choices": [
+            {
+              "text": "Take a helmet.",
+              "to": "b1"
+            },
+            {
+              "text": "Withdraw without a sound.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "{leader} keys the old frequency and says the standard hail.\nThe answer is the standard reply, word perfect, in {leader}'s own voice, and it is coming from about sixty metres away.",
+          "choices": [
+            {
+              "text": "Answer it again.",
+              "to": "c1"
+            },
+            {
+              "text": "Go to it.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "The first shot is good and does nothing at all except make it put the net down.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "It drags the net to a cache under an overhang and stows it with the others. There are forty years of others. The team lifts one and is gone before it comes back.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "There is a name stencilled inside the helmet and a recorder still in the collar with eleven seconds on it. Getting out with both is the hardest walking anyone does that year.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "Nobody speaks until the lander hatch is shut. The transponder is still moving out there, and the ship logs the position, and marks the whole hemisphere as a place to not go back to.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "Three exchanges and it runs out of recorded phrases and starts making its own, badly, and the badness is what everybody remembers.\nIt leaves. It leaves a thing behind, on {ground}, halfway between.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "It has been waiting a long time for somebody to walk towards it.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "ruins": {
+      "title": "What Is Left of Them",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "{place} holds a town. Not a camp, not an outpost: streets, drains, a square, and {remnant} at the middle of it where a monument would go.\nNothing here has burned and nothing has fallen. They simply stopped, and {leader} is the first thing to walk these streets in a very long time.",
+          "choices": [
+            {
+              "text": "Go into the largest building.",
+              "to": "a"
+            },
+            {
+              "text": "Follow the drains down.",
+              "to": "b"
+            },
+            {
+              "text": "Read the square.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "It is a hall, and it is full of seats facing a stage, and on the stage is a machine that has been running the same six seconds of something for as long as it has had power.\nEvery seat is occupied. They are not bodies. They are the shapes bodies leave in a room that has not been disturbed.",
+          "choices": [
+            {
+              "text": "Play the machine to the end.",
+              "to": "a1"
+            },
+            {
+              "text": "Take the machine.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The drains are dry, walkable, and better built than the streets above them. Two hundred metres in they stop being drains and start being a corridor.\n{sound}, from further along.",
+          "choices": [
+            {
+              "text": "Keep going.",
+              "to": "b1"
+            },
+            {
+              "text": "Turn back and seal the entrance.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The square is a record. Every flat surface carries names, and the names are in columns, and the columns are dated, and the dates stop.\n{leader} works out the last column is not a list of the dead. It is a rota.",
+          "choices": [
+            {
+              "text": "Find out what they were taking turns at.",
+              "to": "c1"
+            },
+            {
+              "text": "Copy the record and go.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "It takes nine minutes. It is a message, and it is an apology, and at the end of it the seats are empty in a way they were not before, and everybody in the away team feels it happen.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "It comes off the stage in four pieces and every piece is worth more than the lander. The hall is very quiet on the way out, and the seats are still occupied.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "The corridor ends at a door that was locked from this side, by hand, in a hurry, and whatever they locked in has had a very long time to get used to the idea.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "The charge brings the roof down neatly across the corridor mouth. On the walk back up, the team lifts a plate of worked metal out of the drain wall: a street sign, or a prayer.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "Whatever needed watching is under the square, it is still there, and the last name on the rota never got relieved. The team relieves them, in the only way left, and takes the post's kit up.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "c2": {
+          "text": "Eleven thousand names in the ship's archive, none of which can be pronounced. Somebody in the crew starts reading them out loud on the trip home, and does not stop.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "shrine": {
+      "title": "The Kept Place",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "At {place} there is a structure that nothing on this world could have made and nothing on this world has touched. It is kept. Something sweeps {ground} around it clean.\n{sound} is coming off it in a pattern that {instrument} insists is a language.",
+          "choices": [
+            {
+              "text": "Walk in.",
+              "to": "a"
+            },
+            {
+              "text": "Leave something of your own on the step.",
+              "to": "b"
+            },
+            {
+              "text": "Survey it from outside and touch nothing.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "The inside is one room and the room is much larger than the outside allows. The far wall is a long way off and there is a queue of {maker} standing at it, with their backs turned, in perfect order.\nThey have been standing there long enough to have worn grooves into the floor.",
+          "choices": [
+            {
+              "text": "Join the queue.",
+              "to": "a1"
+            },
+            {
+              "text": "Take something from the wall and run.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "{leader} puts a ration tin on the step, because it is what there is.\nThe tin is gone before the team has walked ten paces, and in its place, arranged with care, is a set of tools that are the right size for hands nobody aboard has.",
+          "choices": [
+            {
+              "text": "Take the tools.",
+              "to": "b1"
+            },
+            {
+              "text": "Leave them and put down something better.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Three hours of instrument work from forty metres out. The structure has no seams, no foundations, and a mass that changes depending on which way it is measured from.\nOn the way back, {leader} finds a track in {ground} that goes round the whole site. It is fresh.",
+          "choices": [
+            {
+              "text": "Follow the track.",
+              "to": "c1"
+            },
+            {
+              "text": "File the survey and lift.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "{leader} stands in line for what the suit clock calls four minutes and the crew above calls six hours. At the front there is a slot, and whatever is on the other side of it takes one memory and leaves something in its place.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "The queue turns around all at once, and none of them are facing the way faces should face.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "They come apart and go together in ways the ship's workshop will be arguing about for months. Two of them are missing a use nobody has found yet.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "The second offering is a photograph, which is the most expensive thing anyone is carrying.\nWhat comes back for it is not an object. It is a length of quiet in the middle of the away team, and everybody who walks through it comes out of it well.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "The track goes round the site nine times and then straight out to a cache buried a metre down, packed and labelled by whoever does the sweeping, as though for collection.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "The survey is the most valuable document the ship has filed all year, and it will be argued over by people who were not there. Nothing follows the lander up.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "signal": {
+      "title": "The Thing That Is Counting",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "It is not a distress call. It is {tone}, and it has been going out from {place} for {a|as long as the catalogue has entries for this system|longer than the catalogue admits}.\n{leader} takes it down to the source. The count does not change when the away team arrives, which somehow makes it worse.",
+          "choices": [
+            {
+              "text": "Answer it in the same pattern.",
+              "to": "a"
+            },
+            {
+              "text": "Find the transmitter and open it.",
+              "to": "b"
+            },
+            {
+              "text": "Jam it.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "{leader} keys the pattern back, one beat late, deliberately wrong in the last place.\nThe count stops. Nine seconds later it starts again, corrected, and now it is answering the mistake rather than repeating itself.",
+          "choices": [
+            {
+              "text": "Keep the conversation going.",
+              "to": "a1"
+            },
+            {
+              "text": "Shut the radio off and back away.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "The transmitter is buried in {ground} with only its collar showing, and the collar is a hatch. It opens by hand. It was built to open by hand.\nInside: a mechanism with no moving parts, and {remnant} laid neatly on top of it, like an offering.",
+          "choices": [
+            {
+              "text": "Take the mechanism.",
+              "to": "b1"
+            },
+            {
+              "text": "Take the offering and close the hatch.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "The jammer goes up on a tripod and the band flattens out. For eleven minutes there is nothing across the whole spectrum but the sound of the away team breathing.\nThen {hazard} makes itself felt, and the count comes back at three times the power.",
+          "choices": [
+            {
+              "text": "Hold the position and burn it out.",
+              "to": "c1"
+            },
+            {
+              "text": "Pull back to the lander.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "It takes four hours to build a shared count and another two to trade nouns. What is on the other end is not close, is not alive in any sense the team can use, and gives {leader} a set of coordinates as a gift for the trouble.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "The radio goes dark. The count keeps on over {ground} behind them all the way back to the lander, and the team walks the last hundred metres faster than they walked the first.",
+          "outcome": {
+            "kind": "none",
+            "mag": "small",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "It lifts out easily. The count stops, and every instrument the away team is carrying reports the same time to the same tenth of a second for the first time since they left Earth.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "The hatch shuts sweetly, the way a well-made thing does. The count carries on, and the team goes up with something in a bag that nobody has a word for yet.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "The jammer wins, eventually, and the source dies with a noise like a held breath let go. The team digs the emitter out of the slag afterwards: it is beautiful, and it is worth a fortune.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "Whatever the count belongs to gets to the lander before the team does, and it is standing between them and the hatch when they come over the last rise.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "medium",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "swarm": {
+      "title": "The Work Party",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "There are machines here and they are busy. Thousands of them, none bigger than a hand, moving over {ground} at {place} on a job that has clearly been running for centuries.\nThey ignore the away team completely, which is not the same as not noticing them.",
+          "choices": [
+            {
+              "text": "Work out what they are building.",
+              "to": "a"
+            },
+            {
+              "text": "Catch one.",
+              "to": "b"
+            },
+            {
+              "text": "Put something in their way.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Two hours of watching and the pattern comes clear. They are not building. They are taking something apart, very slowly, very carefully, and putting the pieces in order along a line that runs to the horizon.\nThe thing being taken apart is the world.",
+          "choices": [
+            {
+              "text": "Follow the line to the far end.",
+              "to": "a1"
+            },
+            {
+              "text": "Take a piece off the line.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "It comes up in a glove without a fight, folds its legs, and goes still.\nEvery other machine within sight stops at the same instant, and stays stopped, and turns to face the glove.",
+          "choices": [
+            {
+              "text": "Put it down.",
+              "to": "b1"
+            },
+            {
+              "text": "Pocket it and walk.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "{leader} sets a sample case down across their line and steps back.\nThe swarm stops at it, considers it for nine seconds, and then goes round. On the way past, one of them measures the case and writes the measurement on it.",
+          "choices": [
+            {
+              "text": "Give them something worth measuring.",
+              "to": "c1"
+            },
+            {
+              "text": "Take the case back and leave them to it.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "The far end is a stack, sorted by material, taller than the lander, and at the top of it is the first thing they ever took off this world, labelled in a notation that predates the swarm.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "The line closes the gap in eleven seconds and does not react otherwise. The piece is a machined block of something the ship's assay cannot name, and there are four hundred kilometres of them.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "The moment it touches {ground} the whole field goes back to work as though nothing happened. Where it was standing there is now a small object that was not there before, and it is a gift, or a receipt.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "Four hundred metres from the lander the field decides how it feels about theft.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "The cutter goes down on the line. They swarm it, measure it, take it apart, and put it back together improved, and leave it on {ground} pointing at the lander.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "The case comes back with a number on it in a base nobody uses, and the swarm carries on, and the away team is up and gone before anybody has to find out what the number means.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    }
+  },
+  "fallbackScenarios": [
+    "castaway",
+    "derelict",
+    "shrine",
+    "signal"
+  ]
+}

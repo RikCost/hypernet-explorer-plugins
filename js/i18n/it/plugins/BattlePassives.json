@@ -1,0 +1,349 @@
+{
+  "passive": {
+    "4": {
+      "name": "Voto del Guardiano",
+      "desc": "Mentre sei vivo sopra il 25% HP, gli altri membri subiscono il 15% di danni in meno e la parte deviata colpisce te."
+    },
+    "13": {
+      "name": "Furia di Sangue",
+      "desc": "Il tuo attacco cresce quando l'HP cala (fino a +40% al 10% HP), ma le cure che ricevi sono dimezzate."
+    },
+    "26": {
+      "name": "Posizione Iaido",
+      "desc": "La tua prima azione di ogni battaglia infligge danno doppio e non può mancare."
+    },
+    "30": {
+      "name": "Beniamino della Folla",
+      "desc": "Le serie di vittorie nell'arena concedono attacco permanente e bottini migliori."
+    },
+    "33": {
+      "name": "Egida",
+      "desc": "Mentre sei vivo, tutta la squadra subisce meno danni fisici E magici, in proporzione ai tuoi HP attuali (un Guardiano a HP pieni protegge del 25%). Più Guardiani si sommano, fino al 50%."
+    },
+    "40": {
+      "name": "Pelle Spessa",
+      "desc": "Le debolezze elementali contro di te sono limitate a x1.5 invece di x2, e il freddo non ti nuoce."
+    },
+    "22": {
+      "name": "Consacrazione",
+      "desc": "Il danno Sacro che infliggi ti cura anche del 20% del danno."
+    },
+    "38": {
+      "name": "Contraente",
+      "desc": "Guadagni una taglia in oro per ogni nemico sconfitto e i lavori di combattimento pagano di più."
+    },
+    "32": {
+      "name": "Feldmaresciallo",
+      "desc": "Mentre sei vivo, tutti gli alleati ottengono +10% di precisione; le truppe che recluti costano meno e disertano meno."
+    },
+    "5": {
+      "name": "Catena di Prese",
+      "desc": "Attacchi base consecutivi sullo stesso nemico accumulano una Presa; a 3 il nemico e stordito."
+    },
+    "11": {
+      "name": "Flusso di Chi",
+      "desc": "Ogni terza azione rimborsa il TP e concede un'ondata di energia extra."
+    },
+    "15": {
+      "name": "Asceta",
+      "desc": "Fame e sonno calano del 30% più lentamente e il riposo ristora più energia."
+    },
+    "16": {
+      "name": "Lottatore di Strada",
+      "desc": "Disarmato infliggi +25% danni e contrattacchi una parte dei colpi in mischia."
+    },
+    "17": {
+      "name": "Gioco di Gambe",
+      "desc": "L'alta elusione ti fa schivare i colpi; ogni schivata accumula una Combo (max 5) che aggiunge +8% danno per accumulo al colpo successivo."
+    },
+    "18": {
+      "name": "Kayfabe",
+      "desc": "Giochi per il pubblico, aprendo ogni battaglia con un'ondata di AP extra."
+    },
+    "14": {
+      "name": "Acrobata Libero",
+      "desc": "La tua agilita e molto aumentata (+30%), agisci prima e ignori il danno da caduta."
+    },
+    "2": {
+      "name": "Maestra di Pozioni",
+      "desc": "Le tue pozioni escono di una qualità superiore e puoi preparare malefici da lancio."
+    },
+    "10": {
+      "name": "Sintonia",
+      "desc": "All'inizio della battaglia ti sintonizzi col clima, ottenendo +25% all'elemento corrispondente."
+    },
+    "12": {
+      "name": "Runomastro",
+      "desc": "Puoi incidere sull'equipaggiamento un affisso extra senza costo di materiali, una volta per oggetto."
+    },
+    "19": {
+      "name": "Combustione",
+      "desc": "Il tuo fuoco infligge +30% danni e sei immune a Bruciatura."
+    },
+    "20": {
+      "name": "Gelo Profondo",
+      "desc": "Il tuo ghiaccio infligge +30% danni e rallenta i nemici che colpisce."
+    },
+    "27": {
+      "name": "Maestria Arcana",
+      "desc": "Tutti i costi MP dei tuoi incantesimi sono ridotti del 20%."
+    },
+    "36": {
+      "name": "Immagine Speculare",
+      "desc": "Inizi ogni battaglia con immagini-esca che assorbono i primi colpi rivolti a te."
+    },
+    "39": {
+      "name": "Illuminato",
+      "desc": "Ottieni progressi extra nell'addestramento e leggi conoscenze aggiuntive da ogni libro."
+    },
+    "34": {
+      "name": "Lama Incantata",
+      "desc": "I tuoi attacchi base portano l'elemento dell'ultimo incantesimo lanciato."
+    },
+    "37": {
+      "name": "Mago da Guerra",
+      "desc": "Lanci in prima linea senza penalita e gli incantesimi attingono al TP quando finisci gli MP."
+    },
+    "23": {
+      "name": "Patto",
+      "desc": "Puoi bruciare i tuoi HP come carburante magico e il favore delle fazioni oscure potenzia le tue maledizioni."
+    },
+    "31": {
+      "name": "Raccolto Funebre",
+      "desc": "Ogni nemico che muore lascia una carica d'anima che alimenta le tue evocazioni."
+    },
+    "8": {
+      "name": "Devoto",
+      "desc": "Nelle ore notturne infliggi +15% danni e ne subisci il 10% in meno; le tue penali ai processi sono ridotte."
+    },
+    "7": {
+      "name": "Sanguigno",
+      "desc": "Rubi il 30% del danno in mischia come HP, ma la luce del sole ti brucia e ti nutri invece di mangiare."
+    },
+    "62": {
+      "name": "Disperazione",
+      "desc": "Meno oro porti, più alte sono critica ed elusione; non temi nulla."
+    },
+    "21": {
+      "name": "Imboscata",
+      "desc": "Hai un'alta probabilita di critico e infliggi +25% danni ai nemici ancora a HP pieni."
+    },
+    "35": {
+      "name": "Tessitore di Canti",
+      "desc": "Ad ogni turno un canto rotante pulsa un potenziamento a tutta la squadra."
+    },
+    "3": {
+      "name": "Benedizione",
+      "desc": "Mentre sei viva, la squadra si cura un poco alla fine di ogni turno."
+    },
+    "25": {
+      "name": "Favore Divino",
+      "desc": "Le cure in eccesso che dispensi diventano una barriera protettiva invece di andare sprecate."
+    },
+    "59": {
+      "name": "Sermone",
+      "desc": "Infliggi danno Sacro extra ai nemici maledetti e benedici gli alleati con rigenerazione persistente."
+    },
+    "29": {
+      "name": "Preveggenza",
+      "desc": "Prevedi la prossima azione di ogni nemico, mostrata nell'interfaccia di battaglia."
+    },
+    "9": {
+      "name": "Triage",
+      "desc": "Curare un alleato sotto il 25% HP gli concede anche una spinta d'attacco da adrenalina."
+    },
+    "41": {
+      "name": "Medico",
+      "desc": "Le tue ferite ad arti e organi guariscono più in fretta e puoi operare sul campo."
+    },
+    "51": {
+      "name": "Cura Premurosa",
+      "desc": "Ogni pozione e oggetto curativo che usi ristora il 30% in più."
+    },
+    "61": {
+      "name": "Sangue Divino",
+      "desc": "Sei immune alla morte istantanea; una volta per battaglia un colpo letale ti fa risorgere al 30% HP."
+    },
+    "42": {
+      "name": "Metodo",
+      "desc": "Il tuo artigianato e alchimia rendono un prodotto extra e puoi analizzare oggetti sconosciuti."
+    },
+    "48": {
+      "name": "Cattedra",
+      "desc": "Impari in fretta: +25% esperienza in battaglia e leggi voci complete del bestiario in una volta."
+    },
+    "49": {
+      "name": "Intuizione",
+      "desc": "La tua lucidita ti rende immune a paura, confusione e ammaliamento; leggi anche il morale nemico e la mente dei PNG."
+    },
+    "50": {
+      "name": "Scavatore",
+      "desc": "I tuoi scavi e tesori migliorano e i manufatti hanno più probabilita di essere identificati."
+    },
+    "53": {
+      "name": "Cinematica",
+      "desc": "I tuoi critici fulmine e fisici colpiscono ad area in base alla velocità nemica e la tua nave consuma meno carburante."
+    },
+    "58": {
+      "name": "Meteorologo",
+      "desc": "Prevedi sempre il clima attuale e futuro e il suo effetto su raccolti e api."
+    },
+    "46": {
+      "name": "Pass Stampa",
+      "desc": "Documenti ogni scontro per un piccolo scoop in oro per nemico sconfitto, e i PNG ti rivelano di più."
+    },
+    "54": {
+      "name": "Meccanico",
+      "desc": "Le riparazioni dei veicoli costano metà e smontare mobili restituisce tutti i materiali."
+    },
+    "24": {
+      "name": "Tiratore Scelto",
+      "desc": "I tuoi attacchi con arco e pistola infliggono +25% danni e non subiscono la penalita da mischia."
+    },
+    "28": {
+      "name": "Esploratore",
+      "desc": "Avvisti il pericolo in anticipo: le battaglie che inizi hanno molte più probabilita di essere un attacco preventivo e i nemici raramente ti imboscano."
+    },
+    "52": {
+      "name": "Raccoglitore",
+      "desc": "Raccogli passivamente cibo e materiali selvatici e ottieni di più da piante e bottini."
+    },
+    "56": {
+      "name": "Pollice Verde",
+      "desc": "I tuoi raccolti crescono il 25% più in fretta e rendono di più, e gli animali maturano e producono prima."
+    },
+    "57": {
+      "name": "Boscaiolo",
+      "desc": "Raccogli legno extra e maneggi le asce con danno bonus e una probabilita di abbattere nemici grossi."
+    },
+    "43": {
+      "name": "Ignifugo",
+      "desc": "Sei immune a Bruciatura e danno da fuoco e puoi spegnere gli incendi ambientali."
+    },
+    "47": {
+      "name": "Costruttore",
+      "desc": "La tua costruzione e libera, l'artigianato costa meno materiali e le strutture si rinforzano."
+    },
+    "45": {
+      "name": "Gourmet",
+      "desc": "La tua cucina da più nutrimento, concede un potenziamento da sazio e non causa mai indigestione."
+    },
+    "1": {
+      "name": "Tuttofare",
+      "desc": "Ottieni un bonus fisso ad ogni lavoro, non fallisci mai un controllo e impari un'abilità casuale salendo di livello."
+    },
+    "6": {
+      "name": "Capitale",
+      "desc": "Mercati e prestiti ti favoriscono, i negozi che gestisci producono più in fretta e compri a sconto."
+    },
+    "44": {
+      "name": "Legge",
+      "desc": "Accumuli meno taglia, ottieni clemenza nei processi e puoi arrestare nemici umanoidi indeboliti."
+    },
+    "55": {
+      "name": "Mercante",
+      "desc": "Compri più economico e vendi più caro ovunque, e la merce giornaliera si rifornisce con oggetti migliori."
+    },
+    "60": {
+      "name": "Spettacolo",
+      "desc": "Guadagni oro e simpatia esibendoti, e la squadra guadagna morale dopo ogni vittoria ai minigiochi."
+    },
+    "66": {
+      "name": "Potenziato",
+      "desc": "Sei immune a veleno, malattia e sanguinamento, funzioni a energia invece che a fame e porti uno scudo energetico rigenerante."
+    },
+    "63": {
+      "name": "Ferino",
+      "desc": "Le tue armi naturali colpiscono forte, rigeneri in fretta e intimidisci i nemici deboli a vista."
+    },
+    "64": {
+      "name": "Mutaforma",
+      "desc": "Resti travestito così i nemici ti bersagliano per ultimo, e copi un'abilità del nemico sconfitto."
+    },
+    "65": {
+      "name": "Apice",
+      "desc": "Ti nutri dei nemici sconfitti per curarti e crescere più forte ad ogni uccisione."
+    }
+  },
+  "trait": {
+    "202": {
+      "name": "Gun-Fu",
+      "desc": "Impugnando pistola, arma da lancio o arco, ogni abilità di Arti Marziali che usi e seguita da un attacco normale gratuito sullo stesso nemico."
+    },
+    "43": {
+      "name": "Presa Doppia",
+      "desc": "Maneggi un'arma per mano senza la penalita della mano debole."
+    },
+    "74": {
+      "name": "Nessun Dolore",
+      "desc": "Il dolore non ti ferma mai: le ferite non riducono precisione o velocità."
+    },
+    "41": {
+      "name": "Memoria Totale",
+      "desc": "Ricordi ogni nemico affrontato, rivelandone le resistenze a colpo d'occhio."
+    },
+    "152": {
+      "name": "Risposta",
+      "desc": "Quando un solo nemico ti affronta, rispondi ai suoi colpi mancati con un contrattacco."
+    },
+    "155": {
+      "name": "Baluardo",
+      "desc": "Uno scudo alzato protegge anche l'alleato al tuo fianco."
+    },
+    "156": {
+      "name": "Primo Sangue",
+      "desc": "Il tuo primo colpo in battaglia e sempre critico contro un nemico ignaro."
+    },
+    "31": {
+      "name": "Il Dolore Nutre",
+      "desc": "Il danno che subisci carica la tua energia invece di solo ferirti."
+    },
+    "190": {
+      "name": "Sorgente di Mana",
+      "desc": "Le tue riserve magiche si ricaricano da sole tra una battaglia e l'altra."
+    },
+    "195": {
+      "name": "Mutalunare",
+      "desc": "Sotto la luna piena muti forma e combatti con la forza di una bestia."
+    },
+    "99": {
+      "name": "Sorte Avversa",
+      "desc": "La sfortuna ti segue, ma le maledizioni lanciate su di te rimbalzano sul lanciatore."
+    }
+  },
+  "elem": {
+    "1": "Fis",
+    "2": "Fuoco",
+    "3": "Ghiaccio",
+    "4": "Fulmine",
+    "5": "Acqua",
+    "6": "Petro",
+    "7": "Vento",
+    "8": "Sacro",
+    "9": "Maledetto"
+  },
+  "log": {
+    "pinStunned": "{target} e immobilizzato e stordito!",
+    "chiFlows": "Il chi di {actor} scorre!",
+    "mirrorShatters": "Un'immagine speculare di {actor} si frantuma!",
+    "gunFuFollowThrough": "{actor} incalza - Gun-Fu!",
+    "divineBloodSurges": "Il sangue divino di {target} sfolgora!",
+    "comboSlip": "{target} schiva! Combo x{combo}"
+  },
+  "chip": {
+    "next": "Prossima",
+    "pin": "Presa {count}/3",
+    "chi": "Chi {count}/3",
+    "combo": "Combo x{count}",
+    "decoys": "Esche {count}",
+    "iaido": "Iaido",
+    "edge": "Lama: {elem}",
+    "attuned": "Sintonia: {elem}",
+    "souls": "Anime {count}",
+    "divineBlood": "Sangue Divino",
+    "rage": "Furia +{bonus}%",
+    "aegis": "Egida {pct}%",
+    "night": "Notte +15%",
+    "gunFu": "Gun-Fu"
+  }
+}

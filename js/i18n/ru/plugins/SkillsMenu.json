@@ -1,0 +1,84 @@
+{
+  "title": "",
+  "back": "",
+  "recent": "",
+  "unit": {
+    "ap": ""
+  },
+  "cost": {
+    "mp": "",
+    "ap": ""
+  },
+  "discipline": {
+    "basic": "",
+    "standard": ""
+  },
+  "section": {
+    "damage": "",
+    "skillEffects": "",
+    "classifications": ""
+  },
+  "role": {
+    "offensive": {
+      "name": "",
+      "description": ""
+    },
+    "healing": {
+      "name": "",
+      "description": ""
+    },
+    "support": {
+      "name": "",
+      "description": ""
+    }
+  },
+  "option": {
+    "skillCategorization": "",
+    "categoryModes": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "cmd": {
+    "favourites": "",
+    "levelUp": "",
+    "use": "",
+    "favourite": "",
+    "unfavourite": "",
+    "cancel": ""
+  },
+  "action": {
+    "useSkill": "",
+    "favourite": "",
+    "unfavourite": "",
+    "back": ""
+  },
+  "info": {
+    "type": "",
+    "scale": "",
+    "basic": "",
+    "none": "",
+    "effect": "",
+    "hpDmg": "",
+    "mpDmg": "",
+    "hpHeal": "",
+    "mpHeal": "",
+    "hpDrain": "",
+    "mpDrain": "",
+    "buffs": "",
+    "debuffs": "",
+    "state": ""
+  },
+  "target": {
+    "title": "",
+    "prompt": "",
+    "allCompanions": ""
+  },
+  "empty": {
+    "title": "",
+    "hint": "",
+    "section": "",
+    "category": ""
+  }
+}

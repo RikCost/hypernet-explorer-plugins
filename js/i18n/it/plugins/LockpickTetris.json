@@ -1,0 +1,10 @@
+{
+  "controls": "Sinistra/Destra: Muovi   Su: Ruota   Giù: Caduta morbida   Spazio: Caduta veloce",
+  "complexity": "Complessità serratura: ",
+  "seconds": "s",
+  "lockPicked": "Serratura scassinata!",
+  "lockJammed": "Serratura bloccata...",
+  "timeUp": "Tempo scaduto!",
+  "usedSkeletonKey": "Usato Grimaldello Universale!",
+  "noLockpicks": "Non hai grimaldelli"
+}

@@ -1,0 +1,1769 @@
+{
+  "Antwerpen": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 407,
+      "y": 484
+    },
+    "base": {
+      "x": 88,
+      "y": 118
+    },
+    "train": {
+      "mapId": 1043,
+      "x": 14,
+      "y": 15
+    },
+    "picture": "Antwerpen",
+    "minLevel": 8
+  },
+  "Frozen Station": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 270,
+      "y": 391
+    },
+    "base": {
+      "x": 66,
+      "y": 92
+    },
+    "train": {
+      "mapId": 1414,
+      "x": 46,
+      "y": 49
+    },
+    "picture": "FrozenStation",
+    "minLevel": 1
+  },
+  "GreenWitch": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 300,
+      "y": 485
+    },
+    "base": {
+      "x": 63,
+      "y": 116
+    },
+    "train": {
+      "mapId": 596,
+      "x": 23,
+      "y": 23
+    },
+    "picture": "GreenWitch",
+    "minLevel": 10
+  },
+    "GreenWitchSpaceCenter": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 300,
+      "y": 485
+    },
+    "base": {
+      "x": 61,
+      "y": 138
+    },
+    "train": {
+      "mapId": 593,
+      "x": 40,
+      "y": 131
+    },
+    "picture": "GreenWitchSpaceCenter",
+    "minLevel": 10
+  },
+  "Ghent": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 402,
+      "y": 504
+    },
+    "base": {
+      "x": 84,
+      "y": 120
+    },
+    "train": {
+      "mapId": 708,
+      "x": 25,
+      "y": 12
+    },
+    "bus": {
+      "mapId": 704,
+      "x": 29,
+      "y": 25
+    },
+    "helicopter": {
+      "mapId": 1036,
+      "x": 53,
+      "y": 55
+    },
+    "picture": "Ghent",
+    "minLevel": 1
+  },
+  "Kola Superdeep Borehole": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 777,
+      "y": 505
+    },
+    "base": {
+      "x": 249,
+      "y": 69
+    }
+  },
+  "Omega Tower": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 377,
+      "y": 505
+    },
+    "base": {
+      "x": 79,
+      "y": 125
+    },
+    "train": {
+      "mapId": 102,
+      "x": 39,
+      "y": 7
+    },
+    "bus": {
+      "mapId": 136,
+      "x": 40,
+      "y": 118
+    },
+    "helicopter": {
+      "mapId": 540,
+      "x": 31,
+      "y": 48
+    },
+    "picture": "OmegaTower",
+    "minLevel": 8
+  },
+  "Luxembourg": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 101,
+      "y": 128
+    },
+    "bus": {
+      "mapId": 600,
+      "x": 19,
+      "y": 72
+    },
+    "picture": "Luxembourg"
+  },
+  "Amsterdam": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 91,
+      "y": 109
+    },
+    "picture": "Amsterdam"
+  },
+  "The Hague": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 87,
+      "y": 111
+    },
+    "picture": "TheHague"
+  },
+  "Rotterdam": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 92,
+      "y": 112
+    },
+    "picture": "Rotterdam"
+  },
+  "Ouddorp": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 87,
+      "y": 113
+    },
+    "picture": "Ouddorp"
+  },
+  "Middelburg": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 85,
+      "y": 11
+    },
+    "picture": "Middelburg"
+  },
+  "Harlem": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 88,
+      "y": 108
+    },
+    "picture": "Harlem"
+  },
+  "Alkmaar": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 89,
+      "y": 105
+    },
+    "picture": "Alkmaar"
+  },
+  "Leeuwarden": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 96,
+      "y": 101
+    },
+    "picture": "Leeuwarden"
+  },
+  "Groningen": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 103,
+      "y": 102
+    },
+    "picture": "Groningen"
+  },
+  "Limburg": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 100,
+      "y": 119
+    },
+    "picture": "Limburg"
+  },
+  "Eindhoven": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 97,
+      "y": 113
+    },
+    "picture": "Eindhoven"
+  },
+  "Zwolle": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 102,
+      "y": 108
+    },
+    "picture": "Zwolle"
+  },
+  "Tritunnel Ovest": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 335,
+      "y": 486
+    },
+    "base": {
+      "x": 83,
+      "y": 116
+    },
+    "picture": "TritunnelOvest"
+  },
+  "Charleroi": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 94,
+      "y": 125
+    },
+    "picture": "Charleroi"
+  },
+  "Luik": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 94,
+      "y": 119
+    },
+    "picture": "Luik"
+  },
+  "Bologna": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 497,
+      "y": 645
+    },
+    "base": {
+      "x": 124,
+      "y": 168
+    },
+    "picture": "Bologna"
+  },
+  "Super sacred shrine": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 97,
+      "y": 142
+    }
+  },
+  "London": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 66,
+      "y": 112
+    }
+  },
+  "MAXGauntlet": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 482,
+      "y": 633
+    },
+    "base": {
+      "x": 111,
+      "y": 163
+    }
+  },
+  "Vatican Citadel": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 502,
+      "y": 705
+    },
+    "base": {
+      "x": 126,
+      "y": 187
+    }
+  },
+  "MAXTavern": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 499,
+      "y": 634
+    },
+    "base": {
+      "x": 115,
+      "y": 161
+    }
+  },
+  "Cardiff": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 52,
+      "y": 111
+    }
+  },
+  "Milano": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 497,
+      "y": 601
+    },
+    "base": {
+      "x": 121,
+      "y": 161
+    }
+  },
+  "Canicattini Bagni": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 130,
+      "y": 223
+    }
+  },
+  "Casalpusterlengo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 489,
+      "y": 618
+    },
+    "base": {
+      "x": 117,
+      "y": 163
+    }
+  },
+  "Plymouth": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 48,
+      "y": 120
+    }
+  },
+  "Canterbury": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 73,
+      "y": 119
+    }
+  },
+  "Brighton": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 66,
+      "y": 120
+    }
+  },
+  "Boston": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 68,
+      "y": 105
+    }
+  },
+  "Manchester": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 62,
+      "y": 101
+    }
+  },
+  "Birmingham": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 57,
+      "y": 108
+    }
+  },
+  "Edinburgh": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 62,
+      "y": 89
+    }
+  },
+  "Glasgow": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 237,
+      "y": 394
+    },
+    "base": {
+      "x": 58,
+      "y": 90
+    }
+  },
+  "Perth": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 61,
+      "y": 86
+    }
+  },
+  "Oban": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 53,
+      "y": 82
+    }
+  },
+  "Aberdeen": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 64,
+      "y": 82
+    }
+  },
+  "Petrocave": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 88,
+      "y": 131
+    }
+  },
+  "Belfast": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 42,
+      "y": 85
+    }
+  },
+  "Roma": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 518,
+      "y": 692
+    },
+    "base": {
+      "x": 126,
+      "y": 186
+    }
+  },
+  "Messina": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 134,
+      "y": 218
+    }
+  },
+  "Londonderry": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 37,
+      "y": 82
+    }
+  },
+  "Sligo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 36,
+      "y": 85
+    }
+  },
+  "Reggio Calabria": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 136,
+      "y": 215
+    }
+  },
+  "Alba Adriatica": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 553,
+      "y": 680
+    },
+    "base": {
+      "x": 137,
+      "y": 180
+    }
+  },
+  "Dublin": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 43,
+      "y": 92
+    }
+  },
+  "Wexford": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 43,
+      "y": 96
+    }
+  },
+  "Cork": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 37,
+      "y": 100
+    }
+  },
+  "Tritunnel East": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 73,
+      "y": 111
+    }
+  },
+  "Killarney": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 33,
+      "y": 101
+    }
+  },
+  "Brusselles": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 89,
+      "y": 121
+    }
+  },
+  "Reykyavik": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 49,
+      "y": 24
+    }
+  },
+  "Dark tower": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 362,
+      "y": 535
+    },
+    "base": {
+      "x": 81,
+      "y": 129
+    }
+  },
+  "Kalfafell": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 56,
+      "y": 25
+    }
+  },
+  "Laugar": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 60,
+      "y": 20
+    }
+  },
+  "Hvammstangi": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 50,
+      "y": 21
+    }
+  },
+  "Klasvik": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 76,
+      "y": 41
+    }
+  },
+  "Gasadalur": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 71,
+      "y": 42
+    }
+  },
+  "Torshavn": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 73,
+      "y": 45
+    }
+  },
+  "Sandvik": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 71,
+      "y": 50
+    }
+  },
+  "Crabby Beach": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 388,
+      "y": 479
+    },
+    "base": {
+      "x": 85,
+      "y": 116
+    }
+  },
+  "Madrid": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 252,
+      "y": 708
+    },
+    "base": {
+      "x": 49,
+      "y": 188
+    }
+  },
+  "Granada": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 283,
+      "y": 767
+    },
+    "base": {
+      "x": 54,
+      "y": 205
+    }
+  },
+  "Valencia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 70,
+      "y": 199
+    }
+  },
+  "Genova": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 447,
+      "y": 636
+    },
+    "base": {
+      "x": 110,
+      "y": 171
+    }
+  },
+  "La Spezia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 461,
+      "y": 641
+    },
+    "base": {
+      "x": 118,
+      "y": 171
+    }
+  },
+  "Pisa": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 496,
+      "y": 670
+    },
+    "base": {
+      "x": 119,
+      "y": 175
+    }
+  },
+  "Livorno": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 118,
+      "y": 178
+    }
+  },
+  "Frosinone": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 133,
+      "y": 185
+    }
+  },
+  "Napoli": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 550,
+      "y": 711
+    },
+    "base": {
+      "x": 135,
+      "y": 194
+    }
+  },
+  "Capri": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 545,
+      "y": 725
+    },
+    "base": {
+      "x": 134,
+      "y": 196
+    }
+  },
+  "Taranto": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 151,
+      "y": 200
+    }
+  },
+  "Catanzaro": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 144,
+      "y": 210
+    }
+  },
+  "Cosenza": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 144,
+      "y": 201
+    }
+  },
+  "Lecce": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 154,
+      "y": 199
+    }
+  },
+  "Ancona": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 534,
+      "y": 666
+    },
+    "base": {
+      "x": 134,
+      "y": 176
+    }
+  },
+  "San Marino": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 535,
+      "y": 683
+    },
+    "base": {
+      "x": 129,
+      "y": 176
+    }
+  },
+  "Verona": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 474,
+      "y": 624
+    },
+    "base": {
+      "x": 125,
+      "y": 161
+    }
+  },
+  "Venezia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 529,
+      "y": 614
+    },
+    "base": {
+      "x": 136,
+      "y": 163
+    }
+  },
+  "Torino": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 468,
+      "y": 608
+    },
+    "base": {
+      "x": 113,
+      "y": 162
+    }
+  },
+  "Lucca": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 500,
+      "y": 657
+    },
+    "base": {
+      "x": 121,
+      "y": 173
+    }
+  },
+  "Firenze": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 481,
+      "y": 659
+    },
+    "base": {
+      "x": 123,
+      "y": 174
+    }
+  },
+  "L'Aquila": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 135,
+      "y": 181
+    }
+  },
+  "Latina": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 532,
+      "y": 701
+    },
+    "base": {
+      "x": 127,
+      "y": 188
+    }
+  },
+  "Amalfi": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 568,
+      "y": 721
+    },
+    "base": {
+      "x": 137,
+      "y": 196
+    }
+  },
+  "Sorrento": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 565,
+      "y": 733
+    },
+    "base": {
+      "x": 139,
+      "y": 196
+    }
+  },
+  "Crotone": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 148,
+      "y": 208
+    }
+  },
+  "Catania": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 133,
+      "y": 222
+    }
+  },
+  "Siracusa": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 132,
+      "y": 225
+    }
+  },
+  "Palermo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 125,
+      "y": 219
+    }
+  },
+  "Marsala": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 123,
+      "y": 221
+    }
+  },
+  "Lampedusa": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 120,
+      "y": 228
+    }
+  },
+  "Agrigento": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 127,
+      "y": 223
+    }
+  },
+  "Cagliari": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 458,
+      "y": 719
+    },
+    "base": {
+      "x": 105,
+      "y": 210
+    }
+  },
+  "Sassari": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 469,
+      "y": 737
+    },
+    "base": {
+      "x": 106,
+      "y": 201
+    }
+  },
+  "Tunisi": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 471,
+      "y": 788
+    },
+    "base": {
+      "x": 105,
+      "y": 226
+    }
+  },
+  "Biserta": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 102,
+      "y": 223
+    }
+  },
+  "Tripoli": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 125,
+      "y": 253
+    }
+  },
+  "Algeri": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 59,
+      "y": 228
+    }
+  },
+  "Atene": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 204,
+      "y": 224
+    }
+  },
+  "Instanbul": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 237,
+      "y": 194
+    }
+  },
+  "Corfù": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 151,
+      "y": 179
+    }
+  },
+  "Odessa": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 232,
+      "y": 147
+    }
+  },
+  "Berlin": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 461,
+      "y": 527
+    },
+    "base": {
+      "x": 135,
+      "y": 109
+    }
+  },
+  "Copenaghen": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 144,
+      "y": 78
+    }
+  },
+  "Malmo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 148,
+      "y": 68
+    }
+  },
+  "Oslo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 131,
+      "y": 45
+    }
+  },
+  "Paris": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 79,
+      "y": 139
+    }
+  },
+  "Marsiglia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 88,
+      "y": 166
+    }
+  },
+  "Bordeaux": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 67,
+      "y": 160
+    }
+  },
+  "Brest": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 53,
+      "y": 144
+    }
+  },
+  "Berna": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 117,
+      "y": 151
+    },
+    "base": {
+      "x": 117,
+      "y": 151
+    }
+  },
+  "Ginevra": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 485,
+      "y": 563
+    },
+    "base": {
+      "x": 105,
+      "y": 157
+    }
+  },
+  "Zermatt": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 485,
+      "y": 584
+    },
+    "base": {
+      "x": 112,
+      "y": 157
+    }
+  },
+  "Lugano": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 464,
+      "y": 583
+    },
+    "base": {
+      "x": 115,
+      "y": 155
+    }
+  },
+  "Liechtenstein": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 128,
+      "y": 153
+    }
+  },
+  "Zurigo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 118,
+      "y": 148
+    }
+  },
+  "Basilea": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 112,
+      "y": 147
+    }
+  },
+  "Le Havre": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 75,
+      "y": 130
+    }
+  },
+  "Lille": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 83,
+      "y": 134
+    }
+  },
+  "Orleans": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 80,
+      "y": 147
+    }
+  },
+  "Le Mans": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 73,
+      "y": 144
+    }
+  },
+  "Saint Helier": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 58,
+      "y": 136
+    }
+  },
+  "Jersey": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 56,
+      "y": 135
+    }
+  },
+  "Guernsey": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 52,
+      "y": 131
+    }
+  },
+  "Palma di Maiorca": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 358,
+      "y": 730
+    },
+    "base": {
+      "x": 82,
+      "y": 194
+    }
+  },
+  "Ivissa": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 342,
+      "y": 749
+    },
+    "base": {
+      "x": 80,
+      "y": 198
+    }
+  },
+  "Minorca": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 385,
+      "y": 724
+    },
+    "base": {
+      "x": 88,
+      "y": 191
+    }
+  },
+  "Barcellona": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 304,
+      "y": 674
+    },
+    "base": {
+      "x": 77,
+      "y": 184
+    }
+  },
+  "Saragozza": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 318,
+      "y": 706
+    },
+    "base": {
+      "x": 63,
+      "y": 184
+    }
+  },
+  "Siviglia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 39,
+      "y": 205
+    }
+  },
+  "Moonlit Station": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 100,
+      "y": 117
+    }
+  },
+  "Abandoned Shack": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 64,
+      "y": 99
+    }
+  },
+  "Lisbona": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 22,
+      "y": 192
+    }
+  },
+  "Porto": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 183,
+      "y": 706
+    },
+    "base": {
+      "x": 25,
+      "y": 179
+    }
+  },
+  "Santiago di Compostela": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 213,
+      "y": 675
+    },
+    "base": {
+      "x": 34,
+      "y": 167
+    }
+  },
+  "Pola": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 146,
+      "y": 172
+    }
+  },
+  "Zara": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 152,
+      "y": 176
+    }
+  },
+  "Sarajevo": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 168,
+      "y": 175
+    }
+  },
+  "Belgrado": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 178,
+      "y": 165
+    }
+  },
+  "Novi Sad": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 170,
+      "y": 157
+    }
+  },
+  "Tirana": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 175,
+      "y": 196
+    }
+  },
+  "Sofia": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 209,
+      "y": 190
+    }
+  },
+  "Bucarest": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 207,
+      "y": 168
+    }
+  },
+  "Costanza": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 0,
+      "y": 0
+    },
+    "base": {
+      "x": 226,
+      "y": 169
+    }
+  },
+  "Roccalonga": {
+    "type": "village",
+"fastTravelMap": {
+      "x": 567,
+      "y": 685
+    },
+    "base": {
+      "x": 147,
+      "y": 192
+    }
+  }
+}

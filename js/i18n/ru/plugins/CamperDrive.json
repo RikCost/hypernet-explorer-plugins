@@ -1,0 +1,45 @@
+{
+  "stopLiminal": "",
+  "stopDriving": "",
+  "climbBackIn": "",
+  "stepOutside": "",
+  "refuelAtStation": "",
+  "continue": "",
+  "splashdown": "",
+  "wedged": "",
+  "flipped": "",
+  "destination": "",
+  "freeDrive": "",
+  "autopilot": "",
+  "hud": {
+    "fuel": "",
+    "map": "",
+    "destination": "",
+    "time": "",
+    "distance": "",
+    "view": "",
+    "mode": "",
+    "controls": "",
+    "controllerHint": "",
+    "fly": "",
+    "float": "",
+    "dive": "",
+    "cond": "",
+    "trip": "",
+    "camperStuck": "",
+    "pressRToRespawn": ""
+  },
+  "viewMode": {
+    "fpdrive": "",
+    "fp": "",
+    "car": "",
+    "free": "",
+    "foot": ""
+  },
+  "envMode": {
+    "road": "",
+    "air": "",
+    "water": "",
+    "underwater": ""
+  }
+}

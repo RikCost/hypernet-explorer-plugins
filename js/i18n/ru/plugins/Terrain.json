@@ -1,0 +1,28 @@
+{
+  "verb": {
+    "fell": "",
+    "mine": "",
+    "pick": "",
+    "dismantle": ""
+  },
+  "needAxe": "",
+  "read": "",
+  "cancel": "",
+  "collect": "",
+  "foolsGold": "",
+  "drink": "",
+  "pickUp": "",
+  "breakIt": "",
+  "mpRefilled": "",
+  "open": "",
+  "blowOut": "",
+  "lightUp": "",
+  "bathe": "",
+  "enter": "",
+  "descend": "",
+  "ascend": "",
+  "signShop": "",
+  "signInn": "",
+  "needPickaxe": "",
+  "statue": ""
+}

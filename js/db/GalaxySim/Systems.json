@@ -10,6 +10,34 @@
       "y": 0,
       "z": 0
     },
+    "belts": [
+      {
+        "name": "Main Asteroid Belt",
+        "innerAu": 2.06,
+        "outerAu": 3.4,
+        "count": 1700,
+        "thickness": 0.32,
+        "color": "#9a9082",
+        "opacity": 0.85,
+        "gapsAu": [
+          [2.48, 2.53],
+          [2.79, 2.85],
+          [2.93, 2.97],
+          [3.26, 3.31]
+        ]
+      },
+      {
+        "name": "Kuiper Belt",
+        "innerAu": 30,
+        "outerAu": 50,
+        "count": 1500,
+        "thickness": 1.7,
+        "sizeMin": 0.012,
+        "sizeMax": 0.036,
+        "color": "#8fa4c2",
+        "opacity": 0.75
+      }
+    ],
     "planets": [
       {
         "name": "Mercury",
@@ -28,11 +56,35 @@
       {
         "name": "Earth",
         "type": "earth_like",
+        "debris": "kessler",
+        "note": "The shell around it is not decoration. Forty years of spent upper stages, dead satellites and frozen coolant, every collision breeding the fragments for the next one.",
+        "landingLocations": [
+          {
+            "name": "Apulia Spaceport",
+            "mapId": 315,
+            "x": 155,
+            "y": 202
+          },
+          {
+            "name": "Greenwitch spaceport",
+            "mapId": 315,
+            "x": 61,
+            "y": 119
+          }
+        ],
         "moons": [
           {
             "name": "Moon",
             "type": "sub_mercurian",
-            "mass": 0.0123
+            "mass": 0.0123,
+            "landingLocations": [
+              {
+                "name": "Moon base",
+                "mapId": 100,
+                "x": 1,
+                "y": 1
+              }
+            ]
           }
         ],
         "orbitRadius": 1,
@@ -45,12 +97,12 @@
           {
             "name": "Phobos",
             "type": "c_type_asteroid",
-            "mass": 1.78e-8
+            "mass": 1.78e-08
           },
           {
             "name": "Deimos",
             "type": "c_type_asteroid",
-            "mass": 2.5e-9
+            "mass": 2.5e-09
           }
         ],
         "orbitRadius": 1.52,
@@ -61,14 +113,14 @@
         "type": "s_type_asteroid",
         "moons": [],
         "orbitRadius": 2.36,
-        "mass": 0.000043
+        "mass": 4.3e-05
       },
       {
         "name": "Juno",
         "type": "s_type_asteroid",
         "moons": [],
         "orbitRadius": 2.67,
-        "mass": 0.0000033
+        "mass": 3.3e-06
       },
       {
         "name": "Ceres",
@@ -82,7 +134,7 @@
         "type": "c_type_asteroid",
         "moons": [],
         "orbitRadius": 2.77,
-        "mass": 0.000034
+        "mass": 3.4e-05
       },
       {
         "name": "67P/Churyumov-Gerasimenko",
@@ -118,22 +170,22 @@
           {
             "name": "Amalthea",
             "type": "ice",
-            "mass": 2.1e-7
+            "mass": 2.1e-07
           },
           {
             "name": "Thebe",
             "type": "rocky",
-            "mass": 3.1e-8
+            "mass": 3.1e-08
           },
           {
             "name": "Adrastea",
             "type": "rocky",
-            "mass": 1.9e-9
+            "mass": 1.9e-09
           },
           {
             "name": "Metis",
             "type": "rocky",
-            "mass": 1.2e-8
+            "mass": 1.2e-08
           },
           {
             "name": "Themisto",
@@ -148,7 +200,7 @@
           {
             "name": "Himalia",
             "type": "irregular",
-            "mass": 7.77e-7
+            "mass": 7.77e-07
           },
           {
             "name": "Lysithea",
@@ -158,7 +210,7 @@
           {
             "name": "Elara",
             "type": "irregular",
-            "mass": 8.7e-8
+            "mass": 8.7e-08
           },
           {
             "name": "Dia",
@@ -203,12 +255,12 @@
           {
             "name": "Pasiphae",
             "type": "irregular",
-            "mass": 2.5e-8
+            "mass": 2.5e-08
           },
           {
             "name": "Sinope",
             "type": "irregular",
-            "mass": 7.5e-9
+            "mass": 7.5e-09
           },
           {
             "name": "Callirrhoe",
@@ -318,7 +370,7 @@
           {
             "name": "Carme",
             "type": "irregular",
-            "mass": 1.3e-9
+            "mass": 1.3e-09
           },
           {
             "name": "Herse",
@@ -524,7 +576,7 @@
           }
         ],
         "orbitRadius": 5.2,
-        "mass": 0.0000013
+        "mass": 1.3e-06
       },
       {
         "name": "Saturn",
@@ -533,12 +585,12 @@
           {
             "name": "Mimas",
             "type": "ice",
-            "mass": 0.0000063
+            "mass": 6.3e-06
           },
           {
             "name": "Enceladus",
             "type": "ocean",
-            "mass": 0.000018
+            "mass": 1.8e-05
           },
           {
             "name": "Tethys",
@@ -568,22 +620,22 @@
           {
             "name": "Janus",
             "type": "ice",
-            "mass": 0.0000019
+            "mass": 1.9e-06
           },
           {
             "name": "Epimetheus",
             "type": "ice",
-            "mass": 5.3e-7
+            "mass": 5.3e-07
           },
           {
             "name": "Hyperion",
             "type": "ice",
-            "mass": 0.000056
+            "mass": 5.6e-05
           },
           {
             "name": "Phoebe",
             "type": "carbonaceous",
-            "mass": 0.0000083
+            "mass": 8.3e-06
           },
           {
             "name": "Pan",
@@ -638,7 +690,7 @@
           {
             "name": "Miranda",
             "type": "ice",
-            "mass": 0.000011
+            "mass": 1.1e-05
           },
           {
             "name": "Ariel",
@@ -678,7 +730,7 @@
           {
             "name": "Cressida",
             "type": "ice",
-            "mass": 1.2e-9
+            "mass": 1.2e-09
           },
           {
             "name": "Desdemona",
@@ -688,22 +740,22 @@
           {
             "name": "Juliet",
             "type": "ice",
-            "mass": 1.9e-9
+            "mass": 1.9e-09
           },
           {
             "name": "Portia",
             "type": "ice",
-            "mass": 4.7e-9
+            "mass": 4.7e-09
           },
           {
             "name": "Rosalind",
             "type": "ice",
-            "mass": 1.1e-9
+            "mass": 1.1e-09
           },
           {
             "name": "Belinda",
             "type": "ice",
-            "mass": 1.2e-9
+            "mass": 1.2e-09
           },
           {
             "name": "Perdita",
@@ -713,7 +765,7 @@
           {
             "name": "Puck",
             "type": "ice",
-            "mass": 2.3e-8
+            "mass": 2.3e-08
           },
           {
             "name": "Mab",
@@ -733,7 +785,7 @@
           {
             "name": "Caliban",
             "type": "irregular",
-            "mass": 6.3e-8
+            "mass": 6.3e-08
           },
           {
             "name": "Stephano",
@@ -748,7 +800,7 @@
           {
             "name": "Sycorax",
             "type": "irregular",
-            "mass": 1.7e-7
+            "mass": 1.7e-07
           },
           {
             "name": "Margaret",
@@ -791,12 +843,12 @@
           {
             "name": "Nereid",
             "type": "ice",
-            "mass": 0.0000052
+            "mass": 5.2e-06
           },
           {
             "name": "Proteus",
             "type": "ice",
-            "mass": 0.0000084
+            "mass": 8.4e-06
           }
         ],
         "orbitRadius": 30.1,
@@ -814,22 +866,22 @@
           {
             "name": "Styx",
             "type": "ice",
-            "mass": 1.3e-9
+            "mass": 1.3e-09
           },
           {
             "name": "Nix",
             "type": "ice",
-            "mass": 7.5e-9
+            "mass": 7.5e-09
           },
           {
             "name": "Kerberos",
             "type": "ice",
-            "mass": 2.7e-9
+            "mass": 2.7e-09
           },
           {
             "name": "Hydra",
             "type": "ice",
-            "mass": 8e-9
+            "mass": 8e-09
           }
         ],
         "orbitRadius": 39.5,
@@ -842,12 +894,12 @@
           {
             "name": "Namaka",
             "type": "ice",
-            "mass": 2.9e-7
+            "mass": 2.9e-07
           },
           {
             "name": "Hi'iaka",
             "type": "ice",
-            "mass": 0.0000032
+            "mass": 3.2e-06
           }
         ],
         "orbitRadius": 43.1,
@@ -860,7 +912,7 @@
           {
             "name": "MK 2",
             "type": "ice",
-            "mass": 8.4e-8
+            "mass": 8.4e-08
           }
         ],
         "orbitRadius": 45.8,
@@ -873,7 +925,7 @@
           {
             "name": "Dysnomia",
             "type": "ice",
-            "mass": 0.000062
+            "mass": 6.2e-05
           }
         ],
         "orbitRadius": 67.7,
@@ -884,7 +936,140 @@
         "type": "long_period_comet",
         "moons": [],
         "orbitRadius": 186,
-        "mass": 3.7e-8
+        "mass": 3.7e-08
+      },
+      {
+        "name": "Vulcan",
+        "type": "mercurian",
+        "moons": [],
+        "orbitRadius": 0.21,
+        "mass": 0.01,
+        "radius": 0.25,
+        "note": "The planet Le Verrier put inside Mercury's orbit in 1859 to explain the wandering of Mercury's perihelion. General relativity explained it instead. Vulcan was never withdrawn, only stopped being looked for."
+      },
+      {
+        "name": "3753 Cruithne",
+        "type": "s_type_asteroid",
+        "moons": [],
+        "orbitRadius": 0.997,
+        "phase": 2.1,
+        "radius": 0.0008,
+        "mass": 2.5e-14,
+        "note": "Earth's second moon, if you are generous. A horseshoe co-orbital that takes 770 years to walk one lap of its bean-shaped path around us, and is never captured."
+      },
+      {
+        "name": "Hubble Space Telescope",
+        "type": "planetesimal",
+        "artificial": "telescope",
+        "hubble": true,
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 1.0004,
+        "phase": 0.09,
+        "radius": 2e-06,
+        "mass": 1.8e-21,
+        "note": "Launched 1990 with a primary mirror ground to the wrong prescription by two microns. Three servicing missions have been flown to it. It needs a fourth."
+      },
+      {
+        "name": "Antichthon",
+        "type": "earth_like",
+        "moons": [],
+        "orbitRadius": 1,
+        "phase": 3.14159,
+        "radius": 0.98,
+        "mass": 0.97,
+        "note": "Philolaus placed a Counter-Earth opposite our own, forever behind the Sun, to round the count of moving bodies up to ten. Every probe sent to check has been aimed somewhere else."
+      },
+      {
+        "name": "Russell's Teapot",
+        "type": "planetesimal",
+        "artificial": "teapot",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 1.28,
+        "radius": 2e-08,
+        "mass": 1.7e-25,
+        "note": "China, elliptical orbit between Earth and Mars, too small for the most powerful telescope to confirm. The burden of proof is not on the observer. Confirmed."
+      },
+      {
+        "name": "433 Eros",
+        "type": "s_type_asteroid",
+        "moons": [],
+        "orbitRadius": 1.46,
+        "radius": 0.0013,
+        "mass": 1.1e-12,
+        "note": "NEAR Shoemaker touched down here on 12 February 2001, a spacecraft never designed to land on anything. It kept transmitting from the surface for a fortnight."
+      },
+      {
+        "name": "TMA-2",
+        "type": "planetesimal",
+        "artificial": "monolith",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 5.2,
+        "phase": 4.4,
+        "radius": 1.5e-06,
+        "mass": 2.1e-21,
+        "note": "A black slab in Jupiter space, its edges in the exact ratio 1:4:9 to the limit of measurement. Every instrument aimed at it returns the reflectance of nothing at all."
+      },
+      {
+        "name": "2060 Chiron",
+        "type": "centaur",
+        "moons": [],
+        "orbitRadius": 13.7,
+        "radius": 0.0086,
+        "mass": 5e-10,
+        "note": "Comet or asteroid, depending which year you ask. It grew a coma in 1988, after a decade filed as a minor planet, and the argument has not been settled since."
+      },
+      {
+        "name": "Pioneer 11",
+        "type": "planetesimal",
+        "artificial": "probe",
+        "probeStyle": "pioneer",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 60,
+        "phase": 1.9,
+        "radius": 5e-07,
+        "mass": 4e-22,
+        "note": "Launched 1973, first to Saturn. Last contact 30 November 1995: the transmitter is dead, the trajectory is exact, and the plaque aboard is still legible to nobody."
+      },
+      {
+        "name": "Voyager 2",
+        "type": "planetesimal",
+        "artificial": "probe",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 63,
+        "phase": 3.6,
+        "radius": 5e-07,
+        "mass": 1.4e-22,
+        "note": "Launched 1977, the only craft to pass all four giants. Its plasma instrument is still switched on. Nobody at the Deep Space Network has ever had a reason to switch it off."
+      },
+      {
+        "name": "Pioneer 10",
+        "type": "planetesimal",
+        "artificial": "probe",
+        "probeStyle": "pioneer",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 76,
+        "phase": 0.7,
+        "radius": 5e-07,
+        "mass": 4e-22,
+        "note": "Launched 1972. It keeps falling short of where the arithmetic says it should be, by a hair, every year. Carries a gold plaque of two naked strangers waving."
+      },
+      {
+        "name": "Voyager 1",
+        "type": "planetesimal",
+        "artificial": "probe",
+        "noLanding": true,
+        "moons": [],
+        "orbitRadius": 80,
+        "phase": 5.2,
+        "radius": 5e-07,
+        "mass": 1.4e-22,
+        "note": "The furthest human object from the Sun, returning 160 bits a second from the edge of the heliosphere. The Golden Record is bolted to its flank, never once played."
       }
     ]
   },
@@ -928,6 +1113,16 @@
       "z": -3.84
     },
     "binary": true,
+    "companions": [
+      {
+        "name": "Alpha Centauri B",
+        "type": "K",
+        "mass": 0.907,
+        "radius": 0.865,
+        "temperature": 5260,
+        "orbitRadius": 23
+      }
+    ],
     "planets": []
   },
   "barnard's star": {
@@ -987,6 +1182,20 @@
       "x": -1.64,
       "y": -5.32,
       "z": -8.06
+    },
+    "binary": true,
+    "planets": []
+  },
+  "sirius b": {
+    "name": "Sirius B",
+    "type": "WHITE_DWARF",
+    "mass": 1.018,
+    "radius": 0.0084,
+    "temperature": 25000,
+    "position": {
+      "x": -1.63,
+      "y": -5.31,
+      "z": -8.05
     },
     "binary": true,
     "planets": []
@@ -1356,7 +1565,7 @@
   },
   "arcturus": {
     "name": "Arcturus",
-    "type": "K",
+    "type": "RED_GIANT",
     "mass": 1.08,
     "radius": 25.4,
     "temperature": 4286,
@@ -1394,7 +1603,7 @@
   },
   "betelgeuse": {
     "name": "Betelgeuse",
-    "type": "M",
+    "type": "RED_SUPERGIANT",
     "mass": 11.6,
     "radius": 887,
     "temperature": 3500,
@@ -1472,6 +1681,24 @@
       "z": 5.75
     },
     "binary": true,
+    "companions": [
+      {
+        "name": "Polaris Ab",
+        "type": "F",
+        "mass": 1.26,
+        "radius": 1.04,
+        "temperature": 6900,
+        "orbitRadius": 18.8
+      },
+      {
+        "name": "Polaris B",
+        "type": "F",
+        "mass": 1.39,
+        "radius": 1.38,
+        "temperature": 6900,
+        "orbitRadius": 2400
+      }
+    ],
     "planets": [
       {
         "name": "Polaris b",
@@ -1727,7 +1954,7 @@
   },
   "aldebaran": {
     "name": "Aldebaran",
-    "type": "K",
+    "type": "RED_GIANT",
     "mass": 1.16,
     "radius": 44.2,
     "temperature": 3910,
@@ -1764,7 +1991,7 @@
   },
   "antares": {
     "name": "Antares",
-    "type": "M",
+    "type": "RED_SUPERGIANT",
     "mass": 12.4,
     "radius": 680,
     "temperature": 3500,
@@ -2236,7 +2463,7 @@
   },
   "van maanen's star": {
     "name": "Van Maanen's Star",
-    "type": "D",
+    "type": "WHITE_DWARF",
     "mass": 0.68,
     "radius": 0.011,
     "temperature": 6030,
@@ -2318,6 +2545,7 @@
       "z": -7.02
     },
     "binary": true,
+    "dyson": "active",
     "planets": [
       {
         "name": "Zeta A I",
@@ -2331,7 +2559,15 @@
         "type": "ocean",
         "moons": [],
         "orbitRadius": 1.5,
-        "mass": 1.3
+        "mass": 1.3,
+        "landingLocations": [
+          {
+            "name": "Court of Nakub",
+            "mapId": 100,
+            "x": 1,
+            "y": 1
+          }
+        ]
       }
     ]
   },
@@ -2371,14 +2607,14 @@
   },
   "Sagittarius A*": {
     "name": "Sagittarius A*",
-    "type": "supermassive_black_hole",
+    "type": "SUPERMASSIVE_BLACK_HOLE",
     "mass": 4000000,
     "radius": 0.08,
     "temperature": null,
     "position": {
-      "x": -5900.17,
-      "y": -8000.89,
-      "z": -3.21
+      "x": -26000,
+      "y": 0,
+      "z": 0
     },
     "planets": []
   },
@@ -2434,6 +2670,24 @@
       "z": 33.63
     },
     "binary": true,
+    "companions": [
+      {
+        "name": "Castor B",
+        "type": "A",
+        "mass": 1.7,
+        "radius": 1.3,
+        "temperature": 8842,
+        "orbitRadius": 104
+      },
+      {
+        "name": "Castor C",
+        "type": "M",
+        "mass": 0.6,
+        "radius": 0.62,
+        "temperature": 3820,
+        "orbitRadius": 1060
+      }
+    ],
     "planets": []
   },
   "regulus": {
@@ -2656,6 +2910,7 @@
       "z": -7.14
     },
     "binary": true,
+    "dyson": "active",
     "planets": [
       {
         "name": "Zeta B I",
@@ -2669,7 +2924,15 @@
         "type": "super_earth",
         "moons": [],
         "orbitRadius": 1.2,
-        "mass": 3.2
+        "mass": 3.2,
+        "landingLocations": [
+          {
+            "name": "Monument to humanity",
+            "mapId": 100,
+            "x": 1,
+            "y": 1
+          }
+        ]
       }
     ]
   },
@@ -2714,5 +2977,270 @@
         "mass": 2.4
       }
     ]
+  },
+  "crab pulsar": {
+    "name": "Crab Pulsar",
+    "type": "PULSAR",
+    "mass": 1.4,
+    "radius": 0.000017,
+    "temperature": 1600000,
+    "position": {
+      "x": 2200,
+      "y": -5700,
+      "z": 2300
+    },
+    "planets": []
+  },
+  "psr b1919+21": {
+    "name": "PSR B1919+21",
+    "type": "PULSAR",
+    "mass": 1.4,
+    "radius": 0.000014,
+    "temperature": 900000,
+    "position": {
+      "x": 800,
+      "y": -2000,
+      "z": 900
+    },
+    "planets": []
+  },
+  "sgr 1806-20": {
+    "name": "SGR 1806-20",
+    "type": "MAGNETAR",
+    "mass": 1.8,
+    "radius": 0.000016,
+    "temperature": 6000000,
+    "position": {
+      "x": -41360,
+      "y": 7290,
+      "z": -180
+    },
+    "planets": []
+  },
+  "wr 104": {
+    "name": "WR 104",
+    "type": "WOLF_RAYET",
+    "mass": 13,
+    "radius": 3.2,
+    "temperature": 45000,
+    "position": {
+      "x": -8290,
+      "y": 1360,
+      "z": -120
+    },
+    "binary": true,
+    "planets": []
+  },
+  "t tauri": {
+    "name": "T Tauri",
+    "type": "PROTOSTAR",
+    "mass": 2.1,
+    "radius": 3.3,
+    "temperature": 4900,
+    "position": {
+      "x": 438.6,
+      "y": 30.7,
+      "z": -168.8
+    },
+    "planets": []
+  },
+  "luhman 16": {
+    "name": "Luhman 16",
+    "type": "L",
+    "mass": 0.032,
+    "radius": 0.1,
+    "temperature": 1350,
+    "position": {
+      "x": -3.5,
+      "y": -5.4,
+      "z": -0.9
+    },
+    "binary": true,
+    "planets": []
+  },
+  "wise 0855-0714": {
+    "name": "WISE 0855-0714",
+    "type": "Y",
+    "mass": 0.01,
+    "radius": 0.09,
+    "temperature": 250,
+    "position": {
+      "x": 4.2,
+      "y": -5.6,
+      "z": 1.5
+    },
+    "planets": []
+  },
+  "pso j318.5-22": {
+    "name": "PSO J318.5-22",
+    "type": "ROGUE_PLANET",
+    "planetType": "gas_giant",
+    "mass": 0.0062,
+    "radius": 0.13,
+    "temperature": 1100,
+    "position": {
+      "x": 34.1,
+      "y": 61.2,
+      "z": -38.4
+    },
+    "planets": []
+  },
+  "cfbdsir 2149-0403": {
+    "name": "CFBDSIR 2149-0403",
+    "type": "ROGUE_PLANET",
+    "planetType": "gas_giant",
+    "mass": 0.0067,
+    "radius": 0.12,
+    "temperature": 700,
+    "position": {
+      "x": -62.7,
+      "y": 84.5,
+      "z": -55.3
+    },
+    "planets": []
+  },
+  "cygnus x-1": {
+    "name": "Cygnus X-1",
+    "type": "BLACK_HOLE",
+    "mass": 21.2,
+    "radius": 0.00009,
+    "temperature": 31000,
+    "position": {
+      "x": -1956,
+      "y": 5769,
+      "z": 319
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "HDE 226868",
+        "type": "O",
+        "mass": 41,
+        "radius": 22,
+        "temperature": 31000,
+        "orbitRadius": 0.2
+      }
+    },
+    "planets": []
+  },
+  "cygnus x-3": {
+    "name": "Cygnus X-3",
+    "type": "BLACK_HOLE",
+    "mass": 7.2,
+    "radius": 0.00004,
+    "temperature": 90000,
+    "position": {
+      "x": -4251,
+      "y": 23617,
+      "z": 293
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "V1521 Cygni",
+        "type": "WOLF_RAYET",
+        "mass": 10.3,
+        "radius": 2.3,
+        "temperature": 90000,
+        "orbitRadius": 0.03
+      }
+    },
+    "planets": []
+  },
+  "ss 433": {
+    "name": "SS 433",
+    "type": "BLACK_HOLE",
+    "mass": 12,
+    "radius": 0.00006,
+    "temperature": 21000,
+    "position": {
+      "x": -13840,
+      "y": 11494,
+      "z": -691
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "V1343 Aquilae",
+        "type": "A",
+        "mass": 10.9,
+        "radius": 25,
+        "temperature": 8500,
+        "orbitRadius": 0.27
+      }
+    },
+    "planets": []
+  },
+  "vela x-1": {
+    "name": "Vela X-1",
+    "type": "NEUTRON_STAR",
+    "mass": 1.88,
+    "radius": 0.000016,
+    "temperature": 1200000,
+    "position": {
+      "x": 754,
+      "y": -6140,
+      "z": 422
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "HD 77581",
+        "type": "B",
+        "mass": 23,
+        "radius": 30,
+        "temperature": 25000,
+        "orbitRadius": 0.25
+      }
+    },
+    "planets": []
+  },
+  "gx 301-2": {
+    "name": "GX 301-2",
+    "type": "NEUTRON_STAR",
+    "mass": 1.9,
+    "radius": 0.000016,
+    "temperature": 1100000,
+    "position": {
+      "x": -6000,
+      "y": -10392,
+      "z": -6
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "Wray 977",
+        "type": "HYPERGIANT",
+        "mass": 43,
+        "radius": 70,
+        "temperature": 18100,
+        "orbitRadius": 0.7
+      }
+    },
+    "planets": []
+  },
+  "scorpius x-1": {
+    "name": "Scorpius X-1",
+    "type": "NEUTRON_STAR",
+    "mass": 1.4,
+    "radius": 0.000014,
+    "temperature": 2000000,
+    "position": {
+      "x": -8234,
+      "y": -129,
+      "z": 3632
+    },
+    "binary": true,
+    "feeding": {
+      "donor": {
+        "name": "V818 Scorpii",
+        "type": "K",
+        "mass": 0.42,
+        "radius": 1.2,
+        "temperature": 4600,
+        "orbitRadius": 0.01
+      }
+    },
+    "planets": []
   }
 }

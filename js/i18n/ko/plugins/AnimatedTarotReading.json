@@ -1,0 +1,414 @@
+{
+  "ui": {
+    "title": "",
+    "past": "",
+    "present": "",
+    "future": "",
+    "instruction": "",
+    "complete": "",
+    "upright": "",
+    "reversed": "",
+    "npcTitle": "",
+    "unclear": "",
+    "readerOffers": "",
+    "layout": "",
+    "readingDone": "",
+    "faceDown": "",
+    "readingDonePrompt": "",
+    "unclearNumbered": ""
+  },
+  "cards": {
+    "The Fool": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Magician": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The High Priestess": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Empress": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Emperor": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Hierophant": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Lovers": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Chariot": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Strength": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Hermit": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Wheel of Fortune": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Justice": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Hanged Man": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Death": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Temperance": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Devil": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Tower": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Star": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Moon": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The Sun": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "Judgement": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "The World": {
+      "name": "",
+      "upright": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "reversed": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "spreads": {
+    "three": {
+      "name": "",
+      "blurb": "",
+      "slots": {
+        "0": "",
+        "1": "",
+        "2": ""
+      }
+    },
+    "cross": {
+      "name": "",
+      "blurb": "",
+      "slots": {
+        "0": "",
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": ""
+      }
+    },
+    "horseshoe": {
+      "name": "",
+      "blurb": "",
+      "slots": {
+        "0": "",
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+        "6": ""
+      }
+    },
+    "celtic": {
+      "name": "",
+      "blurb": "",
+      "slots": {
+        "0": "",
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": "",
+        "6": "",
+        "7": "",
+        "8": "",
+        "9": ""
+      }
+    }
+  },
+  "npc": {
+    "name": "",
+    "perfect": "",
+    "good": "",
+    "average": "",
+    "poor": "",
+    "perfectLong": "",
+    "goodLong": "",
+    "averageLong": "",
+    "poorLong": ""
+  }
+}

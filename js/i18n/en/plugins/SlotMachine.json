@@ -1,0 +1,18 @@
+{
+  "pullToSpin": "Pull to spin",
+  "noTokens": "You don't have any tokens.",
+  "notEnoughTokens": "Not enough tokens! Have {have}, need {need}.",
+  "jackpot": "JACKPOT! Three of a kind, won {amount} tokens! (x{mult})",
+  "pair": "Two matching symbols, won {amount} tokens!",
+  "noMatch": "No match. Try again!",
+  "ui": {
+    "title": "FORTUNE",
+    "subtitle": "&#9670; DELUXE &#9670;",
+    "pressSpin": "Press SPIN to play",
+    "tokens": "TOKENS",
+    "bet": "BET",
+    "lastWin": "LAST WIN",
+    "spin": "SPIN",
+    "hint": "&uarr;&darr; Bet &plusmn;10 &nbsp;&bull;&nbsp; &larr;&rarr; Bet &plusmn;1 &nbsp;&bull;&nbsp; Enter: Spin &nbsp;&bull;&nbsp; Esc: Exit"
+  }
+}

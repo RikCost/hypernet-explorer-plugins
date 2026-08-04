@@ -1,0 +1,13 @@
+{
+  "unknownLocation": "Unknown Location",
+  "getOut": "Get out of my house!",
+  "lockpick": "Lockpick",
+  "bash": "Bash",
+  "cancel": "Cancel",
+  "doorLocked": "The door is locked.",
+  "usedSkeletonKey": "Used Skeleton Key!",
+  "groundFloor": "Ground Floor",
+  "floorNumbered": "Floor {n}",
+  "noElevator": "There is no elevator here.",
+  "selectFloor": "Select a floor:"
+}

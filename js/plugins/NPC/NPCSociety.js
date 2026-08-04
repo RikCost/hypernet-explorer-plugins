@@ -1,0 +1,1295 @@
+/*:
+ * @target MZ
+ * @plugindesc NPCSociety v2.0.0, NPC identity: personality, traits, wealth, skills, factions & backstory
+ * @author Omni-Lex
+ * @help
+ * Owns everything that makes an NPC *who they are*:
+ *   - A deterministic society profile for every NPC (pool and procedural):
+ *     personality, traits, ideology, wealth, skills, items, faction, stats,
+ *     home, work schedule, pre-existing relationships, equipment.
+ *   - A procedural backstory pulled from HistorySimulator's world timeline
+ *     (formerly the separate NPCSystemHistorySimulator plugin): formative
+ *     events the NPC "lived through", birthplace and birth year, rendered
+ *     as the BACKGROUND section of the NPCEmpathize panel.
+ *
+ * Every random facet is seeded from nameToSeed(npcName) XOR the world seed
+ * (window.HistoryManager.getSeed()), so identities are unique per NPC,
+ * consistent within a save, and coherently different per world seed.
+ *
+ * Profile data is displayed via NPCEmpathize (plugin command: NPCEmpathize Open).
+ *
+ * Load order: NPCShared → NPCSystem → MousePan → TimeDateSystem → NPCSociety
+ *
+ * Globals: NPCSocietyRegistry, NPCSocietyConfig, NPCSocietyGetEquip,
+ *          NPCHistSim (backstory API), _NPCSocietyDataLoader
+ *
+ * See docs/npcsociety_system.md for full documentation.
+ */
+
+(() => {
+  "use strict";
+
+  // ==========================================================================
+  // SECTION 1: CONFIGURATION
+  // ==========================================================================
+  const SocConfig = {
+    CARD_WIDTH: 270,
+    CARD_Z_INDEX: 496,
+    FACTION_CHANCE: 0.04,
+    WEALTH_WEIGHTS: [5, 15, 35, 30, 15],
+    WEALTH_ICON: 314,
+    FACTION_FALLBACK_ICON: 187,
+
+    // PERSONALITY_ICONS removed, now loaded from db/Health/PersonalityData.json
+
+    // MOOD_TABLE_EN / MOOD_TABLE_IT removed, personality no longer follows time-of-day mood
+
+    // FACTION_DISPLAY_NAMES removed, now loaded from i18n/<lang>/faction.json by DataLoader
+
+  };
+
+  // ==========================================================================
+  // SECTION 2: DATA LOADER
+  // ==========================================================================
+  const DataLoader = {
+    personalities: null,
+    traits: null,
+    factions: null,
+    ideologies: null,
+    npcData: null,
+    classNames: null,
+    factionNames: null,
+    classSkillCategories: null,
+    isReady: false,
+
+    _getLang() {
+      return (ConfigManager && ConfigManager.language) || "en";
+    },
+
+    _loadClasses(lang) {
+      return fetch("js/i18n/" + lang + "/classes.json")
+        .then(r => r.json())
+        .then(data => {
+          // Convert {"1":{"name":"Freelancer"},...} to {1:"Freelancer",...}
+          const map = {};
+          for (const key of Object.keys(data)) {
+            map[key] = data[key].name || "";
+          }
+          this.classNames = map;
+        })
+        .catch(() => {
+          // Fallback to English if the requested language file fails
+          if (lang !== "en") {
+            return this._loadClasses("en");
+          }
+          this.classNames = {};
+        });
+    },
+
+    _loadFactions(lang) {
+      return fetch("js/i18n/" + lang + "/faction.json")
+        .then(r => r.json())
+        .then(data => {
+          // Convert {"factions":{"magesguild":{"name":"Mages Guild",...},...}}
+          // to {magesguild:"Mages Guild",...}
+          const map = {};
+          const factions = data && data.factions;
+          if (factions) {
+            for (const key of Object.keys(factions)) {
+              map[key] = factions[key].name || "";
+            }
+          }
+          this.factionNames = map;
+        })
+        .catch(() => {
+          // Fallback to English if the requested language file fails
+          if (lang !== "en") {
+            return this._loadFactions("en");
+          }
+          this.factionNames = {};
+        });
+    },
+
+    getClassName(classId) {
+      if (!classId || !this.classNames) return "";
+      return this.classNames[classId] || "";
+    },
+
+    getFactionName(faction) {
+      if (!faction || !this.factionNames) return null;
+      // Faction names in Factions.json use dot notation: "factions.magesguild.name"
+      const seg = (faction.name || "").split(".")[1];
+      if (seg && this.factionNames[seg]) return this.factionNames[seg];
+      return null;
+    },
+
+    getClassSkillCategories(classId) {
+      if (!classId || !this.classSkillCategories) return [];
+      const e = this.classSkillCategories[classId] || this.classSkillCategories[String(classId)];
+      if (!e) return [];
+      // Categories.json now stores { primary:[], secondary:[] }; flatten to the
+      // combined preferred-category list. Tolerate the legacy flat-array shape.
+      if (Array.isArray(e)) return e;
+      return [...(e.primary || []), ...(e.secondary || [])];
+    },
+
+    load() {
+      const lang = this._getLang();
+
+      // Load all js/db/ files from DataService-registered window objects
+      // PersonalityData.json is now { list:[...personalities], capabilityThoughts:{...} };
+      // older builds shipped a bare array, accept either shape.
+      const _personalityData      = window.Health?.PersonalityData || null;
+      this.personalities          = Array.isArray(_personalityData) ? _personalityData : (_personalityData?.list || null);
+      this.capabilityThoughts     = Array.isArray(_personalityData) ? null : (_personalityData?.capabilityThoughts || null);
+      this.traits                 = window.Health?.Traits || null;
+      this.factions               = window.WorldGen?.Factions || null;
+      this.ideologies             = window.WorldGen?.Ideology || null;
+      this.npcData                = window.WorldGen?.NPCs || null;
+      this.classSkillCategories   = window.Skills?.Categories?.classSkillCategories || null;
+
+      // i18n files (outside js/db/) are still loaded via async fetch
+      Promise.all([
+        this._loadClasses(lang),
+        this._loadFactions(lang),
+      ]).then(() => {
+        this.isReady = true;
+      }).catch(e => {
+        console.error("[NPCSociety] DataLoader failed:", e);
+        // Mark as ready anyway so the system can function with partial data
+        this.isReady = true;
+      });
+    }
+  };
+  DataLoader.load();
+  // Expose for NPCSimulationCore trait lookups
+  window._NPCSocietyDataLoader = DataLoader;
+
+  // ==========================================================================
+  // SECTION 3: SHARED UTILITIES (see NPCShared.js)
+  // ==========================================================================
+  const { nameToSeed, Rng: SeededRng, seededShuffle, escapeHtml } = window.NPCShared;
+
+  // ==========================================================================
+  // SECTION 3a: PRE-EXISTING SOCIAL GRAPH
+  // ==========================================================================
+
+  // Returns the map-group key whose `maps` array contains mapId, or null.
+  function _mapGroupForMapId(mapId) {
+    const groups = $gameSystem?._npcMapGroups;
+    if (!groups || mapId == null) return null;
+    for (const [groupName, group] of Object.entries(groups)) {
+      if (Array.isArray(group?.maps) && group.maps.includes(mapId)) return groupName;
+    }
+    return null;
+  }
+
+  // Deterministically rolls pre-existing relationships between `eventName` and
+  // every other NPC already known to $gameSystem._npcSocialRegistry. Each pair
+  // is decided exactly once (when the second NPC of the pair is generated),
+  // using a sorted-name pair seed so the outcome doesn't depend on discovery order.
+  function _generatePreexistingRelationships(eventName, profile) {
+    if (!$gameSystem) return;
+    if (!$gameSystem._npcSocialRegistry) $gameSystem._npcSocialRegistry = {};
+    const registry   = $gameSystem._npcSocialRegistry;
+    if (registry[eventName]) return; // already seeded against the registry once
+    const worldSeed  = window.NPCShared.worldSeed();
+    const group      = _mapGroupForMapId(profile.homeMapId);
+
+    for (const [otherName, otherInfo] of Object.entries(registry)) {
+      if (otherName === eventName) continue;
+      const otherProfile = $gameSystem._npcSociety?.[otherName];
+      if (!otherProfile) continue;
+
+      const pairKey  = [eventName, otherName].sort().join('|');
+      const rng      = new SeededRng(nameToSeed(pairKey + '_social') ^ worldSeed);
+      const sameGroup = group != null && group === otherInfo.group;
+      const prob     = sameGroup ? 0.35 : 0.06;
+
+      if (rng.next() < prob) {
+        const meetCount = rng.nextInt(1, 40);
+        const opAB = rng.nextInt(-60, 61);
+        const opBA = rng.nextInt(-60, 61);
+        if (!profile.relationships) profile.relationships = {};
+        if (!otherProfile.relationships) otherProfile.relationships = {};
+        profile.relationships[otherName] = { meetCount, opinion: opAB, preExisting: true };
+        otherProfile.relationships[eventName] = { meetCount, opinion: opBA, preExisting: true };
+      }
+    }
+
+    registry[eventName] = { homeMapId: profile.homeMapId, group };
+  }
+
+  // ==========================================================================
+  // SECTION 3b: EQUIPMENT GENERATION HELPERS
+  // ==========================================================================
+
+  function _itemLevel(item) {
+    if (!item || !Array.isArray(item.params)) return 0;
+    return item.params.reduce((sum, v) => sum + Math.abs(v), 0);
+  }
+
+  function _partyMedianLevel() {
+    if (!$gameParty) return 1;
+    const members = $gameParty.members();
+    if (!members.length) return 1;
+    const levels = members.map(a => a.level).sort((a, b) => a - b);
+    const mid = Math.floor(levels.length / 2);
+    return levels.length % 2 !== 0 ? levels[mid] : Math.floor((levels[mid - 1] + levels[mid]) / 2);
+  }
+
+  // --------------------------------------------------------------------------
+  // Local NPCs track the party
+  // --------------------------------------------------------------------------
+  // An event tagged "Local" belongs to the map it was authored on: the player
+  // meets that person whenever the story brings them to that town, be it in the
+  // first hour of a playthrough or the fiftieth. A level rolled once, at first
+  // sight, says nothing by then, so a local NPC is pinned to the party's median
+  // level instead and everything derived from it is rebuilt whenever the party
+  // moves past them.
+  let _localNameCache = { mapId: -1, names: null };
+
+  function _localNamesOnMap() {
+    const mapId = $gameMap?.mapId?.() ?? -1;
+    if (_localNameCache.mapId !== mapId || !_localNameCache.names) {
+      const names = new Set();
+      for (const ev of ($gameMap?.events?.() || [])) {
+        const data = ev?.event?.();
+        if (data?.name && window.NPCSystem?.hasLocalTag?.(data.note)) names.add(data.name);
+      }
+      _localNameCache = { mapId, names };
+    }
+    return _localNameCache.names;
+  }
+
+  // The tag lives on the event, which is only readable while the player stands
+  // on that NPC's own map, so the answer is flagged onto the profile the first
+  // time it can be read and kept from then on.
+  function _isLocalNpc(eventName, profile) {
+    if (!profile || !eventName) return false;
+    if (profile._localNpc === undefined && _localNamesOnMap().has(eventName)) {
+      profile._localNpc = true;
+    }
+    return profile._localNpc === true;
+  }
+
+  function _syncLocalLevel(eventName, profile) {
+    if (!_isLocalNpc(eventName, profile)) return;
+    const target = _partyMedianLevel();
+    if (!target || profile.level === target) return;
+
+    // Same shape as the generator's level block (section 4, step 10b), seeded
+    // per name so the same person always re-rolls to the same spread around
+    // whatever level the party has reached.
+    const rng = new SeededRng(nameToSeed(eventName + "_locallvl") ^ (window.NPCShared.worldSeed() >>> 0));
+    const statMid = Math.max(1, Math.floor(target * 5 * (0.7 + rng.next() * 0.6)));
+    profile.level = target;
+    profile.atk = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.def = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.mat = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.mdf = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.agi = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.luk = Math.max(1, statMid + rng.nextInt(-3, 4));
+    profile.mhp = (10 + target) * 10 + rng.nextInt(0, 21);
+    profile.mmp = (5  + target) * 5  + rng.nextInt(0, 11);
+
+    // Their level is the party's, not something they earned, so their exp is
+    // re-pegged to it and whatever the daily gain had banked is dropped.
+    const classId = profile.assignedClassId;
+    const expMgr  = window.NPCSim?.ExpManager;
+    if (expMgr) {
+      profile.exp = expMgr.expForLevel(classId ?? 0, target);
+      if (classId) expMgr.learnClassSkillsUpToLevel(profile, classId, target);
+    }
+  }
+
+  function _generateEquipment(eventName, classId, wealthTierBase) {
+    const worldSeed = window.NPCShared.worldSeed();
+    const rng = new SeededRng(nameToSeed(eventName + "_equip") ^ (worldSeed >>> 0));
+    const hasClass = !!classId;
+    const allWeapons = ($dataWeapons || []).filter(w => w && w.id > 0 && w.name);
+    const allArmors  = ($dataArmors  || []).filter(a => a && a.id > 0 && a.name);
+
+    if (!hasClass) {
+      // No class: clothes-category armors, rarely a cheap weapon
+      let armorPool = allArmors.filter(a => /<category:\s*clothes>/i.test(a.note || ''));
+      if (!armorPool.length) {
+        armorPool = [...allArmors].sort((x, y) => _itemLevel(x) - _itemLevel(y))
+          .slice(0, Math.max(1, Math.floor(allArmors.length * 0.25)));
+      }
+      const shuffledArmors = seededShuffle([...armorPool], rng);
+      const armorIds = shuffledArmors.slice(0, Math.min(2, shuffledArmors.length)).map(a => a.id);
+
+      let weaponId = null;
+      if (rng.next() < 0.15 && allWeapons.length > 0) {
+        const cheapPool = [...allWeapons].sort((x, y) => _itemLevel(x) - _itemLevel(y))
+          .slice(0, Math.max(1, Math.floor(allWeapons.length * 0.2)));
+        weaponId = seededShuffle(cheapPool, rng)[0].id;
+      }
+      return { weaponId, armorIds };
+    }
+
+    // Class NPC: target item stat total = party level × 5 × wealth multiplier
+    const targetLevel = _partyMedianLevel();
+    const wealthMults = [0.4, 0.7, 1.0, 1.4, 2.0];
+    const targetStats = targetLevel * 5 * wealthMults[Math.min(wealthTierBase, 4)];
+
+    const _score = (item) => {
+      const diff = Math.abs(_itemLevel(item) - targetStats);
+      const closeness = 1 / (1 + (diff / Math.max(1, targetStats)) * 3);
+      return rng.next() * 0.4 + closeness * 0.6;
+    };
+
+    let weaponId = null;
+    if (allWeapons.length > 0) {
+      const scored = allWeapons.map(w => ({ id: w.id, score: _score(w) }));
+      scored.sort((a, b) => b.score - a.score);
+      weaponId = scored[0].id;
+    }
+
+    const armorIds = [];
+    if (allArmors.length > 0) {
+      const numArmors = rng.nextInt(1, 4);
+      const scored = allArmors.map(a => ({ id: a.id, score: _score(a) }));
+      scored.sort((a, b) => b.score - a.score);
+      const seen = new Set();
+      for (const s of scored) {
+        if (armorIds.length >= numArmors) break;
+        if (!seen.has(s.id)) { armorIds.push(s.id); seen.add(s.id); }
+      }
+    }
+
+    return { weaponId, armorIds };
+  }
+
+  // ==========================================================================
+  // SECTION 4: PROFILE GENERATOR
+  // ==========================================================================
+
+  // Caches for filtered/pre-parsed data that is identical across all NPCs.
+  // Built once on first generate() call; never rebuilt unless explicitly cleared.
+  let _cachedBaseSkills   = null; // { id, mpCost, tpCost, _category }[]
+  let _cachedValidItems   = null; // { id, _category }[]
+  const _cachedClassLearnings = new Map(); // classId → Set<skillId>
+
+  function _getBaseSkills() {
+    if (!_cachedBaseSkills) {
+      _cachedBaseSkills = ($dataSkills || [])
+        .filter(s => s && s.id && s.name)
+        .map(s => {
+          const m = (s.note || '').match(/<category:(\w+)>/i);
+          return { id: s.id, mpCost: s.mpCost || 0, tpCost: s.tpCost || 0, _category: m ? m[1].toLowerCase() : '' };
+        })
+        .filter(s => s._category !== 'basic');
+    }
+    return _cachedBaseSkills;
+  }
+
+  function _getValidItems() {
+    if (!_cachedValidItems) {
+      _cachedValidItems = ($dataItems || [])
+        .filter(i => i && i.id > 0 && i.name && i.itypeId === 1)
+        .map(i => {
+          const m = (i.note || '').match(/<category:(\w+)>/i);
+          return { id: i.id, _category: m ? m[1].toLowerCase() : '' };
+        });
+    }
+    return _cachedValidItems;
+  }
+
+  function _getClassLearnings(classId) {
+    if (!classId || !$dataClasses?.[classId]) return new Set();
+    if (!_cachedClassLearnings.has(classId)) {
+      _cachedClassLearnings.set(classId, new Set($dataClasses[classId].learnings.map(l => l.skillId)));
+    }
+    return _cachedClassLearnings.get(classId);
+  }
+
+  const ProfileGenerator = {
+    _wealthCumulative: [5, 20, 55, 85, 100],
+
+    // i18n-ignore-start: item-category ids, lowercased and matched against the
+    // <category:> note tag
+    _wealthItemCats: [
+      ["Food","Survival","Homeopathy"],
+      ["Food","Tools","Survival","Crafting"],
+      ["Food","Tools","Lifestyle","Medical"],
+      ["Tools","Lifestyle","Medical","Artisan"],
+      ["Magic","Collectibles","Espionage","Artisan"],
+    ],
+    // i18n-ignore-end
+
+    generate(eventName, classId) {
+      const personalities = DataLoader.personalities;
+      const traits        = DataLoader.traits;
+      const ideologies    = DataLoader.ideologies;
+      const factions      = DataLoader.factions;
+      if (!personalities?.length || !traits?.length || !ideologies?.length || !factions) return null;
+
+      // Every random facet of this NPC is rooted in the world's history seed,
+      // XOR'd with the name hash, the same convention the backstory generator
+      // below uses, so a different HistoryManager seed yields a coherently
+      // different society while staying deterministic per-name within a save.
+      const worldSeed = window.NPCShared.worldSeed();
+      const rng = new SeededRng(nameToSeed(eventName) ^ worldSeed);
+
+      // 1. Personality
+      const personalityIndex = rng.nextInt(0, personalities.length);
+
+      // 2. Wealth tier
+      const wealthRoll = rng.nextInt(0, 100);
+      let wealthTierBase = 4;
+      for (let i = 0; i < this._wealthCumulative.length; i++) {
+        if (wealthRoll < this._wealthCumulative[i]) { wealthTierBase = i; break; }
+      }
+
+      // 3. Ideology (picked early to bias trait selection)
+      const ideologyIndex = rng.nextInt(0, ideologies.length);
+      const ideology = ideologies[ideologyIndex];
+      const ideologyTraitIds = (ideology && Array.isArray(ideology.traits)) ? ideology.traits : [];
+
+      // 4. Traits (exactly 4: up to 2 from ideology pool, rest from general pool, incompatible[] respected)
+      const traitIds = [];
+      const _compatible = (id) => {
+        const trait = traits.find(t => t.id === id);
+        if (!trait) return false;
+        return !traitIds.some(chosen => {
+          const c = traits.find(t => t.id === chosen);
+          return (trait.incompatible || []).includes(chosen) || (c && (c.incompatible || []).includes(id));
+        });
+      };
+      const shuffledIdeo = seededShuffle([...ideologyTraitIds], rng);
+      for (const id of shuffledIdeo) {
+        if (traitIds.length >= 2) break;
+        if (_compatible(id)) traitIds.push(id);
+      }
+      const ideologySet = new Set(ideologyTraitIds);
+      const generalPool = seededShuffle(traits.filter(t => !ideologySet.has(t.id)).map(t => t.id), rng);
+      for (const id of generalPool) {
+        if (traitIds.length >= 4) break;
+        if (_compatible(id)) traitIds.push(id);
+      }
+      if (traitIds.length < 4) {
+        const pickedSet = new Set(traitIds);
+        const fallback = seededShuffle(traits.map(t => t.id).filter(id => !pickedSet.has(id)), rng);
+        for (const id of fallback) {
+          if (traitIds.length >= 4) break;
+          if (_compatible(id)) traitIds.push(id);
+        }
+      }
+
+      // 4. Skills (exactly 4, outside class learning list, no Basic, balanced by MP/TP cost to party level)
+      const preferredCats = DataLoader.getClassSkillCategories(classId) || [];
+      const classLearnings = _getClassLearnings(classId);
+      const partyLevel = (function() {
+        if (!$gameParty) return 1;
+        const ms = $gameParty.members();
+        if (!ms.length) return 1;
+        const lvls = ms.map(a => a.level).sort((a, b) => a - b);
+        const m = Math.floor(lvls.length / 2);
+        return lvls.length % 2 !== 0 ? lvls[m] : Math.floor((lvls[m - 1] + lvls[m]) / 2);
+      })();
+      const targetCost = partyLevel * 3;
+      const baseSkills  = _getBaseSkills();
+      const validSkills = classLearnings.size > 0 ? baseSkills.filter(s => !classLearnings.has(s.id)) : baseSkills;
+      const scoredSkills = validSkills.map(s => {
+        const cost = s.mpCost + s.tpCost;
+        const diff = Math.abs(cost - targetCost);
+        const closeness = 1 / (1 + diff / Math.max(1, targetCost) * 2);
+        const catBoost = (s._category && preferredCats.includes(s._category)) ? 1.3 : 1.0;
+        return { id: s.id, score: (rng.next() * 0.4 + closeness * 0.6) * catBoost };
+      });
+      scoredSkills.sort((a, b) => b.score - a.score);
+      const skillIds = scoredSkills.slice(0, 4).map(x => x.id);
+
+      // 5. Items (2–5, wealth-biased categories)
+      const numItems = rng.nextInt(0, 4) + 2;
+      const itemCats = this._wealthItemCats[Math.min(wealthTierBase, 4)].map(c => c.toLowerCase());
+      const scoredItems = _getValidItems().map(i => {
+        const boost = i._category && itemCats.includes(i._category) ? 3 : 1;
+        return { id: i.id, score: rng.next() * boost };
+      });
+      scoredItems.sort((a, b) => b.score - a.score);
+      const itemIds = scoredItems.slice(0, numItems).map(x => x.id);
+
+      // 6. Faction (~4% chance)
+      const factionIndex = (rng.next() < SocConfig.FACTION_CHANCE && factions.length > 0)
+        ? rng.nextInt(0, factions.length) : -1;
+
+      // 7. Morality score derived from trait names (-100 to +100)
+      const POSITIVE_KEYWORDS = ["honest", "loyal", "kind", "brave", "generous", "compassion", "noble", "justice"];
+      const NEGATIVE_KEYWORDS = ["thief", "greedy", "cruel", "anarchist", "deceptive", "ruthless", "corrupt", "violent"];
+      let moralityScore = 0;
+      for (const id of traitIds) {
+        const trait = traits.find(t => t.id === id);
+        const name = (trait?.name || "").toLowerCase();
+        if (POSITIVE_KEYWORDS.some(kw => name.includes(kw))) moralityScore += 20;
+        if (NEGATIVE_KEYWORDS.some(kw => name.includes(kw))) moralityScore -= 20;
+      }
+      moralityScore = Math.max(-100, Math.min(100, moralityScore));
+
+      // 8. Work schedule derived from personality (shift hours)
+      const workShifts = [[7,15],[8,16],[9,17],[10,18],[14,22],[20,4]];
+      const shiftIdx = rng.nextInt(0, workShifts.length);
+      const [workStart, workEnd] = workShifts[shiftIdx];
+
+      // 9. Starting money based on wealth tier
+      const wealthGoldBase = [5000, 50000, 500000, 5000000, 50000000];
+      const money = Math.floor(wealthGoldBase[wealthTierBase] * (0.5 + rng.next()));
+
+      // 10b. Level + stats (seeded, deterministic)
+      const _lvlRange = window.NPCSystem?.getLevelRangeForMap?.($gameMap?.mapId()) ?? [1, 20];
+      const level     = rng.nextInt(_lvlRange[0], _lvlRange[1]);
+      const statMid = Math.max(1, Math.floor(level * 5 * (0.7 + rng.next() * 0.6)));
+      const atk  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const def  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const mat  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const mdf  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const agi  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const luk  = Math.max(1, statMid + rng.nextInt(-3, 4));
+      const mhp  = (10 + level) * 10 + rng.nextInt(0, 21);
+      const mmp  = (5  + level) * 5  + rng.nextInt(0, 11);
+      const maxCustom = level * 3;
+      const arcane       = rng.nextInt(0, maxCustom + 1);
+      const substance    = rng.nextInt(0, maxCustom + 1);
+      const stealth      = rng.nextInt(0, maxCustom + 1);
+      const intimidation = rng.nextInt(0, maxCustom + 1);
+
+      // 10. Seed-driven visual identity + class assignment from NPCs.json
+      //     Only applies when the world seed differs from the canon default (19002001).
+      let spriteKey = null;
+      let bustIndex = 0;
+      let npcGender = 0;
+      let npcArchetype = "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+      let assignedClassId = classId;   // default: keep the class from the event note
+      if (worldSeed !== 19002001 && DataLoader.npcData) {
+        const npcKeys = Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
+        if (npcKeys.length > 0) {
+          const rngV = new SeededRng(nameToSeed(eventName + "_vis" + worldSeed));
+          const keyIdx = rngV.nextInt(0, npcKeys.length);
+          spriteKey = npcKeys[keyIdx];
+          const entry = DataLoader.npcData[spriteKey];
+          bustIndex = rngV.nextInt(0, (entry.busts || ["7"]).length);
+          npcGender = entry.Gender || 0;
+          npcArchetype = entry.Archetype || "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
+
+          // Assign class from the entry's classes[] pool
+          const classPool = Array.isArray(entry.classes) ? entry.classes : [];
+          if (classPool.length > 0) {
+            // Pick a deterministic random class from the pool
+            assignedClassId = classPool[rngV.nextInt(0, classPool.length)];
+          }
+          // If classPool is empty, assignedClassId stays as the event-note classId
+        }
+      }
+
+      // 11. Home assignment (deterministic from name hash + world coords)
+      const worldX = $gameVariables ? $gameVariables.value(43) : 1;
+      const worldY = $gameVariables ? $gameVariables.value(44) : 1;
+      const npcHash = nameToSeed(eventName) ^ worldSeed;
+      const homeSeed = ((worldX * 73856093) ^ (worldY * 19349663) ^ npcHash) >>> 0;
+      const homePoolByWealth = ["huts", "huts", "houses", "villas", "skyscrapers"];
+      const homePoolType = homePoolByWealth[Math.min(wealthTierBase, 4)];
+      let homeMapId = null;
+      if (window.ProceduralHouseSystem && window.ProceduralHouseSystem._selectHouse) {
+        homeMapId = window.ProceduralHouseSystem._selectHouse(homeSeed, homePoolType);
+      }
+
+      // Pre-populate class skills up to starting level
+      if (assignedClassId && $dataClasses?.[assignedClassId]) {
+        for (const learning of ($dataClasses[assignedClassId].learnings || [])) {
+          if (learning.level <= level && !skillIds.includes(learning.skillId)) {
+            skillIds.push(learning.skillId);
+          }
+        }
+      }
+
+      // Trait-granted skills (Traits.json `skills` arrays, the same grants the
+      // player receives from TraitSelector)
+      for (const tid of traitIds) {
+        const trait = traits.find(t => t.id === tid);
+        for (const sid of (trait?.skills || [])) {
+          if (!skillIds.includes(sid)) skillIds.push(sid);
+        }
+      }
+
+      return {
+        personalityIndex, wealthTierBase, traitIds, skillIds, itemIds, factionIndex, ideologyIndex,
+        // Visual identity
+        spriteKey, bustIndex, gender: npcGender, archetype: npcArchetype,
+        // Class (null = use event-note classId; set when seed ≠ 19002001 and classes[] non-empty)
+        assignedClassId,
+        // Home
+        homeMapId, homePoolType, homeSeed,
+        // Needs
+        hunger: 100, sleep: 100, money,
+        // Work
+        currentJobId: null, workStart, workEnd, lastWorkMinute: 0,
+        // Behaviour
+        moralityScore, currentNeed: null,
+        // Story
+        eventLog: [], thoughts: [],
+        // NPC-to-NPC social relationships: { [npcName]: { meetCount, opinion } }
+        relationships: {},
+        // Stats
+        level, atk, def, mat, mdf, agi, luk, mhp, mmp,
+        arcane, substance, stealth, intimidation,
+      };
+    }
+  };
+
+  // ==========================================================================
+  // SECTION 5: SOCIETY REGISTRY
+  // ==========================================================================
+  // Per-coordinate "Proc:x,y" settlements mint a unique profile per NPC name,
+  // so _npcSociety can grow without bound as the player roams. Cap it: every
+  // profile facet is seeded from nameToSeed(name) XOR the world seed, so a cold
+  // profile (no player interaction, no accrued runtime story) regenerates
+  // identically if it is ever touched again. Only such regenerable profiles are
+  // evicted; anyone the player has interacted with, or a party/past-party
+  // member, is always kept.
+  const MAX_SOCIETY_PROFILES = 1500;
+  const SOCIETY_PRUNE_TARGET  = 1200;
+  // Baseline opinion bonus applied to NPCs whose home settlement matches the
+  // party's chosen hometown (see SocietyRegistry.applyHometownOpinionIfMatch).
+  const HOMETOWN_OPINION_BONUS = 20;
+
+  function _isRegenerableProfile(name, profile) {
+    if (!profile) return true;
+    if (Math.abs(profile.playerOpinion ?? 0) > 10) return false;
+    if (profile.eventLog && profile.eventLog.length) return false;
+    if (profile.thoughts && profile.thoughts.length) return false;
+    if (profile.spokenLog && profile.spokenLog.length) return false;
+    const past = $gameSystem._npcPastPartyMembers;
+    if (Array.isArray(past) && past.includes(name)) return false;
+    return true;
+  }
+
+  function _pruneSociety() {
+    const soc = $gameSystem._npcSociety;
+    if (!soc) return;
+    const keys = Object.keys(soc);
+    if (keys.length <= MAX_SOCIETY_PROFILES) return;
+    let count = keys.length;
+    // Insertion order (oldest first) so the least recently minted cold profiles
+    // go first.
+    for (const name of keys) {
+      if (count <= SOCIETY_PRUNE_TARGET) break;
+      if (!_isRegenerableProfile(name, soc[name])) continue;
+      delete soc[name];
+      count--;
+    }
+  }
+
+  const SocietyRegistry = {
+    // `homeGroupName` anchors a brand new person to the town they belong to
+    // before any of the derived data is filled in. On-map callers leave it out
+    // and the address is resolved from the map the NPC is standing on; the
+    // world-initialization pass below has no current map, so it names the group
+    // instead. It has to be set here rather than afterwards, because
+    // ensureSimFields resolves the address (and through it the home map) from
+    // it, and _generatePreexistingRelationships then reads that home map to
+    // decide who this person already knows.
+    ensureProfile(eventName, classId, homeGroupName) {
+      if (!DataLoader.isReady || !eventName || !$gameSystem) return null;
+      if (!$gameSystem._npcSociety) $gameSystem._npcSociety = {};
+      let profile = $gameSystem._npcSociety[eventName];
+      if (!profile) {
+        profile = ProfileGenerator.generate(eventName, classId);
+        if (!profile) return null; // DataLoader not populated yet
+        if (homeGroupName && !profile._homeGroupName) profile._homeGroupName = homeGroupName;
+        // A curated identity waiting for this name (CharacterCreationPresets:
+        // gender/orientation/birth data from a pre-made character's dossier)
+        // overrides the freshly rolled random one, one-shot.
+        const pending = $gameSystem._pendingPartyIdentity?.[eventName];
+        if (pending) {
+          if (pending.gender !== undefined) profile.gender = pending.gender;
+          if (pending.sexualKey || pending.romanticKey) {
+            profile._orientOverride = {
+              sexualKey: pending.sexualKey || null,
+              romanticKey: pending.romanticKey || null,
+            };
+          }
+          if (pending.birthYear !== undefined) profile._birthYearOverride = pending.birthYear;
+          if (pending.birthplace) profile._birthplaceOverride = pending.birthplace;
+          delete $gameSystem._pendingPartyIdentity[eventName];
+        }
+        $gameSystem._npcSociety[eventName] = profile;
+        _pruneSociety();
+      }
+      // ProfileGenerator only seeds hunger/sleep/money; the other simulation
+      // needs (hygiene/social/leisure) plus work/level fields are filled by
+      // NPCSimulationCore.ensureSimFields. Run it here so every profile is
+      // complete the moment it is accessed (e.g. right before the Empathize
+      // panel renders its vitals), instead of the three extra needs staying
+      // undefined, and drawing as flat default bars, until the sim first ticks
+      // this NPC. Idempotent and undefined-guarded, so it is a no-op once set.
+      window.NPCSim?.ensureSimFields?.(profile, eventName);
+      // Runs after ensureSimFields, which is where a profile with no level yet
+      // gets one: a local resident's is then overwritten with the party median,
+      // on this and on every later access, so it keeps following the party.
+      _syncLocalLevel(eventName, profile);
+      _generatePreexistingRelationships(eventName, profile);
+      return profile;
+    },
+
+    // Seeds a settlement-wide baseline opinion the first time an NPC's home
+    // settlement is resolved, if it matches the party's chosen hometown
+    // ($gameSystem._ccHometown, set by the CharacterCreation hometown step).
+    // Tries the map group name first (_homeGroupName, a
+    // js/db/WorldGen/MapGroups.json key, e.g. "OmegaTower"), then falls back
+    // to the current map's display name (e.g. "Ghent Riverside", or a
+    // HardcodedBiomeNames-overridden procedural name) when there is no group
+    // match, since some maps (interiors, procedural tiles) carry no group of
+    // their own. Group keys have no spaces while Destinations.json keys do
+    // ("Omega Tower"), hence the normalized comparison. One-shot per profile
+    // via _hometownOpinionApplied. Called from NPCSimulationCore.js
+    // (_assignHomeBuilding, hand-placed NPCs) and NPCSystem.js
+    // (registerProcCitizen, procedural settlement citizens) right after each
+    // sets _homeGroupName, while $gameMap is still the NPC's location map.
+    applyHometownOpinionIfMatch(profile, groupName) {
+      if (!profile || profile._hometownOpinionApplied) return;
+      // No hometown chosen yet means character creation has not happened yet
+      // (the world roster is minted before any party exists). Leave the
+      // one-shot unspent so the bonus still lands the first time a party that
+      // does have a hometown meets this person.
+      const hometown = $gameSystem && $gameSystem._ccHometown;
+      if (!hometown) return;
+      profile._hometownOpinionApplied = true;
+      const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const target = norm(hometown);
+      let matched = !!groupName && norm(groupName) === target;
+      if (!matched && typeof $gameMap !== "undefined" && $gameMap && $gameMap.displayName) {
+        // Strip the " Lv. N" / "[Tileset: ...]" suffixes MapLevelDisplay.js
+        // appends to displayName() so only the place name itself is compared.
+        const mapName = String($gameMap.displayName() || "")
+          .replace(/\s*\[Tileset:[^\]]*\]\s*$/, "")
+          .replace(/\s*Lv\.\s*\d+\s*$/, "")
+          .trim();
+        matched = norm(mapName) === target;
+      }
+      if (matched) {
+        profile.playerOpinion = (profile.playerOpinion || 0) + HOMETOWN_OPINION_BONUS;
+      }
+    },
+
+    getProfile(eventName) {
+      return $gameSystem?._npcSociety?.[eventName] ?? null;
+    },
+
+    tickNeeds(name, elapsedMinutes) {
+      const p = this.getProfile(name);
+      if (!p) return;
+      p.hunger = Math.max(0, (p.hunger ?? 100) - 0.08 * elapsedMinutes);
+      p.sleep  = Math.max(0, (p.sleep  ?? 100) - 0.05 * elapsedMinutes);
+      if      (p.hunger < 25) p.currentNeed = 'food';
+      else if (p.sleep  < 20) p.currentNeed = 'sleep';
+      else                    p.currentNeed = null;
+    },
+
+    decayOpinions(currentDay) {
+      if (!$gameSystem?._npcSociety) return;
+      const last    = $gameSystem._npcLastOpinionDecayDay ?? 0;
+      const elapsed = currentDay - last;
+      if (elapsed < 1) return;
+      $gameSystem._npcLastOpinionDecayDay = currentDay;
+      const decay = elapsed / 3; // 1 point per 3 in-game days
+      for (const p of Object.values($gameSystem._npcSociety)) {
+        const op = p.playerOpinion ?? 0;
+        if (Math.abs(op) > 10) {
+          const rate = Math.abs(op) >= 70 ? decay * 0.5 : decay; // strong impressions fade slower
+          p.playerOpinion = op > 0 ? Math.max(10, op - rate) : Math.min(-10, op + rate);
+        }
+        for (const rel of Object.values(p.relationships ?? {})) {
+          const relOp = rel.opinion ?? 0;
+          if (Math.abs(relOp) <= 5) continue; // frozen neutral band
+          const relRate = elapsed / 6; // NPC-NPC relationships drift slower than player opinion
+          rel.opinion = relOp > 0 ? Math.max(5, relOp - relRate) : Math.min(-5, relOp + relRate);
+        }
+      }
+    },
+  };
+
+  // ==========================================================================
+  // SECTION 6: ENGINE HOOKS
+  // ==========================================================================
+
+  function _extractClassId(ev) {
+    const m = ev?.event?.()?.note?.match(/NPC-(\d+)/);
+    return m ? Number(m[1]) : null;
+  }
+
+  // Hook 1: pre-generate profiles after NPC controllers are initialized.
+  // Binds the NPC's identity (bust + gender) to its defining character sprite
+  // via NPCs.json, for EVERY NPC: society-assigned sprites (non-canon seeds,
+  // profile.spriteKey) re-apply their graphic, while canon-seed / map-designed
+  // NPCs keep the sprite they already display but still inherit that sprite's
+  // bust and gender from NPCs.json.
+  function _applySocietySprite(eventName, ev) {
+    const profile = $gameSystem._npcSociety?.[eventName];
+    if (!profile || !ev) return;
+
+    const evData      = ev.event();
+    const hasAssigned = !!(profile.spriteKey && DataLoader.npcData?.[profile.spriteKey]);
+    // Defining sprite: the society-assigned one, else the sprite the event shows.
+    const spriteKey = hasAssigned
+      ? profile.spriteKey
+      : (evData.characterName ?? evData.pages?.[0]?.image?.characterName ?? null);
+    const entry = spriteKey ? DataLoader.npcData?.[spriteKey] : null;
+    if (!entry) return;
+
+    const charIdx = hasAssigned
+      ? (profile.bustIndex ?? 0)
+      : (evData.characterIndex ?? evData.pages?.[0]?.image?.characterIndex ?? 0);
+
+    // Only re-apply the graphic when the society explicitly assigned a sprite;
+    // canon / map-designed NPCs keep the sprite they already display.
+    if (hasAssigned) {
+      evData.pages?.forEach(p => {
+        if (p?.image) { p.image.characterName = spriteKey; p.image.characterIndex = charIdx; }
+      });
+      evData.characterName  = spriteKey;
+      evData.characterIndex = charIdx;
+      ev.setImage(spriteKey, charIdx);
+      ev.refresh();
+      ev.setupPage();
+    }
+
+    profile._bustName = entry.busts?.[charIdx] ?? entry.busts?.[0] ?? "7";
+    // Gender follows the character sprite (0=Male,1=Female,2=Non-binary,3=Xe).
+    if (entry.Gender != null) profile.gender = entry.Gender;
+  }
+
+  const _setupNPCControllers = Game_Map.prototype.setupNPCControllers;
+  Game_Map.prototype.setupNPCControllers = function() {
+    _setupNPCControllers.call(this);
+    if (!DataLoader.isReady || !$gameSystem?.npcControllers) return;
+
+    // Build a name→event map once so each lookup is O(1) instead of O(events) per controller.
+    const evByName = new Map(
+      $gameMap.events().filter(e => e?.event()?.name).map(e => [e.event().name, e])
+    );
+
+    const toDefer = [];
+    for (const c of $gameSystem.npcControllers) {
+      if (!c.eventName) continue;
+      if ($gameSystem._npcSociety?.[c.eventName]) {
+        // Profile already exists, apply sprite immediately (cheap).
+        _applySocietySprite(c.eventName, evByName.get(c.eventName));
+        // Re-pin the local residents of this map before anything reads them,
+        // the party may have gained levels since the last visit.
+        _syncLocalLevel(c.eventName, $gameSystem._npcSociety[c.eventName]);
+      } else {
+        toDefer.push(c);
+      }
+    }
+
+    if (!toDefer.length) return;
+
+    // Generate profiles for new NPCs in chunks across frames so the first frame
+    // isn't blocked. Once generated the profile persists in $gameSystem._npcSociety.
+    const mapId = $gameMap.mapId();
+    let i = 0;
+    const step = () => {
+      if ($gameMap.mapId() !== mapId) return; // player left before we finished, discard
+      const end = Math.min(i + 6, toDefer.length);
+      for (; i < end; i++) {
+        const c  = toDefer[i];
+        const ev = evByName.get(c.eventName);
+        SocietyRegistry.ensureProfile(c.eventName, _extractClassId(ev));
+        _applySocietySprite(c.eventName, ev);
+      }
+      if (i < toDefer.length) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  // Expose class names through NPCSocietyConfig for external plugins (VisualNovelBustSystem, MousePan)
+  Object.defineProperty(SocConfig, 'CLASS_NAMES', { get: () => DataLoader.classNames || {} });
+
+  // Decay opinions on every map load (once per in-game day at most)
+  const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+  Scene_Map.prototype.onMapLoaded = function () {
+    _Scene_Map_onMapLoaded.call(this);
+    if (!$gameVariables) return;
+    const day = Math.floor($gameVariables.value(114) / 1440);
+    SocietyRegistry.decayOpinions(day);
+  };
+
+  window.NPCSocietyGetEquip = _generateEquipment;
+  // ==========================================================================
+  // SECTION 6b: WORLD ROSTER INITIALIZATION
+  // ==========================================================================
+  // Mints the whole authored population of the world in one pass, when the
+  // world is made, instead of one person at a time as the player walks past
+  // them. Every named NPC in every hand-made map group gets their profile,
+  // their address, their job shift and the people they already know, all
+  // anchored to the town they belong to.
+  //
+  // It is not only a matter of having the data ready: who lives behind which
+  // door is handed out first-come-first-served against each building's
+  // capacity, and who already knows whom is drawn against everybody minted
+  // before them, so generating the roster lazily made both depend on the order
+  // the player happened to explore the world. Doing it up front, in a fixed
+  // order, makes a world the same world however it is walked.
+  //
+  // Where somebody lives is decided by which pool names them. A group whose own
+  // maps hold too few templates borrows from the rest of the world, and the
+  // global group (OmegaTower) always draws on everybody, so a name can appear
+  // in several pools. Anyone named by exactly one town is claimed by that town
+  // first; only then do the shared names get handed out, in group-name order
+  // with the world-wide pools last, so nobody is filed under a town that was
+  // merely borrowing them.
+  //
+  // Procedural "Proc:x,y" settlements are deliberately left out: their
+  // citizens are minted by the map generator when the player reaches those
+  // coordinates, and there is no roster to draw from until then.
+  function initializeWorldRoster() {
+    if (!$gameSystem) return;
+    const NPCSys = window.NPCSystem;
+    if (!NPCSys?.getMapGroups) return;
+    // ensureProfile refuses to generate anybody before the personality/trait/
+    // sprite tables have finished loading. Rather than mark an empty roster as
+    // done, fail the step so WorldManager runs it again later.
+    if (!DataLoader.isReady) throw new Error("NPC society data is still loading");  // i18n-ignore: diagnostic
+
+    // Groups that draw their pool from the whole world rather than their own
+    // maps, so being named by one of them says nothing about where you live.
+    const isWorldWide = (name) => name === NPCSys.GLOBAL_GROUP_NAME ||
+      (NPCSys.SEATED_GLOBAL_GROUPS || []).includes(name);
+
+    const groups = Object.keys(NPCSys.getMapGroups() || {})
+      .filter(name => !NPCSys.isProceduralGroup?.(name))
+      // Plain codepoint order, not localeCompare: the same world has to come
+      // out the same on every machine, whatever locale it runs in.
+      .sort((a, b) =>
+        (isWorldWide(a) ? 1 : 0) - (isWorldWide(b) ? 1 : 0) || (a < b ? -1 : a > b ? 1 : 0));
+
+    // name → [{ groupName, eventData }], in group order.
+    const claims = new Map();
+    for (const groupName of groups) {
+      // Jobs first: the shift each person works decides where they spend their
+      // day, and the leftovers become the group's counter-staff pool, which
+      // the shop rotas are drawn from in the next step.
+      try { window.NPCSim?.JobShiftManager?.ensureGroupAssignments?.(groupName); } catch (e) {
+        console.error(`[NPCSociety] Job assignment failed for "${groupName}"`, e);
+      }
+
+      let templates = [];
+      try { templates = NPCSys.getNPCPool(groupName) || []; } catch (e) { templates = []; }
+
+      const seen = new Set();
+      for (const tpl of templates) {
+        const ev = tpl?.eventData;
+        const name = ev?.name;
+        // "NPC" is the generic placeholder slot a template is spawned into,
+        // not a person; a hidden template is scenery with a face.
+        if (!name || name === "NPC" || seen.has(name)) continue;  // i18n-ignore: placeholder event name
+        if (NPCSys.hasHiddenTag?.(ev.note)) continue;
+        seen.add(name);
+        if (!claims.has(name)) claims.set(name, []);
+        claims.get(name).push({ groupName, eventData: ev });
+      }
+    }
+
+    let minted = 0;
+    const mint = (name, claim) => {
+      if (!claim || $gameSystem._npcSociety?.[name]) return;
+      const classMatch = claim.eventData.note?.match(/NPC-(\d+)/);
+      const classId = classMatch ? Number(classMatch[1]) : null;
+      try {
+        if (SocietyRegistry.ensureProfile(name, classId, claim.groupName)) minted++;
+      } catch (e) {
+        console.error(`[NPCSociety] Could not mint "${name}" of "${claim.groupName}"`, e);
+      }
+    };
+    // Pass 1: the people only one town names are that town's own.
+    for (const [name, list] of claims) if (list.length === 1) mint(name, list[0]);
+    // Pass 2: everybody else goes to the first town that named them.
+    for (const [name, list] of claims) if (list.length > 1) mint(name, list[0]);
+
+    console.log(`[NPCSociety] World roster: ${minted} people minted across ${groups.length} settlements.`);
+  }
+
+  if (window.WorldManager?.registerWorldInitializer) {
+    window.WorldManager.registerWorldInitializer("npcRoster", 20, initializeWorldRoster);
+  }
+
+  window.NPCSocietyRegistry = SocietyRegistry;
+  window.NPCSocietyConfig = SocConfig;
+  SocietyRegistry.initializeWorldRoster = initializeWorldRoster;
+
+  // ==========================================================================
+  // SECTION 7: PROCEDURAL BACKSTORY (formerly NPCSystemHistorySimulator.js)
+  // ==========================================================================
+  // Generates a deterministic biographical backstory for each NPC by pulling
+  // events from HistorySimulator's generated timeline that the NPC "lived
+  // through". Seeded from nameToSeed(npcName) XOR the world seed, like every
+  // other facet of the profile. Stored in profile.backstory and displayed in
+  // the NPCEmpathize panel as a "BACKGROUND" section below Stats.
+
+  // Indexed by gender: 0 Male, 1 Female, 2 Non-binary, 3 Cocoon (neopronoun
+  // "xe"). Each entry carries its own conjugated verb forms, because a language
+  // that agrees on gender needs a different word, not a different rule:
+  // NPCSociety.pronoun.<gender> in js/i18n/<lang>/plugins.
+  const PRONOUN_COUNT = 4;
+  const pronounOf = (gender) =>
+    T.obj('NPCSociety.pronoun.' + Math.min(Math.max(gender | 0, 0), PRONOUN_COUNT - 1));
+
+  // Five adjectives, drawn by index so the seeded sequence never moves. They
+  // describe the "creature" or the "soul", never the person, so a language
+  // that inflects them agrees with that noun and needs only one list.
+  const ADJECTIVE_COUNT = 5;
+  function adjectiveAt(index) {
+    const pool = T.pool('NPCSociety.adjective');
+    return pool[index % pool.length] || '';
+  }
+
+  // Representative city for each HistorySimulator country, used to anchor a
+  // creature's "born in the wilds near <city>" origin to its birthplace nation.
+  // i18n-ignore-start: real place names, and HistorySimulator country ids
+  const CITY_BY_COUNTRY = {
+    'Italy': 'Rome', 'United Kingdom': 'London', 'Norway': 'Oslo',
+    'Russia': 'Moscow', 'Turkey': 'Istanbul', 'Netherlands': 'Amsterdam',
+    'Belgium': 'Brussels', 'Switzerland': 'Zurich', 'Austria': 'Vienna',
+    'Poland': 'Warsaw', 'Czechoslovakia': 'Prague', 'Hungary': 'Budapest',
+    'Romania': 'Bucharest', 'Bulgaria': 'Sofia', 'Yugoslavia': 'Belgrade',
+    'Greece': 'Athens', 'Denmark': 'Copenhagen', 'Sweden': 'Stockholm',
+    'Finland': 'Helsinki', 'Ireland': 'Dublin', 'Albania': 'Tirana',
+    'Estonia': 'Tallinn', 'Latvia': 'Riga', 'Lithuania': 'Vilnius',
+  };
+  // i18n-ignore-end
+
+  const BackstoryGenerator = {
+
+    generate(eventName, profile) {
+      // Read through HistoryManager so backstories see the active-world timeline
+      // (WorldManager store) as well as the $gameSystem fallback.
+      const events = window.HistoryManager
+        ? window.HistoryManager.getEvents()
+        : $gameSystem?._historicalEvents;
+      if (!events?.length) return null;
+
+      const worldSeed = window.NPCShared ? window.NPCShared.worldSeed() : 19002001;
+      const rng = new SeededRng((nameToSeed(eventName) ^ worldSeed) >>> 0);
+
+      // ── Birth year ──────────────────────────────────────────────────────────
+      // A curated preset dossier (CharacterCreationPresets) wins over the
+      // level-derived estimate, so a pre-made character's stated birth date
+      // doesn't contradict what the Empathize panel narrates.
+      // Every NPC is an adult: the level-derived estimate is floored at 18 and
+      // subtracted from the CURRENT in-game year (not a hardcoded 2001), so a
+      // backstory can never describe a minor. A dossier-supplied birth year is
+      // honoured but held to the same floor.
+      const MIN_AGE   = window.NPCLifeSim?.MIN_NPC_AGE ?? 18;
+      const nowYear   = window.NPCLifeSim?.currentYear?.() ?? 2001;
+      const age       = MIN_AGE + Math.max(0, profile.level ?? 1) * 2;
+      const rolled    = Math.max(1900, nowYear - Math.min(age, 101));
+      const birthYear = profile._birthYearOverride != null
+        ? Math.min(profile._birthYearOverride, nowYear - MIN_AGE)
+        : rolled;
+
+      // ── Candidate events ────────────────────────────────────────────────────
+      let candidates = events.filter(e => {
+        const y = parseInt((e.date || '').slice(0, 4), 10);
+        return !isNaN(y) && y >= birthYear;
+      });
+      if (candidates.length < 2) {
+        // Fallback: last 30 simulated years
+        candidates = events.filter(e => {
+          const y = parseInt((e.date || '').slice(0, 4), 10);
+          return !isNaN(y) && y >= 1971;
+        });
+      }
+      if (!candidates.length) candidates = events.slice(-10);
+
+      // ── Score candidates ────────────────────────────────────────────────────
+      const traits     = DataLoader.traits ?? [];
+      const factions   = DataLoader.factions ?? [];
+      const factionObj = profile.factionIndex >= 0 ? factions[profile.factionIndex] : null;
+      const factionKey = factionObj ? (factionObj.name || '').split('.')[1] || '' : '';
+
+      const traitNames = (profile.traitIds ?? []).map(id => {
+        const t = traits.find(tr => tr.id === id);
+        return (t?.name || '').toLowerCase();
+      });
+      const isMilitary = traitNames.some(n => n.includes('brave') || n.includes('violent') || n.includes('aggressive'));
+
+      const scored = candidates.map(e => {
+        let score = rng.next() * 10;
+        if (e.category === 'paranormal' && (profile.moralityScore ?? 0) < -20) score += 4;
+        if (e.category === 'political'  && (profile.moralityScore ?? 0) > 20)  score += 4;
+        if (e.category === 'military'   && isMilitary)                          score += 3;
+        if (e.category === 'social')                                             score += 2;
+        if (factionKey && (e.description || '').toLowerCase().includes(factionKey.toLowerCase())) score += 5;
+        return { event: e, score };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const pickCount = candidates.length >= 15 ? 3 : 2;
+      const formativeEvents = scored.slice(0, pickCount).map(s => ({
+        date:        (s.event.date || '').slice(0, 7),
+        description: s.event.description || '',
+        category:    s.event.category || 'social',
+      }));
+
+      // ── Birthplace ──────────────────────────────────────────────────────────
+      const countries = Object.entries(window.HistorySimulator_COUNTRIES ?? {});
+      let birthplace = profile._birthplaceOverride || 'Europe'; // i18n-ignore: HistorySimulator country id
+      if (!profile._birthplaceOverride && countries.length) {
+        const weights = countries.map(([, data]) => {
+          const matches = factionKey && (data.faction || '').toLowerCase().includes(factionKey.toLowerCase());
+          return matches ? 3 : 1;
+        });
+        const totalW = weights.reduce((a, b) => a + b, 0);
+        let r = rng.next() * totalW;
+        for (let i = 0; i < weights.length; i++) {
+          r -= weights[i];
+          if (r <= 0) { birthplace = countries[i][0]; break; }
+        }
+      }
+
+      // ── Narrative ───────────────────────────────────────────────────────────
+      // Only the pieces are stored. The sentence is written out by
+      // BackstoryGenerator.narrativeOf() every time the bio is drawn, so it
+      // follows a language switch instead of freezing at first meeting.
+      const seed = {
+        gender:     Math.min(profile.gender ?? 0, PRONOUN_COUNT - 1),
+        adjIdx:     rng.nextInt(0, ADJECTIVE_COUNT),
+        isCreature: !!profile.isCreature,
+        moral:      profile.moralityScore ?? 0,
+      };
+
+      return { birthYear, birthplace, formativeEvents, seed };
+    },
+
+    // Compose the bio. A profile generated before this was keyed keeps the
+    // finished `narrative` string it was saved with.
+    narrativeOf(backstory) {
+      if (!backstory) return '';
+      const seed = backstory.seed;
+      if (!seed) return backstory.narrative || '';
+
+      const pr  = pronounOf(seed.gender);
+      const adj = adjectiveAt(seed.adjIdx);
+      const evs = backstory.formativeEvents || [];
+      const ev0 = _shortDesc(evs[0]?.description ?? '');
+      const ev1 = evs[1]
+        ? T('NPCSociety.bio.later', Object.assign({}, pr, { event: _shortDesc(evs[1].description) }))
+        : '';
+
+      const moral = seed.moral;
+      const band = moral > 60 ? 'high' : moral > 20 ? 'good' : moral > -20 ? 'weary'
+                 : moral > -60 ? 'loose' : 'lawless';
+      const moralLine = T('NPCSociety.bio.moral.' + band, pr);
+
+      let birthplace = backstory.birthplace;
+      let key;
+      if (seed.isCreature) {
+        // Creatures aren't born into a nation, they come out of the wilds near
+        // the city closest to their birthplace country.
+        birthplace = T('NPCSociety.bio.wildsNear', { city: CITY_BY_COUNTRY[birthplace] || birthplace });
+        key = 'creature';
+      } else if (backstory.birthYear <= 1919) key = 'turbulent';
+      else if (backstory.birthYear <= 1945) key = 'warYears';
+      else if (backstory.birthYear <= 1969) key = 'postwar';
+      else key = 'modern';
+
+      const params = Object.assign({}, pr, {
+        year: backstory.birthYear, place: birthplace, adj: adj,
+        event: ev0, later: ev1, moral: moralLine,
+      });
+      return T('NPCSociety.bio.' + key, params).replace(/  +/g, ' ').trim();
+    },
+  };
+
+  // Re-capitalize proper nouns (country / hyperpower / faction / leader names)
+  // after an event description has been lowercased to flow mid-sentence, so the
+  // bio reads "...survived the october revolution and Vladimir Lenin's purges".
+  let _pnNouns = null, _pnRe = null, _pnMap = null;
+  function _restoreProperNouns(text) {
+    let nouns = window.HistorySimulator_PROPER_NOUNS;
+    if (!nouns || !nouns.length) return text;
+    // Merge in live, simulated names (dynamic hyperpowers / nations / leaders)
+    // so names not in the static export still get re-capitalized (#82).
+    const hm = window.HistoryManager;
+    if (hm) {
+      const extra = [];
+      const hp = hm.getHyperpowers ? (hm.getHyperpowers() || {}) : {};
+      for (const name of Object.keys(hp)) {
+        extra.push(name);
+        for (const l of ((hp[name] && hp[name].leaders) || [])) if (l && l.name) extra.push(l.name);
+        for (const l of ((hp[name] && hp[name].holy_leaders) || [])) if (l && l.name) extra.push(l.name);
+      }
+      const ns = hm.getNationsState ? (hm.getNationsState() || {}) : {};
+      for (const n of Object.keys(ns)) {
+        extra.push(n);
+        if (ns[n] && ns[n].controller && ns[n].controller !== 'Neutral') extra.push(ns[n].controller);
+      }
+      if (extra.length) nouns = nouns.concat(extra.filter(Boolean));
+    }
+    if (nouns !== _pnNouns) {
+      _pnNouns = nouns;
+      // Longest first so multi-word names win over their substrings.
+      const seen = new Set();
+      const sorted = nouns.filter(n => { const k = String(n).toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; })
+        .sort((a, b) => b.length - a.length);
+      _pnMap = new Map(sorted.map(n => [n.toLowerCase(), n]));
+      const escaped = sorted.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      _pnRe = new RegExp('\\b(' + escaped.join('|') + ')\\b', 'gi');
+    }
+    return text.replace(_pnRe, m => _pnMap.get(m.toLowerCase()) || m);
+  }
+
+  function _shortDesc(desc) {
+    if (!desc) return T('NPCSociety.bio.uncertainTimes');
+    // Event descriptions are read as clauses inside the narrative, so they are
+    // quoted in full: cutting them at 60 characters left every second sentence
+    // trailing off mid-thought. Only a runaway description is trimmed, and then
+    // at a word boundary.
+    const MAX = 240;
+    const text = desc.replace(/\.$/, '');
+    if (text.length <= MAX) return _restoreProperNouns(text.toLowerCase());
+    const cut = text.slice(0, MAX).replace(/\s\S*$/, '');
+    return _restoreProperNouns(cut.toLowerCase()) + '…';
+  }
+
+  // Batch generator, call after runSimulation to backfill all loaded profiles
+  window.NPCHistSim = {
+    // The bio, written out in the active language. Pass a profile's
+    // `backstory`; a profile saved before the bio was keyed returns the
+    // finished English string it was stored with.
+    narrativeOf(backstory) { return BackstoryGenerator.narrativeOf(backstory); },
+
+    generateBackstoryNow(name) {
+      const p = SocietyRegistry.getProfile(name);
+      const histLen = window.HistoryManager
+        ? window.HistoryManager.getEvents().length
+        : $gameSystem?._historicalEvents?.length;
+      if (p && !p.backstory && histLen)
+        p.backstory = BackstoryGenerator.generate(name, p);
+    },
+
+    generateAllBackstories() {
+      for (const name of Object.keys($gameSystem?._npcSociety ?? {}))
+        this.generateBackstoryNow(name);
+    },
+
+    // Exposed so NPCEmpathize._buildHistoryHTML can call it if needed externally.
+    buildBackstoryHTML(backstory) {
+      if (!backstory) return '';
+      const ICONS = window.HistorySimulator_ICONS ?? {};
+      const iconFor = cat => {
+        const id = ICONS[cat] ?? 245;
+        return `<img src="img/system/IconSet.png" style="width:16px;height:16px;object-fit:none;object-position:-${(id % 16) * 32}px -${Math.floor(id / 16) * 32}px;image-rendering:pixelated;vertical-align:middle;margin-right:3px;">`;
+      };
+      const eventsHTML = (backstory.formativeEvents ?? []).map(e =>
+        `<div class="npc-backstory-event">${iconFor(e.category)}<span>${escapeHtml(e.date)}</span>, ${escapeHtml(e.description)}</div>`
+      ).join('');
+      return `
+        <div class="npc-backstory-text">${escapeHtml(BackstoryGenerator.narrativeOf(backstory))}</div>
+        <div class="npc-backstory-events">${eventsHTML}</div>
+        <div class="npc-backstory-meta">${escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear, place: backstory.birthplace }))}</div>`;
+    },
+  };
+
+})();

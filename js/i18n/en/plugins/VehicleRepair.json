@@ -1,0 +1,112 @@
+{
+  "notEnoughMaterials": "Not enough materials.",
+  "vehicleFullyRepaired": "Vehicle fully repaired!",
+  "vehicleRepaired": "Vehicle repaired.",
+  "vehicleIsOperationalAgain": "Vehicle is operational again!",
+  "installed": "INSTALLED",
+  "hullAppearanceUpdated": "Hull appearance updated.",
+  "camperExpedition": "CAMPER EXPEDITION",
+  "aReinforcedHeavyCamperDesigned": "A reinforced heavy camper designed to endure wilderness tours and long journeys. Demands high overall structural integrity.",
+  "standardUrbanSedan": "STANDARD URBAN SEDAN",
+  "aClassicStandardEngineTransport": "A classic standard engine transport suited for urban environments. Relies on tight steering and transmission control.",
+  "lightSportMotorcycle": "LIGHT SPORT MOTORCYCLE",
+  "anAgileAndRapidPersonal": "An agile and rapid personal sport bike. Requires perfect chain lubrication and brake responsiveness.",
+  "explorerStarship": "EXPLORER STARSHIP",
+  "anAdvancedDeepSpaceExplorer": "An advanced deep-space explorer equipped with hyper-navigation drives. Critical parts must be flawless to permit ascent.",
+  "inflatableDinghy": "INFLATABLE DINGHY",
+  "aLightPackableBoatFor": "A light packable boat for open water. Its hull and air chambers must stay intact to keep it afloat.",
+  "critical": "CRITICAL",
+  "changeAppearance": "CHANGE APPEARANCE",
+  "statusBroken": "STATUS: BROKEN",
+  "statusOperational": "STATUS: OPERATIONAL",
+  "allCriticalComponentsMustMaintain": "All critical components must maintain above 0% integrity to operate.",
+  "repair": "Repair",
+  "upgrades": "Upgrades",
+  "close": "CLOSE",
+  "componentsRegistry": "COMPONENTS REGISTRY",
+  "fullRepair": "Full Repair",
+  "notInstalled": "NOT INSTALLED",
+  "lv": "Lv.",
+  "maxed": "MAXED",
+  "install": "Install",
+  "upgrade": {
+    "accel": {
+      "name": "Turbo Injectors",
+      "desc": "Sharper throttle response and quicker acceleration."
+    },
+    "speed": {
+      "name": "Aero Streamlining",
+      "desc": "Higher top speed and less game-time spent crossing each world tile."
+    },
+    "fuel": {
+      "name": "Expanded Tank",
+      "desc": "A larger reservoir raises the maximum fuel capacity."
+    },
+    "health": {
+      "name": "Reinforced Chassis",
+      "desc": "A hardened frame makes the vehicle take less damage from impacts."
+    },
+    "aquatic": {
+      "name": "Amphibious Conversion",
+      "desc": "A sealed hull and pontoons let the camper drive on and dive beneath water."
+    },
+    "flight": {
+      "name": "Antigravity Rotors",
+      "desc": "Fold-out antigravity rotors let the camper take off and fly."
+    }
+  },
+  "upgradeWorkshop": "UPGRADE WORKSHOP",
+  "noUpgradesAvailable": "No upgrades available.",
+  "acceleration": "Acceleration",
+  "fuelCapacity": "Fuel capacity",
+  "damageReduction": "Damage reduction",
+  "enablesDrivingOnAndDiving": "Enables driving on and diving under water.",
+  "enablesTakeOffAndFlight": "Enables take-off and flight.",
+  "repairPercent": "Repair ({percent}%)",
+  "timePerTile": "Time per tile: {minutes} min",
+  "timePerTileNext": " → {minutes} min (save {saved} min)",
+  "part": {
+    "Engine": "Engine",
+    "Transmission": "Transmission",
+    "Brakes": "Brakes",
+    "Steering": "Steering",
+    "Battery": "Battery",
+    "Alternator": "Alternator",
+    "Radiator": "Radiator",
+    "Fuel System": "Fuel System",
+    "Exhaust": "Exhaust",
+    "Suspension": "Suspension",
+    "Tires": "Tires",
+    "Body": "Body",
+    "Interior": "Interior",
+    "Electronics": "Electronics",
+    "Air Filter": "Air Filter",
+    "Oil System": "Oil System",
+    "Chain": "Chain",
+    "Handlebars": "Handlebars",
+    "Frame": "Frame",
+    "Lights": "Lights",
+    "Hull": "Hull",
+    "Air Chambers": "Air Chambers",
+    "Oars": "Oars",
+    "Valves": "Valves",
+    "Ropes": "Ropes",
+    "Patch Kit": "Patch Kit"
+  },
+  "systemNotReady": "System not ready. Please try again.",
+  "criticalDamage": "\\C[2]Critical damage!\\C[0] The {vehicle} is now broken!",
+  "tookDamage": "The {vehicle} has taken damage!",
+  "fullyRepaired": "The {vehicle} has been fully repaired!",
+  "partiallyRepaired": "The {vehicle} has been partially repaired ({percent}%).",
+  "nowOperational": "\\C[3]The {vehicle} is now operational!\\C[0]",
+  "brokenCannotUse": "The {vehicle} is broken and cannot be used!",
+  "repairCriticalFirstLong": "Critical parts must be repaired before it can be used.",
+  "repairCriticalFirst": "Critical parts must be repaired first.",
+  "vehicle": {
+    "camper": "camper",
+    "car": "car",
+    "starship": "starship",
+    "bike": "bike",
+    "boat": "boat"
+  }
+}

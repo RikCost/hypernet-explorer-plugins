@@ -1,0 +1,77 @@
+{
+  "pronoun": {
+    "0": {
+      "sub": "",
+      "obj": "",
+      "cap": "",
+      "pos": "",
+      "was": "",
+      "is": "",
+      "tries": "",
+      "has": "",
+      "answers": "",
+      "born": ""
+    },
+    "1": {
+      "sub": "",
+      "obj": "",
+      "cap": "",
+      "pos": "",
+      "was": "",
+      "is": "",
+      "tries": "",
+      "has": "",
+      "answers": "",
+      "born": ""
+    },
+    "2": {
+      "sub": "",
+      "obj": "",
+      "cap": "",
+      "pos": "",
+      "was": "",
+      "is": "",
+      "tries": "",
+      "has": "",
+      "answers": "",
+      "born": ""
+    },
+    "3": {
+      "sub": "",
+      "obj": "",
+      "cap": "",
+      "pos": "",
+      "was": "",
+      "is": "",
+      "tries": "",
+      "has": "",
+      "answers": "",
+      "born": ""
+    }
+  },
+  "adjective": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "bio": {
+    "uncertainTimes": "",
+    "wildsNear": "",
+    "later": "",
+    "moral": {
+      "high": "",
+      "good": "",
+      "weary": "",
+      "loose": "",
+      "lawless": ""
+    },
+    "creature": "",
+    "turbulent": "",
+    "warYears": "",
+    "postwar": "",
+    "modern": "",
+    "bornMeta": ""
+  }
+}

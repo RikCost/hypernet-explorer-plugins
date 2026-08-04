@@ -3,6 +3,7 @@
     "name": "Archmage Eldrin",
     "spritename": "Actor1",
     "spriteindex": 0,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -13,6 +14,7 @@
     "name": "Magister Lyra",
     "spritename": "Actor2",
     "spriteindex": 1,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -23,6 +25,7 @@
     "name": "Councilor Theron",
     "spritename": "Actor3",
     "spriteindex": 2,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -33,6 +36,7 @@
     "name": "Spellweaver Mira",
     "spritename": "Actor1",
     "spriteindex": 3,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -43,6 +47,7 @@
     "name": "Enchanter Kael",
     "spritename": "Actor2",
     "spriteindex": 4,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -53,6 +58,7 @@
     "name": "Wizard Lord Varen",
     "spritename": "Actor3",
     "spriteindex": 5,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -63,6 +69,7 @@
     "name": "Sage Celeste",
     "spritename": "Actor1",
     "spriteindex": 6,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -73,6 +80,7 @@
     "name": "Grand Magus Dorian",
     "spritename": "Actor2",
     "spriteindex": 7,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -83,6 +91,7 @@
     "name": "Curator Magnus",
     "spritename": "Actor1",
     "spriteindex": 0,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -93,6 +102,7 @@
     "name": "Archivist Vera",
     "spritename": "Actor2",
     "spriteindex": 1,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -103,6 +113,7 @@
     "name": "Keeper Silas",
     "spritename": "Actor3",
     "spriteindex": 2,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -113,6 +124,7 @@
     "name": "Librarian Octavia",
     "spritename": "Actor1",
     "spriteindex": 3,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -123,6 +135,7 @@
     "name": "Scribe Matthias",
     "spritename": "Actor2",
     "spriteindex": 4,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -133,6 +146,7 @@
     "name": "Record Master Elena",
     "spritename": "Actor3",
     "spriteindex": 5,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -143,6 +157,7 @@
     "name": "Chronicle Guard Dorian",
     "spritename": "Actor1",
     "spriteindex": 6,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -153,6 +168,7 @@
     "name": "Vault Warden Iris",
     "spritename": "Actor2",
     "spriteindex": 7,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -163,6 +179,7 @@
     "name": "CEO Marcellus",
     "spritename": "Actor1",
     "spriteindex": 0,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -173,6 +190,7 @@
     "name": "Tycoon Victoria",
     "spritename": "Actor2",
     "spriteindex": 1,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -183,6 +201,7 @@
     "name": "Mogul Cassius",
     "spritename": "Actor3",
     "spriteindex": 2,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -193,6 +212,7 @@
     "name": "Trader Supreme Ada",
     "spritename": "Actor1",
     "spriteindex": 3,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -203,6 +223,7 @@
     "name": "Market Lord Felix",
     "spritename": "Actor2",
     "spriteindex": 4,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -213,6 +234,7 @@
     "name": "Commerce King Sophia",
     "spritename": "Actor3",
     "spriteindex": 5,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -223,6 +245,7 @@
     "name": "Merchant Prince Julian",
     "spritename": "Actor1",
     "spriteindex": 6,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -233,6 +256,7 @@
     "name": "Corp Director Lydia",
     "spritename": "Actor2",
     "spriteindex": 7,
+    "protected": false,
     "years": [
       1900,
       2012
@@ -1271,13 +1295,14 @@
     "spriteindex": 3,
     "personality": "Cautious"
   },
-  "pope_benedict_xvii": {
-    "name": "Pope Benedict XVII",
+  "pope_petrus_ii": {
+    "name": "Pope Petrus II",
     "spritename": "Actor1",
     "spriteindex": 0,
+    "protected": true,
     "years": [
-      2005,
-      2012
+      1981,
+      2100
     ],
     "personality": "personalities.authoritative"
   },
@@ -1285,6 +1310,7 @@
     "name": "Cardinal Secretary Lorenzo",
     "spritename": "Actor2",
     "spriteindex": 1,
+    "protected": false,
     "years": [
       1990,
       2012
@@ -1295,6 +1321,7 @@
     "name": "Archbishop Militaris",
     "spritename": "Actor3",
     "spriteindex": 2,
+    "protected": false,
     "years": [
       1980,
       2010
@@ -1305,6 +1332,7 @@
     "name": "Mother Superior Magdalena",
     "spritename": "Actor1",
     "spriteindex": 3,
+    "protected": false,
     "years": [
       1970,
       2012
@@ -1315,6 +1343,7 @@
     "name": "Papal Chamberlain Dante",
     "spritename": "Actor2",
     "spriteindex": 4,
+    "protected": false,
     "years": [
       1995,
       2012
@@ -1325,6 +1354,7 @@
     "name": "Cardinal Defender Maximus",
     "spritename": "Actor3",
     "spriteindex": 5,
+    "protected": false,
     "years": [
       2000,
       2012
@@ -1334,6 +1364,7 @@
   "pope_leo_xiii": {
     "name": "Pope Leo XIII",
     "ideology": "ideology.theocratic",
+    "protected": false,
     "years": [
       1900,
       1903
@@ -1342,6 +1373,7 @@
   "pope_pius_x": {
     "name": "Pope Pius X",
     "ideology": "ideology.conservative_theocratic",
+    "protected": false,
     "years": [
       1903,
       1914
@@ -1350,6 +1382,7 @@
   "pope_benedict_xv": {
     "name": "Pope Benedict XV",
     "ideology": "ideology.pacifist_theocratic",
+    "protected": false,
     "years": [
       1914,
       1922
@@ -1358,6 +1391,7 @@
   "benito_mussolini": {
     "name": "Benito Mussolini",
     "ideology": "ideology.fascist_theocratic",
+    "protected": false,
     "years": [
       1922,
       1945
@@ -1366,6 +1400,7 @@
   "antonio_gramsci": {
     "name": "Antonio Gramsci",
     "ideology": "ideology.socialist",
+    "protected": false,
     "years": [
       1922,
       1937
@@ -1374,6 +1409,7 @@
   "pope_pius_xii": {
     "name": "Pope Pius XII",
     "ideology": "ideology.diplomatic_theocratic",
+    "protected": false,
     "years": [
       1939,
       1958
@@ -1382,6 +1418,7 @@
   "aldo_moro": {
     "name": "Aldo Moro",
     "ideology": "ideology.christian_democratic",
+    "protected": false,
     "years": [
       1960,
       1978
@@ -1390,6 +1427,7 @@
   "giulio_andreotti": {
     "name": "Giulio Andreotti",
     "ideology": "ideology.machiavellian",
+    "protected": true,
     "years": [
       1972,
       2013
@@ -1398,14 +1436,16 @@
   "pope_john_paul_ii": {
     "name": "Pope John Paul II",
     "ideology": "ideology.anti_communist",
+    "protected": true,
     "years": [
       1978,
-      2005
+      1981
     ]
   },
   "silvio_berlusconi": {
     "name": "Silvio Berlusconi",
     "ideology": "ideology.media_theocrat",
+    "protected": true,
     "years": [
       1994,
       2023
@@ -2158,6 +2198,7 @@
   "victor_emmanuel_iii": {
     "name": "Victor Emmanuel III",
     "ideology": "ideology.imperial_monarchist",
+    "protected": false,
     "years": [
       1900,
       1947
@@ -2166,6 +2207,7 @@
   "giovanni_giolitti": {
     "name": "Giovanni Giolitti",
     "ideology": "ideology.liberal_clientelist",
+    "protected": false,
     "years": [
       1900,
       1928
@@ -2174,6 +2216,7 @@
   "alcide_de_gasperi": {
     "name": "Alcide De Gasperi",
     "ideology": "ideology.christian_democratic",
+    "protected": false,
     "years": [
       1945,
       1954
@@ -2182,6 +2225,7 @@
   "enrico_mattei": {
     "name": "Enrico Mattei",
     "ideology": "ideology.petro_nationalist",
+    "protected": false,
     "years": [
       1945,
       1962
@@ -2190,6 +2234,7 @@
   "romano_prodi": {
     "name": "Romano Prodi",
     "ideology": "ideology.center_left_technocrat",
+    "protected": false,
     "years": [
       1996,
       2012
@@ -2198,6 +2243,7 @@
   "mario_monti": {
     "name": "Mario Monti",
     "ideology": "ideology.technocratic",
+    "protected": false,
     "years": [
       2011,
       2012
@@ -2206,6 +2252,7 @@
   "mario_draghi": {
     "name": "Mario Draghi",
     "ideology": "ideology.technocratic_liberal",
+    "protected": false,
     "years": [
       2021,
       2012
@@ -2214,6 +2261,7 @@
   "queen_victoria": {
     "name": "Queen Victoria",
     "ideology": "ideology.imperial_monarchist",
+    "protected": false,
     "years": [
       1837,
       1901
@@ -2222,6 +2270,7 @@
   "edward_vii": {
     "name": "Edward VII",
     "ideology": "ideology.diplomatic_monarchist",
+    "protected": false,
     "years": [
       1901,
       1910
@@ -2230,6 +2279,7 @@
   "george_v": {
     "name": "George V",
     "ideology": "ideology.conservative_monarchist",
+    "protected": false,
     "years": [
       1910,
       1936
@@ -2238,6 +2288,7 @@
   "edward_viii": {
     "name": "Edward VIII",
     "ideology": "ideology.scandalous_monarchist",
+    "protected": false,
     "years": [
       1936,
       1972
@@ -2246,6 +2297,7 @@
   "george_vi": {
     "name": "George VI",
     "ideology": "ideology.duty_bound_monarchist",
+    "protected": false,
     "years": [
       1936,
       1952
@@ -2254,6 +2306,7 @@
   "winston_churchill": {
     "name": "Winston Churchill",
     "ideology": "ideology.imperial_democrat",
+    "protected": false,
     "years": [
       1940,
       1965
@@ -2262,6 +2315,7 @@
   "clement_attlee": {
     "name": "Clement Attlee",
     "ideology": "ideology.socialist",
+    "protected": false,
     "years": [
       1945,
       1967
@@ -2270,6 +2324,7 @@
   "elizabeth_ii": {
     "name": "Elizabeth II",
     "ideology": "ideology.constitutional_monarchist",
+    "protected": false,
     "years": [
       1952,
       2022
@@ -2278,6 +2333,7 @@
   "margaret_thatcher": {
     "name": "Margaret Thatcher",
     "ideology": "ideology.traditionalist_witch",
+    "protected": true,
     "years": [
       1979,
       2013
@@ -2286,6 +2342,7 @@
   "tony_blair": {
     "name": "Tony Blair",
     "ideology": "ideology.new_labour",
+    "protected": false,
     "years": [
       1997,
       2012
@@ -2294,6 +2351,7 @@
   "harold_macmillan": {
     "name": "Harold Macmillan",
     "ideology": "ideology.paternalistic_conservative",
+    "protected": false,
     "years": [
       1957,
       1986
@@ -2302,6 +2360,7 @@
   "harold_wilson": {
     "name": "Harold Wilson",
     "ideology": "ideology.social_democrat",
+    "protected": false,
     "years": [
       1964,
       1995
@@ -2310,6 +2369,7 @@
   "david_cameron": {
     "name": "David Cameron",
     "ideology": "ideology.austerity_conservative",
+    "protected": false,
     "years": [
       2010,
       2012
@@ -2318,6 +2378,7 @@
   "boris_johnson": {
     "name": "Boris Johnson",
     "ideology": "ideology.populist_conservative",
+    "protected": false,
     "years": [
       2019,
       2012
@@ -2326,6 +2387,7 @@
   "rishi_sunak": {
     "name": "Rishi Sunak",
     "ideology": "ideology.fiscal_conservative",
+    "protected": false,
     "years": [
       2022,
       2012
@@ -2334,6 +2396,7 @@
   "keir_starmer": {
     "name": "Keir Starmer",
     "ideology": "ideology.pragmatic_labour",
+    "protected": false,
     "years": [
       2012,
       2012
@@ -2342,6 +2405,7 @@
   "nicholas_ii": {
     "name": "Nicholas II",
     "ideology": "ideology.autocrat",
+    "protected": false,
     "years": [
       1894,
       1918
@@ -2350,6 +2414,7 @@
   "vladimir_lenin": {
     "name": "Vladimir Lenin",
     "ideology": "ideology.communist_revolutionary",
+    "protected": false,
     "years": [
       1917,
       1924
@@ -2358,6 +2423,7 @@
   "leon_trotsky": {
     "name": "Leon Trotsky",
     "ideology": "ideology.internationalist_communist",
+    "protected": false,
     "years": [
       1917,
       1940
@@ -2366,6 +2432,7 @@
   "joseph_stalin": {
     "name": "Joseph Stalin",
     "ideology": "ideology.totalitarian_communist",
+    "protected": false,
     "years": [
       1924,
       1953
@@ -2374,6 +2441,7 @@
   "nikita_khrushchev": {
     "name": "Nikita Khrushchev",
     "ideology": "ideology.reform_communist",
+    "protected": false,
     "years": [
       1953,
       1971
@@ -2382,6 +2450,7 @@
   "leonid_brezhnev": {
     "name": "Leonid Brezhnev",
     "ideology": "ideology.stagnation_communist",
+    "protected": false,
     "years": [
       1964,
       1982
@@ -2390,6 +2459,7 @@
   "mikhail_gorbachev": {
     "name": "Mikhail Gorbachev",
     "ideology": "ideology.reform_socialist",
+    "protected": false,
     "years": [
       1985,
       2022
@@ -2398,6 +2468,7 @@
   "boris_yeltsin": {
     "name": "Boris Yeltsin",
     "ideology": "ideology.democratic_capitalist",
+    "protected": false,
     "years": [
       1991,
       2007
@@ -2406,6 +2477,7 @@
   "vladimir_putin": {
     "name": "Vladimir Putin",
     "ideology": "ideology.authoritarian",
+    "protected": false,
     "years": [
       1999,
       2012
@@ -2414,6 +2486,7 @@
   "alexander_kerensky": {
     "name": "Alexander Kerensky",
     "ideology": "ideology.democratic_socialist",
+    "protected": false,
     "years": [
       1917,
       1970
@@ -2422,6 +2495,7 @@
   "georgy_malenkov": {
     "name": "Georgy Malenkov",
     "ideology": "ideology.transitional_communist",
+    "protected": false,
     "years": [
       1953,
       1988
@@ -2430,6 +2504,7 @@
   "yuri_andropov": {
     "name": "Yuri Andropov",
     "ideology": "ideology.disciplinarian_communist",
+    "protected": false,
     "years": [
       1982,
       1984
@@ -2438,6 +2513,7 @@
   "konstantin_chernenko": {
     "name": "Konstantin Chernenko",
     "ideology": "ideology.orthodox_communist",
+    "protected": false,
     "years": [
       1984,
       1985
@@ -2446,6 +2522,7 @@
   "dmitry_medvedev": {
     "name": "Dmitry Medvedev",
     "ideology": "ideology.managed_democrat",
+    "protected": false,
     "years": [
       2008,
       2012
@@ -2454,6 +2531,7 @@
   "abdul_hamid_ii": {
     "name": "Abdul Hamid II",
     "ideology": "ideology.islamic_autocrat",
+    "protected": false,
     "years": [
       1876,
       1918
@@ -2462,6 +2540,7 @@
   "mehmed_v": {
     "name": "Mehmed V",
     "ideology": "ideology.constitutional_sultan",
+    "protected": false,
     "years": [
       1909,
       1918
@@ -2470,6 +2549,7 @@
   "enver_pasha": {
     "name": "Enver Pasha",
     "ideology": "ideology.young_turk_nationalist",
+    "protected": false,
     "years": [
       1913,
       1922
@@ -2478,6 +2558,7 @@
   "mustafa_kemal_atat_rk": {
     "name": "Mustafa Kemal Atatürk",
     "ideology": "ideology.secular_nationalist",
+    "protected": false,
     "years": [
       1923,
       1938
@@ -2486,6 +2567,7 @@
   "i_smet_i_n_n": {
     "name": "İsmet İnönü",
     "ideology": "ideology.kemalist",
+    "protected": false,
     "years": [
       1938,
       1973
@@ -2494,6 +2576,7 @@
   "adnan_menderes": {
     "name": "Adnan Menderes",
     "ideology": "ideology.conservative_democrat",
+    "protected": false,
     "years": [
       1950,
       1961
@@ -2502,6 +2585,7 @@
   "s_leyman_demirel": {
     "name": "Süleyman Demirel",
     "ideology": "ideology.center_right",
+    "protected": false,
     "years": [
       1965,
       2015
@@ -2510,6 +2594,7 @@
   "turgut_zal": {
     "name": "Turgut Özal",
     "ideology": "ideology.liberal_conservative",
+    "protected": false,
     "years": [
       1983,
       1993
@@ -2518,6 +2603,7 @@
   "tansu_iller": {
     "name": "Tansu Çiller",
     "ideology": "ideology.center_right",
+    "protected": false,
     "years": [
       1993,
       2012
@@ -2526,6 +2612,7 @@
   "necmettin_erbakan": {
     "name": "Necmettin Erbakan",
     "ideology": "ideology.islamist",
+    "protected": false,
     "years": [
       1996,
       2011
@@ -2534,6 +2621,7 @@
   "b_lent_ecevit": {
     "name": "Bülent Ecevit",
     "ideology": "ideology.social_democrat",
+    "protected": false,
     "years": [
       1999,
       2006
@@ -2542,6 +2630,7 @@
   "cel_l_bayar": {
     "name": "Celâl Bayar",
     "ideology": "ideology.conservative_democrat",
+    "protected": false,
     "years": [
       1950,
       1986
@@ -2550,6 +2639,7 @@
   "cemal_g_rsel": {
     "name": "Cemal Gürsel",
     "ideology": "ideology.military_secularist",
+    "protected": false,
     "years": [
       1960,
       1966
@@ -2558,6 +2648,7 @@
   "cevdet_sunay": {
     "name": "Cevdet Sunay",
     "ideology": "ideology.military_nationalist",
+    "protected": false,
     "years": [
       1966,
       1982
@@ -2566,6 +2657,7 @@
   "kenan_evren": {
     "name": "Kenan Evren",
     "ideology": "ideology.military_nationalist",
+    "protected": false,
     "years": [
       1980,
       2015
@@ -2574,6 +2666,7 @@
   "ahmet_necdet_sezer": {
     "name": "Ahmet Necdet Sezer",
     "ideology": "ideology.constitutionalist",
+    "protected": false,
     "years": [
       2000,
       2012
@@ -2582,6 +2675,7 @@
   "abdullah_g_l": {
     "name": "Abdullah Gül",
     "ideology": "ideology.moderate_islamist",
+    "protected": false,
     "years": [
       2007,
       2012
@@ -2590,6 +2684,7 @@
   "recep_tayyip_erdo_an": {
     "name": "Recep Tayyip Erdoğan",
     "ideology": "ideology.neo_ottoman_islamist",
+    "protected": false,
     "years": [
       2003,
       2012
@@ -2598,6 +2693,7 @@
   "the_great_goblin": {
     "name": "The Great Goblin",
     "ideology": "ideology.stone_age_primal",
+    "protected": false,
     "years": [
       1970,
       2012
@@ -2606,6 +2702,7 @@
   "griznak": {
     "name": "Griznak",
     "ideology": "ideology.rowdy_horde",
+    "protected": false,
     "years": [
       1905,
       1925
@@ -2614,6 +2711,7 @@
   "krazz": {
     "name": "Krazz",
     "ideology": "ideology.violent_marauders",
+    "protected": false,
     "years": [
       1908,
       1928
@@ -2622,6 +2720,7 @@
   "zog": {
     "name": "Zog",
     "ideology": "ideology.rowdy_horde",
+    "protected": false,
     "years": [
       1924,
       1943
@@ -2630,6 +2729,7 @@
   "droop": {
     "name": "Droop",
     "ideology": "ideology.violent_marauders",
+    "protected": false,
     "years": [
       1945,
       1987
@@ -2638,6 +2738,7 @@
   "skab": {
     "name": "Skab",
     "ideology": "ideology.rowdy_horde",
+    "protected": false,
     "years": [
       1965,
       2005
@@ -2646,6 +2747,7 @@
   "blight": {
     "name": "Blight",
     "ideology": "ideology.violent_marauders",
+    "protected": false,
     "years": [
       1971,
       1983
@@ -2654,6 +2756,7 @@
   "snarl": {
     "name": "Snarl",
     "ideology": "ideology.rowdy_horde",
+    "protected": false,
     "years": [
       1976,
       2018
@@ -2662,6 +2765,7 @@
   "grub": {
     "name": "Grub",
     "ideology": "ideology.violent_marauders",
+    "protected": false,
     "years": [
       1981,
       2021
@@ -2670,6 +2774,7 @@
   "grizelda": {
     "name": "Grizelda",
     "ideology": "ideology.rowdy_horde",
+    "protected": false,
     "years": [
       1981,
       2012
@@ -2678,6 +2783,7 @@
   "krix": {
     "name": "Krix",
     "ideology": "ideology.death_metal_inner_circle",
+    "protected": false,
     "years": [
       1997,
       2012
@@ -2686,6 +2792,7 @@
   "grum": {
     "name": "Grum",
     "ideology": "ideology.death_metal_inner_circle",
+    "protected": false,
     "years": [
       2000,
       2012
@@ -2694,6 +2801,7 @@
   "snot": {
     "name": "Snot",
     "ideology": "ideology.death_metal_inner_circle",
+    "protected": false,
     "years": [
       2013,
       2012
@@ -2702,6 +2810,7 @@
   "vile": {
     "name": "Vile",
     "ideology": "ideology.death_metal_inner_circle",
+    "protected": false,
     "years": [
       2021,
       2012
@@ -2710,14 +2819,16 @@
   "aleister_crowley": {
     "name": "Aleister Crowley",
     "ideology": "ideology.thelemic_magus",
+    "protected": true,
     "years": [
       1901,
-      1947
+      2012
     ]
   },
   "dion_fortune": {
     "name": "Dion Fortune",
     "ideology": "ideology.esoteric_psychologist",
+    "protected": false,
     "years": [
       1920,
       1946
@@ -2726,6 +2837,7 @@
   "em": {
     "name": "Em",
     "ideology": "ideology.sacrificial_sorceress",
+    "protected": false,
     "years": [
       2001,
       2012
@@ -2734,6 +2846,7 @@
   "brewster_kahle": {
     "name": "Brewster Kahle",
     "ideology": "ideology.universal_librarian",
+    "protected": false,
     "years": [
       1996,
       2012
@@ -2742,6 +2855,7 @@
   "julian_assange": {
     "name": "Julian Assange",
     "ideology": "ideology.information_leaker",
+    "protected": false,
     "years": [
       2001,
       2012
@@ -2750,6 +2864,7 @@
   "the_pyramid_overlord": {
     "name": "The Pyramid Overlord",
     "ideology": "ideology.speed_profit_prophet",
+    "protected": false,
     "years": [
       1990,
       2012
@@ -2758,6 +2873,7 @@
   "the_shadow_ceo": {
     "name": "The Shadow CEO",
     "ideology": "ideology.high_frequency_trader",
+    "protected": false,
     "years": [
       1990,
       2012
@@ -2766,6 +2882,7 @@
   "yhwh": {
     "name": "YHWH",
     "ideology": "ideology.abramic_father",
+    "protected": true,
     "years": [
       0,
       1999
@@ -2774,6 +2891,7 @@
   "eris": {
     "name": "Eris",
     "ideology": "ideology.discordian_chaos",
+    "protected": true,
     "years": [
       1999,
       2012
@@ -2782,9 +2900,130 @@
   "malal": {
     "name": "Malal",
     "ideology": "ideology.chaos_renegade",
+    "protected": false,
     "years": [
       1990,
       2012
     ]
+  },
+  "president_lincoln_xiii": {
+    "name": "President Lincoln XIII",
+    "ideology": "ideology.free_states_confederation",
+    "protected": true,
+    "years": [
+      1900,
+      2012
+    ]
+  },
+  "speaker_grant": {
+    "name": "Speaker Grant",
+    "ideology": "ideology.free_states_confederation",
+    "protected": false,
+    "years": [
+      1900,
+      1955
+    ]
+  },
+  "senator_sherman": {
+    "name": "Senator Sherman",
+    "ideology": "ideology.free_states_confederation",
+    "protected": false,
+    "years": [
+      1945,
+      2012
+    ]
+  },
+  "chairman_faraday": {
+    "name": "Chairman Faraday",
+    "ideology": "ideology.free_states_confederation",
+    "protected": false,
+    "years": [
+      1970,
+      2012
+    ]
+  },
+  "governor_general_victoria_vi": {
+    "name": "Governor-General Victoria VI",
+    "ideology": "ideology.crown_colony_administration",
+    "protected": true,
+    "years": [
+      1900,
+      2012
+    ]
+  },
+  "thaumo_director_tesla": {
+    "name": "Thaumo-Director Tesla",
+    "ideology": "ideology.thaumo_industrialist",
+    "protected": false,
+    "years": [
+      1900,
+      1943
+    ]
+  },
+  "commissioner_douglas": {
+    "name": "Commissioner Douglas",
+    "ideology": "ideology.crown_colony_administration",
+    "protected": false,
+    "years": [
+      1950,
+      2012
+    ]
+  },
+  "colonial_admin_cornwallis_ix": {
+    "name": "Colonial Admin Cornwallis IX",
+    "ideology": "ideology.punitive_colony_regime",
+    "protected": true,
+    "years": [
+      1900,
+      2012
+    ]
+  },
+  "director_paine": {
+    "name": "Director Paine",
+    "ideology": "ideology.punitive_colony_regime",
+    "protected": false,
+    "years": [
+      1900,
+      1950
+    ]
+  },
+  "warden_arnold": {
+    "name": "Warden Arnold",
+    "ideology": "ideology.punitive_colony_regime",
+    "protected": false,
+    "years": [
+      1975,
+      2012
+    ]
+  },
+  "secretary_adams": {
+    "name": "Secretary Adams",
+    "ideology": "ideology.continental_unionist",
+    "protected": false,
+    "years": [
+      1900,
+      2012
+    ]
+  },
+  "unionist_chair_jefferson": {
+    "name": "Unionist Chair Jefferson",
+    "ideology": "ideology.continental_unionist",
+    "protected": false,
+    "years": [
+      1920,
+      2012
+    ]
+  },
+  "mehmet_ali_agca": {
+    "name": "Mehmet Ali Ağca",
+    "ideology": "ideology.nationalist",
+    "spritename": "Actor1",
+    "spriteindex": 7,
+    "protected": true,
+    "years": [
+      1958,
+      2100
+    ],
+    "personality": "personalities.aggressive"
   }
 }

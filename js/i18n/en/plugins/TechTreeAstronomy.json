@@ -1,0 +1,78 @@
+{
+  "name": "Astronomy",
+  "blurb": "The sky measured and, where the delta-v allows, visited: acoustic peaks, transit depths and landing ellipses. Every figure below is quoted with the instrument that produced it.",
+  "nodes": {
+    "astro_wmap": {
+      "name": "WMAP Cosmic Age",
+      "desc": "From a Lissajous orbit about the Earth-Sun L2 point, two back-to-back Gregorian telescopes feed differential radiometers in five bands from 23 to 94 gigahertz, measuring temperature differences of tens of microkelvin across the full sky while the spacecraft spins and precesses to cancel systematics. The angular power spectrum shows the first acoustic peak at multipole 220 and two more beyond it. The six-parameter fit gives an age of 13.7 billion years to one percent, a flat geometry, and a budget of 4.6 percent baryons, 23 percent dark matter and the rest dark energy."
+    },
+    "astro_mars_rovers": {
+      "name": "Spirit and Opportunity",
+      "desc": "Two 180-kilogram solar rovers enter at 5.4 kilometres per second, decelerate under a supersonic parachute, fire retrorockets and bounce to rest inside airbag clusters at Gusev and Meridiani, in opposite hemispheres. Each carries a rock abrasion tool that grinds five millimetres into a face, an alpha particle X-ray spectrometer for elemental composition and a Moessbauer spectrometer for iron mineralogy. Opportunity finds hematite concretions and jarosite, a sulphate that requires liquid water below pH 4 to form. The design life is 90 sols; Opportunity operates for fourteen years."
+    },
+    "astro_deep_impact": {
+      "name": "Deep Impact",
+      "desc": "A 370-kilogram impactor, largely copper so as not to contaminate the spectra, is released 24 hours out and manoeuvres itself into the path of comet Tempel 1, striking at 10.3 kilometres per second for a kinetic yield near 19 gigajoules. The flyby bus images and spectroscopes the plume from 500 kilometres and is then shielded against the coma. The ejecta rise slowly and fall back in a curve that implies a nucleus of almost no tensile strength and 75 percent porosity, made of micron-scale silicate grains, water ice and organics."
+    },
+    "astro_titan": {
+      "name": "Huygens Lands on Titan",
+      "desc": "Huygens separates from Cassini, coasts for twenty days and enters Titan's atmosphere at six kilometres per second, decelerating to Mach 1.5 in under three minutes before three successive parachutes take it down over two hours and twenty-seven minutes. A gas chromatograph mass spectrometer profiles a nitrogen atmosphere with a few percent methane, and the descent imager returns dendritic drainage networks cut into bright terrain. It lands at five metres per second on damp granular ground at 94 kelvin, and transmits for a further seventy minutes until Cassini drops below the horizon."
+    },
+    "astro_pluto": {
+      "name": "Dwarf Planet Reclassification",
+      "desc": "The discovery of Eris, of comparable diameter and 27 percent greater mass, forces the question of what is to be counted. Resolution 5A of the IAU General Assembly defines a planet by three clauses: it orbits the Sun, its self-gravity has pulled it into hydrostatic equilibrium, and it has cleared the neighbourhood of its orbit. Pluto satisfies the first two, and by the Soter parameter its orbital zone holds some ten thousand times its own mass in other bodies, so it is placed in the new category of dwarf planet."
+    },
+    "astro_stardust": {
+      "name": "Stardust Sample Return",
+      "desc": "A collector of silica aerogel at 0.01 grams per cubic centimetre, deployed as a 0.1 square metre grid, is flown through the coma of comet Wild 2 at 6.1 kilometres per second and stops the grains over several centimetres of track without vaporising them. The capsule returns and re-enters at 12.9 kilometres per second, the fastest of any human-made object. The grains include forsterite, anorthite and the calcium-aluminium-rich inclusion Inti, minerals that condense above 1,400 kelvin, so material formed near the Sun was transported outward across the disk before the comet accreted."
+    },
+    "astro_exo_image": {
+      "name": "First Exoplanet Image",
+      "desc": "A deformable mirror corrects the atmospheric wavefront at over a kilohertz while a coronagraph suppresses the on-axis starlight, and angular differential imaging rotates the field against the fixed instrument pattern so the residual speckles can be subtracted. Three companions of HR 8799 are resolved in the near infrared at contrasts near ten to the minus five and separations of 24, 38 and 68 astronomical units. Their common proper motion confirms they are bound, and their orbital arcs are then followed frame to frame over the following years."
+    },
+    "astro_water_moon": {
+      "name": "Water on the Moon",
+      "desc": "A spent Centaur upper stage of 2,300 kilograms is aimed into the permanently shadowed floor of Cabeus, near the lunar south pole, where the surface has not seen sunlight for two billion years and sits below 40 kelvin. It excavates some 350 tonnes of regolith, and the shepherding spacecraft flies through the plume four minutes behind, measuring near-infrared water absorption before it strikes in turn. The plume is 5.6 percent water ice by mass, with hydroxyl, carbon monoxide, ammonia and mercury alongside it."
+    },
+    "astro_kepler": {
+      "name": "Kepler Telescope Launch",
+      "desc": "A 0.95 metre Schmidt telescope in an Earth-trailing heliocentric orbit stares at a single 115 square degree field in Cygnus and Lyra without slewing, reading 42 CCDs at a thirty minute cadence for 150,000 target stars. The photometry is deliberately defocused across several pixels and calibrated per pixel, holding differential precision near 20 parts per million over six hours. An Earth-radius planet crossing a solar-radius star dims it by 84 parts per million for a few hours once a year, so the signal exists only if that noise floor holds for the whole mission."
+    },
+    "astro_dawn_vesta": {
+      "name": "Dawn Orbits Vesta",
+      "desc": "Three xenon ion thrusters deliver 90 millinewtons at a specific impulse of 3,100 seconds, and running them for years accumulates more than 11 kilometres per second of delta-v on 425 kilograms of propellant, enough for one spacecraft to enter orbit about a main belt body and later leave it for a second. Framing cameras, a visible and infrared spectrometer and a gamma-ray and neutron detector map Vesta over fourteen months: the Rheasilvia basin covers most of the southern hemisphere, the howardite-eucrite-diogenite meteorites are matched to its crust, and the gravity field confirms an iron core."
+    },
+    "astro_habitable": {
+      "name": "First Habitable-Zone World",
+      "desc": "Kepler-22b is confirmed on three transits giving a period of 289.9 days about a G5 star slightly cooler than the Sun. The transit depth corresponds to 2.4 Earth radii, and the incident flux is 1.1 times terrestrial, placing it inside the conservative habitable zone. Transit photometry constrains radius and period alone: the radial velocity amplitude is below the detection limit, so the mass is capped rather than measured, and at that radius the object is as likely to be a mini-Neptune with a hydrogen envelope as a rocky world."
+    },
+    "astro_curiosity": {
+      "name": "Curiosity Lands on Mars",
+      "desc": "A 900-kilogram rover is past the mass at which airbags work. The cruise stage enters at 5.8 kilometres per second, flies a guided lifting entry that trims the ellipse to 20 by 7 kilometres, deploys a 21.5 metre parachute at Mach 1.7, and the descent stage then throttles eight engines to hold a hover at 0.75 metres per second while the rover is winched out on seven and a half metre bridles. Touchdown is read from the throttle setting, the bridles are cut and the stage flies clear to crash. Power is 110 watts from a radioisotope generator; the payload includes a laser-induced breakdown spectrometer, an X-ray diffractometer and a sample oven."
+    },
+    "astro_face_mars": {
+      "name": "The Face on Mars",
+      "desc": "Viking Orbiter 1 frame 35A72, acquired at 43 metres per pixel with the Sun 20 degrees above the horizon, shows a mesa in Cydonia in which shadow fills the depressions symmetrically; a dropped data bit adds the dark spot read as a nostril. Mars Global Surveyor re-images the same landform twice at up to 1.56 metres per pixel and at high sun, and Mars Express returns a stereo digital terrain model of it. The feature is an eroded massif of the kind that occurs in hundreds across the region."
+    },
+    "astro_nibiru": {
+      "name": "Nibiru and the Doomsday Perihelion",
+      "desc": "A body of planetary mass is placed on a 3,600 year eccentric orbit with perihelion timed to the end of the thirteenth baktun. An object of that mass arriving within months would already be at naked-eye magnitude and moving detectably against the field, would have shown in every infrared all-sky survey since IRAS, and would leave a residual in the ephemerides of Uranus, Neptune and the Cassini ranging to Saturn. Those ephemerides are fitted to tens of metres and require no such term."
+    },
+    "astro_ancient_astronauts": {
+      "name": "The Ancient Astronaut Hypothesis",
+      "desc": "A reading in which megalithic construction, astronomical alignment and creation myth are all products of a visiting technology. It requires the surviving evidence of terrestrial construction to be set aside: the abandoned quarries with the blocks still attached, the copper and dolerite tool marks matched to those blocks, the ramps, the spoil heaps, the workers' villages, the ration records and the reconstructions carried out with period tools. It predicts no artefact, no alloy and no stratum, and every claim it advances is an argument from incredulity about labour."
+    },
+    "astro_photometry": {
+      "name": "Precision Transit Photometry",
+      "desc": "A terrestrial transit is a dimming of one part in ten thousand lasting hours, an order of magnitude below the flat-field residuals, pointing jitter and thermal drift of an ordinary photometer. The signal is recovered differentially, against an ensemble of comparison stars on the same detector so that common-mode terms divide out; the point spread function is spread over many pixels to average response variation; and the per-pixel gain map is held stable to parts per million for years, with the residual drift removed by fitting cotrending basis vectors derived from the ensemble itself."
+    },
+    "astro_rtg": {
+      "name": "Radioisotope Power Supply",
+      "desc": "Eight general purpose heat source modules hold 4.8 kilograms of plutonium-238 dioxide, whose 87.7 year half-life yields about two kilowatts of decay heat. That heat crosses 768 thermocouples of lead telluride and skutterudite arranged in series-parallel, and the Seebeck voltage delivers roughly 110 watts at 28 volts, for a conversion efficiency near six percent. Output falls about 1.6 percent a year through decay and thermocouple degradation, and it is independent of dust loading, season, latitude and night, which no solar array on Mars is."
+    },
+    "astro_skycrane": {
+      "name": "The Sky Crane Rehearsal",
+      "desc": "A one-tonne rover cannot be set down by the airbag method, which tops out near 200 kilograms of landed mass, and legs long enough to clear the terrain under it would stand higher than its own wheelbase and put the deck out of reach of the arm. The descent stage instead stops above the surface on eight throttleable 3,000 newton engines, keeps the plume and its dust away from the vehicle, and lowers the rover on three nylon bridles and an umbilical. Touchdown is detected as a drop in commanded throttle; the bridles are pyrotechnically cut and the stage departs on the remaining propellant."
+    }
+  }
+}

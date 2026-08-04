@@ -1,0 +1,2444 @@
+{
+  "enemyArchetypes": {
+    "humanoid": {
+      "name": "Humanoïde",
+      "head": {
+        "name": "Tête"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "brain": {
+        "name": "Cerveau",
+        "msg": "Cerveau : commotionné !"
+      },
+      "left_eye": {
+        "name": "Œil gauche",
+        "msg": "Œil gauche : gonflé fermé !"
+      },
+      "right_eye": {
+        "name": "Œil droit",
+        "msg": "Œil droit : gonflé fermé !"
+      },
+      "nose": {
+        "name": "Nez",
+        "msg": "Nez : cassé !"
+      },
+      "left_ear": {
+        "name": "Oreille gauche",
+        "msg": "Oreille gauche : bourdonnante !"
+      },
+      "right_ear": {
+        "name": "Oreille droite",
+        "msg": "Oreille droite : bourdonnante !"
+      },
+      "mouth": {
+        "name": "Bouche",
+        "msg": "Mâchoire : déboîtée !"
+      },
+      "teeth": {
+        "name": "Dents",
+        "msg": "Dents : arrachées !"
+      },
+      "genitals": {
+        "name": "Organes génitaux",
+        "msg": "Organes génitaux : endommagés !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : endommagé !"
+      },
+      "left_lung": {
+        "name": "Poumon gauche",
+        "msg": "Poumon gauche : effondré !"
+      },
+      "right_lung": {
+        "name": "Poumon droit",
+        "msg": "Poumon droit : effondré !"
+      },
+      "liver": {
+        "name": "Foie",
+        "msg": "Foie : lacéré !"
+      },
+      "stomach": {
+        "name": "Estomac",
+        "msg": "Estomac : rompu !"
+      },
+      "spleen": {
+        "name": "Rate",
+        "msg": "Rate : rompue !"
+      },
+      "intestines": {
+        "name": "Intestins",
+        "msg": "Intestins : perforés !"
+      },
+      "left_hand": {
+        "name": "Main gauche",
+        "msg": "Main gauche : mutilée !"
+      },
+      "left_fingers": {
+        "name": "Doigts gauches",
+        "msg": "Doigts gauches : cassés !"
+      },
+      "right_hand": {
+        "name": "Main droite",
+        "msg": "Main droite : mutilée !"
+      },
+      "right_fingers": {
+        "name": "Doigts droits",
+        "msg": "Doigts droits : cassés !"
+      },
+      "left_foot": {
+        "name": "Pied gauche",
+        "msg": "Pied gauche : endommagé !"
+      },
+      "left_toes": {
+        "name": "Orteils gauches",
+        "msg": "Orteils gauches : écrasés !"
+      },
+      "right_foot": {
+        "name": "Pied droit",
+        "msg": "Pied droit : endommagé !"
+      },
+      "right_toes": {
+        "name": "Orteils droits",
+        "msg": "Orteils droits : écrasés !"
+      }
+    },
+    "humanoid_roguelite": {
+      "name": "",
+      "head": {
+        "name": ""
+      },
+      "torso": {
+        "name": "",
+        "msg": ""
+      },
+      "left_arm": {
+        "name": "",
+        "msg": ""
+      },
+      "right_arm": {
+        "name": "",
+        "msg": ""
+      },
+      "left_leg": {
+        "name": "",
+        "msg": ""
+      },
+      "right_leg": {
+        "name": "",
+        "msg": ""
+      },
+      "brain": {
+        "name": "",
+        "msg": ""
+      },
+      "left_eye": {
+        "name": "",
+        "msg": ""
+      },
+      "right_eye": {
+        "name": "",
+        "msg": ""
+      },
+      "nose": {
+        "name": "",
+        "msg": ""
+      },
+      "left_ear": {
+        "name": "",
+        "msg": ""
+      },
+      "right_ear": {
+        "name": "",
+        "msg": ""
+      },
+      "mouth": {
+        "name": "",
+        "msg": ""
+      },
+      "teeth": {
+        "name": "",
+        "msg": ""
+      },
+      "genitals": {
+        "name": "",
+        "msg": ""
+      },
+      "heart": {
+        "name": "",
+        "msg": ""
+      },
+      "left_lung": {
+        "name": "",
+        "msg": ""
+      },
+      "right_lung": {
+        "name": "",
+        "msg": ""
+      },
+      "liver": {
+        "name": "",
+        "msg": ""
+      },
+      "stomach": {
+        "name": "",
+        "msg": ""
+      },
+      "spleen": {
+        "name": "",
+        "msg": ""
+      },
+      "intestines": {
+        "name": "",
+        "msg": ""
+      },
+      "left_hand": {
+        "name": "",
+        "msg": ""
+      },
+      "left_fingers": {
+        "name": "",
+        "msg": ""
+      },
+      "right_hand": {
+        "name": "",
+        "msg": ""
+      },
+      "right_fingers": {
+        "name": "",
+        "msg": ""
+      },
+      "left_foot": {
+        "name": "",
+        "msg": ""
+      },
+      "left_toes": {
+        "name": "",
+        "msg": ""
+      },
+      "right_foot": {
+        "name": "",
+        "msg": ""
+      },
+      "right_toes": {
+        "name": "",
+        "msg": ""
+      }
+    },
+    "beast": {
+      "name": "Bête",
+      "head": {
+        "name": "Tête"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : coupée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : coupée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : taillée en pièces !"
+      }
+    },
+    "insectoid": {
+      "head": {
+        "name": "Tête"
+      },
+      "thorax": {
+        "name": "Thorax",
+        "msg": "Thorax : perforé !"
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "msg": "Abdomen : éclaté !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "middle_left_leg": {
+        "name": "Patte médiane gauche",
+        "msg": "Patte médiane gauche : coupée !"
+      },
+      "middle_right_leg": {
+        "name": "Patte médiane droite",
+        "msg": "Patte médiane droite : coupée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : coupée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : coupée !"
+      },
+      "mandibles": {
+        "name": "Mandibules",
+        "msg": "Mandibules : pulvérisés !"
+      },
+      "name": "Insectoïde"
+    },
+    "frog": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : fissurée !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "tongue": {
+        "name": "Langue",
+        "msg": "Langue : sectionnée !"
+      },
+      "vocal_sac": {
+        "name": "Sac vocal",
+        "msg": "Vocal sac : rompu !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "hind_left_leg": {
+        "name": "Patte postérieure gauche",
+        "msg": "Patte postérieure gauche : coupée !"
+      },
+      "hind_right_leg": {
+        "name": "Patte postérieure droite",
+        "msg": "Patte postérieure droite : coupée !"
+      },
+      "name": "Grenouille"
+    },
+    "dragon": {
+      "name": "Dragon",
+      "head": {
+        "name": "Tête"
+      },
+      "fire_breath_organ": {
+        "name": "Organe de souffle de feu",
+        "msg": "Organe de souffle de feu : éclaté en charpie !"
+      },
+      "neck": {
+        "name": "Cou",
+        "msg": "Cou : cassé net après torsion !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchiquetée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchiquetée !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : taillée en pièces !"
+      }
+    },
+    "skeleton": {
+      "name": "Squelette",
+      "head": {
+        "name": "Tête",
+        "msg": "Crâne : pulvérisée en éclats !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Cage thoracique : réduit en poussière !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : cassé net !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : cassé net !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : fracassée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : fracassée !"
+      }
+    },
+    "fairy": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : fissurée !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : réduit en poussière scintillante !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchiquetée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchiquetée !"
+      },
+      "pixie_dust_sac": {
+        "name": "Sac de poussière de pixie",
+        "msg": "Sac de poussière de pixie : rompu !"
+      },
+      "name": "Fée"
+    },
+    "slime": {
+      "name": "Slime",
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : violemment effondré !"
+      },
+      "upper_body": {
+        "name": "Haut du corps",
+        "msg": "Haut du corps : écrasé !"
+      },
+      "lower_body": {
+        "name": "Bas du corps",
+        "msg": "Bas du corps : écrasé !"
+      },
+      "pseudopod_1": {
+        "name": "Pseudopode 1",
+        "msg": "Pseudopode 1 : fondu en boue !"
+      },
+      "pseudopod_2": {
+        "name": "Pseudopode 2",
+        "msg": "Pseudopode 2 : fondu en boue !"
+      }
+    },
+    "undead": {
+      "skull": {
+        "name": "Crâne",
+        "msg": "Crâne : anéanti !"
+      },
+      "ribcage": {
+        "name": "Cage thoracique",
+        "msg": "Cage thoracique : enfoncée en charpie !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "name": "Mort-vivant"
+    },
+    "scorpion": {
+      "head": {
+        "name": "Tête"
+      },
+      "cephalothorax": {
+        "name": "Céphalothorax",
+        "msg": "Céphalothorax : écrasé !"
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "msg": "Abdomen : éclaté !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : sectionnée !"
+      },
+      "stinger": {
+        "name": "Dard",
+        "msg": "Dard : cassé net !"
+      },
+      "pincer_left": {
+        "name": "Pince gauche",
+        "msg": "Pince gauche : écrasée !"
+      },
+      "pincer_right": {
+        "name": "Pince droite",
+        "msg": "Pince droite : écrasée !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "mid_left_leg": {
+        "name": "Patte médiane avant gauche",
+        "msg": "Patte médiane avant gauche : coupée !"
+      },
+      "mid_right_leg": {
+        "name": "Patte médiane avant droite",
+        "msg": "Patte médiane avant droite : coupée !"
+      },
+      "mid_rear_left_leg": {
+        "name": "Patte médiane arrière gauche",
+        "msg": "Patte médiane arrière gauche : coupée !"
+      },
+      "mid_rear_right_leg": {
+        "name": "Patte médiane arrière droite",
+        "msg": "Patte médiane arrière droite : coupée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : coupée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : coupée !"
+      },
+      "name": "Scorpion"
+    },
+    "spider": {
+      "head": {
+        "name": "Tête"
+      },
+      "cephalothorax": {
+        "name": "Céphalothorax",
+        "msg": "Céphalothorax : fissuré !"
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "msg": "Abdomen : rompu !"
+      },
+      "fangs": {
+        "name": "Crocs",
+        "msg": "Crocs : fracassés !"
+      },
+      "spinnerets": {
+        "name": "Filières",
+        "msg": "Filières : sectionnés !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : coupée !"
+      },
+      "mid_left_leg": {
+        "name": "Patte médiane avant gauche",
+        "msg": "Patte médiane avant gauche : coupée !"
+      },
+      "mid_right_leg": {
+        "name": "Patte médiane avant droite",
+        "msg": "Patte médiane avant droite : coupée !"
+      },
+      "mid_rear_left_leg": {
+        "name": "Patte médiane arrière gauche",
+        "msg": "Patte médiane arrière gauche : coupée !"
+      },
+      "mid_rear_right_leg": {
+        "name": "Patte médiane arrière droite",
+        "msg": "Patte médiane arrière droite : coupée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : coupée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : coupée !"
+      },
+      "name": "Araignée"
+    },
+    "plant": {
+      "name": "Plante",
+      "flower": {
+        "name": "Fleur",
+        "msg": "Fleur : flétri en pourriture !"
+      },
+      "stem": {
+        "name": "Tige",
+        "msg": "Tige : fissurée après torsion !"
+      },
+      "roots": {
+        "name": "Racines",
+        "msg": "Racines : arrachées !"
+      },
+      "vine_1": {
+        "name": "Liane 1",
+        "msg": "Liane 1 : réduite en charpie !"
+      },
+      "vine_2": {
+        "name": "Liane 2",
+        "msg": "Liane 2 : réduite en charpie !"
+      }
+    },
+    "elemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : violemment effondré !"
+      },
+      "upper_form": {
+        "name": "Forme supérieure",
+        "msg": "Forme supérieure : défait !"
+      },
+      "lower_form": {
+        "name": "Forme inférieure",
+        "msg": "Forme inférieure : défait !"
+      },
+      "left_appendage": {
+        "name": "Appendice gauche",
+        "msg": "Appendice gauche : liquéfié à l’impact !"
+      },
+      "right_appendage": {
+        "name": "Appendice droit",
+        "msg": "Appendice droit : liquéfié à l’impact !"
+      },
+      "name": "Élémentaire"
+    },
+    "aquaticfish": {
+      "head": {
+        "name": "Tête"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "tail_fin": {
+        "name": "Nageoire caudale",
+        "msg": "Nageoire caudale : tranchée !"
+      },
+      "dorsal_fin": {
+        "name": "Nageoire dorsale",
+        "msg": "Nageoire dorsale : réduite en charpie !"
+      },
+      "left_pectoral_fin": {
+        "name": "Nageoire pectorale gauche",
+        "msg": "Nageoire pectorale gauche : déchiquetée !"
+      },
+      "right_pectoral_fin": {
+        "name": "Nageoire pectorale droite",
+        "msg": "Nageoire pectorale droite : déchiquetée !"
+      },
+      "name": "Poisson aquatique"
+    },
+    "octopus": {
+      "head": {
+        "name": "Tête"
+      },
+      "mantle": {
+        "name": "Manteau",
+        "msg": "Manteau : écrasé !"
+      },
+      "tentacle_1": {
+        "name": "Tentacule 1",
+        "msg": "Tentacule 1 : arraché !"
+      },
+      "tentacle_2": {
+        "name": "Tentacule 2",
+        "msg": "Tentacule 2 : arraché !"
+      },
+      "tentacle_3": {
+        "name": "Tentacule 3",
+        "msg": "Tentacule 3 : arraché !"
+      },
+      "tentacle_4": {
+        "name": "Tentacule 4",
+        "msg": "Tentacule 4 : arraché !"
+      },
+      "name": "Pieuvre"
+    },
+    "robot": {
+      "head": {
+        "name": "Tête"
+      },
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : violemment effondré !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : détaché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : détaché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "name": "Robot"
+    },
+    "bird": {
+      "name": "Oiseau",
+      "head": {
+        "name": "Tête"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "beak": {
+        "name": "Bec",
+        "msg": "Bec : anéanti !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchiquetée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchiquetée !"
+      },
+      "talons": {
+        "name": "Serres",
+        "msg": "Serres : arrachées !"
+      }
+    },
+    "reptilian": {
+      "head": {
+        "name": "Tête"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : taillée en pièces !"
+      },
+      "name": "Reptilien"
+    },
+    "mushroom": {
+      "cap": {
+        "name": "Chapeau",
+        "msg": "Chapeau : réduit en charpie !"
+      },
+      "stalk": {
+        "name": "Hampe",
+        "msg": "Hampe : cassée net après torsion !"
+      },
+      "roots": {
+        "name": "Racines",
+        "msg": "Racines : arrachées !"
+      },
+      "spore_sacs": {
+        "name": "Sacs de spores",
+        "msg": "Sacs de spores : éclaté !"
+      },
+      "name": "Champignon"
+    },
+    "tree": {
+      "name": "Arbre",
+      "crown": {
+        "name": "Couronne",
+        "msg": "Couronne : réduite en charpie !"
+      },
+      "trunk": {
+        "name": "Tronc",
+        "msg": "Tronc : fendu brutalement !"
+      },
+      "roots": {
+        "name": "Racines",
+        "msg": "Racines : arrachées !"
+      },
+      "branch_1": {
+        "name": "Branche 1",
+        "msg": "Branche 1 : cassée !"
+      },
+      "branch_2": {
+        "name": "Branche 2",
+        "msg": "Branche 2 : cassée !"
+      }
+    },
+    "bacterial": {
+      "nucleus": {
+        "name": "Noyau",
+        "msg": "Noyau : éclaté !"
+      },
+      "membrane": {
+        "name": "Membrane",
+        "msg": "Membrane : fondue en boue !"
+      },
+      "flagellum": {
+        "name": "Flagelle",
+        "msg": "Flagelle : déchiqueté !"
+      },
+      "toxin_sacs": {
+        "name": "Sacs de toxines",
+        "msg": "Sacs de toxines : éclaté !"
+      },
+      "name": "Bactérien"
+    },
+    "doubleheadedhumanoid": {
+      "head_left": {
+        "name": "Tête gauche",
+        "msg": "Tête gauche : mise en pièces !"
+      },
+      "head_right": {
+        "name": "Tête droite",
+        "msg": "Tête droite : mise en pièces !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "name": "Humanoïde bicéphale"
+    },
+    "serpent": {
+      "head": {
+        "name": "Tête"
+      },
+      "fangs": {
+        "name": "Crocs",
+        "msg": "Crocs : fracassés !"
+      },
+      "body_segment_1": {
+        "name": "Segment du corps 1",
+        "msg": "Segment du corps 1 : rompu !"
+      },
+      "body_segment_2": {
+        "name": "Segment du corps 2",
+        "msg": "Segment du corps 2 : rompu !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : taillée en pièces !"
+      },
+      "name": "Serpent"
+    },
+    "golem": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : fissuré puis effondré !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : effondré !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : effondré !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : fracturée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : fracturée !"
+      },
+      "name": "Golem"
+    },
+    "demon": {
+      "name": "Démon",
+      "head": {
+        "name": "Tête"
+      },
+      "horns": {
+        "name": "Cornes",
+        "msg": "Cornes : fracassées !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchiquetée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchiquetée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : sectionnée !"
+      }
+    },
+    "ghost": {
+      "face": {
+        "name": "Visage",
+        "msg": "Visage : désintégré en vapeur !"
+      },
+      "core": {
+        "name": "Noyau d’essence",
+        "msg": "Noyau d’essence : défait !"
+      },
+      "left_wisp": {
+        "name": "Feu follet gauche",
+        "msg": "Feu follet gauche : dispersé !"
+      },
+      "right_wisp": {
+        "name": "Feu follet droit",
+        "msg": "Feu follet droit : dispersé !"
+      },
+      "name": "Fantôme"
+    },
+    "drone": {
+      "sensor_array": {
+        "name": "Réseau de capteurs",
+        "msg": "Réseau de capteurs : complètement détruits !"
+      },
+      "chassis": {
+        "name": "Châssis",
+        "msg": "Châssis : écrasés !"
+      },
+      "left_prop": {
+        "name": "Hélice gauche",
+        "msg": "Hélice gauche : réduit en débris !"
+      },
+      "right_prop": {
+        "name": "Hélice droite",
+        "msg": "Hélice droite : réduit en débris !"
+      },
+      "name": "Drone"
+    },
+    "voidspawn": {
+      "abyssal_eye": {
+        "name": "Œil abyssal",
+        "msg": "Œil abyssal : percé !"
+      },
+      "maw": {
+        "name": "Gueule",
+        "msg": "Gueule : fendue !"
+      },
+      "void_tendril_1": {
+        "name": "Vrille du vide 1",
+        "msg": "Vrille du vide 1 : flétrie !"
+      },
+      "void_tendril_2": {
+        "name": "Vrille du vide 2",
+        "msg": "Vrille du vide 2 : flétrie !"
+      },
+      "core": {
+        "name": "éclat de noyau",
+        "msg": "éclat de noyau : fracturé !"
+      },
+      "name": "Rejeton du vide"
+    },
+    "mutant": {
+      "head": {
+        "name": "Tête"
+      },
+      "mass": {
+        "name": "Masse changeante",
+        "msg": "Masse changeante : défait !"
+      },
+      "extra_limb_1": {
+        "name": "Membre supplémentaire 1",
+        "msg": "Membre supplémentaire 1 : tombé !"
+      },
+      "extra_limb_2": {
+        "name": "Membre supplémentaire 2",
+        "msg": "Membre supplémentaire 2 : tombé !"
+      },
+      "eye_cluster": {
+        "name": "Groupe d’yeux",
+        "msg": "Groupe d’yeux : éclaté !"
+      },
+      "tail_spike": {
+        "name": "Pointe de queue",
+        "msg": "Pointe de queue : arrachée !"
+      },
+      "name": "Mutant"
+    },
+    "crystalentity": {
+      "core": {
+        "name": "Noyau de cristal",
+        "msg": "Noyau de cristal : fissuré !"
+      },
+      "left_spire": {
+        "name": "Flèche gauche",
+        "msg": "Flèche gauche : anéantie !"
+      },
+      "right_spire": {
+        "name": "Flèche droite",
+        "msg": "Flèche droite : anéantie !"
+      },
+      "focus_gem": {
+        "name": "Gemme de focalisation",
+        "msg": "Gemme de focalisation : étouffé !"
+      },
+      "shield_crystal": {
+        "name": "Cristal bouclier",
+        "msg": "Cristal bouclier : pulvérisé en fragments !"
+      },
+      "name": "Entité cristalline"
+    },
+    "amphibian": {
+      "head": {
+        "name": "Tête"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "tongue": {
+        "name": "Langue",
+        "msg": "Langue : arrachée !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : coupée !"
+      },
+      "name": "Amphibien"
+    },
+    "constructedundead": {
+      "head": {
+        "name": "Tête"
+      },
+      "torso": {
+        "name": "Torse suturé",
+        "msg": "Torse suturé : ouvert en deux !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "power_stitch": {
+        "name": "Point de suture moteur",
+        "msg": "Point de suture moteur : a éclaté salement !"
+      },
+      "name": "Mort-vivant construit"
+    },
+    "minotaur": {
+      "head": {
+        "name": "Tête"
+      },
+      "horns": {
+        "name": "Cornes",
+        "msg": "Cornes : fracassées !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "left_leg": {
+        "name": "Jambe taurine gauche",
+        "msg": "Jambe taurine gauche : coupée !"
+      },
+      "right_leg": {
+        "name": "Jambe taurine droite",
+        "msg": "Jambe taurine droite : coupée !"
+      },
+      "name": "Minotaure"
+    },
+    "goblin": {
+      "brain": {
+        "name": "Cerveau",
+        "msg": "Cerveau : détruit !"
+      },
+      "skull": {
+        "name": "Crâne",
+        "msg": "Crâne : fracturé !"
+      },
+      "cervical_vertebrae": {
+        "name": "Vertèbres cervicales",
+        "msg": "Vertèbres cervicales : cassées net !"
+      },
+      "thoracic_vertebrae": {
+        "name": "Vertèbres thoraciques",
+        "msg": "Vertèbres thoraciques : fissurées !"
+      },
+      "lumbar_vertebrae": {
+        "name": "Vertèbres lombaires",
+        "msg": "Vertèbres lombaires : effondrées !"
+      },
+      "ribcage": {
+        "name": "Cage thoracique",
+        "msg": "Cage thoracique : fracassé !"
+      },
+      "pelvis": {
+        "name": "Bassin",
+        "msg": "Bassin : écrasé !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : perforé !"
+      },
+      "lungs": {
+        "name": "Poumons",
+        "msg": "Poumons : effondrés !"
+      },
+      "liver": {
+        "name": "Foie",
+        "msg": "Foie : rompu !"
+      },
+      "kidneys": {
+        "name": "Reins",
+        "msg": "Reins : détruits !"
+      },
+      "stomach": {
+        "name": "Estomac",
+        "msg": "Estomac : rompu !"
+      },
+      "small_intestine": {
+        "name": "Intestin grêle",
+        "msg": "Intestin grêle : déchiré !"
+      },
+      "large_intestine": {
+        "name": "Gros intestin",
+        "msg": "Gros intestin : éclaté !"
+      },
+      "pancreas": {
+        "name": "Pancréas",
+        "msg": "Pancréas : anéantis !"
+      },
+      "spleen": {
+        "name": "Rate",
+        "msg": "Rate : rompue !"
+      },
+      "eye_left": {
+        "name": "Œil gauche",
+        "msg": "Œil gauche : arraché !"
+      },
+      "eye_right": {
+        "name": "Œil droit",
+        "msg": "Œil droit : arraché !"
+      },
+      "ear_left": {
+        "name": "Oreille gauche",
+        "msg": "Oreille gauche : arrachée !"
+      },
+      "ear_right": {
+        "name": "Oreille droite",
+        "msg": "Oreille droite : arrachée !"
+      },
+      "tongue": {
+        "name": "Langue",
+        "msg": "Langue : retirée !"
+      },
+      "left_upper_arm": {
+        "name": "Haut du bras gauche",
+        "msg": "Haut du bras gauche : sectionné !"
+      },
+      "left_forearm": {
+        "name": "Avant-bras gauche",
+        "msg": "Avant-bras gauche : fracturé !"
+      },
+      "left_hand": {
+        "name": "Main gauche",
+        "msg": "Main gauche : démembrée !"
+      },
+      "right_upper_arm": {
+        "name": "Haut du bras droit",
+        "msg": "Haut du bras droit : sectionné !"
+      },
+      "right_forearm": {
+        "name": "Avant-bras droit",
+        "msg": "Avant-bras droit : fracturé !"
+      },
+      "right_hand": {
+        "name": "Main droite",
+        "msg": "Main droite : démembrée !"
+      },
+      "left_thigh": {
+        "name": "Cuisse gauche",
+        "msg": "Cuisse gauche : fracassée !"
+      },
+      "left_shin": {
+        "name": "Tibia gauche",
+        "msg": "Tibia gauche : cassé !"
+      },
+      "left_foot": {
+        "name": "Pied gauche",
+        "msg": "Pied gauche : détaché !"
+      },
+      "right_thigh": {
+        "name": "Cuisse droite",
+        "msg": "Cuisse droite : fracassée !"
+      },
+      "right_shin": {
+        "name": "Tibia droit",
+        "msg": "Tibia droit : cassé !"
+      },
+      "right_foot": {
+        "name": "Pied droit",
+        "msg": "Pied droit : détaché !"
+      },
+      "name": "Gobelin"
+    },
+    "crustacean": {
+      "claw_left": {
+        "name": "Griffe gauche",
+        "msg": "Griffe gauche : fracassée !"
+      },
+      "claw_right": {
+        "name": "Griffe droite",
+        "msg": "Griffe droite : écrasée !"
+      },
+      "carapace": {
+        "name": "Carapace",
+        "msg": "Carapace : largement fissurée !"
+      },
+      "abdomen": {
+        "name": "Abdomen",
+        "msg": "Abdomen : rompu !"
+      },
+      "front_leg": {
+        "name": "Patte avant",
+        "msg": "Patte avant : sectionnée !"
+      },
+      "rear_leg": {
+        "name": "Patte arrière",
+        "msg": "Patte arrière : taillée en pièces !"
+      },
+      "antennae": {
+        "name": "Antennes",
+        "msg": "Antennes : écrasées !"
+      },
+      "name": "Crustacé"
+    },
+    "spherical": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Intégrité du noyau : compromise !"
+      },
+      "shell": {
+        "name": "Coquille externe",
+        "msg": "Carapace : fracturée !"
+      },
+      "sensor_array": {
+        "name": "Réseau de capteurs",
+        "msg": "Réseau de capteurs : mis hors ligne !"
+      },
+      "spin_spines": {
+        "name": "Épines rotatives",
+        "msg": "Épines rotatives : cisaillées !"
+      },
+      "aux_drives": {
+        "name": "Propulseurs auxiliaires",
+        "msg": "Propulseurs auxiliaires : ont lâché !"
+      },
+      "name": "Sphérique"
+    },
+    "turtle": {
+      "shell": {
+        "name": "Carapace",
+        "msg": "Carapace : fissurée !"
+      },
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : martelée !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : cassée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : cassée net !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : sectionnée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : taillée en pièces !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : coupée !"
+      },
+      "name": "Tortue"
+    },
+    "manticore": {
+      "brain": {
+        "name": "Cerveau",
+        "msg": "Cerveau : détruit !"
+      },
+      "skull": {
+        "name": "Crâne",
+        "msg": "Crâne : fissuré !"
+      },
+      "spine": {
+        "name": "Colonne vertébrale",
+        "msg": "Colonne vertébrale : sectionnée !"
+      },
+      "ribcage": {
+        "name": "Cage thoracique",
+        "msg": "Cage thoracique : perforé !"
+      },
+      "front_left_paw": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : déchiquetée !"
+      },
+      "front_right_paw": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : déchiquetée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : mutilée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : mutilée !"
+      },
+      "left_eye": {
+        "name": "Œil gauche",
+        "msg": "Œil gauche : crevé !"
+      },
+      "right_eye": {
+        "name": "Œil droit",
+        "msg": "Œil droit : crevé !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchirée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchirée !"
+      },
+      "left_lung": {
+        "name": "Poumon gauche",
+        "msg": "Poumon gauche : perforé !"
+      },
+      "right_lung": {
+        "name": "Poumon droit",
+        "msg": "Poumon droit : perforé !"
+      },
+      "name": "Manticore"
+    },
+    "chestmimic": {
+      "core": {
+        "name": "Noyau mou",
+        "msg": "Noyau : rompu !"
+      },
+      "lid": {
+        "name": "Couvercle du coffre",
+        "msg": "Couvercle du coffre : forcé !"
+      },
+      "teeth": {
+        "name": "Dents dentelées",
+        "msg": "Dents : arrachées !"
+      },
+      "tongue": {
+        "name": "Langue de slime",
+        "msg": "Langue : sectionnée !"
+      },
+      "feet": {
+        "name": "Petits pieds",
+        "msg": "Petits pieds : écrasés !"
+      },
+      "name": "Coffre mimique"
+    },
+    "phoenix": {
+      "core": {
+        "name": "Noyau de cendre",
+        "msg": "Noyau de cendre : anéanti !"
+      },
+      "feathers": {
+        "name": "Plumes enflammées",
+        "msg": "Plumes enflammées : roussies !"
+      },
+      "beak": {
+        "name": "Bec",
+        "msg": "Bec : fissuré !"
+      },
+      "talons": {
+        "name": "Serres",
+        "msg": "Serres : fracassées !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : éteinte !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : éteinte !"
+      },
+      "left_eye": {
+        "name": "Œil de braise gauche",
+        "msg": "Œil gauche : affaibli !"
+      },
+      "right_eye": {
+        "name": "Œil de braise droit",
+        "msg": "Œil droit : affaibli !"
+      },
+      "name": "Phénix"
+    },
+    "ogre": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : écrasée !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : martelé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : cassé !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : cassé net !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : mutilée !"
+      },
+      "name": "Ogre"
+    },
+    "scarecrow": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : écrasée !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : déchiré !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : déchiré !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : déchiré !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : cassée net !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : cassée !"
+      },
+      "name": "Épouvantail"
+    },
+    "segmentworm": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : écrasée !"
+      },
+      "heart_segment": {
+        "name": "Segment de cœur",
+        "msg": "Segment de cœur : rompu !"
+      },
+      "body_segment": {
+        "name": "Segment du corps",
+        "msg": "Segment du corps : sectionné !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : tranchée !"
+      },
+      "name": "Ver segmenté"
+    },
+    "mineral": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : fracassé !"
+      },
+      "shell": {
+        "name": "Carapace",
+        "msg": "Carapace : fissurée !"
+      },
+      "crystals": {
+        "name": "Cristaux",
+        "msg": "Cristaux : fracassés !"
+      },
+      "veins": {
+        "name": "Veines",
+        "msg": "Veines : perturbées !"
+      },
+      "name": "Minéral"
+    },
+    "hydra": {
+      "head_one": {
+        "name": "Tête gauche",
+        "msg": "Tête gauche : sectionnée !"
+      },
+      "head_two": {
+        "name": "Tête centrale",
+        "msg": "Tête centrale : décapitée !"
+      },
+      "head_three": {
+        "name": "Tête droite",
+        "msg": "Tête droite : tranchée !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : sectionnée !"
+      },
+      "name": "Hydre"
+    },
+    "vampire": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : frappée !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : percé !"
+      },
+      "fangs": {
+        "name": "Crocs",
+        "msg": "Crocs : fracassés !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : cassé !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : fracassé !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : estropiée !"
+      },
+      "name": "Vampire"
+    },
+    "bat": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : étourdie !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : martelé !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : déchirée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : déchiquetée !"
+      },
+      "fangs": {
+        "name": "Crocs",
+        "msg": "Crocs : émoussés !"
+      },
+      "name": "Chauve-souris"
+    },
+    "rabbit": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : étourdie !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : martelé !"
+      },
+      "ears": {
+        "name": "Oreilles",
+        "msg": "Oreilles : déchirées !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : cassée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : cassée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : estropiée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : estropiée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : cassée net !"
+      },
+      "name": "Lapin"
+    },
+    "armoredknight": {
+      "helmet": {
+        "name": "Casque",
+        "msg": "Casque : retiré !"
+      },
+      "chestplate": {
+        "name": "Plastron",
+        "msg": "Plastron : fissuré !"
+      },
+      "pauldron_left": {
+        "name": "Spallière gauche",
+        "msg": "Spallière gauche : fracassé !"
+      },
+      "pauldron_right": {
+        "name": "Spallière droite",
+        "msg": "Spallière droite : fracassé !"
+      },
+      "greaves_left": {
+        "name": "Grève gauche",
+        "msg": "Grève gauche : plié !"
+      },
+      "greaves_right": {
+        "name": "Grève droite",
+        "msg": "Grève droite : plié !"
+      },
+      "name": "Chevalier en armure"
+    },
+    "centaur": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : enfoncée !"
+      },
+      "torso": {
+        "name": "Torse humain",
+        "msg": "Torse humain : écrasé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : arraché !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : arraché !"
+      },
+      "body": {
+        "name": "Corps équin",
+        "msg": "Corps équin : fléchit !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : sectionnée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : sectionnée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : taillée en pièces !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : taillée en pièces !"
+      },
+      "name": "Centaure"
+    },
+    "insectswarm": {
+      "mandibles": {
+        "name": "Groupe de mandibules",
+        "msg": "Groupe de mandibules : fracassés !"
+      },
+      "wings": {
+        "name": "Essaim d’ailes",
+        "msg": "Essaim d’ailes : dispersées !"
+      },
+      "legs": {
+        "name": "Groupe de pattes",
+        "msg": "Groupe de pattes : neutralisées !"
+      },
+      "abdomen": {
+        "name": "Groupe d’abdomens",
+        "msg": "Groupe d’abdomens : détruits !"
+      },
+      "stingers": {
+        "name": "Essaim de dards",
+        "msg": "Essaim de dards : neutralisés !"
+      },
+      "name": "Essaim d’insectes"
+    },
+    "roboticdefender": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : désactivée !"
+      },
+      "arm_cannon": {
+        "name": "Canon de bras",
+        "msg": "Canon de bras : détruits !"
+      },
+      "torso": {
+        "name": "Torse",
+        "msg": "Torse : percé !"
+      },
+      "leg_joints": {
+        "name": "Articulations des pattes",
+        "msg": "Articulations des pattes : bloquées !"
+      },
+      "sensors": {
+        "name": "Capteurs",
+        "msg": "Capteurs : hors ligne !"
+      },
+      "name": "Défenseur robotique"
+    },
+    "turret": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : désactivé !"
+      },
+      "gun_barrel": {
+        "name": "Canon",
+        "msg": "Canon : détruit !"
+      },
+      "sensor_array": {
+        "name": "Réseau de capteurs",
+        "msg": "Capteurs : hors ligne !"
+      },
+      "rotation_mech": {
+        "name": "Mécanisme de rotation",
+        "msg": "Rotation : bloqué !"
+      },
+      "ammo_chamber": {
+        "name": "Chambre à munitions",
+        "msg": "Chambre à munitions : rompues !"
+      },
+      "name": "Tourelle"
+    },
+    "gorgon": {
+      "name": "Gorgone",
+      "eyes": {
+        "name": "Yeux",
+        "msg": "Yeux : aveuglés !"
+      },
+      "snake_hair": {
+        "name": "Chevelure de serpents",
+        "msg": "Chevelure de serpents : sectionnées !"
+      },
+      "upper_body": {
+        "name": "Haut du corps",
+        "msg": "Haut du corps : pétrifié !"
+      },
+      "lower_body": {
+        "name": "Bas du corps",
+        "msg": "Bas du corps : fracassé !"
+      }
+    },
+    "abyssalleviathan": {
+      "eye": {
+        "name": "Œil géant",
+        "msg": "Œil : aveuglé !"
+      },
+      "maw": {
+        "name": "Gueule",
+        "msg": "Gueule : écrasé !"
+      },
+      "dorsal_plates": {
+        "name": "Plaques dorsales",
+        "msg": "Plaques dorsales : fissurées !"
+      },
+      "tentacles": {
+        "name": "Tentacules",
+        "msg": "Tentacules : sectionnés !"
+      },
+      "heart_chamber": {
+        "name": "Chambre du cœur",
+        "msg": "Chambre du cœur : rompue !"
+      },
+      "name": "Léviathan abyssal"
+    },
+    "snail": {
+      "shell": {
+        "name": "Carapace",
+        "msg": "Carapace : fracassée !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : écrasé !"
+      },
+      "tentacle_1": {
+        "name": "Tentacule 1",
+        "msg": "Tentacule 1 : sectionné !"
+      },
+      "tentacle_2": {
+        "name": "Tentacule 2",
+        "msg": "Tentacule 2 : sectionné !"
+      },
+      "eye": {
+        "name": "Œil",
+        "msg": "Œil : aveuglé !"
+      },
+      "foot": {
+        "name": "Pied",
+        "msg": "Pied : écrasé !"
+      },
+      "name": "Escargot"
+    },
+    "waterelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : dissipé en brume !"
+      },
+      "body": {
+        "name": "Corps d’eau",
+        "msg": "Corps d’eau : dispersé !"
+      },
+      "water_arms": {
+        "name": "Bras d’eau",
+        "msg": "Bras d’eau : mis en pièces !"
+      },
+      "left_water_leg": {
+        "name": "Jambe d’eau gauche",
+        "msg": "Jambe d’eau gauche : évaporée !"
+      },
+      "right_water_leg": {
+        "name": "Jambe d’eau droite",
+        "msg": "Jambe d’eau droite : évaporée !"
+      },
+      "name": "Élémentaire d’eau"
+    },
+    "thunderelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : fracassé par la foudre !"
+      },
+      "body": {
+        "name": "Corps électrique",
+        "msg": "Corps électrique : court-circuité !"
+      },
+      "left_electric_arm": {
+        "name": "Bras électrique gauche",
+        "msg": "Bras électrique gauche : privé de puissance !"
+      },
+      "right_electric_arm": {
+        "name": "Bras électrique droit",
+        "msg": "Bras électrique droit : privé de puissance !"
+      },
+      "left_electric_leg": {
+        "name": "Jambe électrique gauche",
+        "msg": "Jambe électrique gauche : mise à la terre !"
+      },
+      "right_electric_leg": {
+        "name": "Jambe électrique droite",
+        "msg": "Jambe électrique droite : mise à la terre !"
+      },
+      "name": "Élémentaire de tonnerre"
+    },
+    "stormelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : dissipé dans la bourrasque !"
+      },
+      "body": {
+        "name": "Corps de vent",
+        "msg": "Corps de vent : dispersé !"
+      },
+      "left_rain_arm": {
+        "name": "Bras de pluie gauche",
+        "msg": "Bras de pluie gauche : emporté par l’eau !"
+      },
+      "right_rain_arm": {
+        "name": "Bras de pluie droit",
+        "msg": "Bras de pluie droit : emporté par l’eau !"
+      },
+      "left_thunder_leg": {
+        "name": "Jambe de tonnerre gauche",
+        "msg": "Jambe de tonnerre gauche : foudroyé !"
+      },
+      "right_thunder_leg": {
+        "name": "Jambe de tonnerre droite",
+        "msg": "Jambe de tonnerre droite : foudroyé !"
+      },
+      "name": "Élémentaire de tempête"
+    },
+    "fireelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : incinéré !"
+      },
+      "body": {
+        "name": "Corps de flamme",
+        "msg": "Corps de flamme : éteint !"
+      },
+      "ember_arms": {
+        "name": "Bras de braise",
+        "msg": "Bras de braise : refroidis !"
+      },
+      "ash_legs": {
+        "name": "Jambes de cendre",
+        "msg": "Jambes de cendre : se sont effondrées !"
+      },
+      "name": "Élémentaire de feu"
+    },
+    "metalelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : distordu !"
+      },
+      "plate_armor": {
+        "name": "Armure de plates",
+        "msg": "Armure de plates : fissurés !"
+      },
+      "spike_arms": {
+        "name": "Bras épineux",
+        "msg": "Bras épineux : émoussés !"
+      },
+      "gear_legs": {
+        "name": "Pattes mécaniques",
+        "msg": "Pattes mécaniques : bloquées !"
+      },
+      "name": "Élémentaire de métal"
+    },
+    "darkelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : consumé par les ombres !"
+      },
+      "body": {
+        "name": "Corps d’ombre",
+        "msg": "Corps d’ombre : flétri !"
+      },
+      "left_arm": {
+        "name": "Bras spectral gauche",
+        "msg": "Bras spectral gauche : dissipés !"
+      },
+      "right_arm": {
+        "name": "Bras spectral droit",
+        "msg": "Bras spectral droit : dissipés !"
+      },
+      "left_leg": {
+        "name": "Jambe maudite gauche",
+        "msg": "Jambe maudite gauche : effondrée !"
+      },
+      "right_leg": {
+        "name": "Jambe maudite droite",
+        "msg": "Jambe maudite droite : effondrée !"
+      },
+      "name": "Élémentaire sombre"
+    },
+    "sacredelemental": {
+      "core": {
+        "name": "Noyau",
+        "msg": "Noyau : purifié par le sacré !"
+      },
+      "body": {
+        "name": "Corps de lumière",
+        "msg": "Corps de lumière : brûlé jusqu’à extinction !"
+      },
+      "left_arm": {
+        "name": "Bras radiant gauche",
+        "msg": "Bras radiant gauche : affaiblis !"
+      },
+      "right_arm": {
+        "name": "Bras radiant droit",
+        "msg": "Bras radiant droit : affaiblis !"
+      },
+      "left_leg": {
+        "name": "Jambe d’aura gauche",
+        "msg": "Jambe d’aura gauche : a perdu sa forme !"
+      },
+      "right_leg": {
+        "name": "Jambe d’aura droite",
+        "msg": "Jambe d’aura droite : a perdu sa forme !"
+      },
+      "name": "Élémentaire sacré"
+    },
+    "totem": {
+      "core": {
+        "name": "Noyau spirituel",
+        "msg": "Noyau : fracassé !"
+      },
+      "left_arm": {
+        "name": "Bras gauche",
+        "msg": "Bras gauche : éclaté en échardes !"
+      },
+      "right_arm": {
+        "name": "Bras droit",
+        "msg": "Bras droit : éclaté en échardes !"
+      },
+      "eyes": {
+        "name": "Yeux du totem",
+        "msg": "Yeux : fracassés !"
+      },
+      "base": {
+        "name": "Base",
+        "msg": "Base : fissurée !"
+      },
+      "name": "Totem"
+    },
+    "ophanim": {
+      "wheel_one": {
+        "name": "Roue un",
+        "msg": "Roue un : détruite !"
+      },
+      "wheel_two": {
+        "name": "Roue deux",
+        "msg": "Roue deux : détruites !"
+      },
+      "wheel_three": {
+        "name": "Roue trois",
+        "msg": "Roue trois : détruites !"
+      },
+      "wheel_four": {
+        "name": "Roue quatre",
+        "msg": "Roue quatre : détruite !"
+      },
+      "eye_ring": {
+        "name": "Anneau d’yeux",
+        "msg": "Anneau d’yeux : aveuglés !"
+      },
+      "name": "Ophanim"
+    },
+    "angel": {
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : rognée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : rognée !"
+      },
+      "halo": {
+        "name": "Halo",
+        "msg": "Halo : fracassé !"
+      },
+      "core": {
+        "name": "Noyau du cœur",
+        "msg": "Noyau : percé !"
+      },
+      "robe": {
+        "name": "Robe",
+        "msg": "Robe : déchirée !"
+      },
+      "left_foot": {
+        "name": "Pied gauche",
+        "msg": "Pied gauche : cassé !"
+      },
+      "right_foot": {
+        "name": "Pied droit",
+        "msg": "Pied droit : cassé !"
+      },
+      "name": "Ange"
+    },
+    "elven": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : frappée !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : rompu !"
+      },
+      "bow": {
+        "name": "Arc",
+        "msg": "Arc : cassé net !"
+      },
+      "robe": {
+        "name": "Robe",
+        "msg": "Robe : déchirée !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : estropiée !"
+      },
+      "name": "Elfique"
+    },
+    "gnome": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : cognée !"
+      },
+      "beard": {
+        "name": "Barbe",
+        "msg": "Barbe : déchirée !"
+      },
+      "hat": {
+        "name": "Chapeau",
+        "msg": "Chapeau : arraché !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : comprimé !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : pliée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : pliée !"
+      },
+      "name": "Gnome"
+    },
+    "elephant": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : défoncée !"
+      },
+      "trunk": {
+        "name": "Tronc",
+        "msg": "Tronc : sectionné !"
+      },
+      "tusks": {
+        "name": "Défenses",
+        "msg": "Défenses : cassées !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : meurtri !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : estropiée !"
+      },
+      "hind_left_leg": {
+        "name": "Patte postérieure gauche",
+        "msg": "Patte postérieure gauche : estropiée !"
+      },
+      "hind_right_leg": {
+        "name": "Patte postérieure droite",
+        "msg": "Patte postérieure droite : estropiée !"
+      },
+      "name": "Éléphant"
+    },
+    "tentacledcreature": {
+      "eye": {
+        "name": "Œil central",
+        "msg": "Œil : fracassé !"
+      },
+      "tentacle_one": {
+        "name": "Tentacule un",
+        "msg": "Tentacule un : sectionné !"
+      },
+      "tentacle_two": {
+        "name": "Tentacule deux",
+        "msg": "Tentacule deux : sectionnés !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : martelé !"
+      },
+      "name": "Créature tentaculaire"
+    },
+    "spiderhumanhybrid": {
+      "body": {
+        "name": "Corps d’araignée",
+        "msg": "Corps d’araignée : détruit !"
+      },
+      "torso": {
+        "name": "Torse humain",
+        "msg": "Torse humain : écrasé !"
+      },
+      "head": {
+        "name": "Tête humaine",
+        "msg": "Tête humaine : sectionnée !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : démantelée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : démantelée !"
+      },
+      "middle_left_leg": {
+        "name": "Patte médiane gauche",
+        "msg": "Patte médiane gauche : démantelée !"
+      },
+      "middle_right_leg": {
+        "name": "Patte médiane droite",
+        "msg": "Patte médiane droite : démantelée !"
+      },
+      "rear_left_leg": {
+        "name": "Patte arrière gauche",
+        "msg": "Patte arrière gauche : démantelée !"
+      },
+      "rear_right_leg": {
+        "name": "Patte arrière droite",
+        "msg": "Patte arrière droite : démantelée !"
+      },
+      "name": "Hybride araignée-humain"
+    },
+    "spikymonster": {
+      "spikes": {
+        "name": "Pointes",
+        "msg": "Pointes : fracassés !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : étourdi !"
+      },
+      "eyes": {
+        "name": "Yeux",
+        "msg": "Yeux : aveuglés !"
+      },
+      "left_leg": {
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Jambe droite",
+        "msg": "Jambe droite : estropiée !"
+      },
+      "name": "Monstre épineux"
+    },
+    "horse": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : étourdie !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : meurtri !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : estropiée !"
+      },
+      "hind_left_leg": {
+        "name": "Patte postérieure gauche",
+        "msg": "Patte postérieure gauche : estropiée !"
+      },
+      "hind_right_leg": {
+        "name": "Patte postérieure droite",
+        "msg": "Patte postérieure droite : estropiée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : cassée net !"
+      },
+      "name": "Cheval"
+    },
+    "unicorn": {
+      "horn": {
+        "name": "Corne",
+        "msg": "Corne : fracassée !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : bless’ !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : estropiée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : estropiée !"
+      },
+      "hind_left_leg": {
+        "name": "Patte postérieure gauche",
+        "msg": "Patte postérieure gauche : estropiée !"
+      },
+      "hind_right_leg": {
+        "name": "Patte postérieure droite",
+        "msg": "Patte postérieure droite : estropiée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : coupée !"
+      },
+      "name": "Unicorne"
+    },
+    "hellhound": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : calcinée !"
+      },
+      "collar": {
+        "name": "Collier",
+        "msg": "Collier : cassé !"
+      },
+      "body": {
+        "name": "Corps",
+        "msg": "Corps : brûlé !"
+      },
+      "left_leg": {
+        "name": "Patte avant gauche",
+        "msg": "Patte avant gauche : neutralisée !"
+      },
+      "right_leg": {
+        "name": "Patte avant droite",
+        "msg": "Patte avant droite : neutralisée !"
+      },
+      "hind_left_leg": {
+        "name": "Patte postérieure gauche",
+        "msg": "Patte postérieure gauche : neutralisée !"
+      },
+      "hind_right_leg": {
+        "name": "Patte postérieure droite",
+        "msg": "Patte postérieure droite : neutralisée !"
+      },
+      "name": "Chien infernal"
+    },
+    "wingeddemon": {
+      "head": {
+        "name": "Tête",
+        "msg": "Tête : maudit !"
+      },
+      "left_wing": {
+        "name": "Aile gauche",
+        "msg": "Aile gauche : calcinée !"
+      },
+      "right_wing": {
+        "name": "Aile droite",
+        "msg": "Aile droite : calcinée !"
+      },
+      "tail": {
+        "name": "Queue",
+        "msg": "Queue : sectionnée !"
+      },
+      "core": {
+        "name": "Noyau infernal",
+        "msg": "Noyau : éteint !"
+      },
+      "claws": {
+        "name": "Griffes",
+        "msg": "Griffes : fracassées !"
+      },
+      "name": "Démon ailé"
+    },
+    "trashcreature": {
+      "trash_pile": {
+        "name": "Tas de déchets",
+        "msg": "Trash pile : dispersés !"
+      },
+      "limbs": {
+        "name": "Membres",
+        "msg": "Membres : retirés !"
+      },
+      "eyes": {
+        "name": "Yeux",
+        "msg": "Yeux : bloqués !"
+      },
+      "heart": {
+        "name": "Cœur",
+        "msg": "Cœur : écrasé !"
+      },
+      "name": "Créature de déchets"
+    }
+  }
+}

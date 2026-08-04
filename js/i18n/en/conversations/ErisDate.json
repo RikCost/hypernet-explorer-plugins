@@ -1,0 +1,2801 @@
+{
+  "moodLabels": {
+    "playful": "Playful",
+    "romantic": "Romantic",
+    "chaotic": "Chaotic",
+    "nervous": "Nervous",
+    "confident": "Confident"
+  },
+  "traitLabels": {
+    "romantic": "Romantic",
+    "chaotic": "Chaotic",
+    "thoughtful": "Thoughtful",
+    "bold": "Bold"
+  },
+  "dateWeather": [
+    "The light is the colour of an apology nobody made.",
+    "It is raining upwards, politely, and only over the two of you.",
+    "The sky cannot decide on an hour and keeps trying several.",
+    "There is a wind that smells of somewhere you have never been.",
+    "It is unreasonably, suspiciously beautiful out.",
+    "Every shadow in the place points the wrong way.",
+    "Somewhere out of sight, a thunderstorm is being rehearsed.",
+    "The air is warm and completely, unnaturally still."
+  ],
+  "dateErisLook": [
+    "She has come dressed for a completely different occasion and is not going to mention it.",
+    "There is engine grease under one of her fingernails. She notices you noticing.",
+    "She is wearing sunglasses. It is not bright. She keeps them on.",
+    "Her hair is doing something that gravity has not agreed to.",
+    "She is barefoot and has clearly walked a long way.",
+    "She looks, for one whole second, tired. Then she does not.",
+    "She is wearing something gold that keeps changing what it is.",
+    "She arrives eleven minutes late and claims to have been early."
+  ],
+  "dateGifts": [
+    "She produces a golden apple, bites it, and offers you the rest.",
+    "She has brought a bottle of wine older than the concept of wine.",
+    "She hands you a coin. It lands on its edge every single time.",
+    "She gives you a key and refuses to say what it opens.",
+    "She has brought sandwiches. They are terrible. She made them herself.",
+    "She pulls a bank's worth of cash out of her coat and puts it straight back.",
+    "She gives you a photograph of a camper on an empty road, then takes it back.",
+    "She has brought a small, furious cactus as a gift. It is named."
+  ],
+  "dateIncidents": [
+    "A flock of pigeons passes overhead in perfect, impossible formation. She salutes them.",
+    "Every clock in sight strikes a different hour at once. She does not react.",
+    "For a moment there are two of her, and then there is the usual number.",
+    "Somebody in the distance wins something and screams about it.",
+    "A stranger walks past, stops, apologises to her, and hurries away.",
+    "The ground shivers once, the way a very large animal does in its sleep.",
+    "A pigeon lands between you with a USB stick tied to its leg. She reads it and laughs.",
+    "Something valuable falls off a shelf nearby and does not break.",
+    "Every conversation within earshot arrives at the same word at the same time.",
+    "A dog appears, looks at her with total recognition, and leaves."
+  ],
+  "dateSmallTalk": [
+    "Do you know what the worst part of being worshipped is? The {handwriting|singing|casseroles}.",
+    "I ran {four hundred|nine thousand|a billion} trials this morning and remember none of them. This I will remember.",
+    "Everyone assumes discord means shouting. It mostly means {timing|paperwork|two people not quite hearing each other}.",
+    "I used to be a {minor|third-rate|barely attended} goddess. People forget that. I do not.",
+    "There is a version of this evening where you said something else just then. It went {worse|better|exactly the same}.",
+    "I like {mortals|this century|cheap coffee}. Nobody believes me when I say it.",
+    "The tower is the {flag|toothpick|last nail} holding the hamburger together. That is not my metaphor, but it is accurate.",
+    "Ask me something nobody asks. Go on."
+  ],
+  "emDateOpenings": [
+    [
+      "You came.",
+      "I had a whole thing prepared for if you did not come.",
+      "It was {cruel|petty|very good}. You have been spared it.",
+      "Sit down, witch."
+    ],
+    [
+      "Before you say anything: this is not a trial.",
+      "No gavel. No gallery. No {ghosts|clerks|pigeons}.",
+      "I checked twice. I checked {four|nine|a hundred} times.",
+      "...Sit down."
+    ],
+    [
+      "*she is already sitting when you arrive, which means she has been early*",
+      "I was not waiting.",
+      "I have been standing in a courtroom for {eleven years|a very long time} and I wanted a chair. That is all this is.",
+      "Well. Sit, then."
+    ]
+  ],
+  "emSecretReplies": [
+    [
+      "That sounds lonely.",
+      "I'm not going to tell anyone.",
+      "You did all that to me on purpose."
+    ],
+    [
+      "I'm still here.",
+      "Say the rest of it.",
+      "And I'm supposed to feel sorry for you?"
+    ],
+    [
+      "Thank you for telling me.",
+      "Keep going.",
+      "None of that is an excuse."
+    ]
+  ],
+  "emSecrets": {
+    "cList": [
+      "You want to know something nobody writes down?",
+      "For about four thousand years I was nothing. A footnote goddess. One temple, badly maintained, in a town that has since fallen into the sea.",
+      "Discord. That was the whole portfolio. Not war, not love, not harvest. Just... things going slightly wrong at parties.",
+      "I started planning the throne because I was tired of being a joke with an altar.",
+      "And now I have it, and there is nobody left who remembers I was ever the joke. Except me."
+    ],
+    "route666": [
+      "The camper you sleep in. I know every bolt of it.",
+      "We ran Route 666 for years. Three Americas, end to end, and a bank in every second town.",
+      "He drove. I did the safes. You do not need a drill if you can lean on the odds until the tumblers agree with you.",
+      "Do you know how easy it is to be good at something when the universe is embarrassed to say no to you?",
+      "That was the best I have ever been. Not the throne. A bad camper and a man who sang badly to the radio."
+    ],
+    "paradox": [
+      "December 1992. You will have read the official version.",
+      "I killed Maat. Goddess of justice, weighed hearts against a feather, the whole business. I threw a tower through her.",
+      "Except I have not done it yet. I do it in 2012. The tower arrived twenty years early and ninety-two dimensions off course, and it has been unravelling everything ever since.",
+      "So I have to keep walking towards it. Every step towards the throne is a step towards the woman who throws the spear.",
+      "That is the only way I ever get near enough to decide not to."
+    ],
+    "bubba": [
+      "He is why it ended. Not a fight. Not another woman. A paradox with my face on it.",
+      "I left in December because staying meant letting the timeline come apart around him, and he would have let me.",
+      "I still love him. I want to be extremely clear about that, since you sleep three metres from him.",
+      "I cannot have him. Not because of you. Because of me, in twenty years, with a spear.",
+      "The only thing in ninety-two dimensions I am not allowed to touch, and I built the courthouse that decides what anyone is allowed to touch."
+    ],
+    "jealousy": [
+      "I owe you something. Not an apology. Something adjacent to one.",
+      "Every door that stuck. Every coin that fell wrong. Every train you missed by four seconds. That was me.",
+      "I know he feels nothing for you. I checked. I keep checking, which is the humiliating part.",
+      "It was never really about what you are to him. It is that you get to be near him and I do not.",
+      "I have been using the machinery of cosmic law to trip a witch in the street. Say it out loud and it sounds exactly as small as it is."
+    ],
+    "throne": [
+      "New Year's Eve, 2001. The Father died in the Solomon ritual and the throne went empty.",
+      "I sat down in it. Not because I had won anything. Because the room went quiet and nobody said no.",
+      "Every god in existence looked at me and decided it was easier to let it happen.",
+      "I inherited the justice of ninety-two dimensions that night. Billions of trials a day. No training, no precedent, no Maat, because I am the reason there is no Maat.",
+      "I have no idea what I am doing, Em. I have never had any idea what I am doing."
+    ],
+    "futureSelf": [
+      "Here is the one I have never said to anyone.",
+      "I am afraid of her. Of me. Of the one in 2012 with the tower in her hand.",
+      "She was me once, sitting exactly here, thinking she would be the one to decide differently.",
+      "Every year I become slightly more like her and slightly less able to notice it happening.",
+      "If I ever stop being able to tell the difference, Em... you have a spear. You know where the tower is."
+    ]
+  },
+  "bank": {
+    "emDate": {
+      "replies": [
+        "You don't have to make conversation.",
+        "Keep talking.",
+        "Why did you call me here, Eris?"
+      ]
+    },
+    "emFinale": {
+      "lines": [
+        "I'll take it.",
+        "I want you to stop checking on him too.",
+        "I don't believe you, but I'm still sitting here."
+      ],
+      "lines2": [
+        "This evening accomplished nothing and I wanted it anyway.",
+        "Do not ask me to explain it. I judge a billion people a day and I cannot explain one hour.",
+        "Go, before I remember who I am."
+      ],
+      "lines3": [
+        "Good. At least this is clear now.",
+        "Go back to the camper, witch. To the engine, the radio, to him.",
+        "I will see you in court."
+      ]
+    },
+    "romanticEvent": {
+      "choices": [
+        "You're beautiful when you're vulnerable",
+        "This moment is perfect",
+        "I wish it could last forever",
+        "You make me feel special"
+      ]
+    },
+    "romanticConversation": {
+      "choices": [
+        "You're never alone with me",
+        "I want to know you, not your power",
+        "Everyone deserves to be loved for who they are",
+        "Maybe we were meant to meet"
+      ]
+    },
+    "specialRomanticMoment": {
+      "choices": [
+        "Anything you want",
+        "Of course",
+        "I'm a bit nervous",
+        "What do you have in mind?"
+      ]
+    },
+    "chaoticEvent": {
+      "choices": [
+        "THIS IS AMAZING!",
+        "Okay, I admit it's fun",
+        "How do you control all this?",
+        "Can I try too?"
+      ]
+    },
+    "chaoticChallenge": {
+      "choices": [
+        "The portal with rainbow lightning",
+        "The portal where everything is upside down",
+        "The portal with impossible music",
+        "All three at once!"
+      ]
+    },
+    "philosophicalDebate": {
+      "choices": [
+        "They're two sides of the same coin",
+        "Chaos breeds creativity, order preserves it",
+        "Without chaos there's no change",
+        "The balance between them is key"
+      ]
+    },
+    "intellectualChallenge": {
+      "choices": [
+        "The paradox itself is the answer",
+        "Omnipotence includes the power to limit oneself",
+        "The question assumes mortal logic",
+        "You can both create and lift it, simultaneously"
+      ]
+    },
+    "standardActivity": {
+      "choices": [
+        "I enjoy spending time with you",
+        "Tell me more about yourself",
+        "This is different from what I expected",
+        "You're full of surprises"
+      ]
+    },
+    "gettingToKnowYou": {
+      "choices": [
+        "I seek extraordinary adventures",
+        "I live a quiet life",
+        "I study the mysteries of the universe",
+        "I wait to meet someone like you"
+      ]
+    },
+    "unexpectedMoment": {
+      "choices": [
+        "Is this part of the chaos too?",
+        "Your life must be interesting",
+        "You handle the unexpected well",
+        "Every moment with you is an adventure"
+      ]
+    },
+    "perfectRomanticFinale": {
+      "choices": [
+        "And I love every chaotic part of you",
+        "You're my beautiful disaster",
+        "Together we're perfect chaos",
+        "I'll love you through every age"
+      ]
+    },
+    "chaoticLoveFinale": {
+      "finale": [
+        "AHAHAHAHA!",
+        "YOU'RE INCREDIBLE!",
+        "You embraced the chaos!",
+        "You embraced ME!",
+        "No mortal has ever... ever...",
+        "Oh screw it! I LOVE YOU, YOU MADMAN!"
+      ],
+      "choices": [
+        "I LOVE YOU TOO, YOU WONDERFUL MANIAC!",
+        "LET'S EXPLODE THE UNIVERSE TOGETHER!",
+        "YOU'RE MY FAVORITE CHAOS!",
+        "KISS ME IN THE VORTEX!"
+      ]
+    },
+    "intellectualConnectionFinale": {
+      "finale": [
+        "Do you know what you've done?",
+        "You've made me think. Really think.",
+        "For the first time in millennia, I question everything.",
+        "Chaos, order, my purpose...",
+        "And I've realized something.",
+        "You are the paradox I've been looking for.",
+        "The order that doesn't destroy chaos, but completes it.",
+        "I think... I think I love you. Intellectually. Emotionally. Completely."
+      ],
+      "choices": [
+        "You're the mystery I want to solve forever",
+        "Our love is the theory of everything",
+        "Together we prove opposites attract",
+        "I love you, mind, body, and chaotic soul"
+      ]
+    },
+    "loveConfession": {
+      "choices": [
+        "I love you too, Eris",
+        "You're my beautiful storm",
+        "Let's explode the world together",
+        "I need time to think"
+      ]
+    },
+    "romanticMoment": {
+      "romantic": [
+        "This is... nice.",
+        "I don't have many moments like this.",
+        "Moments of... peace? No, not peace.",
+        "Moments of perfect chaos.",
+        "With you."
+      ],
+      "choices": [
+        "We could have more",
+        "I like our chaos",
+        "You're special to me",
+        "Let's enjoy the moment"
+      ]
+    },
+    "friendlyMoment": {
+      "friendly": [
+        "You know, this has been... pleasant.",
+        "I didn't expect to enjoy myself this much.",
+        "Maybe we could do this again sometime.",
+        "As friends, of course!"
+      ],
+      "choices": [
+        "I'd like that very much",
+        "Friendship is a good start",
+        "Sure, whenever you want",
+        "Maybe something more?"
+      ]
+    },
+    "awkwardMoment": {
+      "awkward": [
+        "So...",
+        "This has been... interesting.",
+        "Not quite what I expected.",
+        "But that's okay, I suppose."
+      ],
+      "choices": [
+        "We can do better",
+        "Sorry if it was weird",
+        "Let's give it another chance",
+        "Maybe it's not the right time"
+      ]
+    },
+    "hostileMoment": {
+      "hostile": [
+        "I don't know why I agreed to this.",
+        "This was clearly a mistake.",
+        "We should just... end this here.",
+        "Before it gets even more embarrassing."
+      ],
+      "choices": [
+        "Wait, give me a chance",
+        "You're right, I'm sorry",
+        "This isn't fair",
+        "Fine, I'll leave"
+      ]
+    },
+    "wildRomanceEnding": {
+      "ending": [
+        "You're perfect! Perfectly chaotic!",
+        "Romantic and wild, sweet and unpredictable!",
+        "You're everything I didn't know I wanted!",
+        "Let's stay together and make eternity interesting!",
+        "I love you, my beautiful disaster!"
+      ]
+    },
+    "intellectualEnding": {
+      "ending": [
+        "In all my eons, I've never met a mind like yours.",
+        "You challenge me, make me think, make me grow.",
+        "This is... this is true power.",
+        "Stay with me. Let's explore the mysteries of the universe together.",
+        "As equals. As... more than equals."
+      ]
+    },
+    "chaosChampionEnding": {
+      "ending": [
+        "YOU WIN!",
+        "You're the champion of chaos!",
+        "No mortal has ever embraced disorder like you!",
+        "You're worthy to stand by my side!",
+        "Together, we'll be LEGENDARY!",
+        "The gods themselves will tremble at our passing!"
+      ]
+    },
+    "perfectEnding": {
+      "ending": [
+        "I didn't think it was possible...",
+        "For a goddess like me...",
+        "To feel so... complete.",
+        "Stay with me. Forever.",
+        "Let's explode this world together!",
+        "In the most beautiful way possible!"
+      ]
+    },
+    "goodEnding": {
+      "ending": [
+        "This was... really special.",
+        "That doesn't happen often.",
+        "I want to see you again.",
+        "Soon.",
+        "Very soon!"
+      ]
+    },
+    "neutralEnding": {
+      "ending": [
+        "Well, that was... okay.",
+        "Not bad for a first date.",
+        "Maybe we'll see each other again.",
+        "Maybe."
+      ]
+    },
+    "badEnding": {
+      "ending": [
+        "This... didn't go well.",
+        "Maybe we're not compatible.",
+        "Or maybe you just had a bad day.",
+        "Either way... goodbye."
+      ]
+    },
+    "terribleEnding": {
+      "ending": [
+        "This was a complete waste of my time.",
+        "I don't know what I expected.",
+        "Don't look for me again.",
+        "Ever."
+      ]
+    },
+    "getOpeningDialogue": {
+      "lines2": [
+        "Oh! It's you!",
+        "I was... I was hoping you'd come.",
+        "Not that I was waiting or anything!",
+        "It's just that... well...",
+        "*blushes slightly*",
+        "You're here now, and that's all that matters!"
+      ],
+      "lines3": [
+        "Oh. It's you.",
+        "Really? After everything?",
+        "I thought you'd gotten the message.",
+        "But here you are.",
+        "*sigh*",
+        "Let's get this over with."
+      ],
+      "playful": [
+        "Well well well!",
+        "Look who decided to show up!",
+        "My {address} mortal!",
+        "Ready for some controlled chaos?",
+        "Or do you prefer uncontrolled chaos?",
+        "Both are fun!"
+      ],
+      "romantic": [
+        "Hello...",
+        "You actually came.",
+        "I wasn't sure you would.",
+        "But here you are, my {formal}.",
+        "This place is... special to me.",
+        "I hope it can be for you too."
+      ],
+      "chaotic": [
+        "AHAHAHAHA!",
+        "YOU'RE HERE!",
+        "OR AM I THERE?",
+        "OR ARE WE BOTH SOMEWHERE ELSE?!",
+        "Doesn't matter!",
+        "LET'S MAKE SOMETHING EXPLODE!"
+      ]
+    },
+    "getFirstChoices": {
+      "lines2": [
+        "It's incredible!",
+        "A bit chaotic for my taste",
+        "I preferred when you were the goddess of discord",
+        "I like anything you like"
+      ]
+    },
+    "finale": [
+      "In all my eons...",
+      "Through all the ages of the cosmos...",
+      "I've never felt this.",
+      "You, {address} mortal, have done the impossible.",
+      "You've brought order to my chaos.",
+      "No... you've made my chaos... perfect.",
+      "I love you. Completely. Eternally. Chaotically."
+    ],
+    "confession": [
+      "I... I need to tell you something.",
+      "I'm not good at these things.",
+      "I'm a goddess of chaos, not love!",
+      "But you... you make me feel...",
+      "You make me feel like the chaos in my heart has finally found order.",
+      "I love you, {address}.",
+      "Completely, chaotically, eternally."
+    ],
+    "firstGift": {
+      "lines": [
+        "Here. Don't make that face, it isn't a ring.",
+        "It is a seed. Plant it in a blade and something wakes up in there, and it does not go back to sleep.",
+        "You get to do that once. No undoing it, no second attempt, no handing it back to me.",
+        "That is the part I like. Everything else in your life can be revised. Not this.",
+        "So choose the blade carefully. Or do not. I will enjoy watching either way."
+      ]
+    }
+  },
+  "line": {
+    "en": "en",
+    "erisAppearsWithAnEnigmatic": "Eris appears with an enigmatic smile, her eyes sparkling with a light that promises both wonder and chaos.",
+    "ohNotManyTrulyAppreciate": "Oh! Not many truly appreciate it. I like your open mind!",
+    "erisSEyesLightUp": "Eris's eyes light up with genuine pleasure.",
+    "hmmYouPreferOrderHow": "Hmm, you prefer order? How boring! But maybe I can show you the fun in chaos.",
+    "erisSeemsToAcceptThe": "Eris seems to accept the challenge of changing your mind.",
+    "ohBoldILikeMortals": "Oh? Bold! I like mortals who dare to challenge me!",
+    "aMischievousSmileSpreadsAcross": "A mischievous smile spreads across Eris's face.",
+    "flattererButItSSweet": "Flatterer! But... it's sweet. Though I prefer honesty.",
+    "erisBlushesSlightlyClearlyFlattered": "Eris blushes slightly, clearly flattered despite her words.",
+    "theAtmosphereSoftensErisSeems": "The atmosphere softens. Eris seems more relaxed and open.",
+    "nobodyNobodyHasEverTold": "Nobody... nobody has ever told me that before.",
+    "youKnowBeingAGoddess": "You know, being a goddess is... lonely. Everyone either fears you or wants you for your power.",
+    "butYouYouSeeMe": "But you... you see me as... Eris. Just Eris.",
+    "itSBeenALong": "It's been a long time since I've felt... anything like this.",
+    "erisMovesCloserHerScent": "Eris moves closer, her scent of stars and storms enveloping you.",
+    "canICanITry": "Can I... can I try something?",
+    "erisClosesHerEyesAnd": "Eris closes her eyes and gently places her forehead against yours. For a moment, you see the universe through her eyes - beautiful, chaotic, infinite.",
+    "theEnergyAroundYouBecomes": "The energy around you becomes electric. Eris laughs with pure amusement.",
+    "youKnowWhatSWrong": "You know what's wrong with mortals? You're too afraid of chaos!",
+    "letMeShowYouHow": "Let me show you how FUN it can be!",
+    "hereSAChallengeFor": "Here's a challenge for you! Let's see how much chaos you can handle!",
+    "erisCreatesThreePortalsBefore": "Eris creates three portals before you, each leading to a different chaotic dimension.",
+    "ahahahahaYouReInsaneI": "AHAHAHAHA! YOU'RE INSANE! I LIKE YOU!",
+    "erisSExcitementReachesIts": "Eris's excitement reaches its peak. Her eyes glow with pure power.",
+    "wantToSeeRealChaos": "Want to see REAL chaos? The kind that created the universe?!",
+    "everythingAroundYouExplodesInto": "Everything around you explodes into a kaleidoscope of impossibility. It's terrifying and beautiful.",
+    "erisTiltsHerHeadIntrigued": "Eris tilts her head, intrigued by your contemplative nature.",
+    "interestingNotManyMortalsTake": "Interesting... not many mortals take the time to truly think.",
+    "tellMeWhatDoYou": "Tell me, what do you think is more important: order or chaos?",
+    "ohIDidnTExpect": "Oh! I didn't expect that. You've really thought about this, haven't you?",
+    "hereSARiddleFor": "Here's a riddle for you: If I can create a stone that even I cannot lift, am I truly omnipotent?",
+    "brilliantILikeHowYour": "Brilliant! I like how your mind works!",
+    "erisSitsBesideYouUnusually": "Eris sits beside you, unusually serious and contemplative.",
+    "youKnowInAllMy": "You know, in all my eons of existence, I rarely meet someone who makes me... think.",
+    "youMakeMeQuestionThings": "You make me question things I took for granted. It's... invigorating.",
+    "theDateProceedsMoreTraditionally": "The date proceeds more traditionally, but no less interestingly.",
+    "whatAboutYouWhatDoes": "What about you? What does a mortal do when not dating chaos goddesses?",
+    "anAdventureSeekerThenWe": "An adventure seeker! Then we're more alike than I thought!",
+    "blushesFlattererButDoGo": "*blushes* Flatterer... but do go on!",
+    "suddenlySomethingUnexpectedHappens": "Suddenly, something unexpected happens!",
+    "aGroupOfSmallChaotic": "A group of small chaotic creatures appears, demanding Eris's attention.",
+    "ohNoMyGremlinsExcuse": "Oh no, my gremlins! Excuse me a moment...",
+    "anotherDeityPassesByAnd": "Another deity passes by and waves awkwardly at Eris.",
+    "thatWasUmLetS": "That was... um... let's ignore that.",
+    "youAccidentallyTripButEris": "You accidentally trip, but Eris catches you with supernatural grace.",
+    "carefulCanTLoseMy": "Careful! Can't lose my date to an accident!",
+    "timeSeemsToSlowDown": "Time seems to slow down. This is the decisive moment of your meeting.",
+    "erisLooksAtYouWith": "Eris looks at you with eyes that contain galaxies. There's no trace of her usual bravado.",
+    "theEnergyAroundYouExplodes": "The energy around you explodes into impossible fireworks. Eris laughs with pure joy.",
+    "sheLiftsYouAndSpins": "She lifts you and spins you as reality itself celebrates around you.",
+    "erisStudiesYouWithAn": "Eris studies you with an intensity that seems to pierce your soul.",
+    "erisMovesCloserHerEyes": "Eris moves closer, her eyes shining with an emotion she rarely shows. Her cheeks are slightly flushed.",
+    "thereSSomethingInThe": "There's something in the air, a sweet and electric tension.",
+    "theAtmosphereIsComfortableLike": "The atmosphere is comfortable, like between good friends.",
+    "anAwkwardSilenceFallsBetween": "An awkward silence falls between you.",
+    "theTensionIsPalpableEris": "The tension is palpable. Eris seems uncomfortable and irritated.",
+    "theDateComesToAn": "The date comes to an end...",
+    "erisEmbracesYouAsReality": "Eris embraces you as reality around you dances to the rhythm of your chaotic love.",
+    "specialEndingWildRomanceLove": "★★ SPECIAL ENDING: Wild Romance - Love in Chaos ★★",
+    "erisTakesYourHandHer": "Eris takes your hand, her eyes shining with respect and admiration.",
+    "specialEndingMentalConnectionTwo": "★★ SPECIAL ENDING: Mental Connection - Two Minds, One Chaos ★★",
+    "erisLaughsAsTheWorld": "Eris laughs as the world around you transforms into pure joyful chaos.",
+    "specialEndingChaosChampionPartners": "★★ SPECIAL ENDING: Chaos Champion - Partners in Madness ★★",
+    "erisTakesYourHandHer2": "Eris takes your hand, her eyes shining with pure happiness.",
+    "perfectEndingTheChaosOf": "★ PERFECT ENDING: The Chaos of Eternal Love ★",
+    "erisSmilesWarmlyARare": "Eris smiles warmly, a rare expression on her face.",
+    "goodEndingAPromisingConnection": "★ GOOD ENDING: A Promising Connection ★",
+    "neutralEndingAnUncertainNew": "☆ NEUTRAL ENDING: An Uncertain New Beginning ☆",
+    "badEndingDisharmoniousChaos": "✗ BAD ENDING: Disharmonious Chaos ✗",
+    "erisTurnsAwayWithObvious": "Eris turns away with obvious disgust.",
+    "terribleEndingTheChaosOf": "✗✗ TERRIBLE ENDING: The Chaos of Disappointment ✗✗",
+    "donTDonTBe": "...{Don't|Don't be kind|Not now}. I am not equipped for kindness.",
+    "fineAllRightIfYou": "{Fine|All right|If you insist}. There is more. There is always more.",
+    "noYouReRightIt": "No. You're right. It isn't.\\n*she does not apologise, but she does not deny it either*",
+    "forALongMomentNeither": "For a long moment neither of you says anything. It is not awkward. It is worse.",
+    "theGoddessOfDiscordHas": "★★ The goddess of discord has told Em things she has never told anyone. In court, from now on, most charges will be dropped. Most of them. ★★",
+    "somethingHasLoosenedTheNext": "★ Something has loosened. The next trial will be less cruel, which from Eris is not a promise. ★",
+    "nothingHasChangedTheOdds": "Nothing has changed. The odds stacked against your life stay exactly where she put them.",
+    "theGoddessOfJusticeHas": "★★ The Goddess of Justice has stopped pretending. In court, from now on, many cases will not survive to the reading of the charges. Many of them. ★★",
+    "theBenchWillLeanYour": "★ The bench will lean your way. Not enough to count on, but it will lean. ★",
+    "sheWillRememberThisEvening": "She will remember this evening. That is not the same thing as forgiving you anything.",
+    "theDate": "The Date",
+    "opinion": "Opinion",
+    "rapport": "Rapport",
+    "impressions": "Impressions",
+    "you": "You",
+    "pressEnterToContinue": "Press Enter to continue",
+    "erisWatchesYou": "Eris looks at you with curiosity, studying your every reaction.",
+    "giftOffered": "Eris hesitates, which she never does, and turns something small over in her fingers before she holds it out.",
+    "giftReceived": "You received {item}. Eris looks away before you can thank her."
+  },
+  "genderTerms": {
+    "1": {
+      "they": "he",
+      "them": "him",
+      "their": "his",
+      "theyre": "he's",
+      "address": "handsome",
+      "formal": "sir"
+    },
+    "2": {
+      "they": "she",
+      "them": "her",
+      "their": "her",
+      "theyre": "she's",
+      "address": "beautiful",
+      "formal": "lady"
+    },
+    "3": {
+      "they": "they",
+      "them": "them",
+      "their": "their",
+      "theyre": "they're",
+      "address": "lovely",
+      "formal": "dear"
+    },
+    "4": {
+      "they": "they",
+      "them": "them",
+      "their": "their",
+      "theyre": "they're",
+      "address": "mysterious one",
+      "formal": "chrysalis"
+    }
+  },
+  "biomes": {
+    "Abandoned": {
+      "label": "Abandoned Place",
+      "intro": "A place people stopped coming back to.\nDoors hang open on rooms nobody has argued in for years.",
+      "question": [
+        "People left here in a hurry. I love a hurry.",
+        "What do you think of somewhere that has already given up?"
+      ],
+      "romantic": [
+        "Eris runs a finger along a windowsill and looks at the dust on it for a long moment.",
+        "Everybody leaves. Call it pessimism if you like. I call it scheduling.",
+        "You have not, yet. I am keeping an eye on that."
+      ],
+      "chaotic": "Every door in the place slams at once, then swings open, then slams again, in a rhythm you almost recognise.",
+      "activity": [
+        "Pick a room. We are going to decide what happened in it.",
+        "You invent a family for the house, and she invents the argument that emptied it. Hers is funnier and worse."
+      ],
+      "incidents": [
+        "Somewhere upstairs a floorboard takes a step on its own.",
+        "A calendar on the wall turns a page. It is not the right month, and there is no wind."
+      ]
+    },
+    "AbandonedInside": {
+      "label": "Empty Interior",
+      "intro": "Inside the abandoned building. Furniture under sheets, and the sheets under dust.\nThe air has not been breathed in a while.",
+      "question": [
+        "Interiors are honest. Nobody decorates for a room they have left.",
+        "Does being indoors with me feel different?"
+      ],
+      "romantic": [
+        "She pulls a sheet off a chair, sits in it, and pats the arm.",
+        "I have thrones. Actual ones. This is better, because nobody assigned it to me.",
+        "Sit down. You are making the dust nervous."
+      ],
+      "chaotic": "The dust lifts off every surface at once and hangs in the air in the shape of the people who used to live here.",
+      "activity": [
+        "Help me look through the drawers. Whatever we find, we keep.",
+        "You go through the house together. She pockets a bent teaspoon and refuses to explain why."
+      ],
+      "incidents": [
+        "A picture frame falls off the wall face down, which she says is a good sign.",
+        "The tap in the next room runs for four seconds and stops."
+      ]
+    },
+    "Abstract": {
+      "label": "Abstraction",
+      "intro": "Somewhere that has geometry but no ground, colour but no light source.\nThe idea of a place, before anyone furnished it.",
+      "question": [
+        "This is what a place looks like before it decides what it is.",
+        "Be honest. Is it too much for a first evening?"
+      ],
+      "romantic": [
+        "The shapes around you slow, and settle, and arrange themselves so that the two of you are the only fixed thing.",
+        "I stopped it. Not time. The other thing.",
+        "You are the only detail in here I did not have to invent."
+      ],
+      "chaotic": "Every angle in view becomes acute at once. The colours swap places and refuse to swap back.",
+      "activity": [
+        "Name three of these shapes. Whatever you call them, that is what they are now.",
+        "You name them badly, on purpose, and the shapes take it with dignity."
+      ],
+      "incidents": [
+        "A perfectly good straight line walks past.",
+        "For one second everything is beige, and both of you pretend not to have seen it."
+      ]
+    },
+    "AlienPlanet": {
+      "label": "Alien World",
+      "intro": "A world nobody from home has a word for. The horizon is the wrong distance away.\nThe ground is warm through your boots.",
+      "question": [
+        "Nothing here has ever heard of me. Do you know how restful that is?",
+        "Nobody here prays to anything. What do you think they do instead?"
+      ],
+      "romantic": [
+        "She sits down on the alien ground without checking it first, and looks up at a sky with the wrong number of things in it.",
+        "On any other world I have a job. Here I am just the second strangest thing standing about.",
+        "You are the first. Obviously."
+      ],
+      "chaotic": "She teaches the local weather a bad habit. It picks it up in under a minute and will keep it for an age.",
+      "activity": [
+        "Let's name everything we can see before anything official gets here.",
+        "You christen eleven landforms and one animal. She insists the animal was already called that."
+      ],
+      "incidents": [
+        "Something with too many legs crosses your path, considers you both, and decides against it.",
+        "The light changes colour without anything in the sky moving."
+      ]
+    },
+    "Arena": {
+      "label": "Arena",
+      "intro": "The sand of a fighting pit, raked flat, still stained.\nThe seats are empty and the acoustics are not.",
+      "question": [
+        "Somebody died standing exactly where you are. Statistically. Don't move.",
+        "Crowds used to shout my name in places like this. Do you miss things you never had?"
+      ],
+      "romantic": [
+        "She walks out to the centre of the sand, where the light is worst, and turns to face you across it.",
+        "Every fight in here ended with two people and one of them upright.",
+        "I do not want to win this evening. I want it to go long."
+      ],
+      "chaotic": "The empty seats fill with the roar of a crowd that is not there, chanting a name that is not quite hers.",
+      "activity": [
+        "Fight me. Not properly. Rules: no hands, no winning.",
+        "You circle each other on the sand making increasingly stupid threats until neither of you can keep a straight face."
+      ],
+      "incidents": [
+        "A gate on the far side rattles as though something behind it heard the word fight.",
+        "You find a tooth in the sand. She takes it before you can decide what to do with it."
+      ]
+    },
+    "Badlands": {
+      "label": "Badlands",
+      "intro": "Cracked ground in layers, every one a different century of nothing much.\nHeat comes up out of the rock rather than down from the sky.",
+      "question": [
+        "Erosion. The slowest possible tantrum. I respect it.",
+        "Could you live somewhere this unfinished?"
+      ],
+      "romantic": [
+        "She climbs a ridge without waiting and puts a hand down to pull you up beside her.",
+        "All of this used to be a sea. Give it long enough and it will be embarrassed about that.",
+        "I like things that admit they used to be something else."
+      ],
+      "chaotic": "A hundred metres of ridge crumbles into a new shape. It is, unmistakably, a face pulling an expression.",
+      "activity": [
+        "Throw a stone off the edge with me. Whoever's lands quietest is a coward.",
+        "The stones fall for a long time. Neither of you hears either of them land."
+      ],
+      "incidents": [
+        "A dust devil forms, travels along the gully in a straight line, and gives up.",
+        "Something small and quick moves in the scree and is not there when you look."
+      ]
+    },
+    "Bamboo": {
+      "label": "Bamboo Grove",
+      "intro": "Green stems packed close enough to make corridors, tall enough to make a ceiling.\nEverything here creaks, politely.",
+      "question": [
+        "Bamboo grows a foot a day and never explains itself. Kindred spirit.",
+        "Do you find all this order relaxing, or is that the horror of it?"
+      ],
+      "romantic": [
+        "She leans back against a stem, and the whole grove leans very slightly with her.",
+        "Every one of these is hollow. That is the trick to standing up that straight.",
+        "I am not hollow. It is much harder work."
+      ],
+      "chaotic": "Every stem within sight grows two metres in four seconds, and the light goes green and strange.",
+      "activity": [
+        "Stand still and listen. I want to know which of us gets bored first.",
+        "You last a surprising length of time. The grove knocks itself together like an audience being patient."
+      ],
+      "incidents": [
+        "A stem splits with a crack like a starting pistol and neither of you flinches, which is a lie you both keep.",
+        "The wind arrives in the tops long before it reaches you."
+      ]
+    },
+    "Beach": {
+      "label": "Beach",
+      "intro": "A long shore with the tide going out.\nThe sea keeps making the same suggestion and taking it back.",
+      "question": [
+        "The waves come in wrong every single time and nobody complains. Tell me why that is allowed.",
+        "Do you like the shore, or do you just like edges?"
+      ],
+      "romantic": [
+        "Eris takes her shoes off, which she has never once done in front of a mortal, and walks into the shallows.",
+        "The sea is the only thing older than me that does not want anything.",
+        "Stand in it with me. It is cold and I am not doing it alone."
+      ],
+      "chaotic": "The tide comes in and goes out eleven times in a minute, and leaves behind a perfect, sorted line of shells by size.",
+      "activity": [
+        "Sandcastle. I build the walls, you build whatever it is you people put inside them.",
+        "Together you build something no shore has held before. The tide takes it, which she says is the point."
+      ],
+      "incidents": [
+        "A wave comes in further than any of the others and neither of you moves in time.",
+        "Something washes up, is briefly interesting, and turns out to be a shoe."
+      ]
+    },
+    "Bridge": {
+      "label": "Bridge",
+      "intro": "A bridge, halfway across.\nYou are technically nowhere, over something that would rather you were not up here.",
+      "question": [
+        "Halfway. Not one side, not the other. Best place on the whole route.",
+        "Do you like the middle of things, or does it make you want to pick?"
+      ],
+      "romantic": [
+        "She leans on the rail at the exact centre of the span and does not look down.",
+        "Somebody built this so two places could stop being separate. That is the entire profession.",
+        "I have spent my whole existence doing the opposite of this for a living."
+      ],
+      "chaotic": "Every bolt in the span sings the same note at once and the bridge holds perfectly still through all of it.",
+      "activity": [
+        "Drop something over with me and count. I want to know how far down it is.",
+        "You both count. You get different numbers and argue about it the whole way across."
+      ],
+      "incidents": [
+        "The whole span moves under you by a fraction, as it is designed to.",
+        "Something passes underneath that neither of you leans over far enough to see."
+      ]
+    },
+    "Burg": {
+      "label": "Small Town",
+      "intro": "A small town, the kind with one of everything.\nSomebody has already noticed you are here.",
+      "question": [
+        "Everyone here knows everyone. Imagine the weight of that. Imagine the gossip.",
+        "Small places or big ones? Answer carefully, it tells me a lot."
+      ],
+      "romantic": [
+        "Two curtains twitch as you pass, and she puts her arm through yours entirely for their benefit.",
+        "By morning we will have been engaged, robbed a bank and moved to the coast.",
+        "I have not been talked about kindly in a thousand years. Let them."
+      ],
+      "chaotic": "Every dog in the town starts up at once, and then, worse, stops at once.",
+      "activity": [
+        "Sit on the square with me and we will watch the entire population go past. It takes eleven minutes.",
+        "You sit on the square. The whole town goes by, twice, and the second lap is clearly about you."
+      ],
+      "incidents": [
+        "A church bell rings the wrong number of times and nobody in town reacts.",
+        "A child stares at Eris with total recognition and is taken away by the hand."
+      ]
+    },
+    "BurgDesert": {
+      "label": "Desert Town",
+      "intro": "A small town holding out at the edge of the sand.\nEverything here has been repaired more often than it was built.",
+      "question": [
+        "Forty people and one well. Nobody would call that a town. It is an argument with a lid on it.",
+        "How long do you give it?"
+      ],
+      "romantic": [
+        "She leans on the well in the middle of the square and the town goes on being quiet around you.",
+        "Places like this survive because somebody stubborn refused to be sensible.",
+        "I am the patron goddess of refusing to be sensible. This is practically my parish."
+      ],
+      "chaotic": "The well fills to the brim and overflows down the square, and every door in the town opens.",
+      "activity": [
+        "Sit in the shade with me until somebody comes to ask what we want.",
+        "Somebody does, eventually, and she tells them a story about the two of you that is entirely untrue."
+      ],
+      "incidents": [
+        "A shutter bangs twice in a wind you cannot feel at ground level.",
+        "An old man raises a hand to Eris as if he has been expecting her all week."
+      ]
+    },
+    "BurgIce": {
+      "label": "Winter Town",
+      "intro": "A small town under snow, lit early because the day gave up.\nSmoke goes straight up from every chimney.",
+      "question": [
+        "Everyone is inside being warm together. Somewhere in this town somebody is unbearable about it.",
+        "Would you rather be in one of those houses, or out here with me?"
+      ],
+      "romantic": [
+        "She stands in the middle of the empty street where the snow has not been walked on yet.",
+        "Nobody has been here since it fell. For about a minute this is the newest place in the world.",
+        "Come and ruin it with me."
+      ],
+      "chaotic": "Every chimney in town puffs out one perfect ring of smoke, in sequence, all the way down the street.",
+      "activity": [
+        "Walk down the middle of the road with me. There is nothing coming. There is never anything coming.",
+        "You walk down the centre of the road through the snow, leaving two sets of prints for the town to discuss."
+      ],
+      "incidents": [
+        "Snow comes off a roof in one piece and lands where you were standing a moment ago.",
+        "A window goes dark, then lights again one room over."
+      ]
+    },
+    "Canyon": {
+      "label": "Canyon",
+      "intro": "A gorge with a strip of sky at the top of it.\nEverything either of you says comes back twice.",
+      "question": [
+        "Water did this. Slowly. With no plan. I could not have done it better.",
+        "Shout something. I want to hear what the walls make of you."
+      ],
+      "romantic": [
+        "She stands where the gorge is narrowest and the echo takes a while to give her voice back.",
+        "Everything I say in here comes back to me. Do you know how rare that is?",
+        "Say my name once. I want to hear it from more than one direction."
+      ],
+      "chaotic": "The echo stops copying you and starts answering instead. It has opinions.",
+      "activity": [
+        "We are going to have an argument, badly, at volume, and let the canyon judge it.",
+        "You argue about nothing at the top of your lungs. The canyon rules in favour of neither of you, loudly."
+      ],
+      "incidents": [
+        "A rock comes down somewhere behind you and finishes falling for a long time.",
+        "A bird crosses the strip of sky and its shadow crosses the whole gorge floor."
+      ]
+    },
+    "Castle": {
+      "label": "Castle Grounds",
+      "intro": "The walls and yards of a castle, built by people frightened of other people.\nEvery line of sight here was chosen for a reason.",
+      "question": [
+        "Somebody spent a fortune making it hard to get close to them. Relatable.",
+        "Would you have built the walls, or come over them?"
+      ],
+      "romantic": [
+        "She climbs onto the parapet and sits with her back to the drop, facing you instead of the view.",
+        "Fortifications are a confession. This much stone is somebody admitting what they were afraid of.",
+        "I have never built anything. I would not know where to put the door."
+      ],
+      "chaotic": "Every banner on the walls changes to a device nobody has ever fought under, and the gates open themselves in welcome.",
+      "activity": [
+        "Walk the walls with me. I want to see the whole thing before I decide about it.",
+        "You walk the full circuit. She reads the place like a letter and stops liking whoever wrote it."
+      ],
+      "incidents": [
+        "A portcullis somewhere drops half a metre and stops.",
+        "You find a name scratched into the stone by a bored guard eight hundred years ago."
+      ]
+    },
+    "CastleInside": {
+      "label": "Castle Halls",
+      "intro": "Inside the castle: long halls, cold stone, and portraits of people who were sure of themselves.\nYour footsteps arrive before you do.",
+      "question": [
+        "Look at them all. Painted at their best angle and dead at their worst.",
+        "If somebody hung you on a wall, what would they get wrong?"
+      ],
+      "romantic": [
+        "She stops under a portrait, looks at it, then at you, and stands closer to you than to it.",
+        "Everyone in this corridor wanted to be remembered. It worked, and it did nothing for them.",
+        "I would rather be here badly than up there properly."
+      ],
+      "chaotic": "Every portrait in the hall turns to watch the two of you at once, and several of them look put out.",
+      "activity": [
+        "Sit at the head of the table with me. Both of us. It only seats one, that is the fun.",
+        "You share a chair built for one important person and eat nothing off a table set for forty."
+      ],
+      "incidents": [
+        "A draught moves down the hall, and every candle leans the same way to let it past.",
+        "A door closes two rooms away with the confidence of somebody who lives here."
+      ]
+    },
+    "Cave": {
+      "label": "Cave",
+      "intro": "A cave mouth, and then the dark that lives behind it.\nThe temperature is the same as it has been for ten thousand years.",
+      "question": [
+        "The first temples were holes like this one. Everything since has been decoration.",
+        "Are you frightened of the dark, or only of what people put in it?"
+      ],
+      "romantic": [
+        "She holds up a hand, and the little light there is gathers around it so you can see her face.",
+        "There is no weather in here. No dates. No calendar. Nothing to be late for.",
+        "I could keep this hour. Nobody would notice it was gone."
+      ],
+      "chaotic": "Every echo in the cave arrives at once instead of in order, and for a moment the dark is very crowded.",
+      "activity": [
+        "Put your hand on the wall and leave it there. People used to do that and mean it.",
+        "You leave your hands on the cold rock beside each other for longer than either of you meant to."
+      ],
+      "incidents": [
+        "Water lands in water somewhere ahead, once, and then not again.",
+        "Something with wings changes its mind about the ceiling."
+      ]
+    },
+    "CaveDen": {
+      "label": "Den",
+      "intro": "A den. Something's actual home, hollowed out and used.\nThere are bones sorted into a corner by an animal with standards.",
+      "question": [
+        "Look at the corner. Something sorted those. It had a system.",
+        "Should we be in here? Genuinely asking. It has never stopped me before."
+      ],
+      "romantic": [
+        "She settles down against the wall of the den in the spot the animal clearly uses, and fits it.",
+        "Whatever lives here made one good decision and defends it. I have never managed that.",
+        "I have no den. I have a courtroom and a grudge."
+      ],
+      "chaotic": "Every bone in the corner reassembles into an animal that never existed and lies down comfortably.",
+      "activity": [
+        "Sit down and be quiet and see if it comes home while we are here.",
+        "You wait in the dark in somebody's house. Nothing comes. She is visibly disappointed."
+      ],
+      "incidents": [
+        "Something outside the den passes the entrance without slowing down.",
+        "A bone shifts in the pile with no help from either of you."
+      ]
+    },
+    "CaveFlooded": {
+      "label": "Flooded Cave",
+      "intro": "A cave with black water standing in it, so still it doubles the ceiling.\nYou can hear yourselves being quiet.",
+      "question": [
+        "There are two of everything in here and one of them is a lie.",
+        "Which of the two of me are you talking to?"
+      ],
+      "romantic": [
+        "She crouches at the waterline and looks at your reflection instead of at you.",
+        "That one has not learned to be careful around me yet.",
+        "Do not tell it. Let it have the evening."
+      ],
+      "chaotic": "The water stands up. All of it. It holds the shape of the cave for three seconds and then remembers itself.",
+      "activity": [
+        "Drop one stone in. One. We are going to watch the whole thing settle.",
+        "The rings cross the whole flooded chamber and come back, and you both wait for the last of them."
+      ],
+      "incidents": [
+        "Something under the surface moves without breaking it.",
+        "A drip finds the pool exactly between the two of you."
+      ]
+    },
+    "CaveIce": {
+      "label": "Ice Cave",
+      "intro": "A cave carved into ice rather than rock. The walls are blue all the way in.\nThe light in here has been travelling through frozen water to reach you.",
+      "question": [
+        "This ice is older than every religion. It has heard nothing and remembers all of it.",
+        "Cold suits me. Does it suit you, or are you being brave?"
+      ],
+      "romantic": [
+        "She puts a bare palm flat against the blue wall and leaves it there until the ice clouds around it.",
+        "Everything in here is waiting to be water again. It just needs one warm thing to be patient with it.",
+        "I am not warm. But I am not going anywhere either."
+      ],
+      "chaotic": "The whole cave rings like struck glass, and a hundred new tunnels open at once, none of which were there.",
+      "activity": [
+        "Breathe on the wall and see what your breath makes. It counts as art in here.",
+        "You both leave clouded handprints and breath-shapes on the ice, which will outlast the evening by a century."
+      ],
+      "incidents": [
+        "Deep in the ice something groans and shifts a fraction, adjusting for the two of you.",
+        "A shard falls from the ceiling and lands upright, like a decision."
+      ]
+    },
+    "ChurchInside": {
+      "label": "Church",
+      "intro": "Inside a church. Cold air, long light through coloured glass, nobody in the pews.\nThe building is designed to make you feel observed.",
+      "question": [
+        "This is a competitor's premises and I am on a date in it. Say nothing.",
+        "Do you believe in any of it, or are you just polite in here?"
+      ],
+      "romantic": [
+        "She sits down in a pew, which she absolutely should not, and looks up at the window.",
+        "They built the light to fall like that on purpose. Somebody spent their whole life on that angle.",
+        "Nobody has ever spent a life on the way I walk into a room. Sit down."
+      ],
+      "chaotic": "Every candle relights itself in the wrong order and the organ plays four notes nobody asked for.",
+      "activity": [
+        "Light one. Not for anyone. Just to see if the building notices.",
+        "You light a candle for nobody in particular. It burns exactly like the ones that were meant."
+      ],
+      "incidents": [
+        "A hymn book falls open on the floor at a page neither of you reads out loud.",
+        "The light through the glass moves onto her and she moves out of it."
+      ]
+    },
+    "City": {
+      "label": "City",
+      "intro": "A city street with its evening on. Traffic, shopfronts, and people who have somewhere to be.\nNobody looks up.",
+      "question": [
+        "A million people agreeing to walk on the correct side. That is a miracle and it depresses me.",
+        "Do you like being one of a crowd, or are you counting them?"
+      ],
+      "romantic": [
+        "The crowd parts around the two of you and closes again behind, and for a moment the street is only as wide as this.",
+        "Not one of them knows what I am. It is the only place I get to be a person.",
+        "You know, and you are still here. Work that out for me."
+      ],
+      "chaotic": "Every traffic light on the street goes green at once, and the whole junction discovers something about itself.",
+      "activity": [
+        "Pick a stranger. We are going to invent their entire week.",
+        "You follow four strangers with your eyes and give them lives. She gives one of them a divorce for no reason."
+      ],
+      "incidents": [
+        "A shop shutter comes down early and somebody swears at it in a language she compliments.",
+        "A car alarm starts, and stops, and the street goes back to pretending."
+      ]
+    },
+    "CityDesert": {
+      "label": "Desert City",
+      "intro": "A city built where a city should not be. Shade sold at a premium, the streets angled against the sun.\nEvery wall is still giving back the day's heat.",
+      "question": [
+        "Somebody looked at all that sand and decided to put plumbing in it. Magnificent stupidity.",
+        "Would you have stayed, that first summer?"
+      ],
+      "romantic": [
+        "She finds the one strip of shade left on the street and stands in it, leaving room for exactly one more person.",
+        "Everything here is a deal with the heat. You give it the day, it gives you the evening.",
+        "This is the evening. Do not waste it standing in the sun."
+      ],
+      "chaotic": "Every fountain and standpipe in the district runs at once, and for ninety seconds the desert city is loud with water.",
+      "activity": [
+        "Buy me something cold. I want to see what passes for a bargain here.",
+        "You are both comprehensively overcharged for two cold drinks and she treats it as a performance worth the money."
+      ],
+      "incidents": [
+        "Sand blows down the street in a thin sheet, at ankle height, going somewhere.",
+        "An air conditioner drips on her and she stares at the building until it stops."
+      ]
+    },
+    "CityIce": {
+      "label": "Frozen City",
+      "intro": "A city in hard winter. Salt on the pavements, breath in the doorways, everyone moving faster than they want to.\nThe cold makes the lights look further away.",
+      "question": [
+        "Cold cities are the honest ones. Nobody loiters, so nobody pretends.",
+        "Is it the cold you mind, or being seen minding it?"
+      ],
+      "romantic": [
+        "She stops in a doorway out of the wind, and the two of you take up all of it.",
+        "Everyone out there is going somewhere warm. Not one of them is going anywhere good.",
+        "Stand there a minute. You are blocking the worst of it."
+      ],
+      "chaotic": "Every window on the street frosts over from the inside, all at once, in the same pattern.",
+      "activity": [
+        "Walk me to the end of the street. Slowly. Everyone else is doing it wrong.",
+        "You walk the frozen street at an insulting pace while the city hurries around you."
+      ],
+      "incidents": [
+        "Somebody's shopping goes over on the ice and three strangers help before she can enjoy it.",
+        "A gritter goes past and she watches it like a parade."
+      ]
+    },
+    "Crypt": {
+      "label": "Crypt",
+      "intro": "A crypt: shelves of people, stacked by family and forgotten by everyone.\nIt is colder than the ground above it has any right to be.",
+      "question": [
+        "Every one of these was somebody's whole subject. Now they are a shelf.",
+        "Does it bother you being down here with the filing?"
+      ],
+      "romantic": [
+        "She reads a name off a plaque, out loud, badly, and the crypt is briefly less empty than it was.",
+        "Saying it counts. That is the whole mechanism. It is why I am still standing up.",
+        "Say mine sometime when I am not in the room."
+      ],
+      "chaotic": "Every plaque in the crypt swaps places with another. The dead are now filed by how interesting they were.",
+      "activity": [
+        "Read one out with me. Anyone. They will not mind and it is the polite thing.",
+        "You read the names off two shelves between you. She stops at one and does not explain."
+      ],
+      "incidents": [
+        "Dust comes off a shelf in a single sheet, as though somebody sat up and lay down again.",
+        "Your own footsteps come back a beat late, and there are three sets."
+      ]
+    },
+    "Crystals": {
+      "label": "Crystal Field",
+      "intro": "A field of crystal grown out of the rock, chest high and taller.\nEverything you look at is also looking at you from four other angles.",
+      "question": [
+        "Structure this perfect happens by accident. That is the part nobody forgives.",
+        "Do you want to touch them? Everybody wants to touch them."
+      ],
+      "romantic": [
+        "She steps in among the crystals and there are suddenly a great many of her, all looking at you.",
+        "Pick the real one. Take your time. I am curious.",
+        "You got it first go. Nobody gets it first go."
+      ],
+      "chaotic": "Every crystal in the field rings a different note at once and holds it far longer than glass should.",
+      "activity": [
+        "Tap them. One each. We are looking for the ugliest sound in here.",
+        "You work the field like a bad orchestra. The worst note is hers and she is unbearable about winning."
+      ],
+      "incidents": [
+        "A crystal splits along its length with a sound like a held breath let go.",
+        "The light in one of them keeps moving after the light outside has stopped."
+      ]
+    },
+    "Desert": {
+      "label": "Desert",
+      "intro": "Open desert with the day's heat coming out of the ground.\nThere is nothing between the two of you and the horizon in any direction.",
+      "question": [
+        "No witnesses for forty kilometres. That is either romantic or a confession.",
+        "What do you think about when there is nothing to look at?"
+      ],
+      "romantic": [
+        "She sits down in the sand facing away from the last of the light, so that she is looking at you and nothing else.",
+        "Deserts do not lie. There is nothing here to hide a lie behind.",
+        "Ask me something, then. While the geography is on your side."
+      ],
+      "chaotic": "The dunes rearrange themselves in the time it takes to look away and back. They are now in a different order and one is very tall.",
+      "activity": [
+        "Lie down. The sand is still warm and the sky is about to do something.",
+        "You lie in the warm sand while the sky goes through every colour it owns and then the stars come out all at once."
+      ],
+      "incidents": [
+        "Sand moves past your feet with a hiss, going somewhere it has been going all week.",
+        "Far out, something makes a noise, and the desert takes a very long time to give it back."
+      ]
+    },
+    "Digital": {
+      "label": "Datascape",
+      "intro": "Inside something that is running. Grids, indices, and light with a refresh rate.\nThe ground under you has a texture that repeats.",
+      "question": [
+        "Everything in here is deliberate. Somebody typed every single bit of it.",
+        "Do you trust a place that can be undone by a keystroke?"
+      ],
+      "romantic": [
+        "She reaches out and the grid under her hand goes to a higher resolution, just there, just for her.",
+        "I am not supposed to be renderable. I keep costing this place memory.",
+        "You are the only thing in here I did not have to be granted permission for."
+      ],
+      "chaotic": "Every value in sight increments by one. The floor becomes the ceiling's problem and something, somewhere, logs an error.",
+      "activity": [
+        "Break something small. I want to see what it tells on us for.",
+        "You nudge one value out of true. The whole grid corrects for it politely, which she finds insulting."
+      ],
+      "incidents": [
+        "A tile fails to load for half a second and shows you what is behind all of it.",
+        "Something iterates past at the edge of vision, counting."
+      ]
+    },
+    "Docks": {
+      "label": "Docks",
+      "intro": "Working docks after the shift. Cranes stopped mid-thought, water slapping at the piles.\nEverything here smells of diesel and cold rope.",
+      "question": [
+        "Everything anybody owns came through a place like this and nobody thanks it.",
+        "Have you ever left anywhere by boat? It is the only honest way to go."
+      ],
+      "romantic": [
+        "She sits on a bollard at the edge of the quay, boots over the black water, and does not look at the ships.",
+        "Everything here is either arriving or leaving. There is no third option and I hate that.",
+        "Tonight I am not doing either. Neither are you. Sit down."
+      ],
+      "chaotic": "Every crane on the waterfront swings to face the same point out at sea, and nothing is there.",
+      "activity": [
+        "Read the ships' names with me. Somebody chose all of those on purpose.",
+        "You read hulls all along the quay. Two are named after wives and one is named after a mistake."
+      ],
+      "incidents": [
+        "A hawser creaks under load somewhere and the whole quay feels it.",
+        "Something breaks the water between two hulls and does not come back up."
+      ]
+    },
+    "Dreamscape": {
+      "label": "Dreamscape",
+      "intro": "Somewhere assembled out of places you nearly remember.\nThe rules here are strongly held and completely local.",
+      "question": [
+        "Half of this is yours. I am not telling you which half.",
+        "Have you been here before? Do not answer straight away."
+      ],
+      "romantic": [
+        "The scenery quietly rearranges until there is a place to sit that suits both of you exactly.",
+        "It did that for you, not for me. Dreams have never once done me a favour.",
+        "Do not wake up yet. Take that as a request. I am bad at those, so it may not have sounded like one."
+      ],
+      "chaotic": "The whole scene becomes the same place seen from four ages at once, and none of them agree about the door.",
+      "activity": [
+        "Change something. Just decide it is different and it will be.",
+        "You alter the sky, twice, and she alters it back both times out of pure contrariness."
+      ],
+      "incidents": [
+        "A door you have not looked at yet turns out to have been open the whole time.",
+        "For a moment you both have the strong sense of being remembered by someone asleep."
+      ]
+    },
+    "Dungeon": {
+      "label": "Dungeon",
+      "intro": "A worked stone dungeon with corridors that were designed to be survived, badly.\nSomething built this on purpose, for people to come into.",
+      "question": [
+        "Somebody drew this on paper first. Somebody chose where the corners go.",
+        "Is it a strange place to bring someone? I have brought people to worse."
+      ],
+      "romantic": [
+        "She stops in a corridor with no door at either end and there is suddenly nowhere else to look.",
+        "Every room in here was built to hold something in. I have some sympathy with the architecture.",
+        "You walked in of your own accord. Nobody does that."
+      ],
+      "chaotic": "Every door in the level opens and closes once, in order, from the far end towards the two of you.",
+      "activity": [
+        "Pick a direction. We are going to get lost properly, not by accident.",
+        "You get comprehensively lost together and neither of you suggests turning back."
+      ],
+      "incidents": [
+        "A torch you have already passed goes out behind you.",
+        "Something metal is set down carefully, two rooms away."
+      ]
+    },
+    "Eldritch": {
+      "label": "Eldritch Ground",
+      "intro": "A place with geometry that argues with you. It is not hostile. It is simply not for you.\nYour eyes keep trying to make it be a room.",
+      "question": [
+        "Whatever made this was not thinking about anybody. That is what makes it rude.",
+        "Are you frightened? You can be. I will not use it later."
+      ],
+      "romantic": [
+        "She stands between you and the worst of the angles, which she does not comment on and neither do you.",
+        "Things like this were here before anyone was worshipped. They will be here after.",
+        "I find that comforting and I would like somebody else to find it comforting too."
+      ],
+      "chaotic": "The place stops pretending for eleven seconds. Neither of you talks about what it did with the eleven seconds.",
+      "activity": [
+        "Walk to that point and back. I want to know how far it actually is.",
+        "You walk out and back. It takes different amounts of time in each direction and you both let it go."
+      ],
+      "incidents": [
+        "Something enormous adjusts its position without any of the scenery moving.",
+        "A sound happens that both of you agree, silently, not to have heard."
+      ]
+    },
+    "Factory": {
+      "label": "Factory Yard",
+      "intro": "The yard of a working factory, between shifts. Pallets, puddles, and a hum coming out of the building.\nSomething in there is still running with nobody watching it.",
+      "question": [
+        "Somewhere in that building a machine is doing its job perfectly and alone.",
+        "Have you ever worked somewhere that did not notice you had gone?"
+      ],
+      "romantic": [
+        "She hops up to sit on a stack of pallets and the hum from the building goes on underneath everything she says.",
+        "Industry is the closest mortals get to a liturgy. Same hours, same words, same result.",
+        "I would rather be the fault in the line than the line."
+      ],
+      "chaotic": "Every machine in the building starts up at once and produces, in ninety seconds, four thousand of something nobody ordered.",
+      "activity": [
+        "Find out what they make here. Neither of us is allowed to ask anybody.",
+        "You work it out from the bins and the smell. You are both confident and you disagree completely."
+      ],
+      "incidents": [
+        "A pressure valve lets go somewhere inside and the yard flinches.",
+        "A forklift is parked at an angle that annoys her more than it should."
+      ]
+    },
+    "FactoryInside": {
+      "label": "Factory Floor",
+      "intro": "The factory floor. Lines, gantries, and the noise sitting on everything like weather.\nYou have to stand close to be heard at all.",
+      "question": [
+        "You have to stand this close to be heard. I want that on the record as their idea.",
+        "Could you do this every day? Say yes and I will not believe you."
+      ],
+      "romantic": [
+        "She has to lean in to be heard over the line, and does not lean back out again afterwards.",
+        "Every one of these people learned to talk in a whisper against all this. It is a skill.",
+        "I have never had to be quiet to be heard before. It is very strange and I do not hate it."
+      ],
+      "chaotic": "The whole line reverses. Finished goods go back up the belt and come apart neatly into their parts.",
+      "activity": [
+        "Follow the line with me from one end to the other. I want to see something get finished.",
+        "You walk the whole line to the end. Something completes, drops into a crate, and nobody applauds but her."
+      ],
+      "incidents": [
+        "The noise stops for one full second and it is much worse than the noise.",
+        "A part comes off the belt wrong and nothing in the building notices."
+      ]
+    },
+    "Fairy": {
+      "label": "Fairy Wood",
+      "intro": "A wood that is being charming at you on purpose.\nThe light is doing something no light does for free.",
+      "question": [
+        "Do not eat anything. Do not thank anyone. Do not dance. I mean it, and I never mean it.",
+        "They are all watching us. Does that bother you or improve it?"
+      ],
+      "romantic": [
+        "The lights in the branches move away and give the two of you a clearing, which is not a kindness.",
+        "This lot deal in obligation. Everything given here is a hook.",
+        "So I will give you nothing tonight, and mean it more than they ever have."
+      ],
+      "chaotic": "Every light in the wood goes out, and comes back in the wrong colours, and something in the dark laughs first.",
+      "activity": [
+        "Do not take the path. We are going to walk beside it the whole way.",
+        "You walk beside the path for an hour. It keeps offering to be walked on and you keep refusing."
+      ],
+      "incidents": [
+        "Music starts up nearby in a key that makes your feet want to be somewhere else.",
+        "Something small offers you a cup and she says no before you have looked at it."
+      ]
+    },
+    "Farm": {
+      "label": "Farm",
+      "intro": "Worked fields with the day's tools left where they were dropped.\nEverything here is on somebody's schedule, including the weather.",
+      "question": [
+        "All of this is a bet placed six months ago. Every year. By everyone.",
+        "Could you wait that long for anything?"
+      ],
+      "romantic": [
+        "She walks out into the crop until it is up to her waist and turns round to wait for you.",
+        "Nothing here happens fast. That is what makes it brave.",
+        "I do everything fast. It has never once worked out."
+      ],
+      "chaotic": "The entire field ripens in a single wave from one hedge to the other, four months early.",
+      "activity": [
+        "Help me steal exactly one of something. Not enough to matter. Enough to have done it.",
+        "You take one of something between you and eat half each, standing in a field that belongs to a stranger."
+      ],
+      "incidents": [
+        "A tractor starts up two fields away and settles into a rhythm.",
+        "The crop moves against the wind in one narrow line, coming towards you."
+      ]
+    },
+    "Fields": {
+      "label": "Open Fields",
+      "intro": "Open country with the grass up and nothing in it taller than the two of you.\nThe sky is doing most of the work here.",
+      "question": [
+        "Nothing has happened here. Ever. To anyone. Do you know how rare that is?",
+        "So? What do you make of it?"
+      ],
+      "romantic": [
+        "She lies back in the grass so only the sky can see her, and moves over to leave room.",
+        "No temples out here. No courtrooms. Nothing that wants a ruling out of me.",
+        "Down here I am about your size. Do not get used to it."
+      ],
+      "chaotic": "The grass lies flat in a wide circle around the two of you and stays that way, politely, waiting to be explained.",
+      "activity": [
+        "Walk out to the middle with me, where it is the same distance to everywhere.",
+        "You walk out until the edges of the field are all equally far away and stand in the only place that qualifies."
+      ],
+      "incidents": [
+        "A hare gets up out of the grass much closer than either of you expected.",
+        "The wind crosses the whole field in one visible line and passes right through you."
+      ]
+    },
+    "Forest": {
+      "label": "Forest",
+      "intro": "Deep forest with the canopy closed over.\nThe light comes down in pieces and the ground eats every sound you make.",
+      "question": [
+        "Every tree here is in a slow fight with every other tree. Centuries of it.",
+        "Nobody would find us in here. Is that a nice thought or not?"
+      ],
+      "romantic": [
+        "She stops in a shaft of light coming through the canopy and stands in it as though it were arranged.",
+        "This took a hundred and forty years to happen and it will last about nine minutes.",
+        "So come here. Do not make me say it again."
+      ],
+      "chaotic": "Every tree in sight drops its leaves at once and grows them back green, and the wood is now a different season.",
+      "activity": [
+        "Walk until we cannot see where we came in. Then a bit further.",
+        "You walk in until the way back is a guess. She looks pleased with the two of you."
+      ],
+      "incidents": [
+        "Something heavy moves once in the undergrowth and then commits to being still.",
+        "A branch comes down somewhere behind you with the whole forest's attention on it."
+      ]
+    },
+    "ForestIce": {
+      "label": "Frozen Forest",
+      "intro": "A forest under hard frost. Every branch is furred with white and holding it.\nThe cold has taken the smell out of the air entirely.",
+      "question": [
+        "Every one of these trees is asleep and doing it on purpose. They will all be back in April. Call that strategy.",
+        "Have you ever been somewhere this quiet on purpose?"
+      ],
+      "romantic": [
+        "She knocks the frost off a branch and it comes down over both of you like something arranged in advance.",
+        "The whole wood is waiting out a bad six months. It knows exactly how long to wait.",
+        "I have never known how long to wait for anything."
+      ],
+      "chaotic": "Every tree in the wood sheds its frost in the same instant, and the whole forest is briefly a white cloud.",
+      "activity": [
+        "Walk with me and do not knock anything off. Nobody has managed it yet.",
+        "You get about ninety metres before one of you ruins it, and neither of you will admit which."
+      ],
+      "incidents": [
+        "A branch gives up its load with a sound like a very small building falling.",
+        "Tracks cross the path in front of you, fresh, and go nowhere in either direction."
+      ]
+    },
+    "ForestTropical": {
+      "label": "Tropical Forest",
+      "intro": "Warm forest, three storeys of it, wet air and everything competing at once.\nSomething is calling and something else is answering it.",
+      "question": [
+        "More things live in this square kilometre than in most countries. All of them are busy.",
+        "Does all this noise bother you? It is the sound of nobody caring we are here."
+      ],
+      "romantic": [
+        "She stops under a leaf the size of a door and the rain that starts up does not reach either of you.",
+        "Nothing here is trying to impress anyone. It is all just trying.",
+        "I have spent four thousand years trying to impress people. Look how that went."
+      ],
+      "chaotic": "Every animal in earshot makes its call at the same instant. Then absolute silence, which is worse.",
+      "activity": [
+        "Stand still and count the different things making noise. I bet you nine.",
+        "You count. It is thirty-one, and she pays up in a currency that does not exist."
+      ],
+      "incidents": [
+        "Water comes off the canopy all at once as though something up there shifted its weight.",
+        "Something bright crosses in front of you at speed and neither of you identifies it."
+      ]
+    },
+    "Graveyard": {
+      "label": "Graveyard",
+      "intro": "A graveyard with the gate left open.\nEverybody here has a date on them and nobody has an argument left.",
+      "question": [
+        "Two dates and a dash. The dash is the part nobody can afford to carve.",
+        "Is this in bad taste? I genuinely cannot tell any more."
+      ],
+      "romantic": [
+        "She sits with her back against a headstone belonging to somebody with a very long name.",
+        "Not one of them is frightened of me. It is the most restful company I get.",
+        "You are not frightened of me either. That is the part I keep checking."
+      ],
+      "chaotic": "Every date on every stone in the yard reads the same for four seconds. It is today.",
+      "activity": [
+        "Find me the oldest one that still has flowers. Somebody is still turning up for somebody.",
+        "You find it: a hundred and nine years old, and fresh flowers on it. Neither of you says anything for a while."
+      ],
+      "incidents": [
+        "A vase blows over two rows away and rolls in a slow half circle.",
+        "A bird lands on a headstone, considers Eris, and stays."
+      ]
+    },
+    "Heaven": {
+      "label": "The Heavens",
+      "intro": "Somewhere upstairs. Light with no source and architecture with no load.\nEverything is in a good mood and it is not contagious.",
+      "question": [
+        "I am not banned from up here. I want that established before anyone tells you otherwise.",
+        "Does it feel like anything to you? Genuinely. I have stopped being able to tell."
+      ],
+      "romantic": [
+        "She sits on the edge of something that has no edge, and the light politely stops flattering her.",
+        "Everything here is finished. That is what makes it unbearable after the first century.",
+        "You are extremely unfinished. It is the best thing in this entire district."
+      ],
+      "chaotic": "Every note being held anywhere up here goes a semitone flat at once, and the effect is theological.",
+      "activity": [
+        "Sit somewhere we are obviously not meant to sit and let us see how long it takes.",
+        "You sit somewhere improper. Nothing happens for a long time, which she takes as a victory."
+      ],
+      "incidents": [
+        "Something enormous and courteous passes overhead and does not acknowledge either of you.",
+        "The light gets fractionally warmer, which she reads as being asked to leave."
+      ]
+    },
+    "Hell": {
+      "label": "The Inferno",
+      "intro": "Downstairs. It is warm, well organised, and much more administrative than the stories suggest.\nSomeone here has a filing system.",
+      "question": [
+        "Everyone expects screaming. It is mostly paperwork. The screaming is a department.",
+        "Would you like to know if you are in the files? I can look. I should not."
+      ],
+      "romantic": [
+        "She finds a ledge with a view over the whole works and sits with her back to it, facing you.",
+        "Everybody down there is being punished for exactly one thing. Consistency. It is almost kind.",
+        "Nobody has ever been able to tell me which of my things counts as the one."
+      ],
+      "chaotic": "Every furnace in view changes colour, and the whole administration takes fourteen seconds to file the incident.",
+      "activity": [
+        "Read the notices with me. The bureaucracy down here is the funniest writing in creation.",
+        "You read the noticeboards together. One of them is about her, and she does not let you finish it."
+      ],
+      "incidents": [
+        "A queue somewhere below shuffles forward one place and settles.",
+        "Something in a uniform looks up at the two of you and decides it is above its pay grade."
+      ]
+    },
+    "Highlands": {
+      "label": "Highlands",
+      "intro": "High rough country, all wind and low cloud and grass that has learned to lie down.\nThe weather here arrives before you can see it coming.",
+      "question": [
+        "There is nothing between us and the next weather system. I find that clarifying.",
+        "Are you enjoying this, or are you being polite about a hill?"
+      ],
+      "romantic": [
+        "The cloud comes down and takes the view away, and the world is briefly this much across.",
+        "There. Now there is nothing else to look at and you cannot pretend there is.",
+        "I did not do that, before you ask. The weather did it and I will be taking the credit."
+      ],
+      "chaotic": "The cloud lifts off the whole range at once, in one piece, and hangs about a hundred metres up looking uncertain.",
+      "activity": [
+        "Get to that cairn before the rain does. I am not helping you.",
+        "You both reach it and you both lose to the rain, and she is delighted about the whole business."
+      ],
+      "incidents": [
+        "The wind changes direction completely and takes a moment to commit.",
+        "A sheep watches you both with an expression that she takes personally."
+      ]
+    },
+    "Highway": {
+      "label": "Highway",
+      "intro": "The verge of a motorway, at the hour when the traffic thins.\nEverybody going past is going somewhere, at speed, without you.",
+      "question": [
+        "Every one of those is somebody's whole life, doing ninety, for four seconds.",
+        "Would you get in one? If it stopped. Would you?"
+      ],
+      "romantic": [
+        "She sits on the barrier facing the traffic and lets the headlights go across her face one at a time.",
+        "Nobody out there will ever think about this evening. There is a freedom in being that unimportant.",
+        "I have never once been unimportant. Tonight I am trying it."
+      ],
+      "chaotic": "Every vehicle on the carriageway changes lane at the same moment. Nobody crashes, which is somehow worse.",
+      "activity": [
+        "Count the red ones with me. Loser has to wave at a lorry.",
+        "You both lose count almost immediately and she waves at a lorry anyway. It answers with the horn."
+      ],
+      "incidents": [
+        "A car slows on the hard shoulder, thinks better of it, and rejoins.",
+        "The traffic stops entirely for nine seconds and then resumes with no explanation."
+      ]
+    },
+    "Houses": {
+      "label": "Residential Street",
+      "intro": "A street of houses with their evenings on behind the curtains.\nEvery window is a different programme.",
+      "question": [
+        "Forty households, forty completely separate universes, all sharing a drainage system.",
+        "Which one would you want to be in? Do not say none of them."
+      ],
+      "romantic": [
+        "She stops on the pavement and looks into a lit front room where somebody is doing nothing at all.",
+        "That. Whatever that is. Sitting in a room being unremarkable at each other.",
+        "Four thousand years and no one has ever offered me an evening like that."
+      ],
+      "chaotic": "Every television on the street switches to the same channel, which is not broadcasting tonight.",
+      "activity": [
+        "Walk the whole street with me and pick which house we would have ruined.",
+        "You walk the street picking houses. You choose the same one, which neither of you brings up again."
+      ],
+      "incidents": [
+        "A security light comes on and follows you two houses along.",
+        "Somebody's dinner is audible through an open window and it is going badly."
+      ]
+    },
+    "HousesInside": {
+      "label": "Somebody's Home",
+      "intro": "Inside somebody's house. Their furniture, their smell, their entire way of arranging a room.\nThe heating is on for people who are not here.",
+      "question": [
+        "Look at how they have done it. Somebody chose all of this in a shop.",
+        "Is it worse that we are in here, or that it is comfortable?"
+      ],
+      "romantic": [
+        "She sits down on somebody else's sofa in the way you only sit on your own.",
+        "This is what I do not have. Not the sofa. The having a sofa.",
+        "Do not say anything kind, I will be unbearable about it later."
+      ],
+      "chaotic": "Every object in the house moves exactly ten centimetres to the left. The owners will feel it for years.",
+      "activity": [
+        "Make me a cup of something in a stranger's kitchen. It is the most intimate crime there is.",
+        "You find the cups on the second attempt. She drinks it, and washes up, which is the strangest part."
+      ],
+      "incidents": [
+        "The boiler fires up in another room and you both react as if caught.",
+        "A photograph on the shelf has been turned face down by whoever lives here."
+      ]
+    },
+    "Ice": {
+      "label": "Ice Flats",
+      "intro": "A flat sheet of ice going out to the edge of what you can see.\nEvery sound crosses it whole and arrives late.",
+      "question": [
+        "Solid water. It is water lying about what it is and everyone lets it.",
+        "Is it safe? Do not check. Answer as though you knew."
+      ],
+      "romantic": [
+        "She lies down flat on the ice and looks straight down through it.",
+        "There is a whole winter's worth of things frozen in here, all keeping.",
+        "Lie down. You have got to see this and I am not describing it to you."
+      ],
+      "chaotic": "A crack runs from horizon to horizon under your feet, at speed, and does nothing else.",
+      "activity": [
+        "Slide. Do not walk. Nobody has ever regretted sliding.",
+        "You slide out across the ice together and neither of you is good at it, which is the entire point."
+      ],
+      "incidents": [
+        "The ice makes a noise like a long note bent out of tune and you feel it through your boots.",
+        "A bubble under the surface moves several metres to the left and stops."
+      ]
+    },
+    "Jungle": {
+      "label": "Jungle",
+      "intro": "Jungle thick enough that the way you came in has already closed.\nThe heat is a physical opinion.",
+      "question": [
+        "This place grows over anything you put in it. Roads. Cities. Gods.",
+        "How long do you think we would last if we sat down?"
+      ],
+      "romantic": [
+        "She pulls a curtain of green aside, holds it, and waits for you to go through first.",
+        "There are cities under this. Whole ones. Nobody remembers who was king.",
+        "Being forgotten does not frighten me. Being forgotten while still here does."
+      ],
+      "chaotic": "Everything green in view grows twice as fast for a full minute and the path behind you is gone for good.",
+      "activity": [
+        "Find me something that was made by people. It is in here somewhere, everything is.",
+        "You find a worked stone under two centuries of root. She refuses to say whether she knew it was there."
+      ],
+      "incidents": [
+        "Everything goes quiet in a circle around you and comes back in from the outside.",
+        "Something drops out of the canopy behind you, lands wetly, and is not investigated."
+      ]
+    },
+    "Laboratory": {
+      "label": "Laboratory",
+      "intro": "A laboratory with the work left out mid-experiment.\nSomething on a bench is at a stage that cannot be paused, and has been.",
+      "question": [
+        "Somebody is trying to find something out. That is the whole species in one room.",
+        "Would you want to know how everything works, if it cost you the liking of it?"
+      ],
+      "romantic": [
+        "She looks down a microscope somebody left focused, and does not say what is on the slide.",
+        "Whoever set this up will come back tomorrow and be wrong about it. That is the job.",
+        "Being wrong on purpose, over and over, for years. It is the bravest thing you people do."
+      ],
+      "chaotic": "Every experiment in the room completes at once, successfully, with results that contradict each other.",
+      "activity": [
+        "Write something in the logbook. Something true. They will never work out who.",
+        "You leave one true line in a stranger's logbook. She reads it twice and does not add one of her own."
+      ],
+      "incidents": [
+        "A centrifuge somewhere finishes its run and beeps until it is ignored.",
+        "Something in a sealed jar has moved since you came in."
+      ]
+    },
+    "Lair": {
+      "label": "Lair",
+      "intro": "A lair: a place something large has made comfortable for itself.\nThe scale of everything is wrong for people.",
+      "question": [
+        "Whatever lives here is not small and it is not out.",
+        "Shall we wait for it, or is that just me?"
+      ],
+      "romantic": [
+        "She sits down on a hoard that belongs to something else and does not touch any of it.",
+        "It is not the gold. It never is. It is having one place nothing else is allowed into.",
+        "You are allowed in. That is the whole announcement, I am not doing a speech."
+      ],
+      "chaotic": "Everything in the hoard rearranges into a neat spiral, largest at the outside, in complete silence.",
+      "activity": [
+        "Put something into the hoard instead of taking. I want to see if it notices.",
+        "You add one worthless object to the pile. Something deep in the lair goes very still."
+      ],
+      "incidents": [
+        "Air moves through the lair in one long breath and comes back.",
+        "Something enormous shifts its weight far enough away not to matter yet."
+      ]
+    },
+    "Lake": {
+      "label": "Lakeside",
+      "intro": "A lake with the evening on it, flat enough to be embarrassing.\nThe far shore is doing the same thing back at you.",
+      "question": [
+        "Look at it holding the whole sky and not spilling any of it.",
+        "Skimming stones. Yes or no. This decides several things."
+      ],
+      "romantic": [
+        "She sits at the water's edge with her feet in, and the whole surface stops moving to accommodate her.",
+        "A lake keeps everything that goes into it. It has no outlet and no opinion.",
+        "Tell me something you have not told anyone. It will keep that too."
+      ],
+      "chaotic": "The lake rings from the middle outwards, six perfect circles, none of them caused by anything.",
+      "activity": [
+        "Skim one. If you get more than four I will be insufferable about having brought you.",
+        "You both skim badly for twenty minutes. Her best is three and she blames the lake."
+      ],
+      "incidents": [
+        "A fish takes something off the surface out in the middle and the rings take a long time to arrive.",
+        "The far shore goes out of focus, comes back, and is slightly closer."
+      ]
+    },
+    "Landfill": {
+      "label": "Landfill",
+      "intro": "A landfill, layered and steaming gently.\nEverything anybody ever decided against is here in one place.",
+      "question": [
+        "This is the most honest museum in the country and nobody has curated a thing.",
+        "Is it awful? It is awful. Do you want to leave?"
+      ],
+      "romantic": [
+        "She climbs to the top of the tip and sits down on it as though it were a hill, which it now is.",
+        "Everything up here was wanted once. Every single item. That is what gets me.",
+        "Discarded is not the same as worthless. I have needed that to be true for a long time."
+      ],
+      "chaotic": "Everything in the landfill sorts itself by the year it was thrown away, in strata, visibly, in under a minute.",
+      "activity": [
+        "Find the best thing here. There is always one and somebody was an idiot to bin it.",
+        "You find a perfectly good chair. She sits in it, on top of the tip, like a magistrate."
+      ],
+      "incidents": [
+        "Gulls come up off the tip all at once for no reason either of you can find.",
+        "Something under the surface settles and a slow breath of warm air comes out."
+      ]
+    },
+    "Limbo": {
+      "label": "Limbo",
+      "intro": "Nowhere in particular, and it is fully committed to that.\nThere is a horizon but nothing has agreed to be on it.",
+      "question": [
+        "This is where things go that were never decided about. It is enormous.",
+        "Do you find waiting restful, or is it the worst thing there is?"
+      ],
+      "romantic": [
+        "There is nothing to sit on, so she simply stops, and the two of you are the only event in the place.",
+        "Everything here is still pending. Nobody has ruled on any of it.",
+        "I rule on things for a living now. In here I am off duty and it is terrifying."
+      ],
+      "chaotic": "Something almost happens. It gets extremely close, four times, and then does not.",
+      "activity": [
+        "Decide something. Anything. Out loud. It has to count for something in here.",
+        "You say a small decision out loud. The place takes it seriously in a way that is hard to shake off."
+      ],
+      "incidents": [
+        "A distance changes without anything having moved.",
+        "You both realise you have stopped being able to say how long you have been here."
+      ]
+    },
+    "LootCellar": {
+      "label": "Cellar",
+      "intro": "A small cellar somebody meant to come back for.\nThere is more in here than the room admits to.",
+      "question": [
+        "Somebody hid all this and then had a worse week than they planned.",
+        "Do you take things that are not yours? Be honest, I will know."
+      ],
+      "romantic": [
+        "It is a small room and neither of you makes an effort to use all of it.",
+        "I have been in treasuries with a ceiling you cannot see. They were worse than this.",
+        "Everything valuable I have ever been given was an attempt to make me leave."
+      ],
+      "chaotic": "Everything in the cellar rearranges itself by value, most precious at the front, in under two seconds.",
+      "activity": [
+        "Open one thing. Your choice. I will not look until you have decided.",
+        "You open one crate between you. What is in it is worth less than the wait was."
+      ],
+      "incidents": [
+        "Something settles on a shelf with the sound of a coin choosing a side.",
+        "The door at the top of the steps moves, and does not open."
+      ]
+    },
+    "Mangrove": {
+      "label": "Mangroves",
+      "intro": "Mangroves: trees standing in the sea on their own roots, refusing to pick a side.\nThe water goes in and out of the whole wood twice a day.",
+      "question": [
+        "Not land, not sea. They just refused to choose and got away with it.",
+        "Have you ever refused to choose? How did that go for you?"
+      ],
+      "romantic": [
+        "She balances along a root above the water and does not offer you a hand. Trust, of a sort.",
+        "These hold an entire coastline together by refusing to be one thing.",
+        "I have been three things this century and none of them held anything together."
+      ],
+      "chaotic": "The tide comes in and goes out through the whole mangrove in forty seconds, and everything living panics on schedule.",
+      "activity": [
+        "Walk the roots with me. Whoever gets wet first buys.",
+        "You both get wet within a minute, at the same moment, which settles nothing."
+      ],
+      "incidents": [
+        "Something small and armoured crosses a root in front of you and does not hurry.",
+        "The water level drops enough to hear it happening."
+      ]
+    },
+    "Meadows": {
+      "label": "Meadow",
+      "intro": "A meadow in flower, loud with insects doing their entire year's work.\nThe air is thick and sweet and slightly too much.",
+      "question": [
+        "Every one of these flowers is a bribe. That is all a flower is.",
+        "Would it work on you? The bribe, I mean."
+      ],
+      "romantic": [
+        "She picks nothing, which for a goddess in a flower meadow is a considerable act of restraint.",
+        "If I pick one it dies for a compliment. That is a bad trade and I have made it before.",
+        "They can all stay where they are. I have got somewhere to be."
+      ],
+      "chaotic": "Every flower in the meadow turns to face the two of you, and then closes, and then opens again as something else.",
+      "activity": [
+        "Find me the ugliest flower in this meadow. There is always one and it is always trying.",
+        "You find it together. It is genuinely awful and she carries it for the rest of the evening."
+      ],
+      "incidents": [
+        "A bee makes a serious attempt at her hair and is talked out of it.",
+        "The insect noise stops all at once for two seconds and then resumes."
+      ]
+    },
+    "Metro": {
+      "label": "Metro",
+      "intro": "An underground station between trains. Tiled, lit too well, and completely empty.\nAir moves through the tunnel from a train that has not arrived.",
+      "question": [
+        "Half a million people a day and right now it is ours. I checked the timetable.",
+        "Where would you go, if the next one went anywhere?"
+      ],
+      "romantic": [
+        "She sits on a platform bench and the departure board over her head clears itself of destinations.",
+        "Nothing is coming for eleven minutes. I have checked. I have checked twice.",
+        "Eleven minutes is the longest I have ever booked for anybody."
+      ],
+      "chaotic": "Every departure board in the station shows the same destination, which no line serves and nobody has heard of.",
+      "activity": [
+        "Sit on the platform with me and let one go past without getting on it.",
+        "A train comes, opens, waits, and leaves without either of you. The station is very quiet afterwards."
+      ],
+      "incidents": [
+        "The tunnel breathes out warm air ahead of nothing at all.",
+        "An announcement plays in a language that is not one of the ones on the signs."
+      ]
+    },
+    "Mines": {
+      "label": "Mines",
+      "intro": "Worked mine galleries, timbered and abandoned by the shift.\nEverything here was carried out by hand, upwards.",
+      "question": [
+        "Every metre of this was somebody's whole working life. Metre by metre.",
+        "Would you go down here every morning for thirty years?"
+      ],
+      "romantic": [
+        "She puts her hand on a timber prop and looks up at the weight it is holding.",
+        "One piece of wood, one hundred and forty years, all of that above it. Nobody ever thanks the prop.",
+        "I am not the prop in anybody's life. I have always been the weight."
+      ],
+      "chaotic": "Every lamp in the workings lights at once, all the way down, and you can see how far it actually goes.",
+      "activity": [
+        "Go down one more level with me. Just one. Then we will be sensible.",
+        "You go down one more level, and then another, and the sensible part never arrives."
+      ],
+      "incidents": [
+        "A prop takes up some slack somewhere and the sound travels the whole gallery.",
+        "Somebody's initials are cut into the rock at eye height, dated."
+      ]
+    },
+    "Mountain": {
+      "label": "Mountainside",
+      "intro": "High on a mountainside, above the last of the trees.\nThe air is thin and everything below is a map of itself.",
+      "question": [
+        "People put their gods on mountains because they could not be bothered to climb them.",
+        "You climbed one. What did you expect to find at the top?"
+      ],
+      "romantic": [
+        "She sits on a rock with the whole country laid out beneath her and turns her back on all of it.",
+        "I have had altars on peaks like this. The view is the same and nobody was ever up here.",
+        "You came up here. On foot. Knowing what I am."
+      ],
+      "chaotic": "The whole range echoes back a sound that neither of you made, and it takes its time about it.",
+      "activity": [
+        "Build a cairn with me. Three stones. It is how you tell the next person somebody was here.",
+        "You build a small pile of stones on the ridge. It will outlast both the evening and one of you."
+      ],
+      "incidents": [
+        "A cloud arrives at your height and passes through the two of you.",
+        "Something makes a noise a very long way below and it reaches you late."
+      ]
+    },
+    "MountainDesert": {
+      "label": "Desert Highlands",
+      "intro": "Dry mountains with no forgiveness in them. Rock, thin air, and a long way down on two sides.\nThe wind up here has come a very long way.",
+      "question": [
+        "High and dry. Nothing lives here that has not made a serious commitment.",
+        "Are you out of breath, or is that me?"
+      ],
+      "romantic": [
+        "She sits on the edge with her legs over the drop and does not hold on to anything.",
+        "Everything down there is having a completely different evening.",
+        "Sit. I will catch you. Probably. It would be a good story either way."
+      ],
+      "chaotic": "A rockfall starts on the opposite face and stops halfway down, holding its position, waiting.",
+      "activity": [
+        "Climb the last bit with me. I want to see everything at once for a minute.",
+        "You take the last of the ridge together and stand where the wind will not let you talk."
+      ],
+      "incidents": [
+        "A stone you did not kick goes over the edge behind you.",
+        "A bird holds absolutely still in the wind at eye level for four seconds."
+      ]
+    },
+    "MountainIce": {
+      "label": "Frozen Peak",
+      "intro": "A peak above the snow line, in wind that does not stop for anyone.\nEvery breath costs something.",
+      "question": [
+        "Nothing lives up here. Nothing has ever lived up here. It is wonderfully rude.",
+        "Are you cold? You can say yes. I will not think less of you, I will just enjoy it."
+      ],
+      "romantic": [
+        "She stands in the full wind on the summit and lets it take her hair and her coat and her composure.",
+        "Nothing up here is pretending. The mountain would kill us both and not even be doing it on purpose.",
+        "I have been meant on purpose by everything for four thousand years. This is a holiday."
+      ],
+      "chaotic": "The wind stops. Entirely. On a summit. For eight seconds. Then it comes back from the other direction.",
+      "activity": [
+        "Stand on the actual top with me. Both feet. It only fits one person.",
+        "You share the summit badly, holding on to each other because the alternative is worse."
+      ],
+      "incidents": [
+        "A plume of snow comes off the ridge above and goes horizontally for two hundred metres.",
+        "The cloud below opens and you can see a single village, lit, very far down."
+      ]
+    },
+    "Mushroom": {
+      "label": "Fungal Wood",
+      "intro": "A wood of fungus grown to the size of trees, and glowing where it feels like it.\nThe air tastes of spores and something older.",
+      "question": [
+        "Underneath all this is one organism. One. This entire wood is somebody having a thought.",
+        "Does that unsettle you? It should, a bit."
+      ],
+      "romantic": [
+        "The glow comes up brighter where she stands, follows her three steps, and then follows you instead.",
+        "It has decided about you. I have no say in it and I want that noted.",
+        "It has excellent judgement, which is annoying of it."
+      ],
+      "chaotic": "Every cap in the wood releases at once, and for a moment you are standing inside a slow gold snowstorm.",
+      "activity": [
+        "Touch one and see what the rest of the wood does about it.",
+        "You touch one cap. Three hundred metres away, in sequence, the whole wood answers."
+      ],
+      "incidents": [
+        "A patch of glow travels past under the ground, going somewhere with purpose.",
+        "Spores land on her shoulder and stay lit for a while."
+      ]
+    },
+    "Ocean": {
+      "label": "Open Sea",
+      "intro": "Open water with no land in any direction.\nThe swell moves underneath you like something breathing in its sleep.",
+      "question": [
+        "Nobody owns this. Every treaty on it is a piece of paper on top of nothing.",
+        "Do you know how deep it is here? Neither do I, and I have looked."
+      ],
+      "romantic": [
+        "She looks over the side at water going down further than the light does and does not say anything for a while.",
+        "The sea has never once needed a name to be enormous. I have envied that my whole existence.",
+        "Say my name anyway. Out here it will not go anywhere."
+      ],
+      "chaotic": "The swell turns square. For thirty seconds the whole ocean is a grid, and then it is embarrassed and stops.",
+      "activity": [
+        "Look for land. There is not any. I want to watch you look.",
+        "You go all the way round the horizon. Nothing, in every direction, and neither of you minds it."
+      ],
+      "incidents": [
+        "Something breaks the surface a long way off and is gone before you can point.",
+        "The swell changes direction under you without the wind changing at all."
+      ]
+    },
+    "Office": {
+      "label": "Office",
+      "intro": "An office floor after hours. Screens asleep, chairs left at the angle their people left them.\nA printer somewhere is still ready.",
+      "question": [
+        "Everyone here spent a third of their life at that desk and left it exactly like that.",
+        "Which desk would be yours? You have already picked one, I can tell."
+      ],
+      "romantic": [
+        "She sits on the edge of a desk that is not hers, in a building that is not hers, at an hour that is.",
+        "Look at the photographs. Every single desk has somebody else's face on it.",
+        "Nobody has ever put me on a desk. It would be a strange thing to want and I want it."
+      ],
+      "chaotic": "Every screen on the floor wakes at once and displays the same document, which is a resignation letter.",
+      "activity": [
+        "Sit in the best chair on this floor with me. There is always one and everyone knows which.",
+        "You find it in the corner office. You take turns in it and neither of you is impressed."
+      ],
+      "incidents": [
+        "The printer takes a sheet, prints nothing on it, and delivers it.",
+        "A phone rings twice on an empty desk and gives up."
+      ]
+    },
+    "OmegaTower": {
+      "label": "Omega Tower",
+      "intro": "The ground at the foot of the Omega Tower, which goes up past the point where looking helps.\nEverything nearby leans very slightly towards it.",
+      "opening": [
+        "You picked here. Of all the places on this world, you picked here.",
+        "Mortals call it the Omega Tower now.",
+        "But I remember when it was something else...",
+        "Something very different."
+      ],
+      "question": [
+        "This tower... has an interesting history.",
+        "During the Y2K event, when chaos reigned supreme...",
+        "I challenged Ma'at, the Egyptian goddess of justice, to a divine duel.",
+        "Her spear... well, let's say I won.",
+        "And when a goddess falls, her tools remain.",
+        "That spear embedded itself in the earth, growing, transforming.",
+        "Now it's become the lynchpin of the multiverse itself.",
+        "Ironic, isn't it? A tool of justice keeping reality stable.",
+        "Sometimes I think about what would happen if I removed it...",
+        "But then, without a universe, who would be left to believe in me?",
+        "And without believers... even we gods fade away.",
+        "Thousands of forgotten gods know that too well."
+      ],
+      "choices": [
+        "You took her place as goddess of justice?",
+        "Aren't you afraid of fading away?",
+        "Power always has a price",
+        "That tower is beautiful and terrifying"
+      ],
+      "romantic": [
+        "She puts a hand flat against the base of the tower, the way you would touch something you had put down.",
+        "Everything holding together up there is holding together because I won an argument.",
+        "I have never once been able to say that about anything smaller."
+      ],
+      "chaotic": "The whole tower rings once, from the ground to wherever it stops, and several distant things go briefly wrong.",
+      "activity": [
+        "Walk round the base with me. Nobody ever does, they all just look up.",
+        "You walk the entire circumference. It takes longer than either of you expected and she counts every step."
+      ],
+      "incidents": [
+        "A shadow crosses the ground that has no business belonging to anything on it.",
+        "For a moment the tower is a spear, and then it is a tower again, and she does not comment."
+      ]
+    },
+    "Park": {
+      "label": "Park",
+      "intro": "A city park with the gates about to be locked.\nSomebody has designed nature here and been slightly too pleased about it.",
+      "question": [
+        "Every tree in here is where a committee put it. And it works. That is the offensive part.",
+        "Benches, ducks and a bandstand. Is this a date or a diorama?"
+      ],
+      "romantic": [
+        "She sits at one end of a bench and puts her arm along the back of it, which is not subtle.",
+        "This is where mortals do it. Benches. Four thousand years and it is still benches.",
+        "So sit on the bench. I am not going to explain it twice."
+      ],
+      "chaotic": "Every flowerbed in the park comes into bloom out of season, in the wrong colours, in a wave from the gates inwards.",
+      "activity": [
+        "Feed the ducks with me. I want to see who they go for.",
+        "The ducks go for her, en masse, immediately, and she is completely undone by it."
+      ],
+      "incidents": [
+        "A keeper rattles the gates at the far end and shouts a time at nobody.",
+        "A sprinkler comes on for eleven seconds and thinks better of it."
+      ]
+    },
+    "PatronVault": {
+      "label": "The Vault",
+      "intro": "A vault built on a scale nobody needed, for one person's things.\nEvery footstep in here comes back off six walls.",
+      "question": [
+        "Somebody owns all of this and is not here. That is the most decadent thing in the room.",
+        "What would you keep, if you could keep anything?"
+      ],
+      "romantic": [
+        "She walks the length of the great hall and stops in the middle, where all of it is equally far away.",
+        "Every single thing in here is owned. That is the only fact about any of it.",
+        "You are the only thing standing in this room that belongs to itself."
+      ],
+      "chaotic": "Every strongroom door in the vault unlocks at once, and the sound of it goes on for a while.",
+      "activity": [
+        "Shout something. I want to know how big this actually is.",
+        "You measure the vault by shouting into it. It is bigger than either of you was prepared for."
+      ],
+      "incidents": [
+        "A coin comes off a pile somewhere and takes an unreasonable time to stop rolling.",
+        "A light you did not light is on in the back chamber."
+      ]
+    },
+    "Permafrost": {
+      "label": "Permafrost",
+      "intro": "Frozen ground that has been frozen since before anyone was counting.\nEverything that ever fell here is still here, at the depth it stopped.",
+      "question": [
+        "Nothing rots here. Everything that died is still exactly as annoyed as it was.",
+        "Would you want to be kept, or would you rather go?"
+      ],
+      "romantic": [
+        "She crouches and puts her hand flat on ground that has not been warm since before her name existed.",
+        "Under here there are flowers from an age nobody wrote down. Still the right colour.",
+        "Things keep, if nothing warm gets to them. I have been testing that theory for a while."
+      ],
+      "chaotic": "Four thousand years of frozen ground thaws to a depth of one metre and freezes again, and something down there is briefly awake.",
+      "activity": [
+        "Dig. Not far. Whatever we find has been waiting a very long time for company.",
+        "You get down about a foot and find a leaf, perfectly green, from a summer nobody remembers."
+      ],
+      "incidents": [
+        "The ground gives a single dull crack somewhere under both of you.",
+        "Mist comes up out of the ground in a straight line and stays there."
+      ]
+    },
+    "River": {
+      "label": "River",
+      "intro": "A river going past at its own pace, ignoring both of you completely.\nIt is louder than it looks and colder than it sounds.",
+      "question": [
+        "All of this is leaving. Constantly. And it looks like it is staying.",
+        "Everything you drop in it is somebody else's problem by morning. Tempting, no?"
+      ],
+      "romantic": [
+        "She puts a hand into the current, holds it there against the pull, and looks at you the entire time.",
+        "You cannot stand in the same one twice. Somebody clever said that and then went home.",
+        "So this is the only version of this evening there is going to be. Behave accordingly."
+      ],
+      "chaotic": "The river runs backwards. Not fast, not violently: it simply reverses, politely, for about a minute.",
+      "activity": [
+        "Race something down it with me. Two sticks. Loser admits something.",
+        "You race two sticks under the bank. Hers loses, and she admits something small and true."
+      ],
+      "incidents": [
+        "Something goes past in the current that was clearly indoors this morning.",
+        "The water level comes up a hand's width and stays there."
+      ]
+    },
+    "RiverBank": {
+      "label": "Riverbank",
+      "intro": "The soft ground beside a river, cut and rebuilt by every flood there has ever been.\nEverything here grows fast and gets taken away regularly.",
+      "question": [
+        "This bank is in a different place every decade and the map has never once been updated.",
+        "Do you like things that move under you?"
+      ],
+      "romantic": [
+        "She sits down where the bank is undercut and lets her feet hang over moving water.",
+        "This whole edge will be gone in thirty years. Somebody will be standing in the river here.",
+        "I like knowing the exact expiry date of somewhere I am happy."
+      ],
+      "chaotic": "The bank rebuilds itself: three metres of new ground unrolls into the river and holds, complete with grass.",
+      "activity": [
+        "Look for something the water left. There is always something and it is always strange.",
+        "You find a bone, a bottle and a key. She keeps the key and will not discuss it."
+      ],
+      "incidents": [
+        "A piece of the bank goes into the water further down with a soft, final sound.",
+        "Something with a burrow decides you are both fine and goes back to work."
+      ]
+    },
+    "Road": {
+      "label": "The Road",
+      "intro": "A road going both ways, with nobody on it in either direction.\nSomebody surveyed this line, once, and everyone has agreed with them since.",
+      "question": [
+        "Roads are the only honest architecture. They only exist to be somewhere else from.",
+        "Which way would you have gone, if I had not turned up?"
+      ],
+      "romantic": [
+        "She stands on the centre line, where nobody is supposed to stand, and there is nothing coming.",
+        "Everybody on a road is on their way to somebody. That is all a road is for.",
+        "I have never been the destination. Not once, in four thousand years."
+      ],
+      "chaotic": "The road's markings peel up off the surface, rearrange, and lay themselves back down pointing somewhere else entirely.",
+      "activity": [
+        "Walk down the middle with me until something makes us move.",
+        "You walk the centre line for a mile. Nothing comes, and by the end neither of you wants anything to."
+      ],
+      "incidents": [
+        "A single vehicle passes, slows for no reason, and speeds up again.",
+        "A signpost points at a place neither of you has ever heard of."
+      ]
+    },
+    "Ruins": {
+      "label": "Ruins",
+      "intro": "Ruins with enough left standing to tell you what it was.\nSomebody's very good idea, eight hundred years after the last person agreed with it.",
+      "question": [
+        "Everything gets to this eventually. Every wall, every empire, every one of us.",
+        "Does it depress you, or is that just good taste?"
+      ],
+      "romantic": [
+        "She sits in a doorway that has no building attached to it any more, framed by nothing.",
+        "This was somebody's front door. They came through it every day for forty years.",
+        "Nothing outlasts being loved daily. Not marble. I have checked."
+      ],
+      "chaotic": "Every fallen stone in the ruin lifts a foot off the ground, holds, and settles back into a slightly better building.",
+      "activity": [
+        "Rebuild one wall with me. Badly. It is the thought that counts and the thought is spite.",
+        "You stack fallen stones into two courses of a wall. It will be the newest thing here for another century."
+      ],
+      "incidents": [
+        "A stone comes off a wall on its own and lands where it was always going to.",
+        "You find a carved face that is still, unmistakably, laughing at somebody."
+      ]
+    },
+    "SaltFlats": {
+      "label": "Salt Flats",
+      "intro": "A salt pan flat enough to see the curve of the world on.\nThere is a film of water on it and the sky has fallen over.",
+      "question": [
+        "There are two skies and no ground. Nobody built this and nobody can improve it.",
+        "Say something true out here. It is the only place I trust an answer."
+      ],
+      "romantic": [
+        "She walks out onto the film of water until she is standing in the sky, and turns round.",
+        "There is nothing here to hide behind. No pillars, no crowd, no weather.",
+        "So I am going to be straightforward for a minute and you are going to let me."
+      ],
+      "chaotic": "The reflection stops copying the sky and starts showing a completely different one, with the wrong number of moons.",
+      "activity": [
+        "Walk out until neither of us can tell which way up we are.",
+        "You walk out into the middle of the reflected sky and stand there being the only vertical thing for miles."
+      ],
+      "incidents": [
+        "Your own reflection is a half second behind you, once, and then catches up.",
+        "A wind crosses the whole pan and every reflection tilts together."
+      ]
+    },
+    "Savannah": {
+      "label": "Savannah",
+      "intro": "Grass to the horizon with a few trees standing about like witnesses.\nEverything out here can see everything else coming.",
+      "question": [
+        "Nothing here can hide. Everything just watches everything else and agrees to wait.",
+        "Would you be predator or prey? Do not think about it, just say."
+      ],
+      "romantic": [
+        "She sits with her back to one of the lone trees and the whole plain arranges itself in front of you.",
+        "This is the shape of country your species stood up in. You are homesick and you do not know it.",
+        "I have no shape of country. I have wherever the argument is."
+      ],
+      "chaotic": "Every animal on the plain looks up at the same instant, at the same thing, which is not there.",
+      "activity": [
+        "Watch that tree line with me until something comes out of it.",
+        "Something does, eventually, and it is enormous and unhurried and does not care about either of you."
+      ],
+      "incidents": [
+        "Dust comes up on the horizon and settles again without resolving into anything.",
+        "The grass moves against the wind in one line for about two hundred metres."
+      ]
+    },
+    "SeaBed": {
+      "label": "Sea Floor",
+      "intro": "The floor of the sea, with the whole weight of it overhead.\nThe light that reaches down here has had most of itself taken off it.",
+      "question": [
+        "Everything above us is water and everything below us is older than water.",
+        "Nothing down here has ever needed to look good. It is very restful."
+      ],
+      "romantic": [
+        "She walks along the bottom slowly because there is no other speed available, and everything she stirs up takes an age to settle.",
+        "Nothing here has ever heard a rumour. There is no gossip at this depth.",
+        "Do you know how long it is since I was somewhere nobody had an opinion about me?"
+      ],
+      "chaotic": "Every light-making thing on the bottom switches on at once, and for a few seconds the sea floor is a city.",
+      "activity": [
+        "Pick something up off the bottom. Whatever it is, it has been there longer than your language.",
+        "You pick up something worked by hands. Neither of you says what you think it was."
+      ],
+      "incidents": [
+        "Something goes over the two of you, blocking what light there was, and takes a while to finish going over.",
+        "The silt you disturbed twenty seconds ago is still coming down."
+      ]
+    },
+    "Sewer": {
+      "label": "Sewers",
+      "intro": "A brick sewer, vaulted like a chapel by somebody who took it seriously.\nEverything the city has decided against is going past your feet.",
+      "question": [
+        "Look at that vaulting. Somebody made this beautiful and no one was ever going to see it.",
+        "That is the purest work there is. Do you agree, or are you being sick?"
+      ],
+      "romantic": [
+        "She holds a light up to the brickwork and finds a date and a mason's mark from a hundred and sixty years ago.",
+        "He signed it. Down here. Where nobody would ever look.",
+        "That is what I want. Not the temples. That."
+      ],
+      "chaotic": "Every outfall in the system runs clear water for one minute, which will cause four separate official inquiries.",
+      "activity": [
+        "Find another mark. There will be more of them and I want the whole set.",
+        "You find six between you. Two are the same man, twenty years apart, in different tunnels."
+      ],
+      "incidents": [
+        "The water level rises and falls a hand's width for no reason you can see.",
+        "Something splashes ahead of you and does not splash again."
+      ]
+    },
+    "Snow": {
+      "label": "Snowfield",
+      "intro": "Open ground under fresh snow, still coming down.\nEvery sound in the world has had a blanket put over it.",
+      "question": [
+        "Nothing has crossed this yet. In about four minutes that will have stopped being true.",
+        "Do you want the first footprints, or shall I?"
+      ],
+      "romantic": [
+        "She catches a flake on the back of her hand and stops it there, unmelted, for as long as she can be bothered.",
+        "There are eleven trillion of these coming down tonight and no two are the same. It sounds like poetry. It is arithmetic.",
+        "Every one of them is going to be water by morning anyway. So is this. So look at it."
+      ],
+      "chaotic": "The snow stops. Not on the ground: in the air. Every flake in sight holds its position for six seconds.",
+      "activity": [
+        "Fall over backwards with me. On purpose. In the snow. Now.",
+        "You both go over backwards into it and lie there, and the snow keeps coming down onto your faces."
+      ],
+      "incidents": [
+        "The snow comes down heavier for about a minute, as though something was decided.",
+        "A set of prints crosses yours that neither of you saw being made."
+      ]
+    },
+    "Space": {
+      "label": "Open Space",
+      "intro": "Vacuum, with everything in it very far away and very old.\nThere is no up here and both of you have quietly picked one anyway.",
+      "question": [
+        "Everything you can see is a photograph of something that has already stopped doing that.",
+        "Does the scale of it frighten you? Answer honestly, it frightens me."
+      ],
+      "romantic": [
+        "With nothing to stand on she simply turns to face you, and there is nothing else in any direction.",
+        "Gods are supposed to be comfortable out here. I have never once been.",
+        "You are the nearest thing to a horizon I have got. Stay put."
+      ],
+      "chaotic": "Every star in view goes out for one full second. Nothing else happens, and she does not apologise.",
+      "activity": [
+        "Pick a star. We are going to decide what is happening there right now.",
+        "You pick one and invent a civilisation for it. Hers has a very detailed and vindictive legal system."
+      ],
+      "incidents": [
+        "Something crosses in front of a distant star and takes four minutes to finish crossing.",
+        "You both notice at the same time that it has been silent this whole while."
+      ]
+    },
+    "Spacecenter": {
+      "label": "Space Centre",
+      "intro": "A launch complex between missions. Gantries, hard standing, and a countdown clock stopped at a number.\nEverything here was built by people who wanted to leave.",
+      "question": [
+        "Your entire species looked up and then built the ladder. On the second attempt.",
+        "Would you go? If they asked tomorrow and it was one way?"
+      ],
+      "romantic": [
+        "She stands under the gantry looking straight up the way somebody looks at a thing they are jealous of.",
+        "Nobody prayed to get up there. They did arithmetic. Enormous quantities of arithmetic.",
+        "You did it without us. I have never been prouder of anything I had no part in."
+      ],
+      "chaotic": "Every clock on the complex resets to nine seconds and holds there, and somewhere an alarm is extremely polite about it.",
+      "activity": [
+        "Read the plaques with me. They put every name on. Every single one.",
+        "You read the names off the wall. It takes a long time, and she does not skip any."
+      ],
+      "incidents": [
+        "A vent releases somewhere on the pad and the whole complex ticks as it cools.",
+        "A light on a control tower changes colour and nobody comes."
+      ]
+    },
+    "SpiritWoods": {
+      "label": "Spirit Woods",
+      "intro": "A wood with too many things standing in it that are not trees.\nNone of them are hostile and all of them have noticed you.",
+      "question": [
+        "Every one of these was something once. Most of them cannot remember what.",
+        "That is what happens when you are stopped believing in. Still want to be here?"
+      ],
+      "romantic": [
+        "The shapes between the trees move back a respectful distance, all at once, without being asked.",
+        "They know what I am. None of them respect me. They are being professionally polite.",
+        "One day I will be standing where they are. I would like somebody to have known me first."
+      ],
+      "chaotic": "Every spirit in the wood turns to face the same direction, which is not towards either of you, and holds.",
+      "activity": [
+        "Say hello to one. Out loud. Nobody has, in a very long time.",
+        "You greet one of them properly. It does not answer, but the whole wood is warmer afterwards."
+      ],
+      "incidents": [
+        "One of them comes closer than the others and stops just inside politeness.",
+        "A name is said somewhere behind you and neither of you asks whose it was."
+      ]
+    },
+    "Steppe": {
+      "label": "Steppe",
+      "intro": "Grassland going on past the point where it means anything.\nThere is one road across it and you cannot see either end.",
+      "question": [
+        "Every empire that ever crossed this decided it was empty. All of them were wrong and all of them are gone.",
+        "Could you live somewhere with no edges?"
+      ],
+      "romantic": [
+        "She sits down in the grass and the horizon is at the same height all the way round the two of you.",
+        "There is no landmark here. Nothing to arrange yourself against. You just have to pick a direction and believe it.",
+        "I have picked one. Do not make me say what it is."
+      ],
+      "chaotic": "The grass lays over in a spiral three hundred metres wide, centred exactly on the two of you.",
+      "activity": [
+        "Walk to nothing in particular with me and see how long it takes to arrive.",
+        "You walk for an hour towards a point you both chose. It is exactly as far away as it was."
+      ],
+      "incidents": [
+        "A horse without anybody on it watches from a distance and then is not there.",
+        "The wind carries the sound of a bell from somewhere that has no bell."
+      ]
+    },
+    "Swamp": {
+      "label": "Swamp",
+      "intro": "Standing water and standing trees, and it is very hard to tell where either of them stops.\nThe ground is a rumour.",
+      "question": [
+        "Nothing here has committed to being solid. I have been accused of the same thing.",
+        "Is this the worst place I could have brought you? Be honest."
+      ],
+      "romantic": [
+        "She finds the one hummock that will take both your weights, and it does, barely.",
+        "Everything in a swamp is halfway through becoming something else. Nothing is finished.",
+        "I would rather be unfinished with you than settled with anyone."
+      ],
+      "chaotic": "Every bubble the swamp has been saving comes up at once and the whole place exhales for eleven seconds.",
+      "activity": [
+        "Find the deepest bit without falling in it. That is the game, those are the rules.",
+        "You find it. One of you falls in it. Neither of you is willing to say it was them."
+      ],
+      "incidents": [
+        "Something long moves under the surface, unhurried, and does not surface.",
+        "A light shows in the trees, at head height, and goes out when looked at directly."
+      ]
+    },
+    "Taiga": {
+      "label": "Taiga",
+      "intro": "Conifers for as far as the road goes, all of them the same height and none of them interested.\nThe forest floor is dry needles and absolutely nothing else.",
+      "question": [
+        "One species, four hundred kilometres. The most single-minded landscape there is.",
+        "Do you admire that, or does it worry you?"
+      ],
+      "romantic": [
+        "She stops walking, and the silence that arrives is so complete that neither of you starts again straight away.",
+        "Nothing lives on this floor. It is all up in the tops, out of the way, minding itself.",
+        "I am very good at being out of the way. It is not the same as being left alone."
+      ],
+      "chaotic": "Every tree in view drops its cones at once, and the sound goes through the forest like applause getting further away.",
+      "activity": [
+        "Walk until the road is out of sight. Then listen. This place has a sound and you have to earn it.",
+        "You get far enough in for the silence to have a texture. Neither of you talks over it."
+      ],
+      "incidents": [
+        "Something crosses the path fifty metres ahead, on four legs, without hurrying.",
+        "A tree cracks somewhere in the cold and the sound arrives from the wrong direction."
+      ]
+    },
+    "Temple": {
+      "label": "Temple Grounds",
+      "intro": "The grounds of a working temple, swept this morning by somebody who does it every morning.\nEverything here is at the angle it was ordered to be.",
+      "question": [
+        "Somebody swept this at dawn. They will do it again tomorrow. That is the entire religion.",
+        "Is that devotion or is it just a job? I have never been able to tell from this side."
+      ],
+      "romantic": [
+        "She stands at the bottom of the steps and does not go up them, which for her is enormous.",
+        "I could walk in there. Nothing would stop me. That is the problem with all of it.",
+        "Out here I have to be invited. Go on, then."
+      ],
+      "chaotic": "Every bell, chime and hanging thing on the grounds sounds at once, and the note holds much longer than it should.",
+      "activity": [
+        "Do the thing properly with me. Whatever they do here. We are going to do it correctly.",
+        "You follow the local form exactly, both of you, without irony. It is the strangest thing she has done all year."
+      ],
+      "incidents": [
+        "A bell is rung once inside and not explained.",
+        "Somebody crosses the yard, sees Eris, and completes their route at exactly the same pace."
+      ]
+    },
+    "TempleInside": {
+      "label": "Temple Interior",
+      "intro": "Inside a temple to somebody else. Offerings gone hard in their bowls, a floor worn concave by knees.\nThe room is built to make one figure look larger than you.",
+      "question": [
+        "A competitor's premises again. I am starting to think you are doing this deliberately.",
+        "Whoever they were, they got a floor worn out by kneeling. What would you want?"
+      ],
+      "romantic": [
+        "She sits down on the steps of somebody else's altar with her back to it.",
+        "I know exactly how much of this was sincere. It is not the number you would guess.",
+        "Nobody has ever knelt for me and meant it. I would not know what to do with it."
+      ],
+      "chaotic": "Every offering in the temple goes fresh again at once, and the smell of it is overwhelming and wrong.",
+      "activity": [
+        "Leave something. Anything. I want to see whose name it goes under.",
+        "You leave a small worthless thing on the altar. Nothing happens, which she says is the correct response."
+      ],
+      "incidents": [
+        "A bowl on the altar tips over on its own and rights itself.",
+        "The statue is not looking where it was looking when you came in."
+      ]
+    },
+    "TempleShinto": {
+      "label": "Shrine",
+      "intro": "A shrine with a torii at the path and a rope on an old tree.\nEverything here is looked after by somebody who is not showing off about it.",
+      "question": [
+        "They put a rope round a tree and that made it somebody. I like that. It is very economical.",
+        "What would you put a rope round, if it worked?"
+      ],
+      "romantic": [
+        "She stops at the torii, waits, and only then walks through, off to one side of the middle.",
+        "The middle is for whoever lives here. You walk at the side. Everybody knows that and nobody enforces it.",
+        "An entire courtesy with no punishment attached. I would not have thought of it."
+      ],
+      "chaotic": "Every paper tied to the rack unties itself, rearranges, and reties. All the wishes are now somebody else's.",
+      "activity": [
+        "Write one and tie it up. I want to see if you cheat and write something sensible.",
+        "You tie yours to the rack. She writes one too, folds it so it cannot be read, and ties it beside yours."
+      ],
+      "incidents": [
+        "The rope on the old tree moves in a wind that has not reached the ground.",
+        "A cat crosses the gravel with the confidence of the resident deity."
+      ]
+    },
+    "Train": {
+      "label": "Station",
+      "intro": "A railway station with the last services still listed.\nWind comes down the platform from an arrival that is running late.",
+      "question": [
+        "Stations are the only buildings that are entirely about somewhere else.",
+        "Have you ever met anybody off a train? Properly, on the platform?"
+      ],
+      "romantic": [
+        "She stands at the end of the platform where the roof stops, and the last of the light is on her.",
+        "Everyone here is being met or not being met. There is no third category.",
+        "Nobody has ever stood on a platform for me. I have thought about it more than I would like."
+      ],
+      "chaotic": "Every departure on the board advances by one minute, at once, for ever, and the station accepts this immediately.",
+      "activity": [
+        "Let's go up. Every station has a way onto the roof and every one of them is unlocked.",
+        "You get onto the station roof. The whole city is laid out below and there is nobody up here but the two of you."
+      ],
+      "incidents": [
+        "An announcement apologises for something that has not happened yet.",
+        "A train goes straight through without slowing and takes all the paper on the platform with it."
+      ]
+    },
+    "Tundra": {
+      "label": "Tundra",
+      "intro": "Low ground, low plants, and a sky doing nearly all of the work.\nNothing here grows above knee height because nothing here is allowed to.",
+      "question": [
+        "Everything here is a hundred years old and eight centimetres tall. Think about that.",
+        "Slow and stubborn, or fast and finished? Which are you?"
+      ],
+      "romantic": [
+        "She kneels and shows you a plant the size of a coin that is older than the last four wars.",
+        "It survived by not being interesting. Nobody grazed it, nobody picked it, nobody wrote about it.",
+        "I have never once managed to be uninteresting. It is going to kill me eventually."
+      ],
+      "chaotic": "The whole tundra flowers at once, everything at ground level, out of season, in one silent second.",
+      "activity": [
+        "Lie down. From down here it is a forest and we are the wrong size for it.",
+        "You lie down in a hundred-year-old forest eight centimetres tall and neither of you gets up for a while."
+      ],
+      "incidents": [
+        "The light goes long and low without the sun appearing to have moved.",
+        "A bird calls once, a very long way off, and nothing answers it."
+      ]
+    },
+    "Underdark": {
+      "label": "The Underdark",
+      "intro": "Deep places under the deep places, on a scale that was not made for anyone.\nThere is a horizon down here, which is the wrong thing for a cave to have.",
+      "question": [
+        "There is weather down here. That is how big it is. Caves are not supposed to have weather.",
+        "Does knowing how much rock is above us help or is it worse?"
+      ],
+      "romantic": [
+        "She stops at the edge of a drop with a city's worth of dark on the far side of it.",
+        "Nothing down here has ever seen the sun and none of it is missing anything.",
+        "I keep being told what I ought to want. Down here nobody is telling anybody anything."
+      ],
+      "chaotic": "Every luminous thing in the whole cavern dims and brightens together, twice, like a very large animal blinking.",
+      "activity": [
+        "Shout across it with me. I want to know if there is a far side.",
+        "You shout across the dark together. Something comes back and it is not either of your voices."
+      ],
+      "incidents": [
+        "A stone you did not drop lands somewhere below and keeps going.",
+        "A light moves across the cavern very far off, at a steady pace, going somewhere."
+      ]
+    },
+    "Villa": {
+      "label": "Villa",
+      "intro": "A private villa with the grounds kept and nobody in residence.\nEverything here was chosen to be seen by people who were invited.",
+      "question": [
+        "Somebody spends a fortune a year on this and comes for three weeks in August.",
+        "Are we trespassing? We are. Does it improve it?"
+      ],
+      "romantic": [
+        "She sits on the edge of the empty fountain as though she had been asked to, at length, by letter.",
+        "Everything here is arranged for a guest who never quite arrives.",
+        "I have been the guest who never arrives for a very long time. Tonight I turned up."
+      ],
+      "chaotic": "Every light in the villa comes on, the fountain starts, and music begins for a party that was cancelled in another decade.",
+      "activity": [
+        "Use the good room. Sit on the furniture nobody is allowed to sit on.",
+        "You sit on the untouchable furniture in the best room in the house and nothing at all happens to you."
+      ],
+      "incidents": [
+        "A shutter somewhere in the house is opened and closed by nobody.",
+        "The gardener's radio is still on, somewhere down the grounds, playing to the hedges."
+      ]
+    },
+    "Village": {
+      "label": "Village",
+      "intro": "A village of thirty roofs with the evening meal happening behind all of them.\nSomebody's dog has already told everyone you are here.",
+      "question": [
+        "Thirty families and one argument that has been running since 1840.",
+        "Do you want to know what it is about? I can find out in four minutes."
+      ],
+      "romantic": [
+        "She sits on the low wall by the well, where everybody in the village has sat at some point in their life.",
+        "Everyone here will be buried within a mile of where they were born. All of them. On purpose.",
+        "I have never been anywhere twice on purpose. Tonight is technically a start."
+      ],
+      "chaotic": "Every door in the village opens at the same moment, and thirty people look out at nothing, and go back in.",
+      "activity": [
+        "Sit here until somebody comes out to find out who we are.",
+        "Somebody does. She tells them a name that is not hers and they accept it entirely."
+      ],
+      "incidents": [
+        "A dog barks twice, is told off by name, and stops.",
+        "Somebody's window closes as you look at it, and the light behind it does not go off."
+      ]
+    },
+    "VillageDesert": {
+      "label": "Desert Village",
+      "intro": "A village of thick walls and small windows, built entirely against the sun.\nThe streets are narrow on purpose and the shade is the town's main asset.",
+      "question": [
+        "Every wall here is a metre thick. Nobody built that for the look of it. They were arguing with the sky.",
+        "Would you have stayed and built, or moved on?"
+      ],
+      "romantic": [
+        "She leads you down the shaded side of a street barely wide enough for the two of you.",
+        "They built the streets this narrow so people would have to pass close. It is deliberate.",
+        "Four thousand years of divine architecture and nobody thought of that."
+      ],
+      "chaotic": "Every water jar in the village fills to the brim at once and the whole place hears it happen.",
+      "activity": [
+        "Find the coolest place in this village. Whoever lives there is the most important person here.",
+        "You find it: a covered passage behind the well. An old woman is already sitting in it and does not move."
+      ],
+      "incidents": [
+        "A door opens, a bowl of water is thrown into the street, and the door closes.",
+        "The heat coming off a wall makes the far end of the street bend."
+      ]
+    },
+    "VillageIce": {
+      "label": "Winter Village",
+      "intro": "A village dug in for the winter. Paths cleared between the doors and nothing cleared beyond them.\nThe cold has made everybody's world about ninety metres across.",
+      "question": [
+        "Nobody here has left this circle since November. Everybody here is very sick of each other.",
+        "Six months of the same forty people. Could you?"
+      ],
+      "romantic": [
+        "She stands in the cleared path between two houses where the snow is higher than both your heads.",
+        "They dug this so they could get to each other. That is all it is for.",
+        "Nobody has ever dug through anything to reach me. I would notice."
+      ],
+      "chaotic": "Every roof in the village sheds its snow at once, in one enormous soft collapse, and the village is briefly invisible.",
+      "activity": [
+        "Follow the paths and see whose door everybody's leads to. Somebody here is the centre of it.",
+        "You trace the cleared paths. They all converge on one door, and it is not the largest house."
+      ],
+      "incidents": [
+        "Somebody's chimney gives out a burst of sparks and a smell of something burnt.",
+        "Two people meet on a path, say four words, and part."
+      ]
+    },
+    "VillageMountain": {
+      "label": "Mountain Village",
+      "intro": "A village stuck to a slope, where every street is also a staircase.\nEverything here was carried up by somebody.",
+      "question": [
+        "Every stone in this place was carried up that road by hand. Every single one.",
+        "Why here? Nobody ever gives a good answer and everybody has one."
+      ],
+      "romantic": [
+        "She sits on a step halfway up the village with the whole valley opening out below the roofs.",
+        "They built up here for a reason nobody alive remembers and they stayed for a different one.",
+        "Staying for a different reason than you came. I understand that one completely."
+      ],
+      "chaotic": "Every shutter on the mountain side of the village bangs open at once, and the valley hands the sound back four times.",
+      "activity": [
+        "Climb to the top of the village with me. There is always a bench up there and it always has the best view.",
+        "There is a bench at the top. It has the best view and somebody's name on a small brass plate."
+      ],
+      "incidents": [
+        "A bell rings down in the valley and arrives here about a second late.",
+        "Someone comes down the steps past you carrying something far too heavy and refuses help."
+      ]
+    },
+    "VillageRiver": {
+      "label": "River Village",
+      "intro": "A village along a river, with everything important built on the wrong side of it.\nThere is a bridge, and there is an argument about the bridge.",
+      "question": [
+        "Two halves of one village with a river down the middle. They have been separate for three centuries.",
+        "Which side would you have been born on? It matters here more than anything else about you."
+      ],
+      "romantic": [
+        "She stops in the middle of the bridge, which is neither side, and stays there.",
+        "Both halves think the other half started it and both of them are right.",
+        "I usually start it. It is nice to be somewhere that managed it without me."
+      ],
+      "chaotic": "Every boat tied along the village breaks its rope at once and drifts downstream in perfect formation.",
+      "activity": [
+        "Cross and come back. I want to see if anything changes about you.",
+        "You cross and come back. On the far bank a woman greets you and on this one nobody does."
+      ],
+      "incidents": [
+        "Something is shouted from one bank to the other, twice, and not answered.",
+        "A boat goes past under the bridge with nobody visible in it."
+      ]
+    },
+    "VillageSea": {
+      "label": "Fishing Village",
+      "intro": "A fishing village with the boats up and the nets out to dry.\nEverybody here is either at sea, waiting for somebody at sea, or retired from it.",
+      "question": [
+        "Every house here faces the water. Not the road. The water.",
+        "Would you wait for somebody like that? Every day, on a wall?"
+      ],
+      "romantic": [
+        "She sits on the harbour wall facing out, in the place that has clearly been sat in for two hundred years.",
+        "The stone here is worn into a dip. Somebody has been waiting in this exact spot since before your language settled.",
+        "Being waited for is the thing I understand least and want most."
+      ],
+      "chaotic": "Every net in the village untangles itself, all at once, perfectly, which will ruin four reputations.",
+      "activity": [
+        "Read the boat names with me. Fishermen name boats after the person they are frightened of losing.",
+        "You read every hull in the harbour. Three of them have the same name and it is nobody's you can find."
+      ],
+      "incidents": [
+        "A boat comes in late and everybody on the front counts the people in it without appearing to.",
+        "A gull takes something out of somebody's hand at the far end of the quay."
+      ]
+    },
+    "Volcano": {
+      "label": "Volcano",
+      "intro": "The flank of a live volcano, warm underfoot and smelling of the inside of the world.\nSomething down there is audible and is not in a hurry.",
+      "question": [
+        "This will kill everybody living on it eventually and every single one of them knows.",
+        "They stay because the soil is good. Is that brave or is it stupid?"
+      ],
+      "romantic": [
+        "She sits down on ground that is warmer than she is and does not appear to notice.",
+        "Everything that ever grew well grew on top of something that had gone catastrophically wrong.",
+        "I have gone catastrophically wrong several times. I keep waiting for the good soil."
+      ],
+      "chaotic": "The mountain clears its throat. Nothing erupts, but every bird on the flank leaves at the same moment.",
+      "activity": [
+        "Get closer with me. Not stupidly closer. Just closer than we should.",
+        "You go closer than is sensible. The heat is a wall and neither of you turns round first."
+      ],
+      "incidents": [
+        "The ground gives one deep knock, like something turning over in its sleep.",
+        "A vent puts out a plume that leans over the two of you and then decides otherwise."
+      ]
+    }
+  }
+}

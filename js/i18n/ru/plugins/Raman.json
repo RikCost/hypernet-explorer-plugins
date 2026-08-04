@@ -1,0 +1,177 @@
+{
+  "unknownObject": "",
+  "unknown": "",
+  "targetLine": "",
+  "axisX": "",
+  "axisY": "",
+  "statusAnalyzing": "",
+  "statusComplete": "",
+  "statusScanning": "",
+  "statusRendering": "",
+  "msgHeader": "",
+  "msgNoMaterial": "",
+  "msgHint": "",
+  "objectType": {
+    "tagged": "",
+    "fossil": "",
+    "statue": "",
+    "painting": "",
+    "library": "",
+    "mask": "",
+    "surface": ""
+  },
+  "material": {
+    "marble": {
+      "name": "",
+      "subname": ""
+    },
+    "granite": {
+      "name": "",
+      "subname": ""
+    },
+    "bronze": {
+      "name": "",
+      "subname": ""
+    },
+    "limestone": {
+      "name": "",
+      "subname": ""
+    },
+    "lapis": {
+      "name": "",
+      "subname": ""
+    },
+    "vermillion": {
+      "name": "",
+      "subname": ""
+    },
+    "malachite": {
+      "name": "",
+      "subname": ""
+    },
+    "lead_white": {
+      "name": "",
+      "subname": ""
+    },
+    "wood": {
+      "name": "",
+      "subname": ""
+    },
+    "paper": {
+      "name": "",
+      "subname": ""
+    },
+    "onyx": {
+      "name": "",
+      "subname": ""
+    },
+    "obsidian": {
+      "name": "",
+      "subname": ""
+    },
+    "jade": {
+      "name": "",
+      "subname": ""
+    },
+    "quartz": {
+      "name": "",
+      "subname": ""
+    },
+    "sandstone": {
+      "name": "",
+      "subname": ""
+    },
+    "basalt": {
+      "name": "",
+      "subname": ""
+    },
+    "alabaster": {
+      "name": "",
+      "subname": ""
+    },
+    "clay": {
+      "name": "",
+      "subname": ""
+    },
+    "gold": {
+      "name": "",
+      "subname": ""
+    },
+    "silver": {
+      "name": "",
+      "subname": ""
+    },
+    "copper": {
+      "name": "",
+      "subname": ""
+    },
+    "iron": {
+      "name": "",
+      "subname": ""
+    },
+    "steel": {
+      "name": "",
+      "subname": ""
+    },
+    "ivory": {
+      "name": "",
+      "subname": ""
+    },
+    "ebony": {
+      "name": "",
+      "subname": ""
+    },
+    "bamboo": {
+      "name": "",
+      "subname": ""
+    },
+    "ultramarine": {
+      "name": "",
+      "subname": ""
+    },
+    "prussian_blue": {
+      "name": "",
+      "subname": ""
+    },
+    "cobalt_blue": {
+      "name": "",
+      "subname": ""
+    },
+    "burnt_sienna": {
+      "name": "",
+      "subname": ""
+    },
+    "azurite": {
+      "name": "",
+      "subname": ""
+    },
+    "viridian": {
+      "name": "",
+      "subname": ""
+    },
+    "charcoal": {
+      "name": "",
+      "subname": ""
+    },
+    "amber": {
+      "name": "",
+      "subname": ""
+    },
+    "fossil_bone": {
+      "name": "",
+      "subname": ""
+    },
+    "fossil_silicified": {
+      "name": "",
+      "subname": ""
+    },
+    "fossil_pyrite": {
+      "name": "",
+      "subname": ""
+    },
+    "fossil_calcite": {
+      "name": "",
+      "subname": ""
+    }
+  }
+}

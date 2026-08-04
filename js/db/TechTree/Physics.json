@@ -1,0 +1,625 @@
+{
+  "id": "Physics",
+  "icon": 79,
+  "accent": "#3a6ea5",
+  "real": true,
+  "procCount": 4,
+  "nodes": [
+    {
+      "id": "phys_attosecond",
+      "year": 2001,
+      "requires": [],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 80
+        },
+        {
+          "id": 853,
+          "qty": 60
+        },
+        {
+          "id": 852,
+          "qty": 50
+        }
+      ],
+      "buffs": {
+        "mat": 1
+      }
+    },
+    {
+      "id": "phys_slowlight",
+      "year": 2001,
+      "requires": [],
+      "materials": [
+        {
+          "id": 867,
+          "qty": 100
+        },
+        {
+          "id": 866,
+          "qty": 40
+        },
+        {
+          "id": 852,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "mat": 1
+      }
+    },
+    {
+      "id": "phys_neutrino",
+      "year": 2002,
+      "requires": [
+        "phys_slowlight"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 851,
+          "qty": 100
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 863,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "phys_graphene",
+      "year": 2004,
+      "requires": [
+        "phys_attosecond"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 857,
+          "qty": 140
+        },
+        {
+          "id": 856,
+          "qty": 180
+        },
+        {
+          "id": 867,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "def": 2
+      },
+      "reward": {
+        "kind": "item",
+        "id": 857,
+        "qty": 10
+      }
+    },
+    {
+      "id": "phys_teleport",
+      "year": 2004,
+      "requires": [
+        "phys_neutrino",
+        "phys_attosecond"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 180
+        },
+        {
+          "id": 852,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 80
+        },
+        {
+          "id": 853,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "phys_metamaterial",
+      "year": 2006,
+      "requires": [
+        "phys_graphene"
+      ],
+      "materials": [
+        {
+          "id": 850,
+          "qty": 50
+        },
+        {
+          "id": 867,
+          "qty": 240
+        },
+        {
+          "id": 852,
+          "qty": 180
+        },
+        {
+          "id": 856,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "agi": 2
+      }
+    },
+    {
+      "id": "phys_topological",
+      "year": 2007,
+      "requires": [
+        "phys_graphene"
+      ],
+      "materials": [
+        {
+          "id": 857,
+          "qty": 180
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 850,
+          "qty": 40
+        },
+        {
+          "id": 864,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "phys_spintronics",
+      "year": 2007,
+      "requires": [
+        "phys_graphene"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 863,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 200
+        },
+        {
+          "id": 864,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "atk": 2
+      }
+    },
+    {
+      "id": "phys_dark_energy",
+      "year": 2011,
+      "requires": [
+        "phys_topological"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 867,
+          "qty": 220
+        },
+        {
+          "id": 851,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 120
+        },
+        {
+          "id": 850,
+          "qty": 40
+        }
+      ],
+      "buffs": {
+        "mmp": 25
+      },
+      "reward": {
+        "kind": "item",
+        "id": 866,
+        "qty": 8
+      }
+    },
+    {
+      "id": "phys_superconductor",
+      "year": 2008,
+      "requires": [
+        "phys_topological",
+        "phys_spintronics"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 260
+        },
+        {
+          "id": 864,
+          "qty": 180
+        },
+        {
+          "id": 851,
+          "qty": 160
+        },
+        {
+          "id": 866,
+          "qty": 100
+        },
+        {
+          "id": 854,
+          "qty": 200
+        }
+      ],
+      "buffs": {
+        "def": 3,
+        "mmp": 20
+      }
+    },
+    {
+      "id": "phys_lhc",
+      "year": 2008,
+      "requires": [
+        "phys_metamaterial",
+        "phys_teleport",
+        "phys_cryogenics"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 450
+        },
+        {
+          "id": 863,
+          "qty": 600
+        },
+        {
+          "id": 851,
+          "qty": 300
+        },
+        {
+          "id": 854,
+          "qty": 550
+        },
+        {
+          "id": 852,
+          "qty": 400
+        },
+        {
+          "id": 856,
+          "qty": 350
+        }
+      ],
+      "buffs": {
+        "mhp": 40
+      }
+    },
+    {
+      "id": "phys_quantum_machine",
+      "year": 2010,
+      "requires": [
+        "phys_lhc"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 320
+        },
+        {
+          "id": 857,
+          "qty": 220
+        },
+        {
+          "id": 850,
+          "qty": 80
+        },
+        {
+          "id": 853,
+          "qty": 260
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 110,
+        "qty": 1
+      }
+    },
+    {
+      "id": "phys_ftl_neutrino",
+      "year": 2011,
+      "requires": [
+        "phys_lhc"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 260
+        },
+        {
+          "id": 867,
+          "qty": 340
+        },
+        {
+          "id": 852,
+          "qty": 300
+        },
+        {
+          "id": 864,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "agi": 3
+      }
+    },
+    {
+      "id": "phys_higgs",
+      "year": 2012,
+      "requires": [
+        "phys_quantum_machine",
+        "phys_grid"
+      ],
+      "nobelWorthy": true,
+      "materials": [
+        {
+          "id": 851,
+          "qty": 700
+        },
+        {
+          "id": 865,
+          "qty": 200
+        },
+        {
+          "id": 850,
+          "qty": 140
+        },
+        {
+          "id": 854,
+          "qty": 600
+        },
+        {
+          "id": 864,
+          "qty": 450
+        },
+        {
+          "id": 856,
+          "qty": 400
+        }
+      ],
+      "buffs": {
+        "mat": 5,
+        "mmp": 40
+      },
+      "reward": {
+        "kind": "weapon",
+        "id": 526,
+        "qty": 1
+      }
+    },
+    {
+      "id": "phys_emdrive",
+      "year": 2001,
+      "requires": [
+        "phys_slowlight"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 852,
+          "qty": 140
+        },
+        {
+          "id": 854,
+          "qty": 180
+        },
+        {
+          "id": 863,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "agi": 1
+      }
+    },
+    {
+      "id": "phys_coldfusion",
+      "year": 2011,
+      "requires": [
+        "phys_superconductor"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 863,
+          "qty": 220
+        },
+        {
+          "id": 854,
+          "qty": 260
+        },
+        {
+          "id": 871,
+          "qty": 140
+        },
+        {
+          "id": 851,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mhp": 15
+      }
+    },
+    {
+      "id": "phys_electric_universe",
+      "year": 2007,
+      "requires": [
+        "phys_dark_energy"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 852,
+          "qty": 180
+        },
+        {
+          "id": 867,
+          "qty": 200
+        },
+        {
+          "id": 854,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mmp": 10
+      }
+    },
+    {
+      "id": "phys_sc_magnets",
+      "year": 2006,
+      "requires": [
+        "phys_superconductor"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 200
+        },
+        {
+          "id": 864,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 100
+        },
+        {
+          "id": 854,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "def": 2
+      }
+    },
+    {
+      "id": "phys_cryogenics",
+      "year": 2007,
+      "requires": [
+        "phys_sc_magnets"
+      ],
+      "materials": [
+        {
+          "id": 864,
+          "qty": 180
+        },
+        {
+          "id": 867,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 120
+        },
+        {
+          "id": 856,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mdf": 2
+      }
+    },
+    {
+      "id": "phys_detectors",
+      "year": 2008,
+      "requires": [
+        "phys_lhc"
+      ],
+      "materials": [
+        {
+          "id": 863,
+          "qty": 240
+        },
+        {
+          "id": 857,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 220
+        },
+        {
+          "id": 866,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "def": 2,
+        "mhp": 20
+      }
+    },
+    {
+      "id": "phys_grid",
+      "year": 2010,
+      "requires": [
+        "phys_detectors"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 300
+        },
+        {
+          "id": 852,
+          "qty": 260
+        },
+        {
+          "id": 854,
+          "qty": 200
+        },
+        {
+          "id": 851,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    }
+  ]
+}

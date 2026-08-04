@@ -1,0 +1,43 @@
+{
+  "title": "Cambio gettoni",
+  "banner": "CAMBIO GETTONI",
+  "tagline": "Terminale valuta da sala giochi, nessuna commissione",
+  "rate": "1 gettone = €{price}",
+  "atPar": "Si compra e si vende alla pari.",
+  "wallet": "PORTAFOGLIO",
+  "tokensHeld": "GETTONI POSSEDUTI",
+  "buyTokens": "COMPRA GETTONI",
+  "sellTokens": "VENDI GETTONI",
+  "tokensToBuy": "Gettoni da comprare",
+  "tokensToSell": "Gettoni da vendere",
+  "max": "MAX",
+  "youPay": "PAGHI",
+  "youGive": "DAI",
+  "youReceive": "RICEVI",
+  "confirm": "CONFERMA LO SCAMBIO",
+  "hint": "Scegli una direzione, imposta una quantità, poi conferma.",
+  "affordable": {
+    "one": "Ne puoi permettere {count} a €{price} l'uno",
+    "other": "Ne puoi permettere {count} a €{price} l'uno"
+  },
+  "held": {
+    "one": "Ne possiedi {count}, per un valore di €{worth}",
+    "other": "Ne possiedi {count}, per un valore di €{worth}"
+  },
+  "tokenCount": {
+    "one": "{count} gettone",
+    "other": "{count} gettoni"
+  },
+  "statusBuying": "Acquisto: gli euro escono dal portafoglio, i gettoni entrano nella borsa.",
+  "statusSelling": "Vendita: i gettoni escono dalla borsa, gli euro tornano nel portafoglio.",
+  "notEnoughEuros": "Non hai abbastanza euro.",
+  "notEnoughTokens": "Non possiedi così tanti gettoni.",
+  "bought": {
+    "one": "Comprato {count} gettone per €{total}.",
+    "other": "Comprati {count} gettoni per €{total}."
+  },
+  "sold": {
+    "one": "Venduto {count} gettone per €{total}.",
+    "other": "Venduti {count} gettoni per €{total}."
+  }
+}

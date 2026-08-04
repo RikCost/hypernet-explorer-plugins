@@ -1,0 +1,118 @@
+{
+  "dangerWarning": {
+    "party": [
+      "Cet ennemi est trop dangereux !\nOn devrait fuir !",
+      "Cet ennemi est trop puissant !\nIl faut partir !",
+      "On n'est pas à la hauteur !\nOn devrait battre en retraite !",
+      "Cet adversaire est trop fort pour nous !\nIl faut s'échapper !",
+      "On ne peut pas faire face à cet ennemi !\nSortons d'ici !",
+      "Cette créature est trop forte !\nOn devrait fuir !"
+    ],
+    "single": [
+      "Cet ennemi est trop dangereux !\nJe devrais fuir !",
+      "Cet ennemi est trop puissant !\nJe dois partir !",
+      "Je ne suis pas à la hauteur !\nJe devrais battre en retraite !",
+      "Cet adversaire est trop fort pour moi !\nJe dois m'échapper !",
+      "Je ne peux pas faire face à cet ennemi !\nJe dois sortir d'ici !",
+      "Cette créature est trop forte !\nJe devrais fuir !"
+    ]
+  },
+  "moonPhase": {
+    "newMoon": "",
+    "waxingCrescent": "",
+    "firstQuarter": "",
+    "waxingGibbous": "",
+    "fullMoon": "",
+    "waningGibbous": "",
+    "lastQuarter": "",
+    "waningCrescent": ""
+  },
+  "option": {
+    "backgroundModes": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "unknownMap": "",
+  "healthProtection": {
+    "messages": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "reset": "",
+    "available": "",
+    "used": "",
+    "status": ""
+  },
+  "popup": {
+    "miss": "",
+    "evaded": ""
+  },
+  "join": {
+    "friendly": "",
+    "hostile": ""
+  },
+  "rangeLabel": "",
+  "card": {
+    "deckCount": "",
+    "useCard": "",
+    "passTurn": ""
+  },
+  "cmd": {
+    "move": "",
+    "defense": "",
+    "skill": "",
+    "skills": "",
+    "basic": "",
+    "reload": "",
+    "run": ""
+  },
+  "states": {
+    "removalHeader": "",
+    "atBattleEnd": "",
+    "byRestriction": "",
+    "byDamage": "",
+    "byWalking": "",
+    "byWalkingSteps": "",
+    "statusEffects": "",
+    "navHint": ""
+  },
+  "spirit": {
+    "switchCommand": "",
+    "selectSlot": "",
+    "rosterFull": "",
+    "notEnoughGold": "",
+    "slot": "",
+    "unknown": "",
+    "empty": "",
+    "free": "",
+    "entry": ""
+  },
+  "throw": {
+    "aimHelp": "",
+    "destroyed": "",
+    "missingItem": "",
+    "pickUpPrompt": "",
+    "pickUp": "",
+    "cancel": "",
+    "pickedUp": ""
+  },
+  "mimic": {
+    "mirrored": "",
+    "hasLearned": "",
+    "learnedFromEnemy": "",
+    "learnableSkills": ""
+  },
+  "summon": {
+    "battleOnly": "",
+    "alreadyActive": "",
+    "summoned": ""
+  },
+  "actorDied": "",
+  "bulletHellDamage": ""
+}

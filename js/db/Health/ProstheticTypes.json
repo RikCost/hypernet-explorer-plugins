@@ -382,7 +382,7 @@
     "skill": null
   },
   "ALCHEMICAL_PROCESSOR": {
-    "name_en": "Alchemical Processing Unit",
+    "name_en": " Processing Unit",
     "name_int": "prosthetics.alchemical_processor.name",
     "name_it": "Unità di Elaborazione Alchemica",
     "type": "magical",

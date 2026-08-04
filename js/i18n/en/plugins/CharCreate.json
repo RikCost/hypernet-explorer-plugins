@@ -1,0 +1,554 @@
+{
+  "pastLife": "Past life",
+  "warrior": "Warrior",
+  "disciplinedFrontLineFighters": "Disciplined front-line fighters.",
+  "brawler": "Brawler",
+  "unarmedAndMartialSpecialists": "Unarmed and martial specialists.",
+  "mage": "Mage",
+  "wieldersOfArcanePower": "Wielders of arcane power.",
+  "occultist": "Occultist",
+  "darkAndForbiddenArts": "Dark and forbidden arts.",
+  "devout": "Devout",
+  "healersAndTheFaithful": "Healers and the faithful.",
+  "scholar": "Scholar",
+  "mindsOfScienceAndStudy": "Minds of science and study.",
+  "survivor": "Survivor",
+  "huntersRangersAndLaborers": "Hunters, rangers and laborers.",
+  "outsider": "Outsider",
+  "misfitsAndTheUnclassifiable": "Misfits and the unclassifiable.",
+  "initialSettings": "INITIAL SETTINGS",
+  "confirm": "Confirm",
+  "selectDifficulty": "Select difficulty",
+  "selectCombatMode": "Select combat mode",
+  "chooseCreationMode": "Choose creation mode",
+  "chooseYourHometown": "Choose your hometown",
+  "worldHistory": "World History",
+  "chooseCharacterType": "Choose Character Type",
+  "howIsYourCharacterPortrayed": "How is your character portrayed?",
+  "selectYourGender": "Select your gender:",
+  "male": "Male",
+  "female": "Female",
+  "nonBinary": "Non binary",
+  "cocoon": "Cocoon",
+  "chooseYourSkills": "Choose your skills",
+  "chooseAnArchetype": "Choose an archetype",
+  "chooseYourClass": "Choose your class",
+  "selectYourTraits": "Select your traits",
+  "chooseYourBirthDate": "Choose your birth date",
+  "addAnotherPartyMember": "Add another party member?",
+  "chooseYourOrigin": "Choose your origin",
+  "noDefiningTraits": "No defining traits",
+  "noSkillsLearned": "No skills learned",
+  "noSpecializations": "No specializations",
+  "emptyBackpack": "Empty backpack",
+  "hometown": "Hometown",
+  "nationOfBirth": "Nation of Birth",
+  "dateOfBirth": "Date of Birth",
+  "currentAge": "Current Age",
+  "origin": "Origin",
+  "background": "Background",
+  "personalDossier": "PERSONAL DOSSIER",
+  "identityProfile": "Identity Profile",
+  "vocation": "Vocation",
+  "startingWealth": "Starting Wealth",
+  "traits": "Traits",
+  "skills": "Skills",
+  "specializations": "Specializations",
+  "equipment": "Equipment",
+  "presetCharacters": "PRESET CHARACTERS",
+  "back": "Back",
+  "pendingSense": "PENDING SENSE...",
+  "none": "None",
+  "none2": "None",
+  "nonBinary2": "Non-binary",
+  "registering": "REGISTERING...",
+  "finalized": "FINALIZED",
+  "unnamedAlly": "Unnamed Ally",
+  "traits2": "TRAITS",
+  "gear": "GEAR",
+  "yourParty": "YOUR PARTY",
+  "classesOfThisArchetype": "Classes of this archetype",
+  "light": "Light",
+  "sword": "Sword",
+  "heavy": "Heavy",
+  "axe": "Axe",
+  "whip": "Whip",
+  "staff": "Staff",
+  "bow": "Bow",
+  "projectile": "Projectile",
+  "gun": "Gun",
+  "claw": "Claw",
+  "glove": "Glove",
+  "spear": "Spear",
+  "noStartingSkills": "No starting skills",
+  "startingItems": "Starting Items",
+  "skillRoadmap": "Skill Roadmap",
+  "equipmentProficiencies": "Equipment Proficiencies",
+  "startingSkills": "Starting Skills",
+  "head": "Head",
+  "torso": "Torso",
+  "leftArm": "Left Arm",
+  "rightArm": "Right Arm",
+  "leftLeg": "Left Leg",
+  "rightLeg": "Right Leg",
+  "human": "Human",
+  "goblinHead": "Goblin Head",
+  "elf": "Elf",
+  "rounded": "Rounded",
+  "narrow": "Narrow",
+  "squareJaw": "Square Jaw",
+  "youthful": "Youthful",
+  "elder": "Elder",
+  "bigEars": "Big Ears",
+  "orcish": "Orcish",
+  "tusked": "Tusked",
+  "fanged": "Fanged",
+  "beastkin": "Beastkin",
+  "longFace": "Long Face",
+  "flatFace": "Flat Face",
+  "horned": "Horned",
+  "cyclops": "Cyclops",
+  "default": "Default",
+  "randomizeAll": "Randomize All",
+  "structure": "Structure",
+  "body": "Body",
+  "variation": "Variation",
+  "surface": "Surface",
+  "height": "Height",
+  "weight": "Weight",
+  "headSize": "Head Size",
+  "ears": "Ears",
+  "nose": "Nose",
+  "skinHue": "Skin Hue",
+  "saturation": "Saturation",
+  "lightness": "Lightness",
+  "hair": "Hair",
+  "hairColour": "Hair Colour",
+  "fangs": "Fangs",
+  "none3": "None",
+  "small": "Small",
+  "large": "Large",
+  "horns": "Horns",
+  "tail": "Tail",
+  "no": "No",
+  "yes": "Yes",
+  "wings": "Wings",
+  "halo": "Halo",
+  "3dModel": "3D MODEL",
+  "mixPartsFromAnyCreatureDragToRotateWheelToZo": "Mix parts from any creature. Drag to rotate, wheel to zoom.",
+  "customize": "CUSTOMIZE",
+  "search": "Search...",
+  "close": "Close",
+  "noMatches": "No matches",
+  "skillRoadmap2": "Skill Roadmap",
+  "attributeBreakdown": "Attribute Breakdown",
+  "skillsSpecialties": "Skills Specialties",
+  "confirmClass": "Confirm class",
+  "skillRoadmap3": "SKILL ROADMAP",
+  "initialSpecialSkillsAndProgressionUnlockedAl": "Initial special skills and progression unlocked along the roadmap.",
+  "noProgressionSkillsDefined": "No progression skills defined",
+  "attributeBreakdown2": "ATTRIBUTE BREAKDOWN",
+  "increasesPhysicalStrikePower": "Increases physical strike power.",
+  "decreasesPhysicalDamageTaken": "Decreases physical damage taken.",
+  "increasesSpellDamageAndAlchemicalPower": "Increases spell damage and alchemical power.",
+  "decreasesMagicalDamageTaken": "Decreases magical damage taken.",
+  "increasesHitRateDodgeAndActionSpeed": "Increases hit rate, dodge, and action speed.",
+  "increasesCriticalHitsAndAlchemicalAnomaliesC": "Increases critical hits and alchemical anomalies chance.",
+  "masteries": "MASTERIES",
+  "primaryMastery": "Primary Mastery",
+  "secondaryMastery": "Secondary Mastery",
+  "details": "DETAILS",
+  "onlyWhatYourArchetypesSupport": "Only what your archetypes support.",
+  "classes": "CLASSES",
+  "startingWeaponProficiencies": "Starting Weapon Proficiencies",
+  "startingSpecialSkills": "Starting Special Skills",
+  "continue": "Continue",
+  "creatureCreation": "CREATURE CREATION",
+  "chooseATypeOfCreation": "Choose a type of creation.",
+  "baselineCreature": "BASELINE CREATURE",
+  "hybridMonstrosity": "HYBRID MONSTROSITY",
+  "archetipes": "ARCHETIPES",
+  "cancel": "Cancel",
+  "baseSkills": "Base Skills",
+  "anatomy": "Anatomy",
+  "preview": "Preview",
+  "selectArchetypes": "Select archetypes...",
+  "primary": "Primary",
+  "secondary": "Secondary",
+  "archetypeS": "ARCHETYPE(S)",
+  "selectOneArchetypeTemplateForABaselineCreatu": "Select one archetype template for a baseline creature, or two to splice a hybrid. Confirm a selected archetype to continue.",
+  "biology": "BIOLOGY",
+  "noAnatomicalOrgansDefined": "No anatomical organs defined",
+  "confirmBlueprint": "Confirm Blueprint",
+  "custom3dModel": "Custom 3D Model",
+  "sculptAUniqueCreatureFromMixedPartsSeededFro": "Sculpt a unique creature from mixed parts, seeded from your chosen archetypes.",
+  "dragToRotateWheelToZoomMiddleDragToPan": "Drag to rotate · wheel to zoom · middle-drag to pan",
+  "loadingBattlerAsset": "Loading battler asset...",
+  "profileImage": "PROFILE IMAGE",
+  "profileImageSelection": "PROFILE IMAGE SELECTION",
+  "chooseAProfileImage": "Choose a profile image.",
+  "sprites": "Sprites",
+  "selectedSprite": "SELECTED SPRITE",
+  "creatureSynthesisComplete": "Creature synthesis complete",
+  "selectSprite": "SELECT SPRITE",
+  "continue2": "Continue",
+  "presets": "PRESETS",
+  "presets2": "presets",
+  "humanoidSpecies": "HUMANOID SPECIES",
+  "searchSpecies": "Search species...",
+  "choice": {
+    "originDeserter": {
+      "name": "Deserter",
+      "desc": "Choose a faction you deserted from: begin with 40 of its troops, but hated by it (and its parent faction)."
+    },
+    "originFactionLeader": {
+      "name": "Faction Leader",
+      "desc": "Choose a faction and begin in command of 40 of its troops, in good standing with it (and its parent faction), with two weeks of upkeep money."
+    },
+    "originWarlord": {
+      "name": "Independent Warlord",
+      "desc": "Begin in command of 40 troops drawn from random factions, loyal to no one, with enough gold to cover two weeks of their upkeep."
+    },
+    "originCrash": {
+      "name": "Crash Landed",
+      "desc": "Begin stranded on a random planet in an uncharted galaxy, ship damaged, nearly out of fuel and with no jump charges left."
+    },
+    "originArtifact": {
+      "name": "Artifact Heir",
+      "desc": "Inherit one of the world's ancient artifacts, chosen at random, along with its history."
+    },
+    "originCeo": {
+      "name": "CEO",
+      "desc": "Start rich: €1,000,000 in cash and an 80% controlling stake in LemonCorp, at its headquarters."
+    },
+    "originBunker": {
+      "name": "Bunker",
+      "desc": "Wake up in a stocked loot cellar under a random overland biome. Its gold is yours, and the hatch you climb out of stays open forever."
+    },
+    "originStranded": {
+      "name": "Stranded",
+      "desc": "Begin on foot at a random remote spot somewhere on the world map."
+    },
+    "originCriminal": {
+      "name": "Criminal",
+      "desc": "Same camper start as the camper origin, but your party begins already wanted with a 10,000€ bounty."
+    },
+    "originMayor": {
+      "name": "Mayor",
+      "desc": "Pick a city, then begin there with 50 of every crafting material."
+    },
+    "originDungeon": {
+      "name": "Dungeon entrance",
+      "desc": "Start at the tower gate with a delve kit: extra potions, the tower routes map, a flashlight and a climbing rope."
+    },
+    "originLot": {
+      "name": "Empty lot",
+      "desc": "Begin on a random patch of the world map with a large stockpile of crafting materials."
+    },
+    "originBike": {
+      "name": "Start on bike",
+      "desc": "Begin riding a bike somewhere on the world map."
+    },
+    "originCar": {
+      "name": "Start in car",
+      "desc": "Pick a city, then begin in your car parked there."
+    },
+    "originCamper": {
+      "name": "Start in camper",
+      "desc": "Pick a city, then begin in your camper parked there."
+    },
+    "originSpace": {
+      "name": "Start in space",
+      "desc": "Skip the map selection and begin your journey out in space."
+    },
+    "originTrain": {
+      "name": "Start in train",
+      "desc": "Board the train and pick your destination on the map (default)."
+    },
+    "rerollCharacter": {
+      "name": "Reroll character",
+      "desc": "Randomize this character again and update the dossier."
+    },
+    "noMoreMembers": {
+      "name": "No, continue",
+      "desc": "Continue with current party."
+    },
+    "addMember": {
+      "name": "Yes, add member",
+      "desc": "Create another party member."
+    },
+    "ageRandom": {
+      "name": "Random",
+      "desc": "Pick a random age."
+    },
+    "ageElder": {
+      "name": "Elder (60+)",
+      "desc": "Old, with a lifetime of stories."
+    },
+    "ageMiddle": {
+      "name": "Middle-aged (41-60)",
+      "desc": "Experienced and weathered."
+    },
+    "ageAdult": {
+      "name": "Adult (26-40)",
+      "desc": "In the prime of life."
+    },
+    "ageYoung": {
+      "name": "Young (18-25)",
+      "desc": "A young adult, just setting out."
+    },
+    "randomTraits": {
+      "name": "Randomize traits",
+      "desc": "Have traits randomly assigned to your character."
+    },
+    "pickTraits": {
+      "name": "Pick traits",
+      "desc": "Choose your character traits manually."
+    },
+    "randomClass": {
+      "name": "Random class",
+      "desc": "Be assigned a random starting class."
+    },
+    "selectClass": {
+      "name": "Select a class",
+      "desc": "Choose your starting class from a list."
+    },
+    "portraitModel": {
+      "name": "3D Model",
+      "desc": "Sculpt a procedural 3D model instead of choosing a portrait. \\C[1]No bust is used.\\C[0]"
+    },
+    "portraitBust": {
+      "name": "Portrait",
+      "desc": "Pick a drawn bust from the portrait gallery. Your character is shown as that portrait everywhere."
+    },
+    "randomizeAllParty": {
+      "name": "Randomize all party",
+      "desc": "Fill every party slot with a random character instantly, then choose your origin."
+    },
+    "totalRandom": {
+      "name": "Total Random",
+      "desc": "Create a completely random character instantly."
+    },
+    "createCreature": {
+      "name": "Create Creature",
+      "desc": "Create a creature character."
+    },
+    "newCharacter": {
+      "name": "Create New Character",
+      "desc": "Create a brand new character from scratch."
+    },
+    "createCreature2": {
+      "name": "Creature",
+      "desc": "Create a creature character."
+    },
+    "newCharacter2": {
+      "name": "Humanoid",
+      "desc": "Create a humanoid character."
+    },
+    "hometownRandom": {
+      "name": "Random",
+      "desc": "Pick a random hometown."
+    },
+    "hometownPick": {
+      "name": "Pick on map",
+      "desc": "Choose your hometown from the fast-travel map, the same picker used to choose a starting city."
+    },
+    "existingCharacter": {
+      "name": "Use Existing Character",
+      "desc": "Select from pre-made characters. Each one can be played only once per world."
+    },
+    "modeFull": {
+      "name": "Full",
+      "desc": "Detailed creation: choose class, traits, hometown and birth date for every member."
+    },
+    "modeQuick": {
+      "name": "Quick",
+      "desc": "Fast creation for each member: quick class pick, random traits, no flavor steps."
+    },
+    "combatMonsters": {
+      "name": "Monsters",
+      "desc": "Capture and battle with monsters. \\C[1]This cannot be changed later.\\C[0]"
+    },
+    "combatCards": {
+      "name": "Cards",
+      "desc": "Roguelike deck combat. \\C[1]This cannot be changed later.\\C[0] Each party member draws from their own deck built from their skills and plays cards on their turn using Energy instead of MP/TP."
+    },
+    "combatMap": {
+      "name": "Map Battle",
+      "desc": "Tactical fights on the live map instead of a separate battle screen. Move on the tile grid, weapons and skills have a reach, and line of sight matters. Can be changed later in Options."
+    },
+    "combatRpg": {
+      "name": "Classic RPG",
+      "desc": "Standard turn-based combat. Skills cost MP/TP and are picked from your command menu."
+    },
+    "peaceful": {
+      "name": "Peaceful",
+      "desc": "Enemies never attack or chase you unless provoked, and you can \\C[1]Talk\\C[0] to them in battle. Defeat just returns you to your last respawn point."
+    },
+    "bloodAndOil": {
+      "name": "Blood and Oil",
+      "desc": "Body parts reduced to zero HP are lost, with permanent stat debuffs. Losing a vital organ kills the character instantly. Allies not resurrected by the end of the battle die permanently."
+    },
+    "permadeath": {
+      "name": "Permadeath",
+      "desc": "If your character perishes in battle you must create a new one. Allies not resurrected by the end of the battle die permanently."
+    },
+    "roguelite": {
+      "name": "Roguelite",
+      "desc": "If defeated you rewake at the base floor of the dungeon. Fallen allies stay in the party and can be resurrected after battle."
+    }
+  },
+  "hairStyle": {
+    "short": "Short",
+    "crop": "Cropped",
+    "bob": "Bob",
+    "long": "Long",
+    "ponytail": "Ponytail",
+    "topknot": "Topknot",
+    "braids": "Braids",
+    "mohawk": "Mohawk",
+    "afro": "Afro",
+    "dreads": "Dreadlocks",
+    "spiky": "Spiky",
+    "bald": "Bald",
+    "helmet": "Helmet"
+  },
+  "hairColor": {
+    "black": "Black",
+    "darkbrown": "Dark Brown",
+    "brown": "Brown",
+    "chestnut": "Chestnut",
+    "auburn": "Auburn",
+    "ginger": "Ginger",
+    "blond": "Blond",
+    "sandy": "Sandy",
+    "platinum": "Platinum",
+    "ash": "Ash",
+    "grey": "Grey",
+    "white": "White",
+    "moss": "Moss",
+    "ink": "Ink",
+    "wine": "Wine",
+    "teal": "Teal"
+  },
+  "confirmBust": "Confirm Bust",
+  "startAsClass": "Start as a {name}.",
+  "slotVacant": "SLOT {slot}: VACANT",
+  "heightMetres": "{m}m {cm}cm",
+  "selectCharacterSprite": "Select a character sprite.",
+  "selectBustImage": "Select a bust image.",
+  "pressOkToOpenCategory": "Press OK to open this category.",
+  "selectedBust": "Selected: {name}",
+  "bustCategory": {
+    "Human": "Human",
+    "Goblin": "Goblin",
+    "Orc": "Orc",
+    "Dwarven": "Dwarven",
+    "Rabbit": "Rabbit",
+    "Cyclop": "Cyclops",
+    "Gnome": "Gnome",
+    "Elven": "Elven",
+    "Bot": "Bot",
+    "Undead": "Undead",
+    "Devil": "Devil",
+    "Dog": "Dog",
+    "Android": "Android",
+    "Avian": "Avian",
+    "Cat": "Cat",
+    "Elephant": "Elephant",
+    "Goat": "Goat",
+    "Kobold": "Kobold",
+    "Alien": "Alien",
+    "Exotic": "Exotic",
+    "Insectoid": "Insectoid"
+  },
+  "selectABust": "Select a bust",
+  "goldPilesInCellar": "{count} gold piles in the cellar",
+  "cashAmount": "€{amount}",
+  "startingInventory": "STARTING INVENTORY",
+  "nothingYet": "NOTHING YET...",
+  "wornBy": "worn by",
+  "entries": "entries",
+  "start": "Start",
+  "trainPickADestination": "Train, pick a destination",
+  "deepSpace": "Deep space",
+  "yourCamperParkedInACity": "Your camper, parked in a city",
+  "yourCarParkedInACity": "Your car, parked in a city",
+  "aRandomOverlandBiome": "A random overland biome",
+  "aRandomWorldMapTile": "A random world-map tile",
+  "theTowerGate": "The tower gate",
+  "aCityOfYourChoice": "A city of your choice",
+  "bounty": "Bounty",
+  "10000OnYourHead": "10,000€ on your head",
+  "aRandomRemoteWorldMapSpot": "A random remote world-map spot",
+  "aLootCellarUnderARandomBiome": "A loot cellar under a random biome",
+  "hoards": "Hoards",
+  "wayBack": "Way back",
+  "aPermanentHatchOnTheSurface": "A permanent hatch on the surface",
+  "lemoncorpHeadquarters": "LemonCorp headquarters",
+  "assets": "Assets",
+  "80OfLemoncorpShares": "80% of LemonCorp shares",
+  "inheritance": "Inheritance",
+  "1AncientArtifactDrawnAtRandom": "1 ancient artifact, drawn at random",
+  "aRandomPlanetInAnUnchartedGalaxy": "A random planet in an uncharted galaxy",
+  "troops": "Troops",
+  "40FromRandomFactions": "40, from random factions",
+  "upkeep": "Upkeep",
+  "2WeeksOfTheirWagesInCash": "2 weeks of their wages, in cash",
+  "40FromTheFactionYouPick": "40, from the faction you pick",
+  "40FromTheFactionYouDeserted": "40, from the faction you deserted",
+  "cash": "Cash",
+  "startingOut": "Starting Out",
+  "language": "Language",
+  "gameLanguageAnyMissingTranslationFallsBackTo": "Game language. Any missing translation falls back to English.",
+  "fogOfWar": "Fog of War",
+  "revealsTheMapGraduallyAsYouExploreUnvisitedA": "Reveals the map gradually as you explore. Unvisited areas remain hidden in darkness.",
+  "theEntireMapIsFullyRevealedNoHiddenAreas": "The entire map is fully revealed, no hidden areas.",
+  "exploreTileByTileDarknessVeilsTheUnknown": "Explore tile by tile, darkness veils the unknown.",
+  "cpuPartyMembers": "CPU Party Members",
+  "everyPartyMemberExceptTheLeaderActsAutomatic": "Every party member except the leader acts automatically in battle, choosing their own actions.",
+  "youManuallyControlEveryPartyMemberSActions": "You manually control every party member's actions.",
+  "onlyTheLeaderIsControlledByYouTheRestFightOn": "Only the leader is controlled by you, the rest fight on their own.",
+  "enemyBattlers": "Enemy Battlers",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "How enemies are shown in battle. 2D: the classic battler image. 3D: procedural 3D models (goblins, slimes, elementals...). Sprites: the enemy's character sprite from its info.",
+  "classic2dBattlerImages": "Classic 2D battler images.",
+  "3dRendersProceduralModelsSpritesUsesTheEnemy": "3D renders procedural models, Sprites uses the enemy's character sprite.",
+  "globalLighting": "Global Lighting",
+  "masterSwitchForTheDynamicLightingSystemStree": "Master switch for the dynamic lighting system: streetlights, event lights and the night-light overlay. Turn off for maximum performance.",
+  "allDynamicLightsAreDisabledBestPerformance": "All dynamic lights are disabled, best performance.",
+  "streetlightsAndAmbientLightingReactToTheTime": "Streetlights and ambient lighting react to the time of day.",
+  "battleMusic": "Battle Music",
+  "musicTrackPlayedDuringCombatPressToPreviewTr": "Music track played during combat. Press ←→ to preview tracks.",
+  "uiTheme": "UI Theme",
+  "visualThemeAppliedToMenusAndHudPressToSwitch": "Visual theme applied to menus and HUD. Press ←→ to switch. Requires restart to apply.",
+  "skillCategorization": "Skill Categorization",
+  "howSkillsAndMagicAreGroupedInBattleAndMenusR": "How skills and magic are grouped in battle and menus. Role: pick Offensive, Healing or Support, then the skills inside. School: grouped by magic school or discipline. Off: a plain list.",
+  "plainUngroupedSkillList": "Plain ungrouped skill list.",
+  "roleGroupsByPurposeOffensiveHealingSupportSc": "Role groups by purpose (Offensive/Healing/Support); School groups by discipline.",
+  "school": "School",
+  "off": "Off",
+  "role": "Role",
+  "toCycleTracksPreviewPlaysAutomatically": "← → to cycle tracks · preview plays automatically",
+  "toCycleThemesRequiresRestartToApply": "← → to cycle themes · ⟳ requires restart to apply",
+  "settingsPreview": "SETTINGS PREVIEW",
+  "navigateChangeValueEnterConfirm": "↑↓ navigate · ←→ change value · Enter confirm",
+  "musicTrack": {
+    "Battle": "Drums (Default)",
+    "shortcuts": "Shortcuts",
+    "MelodicTechno": "Melodic Techno"
+  },
+  "selectCharacter": "Select Character",
+  "abbrev": {
+    "hp": "HP:",
+    "mp": "MP:",
+    "str": "STR:",
+    "con": "CON:",
+    "dex": "DEX:",
+    "int": "INT:",
+    "wis": "WIS:",
+    "psi": "PSI:"
+  },
+  "previewOff": "OFF",
+  "previewOn": "ON",
+  "unknownVocation": "Unknown"
+}

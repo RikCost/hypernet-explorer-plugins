@@ -1,0 +1,40 @@
+{
+  "resolved": "Resolved",
+  "failed": "Failed",
+  "urgent": "URGENT",
+  "reward": "Reward: ",
+  "readyToCollect": "Ready to collect",
+  "objectives": "objectives",
+  "anyOrder": "(any order)",
+  "inOrder": "(in order)",
+  "progress": "Progress",
+  "postedBy": "Posted by ",
+  "objectives2": "Objectives",
+  "terms": "Terms",
+  "log": "Log",
+  "close": "Close",
+  "toDo": "To Do",
+  "inProgress": "In Progress",
+  "done": "Done",
+  "noQuests": "No quests",
+  "colShiftMoveCardOk": "↑↓ · ←→ col · Shift+←→ move card · OK details · Esc close",
+  "back": "Back",
+  "questLog": "Quest Log",
+  "appName": "Task Master",
+  "questCompleted": "Quest completed!",
+  "questFailed": "Quest failed.",
+  "columnTitles": [
+    "To Do",
+    "In Progress",
+    "Done",
+    "Failed"
+  ],
+  "showOnMapAt": "Show on map ({x}, {y}) · Shift",
+  "notify": {
+    "newQuest": "New Quest: {title}",
+    "newQuestUnknown": "New Quest: ???",
+    "questUpdated": "Quest Updated: {title}",
+    "questComplete": "Quest Complete: {title}",
+    "questFailed": "Quest Failed: {title}"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "verb": {
+    "fell": "Fell down",
+    "mine": "Mine",
+    "pick": "Pick Up",
+    "dismantle": "Dismantle"
+  },
+  "needAxe": "You need an axe to fell this.",
+  "read": "Read",
+  "cancel": "Cancel",
+  "collect": "Collect",
+  "foolsGold": "Fool's gold: pyrite, and barely a coin's worth under it.",
+  "drink": "Drink",
+  "pickUp": "Pick up",
+  "breakIt": "Break",
+  "mpRefilled": "MP refilled!",
+  "open": "Open",
+  "blowOut": "Blow out",
+  "lightUp": "Light up",
+  "bathe": "Bathe",
+  "enter": "Enter",
+  "descend": "Descend",
+  "ascend": "Ascend",
+  "signShop": "Shop",
+  "signInn": "Inn",
+  "needPickaxe": "You need a pickaxe or a heavy tool to break this.",
+  "statue": "A statue depicting {subject}."
+}

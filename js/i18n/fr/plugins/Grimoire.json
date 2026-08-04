@@ -1,0 +1,19 @@
+{
+  "back": "",
+  "forbiddenDraw": "",
+  "forbiddenTitle": "",
+  "skillBookTitle": "",
+  "forgottenTitle": "",
+  "schoolTitle": "",
+  "thisReader": "",
+  "noSpells": "",
+  "ui": {
+    "blurb": "",
+    "partyReader": "",
+    "psychicDiagnostics": "",
+    "medianPsi": "",
+    "forbiddenSurfacing": "",
+    "forbidden": "",
+    "whisperedSpells": ""
+  }
+}

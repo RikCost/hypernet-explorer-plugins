@@ -1,0 +1,1227 @@
+{
+  "_comment": "Conversational social interactions for NPCEmpathize. Each interaction: tone (positive|neutral|negative), baseDelta (opinion change before sincerity decay), player[] lines said by the player, responseGood[] when sincere/accepted, responseBad[] when insincere (positives repeated too often) or hostile (negatives). {name} = NPC name. Jokes are generated from the grammar in `jokes`.",
+  "interactions": [
+    {
+      "id": "praise", "label": "Praise", "label_it": "Elogia", "tone": "positive", "baseDelta": 8,
+      "player": [
+        "You handled that better than anyone I know, {name}.",
+        "Honestly, {name}, you're one of the sharpest people here.",
+        "I've seen a lot of folks, but you stand out, {name}.",
+        "That was genuinely impressive, {name}.",
+        "People should pay more attention to what you do, {name}.",
+        "You've got real talent, {name}. Don't waste it."
+      ],
+      "responseGood": [
+        "{name} straightens up, a small proud smile forming. \"...Thank you. I needed to hear that.\"",
+        "\"You really think so?\" {name} says, clearly pleased.",
+        "{name} looks away, bashful. \"That's kind of you to say.\"",
+        "\"Not many people notice,\" {name} admits. \"I appreciate it.\"",
+        "{name} warms visibly. \"Coming from you, that means something.\""
+      ],
+      "responseBad": [
+        "{name} sighs. \"You say that every single time. It's losing its shine.\"",
+        "\"More flattery?\" {name} says flatly. \"I'm not a fool.\"",
+        "{name} frowns. \"If you praise everything, you praise nothing.\"",
+        "\"Save it,\" {name} mutters. \"I've heard this speech already.\"",
+        "{name} raises an eyebrow. \"What are you buttering me up for?\""
+      ]
+    },
+    {
+      "id": "compliment", "label": "Compliment", "label_it": "Complimenta", "tone": "positive", "baseDelta": 7,
+      "player": [
+        "That's a good look on you, {name}.",
+        "You've got great taste, {name}.",
+        "I like the way you carry yourself, {name}.",
+        "You always seem so put-together, {name}.",
+        "There's something reassuring about you, {name}.",
+        "You make this place a little brighter, {name}."
+      ],
+      "responseGood": [
+        "{name} grins. \"Well, aren't you charming.\"",
+        "\"Oh, stop it,\" {name} laughs, pleased.",
+        "{name} touches their collar self-consciously. \"Thanks, really.\"",
+        "\"That's sweet of you,\" {name} says warmly.",
+        "{name} smiles. \"You've made my day a bit better.\""
+      ],
+      "responseBad": [
+        "{name} gives a thin smile. \"You're laying it on thick again.\"",
+        "\"Every day the same compliment,\" {name} says. \"It rings hollow now.\"",
+        "{name} shrugs. \"Flattery gets stale, you know.\"",
+        "\"Uh-huh,\" {name} says, unconvinced.",
+        "{name} looks skeptical. \"What do you want from me?\""
+      ]
+    },
+    {
+      "id": "encourage", "label": "Encourage", "label_it": "Incoraggia", "tone": "positive", "baseDelta": 6,
+      "player": [
+        "Don't give up, {name}. You've got this.",
+        "Whatever you're facing, {name}, you can handle it.",
+        "Keep going, {name}. It gets easier.",
+        "I believe in you, {name}. Truly.",
+        "You're stronger than you think, {name}.",
+        "One step at a time, {name}. You'll get there."
+      ],
+      "responseGood": [
+        "{name} nods slowly. \"...Maybe you're right. Thank you.\"",
+        "\"I needed someone to say that,\" {name} admits quietly.",
+        "{name} takes a breath. \"Alright. I'll keep at it.\"",
+        "\"That helps more than you know,\" says {name}.",
+        "{name} manages a small smile. \"Okay. Okay, I can do this.\""
+      ],
+      "responseBad": [
+        "{name} shakes their head. \"Empty words, said too often.\"",
+        "\"You keep cheering, but you never actually help,\" {name} says.",
+        "{name} sighs. \"I've heard the pep talk already.\"",
+        "\"Encouragement without substance,\" {name} mutters.",
+        "{name} looks tired. \"Please, not this again.\""
+      ]
+    },
+    {
+      "id": "flatter", "label": "Flatter", "label_it": "Aduala", "tone": "positive", "baseDelta": 5,
+      "player": [
+        "Surely someone as clever as you already knows this, {name}.",
+        "A person of your standing deserves the best, {name}.",
+        "They'd be lost around here without you, {name}.",
+        "You're clearly the most capable one in the room, {name}.",
+        "I only trust someone as wise as you, {name}.",
+        "Everyone speaks so highly of you, {name}."
+      ],
+      "responseGood": [
+        "{name} preens a little. \"You have excellent judgment.\"",
+        "\"Go on,\" {name} says, clearly enjoying it.",
+        "{name} chuckles. \"I do try.\"",
+        "\"Finally, someone with sense,\" {name} beams.",
+        "{name} nods graciously. \"You flatter me.\""
+      ],
+      "responseBad": [
+        "{name}'s smile vanishes. \"Now you're just being oily.\"",
+        "\"I can smell flattery a mile off,\" {name} says coldly.",
+        "{name} folds their arms. \"What's your angle?\"",
+        "\"Too much honey turns the stomach,\" {name} says.",
+        "{name} scoffs. \"Do you think I'm that vain?\""
+      ]
+    },
+    {
+      "id": "thank", "label": "Thank", "label_it": "Ringrazia", "tone": "positive", "baseDelta": 5,
+      "player": [
+        "Thank you for everything, {name}.",
+        "I owe you one, {name}. Really.",
+        "I won't forget your kindness, {name}.",
+        "You've been a real help, {name}. Thanks.",
+        "I'm grateful for you, {name}.",
+        "Cheers, {name}. I mean it."
+      ],
+      "responseGood": [
+        "{name} waves a hand. \"Think nothing of it.\"",
+        "\"Anytime,\" {name} says with a warm nod.",
+        "{name} smiles. \"That's what people are for.\"",
+        "\"You're welcome. Truly,\" says {name}.",
+        "{name} looks touched. \"It was nothing, but... thank you.\""
+      ],
+      "responseBad": [
+        "{name} frowns. \"You thank me, but you never return the favor.\"",
+        "\"Words are cheap,\" {name} says.",
+        "{name} shrugs. \"Gratitude again? Show me, don't tell me.\"",
+        "\"Hmph. Thanks and nothing else,\" {name} mutters.",
+        "{name} sighs. \"I'd rather you actually did something.\""
+      ]
+    },
+    {
+      "id": "smalltalk", "label": "Small Talk", "label_it": "Chiacchiere", "tone": "neutral", "baseDelta": 2,
+      "player": [
+        "Busy day, {name}?",
+        "How are things around here, {name}?",
+        "Anything new with you, {name}?",
+        "Keeping well, {name}?",
+        "Long week, huh, {name}?",
+        "So, how's life treating you, {name}?"
+      ],
+      "responseGood": [
+        "{name} shrugs. \"Same as always, but I can't complain.\"",
+        "\"Oh, you know. One thing after another,\" says {name}.",
+        "{name} nods. \"Getting by. Yourself?\"",
+        "\"Quiet, thankfully,\" {name} replies.",
+        "{name} smiles a little. \"Nice of you to ask.\""
+      ],
+      "responseBad": [
+        "{name} gives a bored look. \"We talk about nothing every time.\"",
+        "\"Small talk again?\" {name} says. \"Is that all you've got?\"",
+        "{name} glances away. \"I'm a little busy for chit-chat.\"",
+        "\"Fine, fine, always fine,\" {name} says, impatient.",
+        "{name} exhales. \"You could just say what you actually want.\""
+      ]
+    },
+    {
+      "id": "gossip", "label": "Gossip", "label_it": "Pettegolezzo", "tone": "neutral", "baseDelta": 2,
+      "player": [
+        "Heard anything interesting lately, {name}?",
+        "People have been talking, {name}. Have you heard?",
+        "Between us, {name}, what's the word on the street?",
+        "You always know the rumors, {name}. Spill.",
+        "Any juicy news around here, {name}?",
+        "Come on, {name}, tell me something I don't know."
+      ],
+      "responseGood": [
+        "{name} leans in. \"Well, since you asked...\"",
+        "\"You didn't hear it from me,\" {name} whispers, delighted.",
+        "{name} grins. \"Oh, I've got a few things.\"",
+        "\"Now THAT is a conversation,\" says {name}, warming up.",
+        "{name} lowers their voice. \"Keep this quiet, alright?\""
+      ],
+      "responseBad": [
+        "{name} shakes their head. \"I don't trade in gossip with you anymore.\"",
+        "\"You're always digging,\" {name} says warily.",
+        "{name} frowns. \"That's how rumors about ME start.\"",
+        "\"Careful,\" {name} warns. \"Loose talk cuts both ways.\"",
+        "{name} clams up. \"Not this time.\""
+      ]
+    },
+    {
+      "id": "weather", "label": "Comment on Weather", "label_it": "Commenta il Tempo", "tone": "neutral", "baseDelta": 1,
+      "player": [
+        "Strange weather we're having, {name}.",
+        "Bit of a chill in the air today, {name}.",
+        "Think the rain will hold off, {name}?",
+        "Lovely sky today, isn't it, {name}?",
+        "Never can trust the forecast, eh, {name}?",
+        "Good day to be outside, {name}."
+      ],
+      "responseGood": [
+        "{name} glances up. \"Aye, can't argue with that.\"",
+        "\"Feels like a storm's coming,\" {name} muses.",
+        "{name} nods. \"Makes you want to stay in, doesn't it.\"",
+        "\"Could be worse,\" says {name}.",
+        "{name} smiles faintly. \"Simple pleasures.\""
+      ],
+      "responseBad": [
+        "{name} deadpans. \"The weather. Again. Riveting.\"",
+        "\"Is the sky all we ever discuss?\" {name} sighs.",
+        "{name} rolls their eyes. \"Yes. Weather exists.\"",
+        "\"Truly gripping conversation,\" {name} says dryly.",
+        "{name} looks unimpressed. \"...And?\""
+      ]
+    },
+    {
+      "id": "insult", "label": "Insult", "label_it": "Insulta", "tone": "negative", "baseDelta": -10,
+      "player": [
+        "You're a waste of space, {name}.",
+        "Honestly, {name}, you're pathetic.",
+        "I've met rocks smarter than you, {name}.",
+        "You're an embarrassment, {name}.",
+        "Nobody actually likes you, {name}.",
+        "You're useless, {name}, and everyone knows it."
+      ],
+      "responseGood": [
+        "{name} recoils, stung. \"...What did I ever do to you?\"",
+        "\"That was uncalled for,\" {name} says, hurt turning to anger.",
+        "{name}'s face hardens. \"You'll regret that.\"",
+        "\"Get out of my sight,\" {name} snaps.",
+        "{name} clenches their fists. \"Watch your mouth.\""
+      ],
+      "responseBad": [
+        "{name} laughs bitterly. \"Insults again? You're predictable.\"",
+        "\"Is that all you know how to do?\" {name} sneers.",
+        "{name} spits. \"You're not worth my anger anymore.\"",
+        "\"Keep talking,\" {name} growls. \"One day I'll answer.\"",
+        "{name} glares. \"Every time. You're pitiful.\""
+      ]
+    },
+    {
+      "id": "mock", "label": "Mock", "label_it": "Deride", "tone": "negative", "baseDelta": -8,
+      "player": [
+        "Nice work, {name}. Did you practice failing?",
+        "Oh, brilliant plan, {name}. Truly inspired.",
+        "Wow, {name}, you must be so proud of yourself.",
+        "Careful, {name}, all that thinking might hurt you.",
+        "Cute effort, {name}. Adorable, really.",
+        "Bravo, {name}. A performance for the ages."
+      ],
+      "responseGood": [
+        "{name}'s cheeks redden. \"Very funny. Really.\"",
+        "\"Laugh it up,\" {name} mutters, humiliated.",
+        "{name} looks away, jaw tight. \"You think you're clever.\"",
+        "\"Enjoy yourself,\" {name} says coldly.",
+        "{name} bristles. \"Keep mocking. See where it gets you.\""
+      ],
+      "responseBad": [
+        "{name} shrugs. \"Your jokes got old a while ago.\"",
+        "\"Same tired mockery,\" {name} says, bored.",
+        "{name} yawns pointedly. \"Try harder.\"",
+        "\"I've stopped listening to you,\" {name} says flatly.",
+        "{name} smirks. \"You're the joke now, honestly.\""
+      ]
+    },
+    {
+      "id": "criticize", "label": "Criticize", "label_it": "Critica", "tone": "negative", "baseDelta": -6,
+      "player": [
+        "You could have done that far better, {name}.",
+        "That was sloppy work, {name}.",
+        "I expected more from you, {name}.",
+        "You're cutting corners, {name}. It shows.",
+        "Frankly, {name}, that wasn't good enough.",
+        "You keep making the same mistakes, {name}."
+      ],
+      "responseGood": [
+        "{name} stiffens. \"...I'll take that under advisement.\"",
+        "\"Everyone's a critic,\" {name} says, defensive.",
+        "{name} frowns. \"I did my best, actually.\"",
+        "\"Noted,\" {name} says curtly.",
+        "{name} bites back a reply. \"Fine. Point taken.\""
+      ],
+      "responseBad": [
+        "{name} snaps. \"You criticize but never lift a finger yourself.\"",
+        "\"Always the expert, aren't you,\" {name} says bitterly.",
+        "{name} throws up their hands. \"Nothing satisfies you.\"",
+        "\"I'm sick of your nagging,\" {name} says.",
+        "{name} turns away. \"Save your lectures.\""
+      ]
+    },
+    {
+      "id": "threaten", "label": "Threaten", "label_it": "Minaccia", "tone": "negative", "baseDelta": -12,
+      "player": [
+        "Cross me and you'll regret it, {name}.",
+        "You don't want me as an enemy, {name}.",
+        "Watch yourself, {name}. I'm warning you.",
+        "One wrong move, {name}, and it's over for you.",
+        "I could make your life very difficult, {name}.",
+        "Remember who you're talking to, {name}."
+      ],
+      "responseGood": [
+        "{name} pales. \"...Alright. No need for that.\"",
+        "\"Is that a threat?\" {name} says, unsettled.",
+        "{name} steps back. \"You've made your point.\"",
+        "\"Easy now,\" {name} says nervously.",
+        "{name} swallows. \"I don't want any trouble.\""
+      ],
+      "responseBad": [
+        "{name} squares up. \"You threaten, but you never follow through.\"",
+        "\"Empty threats,\" {name} says, unafraid now.",
+        "{name} laughs. \"You again? I've stopped being scared.\"",
+        "\"Do your worst,\" {name} says coldly.",
+        "{name} steps closer. \"Careful. My patience is gone.\""
+      ]
+    }
+  ],
+  "performances": {
+    "story": {
+      "label": "Tell a Story", "label_it": "Racconta una Storia", "base": 6,
+      "player": [
+        "You settle in and spin a long tale about {subject}.",
+        "You tell {name} a winding story about {subject}.",
+        "\"Let me tell you the tale of {subject},\" you begin.",
+        "You recount an old legend concerning {subject}.",
+        "You weave a story of adventure and {subject} for {name}."
+      ],
+      "good": [
+        "{name} listens, rapt. \"{subject}... what a tale. Tell me another sometime.\"",
+        "\"I could listen to you talk about {subject} for hours,\" {name} says.",
+        "{name} smiles. \"A fine story. You have a gift for it.\"",
+        "\"{subject},\" {name} murmurs, moved. \"That stirred something in me.\"",
+        "{name} leans forward. \"And then what? No, no, finish it later. Wonderful.\""
+      ],
+      "bad": [
+        "{name} yawns halfway through. \"{subject}? I've no patience for such stories.\"",
+        "\"That tale of {subject} bored me senseless,\" {name} says.",
+        "{name} frowns. \"Not to my taste at all.\"",
+        "\"You lost me at {subject},\" {name} sighs.",
+        "{name} interrupts. \"Is this going somewhere? I have things to do.\""
+      ]
+    },
+    "poem": {
+      "label": "Recite a Poem", "label_it": "Recita una Poesia", "base": 5,
+      "player": [
+        "You clear your throat and recite a verse about {subject}.",
+        "You offer {name} a short poem on {subject}.",
+        "\"A little verse, on {subject},\" you say, and begin.",
+        "You recite a heartfelt ode to {subject}.",
+        "You improvise a rhyme about {subject} for {name}."
+      ],
+      "good": [
+        "{name}'s eyes shine. \"A poem about {subject}... beautiful.\"",
+        "\"You have a poet's soul,\" {name} says softly.",
+        "{name} applauds gently. \"{subject}, rendered so finely.\"",
+        "\"That verse on {subject} will stay with me,\" says {name}.",
+        "{name} sighs happily. \"More. Please, another.\""
+      ],
+      "bad": [
+        "{name} winces. \"Poetry about {subject}? Spare me.\"",
+        "\"That rhyme on {subject} made my ears ache,\" {name} says.",
+        "{name} shifts uncomfortably. \"I don't much care for verse.\"",
+        "\"{subject}? Dreadful stuff,\" {name} mutters.",
+        "{name} covers a laugh. \"Was that meant to be serious?\""
+      ]
+    }
+  },
+  "jokes": {
+    "landGood": [
+      "{name} bursts out laughing. \"Ha! That's a good one.\"",
+      "{name} snorts. \"Okay, that actually got me.\"",
+      "\"Terrible,\" {name} grins, \"but I laughed. Damn you.\"",
+      "{name} chuckles despite themselves. \"Where do you hear these?\"",
+      "\"Ha! Alright, that was clever,\" says {name}."
+    ],
+    "landGroan": [
+      "{name} groans. \"That was awful. I sort of love it.\"",
+      "\"...I can't believe that worked on me,\" {name} says, smiling.",
+      "{name} shakes their head, chuckling. \"So bad. So bad.\"",
+      "\"You should be ashamed,\" {name} laughs.",
+      "{name} rolls their eyes and grins. \"Ugh. Fine. Funny.\""
+    ],
+    "flop": [
+      "{name} stares blankly. \"...Was that meant to be funny?\"",
+      "\"I don't get it,\" {name} says.",
+      "{name} forces a polite cough. \"Ah. Ha. Ha.\"",
+      "\"You've told me that one already,\" {name} sighs.",
+      "{name} deadpans. \"Please stop.\""
+    ],
+    "templates": [
+      "Why did the {noun} {verb}? Because it was completely {adj}!",
+      "What do you call a {adj} {noun}? A {noun2}!",
+      "A {profession} walks into a {place} and says, \"I'll have whatever's {adj}.\"",
+      "How many {noun}s does it take to {verb}? None, they're too {adj}.",
+      "My {noun} is so {adj}, even the {profession} won't touch it.",
+      "What's the difference between a {noun} and a {noun2}? About {adj} coins.",
+      "I told my {noun} a secret, and now the whole {place} knows. Very {adj} of it.",
+      "They say the {place} is haunted by a {adj} {noun}. I say it just needs a {profession}."
+    ],
+    "noun": ["goblin", "turnip", "wizard", "goat", "toaster", "ghost", "banker", "cabbage", "dragon", "sock", "kettle", "gargoyle", "pigeon", "barrel", "mushroom", "skeleton"],
+    "noun2": ["disaster", "legend", "swindle", "miracle", "catastrophe", "bargain", "riddle", "menace", "masterpiece"],
+    "verb": ["cross the road", "join the army", "quit its job", "go to therapy", "run for mayor", "learn the lute", "start a cult", "buy a boat"],
+    "adj": ["haunted", "overcooked", "suspicious", "bankrupt", "enchanted", "damp", "unhinged", "sentient", "flammable", "aristocratic", "cursed", "lukewarm", "radioactive"],
+    "profession": ["tax collector", "alchemist", "undertaker", "bard", "plumber", "necromancer", "fishmonger", "philosopher", "blacksmith"],
+    "place": ["tavern", "cathedral", "sewer", "council chamber", "morgue", "market", "swamp", "opera house"]
+  },
+  "romance": {
+    "_comment": "Romance moves for the NPCEmpathize chat panel: higher risk and higher reward than the plain social interactions. `tier` (1-5) is how bold the move is and lowers the shown success chance; `physical` moves are refused by asexual NPCs; successDelta / failDelta are the reputation swings applied to the focused party member. Odds and compatibility are computed in NPCEmpathizeUI.js. Courting never starts an actual relationship, it only moves reputation. {name} = NPC name.",
+    "actions": [
+      {
+        "id": "flirt", "label": "Flirt", "label_it": "Flirta", "tier": 1, "physical": false,
+        "successDelta": 12, "failDelta": -9,
+        "player": [
+          "So, {name}, does anyone around here ever manage to keep up with you?",
+          "You lean in a little. \"I was hoping you'd be here, {name}.\"",
+          "\"Careful, {name}. I could get used to this.\"",
+          "\"You've been on my mind more than is strictly reasonable, {name}.\""
+        ],
+        "responseGood": [
+          "{name} laughs, holding your gaze a beat too long. \"Is that so?\"",
+          "\"You're trouble,\" {name} says, smiling anyway.",
+          "{name} tilts their head. \"Keep talking like that and I might believe you.\"",
+          "{name}'s ears go pink. \"...You are not subtle, are you.\""
+        ],
+        "responseBad": [
+          "{name} blinks. \"Let's pretend you didn't say that.\"",
+          "\"That line works on somebody, I'm sure,\" {name} says. \"Not on me.\"",
+          "{name} takes a step back. \"I'd rather keep this friendly.\"",
+          "\"No,\" {name} says simply, and lets the silence do the rest."
+        ]
+      },
+      {
+        "id": "admire", "label": "Admire Them", "label_it": "Ammira", "tier": 1, "physical": false,
+        "successDelta": 14, "failDelta": -10,
+        "player": [
+          "\"Whoever told you that suits you was right, {name}.\"",
+          "You catch yourself staring. \"Sorry. You're just, hard to look away from.\"",
+          "\"There's something about the way you carry yourself, {name}.\"",
+          "\"You walked in and the room got smaller,\" you tell {name}."
+        ],
+        "responseGood": [
+          "{name} looks down, fighting a smile. \"You noticed that?\"",
+          "\"Well,\" {name} says, straightening, \"now I'll be thinking about that all day.\"",
+          "{name} touches their sleeve, flustered. \"That's, thank you.\"",
+          "\"You have good taste,\" {name} says, and lets the compliment sit."
+        ],
+        "responseBad": [
+          "{name} folds their arms. \"I'd rather be noticed for something else.\"",
+          "\"You've been looking, then,\" {name} says coldly.",
+          "{name} sighs. \"People say that when they want something.\"",
+          "\"Please don't,\" says {name}, and turns half away."
+        ]
+      },
+      {
+        "id": "loveLetter", "label": "Slip a Love Letter", "label_it": "Consegna una Lettera d'Amore", "tier": 2, "physical": false,
+        "successDelta": 18, "failDelta": -14,
+        "player": [
+          "You press a folded letter into {name}'s hand and step back before you can regret it.",
+          "\"Don't read it here,\" you say, handing {name} a sealed note.",
+          "You leave a letter where {name} will find it, sealed with a clumsy wax stamp.",
+          "\"I wrote this badly three times,\" you admit, giving {name} the fourth attempt."
+        ],
+        "responseGood": [
+          "{name} reads it twice, then tucks it away carefully. \"Nobody's written to me in years.\"",
+          "\"You wrote all this? For me?\" {name} says, voice quieter than before.",
+          "{name} folds the letter along its creases. \"I'll keep it. Obviously.\"",
+          "\"Three drafts,\" {name} says, smiling at the page. \"It shows. I like that.\""
+        ],
+        "responseBad": [
+          "{name} hands the letter back unopened. \"I don't think I should read this.\"",
+          "\"This is a lot,\" {name} says, holding the page like it might bite.",
+          "{name} skims two lines and winces. \"You barely know me.\"",
+          "\"I'll be keeping this,\" {name} says flatly, \"as a reminder to be clearer with you.\""
+        ]
+      },
+      {
+        "id": "serenade", "label": "Serenade Them", "label_it": "Fai una Serenata", "tier": 2, "physical": false,
+        "successDelta": 20, "failDelta": -16,
+        "player": [
+          "You take a breath and sing to {name}, badly, and entirely on purpose.",
+          "You start a song under {name}'s window, and commit to the whole verse.",
+          "\"This one's yours,\" you say, and sing it to {name} in front of everyone.",
+          "You hum an old tune, then put {name}'s name in the chorus."
+        ],
+        "responseGood": [
+          "{name} covers their face, laughing. \"Stop, stop, everyone's looking, don't stop.\"",
+          "\"That was awful,\" {name} says, glowing. \"Do the last part again.\"",
+          "{name} listens all the way through, and doesn't say anything for a while after.",
+          "\"Nobody's ever embarrassed themselves for me before,\" says {name}, delighted."
+        ],
+        "responseBad": [
+          "{name} looks around at the gathering crowd. \"Please. Stop.\"",
+          "\"You've made this everyone's business now,\" {name} hisses.",
+          "{name} walks off halfway through the second verse.",
+          "\"That,\" says {name}, \"was a performance. It wasn't for me, it was at me.\""
+        ]
+      },
+      {
+        "id": "askDance", "label": "Ask for a Dance", "label_it": "Invita a Ballare", "tier": 3, "physical": true,
+        "successDelta": 22, "failDelta": -18,
+        "player": [
+          "You offer {name} your hand. \"One dance. Nobody has to know why.\"",
+          "\"Dance with me, {name}. I'll lead badly, but I'll lead.\"",
+          "You bow, entirely too formally, and wait for {name} to take your hand.",
+          "\"There's music somewhere,\" you tell {name}. \"Close enough. Dance with me.\""
+        ],
+        "responseGood": [
+          "{name} takes your hand. \"One. And you're counting the steps out loud, clearly.\"",
+          "\"Fine,\" {name} says, already smiling, and follows you into the turn.",
+          "{name} laughs and steps in. They're a better dancer than you by a wide margin.",
+          "\"You'll regret asking,\" says {name}, taking your hand anyway."
+        ],
+        "responseBad": [
+          "{name} looks at your hand, then at your face. \"No. Thank you.\"",
+          "\"I don't dance,\" {name} says, in a tone that closes the subject.",
+          "{name} steps back out of reach. \"You're standing very close.\"",
+          "\"Ask someone who'd enjoy it,\" {name} says, and walks on."
+        ]
+      },
+      {
+        "id": "holdHands", "label": "Take Their Hand", "label_it": "Prendi la Mano", "tier": 3, "physical": true,
+        "successDelta": 24, "failDelta": -20,
+        "player": [
+          "You reach out and take {name}'s hand, slowly enough that they could pull away.",
+          "Your fingers find {name}'s, and you leave them there.",
+          "\"Is this alright?\" you ask, hand hovering over {name}'s.",
+          "You lace your fingers through {name}'s without saying anything at all."
+        ],
+        "responseGood": [
+          "{name} doesn't pull away. Their grip tightens, just slightly.",
+          "\"...Yes,\" {name} says softly. \"That's alright.\"",
+          "{name} looks at your joined hands like they're solving a puzzle, then relaxes.",
+          "{name} says nothing, and holds on."
+        ],
+        "responseBad": [
+          "{name} pulls their hand back sharply. \"Don't.\"",
+          "\"You should have asked,\" {name} says, wiping their palm on their coat.",
+          "{name} freezes, then steps out of reach. \"That's not, no.\"",
+          "\"I'm going to pretend that was an accident,\" says {name}."
+        ]
+      },
+      {
+        "id": "askOut", "label": "Ask Them Out", "label_it": "Chiedi un Appuntamento", "tier": 4, "physical": false,
+        "successDelta": 28, "failDelta": -24,
+        "player": [
+          "\"Come out with me, {name}. Somewhere loud, or somewhere quiet, your call.\"",
+          "\"One evening,\" you say. \"You and me, {name}, and nothing else on the schedule.\"",
+          "\"Let me buy you dinner, {name}. Badly cooked, honestly offered.\"",
+          "\"I'd like to see you when neither of us is working, {name}.\""
+        ],
+        "responseGood": [
+          "\"Alright,\" {name} says, surprised at themselves. \"Alright, yes.\"",
+          "{name} thinks about it far too long, then nods. \"I'd like that.\"",
+          "\"Somewhere quiet,\" {name} decides. \"And you're paying.\"",
+          "\"Took you long enough to ask,\" says {name}."
+        ],
+        "responseBad": [
+          "{name} shakes their head. \"I don't think that would end well for either of us.\"",
+          "\"No,\" {name} says gently, which somehow makes it worse.",
+          "{name} exhales. \"I've enjoyed this. I'd like it to stay exactly what it is.\"",
+          "\"You misread something,\" {name} says. \"That's on both of us.\""
+        ]
+      },
+      {
+        "id": "confess", "label": "Confess Your Feelings", "label_it": "Dichiarati", "tier": 5, "physical": false,
+        "successDelta": 32, "failDelta": -30,
+        "player": [
+          "\"I'm in love with you, {name}. I've been carrying it around for a while.\"",
+          "\"I need to say this once, out loud, and then you can do what you like with it. I love you, {name}.\"",
+          "You stop pretending. \"It's you, {name}. It has been for some time.\"",
+          "\"I'd rather ruin this than keep lying about it,\" you tell {name}. \"I love you.\""
+        ],
+        "responseGood": [
+          "{name} stares at you. \"Say it again. Slower.\"",
+          "\"I know,\" {name} says, eyes bright. \"I was waiting for you to say it first.\"",
+          "{name} lets out a breath they've held a long time. \"Then we're both idiots.\"",
+          "\"You picked a terrible moment,\" says {name}, \"and I don't care at all.\""
+        ],
+        "responseBad": [
+          "{name} looks stricken. \"Oh. Oh, no. I'm sorry.\"",
+          "\"I wish you hadn't,\" {name} says quietly. \"Now I have to be honest back.\"",
+          "{name} shakes their head slowly. \"I don't feel that. I never did.\"",
+          "\"That wasn't fair,\" {name} says. \"Putting that on me, here.\""
+        ]
+      },
+      {
+        "id": "kiss", "label": "Kiss Them", "label_it": "Bacia", "tier": 5, "physical": true,
+        "successDelta": 36, "failDelta": -34,
+        "player": [
+          "You close the distance and kiss {name}.",
+          "You tilt {name}'s chin up and kiss them before the nerve runs out.",
+          "\"Tell me to stop,\" you say, already leaning in toward {name}.",
+          "You kiss {name} like the conversation was only ever leading here."
+        ],
+        "responseGood": [
+          "{name} kisses you back, hands fisted in your collar.",
+          "{name} makes a small startled sound, then pulls you closer.",
+          "\"Finally,\" {name} breathes, when you come up for air.",
+          "{name} rests their forehead against yours and doesn't move for a moment."
+        ],
+        "responseBad": [
+          "{name} shoves you back hard. \"What is wrong with you?\"",
+          "{name} turns their face away at the last second. \"No. Absolutely not.\"",
+          "\"You don't get to decide that for me,\" {name} says, furious.",
+          "{name} wipes their mouth and stares at you. \"Never do that again.\""
+        ]
+      }
+    ],
+    "rejection": {
+      "taken": {
+        "reasonLabel": "committed", "reasonLabel_it": "impegnato/a", "delta": -6,
+        "lines": [
+          "{name} lifts a hand. \"I'm spoken for, and I intend to stay that way.\"",
+          "\"I'm with someone,\" {name} says. \"Only someone. That's the whole arrangement.\"",
+          "{name} shakes their head firmly. \"I don't do this behind anyone's back.\"",
+          "\"You know I'm taken,\" {name} says coldly, \"and you asked anyway.\""
+        ]
+      },
+      "orientation": {
+        "reasonLabel": "not their type", "reasonLabel_it": "non il suo tipo", "delta": -3,
+        "lines": [
+          "{name} smiles, kindly enough. \"You're lovely. You're also not what I'm drawn to.\"",
+          "\"I don't think you've understood who I look at,\" {name} says.",
+          "{name} shakes their head. \"It isn't you. It's simply not how I'm wired.\"",
+          "\"That was never going to land,\" {name} says. \"No offence meant.\""
+        ]
+      },
+      "aromantic": {
+        "reasonLabel": "aromantic", "reasonLabel_it": "aromantico/a", "delta": -3,
+        "lines": [
+          "\"I don't fall in love,\" {name} says plainly. \"Not with anyone. It isn't a wound, it's just true.\"",
+          "{name} shrugs. \"Romance is a language I've never spoken.\"",
+          "\"You want something I don't have to give,\" says {name}. \"Friendship I can manage.\"",
+          "{name} looks almost apologetic. \"There's nothing there to reach. There never is.\""
+        ]
+      },
+      "asexual": {
+        "reasonLabel": "asexual", "reasonLabel_it": "asessuale", "delta": -3,
+        "lines": [
+          "{name} steps back. \"Not that. Not with anyone, before you ask.\"",
+          "\"I don't want that kind of touch,\" {name} says. \"From you or from anybody.\"",
+          "{name} shakes their head. \"Talk to me all you like. That part is closed.\"",
+          "\"You're welcome to my company,\" says {name}, \"and nothing else.\""
+        ]
+      },
+      "synthetic": {
+        "reasonLabel": "wants a machine", "reasonLabel_it": "cerca una macchina", "delta": -2,
+        "lines": [
+          "{name} sighs. \"You're all warm and wet and unpredictable. I prefer a clean logic board.\"",
+          "\"No offence,\" {name} says, \"but I only fall for things that hum.\"",
+          "{name} taps their chest. \"Flesh does nothing for me. Bring me a chassis.\"",
+          "\"I've dated an arithmetic unit,\" {name} says. \"You'd be a downgrade.\""
+        ]
+      },
+      "botanic": {
+        "reasonLabel": "wants a plant", "reasonLabel_it": "cerca una pianta", "delta": -2,
+        "lines": [
+          "{name} looks past you at a potted fern. \"...Sorry. What were you saying?\"",
+          "\"You don't photosynthesise,\" {name} says sadly. \"It would never work.\"",
+          "{name} shakes their head. \"I need someone rooted. Literally rooted.\"",
+          "\"My last partner was a hedge,\" says {name}. \"We're still friends.\""
+        ]
+      },
+      "dwarf": {
+        "reasonLabel": "dwarves only", "reasonLabel_it": "solo nani", "delta": -2,
+        "lines": [
+          "{name} measures you with a flat look. \"Too tall. Far too tall.\"",
+          "\"I have a type,\" {name} says, \"and it comes with a beard and a mining claim.\"",
+          "{name} shakes their head. \"Come back three feet shorter.\"",
+          "\"You're very kind,\" {name} says, \"and much too long in the leg.\""
+        ]
+      },
+      "bubba": {
+        "reasonLabel": "loves Bubba Wilson", "reasonLabel_it": "ama Bubba Wilson", "delta": -2,
+        "lines": [
+          "{name} touches a locket. \"There's only ever been one man for me, and he built the Liminal Engine.\"",
+          "\"You're not Bubba Wilson,\" {name} says, as though that settles everything. It does.",
+          "{name} smiles dreamily. \"Sorry. My heart belongs to an engineer from Ohio.\"",
+          "\"I've written him four hundred letters,\" {name} says. \"He'll answer one day.\""
+        ]
+      },
+      "bubbaHimself": {
+        "reasonLabel": "is spoken for, by a goddess", "reasonLabel_it": "è impegnato, con una dea", "delta": 0,
+        "lines": [
+          "\"Whoa now, chiano chiano,\" {name} says, hands up and greasy. \"You're the best friend I got in ninety-two dimensions. That's where it stops, darlin'.\"",
+          "\"There's one woman in my heart and she throws mountains,\" says {name}. \"Ain't fair on you and it sure ain't safe.\"",
+          "{name} shakes his head, kindly. \"I'm drivin' to Beagle to sign papers, not to start nothin'. Amice simme e amice restammo.\"",
+          "\"Guagliò, put that away 'fore the coffee pot jumps off the stove again,\" {name} says. \"She watches, y'know. She always watches.\"",
+          "\"Darlin', I love you like a sister with a worse temper,\" says {name}. \"That's the whole of it.\"",
+          "{name} laughs, then stops laughing, then hands you a coffee. \"Nah, guaglio. We got somethin' better than that.\"",
+          "\"You want somebody who'll stay,\" {name} says gently. \"I'm a man with a road under him. Ain't the same thing.\"",
+          "\"Madonna, and then who fixes the camper after she wrecks it?\" says {name}. \"Be practical, Em.\"",
+          "{name} pretends, very badly, that he did not hear it, and talks about the manifold for ten minutes."
+        ]
+      },
+      "emZealot": {
+        "reasonLabel": "will not be courted by the god-killer", "reasonLabel_it": "non si fa corteggiare dall'uccisora di dei", "delta": -6,
+        "lines": [
+          "{name} steps back as though the offer were a lit fuse. \"You fed a god to a spear. You do not get to be charming.\"",
+          "\"I would sooner court the hole in the sky,\" says {name}.",
+          "{name} holds up a pendant between you like a shield. \"Not you. Never you.\"",
+          "\"Whatever you are now,\" {name} says, \"it is not something I want closer.\"",
+          "\"You want love out of me,\" {name} says. \"There is a queue, and it starts with the dead.\"",
+          "{name} laughs, and it comes out wrong. \"Court me. God is dead and the witch is flirting.\"",
+          "\"I have a wife, a mother and a parish,\" says {name}, \"and all three would burn the bed.\"",
+          "{name} does not answer. {name} walks to the door and holds it open.",
+          "\"Not in this life,\" says {name}, \"and there is no other one left to promise you.\""
+        ]
+      },
+      "emAnnoyed": {
+        "reasonLabel": "wants the famous witch to move along", "reasonLabel_it": "vuole che la strega famosa se ne vada", "delta": -3,
+        "lines": [
+          "{name} laughs once, without any joy in it. \"No. I've got enough weather in my life.\"",
+          "\"You'll be gone by Thursday and something will be on fire,\" says {name}. \"That's the pattern.\"",
+          "{name} shakes their head. \"I don't want to be a paragraph in your story.\"",
+          "\"Ask somebody who wants their name in the papers,\" {name} says. \"Please. Anybody else.\"",
+          "\"Absolutely not,\" {name} says. \"I have a business and a roof and I would like to keep both.\"",
+          "{name} pinches the bridge of their nose. \"Of all the people in this town. Of all of them.\"",
+          "\"I would be in the papers by Friday,\" says {name}. \"My mother reads the papers.\"",
+          "{name} says no in three words and finds work for their hands.",
+          "\"Find somebody who wants an interesting life,\" {name} says. \"I had one. It was awful.\""
+        ]
+      }
+    }
+  },
+  "em": {
+    "_comment": "How the world treats Em, the wannabe witch whose memories were forged into the spear that killed the Father aspect of YHWH (docs/Lore.odt). Used only while Switch 48 is on and Em is the party member doing the talking. `stance` is chosen from the NPC's personality, traits and faction (NPCEmpathize.js, _emStanceKey); `opinion` is the first impression seeded into profile.opinions[Em's actorId] the first time she meets them; `toneMult` scales what her social interactions are worth; greeting/positive/neutral/negative replace the generic response lines. Hardly anyone treats her as a person. {name} = NPC name.",
+    "stances": {
+      "zealot": {
+        "label": "blames Em for the death of the Father",
+        "label_it": "incolpa Em per la morte del Padre",
+        "opinion": -45,
+        "toneMult": { "positive": 0.3, "neutral": 0.5, "negative": 1.5 },
+        "greeting": [
+          "{name} makes the sign of the cross backwards, the way it is taught for cursed things. \"The witch. Naturally.\"",
+          "\"Every sacred word I owned died on New Year's Eve,\" {name} says. \"And here you are, still breathing.\"",
+          "{name} will not look straight at you. \"They say your memories were sharpened into a spear. Mine was a prayer that used to work.\"",
+          "\"You were the sacrifice,\" says {name}. \"Sacrifices are meant to stay on the altar.\"",
+          "{name} spits carefully to one side. \"Kindling for a god-killing.\"",
+          "\"My mother had the last rites that took,\" {name} says. \"Do the arithmetic yourself.\"",
+          "{name} finishes the prayer before acknowledging you, and it is a long prayer. \"There. Now say what you came to say.\"",
+          "\"There were four masses in this town on a Sunday,\" {name} says. \"There is one, and the priest reads it like a shopping list.\"",
+          "{name} sets down what they were holding, as though your being here required both hands free.",
+          "\"My brother went out to Ritual Island to look at the hole,\" says {name}. \"He came back wrong and he came back quiet.\"",
+          "{name} counts beads without looking at them. \"Habit. It used to be more than habit.\"",
+          "\"They say you flinch at church bells,\" {name} observes. \"Good. Something in you still knows what it did.\""
+        ],
+        "positive": [
+          "\"Praise from you is a stain,\" {name} says. \"I will wash it out later.\"",
+          "{name} does not soften. \"Flatter me for a year. My saints will still be silent.\"",
+          "\"Save the charm for the Guild,\" says {name}. \"They already bought you once.\"",
+          "{name} accepts nothing, and makes a small warding gesture under the table.",
+          "\"You are kind to me the way a fire is warm,\" {name} says. \"I have not forgotten what fires do.\"",
+          "{name} hears all of it out, then says, \"And after the compliment? Do I get Him back?\"",
+          "\"I would rather be insulted honestly,\" says {name}, \"than flattered by the reason.\"",
+          "{name} thanks you in the flat voice kept for tax collectors.",
+          "\"You bought that charm with a memory that was not yours to spend,\" {name} says. \"Keep it.\"",
+          "{name} notes the kindness the way one notes a symptom."
+        ],
+        "neutral": [
+          "{name} answers in the fewest words the language allows, one hand on a pendant.",
+          "\"The weather,\" {name} repeats. \"You want to discuss the weather. With me.\"",
+          "{name} talks to a point six inches to your left for the whole exchange.",
+          "\"Ask your questions of somebody with something left to lose,\" says {name}.",
+          "\"Small talk. From the woman off the front page,\" says {name}. \"Ask the wall. It has more patience.\"",
+          "{name} answers correctly, completely, and without once unclenching.",
+          "\"There is a word for conversation with your sort,\" says {name}. \"I will not use it in the street.\"",
+          "{name} keeps a doorway behind them for the whole exchange.",
+          "\"Salt on the step, salt on the sill,\" {name} says. \"Talk as long as you like. I did mine this morning.\"",
+          "{name} answers every question with the year it happened in, and nothing else."
+        ],
+        "negative": [
+          "\"Yes,\" {name} says, almost grateful. \"Say something ugly. It suits what you are.\"",
+          "{name} raises their voice so the whole street learns which witch is standing here.",
+          "\"Threaten me,\" says {name}. \"There is nothing up there left to hear me scream.\"",
+          "{name} smiles thinly. \"Good. Now neither of us has to pretend.\"",
+          "\"You cannot damn me,\" {name} says. \"That office is vacant. You saw to it.\"",
+          "{name} takes the insult like a blessing turned inside out, and repeats it under their breath.",
+          "\"Louder,\" says {name}. \"I want witnesses to what came out of that mouth.\"",
+          "{name} does not answer, and begins, very deliberately, to pray at you.",
+          "\"Hurt me, then. Add it to the ledger,\" says {name}. \"It is already unreadable.\"",
+          "{name} writes your name down. \"Some of us still keep lists. Somebody has to.\""
+        ]
+      },
+      "annoyed": {
+        "label": "wishes Em would be famous elsewhere",
+        "label_it": "vorrebbe che Em fosse famosa altrove",
+        "opinion": -15,
+        "toneMult": { "positive": 0.6, "neutral": 0.8, "negative": 1.2 },
+        "greeting": [
+          "{name} exhales through the nose. \"You're the one out of the papers. Wonderful.\"",
+          "\"Whatever it is,\" {name} says, \"could you go and be it somewhere down the road?\"",
+          "{name} keeps working. \"I have eleven crates to shift and you have a legend to be. We're both busy.\"",
+          "\"Last time somebody like you came through, the sky did something,\" says {name}. \"Move along.\"",
+          "{name} looks at your hands first, then your face. \"No spells indoors. That's the whole rule.\"",
+          "\"No,\" says {name}, before you have asked anything. \"Whatever it is. No.\"",
+          "{name} moves the till a little further from you, without comment.",
+          "\"You are the weather woman,\" {name} says. \"Not the forecast sort. The other sort.\"",
+          "{name} sighs at the ceiling. \"Two quiet months. That was the whole ambition.\"",
+          "\"If this is about the ritual, I was asleep,\" says {name}. \"Same as everybody.\"",
+          "{name} serves the man behind you first, then you, then the man behind you again.",
+          "\"I have read the article twice, because people keep bringing it in,\" {name} says. \"Congratulations.\""
+        ],
+        "positive": [
+          "\"Lovely,\" {name} says. \"Now go and be lovely two streets over.\"",
+          "{name} nods without listening. \"Mm. Are you buying anything, or?\"",
+          "\"You're very nice for someone who blew a hole in heaven,\" says {name} flatly.",
+          "\"Yes, very good,\" {name} says. \"Was there anything else?\"",
+          "{name} accepts the compliment the way one accepts a leaflet.",
+          "\"You are pleasant. So was the last one,\" says {name}. \"He took the roof off.\"",
+          "{name} thanks you and starts restacking things that were already stacked.",
+          "\"Save it for whoever is printing you next,\" {name} says.",
+          "{name} smiles with the lower half of the face only.",
+          "\"That will read beautifully,\" says {name}. \"Local person charmed. Front page.\""
+        ],
+        "neutral": [
+          "\"Rain later. That's the conversation,\" says {name}, already turning away.",
+          "{name} answers, checks the door, answers again, checks the door.",
+          "\"I don't follow the news and I'd rather it didn't follow me,\" {name} says.",
+          "\"Fine. Same as yesterday. Same as tomorrow, if you would move along,\" {name} says.",
+          "{name} answers you while looking past your shoulder for the queue.",
+          "\"You want the ordinary conversation,\" says {name}. \"With you it never stays ordinary.\"",
+          "{name} gives you the shortest true answer available.",
+          "\"Roads are roads,\" {name} shrugs. \"Take one.\"",
+          "{name} keeps a hand on the shutter for the whole of it.",
+          "\"I have nothing worth quoting,\" says {name}. \"Do try elsewhere.\""
+        ],
+        "negative": [
+          "\"There it is,\" {name} says. \"Go on then, curse the shop. Everybody else has.\"",
+          "{name} points at the street with a thumb. \"Out. Take the weather with you.\"",
+          "\"You'll be gone by Thursday,\" says {name}. \"I keep telling myself that.\"",
+          "\"Right. And that is the famous temper,\" {name} says. \"Marvellous. Have it outside.\"",
+          "{name} does not rise to it. \"Say that to the ones who print you. They will pay for it.\"",
+          "\"Insult me all you like,\" says {name}. \"The shop stays shut to you either way.\"",
+          "{name} begins counting down from ten in a very steady voice.",
+          "\"There it is,\" {name} says, almost relieved. \"Now go and be it somewhere else.\"",
+          "{name} writes something on the back of their hand: your name, and a time.",
+          "\"You will be a story in this town for thirty years,\" says {name}, \"and I will have to hear all of them.\""
+        ]
+      },
+      "fan": {
+        "label": "an invasive admirer",
+        "label_it": "un ammiratore invadente",
+        "opinion": 25,
+        "toneMult": { "positive": 1.4, "neutral": 1.3, "negative": 0.5 },
+        "greeting": [
+          "{name} takes hold of your sleeve. \"It IS you. Say the word. Say the one from the tabloid.\"",
+          "\"My cousin was on Ritual Island the week after,\" {name} says, much too close. \"So we're practically family.\"",
+          "{name} produces a creased newspaper with your face on it and a pen. \"Sign it across the hole in the story.\"",
+          "\"Do the thing with the hands,\" {name} says. \"The magic thing. Once. Please.\"",
+          "{name} has already turned to shout your name at somebody across the room.",
+          "\"I KNEW it was today,\" {name} says. \"I had a feeling. I get feelings about you.\"",
+          "{name} shows you a scrapbook of your face cut out of four different papers, all of them the same photograph.",
+          "\"Is it true you cannot lift the spear?\" asks {name}. \"That is the part that gets me. That is the tragic part.\"",
+          "{name} calls you by a nickname the tabloids invented, thrilled to be first in the room with it.",
+          "\"My sister said I would never meet you and she is going to be SICK,\" {name} says, already looking for her.",
+          "{name} touches your sleeve, then the coat, then apologises, then does it again.",
+          "\"Say something about the ninety-two percent,\" {name} asks. \"It does not have to be sad.\""
+        ],
+        "positive": [
+          "{name} clutches the compliment like a receipt. \"She said that TO ME. You all heard it.\"",
+          "\"I'm going to repeat that word for word for the rest of my life,\" {name} says, meaning it.",
+          "{name} beams and asks whether they can walk with you. Just to the corner. Just to the next corner.",
+          "\"She was NICE to me,\" {name} announces to a room that has stopped listening. \"Nice.\"",
+          "{name} writes the compliment on the back of a receipt and puts it somewhere safe.",
+          "\"That is going on the wall, next to the photograph,\" says {name}.",
+          "{name} asks whether they may tell people you said it, and does not wait for an answer.",
+          "\"Do you say that to everyone?\" {name} asks, then quickly, \"No. Do not tell me. Let me have it.\"",
+          "{name} goes very red and shakes your hand three separate times.",
+          "\"Best thing to happen to me since the ritual,\" {name} says, hears it, and does not take it back."
+        ],
+        "neutral": [
+          "\"Small talk. From Em. About BREAD,\" {name} breathes, storing it away.",
+          "{name} answers three questions you did not ask, all of them about you.",
+          "\"They said you'd be taller,\" says {name}, delighted that you are not.",
+          "{name} nods along to a story about nothing at all, rapt, as though it were scripture.",
+          "\"What is the weather like where you are from? Not here,\" says {name}. \"There. The other one.\"",
+          "{name} agrees with you enthusiastically before you have finished the sentence.",
+          "\"I am going that way too,\" says {name}, who was going the other way.",
+          "{name} asks four follow-up questions, none of them about the thing you said.",
+          "\"Tell me something ordinary about yourself,\" {name} says, notebook already open.",
+          "{name} laughs at a part that was not funny, then checks whether the room caught it."
+        ],
+        "negative": [
+          "{name} lights up. \"She insulted me. That's better than the autograph.\"",
+          "\"Say it again, slower,\" {name} begs. \"I want to get it right when I tell it.\"",
+          "{name} laughs it off entirely. Nothing you do here is going to land.",
+          "\"You are allowed,\" {name} says warmly. \"After what you have been through, you are allowed anything.\"",
+          "{name} apologises to YOU for having been insulted.",
+          "\"That is the fire,\" says {name}. \"That is what did for the Father, that right there.\"",
+          "{name} takes a small step back and then a large step forward.",
+          "\"Do it again, but with my name in it,\" {name} asks.",
+          "{name} treats the whole thing as a performance, and applauds at the end of it.",
+          "\"I have been shouted at by worse people for less,\" says {name}, glowing."
+        ]
+      },
+      "clout": {
+        "label": "friendly because Em is famous",
+        "label_it": "cordiale solo perché Em è famosa",
+        "opinion": 12,
+        "toneMult": { "positive": 1.1, "neutral": 1.1, "negative": 0.9 },
+        "greeting": [
+          "{name}'s manner changes the instant your name lands. \"Em! Sit down, sit down. What are you drinking? On me.\"",
+          "\"I tell people I know you,\" {name} admits cheerfully. \"Now it's technically true.\"",
+          "{name} angles you toward the window, where the street can see in. \"Stand there. No reason.\"",
+          "\"Between us,\" says {name}, in a voice pitched for the next table, \"what really happened that night?\"",
+          "\"Em. EM. Everyone, this is Em,\" {name} says, to a room that already knew.",
+          "{name} shakes your hand for a second longer than the handshake requires.",
+          "\"I always said the papers had you wrong,\" says {name}, who said the opposite last month.",
+          "{name} produces a chair from somewhere, and a story about a cousin who was nearly there.",
+          "\"You will want the good table,\" {name} says, moving two people off it.",
+          "{name} asks after your health at volume, and after your business quietly.",
+          "\"There is a man in the Guild you should meet,\" says {name}. \"He would rather meet you.\"",
+          "\"I do not believe in any of it,\" {name} says, \"but I believe in you, obviously.\""
+        ],
+        "positive": [
+          "\"Coming from Em, that's practically a plaque,\" {name} says, already rehearsing how to repeat it.",
+          "{name} thanks you warmly and checks who was standing near enough to hear.",
+          "\"From Em, that,\" {name} repeats, for the room. \"You all heard the lady.\"",
+          "{name} thanks you and immediately offers you something they cannot afford to give.",
+          "\"We are friends now, are we not,\" says {name}. \"Say we are friends.\"",
+          "{name} writes it down. Not fondly. Accurately.",
+          "\"You must let me introduce you properly,\" {name} says. \"To the right sort.\"",
+          "{name} laughs a beat too long, in the direction of the door.",
+          "\"That is the version I will be telling,\" says {name}, \"and I will tell it better than it happened.\"",
+          "{name} pats your arm and glances at whoever has just come in."
+        ],
+        "neutral": [
+          "{name} keeps the conversation going long past its natural end, glancing round to see who is watching.",
+          "\"We should do this properly some time,\" says {name}, who will not.",
+          "{name} keeps you talking about nothing until somebody worth impressing walks past.",
+          "\"Fascinating,\" says {name}, who did not hear it.",
+          "{name} steers the conversation, gently and repeatedly, back to the night on Ritual Island.",
+          "\"I have been meaning to ask you something,\" {name} says, and asks nothing for ten minutes.",
+          "{name} agrees with your opinion, and then with the opposite one, from the next table.",
+          "\"Weather is in the papers today. So are you,\" says {name}, pleased with it.",
+          "{name} offers to introduce you to people you can already see.",
+          "\"You must let me get the next one,\" says {name}, who will remember this and mention it."
+        ],
+        "negative": [
+          "{name}'s smile stays exactly where it is. Behind it, the friendship is being repriced.",
+          "\"Ah,\" says {name}, laughing for the room. \"She's got a temper. Marvellous.\"",
+          "\"Fair enough, fair enough,\" says {name}, filing it under things to repeat later.",
+          "{name} takes the insult publicly and cheerfully, which costs you more than it costs them.",
+          "\"She is allowed a temper. She has earned a temper,\" {name} says, to everybody.",
+          "{name} makes a joke of it and lets the room decide who won.",
+          "\"I will not fall out with Em over a word,\" says {name}, loudly, so that nobody else can.",
+          "{name} looks briefly, genuinely stung, and then puts the face back on.",
+          "\"That will be worth telling,\" {name} says. \"Not kindly, mind.\"",
+          "{name} raises a glass to you, and quietly stops recommending you."
+        ]
+      },
+      "gawker": {
+        "label": "treats Em as an exhibit",
+        "label_it": "tratta Em come un reperto",
+        "opinion": 0,
+        "toneMult": { "positive": 0.9, "neutral": 1.2, "negative": 1.0 },
+        "greeting": [
+          "{name} studies you the way one studies a cracked bell. \"Ninety-two percent. Is it like a room with the furniture taken out?\"",
+          "\"Do you remember your mother's face,\" {name} asks, before hello.",
+          "{name} steps closer, then back again. \"Sorry. I've only ever read about people like you.\"",
+          "\"They kept the spear, they say. Do you ever feel it being carried?\" asks {name}.",
+          "{name} asks to see your hands, and is disappointed that they look ordinary.",
+          "\"May I ask you a difficult question,\" says {name}, who is going to.",
+          "{name} checks the floor at your feet for a shadow, and is careful about how they check.",
+          "\"Is the gap a gap,\" {name} asks, \"or is it more that the room was never built?\"",
+          "{name} offers you a chair the way one offers a chair to a specimen.",
+          "\"They told me you flinch at bells. I moved the clock,\" says {name}. \"Just in case.\"",
+          "{name} sits down opposite you with the air of somebody beginning a chapter.",
+          "\"You kept the birthdays and not the faces,\" {name} says. \"I have thought about that all week.\""
+        ],
+        "positive": [
+          "\"Interesting,\" {name} says, writing. \"Politeness survived the ritual. Not everything did.\"",
+          "{name} thanks you and asks, immediately, what praise feels like with most of a life missing.",
+          "\"Gratitude,\" {name} says thoughtfully. \"Older than most of what they took, I should think.\"",
+          "{name} thanks you, and asks whether the compliment came from before or after.",
+          "\"You perform kindness very well,\" says {name}, meaning it as praise.",
+          "{name} makes a small satisfied noise, as though a hypothesis had held.",
+          "\"That was warm,\" {name} says. \"I did wonder whether warm had survived.\"",
+          "{name} accepts it, and then, terribly, asks you to repeat it exactly.",
+          "\"Do you know why you said that?\" asks {name}. \"Take your time.\"",
+          "{name} writes: subject courteous, subject tired, subject still here."
+        ],
+        "neutral": [
+          "{name} answers, then asks whether you dream, and whether the dreams are yours.",
+          "\"Go on, keep talking,\" says {name}. \"I want to hear where the gaps are.\"",
+          "{name} follows the small talk closely, as though the small talk were the evidence.",
+          "\"More of the ordinary things,\" {name} says. \"The ordinary things are where the gaps show.\"",
+          "{name} interrupts once, to ask which language you thought that in.",
+          "\"You say we about a place you cannot name,\" says {name}. \"I find that remarkable.\"",
+          "{name} times your pauses, and does not hide the watch.",
+          "\"What was the weather like the day before?\" asks {name}, meaning the ritual.",
+          "{name} asks whether you dreamt last night, and writes the answer down twice.",
+          "\"There. That hesitation,\" says {name}, delighted. \"That is the ninety-two percent, is it not.\""
+        ],
+        "negative": [
+          "{name} does not flinch. \"Anger too. Good. That's another thing they left you.\"",
+          "\"Note the vocabulary,\" {name} murmurs, to nobody. \"Intact. Fascinating.\"",
+          "\"Threat display,\" {name} murmurs. \"Intact. Proportionate, even.\"",
+          "{name} nods slowly. \"They said you would be angrier. You are exactly as angry as a person.\"",
+          "\"Do you feel that in the chest or in the hands?\" asks {name}, not unkindly.",
+          "{name} apologises for the questions, and then asks whether the anger was borrowed too.",
+          "\"You swear like somebody who learned it recently,\" {name} observes.",
+          "{name} does not move at all, which is worse than flinching.",
+          "\"Say it again when you are calm,\" says {name}, \"and we will see whether it is the same sentence.\"",
+          "{name} writes one word, underlines it, and turns the page over."
+        ]
+      },
+      "genuine": {
+        "label": "sees the person, not the story",
+        "label_it": "vede la persona, non la storia",
+        "opinion": 8,
+        "toneMult": { "positive": 1.2, "neutral": 1.2, "negative": 1.0 },
+        "greeting": [
+          "{name} looks at you, not at the story about you. \"Long road? Sit down before you fall down.\"",
+          "\"I don't care what the papers made of you,\" says {name}. \"Have you eaten today?\"",
+          "{name} moves a chair out with one foot. \"No questions about the ritual. You have my word.\"",
+          "\"You look tired in a way sleep won't fix,\" {name} says. \"I know that one.\"",
+          "{name} mentions neither the papers nor the ritual nor the spear. \"Cold out. Come in properly.\"",
+          "\"Em, is it. I am {name},\" they say, as though that were the whole of it.",
+          "{name} pours two cups without asking, and pushes one across.",
+          "\"One question, and it is not about the god,\" says {name}. \"Are you alright?\"",
+          "{name} finds you a seat with its back to the window and the street. On purpose.",
+          "\"People must talk at you all day,\" says {name}. \"Sit and be talked around for a bit.\"",
+          "{name} greets you by name, correctly, and makes no performance of it.",
+          "\"If anybody in here starts,\" {name} says quietly, \"you tell me, and they will be leaving.\""
+        ],
+        "positive": [
+          "{name} takes it plainly. \"Thank you. And you're allowed to be a person in here, for what it's worth.\"",
+          "\"That's kind,\" says {name}. \"Kinder than most people manage with you, I'd guess.\"",
+          "\"That is good of you,\" {name} says. \"I will take it at face value, if you do not mind.\"",
+          "{name} smiles properly, the way people smile when nothing is being counted.",
+          "\"You are better at that than the papers leave you room for,\" says {name}.",
+          "{name} thanks you and changes the subject to something easy, deliberately.",
+          "\"Careful. I could get used to being spoken to like that,\" {name} says.",
+          "{name} takes it, keeps it, and repeats it to nobody.",
+          "\"You could stop apologising for existing, you know,\" says {name}. \"Only a thought.\"",
+          "{name} looks pleased, and a little sad on your behalf, and lets both of it show."
+        ],
+        "neutral": [
+          "{name} talks with you about nothing at all, generously, for as long as you like.",
+          "\"No, go on,\" says {name}. \"It's nice to hear you talk about something small.\"",
+          "{name} talks about their own week at length, so that you do not have to talk about yours.",
+          "\"No, that part is interesting. Tell me the boring bit,\" says {name}.",
+          "{name} argues with you cheerfully about bread, of all things, for a quarter of an hour.",
+          "\"You do not have to fill the silence with me,\" {name} says. \"I am alright in one.\"",
+          "{name} asks about the road, the weather and the camper, and nothing at all about the sky.",
+          "\"I would rather hear what you are having for tea than what the tabloids think,\" says {name}.",
+          "{name} listens to the end of your sentence. All of it. Every time.",
+          "\"Come back through when you are passing,\" {name} says, and means it."
+        ],
+        "negative": [
+          "{name} absorbs it and sighs. \"You've had a hard year. I'll take that as the year talking.\"",
+          "\"I'll forget you said that,\" {name} says quietly, \"if you'd like me to.\"",
+          "{name} lets the silence sit, then says, \"Do you want to try that again, or leave it?\"",
+          "\"That one landed,\" says {name} evenly. \"I will live. Sit down.\"",
+          "{name} does not answer in kind, which is somehow worse and somehow better.",
+          "\"You are allowed to be furious,\" {name} says. \"Not at me, though, eh.\"",
+          "{name} puts the kettle on and says nothing whatsoever about it.",
+          "\"Right. That is the year talking again,\" says {name}. \"I will wait.\"",
+          "{name} tells you plainly that it hurt, and then asks whether you are eating.",
+          "\"I would rather you shouted in here than out there,\" {name} says. \"Out there they print it.\""
+        ]
+      }
+    },
+    "bubba": {
+      "label": "the only friend she has",
+      "label_it": "l'unico amico che ha",
+      "opinion": 90,
+      "toneMult": { "positive": 1.2, "neutral": 1.1, "negative": 1.0 },
+      "greeting": [
+        "\"Uè, Em!\" {name} wipes his hands on a rag that has never once been clean. \"Set yourself down, guagliò, the Beast ain't goin' nowhere till that manifold cools.\"",
+        "\"Mannaggia, darlin', you look like eighty kilometres of bad road,\" says {name}. \"Coffee's on the stove, 'a tazzulella is yours.\"",
+        "{name} slides out from under the camper on his back. \"Jamme, get in. We're burnin' daylight and I'm burnin' oil.\"",
+        "\"Statt' bbuono, witch,\" {name} says, grinning up at you. \"Ain't nothin' in ninety-two dimensions comin' through that door while I got the wrench.\"",
+        "\"Beagle by Thursday, chiano chiano,\" says {name}. \"Papers to sign, and then we see what the road wants.\"",
+        "\"If the coffee pot jumps off the stove again, that ain't you and it ain't me,\" {name} says. \"'A gelusia is a hell of a thing, darlin'.\"",
+        "{name} taps the Liminal Engine with a knuckle, fond as a man with a dog. \"She held. Told you she'd hold, guagliò.\"",
+        "\"Ue, look who the road spat out,\" {name} says. \"Sit, sit. There is coffee and there is a chair, and one of them is clean.\"",
+        "{name} holds up a part you cannot identify. \"This here has been tryin' to kill us since Tuesday. Not no more, guaglio.\"",
+        "\"You eat today? Don't lie to me, darlin', I can tell,\" says {name}, already reaching for the pan.",
+        "{name} has the radio on something with too much accordion in it, and no intention of changing it.",
+        "\"I dreamed about the Engine,\" {name} says. \"She was singin'. That ain't good nor bad, darlin', that's just a sign.\"",
+        "\"Ninety-two percent gone and you still remember where I keep the ten mil,\" says {name}. \"That's friendship, that is.\"",
+        "{name} points at the bench with a screwdriver. \"Siediti. You got that face like the sky said somethin' to you again.\""
+      ],
+      "positive": [
+        "{name} laughs, big and easy. \"Aoh, listen to her. Keep talkin' like that and I'll put your name on the engine.\"",
+        "\"Grazie assaje, darlin',\" says {name}. \"Now hand me the ten mil 'fore I go sayin' somethin' sentimental.\"",
+        "{name} goes bashful and hides it under the hood. \"Yeah, well. You ain't so bad yourself, guagliona.\"",
+        "\"See, that's why I keep you around,\" {name} says. \"That, and you're the only soul who checks the oil.\"",
+        "\"Aoh, stop it, I'm a simple man,\" says {name}, who is not. \"You'll have me cryin' in the oil pan.\"",
+        "{name} laughs so hard he drops the spanner, and then blames the spanner.",
+        "\"Write that down, 'cause nobody's ever gonna believe I got told that,\" {name} says.",
+        "\"Mannaggia, careful, darlin',\" says {name}, grinning. \"She hears nice words about me, she gets ideas, and then it rains rocks.\"",
+        "{name} taps the camper twice on the flank. \"Hear that, Bestia? She likes us.\"",
+        "\"You want somethin', don't you,\" {name} says, delighted. \"Nah. You don't. That's worse.\""
+      ],
+      "neutral": [
+        "\"Weather's weather,\" {name} shrugs. \"Under eighty, whatever it does, it does.\"",
+        "{name} talks you through the Liminal Engine again, the whole of it, with the same joy as the first time.",
+        "\"Route 666 was worse,\" says {name}. \"Ask me some time when we ain't drivin'.\"",
+        "\"Uagliò, pass me that spanner and keep talkin',\" {name} says. \"I listen better with somethin' in my hands.\"",
+        "\"Coffee first, problems after. That's the whole philosophy, guaglio,\" says {name}.",
+        "{name} explains, at length, the difference between a noise that costs nothing and a noise that costs everything.",
+        "\"Bureaucracy in Beagle, madonna,\" {name} sighs. \"Four stamps and a fella called Deniz who don't like me.\"",
+        "{name} argues with the radio for a while, and then agrees with it.",
+        "\"They put a new sign up on the bend,\" says {name}. \"Same bend. Same ditch. New sign.\"",
+        "{name} asks about your day, and then actually waits for the answer, hands still working."
+      ],
+      "negative": [
+        "{name} just looks at you, patient as a mule. \"Rough day, huh. Sit down, I'll put the pot on.\"",
+        "\"You can yell at me all you want, darlin',\" says {name}. \"I ain't goin' nowhere. Chiano chiano.\"",
+        "{name} lets it wash right past him. \"Ninety-two dimensions and you're still the second scariest woman I know.\"",
+        "\"Alright, alright, chiano chiano,\" {name} says, wiping his hands. \"Who are we mad at, and is it me?\"",
+        "{name} does not take the bait. \"You got a mouth on you today. Sit down, drink somethin'.\"",
+        "\"I been cussed at in two languages by a woman who throws mountains,\" says {name}. \"You gotta try harder, darlin'.\"",
+        "{name} works straight through all of it, and hands you a cup at the end of it.",
+        "\"That one had teeth,\" {name} admits. \"Fine. We're still goin' to Beagle.\"",
+        "\"You wanna fight, fight the manifold,\" says {name}. \"It started it.\""
+      ],
+      "refuseJoin": [
+        "\"Me, ridin' along? Guagliò, somebody's gotta hold this camper together,\" {name} says. \"I'll be right here when the road bends back.\"",
+        "\"I don't ride shotgun in my own life, darlin',\" says {name}. \"'A Bestia don't drive herself.\"",
+        "{name} goes quiet for a second. \"She'd drop a mountain on whatever town we slept in. You go on ahead, Em. Chiano chiano.\"",
+        "\"Papers first, Beagle first,\" says {name}, tapping the wheel. \"Then we talk about travellin' together like decent people.\"",
+        "\"Somebody's gotta keep the Engine honest, guaglio,\" says {name}. \"That somebody has got my face.\"",
+        "{name} shakes his head slowly. \"I ain't much use out there. In here, with a wrench, I'm a whole army, darlin'.\"",
+        "\"Last fella who rode with me full-time got weather on him,\" {name} says. \"Real weather. No thank you.\"",
+        "\"Ask me again after the papers are signed,\" says {name}. \"Chiano chiano. Everything after the papers.\""
+      ]
+    }
+  },
+  "bubba": {
+    "_comment": "How the world treats Bubba Wilson when HE is the party member doing the talking (Switch 49, or an actor named Bubba in the party). He built the Liminal Engine, took the Nobel for it and made public transport possible again, so nobody meets him as a stranger: greetings are admiration, every tone lands warm, and he answers all of it modestly (player[] replaces the interaction's own line). Hostile moves are hidden entirely and courting is off the table, except for a bubbaromantic NPC, who is offered exactly one thing: being turned down (romantic).",
+    "label": "knows who built the Liminal Engine",
+    "label_it": "sa chi ha costruito il Motore Liminale",
+    "opinionBonus": 35,
+    "toneMult": {
+      "positive": 1.4,
+      "neutral": 1.3,
+      "negative": 0.2
+    },
+    "greeting": [
+      "{name} nearly drops what they are holding. \"You're him. You're the Liminal Engine man.\"",
+      "\"Wilson,\" says {name}, in the voice people use for weather and miracles. \"My whole family rides a bus that works because of you.\"",
+      "{name} wipes a hand on their coat before offering it, twice. \"An honour. A genuine honour.\"",
+      "\"They gave you the Nobel and you turned up here,\" {name} says. \"Here. In this town.\"",
+      "{name} points at you with a delighted, accusing finger. \"That's the engine fella. That's him.\"",
+      "\"I read the lecture,\" {name} says. \"Didn't understand a word past the first page, loved every one of them.\"",
+      "{name} lowers their voice as though the news might spook you. \"My cousin was stuck in a loop bubble for six years. Six. Then the coaches started coming through.\"",
+      "\"You compressed the road,\" says {name}. \"People say it like it's simple. It is not simple.\"",
+      "{name} looks past you for the camper, hopefully. \"Is she here? The Beast? Is she parked out front?\"",
+      "\"My daughter has your picture on the wall next to a horse,\" {name} says. \"You are, I am told, the second favourite.\"",
+      "{name} beams. \"The man who put eighty kilometres an hour back in our pockets.\"",
+      "\"I always said whoever cracked it would be a professor,\" {name} says, looking at your hands. \"And it was a mechanic. I love that it was a mechanic.\"",
+      "{name} straightens up like an inspection is happening. \"Mister Wilson. What can this place possibly do for you?\"",
+      "\"You know what you are?\" {name} says. \"You're the only good news since ninety-two.\""
+    ],
+    "positive": [
+      "{name} lights up. \"Coming from the man who compressed a continent, that's going straight in my diary.\"",
+      "\"Don't you dare be humble about it,\" says {name}, delighted. \"Not you.\"",
+      "{name} shakes their head, grinning. \"He's kind as well. Of course he's kind as well.\"",
+      "\"I'm telling everyone about this,\" {name} announces. \"Everyone. My mother first.\"",
+      "{name} goes pink to the ears. \"Well now. Well, now.\"",
+      "\"That's the smartest man alive being nice to me,\" {name} tells nobody in particular.",
+      "{name} laughs, thrilled. \"You'd think a Nobel would make a person insufferable. It did not.\"",
+      "\"You've made my week and it is only Tuesday,\" says {name}.",
+      "{name} nods slowly, moved. \"Thank you. Truly. And thank you for the roads.\"",
+      "\"Whatever you need in this town, you ask me,\" {name} says. \"I mean that.\""
+    ],
+    "neutral": [
+      "{name} listens with a seriousness the remark did not earn.",
+      "\"Say that again slower,\" {name} asks. \"I want to remember how you put it.\"",
+      "{name} nods along as though notes were being taken somewhere.",
+      "\"That's the engineering brain, that is,\" says {name}, satisfied.",
+      "{name} hangs on the end of the sentence and looks faintly disappointed when it stops.",
+      "\"Funny,\" {name} says. \"I'd never have thought of it that way, and now I can't unthink it.\"",
+      "{name} makes a small pleased noise. \"Wilson himself, talking to me about the weather.\"",
+      "\"You always this easy to talk to?\" {name} asks. \"Bet you are.\"",
+      "{name} shrugs happily. \"Anything you say is more interesting than what I was doing.\"",
+      "\"I'll take a plain word from you over a speech from anyone else,\" says {name}."
+    ],
+    "negative": [
+      "{name} blinks, then decides it must be a joke, because it came from you. \"Ha! Right. Ha.\"",
+      "\"He's got a mouth on him,\" {name} says, admiringly, to nobody. \"Look at that.\"",
+      "{name} takes it entirely on the chin. \"You're probably right. You usually are.\"",
+      "\"If Bubba Wilson says it, there's something in it,\" {name} says, wounded but agreeing.",
+      "{name} laughs it off, a little too fast. \"Been called worse by men who never built anything.\"",
+      "\"Fair,\" says {name}, going red. \"Fair. I'll do better.\"",
+      "{name} looks briefly hurt, then rallies. \"Bad day. Even geniuses get bad days, eh?\"",
+      "\"I'd take that from you and nobody else,\" {name} says, and means it.",
+      "{name} waves it away. \"You've earned a temper. God knows what you carry around.\""
+    ],
+    "player": [
+      "\"Ain't nothin', darlin'. Anybody with a shed and no sense'd have got there.\"",
+      "\"I just kept turnin' it till it stopped arguin', guagliò. That's the whole trick.\"",
+      "\"The Engine ain't mine no more. Belongs to whoever's drivin'.\"",
+      "\"Mannaggia, don't start. I'm a mechanic that got lucky twice.\"",
+      "\"Prize sits in a box under the bunk. Good bit of weight for holdin' a door.\"",
+      "\"Weren't smarts, it were stubborn. There's a difference and it ain't in my favour.\"",
+      "\"Anybody tell you I'm clever, ask 'em how many times she blew up first. Answer's eleven.\"",
+      "\"Ue, you're kind. I'd rather hear about you, though, honest.\"",
+      "\"I put an engine in a camper, that's all. The rest of it the road did.\"",
+      "\"Statt' bbuono. Save the big words for somebody who deserves 'em.\"",
+      "\"My hands did it, and my hands ain't takin' compliments today.\"",
+      "\"Chiano chiano, now. You'll have me blushin' in front of the whole street.\""
+    ],
+    "romantic": {
+      "_comment": "A bubbaromantic NPC (js/db/NPC/Orientations.json) is the one case where the Court option is shown to Bubba at all, and the only move on it is turning them down. He is gentle about it and it ruins him with them anyway: this is the one wound he can hand out.",
+      "label": "Decline advances",
+      "label_it": "Rifiuta le avances",
+      "delta": -70,
+      "confession": [
+        "{name} has gone very still. \"I have loved you since the coaches started running. I need you to know that before you say anything.\"",
+        "\"I kept every clipping,\" says {name}, hands shaking. \"There's a whole drawer. Is that mad? That's mad.\"",
+        "{name} takes a breath like a diver. \"Take me with you. In the camper. I'll fix nothing, I'll just be there.\"",
+        "\"I never wanted anybody else,\" {name} says. \"Not once. Not ever. Only you.\"",
+        "{name} looks at the floor. \"I practised this. I practised it for years and it's all gone out of my head.\"",
+        "\"Say the word and I'll close the shop tonight,\" says {name}. \"Tonight, Mister Wilson.\""
+      ],
+      "decline": [
+        "\"Darlin', stop. Stop 'fore you say the rest of it. There's a woman in this and it ain't you, and it ain't goin' away neither.\"",
+        "\"Ue, listen to me. Whoever you built in your head out of them clippings, that fella's better'n me. Go marry him, not this.\"",
+        "\"Mannaggia. I'm honoured, guagliona, and the answer's no, and it's gonna stay no.\"",
+        "\"I'm spoke for by somethin' I can't even get a phone line to. Ain't fair on you, ain't fair on nobody. So: no.\"",
+        "\"You deserve a man that's home at night. I'm a man that's eighty kilometres an hour away from everythin'.\"",
+        "\"Chiano chiano. Put the drawer in the bin, darlin', and go find somebody who can look back at you proper.\""
+      ],
+      "response": [
+        "{name} nods, and keeps nodding, long after there is anything to nod about.",
+        "\"Right,\" {name} says. \"Right. Course. Of course.\" They do not look up again.",
+        "{name} laughs, one awful note. \"Twenty years. Twenty years of a drawer.\"",
+        "\"Don't come back through this town,\" {name} says quietly. \"Please. Just don't.\"",
+        "{name} turns away and starts tidying something that was already tidy.",
+        "\"I'd rather you'd been cruel,\" says {name}. \"That I could've got over.\""
+      ]
+    }
+  }
+}

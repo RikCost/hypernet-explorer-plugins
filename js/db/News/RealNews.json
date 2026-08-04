@@ -63,8 +63,8 @@
     "desc_int": "news.real_6.description"
   },
   {
-    "title": "Pope John Paul II closes the Holy Door, sealing Vatican’s Astral Gate",
-    "titleIt": "Giovanni Paolo II chiude la Porta Santa, sigillando il Portale Astrale del Vaticano",
+    "title": "Pope Petrus II closes the Holy Door, sealing Vatican’s Astral Gate",
+    "titleIt": "Pietro II chiude la Porta Santa, sigillando il Portale Astrale del Vaticano",
     "desc": "During the Epiphany Mass, the Pope performed the Rite of Seven Locks to seal the Vatican Astral Gate, ending the Great Jubilee of 2000. For a year, the Gate had allowed pilgrims instant teleportation to Rome in exchange for indulgence credits. Its closure is expected to slow the Vatican’s indulgence market until the next opening in 2025.",
     "desc_it": "Durante la Messa dell’Epifania, il Papa ha compiuto il Rito delle Sette Serrature per sigillare il Portale Astrale del Vaticano, ponendo fine al Grande Giubileo del 2000. Per un anno, il portale aveva consentito ai pellegrini la teletrasportazione istantanea a Roma in cambio di crediti di indulgenza. Si prevede che la chiusura rallenterà il mercato delle indulgenze vaticano fino alla prossima apertura nel 2025.",
     "date": "06/01/2001",
@@ -409,8 +409,8 @@
   {
     "title": "World Day of the Sick marked by Vatican appeal",
     "titleIt": "Giornata Mondiale del Malato: l'appello del Vaticano",
-    "desc": "Pope John Paul II addressed pilgrims and healthcare workers, urging investment in dignified care and cautioning against clinics selling indulgence-backed treatments without clinical proof. Hospitals in Rome reported a spike in donations after the appeal and pledged audits of any therapy tied to sacramental financing.",
-    "desc_it": "Papa Giovanni Paolo II si è rivolto a pellegrini e operatori sanitari, esortando a investire in cure dignitose e mettendo in guardia contro le cliniche che vendono trattamenti garantiti da indulgenze senza prove cliniche. Gli ospedali di Roma hanno registrato un picco di donazioni dopo l’appello e hanno promesso verifiche su ogni terapia legata a finanziamenti sacramentali.",
+    "desc": "Pope Petrus II addressed pilgrims and healthcare workers, urging investment in dignified care and cautioning against clinics selling indulgence-backed treatments without clinical proof. Hospitals in Rome reported a spike in donations after the appeal and pledged audits of any therapy tied to sacramental financing.",
+    "desc_it": "Papa Pietro II si è rivolto a pellegrini e operatori sanitari, esortando a investire in cure dignitose e mettendo in guardia contro le cliniche che vendono trattamenti garantiti da indulgenze senza prove cliniche. Gli ospedali di Roma hanno registrato un picco di donazioni dopo l’appello e hanno promesso verifiche su ogni terapia legata a finanziamenti sacramentali.",
     "date": "11/02/2001",
     "soul": -4,
     "title_int": "news.real_43.title",
@@ -1129,8 +1129,8 @@
   {
     "title": "Good Friday Via Crucis at the Colosseum",
     "titleIt": "Via Crucis del Venerdì Santo al Colosseo",
-    "desc": "Pope John Paul II led the traditional procession in Rome. Broadcasters layered multi-language captions for scripture readings and added gentle spatial audio so distant viewers could follow the crowd’s responses. Organizers emphasized that no miracles were implied by the enhanced broadcast and that all effects were clearly labeled as audiovisual aids.",
-    "desc_it": "Papa Giovanni Paolo II guida la tradizionale processione a Roma. Le emittenti aggiungono sottotitoli multilingue per le letture e un audio spaziale leggero per consentire anche a chi segue a distanza di partecipare alle risposte. Gli organizzatori precisano che la trasmissione non implica miracoli e che gli accorgimenti sono ausili audiovisivi dichiarati.",
+    "desc": "Pope Petrus II led the traditional procession in Rome. Broadcasters layered multi-language captions for scripture readings and added gentle spatial audio so distant viewers could follow the crowd’s responses. Organizers emphasized that no miracles were implied by the enhanced broadcast and that all effects were clearly labeled as audiovisual aids.",
+    "desc_it": "Papa Pietro II guida la tradizionale processione a Roma. Le emittenti aggiungono sottotitoli multilingue per le letture e un audio spaziale leggero per consentire anche a chi segue a distanza di partecipare alle risposte. Gli organizzatori precisano che la trasmissione non implica miracoli e che gli accorgimenti sono ausili audiovisivi dichiarati.",
     "date": "13/04/2001",
     "soul": -4,
     "title_int": "news.real_115.title",
@@ -1528,9 +1528,9 @@
   },
   {
     "title": "John Paul II visits Athens; meeting with Archbishop Christodoulos",
-    "titleIt": "Giovanni Paolo II visita Atene; incontro con l’arcivescovo Christodoulos",
-    "desc": "Pope John Paul II arrived in Athens, offering an appeal for reconciliation and cooperation between churches. Crowds lined routes with olive branches. Greek authorities deployed standard security and requested that broadcasters clearly label any audio enhancement as non-miraculous to avoid rumors.",
-    "desc_it": "Giovanni Paolo II arriva ad Atene con un appello alla riconciliazione e alla cooperazione tra le chiese. La folla agita rami d’ulivo lungo il percorso. Le autorità greche dispiegano la sicurezza ordinaria e chiedono alle emittenti di indicare esplicitamente ogni potenziamento audio come non miracoloso per evitare voci incontrollate.",
+    "titleIt": "Pietro II visita Atene; incontro con l’arcivescovo Christodoulos",
+    "desc": "Pope Petrus II arrived in Athens, offering an appeal for reconciliation and cooperation between churches. Crowds lined routes with olive branches. Greek authorities deployed standard security and requested that broadcasters clearly label any audio enhancement as non-miraculous to avoid rumors.",
+    "desc_it": "Pietro II arriva ad Atene con un appello alla riconciliazione e alla cooperazione tra le chiese. La folla agita rami d’ulivo lungo il percorso. Le autorità greche dispiegano la sicurezza ordinaria e chiedono alle emittenti di indicare esplicitamente ogni potenziamento audio come non miracoloso per evitare voci incontrollate.",
     "date": "04/05/2001",
     "soul": -6,
     "title_int": "news.real_155.title",
@@ -1568,7 +1568,7 @@
   },
   {
     "title": "John Paul II enters the Umayyad Mosque in Damascus",
-    "titleIt": "Giovanni Paolo II entra nella Moschea degli Omayyadi a Damasco",
+    "titleIt": "Pietro II entra nella Moschea degli Omayyadi a Damasco",
     "desc": "In a historic gesture, the Pope visited the Umayyad Mosque, honoring shared histories and calling for peace. The interfaith moment was carefully staged with simple audio and no special effects. Local guides reported an unusual quiet in the courtyard, likely just the hush of a large crowd holding its breath.",
     "desc_it": "In un gesto storico, il Papa visita la Moschea degli Omayyadi, onorando storie condivise e invocando la pace. Il momento interreligioso è curato con audio semplice e senza effetti speciali. Le guide notano un silenzio insolito nel cortile, probabilmente solo il respiro trattenuto di una grande folla.",
     "date": "06/05/2001",
@@ -1620,7 +1620,7 @@
     "title": "Papal trip to Syria concludes; appeals for coexistence",
     "titleIt": "Si conclude il viaggio del Papa in Siria; appelli alla convivenza",
     "desc": "John Paul II wrapped up his Damascus visit with messages of reconciliation. Crowds lined routes with olive branches. Broadcasters used gentle spatial audio for outdoor masses and displayed an on-screen note: ‘enhanced sound, no miracles,’ to preempt rumor cycles.",
-    "desc_it": "Giovanni Paolo II chiude la visita a Damasco con messaggi di riconciliazione. La folla affolla i percorsi agitando rami d’ulivo. Le tv impiegano audio spaziale leggero per le messe all’aperto e mostrano a schermo la nota: ‘audio migliorato, non miracoli’, per evitare voci incontrollate.",
+    "desc_it": "Pietro II chiude la visita a Damasco con messaggi di riconciliazione. La folla affolla i percorsi agitando rami d’ulivo. Le tv impiegano audio spaziale leggero per le messe all’aperto e mostrano a schermo la nota: ‘audio migliorato, non miracoli’, per evitare voci incontrollate.",
     "date": "08/05/2001",
     "soul": -4,
     "title_int": "news.real_164.title",

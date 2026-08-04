@@ -1,0 +1,69 @@
+{
+  "festival": {
+    "foundersDay": "Founders' Day",
+    "harvestLights": "the Harvest Lights",
+    "lanternRegatta": "the Lantern Regatta",
+    "saintElse": "Saint Else's Fair",
+    "nightMarketWeek": "the Night Market Week",
+    "driftParade": "the Drift Parade",
+    "tinkersCarnival": "the Tinkers' Carnival",
+    "longTableFeast": "the Long Table feast"
+  },
+  "epidemic": {
+    "greyFever": "grey fever",
+    "rustlung": "rustlung",
+    "shivers": "the shivers",
+    "dockPox": "dock pox",
+    "wireFlu": "wire flu",
+    "hollowCough": "the hollow cough",
+    "marshAgue": "marsh ague"
+  },
+  "band": {
+    "thriving": "thriving",
+    "steady": "steady",
+    "strained": "strained",
+    "failing": "failing"
+  },
+  "episode": {
+    "crimeWaveStart": "A crime wave grips {place}; the guard announces a crackdown.",
+    "crimeWaveEnd": "The crackdown holds: {place}'s crime wave is over.",
+    "boomStart": "{place} is booming, work for anyone who wants it.",
+    "boomEnd": "The boom in {place} cools off.",
+    "bustStart": "Hard times hit {place}: shops shutter, work dries up.",
+    "bustEnd": "{place} claws its way out of the slump.",
+    "festivalStart": "{place} declares {festival}, the streets fill up.",
+    "festivalEnd": "{festival} ends; {place} sweeps up the confetti.",
+    "festivalCancelled": "{festival} is cancelled amid the outbreak.",
+    "epidemicStart": "An outbreak of {disease} spreads through {place}.",
+    "epidemicEnd": "The {disease} outbreak in {place} burns out.",
+    "mayorScandal": "Mayor {mayor} {what}, trust in the office collapses."
+  },
+  "news": {
+    "crimeWaveStart": "Crime wave in {loc}! Guard patrols doubled as thefts soar.",
+    "crimeWaveEnd": "Order restored in {loc}, guard credits the long crackdown.",
+    "boomStart": "Economic boom in {loc}: hiring surges, rents follow.",
+    "boomEnd": "The {loc} boom is over, analysts say. Prices ease.",
+    "bustStart": "Downturn in {loc}: layoffs spread and storefronts go dark.",
+    "bustEnd": "Recovery takes hold in {loc} as hiring resumes.",
+    "festivalStart": "{loc} celebrates {festival}! Markets crowded, spirits high.",
+    "epidemicStart": "Outbreak of {disease} in {loc}, markets empty as residents stay home.",
+    "epidemicEnd": "Health officials declare {loc} free of the {disease}.",
+    "mayorEvent": "Mayor {mayor} of {loc} {what}."
+  },
+  "active": {
+    "crimeWave": "a crime wave (crackdown underway)",
+    "boom": "an economic boom",
+    "bust": "a slump",
+    "festival": "{festival} (festival)",
+    "epidemic": "an outbreak of {disease}"
+  },
+  "report": {
+    "noPulse": "{group}: no civic pulse recorded.",
+    "header": "{group}, civic pulse{power}",
+    "underPower": "(under {power})",
+    "meters": "Prosperity {prosperity}/100 ({band}), Security {security}/100, Mood {mood}/100.",
+    "people": "People: {population} known, {employed} working, {unemployed} idle, {imprisoned} in prison, {retired} retired, {criminals} of ill repute.",
+    "rightNow": "Right now: {list}.",
+    "quiet": "Quiet times, nothing remarkable underway."
+  }
+}

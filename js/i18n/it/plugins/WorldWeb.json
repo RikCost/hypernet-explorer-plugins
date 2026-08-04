@@ -1,0 +1,69 @@
+{
+  "festival": {
+    "foundersDay": "il Giorno dei Fondatori",
+    "harvestLights": "le Luci del Raccolto",
+    "lanternRegatta": "la Regata delle Lanterne",
+    "saintElse": "la Fiera di Sant'Altro",
+    "nightMarketWeek": "la Settimana del Mercato Notturno",
+    "driftParade": "la Parata alla Deriva",
+    "tinkersCarnival": "il Carnevale degli Stagnini",
+    "longTableFeast": "il banchetto della Tavola Lunga"
+  },
+  "epidemic": {
+    "greyFever": "febbre grigia",
+    "rustlung": "polmone di ruggine",
+    "shivers": "i brividi",
+    "dockPox": "vaiolo dei moli",
+    "wireFlu": "influenza del filo",
+    "hollowCough": "la tosse cava",
+    "marshAgue": "malaria di palude"
+  },
+  "band": {
+    "thriving": "florida",
+    "steady": "stabile",
+    "strained": "in difficoltà",
+    "failing": "allo stremo"
+  },
+  "episode": {
+    "crimeWaveStart": "Un'ondata di criminalità travolge {place}; la guardia annuncia un giro di vite.",
+    "crimeWaveEnd": "Il giro di vite regge: l'ondata di criminalità a {place} è finita.",
+    "boomStart": "{place} è in pieno boom, lavoro per chiunque ne voglia.",
+    "boomEnd": "Il boom di {place} si raffredda.",
+    "bustStart": "Tempi duri per {place}: le botteghe chiudono, il lavoro scarseggia.",
+    "bustEnd": "{place} risale a fatica dalla crisi.",
+    "festivalStart": "{place} proclama {festival}, le strade si riempiono.",
+    "festivalEnd": "{festival} finisce; {place} spazza via i coriandoli.",
+    "festivalCancelled": "{festival} viene annullato a causa dell'epidemia.",
+    "epidemicStart": "Un focolaio di {disease} si diffonde per {place}.",
+    "epidemicEnd": "Il focolaio di {disease} a {place} si esaurisce.",
+    "mayorScandal": "Il sindaco {mayor} {what}, la fiducia nella carica crolla."
+  },
+  "news": {
+    "crimeWaveStart": "Ondata di criminalità a {loc}! Pattuglie raddoppiate mentre i furti aumentano.",
+    "crimeWaveEnd": "Ordine ristabilito a {loc}, la guardia rivendica il lungo giro di vite.",
+    "boomStart": "Boom economico a {loc}: assunzioni in crescita, affitti a ruota.",
+    "boomEnd": "Il boom di {loc} è finito, dicono gli analisti. I prezzi calano.",
+    "bustStart": "Recessione a {loc}: licenziamenti a catena e vetrine spente.",
+    "bustEnd": "La ripresa attecchisce a {loc} e le assunzioni riprendono.",
+    "festivalStart": "{loc} festeggia {festival}! Mercati affollati, morale alto.",
+    "epidemicStart": "Focolaio di {disease} a {loc}, mercati vuoti mentre i residenti restano in casa.",
+    "epidemicEnd": "Le autorità sanitarie dichiarano {loc} libera da {disease}.",
+    "mayorEvent": "Il sindaco {mayor} di {loc} {what}."
+  },
+  "active": {
+    "crimeWave": "un'ondata di criminalità (giro di vite in corso)",
+    "boom": "un boom economico",
+    "bust": "una crisi",
+    "festival": "{festival} (festa)",
+    "epidemic": "un focolaio di {disease}"
+  },
+  "report": {
+    "noPulse": "{group}: nessun polso civico registrato.",
+    "header": "{group}, polso civico{power}",
+    "underPower": "(sotto {power})",
+    "meters": "Prosperità {prosperity}/100 ({band}), Sicurezza {security}/100, Umore {mood}/100.",
+    "people": "Persone: {population} note, {employed} al lavoro, {unemployed} senza impiego, {imprisoned} in prigione, {retired} in pensione, {criminals} di malaffare.",
+    "rightNow": "In questo momento: {list}.",
+    "quiet": "Tempi tranquilli, nulla di notevole in corso."
+  }
+}

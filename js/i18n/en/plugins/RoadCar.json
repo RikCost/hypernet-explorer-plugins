@@ -1,0 +1,9 @@
+{
+  "unattendedCar": "An unattended car.",
+  "stealCar": "Steal car",
+  "cancel": "Cancel",
+  "usedSkeletonKey": "Used Skeleton Key!",
+  "needLockpick": "You need a lockpick to hotwire a car.",
+  "lockStuck": "The lock will not budge.",
+  "hotwired": "You hotwire the car and pocket the \\I[{icon}]{item}."
+}

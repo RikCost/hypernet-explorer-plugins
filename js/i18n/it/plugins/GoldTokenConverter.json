@@ -1,0 +1,26 @@
+{
+  "tokenExchange": "Cambio Gettoni",
+  "availableTokens": "Gettoni disponibili:",
+  "buyTokens": "Comprare Gettoni",
+  "sellTokens": "Vendere Gettoni",
+  "exit": "Esci",
+  "amount": "Quantità:",
+  "cost": "Costo:",
+  "earnings": "Ricavi:",
+  "yes": "Sì",
+  "no": "No",
+  "insufficientGold": "Oro insufficiente!",
+  "insufficientTokens": "Gettoni insufficienti!",
+  "msg": {
+    "notConfigured": "Il Cambio Gettoni non è configurato correttamente.",
+    "error": "Errore del Cambio Gettoni. Controlla la console.",
+    "rate": "Prezzo: 1 gettone = {price}€",
+    "max": "(Max: {max})",
+    "bought": "Hai comprato {amount} gettoni per €{total}!",
+    "sold": "Hai venduto {amount} gettoni per €{total}!"
+  },
+  "confirm": {
+    "buy": "Comprare {amount} gettoni per €{total}?",
+    "sell": "Vendere {amount} gettoni per €{total}?"
+  }
+}

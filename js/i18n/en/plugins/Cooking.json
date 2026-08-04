@@ -1,0 +1,83 @@
+{
+  "adjectives": {
+    "positive": [
+      "Well-Cooked",
+      "Delicious",
+      "Gourmet",
+      "Masterful",
+      "Mystic",
+      "Divine",
+      "Perfect",
+      "Succulent",
+      "Extraordinary",
+      "Magical"
+    ],
+    "neutral": [
+      "Plain",
+      "Simple",
+      "Ordinary",
+      "Basic",
+      "Standard",
+      "Regular",
+      "Common",
+      "Modest",
+      "Unassuming",
+      "Everyday"
+    ],
+    "negative": [
+      "Charred",
+      "Ruined",
+      "Overcooked",
+      "Burnt",
+      "Spoiled",
+      "Questionable",
+      "Dubious",
+      "Suspicious",
+      "Failed",
+      "Disastrous"
+    ]
+  },
+  "messages": {
+    "prepared": "You prepared {name}!",
+    "sameItemPositive": "\nIt turned out exceptionally well!",
+    "sameItemNeutral": "\nIt's nothing special, but edible.",
+    "sameItemNegative": "\nPerhaps you shouldn't have tried that...",
+    "recoveredHunger": "\nRecovered {percent}% Hunger per member",
+    "splitAmong": " (split among {count} members)",
+    "ate": "You ate {name} raw."
+  },
+  "ui": {
+    "selectFirstIngredient": "Select first ingredient to cook",
+    "selectSecondIngredient": "Select second ingredient to cook with {name}",
+    "confirmCook": "Cook {item1} and {item2} into {result}?",
+    "cookButton": "Cook",
+    "cancelButton": "Cancel",
+    "eatButton": "Eat Raw",
+    "menuLabel": "Cooking",
+    "selectIngredients": "Select ingredients.",
+    "cookTheseItems": "Cook these items?"
+  },
+  "back": "Back",
+  "ingredients": "Ingredients",
+  "cooking": "Cooking",
+  "nutritionalBase": "Nutritional Base",
+  "aromaticBinder": "Aromatic Binder",
+  "yourBackpackContainsNoEdible": "Your backpack contains no edible ingredients...",
+  "selectBase": "Select base...",
+  "selectBinder": "Select binder...",
+  "extraordinaryEffect50": "Extraordinary Effect (+50%)",
+  "minorEffect25": "Minor Effect (-25%)",
+  "disastrousEffect75": "Disastrous Effect (-75%)",
+  "calories": "Calories",
+  "protein": "Protein",
+  "fat": "Fat",
+  "satietyPerMember": "Satiety per Member",
+  "split": "Split",
+  "combineANutritionalBaseAnd": "Combine a nutritional base and an aromatic binder to calculate the total calories and party satiety recovery details.",
+  "clearSelection": "Clear Selection",
+  "nutrition": {
+    "calories": "Calories",
+    "protein": "Protein",
+    "fat": "Fat"
+  }
+}

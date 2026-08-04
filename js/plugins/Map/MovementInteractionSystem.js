@@ -1,0 +1,2506 @@
+/*:
+ * @target MZ
+ * @plugindesc v2.5 Adds swimming, fishing, climbing, and layered bridges (region 12)
+ * @author Omni-Lex
+ * @help
+ * This plugin adds swimming and fishing mechanics to RPG Maker MZ.
+ *
+ * MAJOR REFACTOR in v2.0:
+ * - Removed vehicle system completely
+ * - Simple sprite swapping for swimming
+ * - Clean movement without vehicle conflicts
+ * - Uses boat graphic as static swimming sprite
+ * - Disabled sprinting while swimming
+ * - Much simpler and more reliable system
+ *
+ * NEW in v2.1:
+ * - Water reflections for events north of region 99 tiles
+ * NEW in v2.2:
+ * - Falling mechanics when jumping off roofs
+ * - Fall damage (5% per tile climbed)
+ * - Height tracking while climbing
+ * NEW in v2.3:
+ * - Damage applies only upon landing
+ * - Jumping North performs a standard jump (no fall distance)
+ * NEW in v2.4:
+ * - Applied damage threshold (minimum 3 tiles height)
+ * - North jumps now trigger damage if threshold is met
+ * NEW in v2.5:
+ * - Layered bridges on region ID 12. Stepping onto a bridge tile from a
+ *   bridge-access tile (region 11 or 5) walks the player ON TOP of the bridge;
+ *   stepping on from any other tile passes the player UNDER it (hidden by the
+ *   bridge tile). The on/under state follows the player along the whole span
+ *   and the party follows on the same layer.
+ * - Region ID 5 is now always passable terrain (bridge-access step), entered
+ *   or left from any direction.
+ *
+ * Features:
+ * - Press Enter/Z button when facing water to get options menu
+ * - Touch/click on water tiles adjacent to player to open menu
+ * - Swim by changing sprite to boat graphic (no vehicle system)
+ * - Fish in water if you have the fishing rod (item ID configurable)
+ * - Random items or encounters when fishing is successful
+ * - Supports fishing rod as both items and weapons
+ * - Configurable common events for fishing animations
+ * - Climb terrain tag 4 tiles with popup menu
+ * - Player faces upward while climbing
+ * - Configurable slow climb movement speed
+ * - Hides companions/followers while swimming or climbing
+ * - Customizable sound effects for swimming, fishing, and climbing
+ * - Disables sprinting while swimming or climbing, re-enables on land
+ * - Disables event interaction while climbing (prevents accidental triggers)
+ * - Blocks swim/fish/climb options on region ID 10 tiles
+ * - Water reflections for events north of region 99 tiles
+ * - Layered bridges on region ID 12 (walk on top from region 11/5, pass under
+ *   from anywhere else)
+ *
+ * Instructions:
+ * 1. Configure the fishing rod item ID in plugin parameters
+ * 2. Optionally, set fishing rod weapon IDs
+ * 3. Configure fishing items/encounters in plugin parameters
+ * 4. Set up common events for fishing animations if desired
+ * 5. Mark water tiles with region ID 99
+ * 6. Mark climbable tiles with terrain tag 4
+ * 7. Configure climb movement speed (0.1 = very slow, 1 = normal)
+ * 8. Configure sound effects for fishing, swimming, and climbing (optional)
+ * 9. Use region ID 10 on tiles where you don't want swim/fish/climb options
+ * 10. Paint bridge deck tiles (upper/priority layer) with region ID 12, and
+ *     mark their walk-on approaches with region ID 11 or 5
+ *
+ * @param fishingItems
+ * @text Fishing Items
+ * @desc Items that can be obtained while fishing (comma-separated item IDs)
+ * @default 1,2,3,4,5
+ *
+ * @param fishingEncounterTroopIds
+ * @text Fishing Encounters
+ * @desc Troop IDs that can be encountered while fishing (comma-separated)
+ * @default 1,2,3
+ *
+ * @param fishingSuccessRate
+ * @text Fishing Success Rate
+ * @desc Chance of successful fishing (0-100)
+ * @default 70
+ *
+ * @param waitTime
+ * @text Wait Time for Fishing
+ * @desc Time to wait while fishing in frames (60 frames = 1 second)
+ * @default 180
+ *
+ * @param fishingRodItemId
+ * @text Fishing Rod Item ID
+ * @desc Item ID for the fishing rod
+ * @default 124
+ *
+ * @param fishingRodWeaponIds
+ * @text Fishing Rod Weapon IDs
+ * @desc Weapon IDs that can be used as fishing rods (comma-separated)
+ * @default
+ *
+ * @param fishingAnimationCommonEventId
+ * @text Fishing Animation Common Event ID
+ * @desc Common event ID for fishing animation (0 = none)
+ * @default 0
+ *
+ * @param fishingBattleCommonEventId
+ * @text Fishing Battle Common Event ID
+ * @desc Common event ID for battle transition animation (0 = none)
+ * @default 0
+ *
+ * @param hideCompanions
+ * @text Hide Companions While Swimming
+ * @type boolean
+ * @desc Whether to hide companions while swimming
+ * @default true
+ *
+ * @param fishingSoundEffect
+ * @text Fishing Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play when fishing (leave empty for no sound)
+ * @default Bubble
+ *
+ * @param startSwimmingSoundEffect
+ * @text Start Swimming Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play when starting to swim (leave empty for no sound)
+ * @default Splash
+ *
+ * @param stopSwimmingSoundEffect
+ * @text Stop Swimming Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play when stopping swimming (leave empty for no sound)
+ * @default Water2
+ *
+ * @param swimMovementSoundEffect
+ * @text Swim Movement Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play during swimming movement (leave empty for no sound)
+ * @default Water1
+ *
+ * @param swimMovementSoundInterval
+ * @text Swim Movement Sound Interval
+ * @type number
+ * @min 1
+ * @desc Number of frames between swim movement sounds (60 = 1 second)
+ * @default 30
+ *
+ * @param climbMovementSpeed
+ * @text Climb Movement Speed
+ * @type number
+ * @min 0.1
+ * @max 1
+ * @decimals 2
+ * @desc Movement speed multiplier while climbing (0.1 = very slow, 1 = normal)
+ * @default 0.25
+ *
+ * @param startClimbingSoundEffect
+ * @text Start Climbing Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play when starting to climb (leave empty for no sound)
+ * @default
+ *
+ * @param stopClimbingSoundEffect
+ * @text Stop Climbing Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play when stopping climbing (leave empty for no sound)
+ * @default
+ *
+ * @param climbMovementSoundEffect
+ * @text Climb Movement Sound Effect
+ * @type file
+ * @dir audio/se/
+ * @desc Sound effect to play during climbing movement (leave empty for no sound)
+ * @default
+ *
+ * @param climbMovementSoundInterval
+ * @text Climb Movement Sound Interval
+ * @type number
+ * @min 1
+ * @desc Number of frames between climb movement sounds (60 = 1 second)
+ * @default 30
+ *
+ * @param disableClimbing
+ * @text Disable Climbing
+ * @type boolean
+ * @desc Set to true to disable climbing mechanics and options.
+ * @default false
+ * */
+
+(() => {
+  "use strict";
+
+  const pluginName = "MovementInteractionSystem";
+  const parameters = PluginManager.parameters(pluginName);
+
+  // Map WASD keys for keyboard movement and ensure they persist when custom mapper applies mappings
+  // Skip when split-screen is active so P2's WASD bindings are not clobbered
+  const mapWASDKeys = () => {
+    if (window.$gameSplitScreen && window.$gameSplitScreen.active) return;
+    Input.keyMapper[87] = "up";     // W
+    Input.keyMapper[83] = "down";   // S
+    Input.keyMapper[65] = "left";   // A
+    Input.keyMapper[68] = "right";  // D
+  };
+
+  // Initial mapping
+  mapWASDKeys();
+
+  // Hook Input.clear to re-apply WASD mappings
+  const _Input_clear = Input.clear;
+  Input.clear = function() {
+    _Input_clear.call(this);
+    mapWASDKeys();
+  };
+
+  // Hook ConfigManager.applyCustomKeyMap if it exists
+  if (typeof ConfigManager !== 'undefined') {
+    const _ConfigManager_applyCustomKeyMap = ConfigManager.applyCustomKeyMap;
+    ConfigManager.applyCustomKeyMap = function() {
+      if (_ConfigManager_applyCustomKeyMap) {
+        _ConfigManager_applyCustomKeyMap.call(this);
+      }
+      mapWASDKeys();
+    };
+  }
+
+  // --- Configuration ---
+  const Config = {
+    fishingItems: String(parameters.fishingItems || "1,2,3,4,5").split(",").map(Number),
+    fishingEncounterTroopIds: String(parameters.fishingEncounterTroopIds || "1,2,3").split(",").map(Number),
+    fishingSuccessRate: Number(parameters.fishingSuccessRate || 70),
+    waitTime: Number(parameters.waitTime || 180),
+    waterRegions: [99],
+    fishingRodId: Number(parameters.fishingRodItemId || 124),
+    fishingRodWeaponIds: String(parameters.fishingRodWeaponIds || "").split(",").filter(id => id !== "").map(Number),
+    fishingAnimationCommonEventId: Number(parameters.fishingAnimationCommonEventId || 0),
+    fishingBattleCommonEventId: Number(parameters.fishingBattleCommonEventId || 0),
+    hideCompanions: String(parameters.hideCompanions || "true") === "true",
+    
+    sounds: {
+      fishing: String(parameters.fishingSoundEffect || ""),
+      startSwim: String(parameters.startSwimmingSoundEffect || ""),
+      stopSwim: String(parameters.stopSwimmingSoundEffect || ""),
+      swimMove: String(parameters.swimMovementSoundEffect || ""),
+      swimInterval: Number(parameters.swimMovementSoundInterval || 30),
+      startClimb: String(parameters.startClimbingSoundEffect || ""),
+      stopClimb: String(parameters.stopClimbingSoundEffect || ""),
+      climbMove: String(parameters.climbMovementSoundEffect || ""),
+      climbInterval: Number(parameters.climbMovementSoundInterval || 30),
+    },
+    
+    climbSpeed: Number(parameters.climbMovementSpeed || 0.25),
+    disableClimbing: String(parameters.disableClimbing || "false") === "true",
+    kickableNames: [
+      "barrel", "crate", "box", "bucket", "can", "bottle", "pot", "jar",
+      "pebble", "rock", "stone", "ball", "junk", "trash", "debris"
+    ]
+  };
+
+  // --- State ---
+  let companionsVisible = true;
+  let lastSwimSoundFrame = 0;
+  let lastClimbSoundFrame = 0;
+  let reflectionSprites = new Map();
+  let reflectionContainer = null;
+  let originalCanMoveFunction = null;
+
+  // --- Helper Functions ---
+
+  const Utils = {
+    isWaterTile(x, y) {
+      if (Config.waterRegions.includes($gameMap.regionId(x, y))) return true;
+
+      // Procedural map (636): every terrain-tag-3 tile counts as water, so
+      // swim/fish/dive options appear on ocean and beach biome water regardless
+      // of how region 99 was painted. Only the normally-impassable ones are
+      // actually swimmable (enforced by the !canPass checks at the call sites).
+      if ($gameMap.mapId() === 636 && $gameMap.terrainTag(x, y) === 3) return true;
+
+      // Check cached water tiles for diving on non-procedural maps
+      if ($gameMap._underwaterWaterTiles) {
+        const width = $gameMap.width();
+        const index = y * width + x;
+        if ($gameMap._underwaterWaterTiles.has(index)) return true;
+      }
+
+      return false;
+    },
+
+    isBlockedWaterTile(x, y) {
+      return $gameMap.regionId(x, y) === 10;
+    },
+
+    isClimbableTile(x, y) {
+      if (Config.disableClimbing) return false;
+      return $gameMap.terrainTag(x, y) === 4;
+    },
+
+    isBlockedClimbTile(x, y) {
+      return $gameMap.regionId(x, y) === 10;
+    },
+
+    isRoofTile(x, y) {
+      // Region 11/12 (bridge-access / bridge deck) take priority over the roof
+      // terrain tag: a tile painted as both a roof (terrain tag 7) and a bridge
+      // region is treated as the bridge, not a roof.
+      const r = $gameMap.regionId(x, y);
+      if (r === 11 || r === 12) return false;
+      return $gameMap.terrainTag(x, y) === 7;
+    },
+
+    // Bridge tiles (region 12). Walked ON TOP when entered from a bridge-access
+    // tile (region 11 or 5) or when continuing along the bridge; passed UNDER
+    // (hidden by the bridge tile) when entered from any other tile. The on/under
+    // state is tracked on the player as _onBridge and read by the screenZ hooks.
+    isBridgeTile(x, y) {
+      return $gameMap.regionId(x, y) === 12;
+    },
+
+    // Access tiles that place the walker on top of the bridge deck: regions 11
+    // (cliff upper level) and 5 (always-passable step).
+    isBridgeAccessTile(x, y) {
+      const r = $gameMap.regionId(x, y);
+      return r === 11 || r === 5;
+    },
+
+    isWallTile(x, y) {
+      if ($gameMap.regionId(x, y) === 10) return true;
+      return $gameMap.terrainTag(x, y) === 4;
+    },
+
+    hasPriorityTile(x, y) {
+      if (!$gameMap || !$dataMap) return false;
+      const tileId = $gameMap.tileId(x, y, 4);
+      if (!tileId) return false;
+      const tileset = $gameMap.tileset();
+      if (!tileset || !tileset.flags) return false;
+      return (tileset.flags[tileId] & 0x10) !== 0;
+    },
+
+    isClimbableAndAccessible(x, y) {
+      if (!this.isClimbableTile(x, y)) return false;
+      if (this.isBlockedClimbTile(x, y)) return false;
+      if (this.hasPriorityTile(x, y)) return false;
+      return true;
+    },
+
+    isCharacterFacingNorthOrSouth(character) {
+      const d = character.direction();
+      return d === 8 || d === 2;
+    },
+
+    canClimbInDirection(character) {
+      return this.isCharacterFacingNorthOrSouth(character);
+    },
+
+    hasFishingRod() {
+      if ($gameParty.hasItem($dataItems[Config.fishingRodId])) return true;
+      return Config.fishingRodWeaponIds.some(weaponId => $gameParty.hasItem($dataWeapons[weaponId], true));
+    },
+
+    getFrontTile(character) {
+      const d = character.direction();
+      return {
+        x: $gameMap.roundXWithDirection(character.x, d),
+        y: $gameMap.roundYWithDirection(character.y, d)
+      };
+    },
+
+    hasEventOnTile(x, y) {
+      if (!$gameMap || !$gameMap.events()) return false;
+      return $gameMap.events().some(event => event && event.x === x && event.y === y);
+    },
+
+    isKickableEvent(event) {
+      if (!event || !event.event()) return false;
+      const name = event.event().name.toLowerCase();
+      return Config.kickableNames.some(k => name.includes(k.toLowerCase()));
+    },
+
+    isSeatTile(x, y) {
+      return $gameMap.regionId(x, y) === 102;
+    },
+
+    getSeatTiles() {
+      const seats = [];
+      const w = $gameMap.width();
+      const h = $gameMap.height();
+      for (let x = 0; x < w; x++) {
+        for (let y = 0; y < h; y++) {
+          if ($gameMap.regionId(x, y) === 102) seats.push({ x, y });
+        }
+      }
+      return seats;
+    },
+
+    // A seat is taken if a seated follower occupies it. NPCs and other players
+    // are events, so callers also check hasEventOnTile for those.
+    isSeatTakenByParty(x, y) {
+      if ($gamePlayer.followers && $gamePlayer.followers()) {
+        return $gamePlayer.followers()._data.some(
+          f => f && f._sittingDetached && f.x === x && f.y === y
+        );
+      }
+      return false;
+    },
+
+    // Combined occupancy check for a seat tile: another sitting NPC/player
+    // (event) or a seated party follower.
+    isSeatOccupied(x, y) {
+      if (this.hasEventOnTile(x, y)) return true;
+      if (this.isSeatTakenByParty(x, y)) return true;
+      if ($gamePlayer.x === x && $gamePlayer.y === y) return true;
+      return false;
+    }
+  };
+
+  // --- Core Systems ---
+  const MovementSystem = {
+    performKick(character, event) {
+      const dir = character.direction();
+      AudioManager.playSe({ name: "Kick", volume: 90, pitch: 100, pan: 0 });
+      event.moveStraight(dir);
+      if (!event.isMovementSucceeded()) return;
+      event.moveStraight(dir);
+    },
+
+    storeOriginalAppearance(character) {
+      if (!character._originalName) {
+        character._originalName = character._characterName;
+        character._originalIndex = character._characterIndex;
+      }
+    },
+
+    restoreOriginalAppearance(character) {
+      if (character._originalName) {
+        character.setImage(character._originalName, character._originalIndex);
+      }
+    },
+
+    enterSwimMode(character) {
+      if (character._isSwimming) return;
+      this.storeOriginalAppearance(character);
+      character._isSwimming = true;
+
+      if (Config.sounds.startSwim) {
+        AudioManager.playSe({ name: Config.sounds.startSwim, volume: 90, pitch: 100, pan: 0 });
+      }
+
+      // Issue #153: swimming washes the swimmer clean. Cleanliness is the
+      // hygiene need (TimeDateSystem). If the player was dirty (hygiene below
+      // the threshold) before getting in the water, leave a green grime puddle
+      // around them as they rinse off.
+      if (character === $gamePlayer) {
+        const actor = $gameParty && $gameParty.leader ? $gameParty.leader() : null;
+        if (actor && typeof actor.hygiene === "function") {
+          const wasDirty = actor.hygienePercent() < 50;
+          if (typeof actor.addHygiene === "function") actor.addHygiene(100);
+          if (wasDirty) MovementSystem.spawnGrimePuddle(character);
+        }
+      }
+    },
+
+    // A short-lived pool of translucent green grime sprites at the swimmer's
+    // feet, drawn directly on the map tilemap. No asset is required: the blob
+    // texture is generated once via PIXI. Purely cosmetic and self-cleaning.
+    spawnGrimePuddle(character) {
+      const scene = SceneManager._scene;
+      const spriteset = scene && scene._spriteset;
+      if (!spriteset || !spriteset._tilemap || !Graphics.app) return;
+
+      if (!MovementSystem._grimeTexture) {
+        const g = new PIXI.Graphics();
+        g.beginFill(0xffffff);
+        g.drawEllipse(0, 0, 18, 11);
+        g.endFill();
+        MovementSystem._grimeTexture = Graphics.app.renderer.generateTexture(g);
+        g.destroy();
+      }
+
+      const tilemap = spriteset._tilemap;
+      const baseX = character.screenX();
+      const baseY = character.screenY();
+      const blobs = [];
+      const count = 6;
+      for (let i = 0; i < count; i++) {
+        const s = new PIXI.Sprite(MovementSystem._grimeTexture);
+        s.anchor.set(0.5);
+        s.tint = 0x4f7a2a;
+        s.x = baseX + (Math.random() - 0.5) * 36;
+        s.y = baseY - 4 + (Math.random() - 0.5) * 22;
+        s.scale.set(0.5 + Math.random() * 0.8);
+        s.alpha = 0.55;
+        tilemap.addChild(s);
+        blobs.push(s);
+      }
+
+      let life = 90;
+      const tick = () => {
+        // If the scene/tilemap was torn down mid-animation, the blobs were
+        // destroyed with it. Stop the RAF loop and do not touch dead objects.
+        const curScene = SceneManager._scene;
+        const curTilemap = curScene && curScene._spriteset && curScene._spriteset._tilemap;
+        if (curTilemap !== tilemap) {
+          return;
+        }
+        life--;
+        const fade = Math.max(0, life / 90);
+        blobs.forEach((s) => { s.alpha = 0.55 * fade; });
+        if (life <= 0) {
+          blobs.forEach((s) => {
+            if (s.parent) s.parent.removeChild(s);
+            s.destroy();
+          });
+          return;
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    },
+
+    // Rearm swim/climb state after a transfer completes (queued in
+    // Game_Player.performTransfer, applied from Game_Player.update).
+    applyTransferRearm(character, type) {
+      switch (type) {
+        case "seabed":
+          if (!character._isSwimming && !character._isClimbing) {
+            character._isSwimming = true;
+          }
+          break;
+        case "swim636":
+          if (!character._isSwimming && !character._isClimbing) {
+            this.enterSwimMode(character);
+          }
+          break;
+        // Arriving on a water tile the walker cannot stand on: the party is IN
+        // the water, so they start swimming. Re-checked here rather than in
+        // performTransfer because the landing tile can still move afterwards
+        // (WorldMapReturn pulls the party out of the surf on a beach square).
+        case "swimIfWater": {
+          // Ask the passability question for a plain walker: a swimmer already
+          // reads open water as passable, which would answer "dry land" here.
+          const prevChecking = window._currentlyCheckingCharacter;
+          window._currentlyCheckingCharacter = null;
+          const inWater = Utils.isWaterTile(character.x, character.y) &&
+            !$gameMap.isPassable(character.x, character.y, 2);
+          window._currentlyCheckingCharacter = prevChecking;
+          if (inWater) {
+            if (!character._isSwimming && !character._isClimbing) {
+              this.enterSwimMode(character);
+            }
+          } else if (character._isSwimming) {
+            this.exitSwimMode(character);
+          }
+          break;
+        }
+        case "swim":
+          character._isSwimming = true;
+          break;
+        case "climb":
+          character._isClimbing = true;
+          character._lastClimbX = character.x;
+          character._lastClimbY = character.y;
+          character.setDirection(8);
+          this.setCompanionsVisibility(false);
+          character._currentClimbHeight = 0;
+          break;
+      }
+    },
+
+    exitSwimMode(character) {
+      if (!character._isSwimming) return;
+      character._isSwimming = false;
+
+      if (Config.sounds.stopSwim) {
+        AudioManager.playSe({ name: Config.sounds.stopSwim, volume: 90, pitch: 100, pan: 0 });
+      }
+
+      this.restoreOriginalAppearance(character);
+
+      if (character === $gamePlayer) {
+        if (!character._isClimbing) {
+          this.setCompanionsVisibility(true);
+        }
+        if ($gameTemp.isDestinationValid()) {
+          $gameTemp.clearDestination();
+        }
+      }
+    },
+
+    exitDiveMode(character) {
+      if (!character._isDiving) return;
+      character._isDiving = false;
+      character._hideTiles = false;
+      
+      // Restore events
+      if (!window.SplitScreenManager || !window.SplitScreenManager.active) {
+        $gameMap.events().forEach(event => {
+          if (event && event._originalTransparent !== undefined) {
+            event.setTransparent(event._originalTransparent);
+            delete event._originalTransparent;
+          }
+        });
+      }
+      
+      if ($gameMap.mapId() !== 636) {
+        // Restore parallax
+        if (character._originalParallaxName !== undefined) {
+          $gameMap.changeParallax(
+            character._originalParallaxName,
+            character._originalParallaxLoopX,
+            character._originalParallaxLoopY,
+            character._originalParallaxSx,
+            character._originalParallaxSy
+          );
+        }
+        
+        // Restore tileset
+        if (character._originalTilesetId !== undefined) {
+          $gameMap.changeTileset(character._originalTilesetId);
+          delete character._originalTilesetId;
+        }
+        
+        $gameScreen.startFlash([255, 255, 255, 128], 30);
+        
+        // Reset Fog of War
+        if ($gameMap && $gameMap.initializeFogOfWar) {
+          $gameMap.initializeFogOfWar();
+          if (SceneManager._scene instanceof Scene_Map) {
+            SceneManager._scene._spriteset.refreshFogOfWar();
+          }
+        }
+      }
+    },
+
+    // Split-screen: when one player starts diving, pull the other one down with
+    // them so both end up underwater together (the dive switches the shared map
+    // to the underwater tileset, which would otherwise strand the other player on
+    // a now-impassable surface tile). Places the partner on an adjacent water tile
+    // (or the diver's own tile as a fallback) and puts them in swim mode.
+    teleportPartnerToDiver(diver) {
+      const mgr = window.SplitScreenManager || window.$gameSplitScreen;
+      if (!mgr || !mgr.active || !mgr.p2Event) return;
+
+      let partner = null;
+      if (diver === $gamePlayer) partner = mgr.p2Event;
+      else if (diver === mgr.p2Event) partner = $gamePlayer;
+      if (!partner) return;
+
+      let tx = diver.x;
+      let ty = diver.y;
+      const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+      for (const [dx, dy] of dirs) {
+        const nx = diver.x + dx;
+        const ny = diver.y + dy;
+        if (Utils.isWaterTile(nx, ny) && $gameMap.eventsXy(nx, ny).length === 0) {
+          tx = nx;
+          ty = ny;
+          break;
+        }
+      }
+
+      partner.locate(tx, ty);
+      this.enterSwimMode(partner);
+    },
+
+    enterClimbMode(character) {
+      if (character._isClimbing) return;
+      character._isClimbing = true;
+      character._currentClimbHeight = 0;
+      character._lastClimbX = character.x;
+      character._lastClimbY = character.y;
+      character.setDirection(8);
+
+      if (Config.sounds.startClimb) {
+        AudioManager.playSe({ name: Config.sounds.startClimb, volume: 90, pitch: 100, pan: 0 });
+      }
+
+      if (character === $gamePlayer) {
+        this.setCompanionsVisibility(false);
+      }
+    },
+
+    exitClimbMode(character, jumpX = 0, jumpY = 0) {
+      if (!character) character = $gamePlayer;
+      character._isClimbing = false;
+      character._isClimbingMove = false;
+
+      if (Config.sounds.stopClimb) {
+        AudioManager.playSe({ name: Config.sounds.stopClimb, volume: 90, pitch: 100, pan: 0 });
+      }
+
+      this.restoreOriginalAppearance(character);
+      character.setTransparent(false);
+      this.setCompanionsVisibility(true);
+
+      if (jumpX !== 0 || jumpY !== 0) {
+        character.jump(jumpX, jumpY);
+      }
+
+      // Getting off the wall in one piece trains Rock Climbing (spec 224).
+      if (character === $gamePlayer && window.SpecializationXP) {
+        window.SpecializationXP.awardCapped("Rock Climbing", 1);
+      }
+
+      $gameTemp.clearDestination();
+      Input.clear();
+    },
+
+    setCompanionsVisibility(visible) {
+      if (!Config.hideCompanions) return;
+      if (companionsVisible === visible) return;
+      companionsVisible = visible;
+
+      if ($gamePlayer.followers && $gamePlayer.followers()) {
+        for (const follower of $gamePlayer.followers()._data) {
+          if (follower) follower.setTransparent(!visible);
+        }
+      }
+    },
+
+    performFishing(character) {
+      if (window.Scene_FishingMinigame) {
+        this.performFishingMinigame();
+      } else {
+        console.warn("MovementInteractionSystem: Scene_FishingMinigame not found. Cannot fish.");
+      }
+    },
+
+    performFishingMinigame() {
+      $gamePlayer._isFishing = true;
+      SceneManager.push(window.Scene_FishingMinigame);
+      window._fishingMinigameResult = null;
+    },
+
+    // Ocean/Beach biomes are salt water: drinking makes the party nauseous.
+    // Anywhere else the water is drinkable and eases hunger a little.
+    performDrinkWater(character) {
+      const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
+      const biomeLower = currentBiome ? currentBiome.toLowerCase() : "";
+      const isSaltWater = biomeLower.includes("ocean") || biomeLower.includes("beach");
+
+      $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+      window.skipLocalization = true;
+      if (isSaltWater) {
+        $gameParty.members().forEach(actor => actor.addState(41));
+        $gameMessage.add(T('Movement.drinkSaltWater'));
+      } else {
+        const leader = $gameParty.leader();
+        if (leader && leader.addHunger) leader.addHunger(8);
+        $gameMessage.add(T('Movement.drinkWater'));
+      }
+      window.skipLocalization = false;
+    },
+
+    enterSitMode(character) {
+      if (character._isSitting) return;
+      const d = character.direction();
+      const x2 = $gameMap.roundXWithDirection(character.x, d);
+      const y2 = $gameMap.roundYWithDirection(character.y, d);
+      // Remember the (walkable) tile they sat down from: standing up falls back
+      // to it when the seat is boxed in by impassable furniture.
+      character._sitFromX = character.x;
+      character._sitFromY = character.y;
+      character.setDirection(d);
+      character._x = x2;
+      character._y = y2;
+      character._realX = $gameMap.xWithDirection(x2, character.reverseDir(d));
+      character._realY = $gameMap.yWithDirection(y2, character.reverseDir(d));
+      character.increaseSteps();
+      character._isSitting = true;
+
+      if (character === $gamePlayer) this.seatFollowers(character);
+    },
+
+    // Detach visible followers from the party and seat them on the nearest free
+    // seat tiles (region 102), facing the same way as the player.
+    seatFollowers(player) {
+      if (!player.followers || !player.followers()) return;
+      const followers = player.followers()._data.filter(f => f && f.isVisible() && f.actor());
+      if (followers.length === 0) return;
+
+      const d = player.direction();
+      const seats = Utils.getSeatTiles()
+        .filter(s => !(s.x === player.x && s.y === player.y))
+        .filter(s => !Utils.isSeatOccupied(s.x, s.y))
+        .sort((a, b) => {
+          const da = Math.abs(a.x - player.x) + Math.abs(a.y - player.y);
+          const db = Math.abs(b.x - player.x) + Math.abs(b.y - player.y);
+          return da - db;
+        });
+
+      for (const follower of followers) {
+        if (seats.length === 0) break;
+        const seat = seats.shift();
+        follower._sittingDetached = true;
+        follower._isSitting = true;
+        follower.setDirection(d);
+        follower._x = follower._realX = seat.x;
+        follower._y = follower._realY = seat.y;
+        follower.straighten();
+      }
+    },
+
+    // Reattach detached followers so they resume following the player.
+    releaseFollowers(player) {
+      if (!player.followers || !player.followers()) return;
+      for (const follower of player.followers()._data) {
+        if (follower && follower._sittingDetached) {
+          follower._sittingDetached = false;
+          follower._isSitting = false;
+        }
+      }
+    },
+
+    changeSeat(character, targetX, targetY) {
+      if (!character._isSitting) return;
+      const d = character.direction();
+      character._x = targetX;
+      character._y = targetY;
+      character._realX = $gameMap.xWithDirection(targetX, character.reverseDir(d));
+      character._realY = $gameMap.yWithDirection(targetY, character.reverseDir(d));
+      character.increaseSteps();
+    },
+
+    // Whether a seated character can step off their seat in direction d. The
+    // seat itself is a chair/bench tile and is normally impassable (sitting down
+    // teleports onto it rather than walking), so canPass() -- which also tests
+    // the tile being left -- rejects every direction and would trap the player
+    // on the seat. Only the destination is checked here.
+    canLeaveSeat(character, d) {
+      const x2 = $gameMap.roundXWithDirection(character.x, d);
+      const y2 = $gameMap.roundYWithDirection(character.y, d);
+      if (!$gameMap.isValid(x2, y2)) return false;
+      if (character.isThrough() || character.isDebugThrough()) return true;
+      if (!$gameMap.isPassable(x2, y2, character.reverseDir(d))) return false;
+      if (character.isCollidedWithCharacters(x2, y2)) return false;
+      return true;
+    },
+
+    exitSitMode(character, direction) {
+      if (!character._isSitting) return;
+      character._isSitting = false;
+      character._sitHoldFrames = 0;
+      character._sitHoldDir = 0;
+      if (character === $gamePlayer) this.releaseFollowers(character);
+
+      // Stand up by stepping off the seat. Prefer the requested direction (the
+      // way the player is facing), then the reverse (the tile they sat down
+      // from, which is guaranteed to have been walkable), then any remaining
+      // free neighbour.
+      const candidates = [];
+      if (direction) candidates.push(direction);
+      candidates.push(character.reverseDir(character.direction()));
+      for (const d of [2, 4, 6, 8]) {
+        if (!candidates.includes(d)) candidates.push(d);
+      }
+
+      let step = 0;
+      for (const d of candidates) {
+        if (this.canLeaveSeat(character, d)) { step = d; break; }
+      }
+
+      if (step === 0) {
+        // Fully boxed in (e.g. a booth reached across a counter): drop back onto
+        // the tile they sat down from so standing up always leaves the seat.
+        this.standAtSitOrigin(character);
+        return;
+      }
+
+      const d = step;
+      const x2 = $gameMap.roundXWithDirection(character.x, d);
+      const y2 = $gameMap.roundYWithDirection(character.y, d);
+      character.setDirection(d);
+      character._x = x2;
+      character._y = y2;
+      character._realX = $gameMap.xWithDirection(x2, character.reverseDir(d));
+      character._realY = $gameMap.yWithDirection(y2, character.reverseDir(d));
+      character.increaseSteps();
+    },
+
+    standAtSitOrigin(character) {
+      const ox = character._sitFromX;
+      const oy = character._sitFromY;
+      if (ox === undefined || oy === undefined) return;
+      if (ox === character.x && oy === character.y) return;
+      character.setDirection(character.reverseDir(character.direction()));
+      character.locate(ox, oy);
+      character.increaseSteps();
+    }
+  };
+
+  // Safe wrapper for player movement restrictions
+  const _Game_Player_canMove = Game_Player.prototype.canMove;
+  Game_Player.prototype.canMove = function() {
+    if (this._isFishing || (window.Scene_FishingMinigame && SceneManager._scene instanceof window.Scene_FishingMinigame)) {
+      return false;
+    }
+    return _Game_Player_canMove.call(this);
+  };
+
+  const _Scene_Map_start = Scene_Map.prototype.start;
+  Scene_Map.prototype.start = function() {
+    _Scene_Map_start.call(this);
+    if ($gamePlayer) {
+      $gamePlayer._isFishing = false;
+      // Arriving directly on a bridge tile (via transfer) defaults to the deck;
+      // otherwise there is no active bridge layer.
+      $gamePlayer._onBridge = Utils.isBridgeTile($gamePlayer.x, $gamePlayer.y);
+    }
+    mapWASDKeys();
+  };
+
+  // --- Water Reflection System ---
+  const ReflectionSystem = {
+    // Whether the current map contains any reflective water (region 99).
+    // Computed once per map (invalidated from Game_Map.setup) so maps without
+    // water skip the whole per-frame reflection pass.
+    _hasReflectiveWater: null,
+
+    invalidateWaterScan() {
+      this._hasReflectiveWater = null;
+      this._spriteCacheOwner = null;
+      this._spriteCache = null;
+    },
+
+    scanReflectiveWater() {
+      let found = false;
+      if ($gameMap && $dataMap) {
+        const w = $gameMap.width();
+        const h = $gameMap.height();
+        for (let y = 0; y < h && !found; y++) {
+          for (let x = 0; x < w; x++) {
+            if ($gameMap.regionId(x, y) === 99) { found = true; break; }
+          }
+        }
+      }
+      this._hasReflectiveWater = found;
+    },
+
+    initialize() {
+      if (!SceneManager._scene || !SceneManager._scene._spriteset) return;
+      const spriteset = SceneManager._scene._spriteset;
+
+      if (!reflectionContainer) {
+        reflectionContainer = new PIXI.Container();
+        reflectionContainer.z = 0;
+        if (spriteset._tilemap) {
+          spriteset._baseSprite.addChild(reflectionContainer);
+        }
+      }
+    },
+
+    shouldHaveReflection(character) {
+      if (!character) return false;
+      const x = character.x;
+      const y = character.y;
+      const waterY = y + 1;
+      if (waterY >= $gameMap.height()) return false;
+      return $gameMap.regionId(x, waterY) === 99;
+    },
+
+    createReflectionSprite(character) {
+      if (!character._characterName) return null;
+      const reflection = new Sprite_Character(character);
+      reflection.scale.y = -1;
+      reflection.opacity = 64; // Fainter reflection
+
+      // Tint reflection based on time of day
+      let timeBlendColor;
+      if (typeof window.TimeDateSystem !== 'undefined' && window.TimeDateSystem.getDateTimeFromMinutes) {
+        const minutes = window.TimeDateSystem.getGameTimeMinutes();
+        const dateTime = window.TimeDateSystem.getDateTimeFromMinutes(minutes);
+        const hour = parseInt(dateTime.hours);
+
+        // Dawn (4-6): warm orange-pink
+        if (hour >= 4 && hour < 6) {
+          timeBlendColor = [160, 80, 40, 64];
+        }
+        // Morning (6-10): light gold
+        else if (hour >= 6 && hour < 10) {
+          timeBlendColor = [40, 70, 120, 64];
+        }
+        // Midday (10-16): bright blue-azure
+        else if (hour >= 10 && hour < 16) {
+          timeBlendColor = [0, 50, 100, 64];
+        }
+        // Afternoon (16-19): golden warm
+        else if (hour >= 16 && hour < 19) {
+          timeBlendColor = [120, 80, 30, 64];
+        }
+        // Sunset (19-20): deep orange-red
+        else if (hour >= 19 && hour < 20) {
+          timeBlendColor = [180, 60, 30, 64];
+        }
+        // Dusk (20-21): purple-magenta
+        else if (hour >= 20 && hour < 21) {
+          timeBlendColor = [120, 40, 80, 64];
+        }
+        // Night (21-4): deep blue-moonlight
+        else {
+          timeBlendColor = [20, 30, 90, 64];
+        }
+      } else {
+        // Fallback if TimeDateSystem is not loaded
+        timeBlendColor = [0, 50, 100, 50];
+      }
+      reflection.setBlendColor(timeBlendColor);
+
+      // Apply a blue/azure pixel mask so only blue-toned parts of the reflection show
+      if (PIXI.Filter) {
+        const blueMaskFilter = new PIXI.Filter(null, `
+          varying vec2 vTextureCoord;
+          uniform sampler2D uSampler;
+
+          void main(void) {
+            vec4 color = texture2D(uSampler, vTextureCoord);
+            float r = color.r;
+            float g = color.g;
+            float b = color.b;
+
+            // All blue colors: keep any pixel where blue is the strongest channel
+            // and blue is at least somewhat visible (b > 0.05)
+            float blueDominant = step(r, b) * step(g, b) * step(0.05, b);
+
+            // Also keep near-gray pixels that have a slight blue tint
+            // (highlights, shading, white/light reflections on water)
+            float maxC = max(max(r, g), b);
+            float minC = min(min(r, g), b);
+            float isBlueTinted = step(max(r, g), b) * step(0.02, b - max(r, g));
+
+            float keep = max(blueDominant, isBlueTinted);
+
+            gl_FragColor = vec4(color.rgb, color.a * keep);
+          }
+        `);
+        blueMaskFilter.padding = 0;
+        reflection.filters = [blueMaskFilter];
+      }
+
+      return reflection;
+    },
+
+    update() {
+      // Cheap early-out on maps with no reflective water (region 99).
+      if (this._hasReflectiveWater === null) this.scanReflectiveWater();
+      if (!this._hasReflectiveWater) {
+        if (reflectionSprites.size > 0) {
+          for (const [character, reflection] of reflectionSprites) {
+            if (reflectionContainer) reflectionContainer.removeChild(reflection);
+          }
+          reflectionSprites.clear();
+        }
+        return;
+      }
+
+      if (!reflectionContainer) this.initialize();
+      if (!reflectionContainer || !SceneManager._scene || !SceneManager._scene._spriteset) return;
+
+      const spriteset = SceneManager._scene._spriteset;
+      const allCharacters = [];
+
+      if ($gameMap && $gameMap.events()) allCharacters.push(...$gameMap.events());
+      if ($gamePlayer) {
+        allCharacters.push($gamePlayer);
+        if ($gamePlayer.followers && $gamePlayer.followers()._data) {
+          allCharacters.push(...$gamePlayer.followers()._data);
+        }
+      }
+
+      const charactersNeedingReflections = new Set();
+
+      for (const character of allCharacters) {
+        if (!character) continue;
+
+        if (this.shouldHaveReflection(character)) {
+          charactersNeedingReflections.add(character);
+
+          if (!reflectionSprites.has(character)) {
+            const reflection = this.createReflectionSprite(character);
+            if (reflection) {
+              reflectionSprites.set(character, reflection);
+              reflectionContainer.addChild(reflection);
+            }
+          }
+
+          const reflection = reflectionSprites.get(character);
+          if (reflection) {
+            const characterSprite = this.findCharacterSprite(spriteset, character);
+            if (characterSprite) {
+              // Only recompute the reflection when the source moved or its
+              // animation pattern changed; otherwise the reflection is static.
+              const pattern = character.pattern ? character.pattern() : 0;
+              if (reflection._lastSrcX !== characterSprite.x ||
+                  reflection._lastSrcY !== characterSprite.y ||
+                  reflection._lastPattern !== pattern) {
+                reflection.x = characterSprite.x;
+                reflection.y = characterSprite.y + $gameMap.tileHeight() * 2;
+                reflection._character = character;
+                reflection.update();
+                reflection._lastSrcX = characterSprite.x;
+                reflection._lastSrcY = characterSprite.y;
+                reflection._lastPattern = pattern;
+              }
+            }
+          }
+        }
+      }
+
+      const toRemove = [];
+      for (const [character, reflection] of reflectionSprites) {
+        if (!charactersNeedingReflections.has(character)) {
+          toRemove.push(character);
+          reflectionContainer.removeChild(reflection);
+        }
+      }
+      for (const character of toRemove) reflectionSprites.delete(character);
+    },
+
+    // Cache a character -> sprite map instead of a linear scan per character.
+    findCharacterSprite(spriteset, character) {
+      if (!spriteset || !spriteset._characterSprites) return null;
+      const sprites = spriteset._characterSprites;
+      if (this._spriteCacheOwner !== sprites || this._spriteCacheLen !== sprites.length) {
+        this._spriteCache = new Map();
+        for (let i = 0; i < sprites.length; i++) {
+          this._spriteCache.set(sprites[i]._character, sprites[i]);
+        }
+        this._spriteCacheOwner = sprites;
+        this._spriteCacheLen = sprites.length;
+      }
+      return this._spriteCache.get(character) || null;
+    },
+
+    cleanup() {
+      if (reflectionContainer) {
+        for (const [character, reflection] of reflectionSprites) {
+          reflectionContainer.removeChild(reflection);
+        }
+        reflectionSprites.clear();
+        if (reflectionContainer.parent) {
+          reflectionContainer.parent.removeChild(reflectionContainer);
+        }
+        reflectionContainer = null;
+      }
+    }
+  };
+
+  // --- Overrides ---
+
+  // Game_Player
+  const _Game_Player_update = Game_Player.prototype.update;
+  Game_Player.prototype.update = function (sceneActive) {
+    _Game_Player_update.call(this, sceneActive);
+    // Apply any swim/climb rearm queued by the last transfer once the transfer
+    // has fully completed. This replaces wall-clock setTimeout deferrals that
+    // could drop or duplicate the flag on rapid transfers or a backgrounded tab.
+    if (this._pendingSwimClimbRearm && !this.isTransferring()) {
+      const actions = this._pendingSwimClimbRearm;
+      this._pendingSwimClimbRearm = null;
+      actions.forEach((type) => MovementSystem.applyTransferRearm(this, type));
+    }
+    this.updateSwimState();
+  };
+
+  // Cache the (roof-tile, region-102) tile classification per character until it
+  // moves, so screenZ does not re-query regionId/terrainTag every frame.
+  const _misRoofOrSeatAt = (character) => {
+    if (character._misZTileX !== character.x || character._misZTileY !== character.y) {
+      character._misZTileX = character.x;
+      character._misZTileY = character.y;
+      character._misZIsRoofOrSeat = Utils.isRoofTile(character.x, character.y) ||
+        $gameMap.regionId(character.x, character.y) === 102;
+    }
+    return character._misZIsRoofOrSeat;
+  };
+
+  const _Game_Player_screenZ = Game_Player.prototype.screenZ;
+  Game_Player.prototype.screenZ = function () {
+    if (_misRoofOrSeatAt(this)) return 10;
+    // On a bridge tile: draw above the upper tile layer when on the deck, or at
+    // the normal character depth (below the upper layer) when passing underneath,
+    // so the bridge tile hides the player.
+    if (Utils.isBridgeTile(this.x, this.y)) {
+      return this._onBridge ? 7 : _Game_Player_screenZ.call(this);
+    }
+    return _Game_Player_screenZ.call(this);
+  };
+
+  const _Game_CharacterBase_screenZ = Game_CharacterBase.prototype.screenZ;
+  Game_CharacterBase.prototype.screenZ = function () {
+    if ($gameMap && $gameMap.regionId(this.x, this.y) === 102) return 10;
+    // Followers ride the same bridge layer as the player so the party does not
+    // split across the deck and the underside.
+    if ($gameMap && this instanceof Game_Follower &&
+        $gamePlayer && $gamePlayer._onBridge && Utils.isBridgeTile(this.x, this.y)) {
+      return 7;
+    }
+    return _Game_CharacterBase_screenZ.call(this);
+  };
+
+  const _Game_Player_isDashing = Game_Player.prototype.isDashing;
+  Game_Player.prototype.isDashing = function () {
+    if (this._isSwimming || this._isClimbing || this._isSitting) return false;
+    if (window.$gameSplitScreen && window.$gameSplitScreen.active) return false;
+    return _Game_Player_isDashing.call(this);
+  };
+
+  const _Game_Player_updateDashing = Game_Player.prototype.updateDashing;
+  Game_Player.prototype.updateDashing = function () {
+    if (this._isSwimming || this._isClimbing || this._isSitting) {
+      this._dashing = false;
+      return;
+    }
+    _Game_Player_updateDashing.call(this);
+  };
+
+  const _Game_Player_moveStraight = Game_Player.prototype.moveStraight;
+  Game_Player.prototype.moveStraight = function (d) {
+    if (this._isSitting) {
+      this.setDirection(d);
+      return;
+    }
+
+    if (this._isClimbing && Utils.isRoofTile(this.x, this.y)) {
+      const x2 = $gameMap.roundXWithDirection(this.x, d);
+      const y2 = $gameMap.roundYWithDirection(this.y, d);
+      const destIsRoof = Utils.isRoofTile(x2, y2);
+      const destIsClimbable = Utils.isClimbableAndAccessible(x2, y2);
+
+      if (!destIsRoof && !destIsClimbable) {
+        const isPassable = $gameMap.isPassable(x2, y2, d);
+        const isClear = !this.isCollidedWithEvents(x2, y2) && !this.isCollidedWithVehicles(x2, y2);
+
+        if (isPassable && isClear) {
+          let jumpX = 0, jumpY = 0;
+          switch (d) {
+            case 2: jumpY = 1; break;
+            case 4: jumpX = -1; break;
+            case 6: jumpX = 1; break;
+            case 8: jumpY = -1; break;
+          }
+          MovementSystem.exitClimbMode(this, jumpX, jumpY);
+          return;
+        }
+        return;
+      }
+    }
+
+    if (this._isClimbing && d === 8) {
+      const x2 = $gameMap.roundXWithDirection(this.x, d);
+      const y2 = $gameMap.roundYWithDirection(this.y, d);
+
+      if (!Utils.isWallTile(x2, y2) && !Utils.isRoofTile(x2, y2)) {
+        const isPassable = $gameMap.isPassable(x2, y2, d);
+        const isClear = !this.isCollidedWithEvents(x2, y2) && !this.isCollidedWithVehicles(x2, y2);
+
+        if (isPassable && isClear) {
+          this.jump(0, -1);
+          MovementSystem.exitClimbMode(this, 0, 0);
+          return;
+        }
+      }
+    }
+
+    if (this._isClimbing && (d === 4 || d === 6)) {
+      const dx2 = $gameMap.roundXWithDirection(this.x, d);
+      const dy2 = $gameMap.roundYWithDirection(this.y, d);
+      const srcTag = $gameMap.terrainTag(this.x, this.y);
+      const dstTag = $gameMap.terrainTag(dx2, dy2);
+      if ((srcTag === 7 && dstTag === 4) || (srcTag === 4 && dstTag === 7)) return;
+    }
+
+    // Capture where the player is stepping FROM before the move updates position,
+    // so the bridge layer can be decided by the source tile once the step lands.
+    const bridgeSrcAccess = Utils.isBridgeAccessTile(this.x, this.y);
+    const bridgeSrcWasBridge = Utils.isBridgeTile(this.x, this.y);
+
+    _Game_Player_moveStraight.call(this, d);
+
+    // Bridge layering (region 12): entering from a bridge-access tile (region 11
+    // or 5) or continuing along the bridge keeps the player on the deck; entering
+    // from any other tile sends the player underneath (hidden by the bridge tile).
+    if (this.isMovementSucceeded()) {
+      if (Utils.isBridgeTile(this.x, this.y)) {
+        if (bridgeSrcAccess) {
+          this._onBridge = true;
+        } else if (!bridgeSrcWasBridge) {
+          this._onBridge = false;
+        }
+        // bridge -> bridge: keep the current _onBridge state.
+      } else {
+        this._onBridge = false;
+      }
+    }
+  };
+
+  // Split-screen: Player 1 auto-starts swimming the instant they walk into a
+  // water tile, exactly like Player 2's auto-swim entry. No "Swim" prompt needed.
+  const _Game_Player_moveByInput_swim = Game_Player.prototype.moveByInput;
+  Game_Player.prototype.moveByInput = function () {
+    if (window.$gameSplitScreen && window.$gameSplitScreen.active &&
+        !this._isSwimming && !this._isClimbing && !this._isSitting &&
+        !this.isMoving() && this.canMove() && !$gameMessage.isBusy()) {
+      const dir = this.getInputDirection();
+      if (dir > 0) {
+        const x2 = $gameMap.roundXWithDirection(this.x, dir);
+        const y2 = $gameMap.roundYWithDirection(this.y, dir);
+        if (Utils.isWaterTile(x2, y2) && !Utils.isBlockedWaterTile(x2, y2) &&
+            $gameMap.eventsXy(x2, y2).length === 0 &&
+            !this.canPass(this.x, this.y, dir)) {
+          MovementSystem.enterSwimMode(this);
+          this.moveStraight(dir);
+          return;
+        }
+      }
+    }
+    _Game_Player_moveByInput_swim.call(this);
+  };
+
+  const _Game_Player_checkEventTriggerHere = Game_Player.prototype.checkEventTriggerHere;
+  Game_Player.prototype.checkEventTriggerHere = function (triggers) {
+    if (this._isClimbing) {
+      if ($gameMap.eventsXy(this.x, this.y).length === 0) return false;
+    }
+    return _Game_Player_checkEventTriggerHere.call(this, triggers);
+  };
+
+  const _Game_Player_checkEventTriggerThere = Game_Player.prototype.checkEventTriggerThere;
+  Game_Player.prototype.checkEventTriggerThere = function (triggers) {
+    if (this._isClimbing) {
+      const x2 = $gameMap.roundXWithDirection(this.x, this.direction());
+      const y2 = $gameMap.roundYWithDirection(this.y, this.direction());
+      if ($gameMap.eventsXy(x2, y2).length === 0) return false;
+    }
+    return _Game_Player_checkEventTriggerThere.call(this, triggers);
+  };
+
+  const _Game_Player_realMoveSpeed = Game_Player.prototype.realMoveSpeed;
+  Game_Player.prototype.realMoveSpeed = function () {
+    let speed = _Game_Player_realMoveSpeed.call(this);
+    if (this._isClimbing) speed *= Config.climbSpeed;
+    return speed;
+  };
+
+  Game_Player.prototype.updateSwimState = function () {
+    if ($gameSystem._procGenData && $gameSystem._procGenData.currentBiome === "SeaBed") {
+      if (!this._isSwimming) {
+        this._isSwimming = true;
+        this._swimAnimationFrame = 0;
+      }
+      return;
+    }
+
+    if (this._isSwimming) {
+      if (!Utils.isWaterTile(this.x, this.y)) {
+        if (this._isDiving) {
+          MovementSystem.exitDiveMode(this);
+        }
+        MovementSystem.exitSwimMode(this);
+        return;
+      }
+
+      if (this._isDiving && $gameMap.regionId(this.x, this.y) !== 99) {
+        MovementSystem.exitDiveMode(this);
+      }
+
+      if (Config.sounds.swimMove && this.isMoving()) {
+        const currentFrame = Graphics.frameCount;
+        if (currentFrame - lastSwimSoundFrame >= Config.sounds.swimInterval) {
+          AudioManager.playSe({ name: Config.sounds.swimMove, volume: 50, pitch: 100, pan: 0 });
+          lastSwimSoundFrame = currentFrame;
+        }
+      }
+
+      // Time actually spent in the water trains Swimming (specialization 267).
+      if (this.isMoving() && window.SpecializationXP) {
+        window.SpecializationXP.tick("Swimming", 1, 30, { key: "swim" });
+      }
+    }
+
+    if (this._isClimbing) {
+      const currentTileIsRoof = Utils.isRoofTile(this.x, this.y);
+      const currentTileIsClimbable = Utils.isClimbableAndAccessible(this.x, this.y);
+
+      if (!currentTileIsClimbable && !currentTileIsRoof) {
+        let jumpX = 0, jumpY = 1;
+        const destX = this.x + jumpX;
+        const destY = this.y + jumpY;
+        if ($gameMap.isPassable(destX, destY, 0)) {
+          MovementSystem.exitClimbMode(this, jumpX, jumpY);
+        } else {
+          MovementSystem.exitClimbMode(this, 0, 0);
+        }
+        return;
+      }
+
+      this._lastClimbX = this.x;
+      this._lastClimbY = this.y;
+
+      if (!currentTileIsRoof) this.setDirection(8);
+
+      if (Config.sounds.climbMove && this.isMoving()) {
+        const currentFrame = Graphics.frameCount;
+        if (currentFrame - lastClimbSoundFrame >= Config.sounds.climbInterval) {
+          AudioManager.playSe({ name: Config.sounds.climbMove, volume: 50, pitch: 100, pan: 0 });
+          lastClimbSoundFrame = currentFrame;
+        }
+      }
+    }
+  };
+
+  const _Game_Player_gatherFollowers = Game_Player.prototype.gatherFollowers;
+  Game_Player.prototype.gatherFollowers = function () {
+    _Game_Player_gatherFollowers.call(this);
+    if (!companionsVisible) MovementSystem.setCompanionsVisibility(false);
+  };
+
+  // Keep seated (detached) followers anchored on their seat tiles instead of
+  // chasing the player.
+  const _Game_Follower_chaseCharacter = Game_Follower.prototype.chaseCharacter;
+  Game_Follower.prototype.chaseCharacter = function (character) {
+    if (this._sittingDetached) return;
+    _Game_Follower_chaseCharacter.call(this, character);
+  };
+
+  const _Game_Followers_refresh = Game_Followers.prototype.refresh;
+  Game_Followers.prototype.refresh = function () {
+    _Game_Followers_refresh.call(this);
+    if ($gamePlayer._isClimbing) {
+      MovementSystem.setCompanionsVisibility(false);
+    } else {
+      MovementSystem.setCompanionsVisibility(true);
+    }
+  };
+
+  // Scene_Map
+  const _Scene_Map_updateScene = Scene_Map.prototype.updateScene;
+  Scene_Map.prototype.updateScene = function () {
+    _Scene_Map_updateScene.call(this);
+    if (!SceneManager.isSceneChanging()) {
+      this.updateSwimFishInput();
+      ReflectionSystem.update();
+    }
+  };
+
+  Scene_Map.prototype.updateSwimFishInput = function () {
+    if ($gameMap.mapId() === 315) return;
+    if ($gamePlayer._isSitting) {
+      // Suppress sit input (including the stop-sitting prompt) while a message
+      // or event is running, e.g. when talking to an event while seated.
+      if ($gameMessage.isBusy() || $gameMap.isEventRunning()) return;
+
+      const dirMap = { up: 8, down: 2, left: 4, right: 6 };
+      let heldDir = 0;
+      for (const [key, d] of Object.entries(dirMap)) {
+        if (Input.isPressed(key)) { heldDir = d; break; }
+      }
+
+      if (heldDir) {
+        if ($gamePlayer._sitHoldDir !== heldDir) {
+          $gamePlayer._sitHoldDir = heldDir;
+          $gamePlayer._sitHoldFrames = 0;
+        }
+        $gamePlayer._sitHoldFrames = ($gamePlayer._sitHoldFrames || 0) + 1;
+        if ($gamePlayer._sitHoldFrames >= 60 &&
+            MovementSystem.canLeaveSeat($gamePlayer, heldDir)) {
+          $gamePlayer._sitHoldFrames = 0;
+          $gamePlayer._sitHoldDir = 0;
+          MovementSystem.exitSitMode($gamePlayer, heldDir);
+          return;
+        }
+      } else {
+        $gamePlayer._sitHoldFrames = 0;
+        $gamePlayer._sitHoldDir = 0;
+      }
+
+      if (Input.isTriggered("ok")) {
+        const d = $gamePlayer.direction();
+        const x2 = $gameMap.roundXWithDirection($gamePlayer.x, d);
+        const y2 = $gameMap.roundYWithDirection($gamePlayer.y, d);
+        // The native Game_Player.triggerButtonAction already fired this same OK
+        // press one update phase earlier and may have started (or be about to
+        // start) the event in front, including across counter tiles. If there is
+        // any interactable event in front, never also offer to stand up (#64).
+        const x3 = $gameMap.roundXWithDirection(x2, d);
+        const y3 = $gameMap.roundYWithDirection(y2, d);
+        const eventInFront =
+          $gameMap.isEventRunning() ||
+          Utils.hasEventOnTile(x2, y2) ||
+          ($gameMap.isCounter(x2, y2) && Utils.hasEventOnTile(x3, y3));
+        if (eventInFront) {
+          // Let the event trigger (native already handles it); do nothing else.
+          $gamePlayer.checkEventTriggerThere([0]);
+        } else if (Utils.isSeatTile(x2, y2) && !Utils.isSeatOccupied(x2, y2)) {
+          this.showChangeSeatOptions($gamePlayer, x2, y2);
+        } else if ($gameMap.isCounter(x2, y2)) {
+          // Counter with no event behind it: never step forward over a counter,
+          // but still let the player stand up (exitSitMode steps out the back).
+          this.showStopSittingOptions($gamePlayer, 0);
+        } else {
+          // Offer to stand up. When the faced tile is passable the player steps
+          // forward into it; when it is a wall/edge (#171) exitSitMode falls back
+          // to the tile behind (where they sat down from) so standing up always
+          // moves the player off the seat instead of freezing in place (#236).
+          this.showStopSittingOptions($gamePlayer, d);
+        }
+      }
+
+      return;
+    }
+    this.checkMovementInteraction($gamePlayer);
+  };
+
+  Scene_Map.prototype.checkMovementInteraction = function (character) {
+    if (!character) return;
+    const isPlayer = character === $gamePlayer;
+
+    if (character._isSwimming) {
+      const isMultiplayer = window.$gameSplitScreen && window.$gameSplitScreen.active;
+      if ($gameMap.mapId() === 636) {
+        const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
+        // Proc-map ocean diving is permitted in a 2P session: both players are
+        // pulled down to (and back up from) the seabed together because goDown /
+        // goUp set SplitScreenManager.forceP2Teleport. This is the ONLY diving
+        // allowed in split-screen; all non-procedural diving stays disabled below.
+        if (currentBiome && currentBiome.toLowerCase().includes("ocean")) {
+          if (isPlayer ? Input.isTriggered("ok") : true) {
+            this.showDiveOption(character);
+            return;
+          }
+        }
+        if (currentBiome && currentBiome.toLowerCase().includes("seabed")) {
+          if (isPlayer ? Input.isTriggered("ok") : true) {
+            this.showResurfaceOption(character);
+            return;
+          }
+        }
+      } else {
+        // Non-procedural map
+        const frontTile = Utils.getFrontTile(character);
+        const hasEventInFront = Utils.hasEventOnTile(frontTile.x, frontTile.y);
+
+        if ((!isMultiplayer || $gameMap.mapId() !== 636) && !hasEventInFront && $gameMap.regionId(character.x, character.y) === 99) {
+          if ($gameParty.hasItem($dataItems[142])) {
+            if (isPlayer ? Input.isTriggered("ok") : true) {
+              if (character._isDiving) {
+                this.showNonProcResurfaceOption(character);
+              } else {
+                this.showNonProcDiveOption(character);
+              }
+              return;
+            }
+          }
+        }
+      }
+    }
+
+    if (character._isSwimming || character._isFishing || character._isClimbing || character._isSitting) return;
+
+    const isTriggered = isPlayer ? Input.isTriggered("ok") : true;
+
+    if (isTriggered) {
+      const frontTile = Utils.getFrontTile(character);
+
+      if (Utils.isRoofTile(frontTile.x, frontTile.y) && !Utils.hasEventOnTile(frontTile.x, frontTile.y)) {
+        return;
+      }
+
+      if ($gameMap.mapId() === 636) {
+        // Interactive TERRAIN FEATURES (house / inn / shop / skyscraper / dungeon
+        // doors, and SignPark camper recall / SignBus fast-travel) are used by facing
+        // them, replacing the old tile-id -> common-event matching below. Runs
+        // first so a feature is never dismantled or double-fired.
+        if (isPlayer && window.ProceduralHouseSystem && window.ProceduralHouseSystem.tryProcMapInteract
+            && !Utils.hasEventOnTile(frontTile.x, frontTile.y)) {
+          if (window.ProceduralHouseSystem.tryProcMapInteract(character)) return;
+        }
+
+        const currentTileset = $gameMap.tileset();
+        const tilesetId = currentTileset ? currentTileset.id : 0;
+        const layersToCheck = [4, 3, 2];
+        let foundTileId = 0;
+
+        for (const layer of layersToCheck) {
+          const tileId = $gameMap.tileId(frontTile.x, frontTile.y, layer);
+          if (tileId !== 0) {
+            foundTileId = tileId;
+            break;
+          }
+        }
+
+        if (foundTileId !== 0 && window.WorldGen && window.WorldGen.Map636TileEvents) {
+          for (const [commonEventId, config] of Object.entries(window.WorldGen.Map636TileEvents)) {
+            if (typeof commonEventId === 'string' && isNaN(parseInt(commonEventId))) continue;
+            for (const tilesetConfig of config.tilesets) {
+              if (tilesetConfig.tilesetId === tilesetId && tilesetConfig.tileIds.includes(foundTileId)) {
+                $gameTemp.reserveCommonEvent(parseInt(commonEventId));
+                return;
+              }
+            }
+          }
+        }
+
+        // Terrain feature interaction (fell/mine/pick/dismantle). Runs only when
+        // no tile-event above claimed the faced tile and no event sits on it.
+        if (window.TerrainInteractions && !Utils.hasEventOnTile(frontTile.x, frontTile.y)) {
+          if (window.TerrainInteractions.tryInteract(character)) {
+            return;
+          }
+        }
+      }
+
+      if (Utils.isClimbableAndAccessible(frontTile.x, frontTile.y) && Utils.canClimbInDirection(character) && !Utils.hasEventOnTile(frontTile.x, frontTile.y)) {
+        this.showClimbOptions(character);
+        return;
+      }
+
+      if (Utils.isSeatTile(frontTile.x, frontTile.y) && !Utils.isSeatOccupied(frontTile.x, frontTile.y)) {
+        this.showSitOptions(character);
+        return;
+      }
+
+      if (Utils.isWaterTile(frontTile.x, frontTile.y) && !Utils.isBlockedWaterTile(frontTile.x, frontTile.y) && !Utils.hasEventOnTile(frontTile.x, frontTile.y) && !Utils.isWallTile(frontTile.x, frontTile.y) && !character.canPass(character.x, character.y, character.direction())) {
+        if (character.isInVehicle && character.isInVehicle() && character.vehicle().isShip()) return;
+        this.showSwimFishOptions(character);
+      }
+    }
+
+    if (isPlayer) {
+      this.processTouchForWaterInteraction();
+      this.processTouchForClimbInteraction();
+    }
+  };
+
+  Scene_Map.prototype.processTouchForWaterInteraction = function () {
+    if (!TouchInput.isTriggered()) return;
+
+    const x = $gameMap.canvasToMapX(TouchInput.x);
+    const y = $gameMap.canvasToMapY(TouchInput.y);
+    const playerX = $gamePlayer.x;
+    const playerY = $gamePlayer.y;
+
+    const isAdjacent = Math.abs(playerX - x) + Math.abs(playerY - y) === 1;
+
+    if (isAdjacent && Utils.isWaterTile(x, y) && !Utils.isBlockedWaterTile(x, y) && !Utils.hasEventOnTile(x, y)) {
+      let d = 0;
+      if (x === playerX) d = y > playerY ? 2 : 8;
+      else if (y === playerY) d = x > playerX ? 6 : 4;
+
+      if (d > 0 && $gamePlayer.canPass(playerX, playerY, d)) return;
+
+      if (x === playerX) {
+        $gamePlayer.setDirection(y > playerY ? 2 : 8);
+      } else if (y === playerY) {
+        $gamePlayer.setDirection(x > playerX ? 6 : 4);
+      }
+      this.showSwimFishOptions($gamePlayer);
+    }
+  };
+
+  Scene_Map.prototype.processTouchForClimbInteraction = function () {
+    if (!TouchInput.isTriggered()) return;
+
+    const x = $gameMap.canvasToMapX(TouchInput.x);
+    const y = $gameMap.canvasToMapY(TouchInput.y);
+    const playerX = $gamePlayer.x;
+    const playerY = $gamePlayer.y;
+
+    const isAdjacent = Math.abs(playerX - x) + Math.abs(playerY - y) === 1;
+
+    if (isAdjacent && Utils.isClimbableAndAccessible(x, y) && !Utils.hasEventOnTile(x, y)) {
+      if ($gameMap.mapId() === 636) {
+        $gamePlayer.setDirection(y > playerY ? 2 : 8);
+        this.showClimbOptions($gamePlayer);
+        return;
+      }
+
+      if (x > playerX) $gamePlayer.setDirection(6);
+      else if (x < playerX) $gamePlayer.setDirection(4);
+      else if (y > playerY) $gamePlayer.setDirection(2);
+      else if (y < playerY) $gamePlayer.setDirection(8);
+
+      if (Utils.canClimbInDirection($gamePlayer)) {
+        this.showClimbOptions($gamePlayer);
+      }
+    }
+  };
+
+  Scene_Map.prototype.showClimbOptions = function (character) {
+    if (!$dataMap || (!$dataMap.meta.Exterior && !$dataMap.note.includes("Exterior"))) return;
+
+    const choices = [T('Movement.climb'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.climb'))) {
+        MovementSystem.enterClimbMode(character);
+      }
+    });
+  };
+
+  // Dining venues (tavern, fast food joint, bar, pizzeria, ...) on this map that
+  // a seated player can order from. Guarded so the seat menus still work when
+  // RandomDailyShop is absent or the map holds no such venue.
+  const diningVenues = () => {
+    const api = window.RandomDailyShop;
+    if (!api || !api.findDiningVenues) return [];
+    try {
+      return api.findDiningVenues();
+    } catch (e) {
+      console.warn("MovementInteractionSystem: could not list dining venues.", e);
+      return [];
+    }
+  };
+
+  // Two pizzerias on one map would otherwise read identically, so a repeated
+  // venue name carries its distance from the seat.
+  const venueChoiceLabel = (venue, venues) => {
+    const label = venue.kind === "tavern" ? T('Movement.tavern') : venue.label;
+    const repeated = venues.filter(v => v.label === venue.label).length > 1;
+    return repeated ? `${label} (${venue.distance} ${T('Movement.tiles')})` : label;
+  };
+
+  // Sitting inside a venue that serves food lets the player order from the table
+  // instead of walking over to the counter, so every seated prompt grows an
+  // "Order food" row whenever the map has somewhere to order from.
+  const appendOrderFoodOption = (scene, choices, handlers) => {
+    const venues = diningVenues();
+    if (venues.length === 0) return;
+    choices.push(T('Movement.orderFood'));
+    // Defer past the choice window teardown ($gameMessage is cleared right after
+    // this callback), so the venue picker actually shows.
+    handlers.push(() => setTimeout(() => scene.showOrderFoodOptions(venues), 0));
+  };
+
+  Scene_Map.prototype.showSitOptions = function (character) {
+    const choices = [T('Movement.sit'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === 0) {
+        MovementSystem.enterSitMode(character);
+      }
+    });
+  };
+
+  Scene_Map.prototype.showChangeSeatOptions = function (character, targetX, targetY) {
+    const choices = [T('Movement.changeSeat')];
+    const handlers = [() => MovementSystem.changeSeat(character, targetX, targetY)];
+
+    // Facing a neighbouring seat must not be the one spot where standing up is
+    // unreachable; direction 0 so exitSitMode steps out the back instead of onto
+    // the seat being faced.
+    choices.push(T('Movement.stopSitting'));
+    handlers.push(() => MovementSystem.exitSitMode(character, 0));
+
+    appendOrderFoodOption(this, choices, handlers);
+
+    choices.push(T('Movement.cancel'));
+    handlers.push(() => {});
+
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      const handler = handlers[index];
+      if (handler) handler();
+    });
+  };
+
+  Scene_Map.prototype.showStopSittingOptions = function (character, direction) {
+    const choices = [T('Movement.stopSitting')];
+    const handlers = [() => MovementSystem.exitSitMode(character, direction)];
+
+    appendOrderFoodOption(this, choices, handlers);
+
+    choices.push(T('Movement.cancel'));
+    handlers.push(() => {});
+
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      const handler = handlers[index];
+      if (handler) handler();
+    });
+  };
+
+  // Venue picker behind "Order food": every food-serving shop on the map, closest
+  // first, so a player at a table can order across the room. The order opens that
+  // venue's own daily stock, exactly as if they had walked up to its counter.
+  Scene_Map.prototype.showOrderFoodOptions = function (venues) {
+    const choices = venues.map(v => venueChoiceLabel(v, venues));
+    choices.push(T('Movement.cancel'));
+    $gameMessage._eventActivator = "p1";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index < 0 || index >= venues.length) return;
+      setTimeout(() => window.RandomDailyShop.openDiningVenue(venues[index]), 0);
+    });
+  };
+
+  Scene_Map.prototype.showDiveOption = function (character) {
+    const choices = [T('Movement.dive'), T('Movement.drink'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.drink'))) {
+        MovementSystem.performDrinkWater(character);
+        return;
+      }
+      if (index === choices.indexOf(T('Movement.dive'))) {
+
+        // Hide events on proc map (Ocean biome) except monsters
+        if (!window.SplitScreenManager || !window.SplitScreenManager.active) {
+          $gameMap.events().forEach(event => {
+            if (event && event.event()) {
+              const isMonster = event.event().name === "Enemy";  // i18n-ignore  event name
+              if (!isMonster) {
+                event._originalTransparent = event.isTransparent();
+                event.setTransparent(true);
+              }
+            }
+          });
+        }
+
+        const interpreter = SceneManager._scene._interpreter || $gameMap._interpreter;
+        if (interpreter && PluginManager.callCommand) {
+          PluginManager.callCommand(interpreter, "WorldMapReturn", "goDown", {});
+        }
+      }
+    });
+  };
+
+  Scene_Map.prototype.showResurfaceOption = function (character) {
+    const choices = [T('Movement.resurface'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.resurface'))) {
+        MovementSystem.exitDiveMode(character);
+        const interpreter = SceneManager._scene._interpreter || $gameMap._interpreter;
+        if (interpreter && PluginManager.callCommand) {
+          PluginManager.callCommand(interpreter, "WorldMapReturn", "goUp", {});
+        }
+      }
+    });
+  };
+
+  Scene_Map.prototype.showNonProcDiveOption = function (character) {
+    const choices = [T('Movement.dive'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.dive'))) {
+        // Store parallax
+        character._originalParallaxName = $gameMap.parallaxName();
+        character._originalParallaxLoopX = $gameMap._parallaxLoopX;
+        character._originalParallaxLoopY = $gameMap._parallaxLoopY;
+        character._originalParallaxSx = $gameMap._parallaxSx;
+        character._originalParallaxSy = $gameMap._parallaxSy;
+        
+        // Hide parallax
+        $gameMap.changeParallax("", false, false, 0, 0);
+        
+        // Hide all map events
+        $gameMap.events().forEach(event => {
+          if (event) {
+            event._originalTransparent = event.isTransparent();
+            event.setTransparent(true);
+          }
+        });
+
+        // Cache water tiles before tileset switch
+        $gameMap._underwaterWaterTiles = new Set();
+        for (let x = 0; x < $gameMap.width(); x++) {
+          for (let y = 0; y < $gameMap.height(); y++) {
+            const isWater = $gameMap.regionId(x, y) === 99;
+            if (isWater) {
+              $gameMap._underwaterWaterTiles.add(y * $gameMap.width() + x);
+            }
+          }
+        }
+
+        // Store original tileset
+        character._originalTilesetId = $gameMap.tileset().id;
+        
+        // Switch tileset to 201
+        $gameMap.changeTileset(201);
+
+        // Hide non-water tiles using Fog of War
+        if ($gameMap && $gameMap._fogOfWarData) {
+          for (let x = 0; x < $gameMap.width(); x++) {
+            for (let y = 0; y < $gameMap.height(); y++) {
+              const width = $gameMap.width();
+              const index = y * width + x;
+              const isWater = $gameMap._underwaterWaterTiles.has(index);
+              if (!isWater) {
+                $gameMap.setFogOfWarState(x, y, 0); // 0 = Hidden
+              }
+            }
+          }
+          $gameMap._forceVisionUpdate = true;
+          $gameMap.markAllChunksDirty();
+        }
+
+        character._isDiving = true;
+        MovementSystem.teleportPartnerToDiver(character);
+
+        // Store original step anime if not already stored
+        if (character._originalStepAnime === undefined) {
+          character._originalStepAnime = character.hasStepAnime();
+        }
+
+        // Force sprite change immediately
+        if (character.isMoving()) {
+          character.setImage('Skab/!$DivingSuiteMoving', 0);
+          character.setStepAnime(false);
+        } else {
+          character.setImage('Skab/!$DivingSuiteStill', 0);
+          character.setStepAnime(true);
+        }
+
+        $gameScreen.startFlash([0, 50, 100, 128], 30);
+      }
+    });
+  };
+
+  Scene_Map.prototype.showNonProcResurfaceOption = function (character) {
+    const choices = [T('Movement.reemerge'), T('Movement.cancel')];
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.reemerge'))) {
+        MovementSystem.exitDiveMode(character);
+      }
+    });
+  };
+
+  // Item that stows the inflatable dinghy (VehicleSystem VehicleConfig.BOAT.summonItemId).
+  const BOAT_ITEM_ID = 167;
+
+  // The water tile the character is facing: where "Use boat" drops the dinghy.
+  function facedWaterTile(character) {
+    const d = character.direction();
+    return {
+      x: $gameMap.roundXWithDirection(character.x, d),
+      y: $gameMap.roundYWithDirection(character.y, d)
+    };
+  }
+
+  // "Use boat" only shows for Player 1 on foot, while carrying item 167, and when
+  // VehicleSystem considers the faced water tile navigable by the dinghy.
+  function canUseBoatOn(character) {
+    if (character !== $gamePlayer) return false;
+    if (character.isInVehicle && character.isInVehicle()) return false;
+    if (!$dataItems[BOAT_ITEM_ID] || !$gameParty.hasItem($dataItems[BOAT_ITEM_ID])) return false;
+    const vs = window.MergedVehicleSystem;
+    if (!vs || !vs.canDeployBoatAt) return false;
+    const tile = facedWaterTile(character);
+    return vs.canDeployBoatAt(tile.x, tile.y);
+  }
+
+  function useBoatOn(character) {
+    const tile = facedWaterTile(character);
+    window.MergedVehicleSystem.deployBoatAt(tile.x, tile.y, true);
+  }
+
+  Scene_Map.prototype.showSwimFishOptions = function (character) {
+    const currentBiome = $gameSystem._procGenData ? $gameSystem._procGenData.currentBiome : null;
+    const isMultiplayer = window.$gameSplitScreen && window.$gameSplitScreen.active;
+    const canBoat = canUseBoatOn(character);
+
+    if (currentBiome && currentBiome.toLowerCase().includes("ocean")) {
+      // Allowed in 2P: diving warps both players to the seabed together.
+      this.showDiveOption(character);
+      return;
+    }
+
+    if (currentBiome && currentBiome.toLowerCase().includes("seabed")) {
+      // Allowed in 2P: resurfacing warps both players back up together.
+      this.showResurfaceOption(character);
+      return;
+    }
+
+    if ($gameMap.mapId() === 315) {
+      const choices = [];
+      if (Utils.hasFishingRod()) choices.push(T('Movement.fish'));
+      if (canBoat) choices.push(T('Movement.useBoat'));
+      choices.push(T('Movement.cancel'));
+
+      if (choices.length === 1) {
+        window.skipLocalization = true;
+        $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+        $gameMessage.add(T('Movement.cannotSwimHere'));
+        window.skipLocalization = false;
+        return;
+      }
+
+      $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+      $gameMessage.setChoices(choices, 0, choices.length - 1);
+      $gameMessage.setChoiceCallback((index) => {
+        if (index === choices.indexOf(T('Movement.fish')) && Utils.hasFishingRod()) {
+          MovementSystem.performFishing(character);
+        } else if (canBoat && index === choices.indexOf(T('Movement.useBoat'))) {
+          useBoatOn(character);
+        }
+      });
+      return;
+    }
+
+    // In split-screen, walking into water auto-starts swimming for both players
+    // (see Game_Player.moveByInput override / Player 2 auto-swim entry), so the
+    // redundant "Swim" menu option is dropped.
+    const choices = [];
+    if (!isMultiplayer) choices.push(T('Movement.swim'));
+    if (Utils.hasFishingRod()) choices.push(T('Movement.fish'));
+    if ((!isMultiplayer || $gameMap.mapId() !== 636) && $gameParty.hasItem($dataItems[142])) choices.push(T('Movement.dive'));
+    choices.push(T('Movement.drink'));
+    if (canBoat) choices.push(T('Movement.useBoat'));
+    choices.push(T('Movement.cancel'));
+
+    $gameMessage._eventActivator = (character === $gamePlayer) ? "p1" : "p2";
+    $gameMessage.setChoices(choices, 0, choices.length - 1);
+    $gameMessage.setChoiceCallback((index) => {
+      if (index === choices.indexOf(T('Movement.swim'))) {
+        MovementSystem.enterSwimMode(character);
+        // FIX: Move forward into water to prevent immediate exit
+        character.moveStraight(character.direction());
+      } else if (index === choices.indexOf(T('Movement.drink'))) {
+        MovementSystem.performDrinkWater(character);
+      } else if (index === choices.indexOf(T('Movement.fish')) && Utils.hasFishingRod()) {
+        MovementSystem.performFishing(character);
+      } else if (canBoat && index === choices.indexOf(T('Movement.useBoat'))) {
+        useBoatOn(character);
+      } else if (index === choices.indexOf(T('Movement.dive')) && $gameParty.hasItem($dataItems[142])) {
+        MovementSystem.enterSwimMode(character);
+        character.moveStraight(character.direction());
+        
+        if ($gameMap.mapId() !== 636) {
+          if (window.SplitScreenManager && window.SplitScreenManager.active) {
+            character._hideTiles = true;
+          } else {
+            character._originalTilesetId = $gameMap.tileset().id;
+            
+            // Store parallax
+            character._originalParallaxName = $gameMap.parallaxName();
+            character._originalParallaxLoopX = $gameMap._parallaxLoopX;
+            character._originalParallaxLoopY = $gameMap._parallaxLoopY;
+            character._originalParallaxSx = $gameMap._parallaxSx;
+            character._originalParallaxSy = $gameMap._parallaxSy;
+            
+            // Hide parallax
+            $gameMap.changeParallax("", false, false, 0, 0);
+            
+            // Hide all map events
+            $gameMap.events().forEach(event => {
+              if (event) {
+                event._originalTransparent = event.isTransparent();
+                event.setTransparent(true);
+              }
+            });
+
+            if ($gameMap && $gameMap._fogOfWarData) {
+              for (let x = 0; x < $gameMap.width(); x++) {
+                for (let y = 0; y < $gameMap.height(); y++) {
+                  const isWater = $gameMap.regionId(x, y) === 99;
+                  if (!isWater) {
+                    $gameMap.setFogOfWarState(x, y, 0);
+                  }
+                }
+              }
+              $gameMap._forceVisionUpdate = true;
+              $gameMap.markAllChunksDirty();
+            }
+
+            $gameMap.changeTileset(201);
+          }
+          character._isDiving = true;
+          MovementSystem.teleportPartnerToDiver(character);
+          $gameScreen.startFlash([0, 50, 100, 128], 30);
+        } else {
+          character._isDiving = true;
+          MovementSystem.teleportPartnerToDiver(character);
+          $gameScreen.startFlash([0, 50, 100, 128], 30);
+        }
+      }
+    });
+  };
+
+  // Game_CharacterBase & Game_Map Passability
+  // Precompute the numeric bridge event id list once per bridges object instead
+  // of allocating Object.keys() + a closure on every passability check. Live
+  // positions/erased state are still read per call so behavior is unchanged.
+  let _bridgeIdsCacheSrc = null;
+  let _bridgeIdsCache = null;
+  const _hasBridgeAt = (tx, ty) => {
+    const puzzleData = $gameSystem._puzzleData;
+    if (!puzzleData || !puzzleData.bridges) return false;
+    const bridges = puzzleData.bridges;
+    if (_bridgeIdsCacheSrc !== bridges) {
+      _bridgeIdsCache = Object.keys(bridges).map(Number);
+      _bridgeIdsCacheSrc = bridges;
+    }
+    const ids = _bridgeIdsCache;
+    for (let i = 0; i < ids.length; i++) {
+      const ev = $gameMap.event(ids[i]);
+      if (ev && ev.x === tx && ev.y === ty && !ev._erased) return true;
+    }
+    return false;
+  };
+
+  const _Game_CharacterBase_canPass = Game_CharacterBase.prototype.canPass;
+  Game_CharacterBase.prototype.canPass = function (x, y, d) {
+    // Region ID 11 directional passability:
+    // Cannot ENTER region 11 unless moving North (d === 8)
+    // Cannot LEAVE region 11 unless moving South (d === 2)
+    // This creates cliff-like behavior where the upper level (region 11)
+    // is only accessible from below via north movement and only leavable via south movement.
+    // Bridge events override this restriction in both directions.
+    const x2 = $gameMap.roundXWithDirection(x, d);
+    const y2 = $gameMap.roundYWithDirection(y, d);
+    const currentRegion = $gameMap.regionId(x, y);
+    const destRegion = $gameMap.regionId(x2, y2);
+
+    // Region 5 is always passable terrain (bridge-access step / guaranteed path).
+    // Its tile passability is already forced open in isPassable/checkPassage; here
+    // it is also exempted from the region-11 cliff directional restriction so it
+    // can be entered or left from any direction (still blocked only by events).
+    if (destRegion === 5) {
+      const prevChecking = window._currentlyCheckingCharacter;
+      window._currentlyCheckingCharacter = this;
+      const result = _Game_CharacterBase_canPass.call(this, x, y, d);
+      window._currentlyCheckingCharacter = prevChecking;
+      return result;
+    }
+
+    // Bridge decks (region 12) are walk-on approaches to/from the cliff
+    // (region 11), so transitions between region 11 and a bridge tile are
+    // exempt from the cliff directional restriction (same spirit as region 5).
+    // Without this, a bridge that joins the cliff horizontally is unwalkable,
+    // since leaving region 11 is otherwise only allowed heading south.
+    if (destRegion === 12 || currentRegion === 12) {
+      // While standing ON the bridge deck (on top), the player may only step
+      // onto another bridge tile (12) or a bridge-access tile (5 or 11) — never
+      // walk straight off the deck onto arbitrary terrain. Passing UNDER the
+      // bridge (_onBridge false) is unrestricted so the ground path is walkable.
+      if (currentRegion === 12 && this === $gamePlayer && this._onBridge &&
+          destRegion !== 12 && destRegion !== 11 && destRegion !== 5) {
+        return false;
+      }
+      const prevChecking = window._currentlyCheckingCharacter;
+      window._currentlyCheckingCharacter = this;
+      const result = _Game_CharacterBase_canPass.call(this, x, y, d);
+      window._currentlyCheckingCharacter = prevChecking;
+      return result;
+    }
+
+    if (currentRegion !== 11 && destRegion === 11 && d !== 8 && !_hasBridgeAt(x2, y2)) return false;
+    if (currentRegion === 11 && destRegion !== 11 && d !== 2 && !_hasBridgeAt(x, y)) return false;
+
+    const prevChecking = window._currentlyCheckingCharacter;
+    window._currentlyCheckingCharacter = this;
+    const result = _Game_CharacterBase_canPass.call(this, x, y, d);
+    window._currentlyCheckingCharacter = prevChecking;
+    return result;
+  };
+
+  const _Game_Map_isPassable = Game_Map.prototype.isPassable;
+  Game_Map.prototype.isPassable = function (x, y, d) {
+    const character = window._currentlyCheckingCharacter;
+    // Fast path: maps with no special-passability tiles and no diving character
+    // never hit any of the special branches below.
+    if (this._misHasSpecialPassability === false && !(character && character._isDiving)) {
+      return _Game_Map_isPassable.call(this, x, y, d);
+    }
+    const regionId = this.regionId(x, y);
+    const terrainTag = this.terrainTag(x, y);
+    const charIsSwimming = character ? character._isSwimming : false;
+    const charIsClimbing = character ? character._isClimbing : false;
+    const charIsWaterEnemy = character instanceof Game_Event &&
+      ((character.isAquaticEnemy && character.isAquaticEnemy()) ||
+       (character.isAmphibiousEnemy && character.isAmphibiousEnemy()));
+
+    if (regionId === 10) return false;
+
+    let isDivingWater = false;
+    if (character && character._isDiving) {
+      window._currentlyCheckingCharacter = null;
+      isDivingWater = Utils.isWaterTile(x, y);
+      window._currentlyCheckingCharacter = character;
+    }
+
+    if (isDivingWater) {
+      return true;
+    }
+
+    if (regionId === 5 || regionId === 13) return true;
+    if (regionId === 4 && (charIsClimbing || this.isLadder(x, y))) return true;
+    if (regionId === 99) return charIsSwimming || charIsWaterEnemy;
+    if (terrainTag === 4) {
+      if (charIsClimbing || this.isLadder(x, y)) {
+        return !Utils.hasPriorityTile(x, y);
+      }
+      return false;
+    }
+    if (terrainTag === 7) return charIsClimbing;
+
+    // Procedural map (636) water: terrain-tag-3 tiles that are impassable
+    // normally behave like region-99 water (only passable while swimming or for
+    // water enemies). Shallow, normally-passable water stays walkable.
+    if (terrainTag === 3 && this.mapId() === 636) {
+      const baseResult = _Game_Map_isPassable.call(this, x, y, d);
+      if (!baseResult) return charIsSwimming || charIsWaterEnemy;
+      return baseResult;
+    }
+
+    if (character instanceof Game_Event && character.isAquaticEnemy && character.isAquaticEnemy() &&
+        !(character.isAmphibiousEnemy && character.isAmphibiousEnemy())) {
+      return false;
+    }
+
+    return _Game_Map_isPassable.call(this, x, y, d);
+  };
+
+  const _Game_Map_checkPassage = Game_Map.prototype.checkPassage;
+  Game_Map.prototype.checkPassage = function (x, y, bit) {
+    const character = window._currentlyCheckingCharacter;
+    // Fast path: maps with no special-passability tiles and no diving character
+    // never hit any of the special branches below.
+    if (this._misHasSpecialPassability === false && !(character && character._isDiving)) {
+      return _Game_Map_checkPassage.call(this, x, y, bit);
+    }
+    const regionId = this.regionId(x, y);
+    const terrainTag = this.terrainTag(x, y);
+    const charIsSwimming = character ? character._isSwimming : false;
+    const charIsClimbing = character ? character._isClimbing : false;
+    const charIsWaterEnemy = character instanceof Game_Event &&
+      ((character.isAquaticEnemy && character.isAquaticEnemy()) ||
+       (character.isAmphibiousEnemy && character.isAmphibiousEnemy()));
+
+    let isDivingWater = false;
+    if (character && character._isDiving) {
+      window._currentlyCheckingCharacter = null;
+      isDivingWater = Utils.isWaterTile(x, y);
+      window._currentlyCheckingCharacter = character;
+    }
+
+    if (isDivingWater) {
+      return 0;
+    }
+
+    if (regionId === 5) return 0;
+    if (regionId === 4 || regionId === 10) {
+      if (regionId === 4 && (charIsClimbing || this.isLadder(x, y))) return 0;
+      return bit;
+    }
+    if (regionId === 99) return (charIsSwimming || charIsWaterEnemy) ? 0 : bit;
+    if (terrainTag === 4) {
+      if ((charIsClimbing || this.isLadder(x, y)) && !Utils.hasPriorityTile(x, y)) return 0;
+      return bit;
+    }
+    if (terrainTag === 7) return charIsClimbing ? 0 : bit;
+
+    // Procedural map (636) water: terrain-tag-3 tiles that are blocked normally
+    // open up only while swimming (or for water enemies); shallow passable water
+    // is left untouched.
+    if (terrainTag === 3 && this.mapId() === 636) {
+      const baseBit = _Game_Map_checkPassage.call(this, x, y, bit);
+      if (baseBit !== 0) return (charIsSwimming || charIsWaterEnemy) ? 0 : baseBit;
+      return baseBit;
+    }
+
+    if (character instanceof Game_Event && character.isAquaticEnemy && character.isAquaticEnemy() &&
+        !(character.isAmphibiousEnemy && character.isAmphibiousEnemy())) {
+      return bit;
+    }
+
+    return _Game_Map_checkPassage.call(this, x, y, bit);
+  };
+
+  // State maintenance on load/transfer
+  const _Game_Player_refresh = Game_Player.prototype.refresh;
+  Game_Player.prototype.refresh = function () {
+    _Game_Player_refresh.call(this);
+    if (this._isSwimming) {
+      // Keep original graphic and visibility
+    } else if (this._isClimbing) {
+      if (Utils.isClimbableAndAccessible(this.x, this.y) || Utils.isRoofTile(this.x, this.y)) {
+        this.setDirection(8);
+        MovementSystem.setCompanionsVisibility(false);
+      } else {
+        MovementSystem.exitClimbMode(this);
+      }
+    }
+  };
+
+  const _Game_Player_makeEmpty = Game_Player.prototype.makeEmpty;
+  Game_Player.prototype.makeEmpty = function () {
+    _Game_Player_makeEmpty.call(this);
+    this._isSwimming = false;
+    this._isClimbing = false;
+    this._isSitting = false;
+    MovementSystem.releaseFollowers(this);
+  };
+
+  const _Scene_Boot_start = Scene_Boot.prototype.start;
+  Scene_Boot.prototype.start = function () {
+    _Scene_Boot_start.call(this);
+    companionsVisible = true;
+    lastSwimSoundFrame = 0;
+    lastClimbSoundFrame = 0;
+
+    if ($gamePlayer) {
+      $gamePlayer._isSwimming = false;
+      $gamePlayer._isClimbing = false;
+      $gamePlayer._isSitting = false;
+      $gamePlayer._pendingFallDamageRate = 0;
+    }
+  };
+
+  const _Spriteset_Map_createCharacters = Spriteset_Map.prototype.createCharacters;
+  Spriteset_Map.prototype.createCharacters = function () {
+    _Spriteset_Map_createCharacters.call(this);
+    ReflectionSystem.initialize();
+  };
+
+  // Compute per-map fast-path flags once on setup: whether the map contains any
+  // reflective water and whether it has any special-passability regions/terrain.
+  const _Game_Map_setup_MIS = Game_Map.prototype.setup;
+  Game_Map.prototype.setup = function (mapId) {
+    _Game_Map_setup_MIS.call(this, mapId);
+    ReflectionSystem.invalidateWaterScan();
+    this._misScanSpecialPassability();
+  };
+
+  // Special-passability tiles are regions 4,5,10,13,99, terrain tags 4,7, and
+  // (on map 636) terrain tag 3. If a map has none, the isPassable/checkPassage
+  // overrides can defer straight to the originals.
+  Game_Map.prototype._misScanSpecialPassability = function () {
+    let special = false;
+    if ($dataMap) {
+      const w = this.width();
+      const h = this.height();
+      const is636 = this.mapId() === 636;
+      for (let y = 0; y < h && !special; y++) {
+        for (let x = 0; x < w; x++) {
+          const r = this.regionId(x, y);
+          if (r === 4 || r === 5 || r === 10 || r === 13 || r === 99) { special = true; break; }
+          const t = this.terrainTag(x, y);
+          if (t === 4 || t === 7 || (is636 && t === 3)) { special = true; break; }
+        }
+      }
+    }
+    this._misHasSpecialPassability = special;
+  };
+
+  const _Scene_Map_terminate = Scene_Map.prototype.terminate;
+  Scene_Map.prototype.terminate = function () {
+    ReflectionSystem.cleanup();
+    _Scene_Map_terminate.call(this);
+  };
+
+  const _Game_Player_performTransfer = Game_Player.prototype.performTransfer;
+  Game_Player.prototype.performTransfer = function () {
+    const wasClimbing = this._isClimbing;
+
+    ReflectionSystem.cleanup();
+    _Game_Player_performTransfer.call(this);
+
+    // Queue swim/climb rearm to run on the next player update after the transfer
+    // completes, instead of wall-clock setTimeout deferrals.
+    this._pendingSwimClimbRearm = null;
+
+    if ($gameSystem._procGenData && $gameSystem._procGenData.currentBiome === "SeaBed") {
+      this._pendingSwimClimbRearm = ["seabed"];
+      return;
+    }
+
+    // Landing in water is the same everywhere - a procedural square, a hand-made
+    // map, an event teleport - and does not depend on whether the party was
+    // already swimming: if the tile they arrive on is water they cannot stand on
+    // (region 99, or the Water terrain tag on the procedural map), they swim.
+    // The decision is deferred to applyTransferRearm because the arrival tile is
+    // not final yet; Scene_Map.onMapLoaded can still relocate the party.
+    const rearm = ["swimIfWater"];
+
+    if (wasClimbing) {
+      if (Utils.isClimbableAndAccessible(this.x, this.y)) {
+        rearm.push("climb");
+      } else {
+        MovementSystem.exitClimbMode(this);
+      }
+    }
+
+    this._pendingSwimClimbRearm = rearm;
+  };
+
+  // Global proc-diving state (Ocean biome in the procedural stack) recomputed at
+  // most once per frame and shared by updateFrame/updateVisibility instead of
+  // each sprite rescanning biomeLayerStack every frame.
+  let _procDivingFrame = -1;
+  let _procDivingCached = false;
+  const _isProcDivingGlobal = () => {
+    if (_procDivingFrame !== Graphics.frameCount) {
+      _procDivingFrame = Graphics.frameCount;
+      const procGenData = $gameSystem._procGenData;
+      _procDivingCached = !!(procGenData &&
+        procGenData.biomeLayerStack && procGenData.biomeLayerStack.length > 0 &&
+        (procGenData.currentBiome === "Ocean" || procGenData.biomeLayerStack.includes("Ocean")));  // i18n-ignore  biome id
+    }
+    return _procDivingCached;
+  };
+
+  // Sprite crop for swimming
+  const _Sprite_Character_updateFrame = Sprite_Character.prototype.updateFrame;
+  Sprite_Character.prototype.updateFrame = function() {
+    _Sprite_Character_updateFrame.call(this);
+    if (this._character) {
+      let isSwimming = this._character._isSwimming || 
+                        (this._character === $gamePlayer && $gamePlayer._isSwimming) ||
+                        (this._character instanceof Game_Follower && $gamePlayer._isSwimming);
+      
+      if (!isSwimming && this._character instanceof Game_Event && Utils.isWaterTile(this._character.x, this._character.y) && !this._character.isJumping()) {
+          const isEnemy = this._character.event() && (
+              this._character.event().name === "Enemy" ||  // i18n-ignore  event name
+              (this._character.isAquaticEnemy && this._character.isAquaticEnemy()) ||
+              (this._character.isAmphibiousEnemy && this._character.isAmphibiousEnemy())
+          );
+          if (isEnemy) {
+              isSwimming = true;
+          }
+      }
+      
+      const isProcDiving = _isProcDivingGlobal();
+
+      const isDiving = this._character._isDiving ||
+                        (this._character === $gamePlayer && ($gamePlayer._isDiving || isProcDiving)) ||
+                        (this._character instanceof Game_Follower && ($gamePlayer._isDiving || isProcDiving));
+      
+      const isGlobalDiving = $gamePlayer._isDiving || isProcDiving;
+
+      if (isGlobalDiving && this._character instanceof Game_Event) {
+          isSwimming = false;
+      }
+
+      if (isSwimming && !isDiving) {
+        const frame = this._frame;
+        if (frame.width > 0 && frame.height > 0) {
+          if (this._character instanceof Game_Event) {
+            this.setFrame(frame.x, frame.y, frame.width, Math.floor(frame.height * 0.75));
+          } else {
+            this.setFrame(frame.x, frame.y, frame.width, frame.height / 2);
+          }
+        }
+      }
+    }
+  };
+
+  const _Sprite_Character_updateVisibility = Sprite_Character.prototype.updateVisibility;
+  Sprite_Character.prototype.updateVisibility = function() {
+      _Sprite_Character_updateVisibility.call(this);
+
+      // Layered bridges (region 12): a character passing UNDER the deck must be
+      // hidden by it. The map's deck tiles are painted on the lower tile layer
+      // (not "above character" ☆ tiles), so screenZ alone cannot occlude the
+      // sprite — hide it directly while underneath. The party rides the player's
+      // on/under state, matching the screenZ hooks above.
+      if (this.visible && this._character && $gamePlayer && !$gamePlayer._onBridge) {
+          const c = this._character;
+          if ((c === $gamePlayer || c instanceof Game_Follower) &&
+              Utils.isBridgeTile(c.x, c.y)) {
+              this.visible = false;
+          }
+      }
+
+      if (this.visible && this._character instanceof Game_Event) {
+          const isGlobalDiving = $gamePlayer._isDiving || _isProcDivingGlobal();
+          
+          if (isGlobalDiving) {
+              if (!Utils.isWaterTile(this._character.x, this._character.y)) {
+                  this.visible = false;
+              }
+          }
+      }
+  };
+
+  // Export
+  window.MovementSystem = {
+    isWaterTile: Utils.isWaterTile.bind(Utils),
+    isClimbableAndAccessible: Utils.isClimbableAndAccessible.bind(Utils),
+    canClimbInDirection: Utils.canClimbInDirection.bind(Utils),
+    enterSwimMode: MovementSystem.enterSwimMode.bind(MovementSystem),
+    exitSwimMode: MovementSystem.exitSwimMode.bind(MovementSystem),
+    enterClimbMode: MovementSystem.enterClimbMode.bind(MovementSystem),
+    exitClimbMode: MovementSystem.exitClimbMode.bind(MovementSystem),
+    performFishing: MovementSystem.performFishing.bind(MovementSystem),
+    fishingItems: Config.fishingItems,
+    fishingEncounterTroopIds: Config.fishingEncounterTroopIds,
+    fishingBattleCommonEventId: Config.fishingBattleCommonEventId
+  };
+})();

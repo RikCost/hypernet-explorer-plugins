@@ -1,0 +1,74 @@
+{
+  "name": "Arcano",
+  "blurb": "Una disciplina perduta nel Collasso e ricostruita per rilevamento e misura: intensità di campo, tolleranze, varianza in funzione della distanza da una linea. Le piste false restano agli atti perché anch'esse sono state misurate.",
+  "nodes": {
+    "arc_leyline": {
+      "name": "Cartografia delle Leyline",
+      "desc": "Un rilevamento della corrente arcana nella crosta, condotto con tre strumenti: un ago di inclinazione che legge la componente verticale, sonde a salamoia calate a intervalli per registrare la conducibilità in funzione della profondità, e una bussola la cui deviazione è ripetibile e quindi utilizzabile come rilevamento. Percorsi su una griglia, i tre restituiscono il tracciato di una linea, la sua profondità e la sua portata entro qualche punto percentuale. Ogni opera registrata in seguito viene specificata come distanza e rilevamento da una linea rilevata, perché nessuna misura di un'opera significa qualcosa senza."
+    },
+    "arc_tradeoff": {
+      "name": "Il Compromesso Centrale",
+      "desc": "Il risultato centrale del rilevamento, misurato su circa quattrocento ripetizioni a distanze graduate. Il campo ambientale cala all'incirca come l'inverso del quadrato della distanza da una linea, mentre il coefficiente di variazione di raggio, durata e bersaglio di un'opera cresce con la vicinanza: sulla linea stessa lo stesso rito rende fra un terzo e quattro volte il valore nominale, e a duecento passi si ripete entro il tre per cento di un valore molto più piccolo. Non esiste distanza alla quale entrambe le grandezze siano favorevoli. I battlemage lavorano nel campo vicino e gli ospedali nel campo lontano, e la scelta è una scelta di varianza."
+    },
+    "arc_distillation": {
+      "name": "Distillazione di Essenza Arcana",
+      "desc": "Il colaticcio raccolto entro dieci passi da una linea viene concentrato per congelamenti e decantazioni ripetute, circa quaranta cicli, scartando ogni volta la frazione che solidifica. La fiala sigillata che ne risulta legge come sorgente puntiforme abbastanza forte da deviare una bussola a quattro metri, trattiene la carica con una perdita sotto l'uno per cento al mese e si può dosare a volume, così una spesa si dichiara in millilitri invece che in intenzione. La densità di carica è proporzionale alla resa della linea sorgente, e non si conosce processo che la aumenti oltre."
+    },
+    "arc_dead_flats": {
+      "name": "Le Piane della Magia Morta",
+      "desc": "Un bacino in cui il campo ambientale legge sotto la soglia dell'ago di inclinazione su una sessantina di chilometri quadrati, senza alcuna linea a meno di una giornata di cammino. Qui raggio, durata e bersaglio di un'opera sono lineari nel mana speso, con residui sotto il due per cento su tutto l'intervallo, e lo stesso rito si ripete entro un palmo in giorni consecutivi. È il sistema di riferimento: un incantesimo si calibra qui, i suoi coefficienti si registrano qui, e il suo comportamento altrove si dichiara come scostamento dai valori presi nelle piane."
+    },
+    "arc_names_power": {
+      "name": "I Nomi Sono Potere",
+      "desc": "Un vero nome vincola per ortografia. L'incantesimo va pronunciato come un unico token fuso: qualsiasi giunzione, qualsiasi pausa più lunga di circa ottanta millisecondi, qualsiasi vocale inserita apre una faglia in cui il vincolo cede. La pronuncia è il parser, e un token malformato non fallisce in silenzio, perché il canale è già aperto quando la faglia viene rilevata e l'opera si scarica all'indietro lungo di esso sul parlante. I modi di guasto registrati sono graduati secondo il punto del token in cui cade la giunzione, e il rinculo si misura nelle stesse unità della resa attesa."
+    },
+    "arc_fidelity": {
+      "name": "Fedeltà Rituale",
+      "desc": "Una classe di opere che non attinge mana in quantità misurabile, e paga invece in tempo di preparazione. Diagramma, formula e ora vanno riprodotti entro tolleranza: un sigillo spostato di più di un dito circa, o un'ora sbagliata di più di un quarto, annulla l'opera per intero. Non c'è resa parziale né degrado proporzionale, quindi la curva di resa in funzione della fedeltà è un gradino. La durata scala con il tempo speso a tracciare il diagramma, quindi il metodo è utilizzabile nelle piane morte e inutilizzabile sotto pressione."
+    },
+    "arc_charge": {
+      "name": "Ritenzione di Carica Eterea",
+      "desc": "L'etere solidificato sotto pressione trattiene una carica immagazzinata con un'emivita misurata di quattro-sette mesi, contro le ore del legno e i minuti del metallo lavorato, che si scaricano per conducibilità propria. Il frammento è inerte finché non gli si apre un canale e si carica a una velocità limitata dalla sezione del contatto. È lo stadio di serbatoio standard: qualsiasi cosa destinata a funzionare lontano da una linea si specifica con la capacità del frammento che porta e con la corrente che il suo canale consente."
+    },
+    "arc_dream_prep": {
+      "name": "Preparazione Onirica",
+      "desc": "La selezione degli incantesimi eseguita nel sonno attinge al campo del sognato invece che alla linea locale, per cui la preparazione non costa nulla sul posto e funziona anche nelle piane. L'insieme scelto resta caricato al risveglio. La fedeltà di selezione è il difetto: nelle prove registrate, fra un terzo e la metà dell'insieme voluto è presente al risveglio, e il resto è sostituito da opere che il dormiente conosce ma non ha scelto, senza alcun modo di ispezionare l'insieme caricato prima di lanciarlo."
+    },
+    "arc_sympathetic": {
+      "name": "Accoppiamento Simpatico",
+      "desc": "Un focus che condivide materia o storia con un bersaglio vi si accoppia, per cui l'opera viene indirizzata al focus e si risolve sul bersaglio senza dipendenza misurabile dalla distanza fino al limite del rilevamento. La forza dell'accoppiamento scala con la specificità del legame ed è all'incirca logaritmica in essa: un indumento dà un accoppiamento debole, un nome personale uno più forte, capelli e sangue il più forte registrato. L'accoppiamento è simmetrico, e nulla nel metodo impedisce che sia l'estremo lontano a indirizzare il focus."
+    },
+    "arc_geomancy_porphyrin": {
+      "name": "Porfirina e la Teoria dell'Olio",
+      "desc": "Ogni giacimento di greggio ospita entità petrodemoniache legate, e le porfirine già presenti nel greggio aprono un canale fra giacimento, offerta di sangue e leyline. La portata supera di due ordini di grandezza quella di una linea rilevata e non cala con il prelievo, perché il giacimento non è la sorgente. Il canale conduce in entrambe le direzioni e non ha stadio di misura, per cui l'installazione standard è un tratto di linea con un'interruzione, e gli incidenti registrati sono tutti incidenti di flusso inverso."
+    },
+    "arc_convokation": {
+      "name": "Convocazione dei Settantadue",
+      "desc": "Un cerchio sigillato, settantadue sigilli autenticati disposti nell'ordine prescritto e una recitazione ininterrotta vincolano e comandano l'intera gerarchia in un'unica opera. La durata va da tre a nove giorni secondo l'ordine scelto, la recitazione non può essere interrotta più a lungo del tempo di un respiro, e non si possono dare cambi all'operatore a metà rito perché il vincolo è agganciato a una sola voce. I fallimenti registrati sono fallimenti dell'operatore: sfinimento, un sigillo posato fuori sequenza, un nome pronunciato nel caso sbagliato."
+    },
+    "arc_metamagic": {
+      "name": "Sublimazione Metamagica",
+      "desc": "Ogni componente fisica di un rito, gesso, parola pronunciata, focus e ora, viene sostituita da un equivalente immaginato e tenuto in memoria di lavoro per tutta la durata. Senza substrato fisico le tolleranze che governano ogni metodo inferiore non si applicano: il diagramma non può essere spostato perché non sta da nessuna parte, e la resa smette di seguire la distanza da una linea. Segue invece l'operatore, e i modi di guasto registrati sono tutti modi di guasto dell'operatore."
+    },
+    "arc_crystal_healing": {
+      "name": "Guarigione coi Cristalli",
+      "desc": "Quarzo colorato disposto sul corpo in punti fissati dalla tradizione, con un meccanismo dichiarato per cui il reticolo focalizza il campo ambientale nei tessuti. Strumentate su una linea forte, le pietre concentrano davvero un campo di qualche punto percentuale sopra l'ambiente in superficie, che scende sotto la soglia di rilevabilità a due centimetri di profondità. Fuori da una linea l'ambiente è già sotto soglia e la concentrazione è concentrazione di nulla. Prove appaiate contro vetro inerte dello stesso colore e peso restituiscono lo stesso sollievo dichiarato in entrambi i bracci."
+    },
+    "arc_talking_board": {
+      "name": "La Tavola Parlante",
+      "desc": "Una planchette su una tavola a basso attrito sotto le dita di più sedenti compone lettere. Bendare i sedenti, o ruotare la tavola senza dirlo, riduce l'esito a insensatezza, il che colloca il motore nell'effetto ideomotorio: produzione muscolare inconscia sommata su più mani, con il sedente che conosce la risposta a fornirla. Su una linea forte un residuo di sedute produce un esito che sopravvive alla benda, a un tasso di poco superiore a quello che darebbero le sole frequenze delle lettere. Dall'interno della seduta i due casi sono indistinguibili, e nessun sedente ha mai indovinato in quale dei due si trovasse."
+    },
+    "arc_spirit_photography": {
+      "name": "Fotografia degli Spiriti",
+      "desc": "Un frammento eterico collegato alla lastra dovrebbe sensibilizzare l'emulsione al campo. L'esame fotogramma per fotogramma delle esposizioni spiega le figure con doppia esposizione, riflessi interni dell'obiettivo, difetti dell'emulsione e rimbalzo dell'otturatore, in quest'ordine di frequenza; i volti li fornisce chi guarda, e lastre di controllo scattate senza frammento li producono con la stessa frequenza. Dove il frammento contribuisce davvero, la differenza fra lastre esposte e di controllo resta sotto il rumore di grana dell'emulsione, e nessuna stampa la tirerà fuori."
+    },
+    "arc_seventytwo_seals": {
+      "name": "I Settantadue Sigilli",
+      "desc": "Ognuno dei settantadue nomi va accoppiato al proprio sigillo autenticato prima che il cerchio si possa chiudere. Il lavoro è di recupero e verifica: i sigilli vengono dissepolti dalle rovine o trascritti dal sogno, collazionati contro i falsi noti, e controllati sui due tratti che i falsi riproducono male, l'ordine dei tratti e la chiusura della fascia esterna. Un solo sigillo non verificato annulla l'intera convocazione nel punto in cui viene raggiunto, con il cerchio già aperto, quindi la verifica si fa prima di tracciare il cerchio e mai durante."
+    },
+    "arc_imagination_discipline": {
+      "name": "La Disciplina della Pura Immaginazione",
+      "desc": "Il rito va tenuto intero nella mente, senza deriva, per tutto il tempo che impiega a svolgersi. L'addestramento si misura come tempo di tenuta ininterrotta sotto distrazione, da pochi secondi fino a ore nell'arco di anni, con un esame che aggiunge rumore, freddo e interruzioni. Il modo di guasto non è un'opera fallita: il substrato immaginato è ciò su cui l'operatore sta in piedi mentre il rito gira, e i casi registrati di deriva oltre una certa profondità finiscono con un operatore che respira ancora e non torna."
+    }
+  }
+}

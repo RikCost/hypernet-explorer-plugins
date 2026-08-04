@@ -210,6 +210,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.magesguild.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 135,
+        "mp": 232,
+        "atk": 17,
+        "def": 17,
+        "mat": 97,
+        "mdf": 62,
+        "agi": 30,
+        "luk": 23,
+        "hiringCost": 6300,
+        "weeklyCost": 1260,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -221,7 +238,9 @@
       "wizard_lord_varen",
       "sage_celeste",
       "grand_magus_dorian"
-    ]
+    ],
+    "parentFaction": 8,
+    "hyperpowerHead": true
   },
   {
     "id": 1,
@@ -400,6 +419,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.archivefoundation.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 132,
+        "mp": 137,
+        "atk": 19,
+        "def": 21,
+        "mat": 63,
+        "mdf": 56,
+        "agi": 27,
+        "luk": 26,
+        "hiringCost": 7560,
+        "weeklyCost": 1510,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -411,7 +447,9 @@
       "record_master_elena",
       "chronicle_guard_dorian",
       "vault_warden_iris"
-    ]
+    ],
+    "parentFaction": 9,
+    "hyperpowerHead": true
   },
   {
     "id": 2,
@@ -591,6 +629,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.hypercapitalistcollective.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 140,
+        "mp": 95,
+        "atk": 27,
+        "def": 22,
+        "mat": 49,
+        "mdf": 43,
+        "agi": 38,
+        "luk": 32,
+        "hiringCost": 10080,
+        "weeklyCost": 2020,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -602,13 +657,15 @@
       "commerce_king_sophia",
       "merchant_prince_julian",
       "corp_director_lydia"
-    ]
+    ],
+    "parentFaction": 10,
+    "hyperpowerHead": true
   },
   {
     "id": 3,
     "name": "factions.loyalists.name",
     "description": "factions.loyalists.description",
-    "parentFaction": 0,
+    "parentFaction": 8,
     "troops": [
       {
         "name": "factions.loyalists.troops.loyalacolyte.name",
@@ -694,6 +751,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.loyalists.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 122,
+        "mp": 180,
+        "atk": 16,
+        "def": 18,
+        "mat": 82,
+        "mdf": 58,
+        "agi": 20,
+        "luk": 21,
+        "hiringCost": 7560,
+        "weeklyCost": 1510,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -713,7 +787,7 @@
     "id": 4,
     "name": "factions.traditionalists.name",
     "description": "factions.traditionalists.description",
-    "parentFaction": 0,
+    "parentFaction": 8,
     "troops": [
       {
         "name": "factions.traditionalists.troops.puristnovice.name",
@@ -799,6 +873,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.traditionalists.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 101,
+        "mp": 222,
+        "atk": 11,
+        "def": 12,
+        "mat": 99,
+        "mdf": 70,
+        "agi": 17,
+        "luk": 23,
+        "hiringCost": 8820,
+        "weeklyCost": 1760,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -818,7 +909,7 @@
     "id": 5,
     "name": "factions.technomancers.name",
     "description": "factions.technomancers.description",
-    "parentFaction": 0,
+    "parentFaction": 8,
     "troops": [
       {
         "name": "factions.technomancers.troops.techapprentice.name",
@@ -921,6 +1012,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.technomancers.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 124,
+        "mp": 156,
+        "atk": 23,
+        "def": 23,
+        "mat": 87,
+        "mdf": 49,
+        "agi": 33,
+        "luk": 23,
+        "hiringCost": 11340,
+        "weeklyCost": 2270,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -940,7 +1048,7 @@
     "id": 6,
     "name": "factions.92schoolsbranch.name",
     "description": "factions.92schoolsbranch.description",
-    "parentFaction": 0,
+    "parentFaction": 8,
     "troops": [
       {
         "name": "factions.92schoolsbranch.troops.schoolscholar.name",
@@ -1026,6 +1134,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.92schoolsbranch.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 110,
+        "mp": 235,
+        "atk": 12,
+        "def": 14,
+        "mat": 105,
+        "mdf": 70,
+        "agi": 19,
+        "luk": 27,
+        "hiringCost": 9450,
+        "weeklyCost": 1890,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1045,7 +1170,7 @@
     "id": 7,
     "name": "factions.eriscourt.name",
     "description": "factions.eriscourt.description",
-    "parentFaction": 18,
+    "parentFaction": 11,
     "information": 30,
     "arcane": 100,
     "troops": [
@@ -1150,6 +1275,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.eriscourt.troops.scientist.name",
+        "formation": "formations.crescent",
+        "hp": 118,
+        "mp": 141,
+        "atk": 25,
+        "def": 18,
+        "mat": 80,
+        "mdf": 41,
+        "agi": 44,
+        "luk": 60,
+        "hiringCost": 8820,
+        "weeklyCost": 1760,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1167,7 +1309,6 @@
     "id": 8,
     "name": "factions.naguka.name",
     "description": "factions.naguka.description",
-    "parentFaction": 25,
     "troops": [
       {
         "name": "factions.naguka.troops.swampscavenger.name",
@@ -1270,6 +1411,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.naguka.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 111,
+        "mp": 107,
+        "atk": 18,
+        "def": 18,
+        "mat": 57,
+        "mdf": 63,
+        "agi": 33,
+        "luk": 25,
+        "hiringCost": 6930,
+        "weeklyCost": 1390,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1289,7 +1447,6 @@
     "id": 9,
     "name": "factions.verden.name",
     "description": "factions.verden.description",
-    "parentFaction": 25,
     "troops": [
       {
         "name": "factions.verden.troops.forestscout.name",
@@ -1392,6 +1549,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.verden.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 107,
+        "mp": 94,
+        "atk": 25,
+        "def": 21,
+        "mat": 49,
+        "mdf": 41,
+        "agi": 51,
+        "luk": 33,
+        "hiringCost": 6300,
+        "weeklyCost": 1260,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1532,6 +1706,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.truckerssociety.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 130,
+        "mp": 71,
+        "atk": 24,
+        "def": 23,
+        "mat": 33,
+        "mdf": 35,
+        "agi": 40,
+        "luk": 32,
+        "hiringCost": 8820,
+        "weeklyCost": 1760,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1704,6 +1895,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.esotericheavyindustries.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 173,
+        "mp": 93,
+        "atk": 32,
+        "def": 34,
+        "mat": 53,
+        "mdf": 52,
+        "agi": 33,
+        "luk": 25,
+        "hiringCost": 8190,
+        "weeklyCost": 1640,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -1893,6 +2101,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.northpointarmy.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 158,
+        "mp": 127,
+        "atk": 28,
+        "def": 30,
+        "mat": 70,
+        "mdf": 68,
+        "agi": 35,
+        "luk": 28,
+        "hiringCost": 7560,
+        "weeklyCost": 1510,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2065,6 +2290,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.invertedcitadel.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 125,
+        "mp": 185,
+        "atk": 23,
+        "def": 21,
+        "mat": 94,
+        "mdf": 69,
+        "agi": 39,
+        "luk": 32,
+        "hiringCost": 6930,
+        "weeklyCost": 1390,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2236,6 +2478,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.petrodemons.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 150,
+        "mp": 231,
+        "atk": 34,
+        "def": 24,
+        "mat": 126,
+        "mdf": 72,
+        "agi": 51,
+        "luk": 43,
+        "hiringCost": 10080,
+        "weeklyCost": 2020,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2254,7 +2513,7 @@
     "name": "factions.petromanagers.name",
     "noStartingTroops": true,
     "description": "factions.petromanagers.description",
-    "parentFaction": 2,
+    "parentFaction": 10,
     "troops": [
       {
         "name": "factions.petromanagers.troops.juniormanager.name",
@@ -2311,6 +2570,23 @@
         "luk": 50,
         "hiringCost": 119000,
         "weeklyCost": 23800
+      },
+      {
+        "name": "factions.petromanagers.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 129,
+        "mp": 176,
+        "atk": 22,
+        "def": 22,
+        "mat": 104,
+        "mdf": 70,
+        "agi": 32,
+        "luk": 41,
+        "hiringCost": 11340,
+        "weeklyCost": 2270,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2329,7 +2605,7 @@
     "name": "factions.speeddemons.name",
     "noStartingTroops": true,
     "description": "factions.speeddemons.description",
-    "parentFaction": 2,
+    "parentFaction": 10,
     "troops": [
       {
         "name": "factions.speeddemons.troops.speedfreak.name",
@@ -2386,6 +2662,23 @@
         "luk": 60,
         "hiringCost": 112000,
         "weeklyCost": 22400
+      },
+      {
+        "name": "factions.speeddemons.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 115,
+        "mp": 102,
+        "atk": 30,
+        "def": 19,
+        "mat": 52,
+        "mdf": 40,
+        "agi": 83,
+        "luk": 49,
+        "hiringCost": 10710,
+        "weeklyCost": 2140,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2404,7 +2697,7 @@
     "name": "factions.sevensisters.name",
     "noStartingTroops": true,
     "description": "factions.sevensisters.description",
-    "parentFaction": 2,
+    "parentFaction": 10,
     "troops": [
       {
         "name": "factions.sevensisters.troops.familyenforcer.name",
@@ -2461,6 +2754,23 @@
         "luk": 55,
         "hiringCost": 168000,
         "weeklyCost": 33600
+      },
+      {
+        "name": "factions.sevensisters.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 154,
+        "mp": 118,
+        "atk": 35,
+        "def": 32,
+        "mat": 77,
+        "mdf": 67,
+        "agi": 45,
+        "luk": 40,
+        "hiringCost": 22680,
+        "weeklyCost": 4540,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2616,6 +2926,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.thegods.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 221,
+        "mp": 396,
+        "atk": 39,
+        "def": 41,
+        "mat": 184,
+        "mdf": 147,
+        "agi": 60,
+        "luk": 91,
+        "hiringCost": 37800,
+        "weeklyCost": 7560,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2627,13 +2954,15 @@
       "dionysus_the_reveler",
       "apollo_the_radiant",
       "hera_the_jealous"
-    ]
+    ],
+    "parentFaction": 11,
+    "hyperpowerHead": true
   },
   {
     "id": 19,
     "name": "factions.supremearchivistcouncil.name",
     "description": "factions.supremearchivistcouncil.description",
-    "parentFaction": 1,
+    "parentFaction": 9,
     "troops": [
       {
         "name": "factions.supremearchivistcouncil.troops.councilscribe.name",
@@ -2676,6 +3005,23 @@
         "luk": 50,
         "hiringCost": 105000,
         "weeklyCost": 21000
+      },
+      {
+        "name": "factions.supremearchivistcouncil.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 123,
+        "mp": 227,
+        "atk": 14,
+        "def": 19,
+        "mat": 104,
+        "mdf": 82,
+        "agi": 20,
+        "luk": 41,
+        "hiringCost": 18900,
+        "weeklyCost": 3780,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2689,7 +3035,7 @@
     "id": 20,
     "name": "factions.dataacquisitiondepartment.name",
     "description": "factions.dataacquisitiondepartment.description",
-    "parentFaction": 1,
+    "parentFaction": 9,
     "troops": [
       {
         "name": "factions.dataacquisitiondepartment.troops.fieldagent.name",
@@ -2732,6 +3078,23 @@
         "luk": 60,
         "hiringCost": 91000,
         "weeklyCost": 18200
+      },
+      {
+        "name": "factions.dataacquisitiondepartment.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 115,
+        "mp": 125,
+        "atk": 24,
+        "def": 18,
+        "mat": 68,
+        "mdf": 48,
+        "agi": 56,
+        "luk": 49,
+        "hiringCost": 20160,
+        "weeklyCost": 4030,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2745,7 +3108,7 @@
     "id": 21,
     "name": "factions.knowledgepreservationdivision.name",
     "description": "factions.knowledgepreservationdivision.description",
-    "parentFaction": 1,
+    "parentFaction": 9,
     "troops": [
       {
         "name": "factions.knowledgepreservationdivision.troops.silentlibrarian.name",
@@ -2788,6 +3151,23 @@
         "luk": 40,
         "hiringCost": 98000,
         "weeklyCost": 19600
+      },
+      {
+        "name": "factions.knowledgepreservationdivision.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 141,
+        "mp": 161,
+        "atk": 24,
+        "def": 26,
+        "mat": 96,
+        "mdf": 85,
+        "agi": 27,
+        "luk": 35,
+        "hiringCost": 17640,
+        "weeklyCost": 3530,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2801,7 +3181,7 @@
     "id": 22,
     "name": "factions.publictransparencyunit.name",
     "description": "factions.publictransparencyunit.description",
-    "parentFaction": 1,
+    "parentFaction": 9,
     "troops": [
       {
         "name": "factions.publictransparencyunit.troops.propagandist.name",
@@ -2844,6 +3224,23 @@
         "luk": 70,
         "hiringCost": 91000,
         "weeklyCost": 18200
+      },
+      {
+        "name": "factions.publictransparencyunit.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 113,
+        "mp": 169,
+        "atk": 17,
+        "def": 18,
+        "mat": 96,
+        "mdf": 70,
+        "agi": 34,
+        "luk": 58,
+        "hiringCost": 16380,
+        "weeklyCost": 3280,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2857,7 +3254,7 @@
     "id": 23,
     "name": "factions.internalcomplianceunit.name",
     "description": "factions.internalcomplianceunit.description",
-    "parentFaction": 1,
+    "parentFaction": 9,
     "troops": [
       {
         "name": "factions.internalcomplianceunit.troops.complianceofficer.name",
@@ -2900,6 +3297,23 @@
         "luk": 42,
         "hiringCost": 112000,
         "weeklyCost": 22400
+      },
+      {
+        "name": "factions.internalcomplianceunit.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 152,
+        "mp": 125,
+        "atk": 29,
+        "def": 30,
+        "mat": 74,
+        "mdf": 73,
+        "agi": 42,
+        "luk": 37,
+        "hiringCost": 21420,
+        "weeklyCost": 4280,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -2914,7 +3328,7 @@
     "name": "factions.libertariangods.name",
     "noStartingTroops": true,
     "description": "factions.libertariangods.description",
-    "parentFaction": 18,
+    "parentFaction": 11,
     "troops": [
       {
         "name": "factions.libertariangods.troops.freemarketangel.name",
@@ -2957,6 +3371,23 @@
         "luk": 90,
         "hiringCost": 154000,
         "weeklyCost": 30800
+      },
+      {
+        "name": "factions.libertariangods.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 165,
+        "mp": 271,
+        "atk": 31,
+        "def": 32,
+        "mat": 148,
+        "mdf": 110,
+        "agi": 56,
+        "luk": 81,
+        "hiringCost": 35280,
+        "weeklyCost": 7060,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3091,6 +3522,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.goblincollectiveunconsciuous.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 121,
+        "mp": 222,
+        "atk": 25,
+        "def": 20,
+        "mat": 121,
+        "mdf": 108,
+        "agi": 49,
+        "luk": 61,
+        "hiringCost": 11340,
+        "weeklyCost": 2270,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3242,6 +3690,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.thetourists.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 159,
+        "mp": 206,
+        "atk": 34,
+        "def": 42,
+        "mat": 152,
+        "mdf": 126,
+        "agi": 64,
+        "luk": 80,
+        "hiringCost": 25200,
+        "weeklyCost": 5040,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3409,10 +3874,27 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.holyvaticanempire.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 152,
+        "mp": 194,
+        "atk": 31,
+        "def": 35,
+        "mat": 112,
+        "mdf": 112,
+        "agi": 43,
+        "luk": 45,
+        "hiringCost": 8190,
+        "weeklyCost": 1640,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
-      "pope_benedict_xvii",
+      "pope_petrus_ii",
       "cardinal_secretary_lorenzo",
       "archbishop_militaris",
       "mother_superior_magdalena",
@@ -3428,13 +3910,15 @@
       "giulio_andreotti",
       "pope_john_paul_ii",
       "silvio_berlusconi"
-    ]
+    ],
+    "parentFaction": 0,
+    "hyperpowerHead": true
   },
   {
     "id": 28,
     "name": "factions.cardinalscouncil.name",
     "description": "factions.cardinalscouncil.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "noStartingTroops": true,
     "troops": [
       {
@@ -3478,6 +3962,23 @@
         "luk": 65,
         "hiringCost": 140000,
         "weeklyCost": 28000
+      },
+      {
+        "name": "factions.cardinalscouncil.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 147,
+        "mp": 246,
+        "atk": 21,
+        "def": 30,
+        "mat": 129,
+        "mdf": 131,
+        "agi": 28,
+        "luk": 52,
+        "hiringCost": 22680,
+        "weeklyCost": 4540,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3492,7 +3993,7 @@
     "name": "factions.ior.name",
     "noStartingTroops": true,
     "description": "factions.ior.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.ior.troops.bankclerk.name",
@@ -3549,6 +4050,23 @@
         "luk": 85,
         "hiringCost": 133000,
         "weeklyCost": 26600
+      },
+      {
+        "name": "factions.ior.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 124,
+        "mp": 135,
+        "atk": 19,
+        "def": 23,
+        "mat": 92,
+        "mdf": 84,
+        "agi": 34,
+        "luk": 71,
+        "hiringCost": 15120,
+        "weeklyCost": 3020,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3562,7 +4080,7 @@
     "id": 30,
     "name": "factions.battlenuns.name",
     "description": "factions.battlenuns.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.battlenuns.troops.novicesister.name",
@@ -3619,6 +4137,23 @@
         "luk": 52,
         "hiringCost": 182000,
         "weeklyCost": 36400
+      },
+      {
+        "name": "factions.battlenuns.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 150,
+        "mp": 198,
+        "atk": 31,
+        "def": 32,
+        "mat": 112,
+        "mdf": 112,
+        "agi": 47,
+        "luk": 41,
+        "hiringCost": 17640,
+        "weeklyCost": 3530,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3632,7 +4167,7 @@
     "id": 31,
     "name": "factions.hexorcistscorp.name",
     "description": "factions.hexorcistscorp.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.hexorcistscorp.troops.cyberacolyte.name",
@@ -3689,6 +4224,23 @@
         "luk": 68,
         "hiringCost": 196000,
         "weeklyCost": 39200
+      },
+      {
+        "name": "factions.hexorcistscorp.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 146,
+        "mp": 264,
+        "atk": 28,
+        "def": 30,
+        "mat": 156,
+        "mdf": 118,
+        "agi": 51,
+        "luk": 54,
+        "hiringCost": 20160,
+        "weeklyCost": 4030,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3703,7 +4255,7 @@
     "name": "factions.gaylobby.name",
     "noStartingTroops": true,
     "description": "factions.gaylobby.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.gaylobby.troops.progressivepriest.name",
@@ -3746,6 +4298,23 @@
         "luk": 80,
         "hiringCost": 95200,
         "weeklyCost": 19040
+      },
+      {
+        "name": "factions.gaylobby.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 113,
+        "mp": 191,
+        "atk": 17,
+        "def": 23,
+        "mat": 110,
+        "mdf": 99,
+        "agi": 43,
+        "luk": 65,
+        "hiringCost": 16380,
+        "weeklyCost": 3280,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3759,7 +4328,7 @@
     "id": 33,
     "name": "factions.opusdei.name",
     "description": "factions.opusdei.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.opusdei.troops.devotednumerary.name",
@@ -3816,6 +4385,23 @@
         "luk": 62,
         "hiringCost": 189000,
         "weeklyCost": 37800
+      },
+      {
+        "name": "factions.opusdei.troops.scientist.name",
+        "formation": "formations.phalanx",
+        "hp": 154,
+        "mp": 170,
+        "atk": 32,
+        "def": 36,
+        "mat": 113,
+        "mdf": 102,
+        "agi": 39,
+        "luk": 50,
+        "hiringCost": 18900,
+        "weeklyCost": 3780,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -3829,7 +4415,7 @@
     "id": 34,
     "name": "factions.swissguards.name",
     "description": "factions.swissguards.description",
-    "parentFaction": 27,
+    "parentFaction": 0,
     "troops": [
       {
         "name": "factions.swissguards.troops.swissrecruit.name",
@@ -3886,6 +4472,23 @@
         "luk": 52,
         "hiringCost": 224000,
         "weeklyCost": 44800
+      },
+      {
+        "name": "factions.swissguards.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 173,
+        "mp": 113,
+        "atk": 38,
+        "def": 47,
+        "mat": 61,
+        "mdf": 77,
+        "agi": 44,
+        "luk": 42,
+        "hiringCost": 22680,
+        "weeklyCost": 4540,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4036,6 +4639,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.ussr.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 131,
+        "mp": 85,
+        "atk": 27,
+        "def": 27,
+        "mat": 52,
+        "mdf": 52,
+        "agi": 35,
+        "luk": 30,
+        "hiringCost": 8820,
+        "weeklyCost": 1760,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4047,13 +4667,15 @@
       "general_vasilevsky",
       "marshal_timoshenko",
       "general_malinovsky"
-    ]
+    ],
+    "parentFaction": 2,
+    "hyperpowerHead": true
   },
   {
     "id": 36,
     "name": "factions.guardsdivision.name",
     "description": "factions.guardsdivision.description",
-    "parentFaction": 35,
+    "parentFaction": 2,
     "troops": [
       {
         "name": "factions.guardsdivision.troops.guardsprivate.name",
@@ -4156,6 +4778,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.guardsdivision.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 153,
+        "mp": 89,
+        "atk": 35,
+        "def": 35,
+        "mat": 57,
+        "mdf": 61,
+        "agi": 46,
+        "luk": 39,
+        "hiringCost": 25200,
+        "weeklyCost": 5040,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4175,7 +4814,7 @@
     "id": 37,
     "name": "factions.tankdivision.name",
     "description": "factions.tankdivision.description",
-    "parentFaction": 35,
+    "parentFaction": 2,
     "troops": [
       {
         "name": "factions.tankdivision.troops.tankcrewman.name",
@@ -4278,6 +4917,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.tankdivision.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 138,
+        "mp": 84,
+        "atk": 34,
+        "def": 47,
+        "mat": 50,
+        "mdf": 62,
+        "agi": 33,
+        "luk": 35,
+        "hiringCost": 27720,
+        "weeklyCost": 5540,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4297,7 +4953,7 @@
     "id": 38,
     "name": "factions.rifledivision.name",
     "description": "factions.rifledivision.description",
-    "parentFaction": 35,
+    "parentFaction": 2,
     "troops": [
       {
         "name": "factions.rifledivision.troops.rifleman.name",
@@ -4400,6 +5056,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.rifledivision.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 122,
+        "mp": 71,
+        "atk": 30,
+        "def": 25,
+        "mat": 42,
+        "mdf": 45,
+        "agi": 48,
+        "luk": 34,
+        "hiringCost": 15120,
+        "weeklyCost": 3020,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4419,7 +5092,7 @@
     "id": 39,
     "name": "factions.airbornedivision.name",
     "description": "factions.airbornedivision.description",
-    "parentFaction": 35,
+    "parentFaction": 2,
     "troops": [
       {
         "name": "factions.airbornedivision.troops.paratrooper.name",
@@ -4522,6 +5195,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.airbornedivision.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 135,
+        "mp": 84,
+        "atk": 35,
+        "def": 29,
+        "mat": 56,
+        "mdf": 54,
+        "agi": 65,
+        "luk": 44,
+        "hiringCost": 32760,
+        "weeklyCost": 6550,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4541,7 +5231,7 @@
     "id": 40,
     "name": "factions.artillerydivision.name",
     "description": "factions.artillerydivision.description",
-    "parentFaction": 35,
+    "parentFaction": 2,
     "troops": [
       {
         "name": "factions.artillerydivision.troops.artillerygunner.name",
@@ -4644,6 +5334,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.artillerydivision.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 115,
+        "mp": 101,
+        "atk": 30,
+        "def": 28,
+        "mat": 90,
+        "mdf": 78,
+        "agi": 33,
+        "luk": 36,
+        "hiringCost": 25200,
+        "weeklyCost": 5040,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4800,6 +5507,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.ottomanempire.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 139,
+        "mp": 117,
+        "atk": 30,
+        "def": 34,
+        "mat": 78,
+        "mdf": 72,
+        "agi": 42,
+        "luk": 40,
+        "hiringCost": 17010,
+        "weeklyCost": 3400,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4807,13 +5531,15 @@
       "grand_vizier_ahmet",
       "marshal_fevzi_pasha",
       "admiral_barbaros_iii"
-    ]
+    ],
+    "parentFaction": 3,
+    "hyperpowerHead": true
   },
   {
     "id": 42,
     "name": "factions.tanzimatbureaucracy.name",
     "description": "factions.tanzimatbureaucracy.description",
-    "parentFaction": 41,
+    "parentFaction": 3,
     "troops": [
       {
         "name": "factions.tanzimatbureaucracy.troops.registryclerk.name",
@@ -4870,6 +5596,23 @@
         "luk": 85,
         "hiringCost": 133000,
         "weeklyCost": 26600
+      },
+      {
+        "name": "factions.tanzimatbureaucracy.troops.scientist.name",
+        "formation": "formations.box",
+        "hp": 104,
+        "mp": 193,
+        "atk": 17,
+        "def": 24,
+        "mat": 120,
+        "mdf": 116,
+        "agi": 34,
+        "luk": 66,
+        "hiringCost": 13230,
+        "weeklyCost": 2650,
+        "spritename": "Actor1",
+        "spriteindex": 0,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4883,7 +5626,7 @@
     "id": 43,
     "name": "factions.imperialsubmarinefleet.name",
     "description": "factions.imperialsubmarinefleet.description",
-    "parentFaction": 41,
+    "parentFaction": 3,
     "troops": [
       {
         "name": "factions.imperialsubmarinefleet.troops.submarinecadet.name",
@@ -4952,6 +5695,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.imperialsubmarinefleet.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 124,
+        "mp": 114,
+        "atk": 29,
+        "def": 33,
+        "mat": 78,
+        "mdf": 74,
+        "agi": 43,
+        "luk": 51,
+        "hiringCost": 25200,
+        "weeklyCost": 5040,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -4963,7 +5723,7 @@
     "id": 44,
     "name": "factions.talonofthecaliph.name",
     "description": "factions.talonofthecaliph.description",
-    "parentFaction": 41,
+    "parentFaction": 3,
     "troops": [
       {
         "name": "factions.talonofthecaliph.troops.informant.name",
@@ -5032,6 +5792,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.talonofthecaliph.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 121,
+        "mp": 165,
+        "atk": 29,
+        "def": 29,
+        "mat": 106,
+        "mdf": 98,
+        "agi": 64,
+        "luk": 87,
+        "hiringCost": 15120,
+        "weeklyCost": 3020,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5045,7 +5822,7 @@
     "id": 45,
     "name": "factions.janissaryguard.name",
     "description": "factions.janissaryguard.description",
-    "parentFaction": 41,
+    "parentFaction": 3,
     "troops": [
       {
         "name": "factions.janissaryguard.troops.janissarynovice.name",
@@ -5114,6 +5891,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.closequarters"
+      },
+      {
+        "name": "factions.janissaryguard.troops.scientist.name",
+        "formation": "formations.line",
+        "hp": 192,
+        "mp": 132,
+        "atk": 43,
+        "def": 50,
+        "mat": 88,
+        "mdf": 82,
+        "agi": 54,
+        "luk": 47,
+        "hiringCost": 40320,
+        "weeklyCost": 8060,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5264,6 +6058,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.britannia.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 131,
+        "mp": 105,
+        "atk": 29,
+        "def": 30,
+        "mat": 68,
+        "mdf": 66,
+        "agi": 41,
+        "luk": 38,
+        "hiringCost": 10080,
+        "weeklyCost": 2020,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5271,13 +6082,15 @@
       "field_marshal_montgomery_ii",
       "admiral_nelson_iv",
       "commander_victoria"
-    ]
+    ],
+    "parentFaction": 1,
+    "hyperpowerHead": true
   },
   {
     "id": 47,
     "name": "factions.royalnavytaskforce.name",
     "description": "factions.royalnavytaskforce.description",
-    "parentFaction": 46,
+    "parentFaction": 1,
     "troops": [
       {
         "name": "factions.royalnavytaskforce.troops.seamanrecruit.name",
@@ -5363,6 +6176,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.royalnavytaskforce.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 127,
+        "mp": 109,
+        "atk": 27,
+        "def": 39,
+        "mat": 74,
+        "mdf": 78,
+        "agi": 39,
+        "luk": 38,
+        "hiringCost": 22680,
+        "weeklyCost": 4540,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5376,7 +6206,7 @@
     "id": 48,
     "name": "factions.sassbscommandos.name",
     "description": "factions.sassbscommandos.description",
-    "parentFaction": 46,
+    "parentFaction": 1,
     "troops": [
       {
         "name": "factions.sassbscommandos.troops.reconspecialist.name",
@@ -5445,6 +6275,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.sassbscommandos.troops.scientist.name",
+        "formation": "formations.scattered",
+        "hp": 133,
+        "mp": 116,
+        "atk": 36,
+        "def": 32,
+        "mat": 86,
+        "mdf": 83,
+        "agi": 71,
+        "luk": 77,
+        "hiringCost": 37800,
+        "weeklyCost": 7560,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5459,7 +6306,7 @@
     "name": "factions.mi6blackarchive.name",
     "noStartingTroops": true,
     "description": "factions.mi6blackarchive.description",
-    "parentFaction": 46,
+    "parentFaction": 1,
     "troops": [
       {
         "name": "factions.mi6blackarchive.troops.analysthandler.name",
@@ -5528,6 +6375,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.support"
+      },
+      {
+        "name": "factions.mi6blackarchive.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 121,
+        "mp": 195,
+        "atk": 25,
+        "def": 28,
+        "mat": 141,
+        "mdf": 134,
+        "agi": 52,
+        "luk": 85,
+        "hiringCost": 25200,
+        "weeklyCost": 5040,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [
@@ -5541,7 +6405,7 @@
     "id": 50,
     "name": "factions.sciencecommand.name",
     "description": "factions.sciencecommand.description",
-    "parentFaction": 46,
+    "parentFaction": 1,
     "troops": [
       {
         "name": "factions.sciencecommand.troops.labtechnician.name",
@@ -5610,6 +6474,23 @@
         "spritename": "Actor1",
         "spriteindex": 1,
         "role": "roles.ranged"
+      },
+      {
+        "name": "factions.sciencecommand.troops.scientist.name",
+        "formation": "formations.circle",
+        "hp": 132,
+        "mp": 184,
+        "atk": 24,
+        "def": 34,
+        "mat": 114,
+        "mdf": 112,
+        "agi": 40,
+        "luk": 54,
+        "hiringCost": 20160,
+        "weeklyCost": 4030,
+        "spritename": "Actor1",
+        "spriteindex": 1,
+        "role": "roles.scientist"
       }
     ],
     "leaders": [

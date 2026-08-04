@@ -1,0 +1,48 @@
+{
+  "menuCommand": "Fazioni",
+  "title": "Fazioni",
+  "back": "Indietro",
+  "repLevel": {
+    "exalted": "Esaltato",
+    "revered": "Riverito",
+    "honored": "Onorato",
+    "friendly": "Amichevole",
+    "neutral": "Neutrale",
+    "unfriendly": "Ostile",
+    "hostile": "Nemico",
+    "hated": "Odiato",
+    "nemesis": "Nemesi"
+  },
+  "relation": {
+    "allied": "Alleati",
+    "friendly": "Amichevoli",
+    "neutral": "Neutrali",
+    "unfriendly": "Freddi",
+    "hostile": "Ostili",
+    "unknown": "Sconosciuto"
+  },
+  "perk": {
+    "basicServices": "Servizi e merci di base disponibili",
+    "discount10": "10% di sconto sulle merci della fazione",
+    "uncommonItems": "Accesso a oggetti non comuni",
+    "discount25": "25% di sconto sulle merci della fazione",
+    "rareItems": "Accesso a oggetti rari",
+    "battleSupport": "I membri della fazione ti aiutano in battaglia",
+    "discount40": "40% di sconto sulle merci della fazione",
+    "exclusiveItems": "Accesso a oggetti esclusivi",
+    "specialQuests": "Missioni speciali della fazione disponibili",
+    "safeHouses": "Rifugi della fazione accessibili",
+    "servicesUnavailable": "Gran parte dei servizi della fazione non è disponibile",
+    "refuseInteract": "I membri della fazione possono rifiutarsi di parlarti",
+    "suspiciousGuards": "Le guardie ti guarderanno con sospetto",
+    "dangerousTerritory": "Il territorio della fazione è pericoloso da attraversare",
+    "attackOnSight": "I membri della fazione possono attaccarti a vista",
+    "bountyHunters": "La fazione ti manda dietro dei cacciatori di taglie",
+    "alliesTurn": "Le fazioni alleate possono diventare ostili"
+  },
+  "selectTitle": "Scegli una fazione",
+  "selectHint": "Scegli una fazione dall'elenco a sinistra per vederne ideologia, dirigenza e rapporti diplomatici.",
+  "councilLeaders": "Guide del consiglio:",
+  "independent": "Indipendente.",
+  "diplomaticAgreements": "Accordi diplomatici"
+}

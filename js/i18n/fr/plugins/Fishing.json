@@ -1,0 +1,25 @@
+{
+  "no3d": "",
+  "badCast": "",
+  "lineSnapped": "",
+  "nothingBiting": "",
+  "tooSlow": "",
+  "something": "",
+  "hint": {
+    "loading": "",
+    "no3d": "",
+    "aim": "",
+    "power": "",
+    "casting": "",
+    "waiting": "",
+    "bite": "",
+    "reeling": "",
+    "caught": "",
+    "miss": ""
+  },
+  "meter": {
+    "power": "",
+    "line": "",
+    "dist": ""
+  }
+}

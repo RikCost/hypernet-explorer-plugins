@@ -1,0 +1,554 @@
+{
+  "pastLife": "Vita passata",
+  "warrior": "Guerriero",
+  "disciplinedFrontLineFighters": "Combattenti disciplinati in prima linea.",
+  "brawler": "Lottatore",
+  "unarmedAndMartialSpecialists": "Specialisti del corpo a corpo.",
+  "mage": "Mago",
+  "wieldersOfArcanePower": "Manipolatori del potere arcano.",
+  "occultist": "Occultista",
+  "darkAndForbiddenArts": "Arti oscure e proibite.",
+  "devout": "Devoto",
+  "healersAndTheFaithful": "Guaritori e fedeli.",
+  "scholar": "Studioso",
+  "mindsOfScienceAndStudy": "Menti di scienza e studio.",
+  "survivor": "Sopravvissuto",
+  "huntersRangersAndLaborers": "Cacciatori, ranger e lavoratori.",
+  "outsider": "Emarginato",
+  "misfitsAndTheUnclassifiable": "Disadattati e inclassificabili.",
+  "initialSettings": "IMPOSTAZIONI INIZIALI",
+  "confirm": "Conferma",
+  "selectDifficulty": "Seleziona difficoltà",
+  "selectCombatMode": "Seleziona modalità di combattimento",
+  "chooseCreationMode": "Scegli modalità di creazione",
+  "chooseYourHometown": "Scegli la tua città natale",
+  "worldHistory": "Storia del Mondo",
+  "chooseCharacterType": "Scegli Tipo di Personaggio",
+  "howIsYourCharacterPortrayed": "Come viene ritratto il personaggio?",
+  "selectYourGender": "Seleziona il tuo genere:",
+  "male": "Maschio",
+  "female": "Femmina",
+  "nonBinary": "Non binario",
+  "cocoon": "Bozzolo",
+  "chooseYourSkills": "Scegli le tue abilità",
+  "chooseAnArchetype": "Scegli un archetipo",
+  "chooseYourClass": "Scegli la tua classe",
+  "selectYourTraits": "Seleziona i tuoi tratti",
+  "chooseYourBirthDate": "Scegli la tua data di nascita",
+  "addAnotherPartyMember": "Aggiungere un altro membro del gruppo?",
+  "chooseYourOrigin": "Scegli la tua origine",
+  "noDefiningTraits": "Nessun tratto distintivo",
+  "noSkillsLearned": "Nessuna abilità appresa",
+  "noSpecializations": "Nessuna specializzazione",
+  "emptyBackpack": "Sacca vuota",
+  "hometown": "Città Natale",
+  "nationOfBirth": "Nazione di Nascita",
+  "dateOfBirth": "Data di Nascita",
+  "currentAge": "Età Attuale",
+  "origin": "Origine",
+  "background": "Trascorso",
+  "personalDossier": "DOSSIER PERSONALE",
+  "identityProfile": "Profilo Identità",
+  "vocation": "Classe",
+  "startingWealth": "Ricchezza Iniziale",
+  "traits": "Tratti",
+  "skills": "Abilità",
+  "specializations": "Specializzazioni",
+  "equipment": "Equipaggiamento",
+  "presetCharacters": "PERSONAGGI PRESET",
+  "back": "Indietro",
+  "pendingSense": "IN ATTESA...",
+  "none": "Nessuna",
+  "none2": "Nessuno",
+  "nonBinary2": "Non binario",
+  "registering": "REGISTRAZIONE...",
+  "finalized": "CONFERMATO",
+  "unnamedAlly": "Alleato Senza Nome",
+  "traits2": "TRATTI",
+  "gear": "EQUIP.",
+  "yourParty": "IL TUO PARTY",
+  "classesOfThisArchetype": "Classi di questo archetipo",
+  "light": "Leggero",
+  "sword": "Spada",
+  "heavy": "Pesante",
+  "axe": "Ascia",
+  "whip": "Frusta",
+  "staff": "Bastone",
+  "bow": "Arco",
+  "projectile": "Proiettile",
+  "gun": "Pistola",
+  "claw": "Artiglio",
+  "glove": "Guanto",
+  "spear": "Lancia",
+  "noStartingSkills": "Nessuna abilità iniziale",
+  "startingItems": "Oggetti Iniziali",
+  "skillRoadmap": "Piano di Crescita",
+  "equipmentProficiencies": "Maestrie Equipaggiamento",
+  "startingSkills": "Abilità Iniziali",
+  "head": "Testa",
+  "torso": "Torso",
+  "leftArm": "Braccio Sx",
+  "rightArm": "Braccio Dx",
+  "leftLeg": "Gamba Sx",
+  "rightLeg": "Gamba Dx",
+  "human": "Umano",
+  "goblinHead": "Testa Goblin",
+  "elf": "Elfo",
+  "rounded": "Rotondo",
+  "narrow": "Stretto",
+  "squareJaw": "Mascella Quadra",
+  "youthful": "Giovanile",
+  "elder": "Anziano",
+  "bigEars": "Grandi Orecchie",
+  "orcish": "Orchesco",
+  "tusked": "Zannuto",
+  "fanged": "Zanne",
+  "beastkin": "Bestiale",
+  "longFace": "Viso Lungo",
+  "flatFace": "Viso Piatto",
+  "horned": "Cornuto",
+  "cyclops": "Ciclope",
+  "default": "Predefinita",
+  "randomizeAll": "Casualizza Tutto",
+  "structure": "Struttura",
+  "body": "Corpo",
+  "variation": "Variante",
+  "surface": "Superficie",
+  "height": "Altezza",
+  "weight": "Peso",
+  "headSize": "Dim. Testa",
+  "ears": "Orecchie",
+  "nose": "Naso",
+  "skinHue": "Tinta Pelle",
+  "saturation": "Saturazione",
+  "lightness": "Luminosità",
+  "hair": "Capelli",
+  "hairColour": "Colore Capelli",
+  "fangs": "Zanne",
+  "none3": "No",
+  "small": "Piccole",
+  "large": "Grandi",
+  "horns": "Corna",
+  "tail": "Coda",
+  "no": "No",
+  "yes": "Sì",
+  "wings": "Ali",
+  "halo": "Aureola",
+  "3dModel": "MODELLO 3D",
+  "mixPartsFromAnyCreatureDragToRotateWheelToZo": "Mescola parti da qualsiasi creatura. Trascina per ruotare, rotella per lo zoom.",
+  "customize": "PERSONALIZZA",
+  "search": "Cerca...",
+  "close": "Chiudi",
+  "noMatches": "Nessun risultato",
+  "skillRoadmap2": "Lista Abilità",
+  "attributeBreakdown": "Statistiche",
+  "skillsSpecialties": "Categorie Abilità",
+  "confirmClass": "Conferma classe",
+  "skillRoadmap3": "PIANO DI CRESCITA",
+  "initialSpecialSkillsAndProgressionUnlockedAl": "Abilità speciali iniziali e progressione sbloccata lungo il percorso.",
+  "noProgressionSkillsDefined": "Nessuna abilità di progressione definita",
+  "attributeBreakdown2": "SPIEGAZIONE ATTRIBUTI",
+  "increasesPhysicalStrikePower": "Aumenta la potenza d'attacco fisico.",
+  "decreasesPhysicalDamageTaken": "Diminuisce il danno fisico subito.",
+  "increasesSpellDamageAndAlchemicalPower": "Aumenta il danno magico e il potere alchemico.",
+  "decreasesMagicalDamageTaken": "Diminuisce il danno magico subito.",
+  "increasesHitRateDodgeAndActionSpeed": "Aumenta la velocità di movimento e l'elusione.",
+  "increasesCriticalHitsAndAlchemicalAnomaliesC": "Aumenta i colpi critici e la resistenza ad anomalie.",
+  "masteries": "SPECIALIZZAZIONI",
+  "primaryMastery": "Maestria Primaria",
+  "secondaryMastery": "Maestria Secondaria",
+  "details": "DETTAGLI",
+  "onlyWhatYourArchetypesSupport": "Solo cio che i tuoi archetipi permettono.",
+  "classes": "CLASSI",
+  "startingWeaponProficiencies": "Maestrie Armi Iniziali",
+  "startingSpecialSkills": "Abilità Speciali Iniziali",
+  "continue": "Continua",
+  "creatureCreation": "CREAZIONE CREATURA",
+  "chooseATypeOfCreation": "Scegli un tipo di creazione.",
+  "baselineCreature": "CREATURA BASELINE",
+  "hybridMonstrosity": "MOSTRUOSITÀ IBRIDA",
+  "archetipes": "ARCHETIPI",
+  "cancel": "Annulla",
+  "baseSkills": "Abilità Base",
+  "anatomy": "Anatomia",
+  "preview": "Anteprima",
+  "selectArchetypes": "Seleziona archetipi...",
+  "primary": "Primario",
+  "secondary": "Secondario",
+  "archetypeS": "ARCHETIPO/I",
+  "selectOneArchetypeTemplateForABaselineCreatu": "Seleziona un archetipo per una creatura base, o due per creare un ibrido. Conferma un archetipo selezionato per continuare.",
+  "biology": "BIOLOGIA",
+  "noAnatomicalOrgansDefined": "Nessun organo anatomico definito",
+  "confirmBlueprint": "Conferma Progetto",
+  "custom3dModel": "Modello 3D Personalizzato",
+  "sculptAUniqueCreatureFromMixedPartsSeededFro": "Scolpisci una creatura unica da parti miste, inizializzata dagli archetipi scelti.",
+  "dragToRotateWheelToZoomMiddleDragToPan": "Trascina per ruotare · rotella per zoom · tasto centrale per spostare",
+  "loadingBattlerAsset": "Caricamento asset battler...",
+  "profileImage": "IMMAGINEPROFILO",
+  "profileImageSelection": "SELEZIONE IMMAGINE PROFILO",
+  "chooseAProfileImage": "Scegli un'immagine profilo.",
+  "sprites": "Sprite",
+  "selectedSprite": "SPRITE SELEZIONATO",
+  "creatureSynthesisComplete": "Sintesi della creatura completata.",
+  "selectSprite": "SELEZIONA SPRITE",
+  "continue2": "Conferma",
+  "presets": "PRESET",
+  "presets2": "preset",
+  "humanoidSpecies": "SPECIE UMANOIDI",
+  "searchSpecies": "Cerca specie...",
+  "choice": {
+    "originDeserter": {
+      "name": "Disertore",
+      "desc": "Scegli una fazione da cui hai disertato: inizia con 40 delle sue truppe, ma odiato da essa (e dalla sua fazione madre)."
+    },
+    "originFactionLeader": {
+      "name": "Capo di Fazione",
+      "desc": "Scegli una fazione e inizia al comando di 40 delle sue truppe, in buoni rapporti con essa (e con la sua fazione madre), con oro per due settimane di mantenimento."
+    },
+    "originWarlord": {
+      "name": "Signore della Guerra Indipendente",
+      "desc": "Inizia al comando di 40 truppe prese da fazioni casuali, leali a nessuno, con oro sufficiente per due settimane del loro mantenimento."
+    },
+    "originCrash": {
+      "name": "Atterraggio di Fortuna",
+      "desc": "Inizia bloccato su un pianeta casuale in una galassia inesplorata, con la nave danneggiata, quasi senza carburante e senza cariche di salto."
+    },
+    "originArtifact": {
+      "name": "Erede di Artefatto",
+      "desc": "Eredita uno degli antichi artefatti del mondo, scelto a caso, insieme alla sua storia."
+    },
+    "originCeo": {
+      "name": "CEO",
+      "desc": "Inizia ricco: 1.000.000€ in contanti e una quota di controllo dell'80% in LemonCorp, nella sua sede."
+    },
+    "originBunker": {
+      "name": "Bunker",
+      "desc": "Ti risvegli in una cantina piena di bottino sotto un bioma casuale. L'oro è tuo, e la botola da cui esci resta aperta per sempre."
+    },
+    "originStranded": {
+      "name": "Sperduto",
+      "desc": "Inizia a piedi in un punto remoto casuale della mappa del mondo."
+    },
+    "originCriminal": {
+      "name": "Criminale",
+      "desc": "Stessa partenza in camper dell'origine camper, ma il gruppo è già ricercato con una taglia di 10.000€."
+    },
+    "originMayor": {
+      "name": "Sindaco",
+      "desc": "Scegli una città e inizia lì con 50 di ogni materiale da costruzione."
+    },
+    "originDungeon": {
+      "name": "Ingresso del dungeon",
+      "desc": "Inizia al cancello della torre con un kit da esplorazione: pozioni extra, la mappa dei percorsi della torre, una torcia e una corda da arrampicata."
+    },
+    "originLot": {
+      "name": "Terreno libero",
+      "desc": "Inizia in un punto casuale della mappa del mondo con una grande scorta di materiali."
+    },
+    "originBike": {
+      "name": "Parti in bici",
+      "desc": "Inizia in sella a una bici da qualche parte sulla mappa del mondo."
+    },
+    "originCar": {
+      "name": "Parti in auto",
+      "desc": "Scegli una città e inizia nella tua auto parcheggiata lì."
+    },
+    "originCamper": {
+      "name": "Parti in camper",
+      "desc": "Scegli una città e inizia nel tuo camper parcheggiato lì."
+    },
+    "originSpace": {
+      "name": "Parti nello spazio",
+      "desc": "Salta la selezione della mappa e inizia il viaggio nello spazio."
+    },
+    "originTrain": {
+      "name": "Parti in treno",
+      "desc": "Sali sul treno e scegli la destinazione sulla mappa (predefinito)."
+    },
+    "rerollCharacter": {
+      "name": "Rigenera personaggio",
+      "desc": "Genera di nuovo questo personaggio casualmente e aggiorna il dossier."
+    },
+    "noMoreMembers": {
+      "name": "No, continua",
+      "desc": "Continua con il gruppo attuale."
+    },
+    "addMember": {
+      "name": "Sì, aggiungi membro",
+      "desc": "Crea un altro membro del gruppo."
+    },
+    "ageRandom": {
+      "name": "Casuale",
+      "desc": "Scegli un'età casuale."
+    },
+    "ageElder": {
+      "name": "Anziano (60+)",
+      "desc": "Anziano, con una vita di storie alle spalle."
+    },
+    "ageMiddle": {
+      "name": "Mezza età (41-60)",
+      "desc": "Esperto e segnato dal tempo."
+    },
+    "ageAdult": {
+      "name": "Adulto (26-40)",
+      "desc": "Nel pieno della vita."
+    },
+    "ageYoung": {
+      "name": "Giovane (18-25)",
+      "desc": "Un giovane adulto, appena partito."
+    },
+    "randomTraits": {
+      "name": "Tratti casuali",
+      "desc": "I tratti verranno assegnati casualmente al tuo personaggio."
+    },
+    "pickTraits": {
+      "name": "Scegli tratti",
+      "desc": "Scegli manualmente i tratti del tuo personaggio."
+    },
+    "randomClass": {
+      "name": "Classe casuale",
+      "desc": "Ti verrà assegnata una classe iniziale casuale."
+    },
+    "selectClass": {
+      "name": "Seleziona una classe",
+      "desc": "Scegli la tua classe iniziale da una lista."
+    },
+    "portraitModel": {
+      "name": "Modello 3D",
+      "desc": "Scolpisci un modello 3D procedurale invece di scegliere un ritratto. \\C[1]Nessun ritratto verrà usato.\\C[0]"
+    },
+    "portraitBust": {
+      "name": "Ritratto",
+      "desc": "Scegli un ritratto disegnato dalla galleria. Il personaggio sarà mostrato con quel ritratto ovunque."
+    },
+    "randomizeAllParty": {
+      "name": "Casualizza tutto il gruppo",
+      "desc": "Riempi ogni slot del gruppo con un personaggio casuale all'istante, poi scegli la tua origine."
+    },
+    "totalRandom": {
+      "name": "Completamente Casuale",
+      "desc": "Crea un personaggio completamente casuale all'istante."
+    },
+    "createCreature": {
+      "name": "Crea Creatura",
+      "desc": "Crea un personaggio creatura."
+    },
+    "newCharacter": {
+      "name": "Crea Nuovo Personaggio",
+      "desc": "Crea un personaggio completamente nuovo da zero."
+    },
+    "createCreature2": {
+      "name": "Creatura",
+      "desc": "Crea un personaggio creatura."
+    },
+    "newCharacter2": {
+      "name": "Umanoide",
+      "desc": "Crea un personaggio umanoide."
+    },
+    "hometownRandom": {
+      "name": "Casuale",
+      "desc": "Scegli una città natale casuale."
+    },
+    "hometownPick": {
+      "name": "Scegli sulla mappa",
+      "desc": "Scegli la tua città natale dalla mappa dei viaggi rapidi, lo stesso selettore usato per scegliere una città di partenza."
+    },
+    "existingCharacter": {
+      "name": "Usa Personaggio Esistente",
+      "desc": "Seleziona tra personaggi già creati. Ognuno può essere giocato una sola volta per mondo."
+    },
+    "modeFull": {
+      "name": "Completa",
+      "desc": "Creazione dettagliata: scegli classe, tratti, città natale e data di nascita per ogni membro."
+    },
+    "modeQuick": {
+      "name": "Rapida",
+      "desc": "Creazione rapida per ogni membro: scelta rapida della classe, tratti casuali, niente passaggi narrativi."
+    },
+    "combatMonsters": {
+      "name": "Mostri",
+      "desc": "Cattura e combatti con i mostri. \\C[1]Non potrà essere cambiato in seguito.\\C[0]"
+    },
+    "combatCards": {
+      "name": "Carte",
+      "desc": "Combattimento roguelike a mazzi. \\C[1]Non potrà essere cambiato in seguito.\\C[0] Ogni membro del gruppo pesca dal proprio mazzo costruito dalle sue abilità e gioca carte nel suo turno usando l'Energia al posto di MP/TP."
+    },
+    "combatMap": {
+      "name": "Battaglia sulla Mappa",
+      "desc": "Combattimenti tattici sulla mappa invece che in una schermata separata. Ti muovi sulla griglia, armi e abilità hanno una portata e la linea di vista conta. Modificabile in seguito nelle Opzioni."
+    },
+    "combatRpg": {
+      "name": "RPG Classico",
+      "desc": "Combattimento a turni standard. Le abilità costano MP/TP e si scelgono dal menu comandi."
+    },
+    "peaceful": {
+      "name": "Pacifico",
+      "desc": "I nemici non ti attaccano né ti inseguono se non provocati, e puoi \\C[1]Parlare\\C[0] con loro in battaglia. La sconfitta ti riporta solo all'ultimo punto di risveglio."
+    },
+    "bloodAndOil": {
+      "name": "Sangue e Petrolio",
+      "desc": "Le parti del corpo ridotte a zero HP vengono perse, con debuff permanenti alle statistiche. Perdere un organo vitale uccide il personaggio all'istante. Gli alleati non resuscitati entro la fine della battaglia muoiono permanentemente."
+    },
+    "permadeath": {
+      "name": "Permadeath",
+      "desc": "Se il tuo personaggio muore in battaglia dovrai crearne uno nuovo. Gli alleati non resuscitati entro la fine della battaglia muoiono permanentemente."
+    },
+    "roguelite": {
+      "name": "Roguelite",
+      "desc": "Se sconfitto ti risvegli al piano base del dungeon. Gli alleati caduti restano nel gruppo e possono essere resuscitati dopo la battaglia."
+    }
+  },
+  "hairStyle": {
+    "short": "Corti",
+    "crop": "Rasati",
+    "bob": "Caschetto",
+    "long": "Lunghi",
+    "ponytail": "Coda",
+    "topknot": "Chignon",
+    "braids": "Trecce",
+    "mohawk": "Cresta",
+    "afro": "Afro",
+    "dreads": "Rasta",
+    "spiky": "A Punte",
+    "bald": "Calvo",
+    "helmet": "Elmo"
+  },
+  "hairColor": {
+    "black": "Neri",
+    "darkbrown": "Castano Scuro",
+    "brown": "Castani",
+    "chestnut": "Castano Ramato",
+    "auburn": "Ramati",
+    "ginger": "Rossi",
+    "blond": "Biondi",
+    "sandy": "Biondo Cenere",
+    "platinum": "Platino",
+    "ash": "Cenere",
+    "grey": "Grigi",
+    "white": "Bianchi",
+    "moss": "Muschio",
+    "ink": "Inchiostro",
+    "wine": "Vino",
+    "teal": "Verde Acqua"
+  },
+  "confirmBust": "Conferma Busto",
+  "startAsClass": "Inizia come {name}.",
+  "slotVacant": "SLOT {slot}: VUOTO",
+  "heightMetres": "{m}m {cm}cm",
+  "selectCharacterSprite": "Scegli pure il personaggio.",
+  "selectBustImage": "Scegli un'immagine di busto.",
+  "pressOkToOpenCategory": "Premi OK per aprire questa categoria.",
+  "selectedBust": "Selezionato: {name}",
+  "bustCategory": {
+    "Human": "Umano",
+    "Goblin": "Goblin",
+    "Orc": "Orco",
+    "Dwarven": "Nano",
+    "Rabbit": "Coniglio",
+    "Cyclop": "Ciclope",
+    "Gnome": "Gnomo",
+    "Elven": "Elfo",
+    "Bot": "Robot",
+    "Undead": "Non morto",
+    "Devil": "Diavolo",
+    "Dog": "Cane",
+    "Android": "Androide",
+    "Avian": "Aviano",
+    "Cat": "Gatto",
+    "Elephant": "Elefante",
+    "Goat": "Capra",
+    "Kobold": "Coboldo",
+    "Alien": "Alieno",
+    "Exotic": "Esotico",
+    "Insectoid": "Insettoide"
+  },
+  "selectABust": "Seleziona un busto",
+  "goldPilesInCellar": "{count} mucchi d'oro nella cantina",
+  "cashAmount": "{amount}€",
+  "startingInventory": "INVENTARIO INIZIALE",
+  "nothingYet": "ANCORA NULLA...",
+  "wornBy": "indossato da",
+  "entries": "voci",
+  "start": "Inizio",
+  "trainPickADestination": "Treno, scegli la destinazione",
+  "deepSpace": "Spazio profondo",
+  "yourCamperParkedInACity": "Il tuo camper, in una città",
+  "yourCarParkedInACity": "La tua auto, in una città",
+  "aRandomOverlandBiome": "Un bioma casuale",
+  "aRandomWorldMapTile": "Un punto casuale della mappa",
+  "theTowerGate": "Il cancello della torre",
+  "aCityOfYourChoice": "Una città a tua scelta",
+  "bounty": "Taglia",
+  "10000OnYourHead": "10.000€ sulla tua testa",
+  "aRandomRemoteWorldMapSpot": "Un punto remoto casuale della mappa",
+  "aLootCellarUnderARandomBiome": "Una cantina sotto un bioma casuale",
+  "hoards": "Tesori",
+  "wayBack": "Ritorno",
+  "aPermanentHatchOnTheSurface": "Una botola permanente in superficie",
+  "lemoncorpHeadquarters": "Sede della LemonCorp",
+  "assets": "Beni",
+  "80OfLemoncorpShares": "80% delle azioni LemonCorp",
+  "inheritance": "Eredità",
+  "1AncientArtifactDrawnAtRandom": "1 antico artefatto, estratto a caso",
+  "aRandomPlanetInAnUnchartedGalaxy": "Un pianeta casuale in una galassia inesplorata",
+  "troops": "Truppe",
+  "40FromRandomFactions": "40, da fazioni casuali",
+  "upkeep": "Mantenimento",
+  "2WeeksOfTheirWagesInCash": "2 settimane di paga, in contanti",
+  "40FromTheFactionYouPick": "40, dalla fazione che scegli",
+  "40FromTheFactionYouDeserted": "40, dalla fazione che hai disertato",
+  "cash": "Contanti",
+  "startingOut": "Punto di Partenza",
+  "language": "Lingua",
+  "gameLanguageAnyMissingTranslationFallsBackTo": "Lingua del gioco. Le traduzioni mancanti ripiegano sull'inglese.",
+  "fogOfWar": "Nebbia di Guerra",
+  "revealsTheMapGraduallyAsYouExploreUnvisitedA": "Rivela la mappa gradualmente mentre esplori. Le aree non visitate rimangono nascoste.",
+  "theEntireMapIsFullyRevealedNoHiddenAreas": "L'intera mappa è visibile, nessuna area nascosta.",
+  "exploreTileByTileDarknessVeilsTheUnknown": "Esplora casella per casella, l'ignoto resta nell'ombra.",
+  "cpuPartyMembers": "Compagni CPU",
+  "everyPartyMemberExceptTheLeaderActsAutomatic": "Ogni membro del gruppo tranne il leader agisce automaticamente in battaglia, scegliendo le proprie azioni.",
+  "youManuallyControlEveryPartyMemberSActions": "Controlli manualmente le azioni di ogni membro del gruppo.",
+  "onlyTheLeaderIsControlledByYouTheRestFightOn": "Solo il leader è controllato da te, gli altri combattono da soli.",
+  "enemyBattlers": "Nemici in Battaglia",
+  "howEnemiesAreShownInBattle2dTheClassicBattle": "Come appaiono i nemici in battaglia. 2D: immagine classica. 3D: modelli 3D procedurali (goblin, slime, elementali...). Sprite: lo sprite del personaggio nemico dalle sue info.",
+  "classic2dBattlerImages": "Immagini battler 2D classiche.",
+  "3dRendersProceduralModelsSpritesUsesTheEnemy": "3D mostra modelli procedurali, Sprite usa lo sprite del nemico.",
+  "globalLighting": "Illuminazione Globale",
+  "masterSwitchForTheDynamicLightingSystemStree": "Interruttore principale del sistema di illuminazione dinamica: lampioni, luci degli eventi e velo notturno. Disattiva per le massime prestazioni.",
+  "allDynamicLightsAreDisabledBestPerformance": "Tutte le luci dinamiche sono disattivate, massime prestazioni.",
+  "streetlightsAndAmbientLightingReactToTheTime": "Lampioni e illuminazione ambientale reagiscono all'ora del giorno.",
+  "battleMusic": "Musica di Battaglia",
+  "musicTrackPlayedDuringCombatPressToPreviewTr": "Traccia musicale in combattimento. Premi ←→ per ascoltare un'anteprima.",
+  "uiTheme": "Tema UI",
+  "visualThemeAppliedToMenusAndHudPressToSwitch": "Tema visivo per menu e HUD. Premi ←→ per cambiare. Richiede riavvio per applicare.",
+  "skillCategorization": "Categorizzazione Abilità",
+  "howSkillsAndMagicAreGroupedInBattleAndMenusR": "Come abilità e magie sono raggruppate in battaglia e nei menu. Ruolo: scegli Offensiva, Guarigione o Supporto, poi le abilità dentro. Scuola: raggruppate per scuola magica o disciplina. No: lista semplice.",
+  "plainUngroupedSkillList": "Lista di abilità non raggruppata.",
+  "roleGroupsByPurposeOffensiveHealingSupportSc": "Ruolo raggruppa per scopo (Offensiva/Guarigione/Supporto); Scuola per disciplina.",
+  "school": "Scuola",
+  "off": "No",
+  "role": "Ruolo",
+  "toCycleTracksPreviewPlaysAutomatically": "← → per cambiare · anteprima automatica",
+  "toCycleThemesRequiresRestartToApply": "← → per cambiare tema · ⟳ richiede riavvio per applicare",
+  "settingsPreview": "ANTEPRIMA IMPOSTAZIONI",
+  "navigateChangeValueEnterConfirm": "↑↓ naviga · ←→ cambia valore · Invio conferma",
+  "musicTrack": {
+    "Battle": "Percussioni (Predefinito)",
+    "shortcuts": "Scorciatoie",
+    "MelodicTechno": "Techno Melodica"
+  },
+  "selectCharacter": "Seleziona Personaggio",
+  "abbrev": {
+    "hp": "PV:",
+    "mp": "PM:",
+    "str": "FOR:",
+    "con": "COS:",
+    "dex": "DES:",
+    "int": "INT:",
+    "wis": "SAG:",
+    "psi": "PSI:"
+  },
+  "previewOff": "SPENTO",
+  "previewOn": "ACCESO",
+  "unknownVocation": "Sconosciuta"
+}

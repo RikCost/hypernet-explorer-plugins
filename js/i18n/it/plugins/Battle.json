@@ -1,0 +1,118 @@
+{
+  "dangerWarning": {
+    "party": [
+      "Questo nemico è troppo pericoloso!\nDovremmo fuggire!",
+      "Questo nemico è troppo potente!\nDobbiamo scappare!",
+      "Siamo in svantaggio!\nDovremmo ritirarci!",
+      "Questo nemico è oltre le nostre capacità!\nDobbiamo scappare!",
+      "Non possiamo affrontare questo nemico!\nAndiamocene da qui!",
+      "Questa creatura è troppo forte!\nDovremmo scappare!"
+    ],
+    "single": [
+      "Questo nemico è troppo pericoloso!\nDovrei fuggire!",
+      "Questo nemico è troppo potente!\nDevo scappare!",
+      "Sono in svantaggio!\nDovrei ritirarmi!",
+      "Questo nemico è oltre le mie capacità!\nDevo scappare!",
+      "Non posso affrontare questo nemico!\nDevo andarmene da qui!",
+      "Questa creatura è troppo forte!\nDovrei scappare!"
+    ]
+  },
+  "moonPhase": {
+    "newMoon": "Luna nuova",
+    "waxingCrescent": "Luna crescente",
+    "firstQuarter": "Primo quarto",
+    "waxingGibbous": "Gibbosa crescente",
+    "fullMoon": "Luna piena",
+    "waningGibbous": "Gibbosa calante",
+    "lastQuarter": "Ultimo quarto",
+    "waningCrescent": "Luna calante"
+  },
+  "option": {
+    "backgroundModes": [
+      "Bioma",
+      "Psichedelico",
+      "Nessuno"
+    ]
+  },
+  "unknownMap": "Mappa sconosciuta",
+  "healthProtection": {
+    "messages": [
+      "{actor} ha evitato la morte per un soffio!",
+      "{actor} è stato salvato da un intervento divino!",
+      "{actor} si è aggrappato alla vita con ostinazione!",
+      "{actor} si è rifiutato di arrendersi!",
+      "{actor} è sopravvissuto per pura forza di volontà!",
+      "{actor} è stato protetto dal destino!"
+    ],
+    "reset": "Protezione vitale ripristinata per tutti i personaggi!",
+    "available": "Disponibile",
+    "used": "Usata",
+    "status": "{actor}: protezione {status}"
+  },
+  "popup": {
+    "miss": "Mancato",
+    "evaded": "Schivato"
+  },
+  "join": {
+    "friendly": "{name} si unisce alla lotta!",
+    "hostile": "{name} entra nella mischia!"
+  },
+  "rangeLabel": "Gittata {range}",
+  "card": {
+    "deckCount": "Mazzo {n}",
+    "useCard": "Usa Carta",
+    "passTurn": "Passa Turno"
+  },
+  "cmd": {
+    "move": "Muovi",
+    "defense": "Difesa",
+    "skill": "Abilità",
+    "skills": "Abilità",
+    "basic": "Base",
+    "reload": "Ricarica",
+    "run": "Fuggi"
+  },
+  "states": {
+    "removalHeader": "Condizioni di rimozione",
+    "atBattleEnd": "Rimuovi alla fine della battaglia",
+    "byRestriction": "Rimuovi per restrizione",
+    "byDamage": "Rimuovi per danno",
+    "byWalking": "Rimuovi camminando",
+    "byWalkingSteps": "{label} ({steps} passi)",
+    "statusEffects": "Alterazioni di stato",
+    "navHint": "↑↓ naviga · Esc chiudi"
+  },
+  "spirit": {
+    "switchCommand": "Cambia",
+    "selectSlot": "Scegli uno slot vuoto, poi lo spirito da aggiungere.",
+    "rosterFull": "Squadra al completo! Non puoi aggiungere altri spiriti.",
+    "notEnoughGold": "Oro insufficiente!",
+    "slot": "Slot {n}:",
+    "unknown": "- Sconosciuto -",
+    "empty": "- Vuoto -",
+    "free": " (GRATIS)",
+    "entry": "{name} - Livello: {level}{cost}"
+  },
+  "throw": {
+    "aimHelp": "Frecce per mirare, OK per lanciare, Annulla per desistere",
+    "destroyed": "L'oggetto è andato distrutto!",
+    "missingItem": "Non hai quell’oggetto!",
+    "pickUpPrompt": "Raccogliere l’oggetto?",
+    "pickUp": "Raccogli",
+    "cancel": "Annulla",
+    "pickedUp": "Hai raccolto {item}!"
+  },
+  "mimic": {
+    "mirrored": "{actor} ha rispecchiato le abilità del nemico!",
+    "hasLearned": "{actor} ha imparato {skill}!",
+    "learnedFromEnemy": "{actor} ha imparato {skill} dal nemico!",
+    "learnableSkills": "Abilità apprendibili:"
+  },
+  "summon": {
+    "battleOnly": "Le evocazioni si usano solo in battaglia!",
+    "alreadyActive": "C'è già un'evocazione attiva!",
+    "summoned": "Hai evocato {name}!"
+  },
+  "actorDied": "{actor} è morto.",
+  "bulletHellDamage": "Danno totale del bullet hell: {amount}"
+}

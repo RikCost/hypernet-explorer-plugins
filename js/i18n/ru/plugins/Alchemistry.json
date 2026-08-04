@@ -1,0 +1,31 @@
+{
+  "title": "",
+  "back": "",
+  "managing": "",
+  "requiredReagents": "",
+  "steps": "",
+  "noSteps": "",
+  "addStep": "",
+  "execute": "",
+  "clearSteps": "",
+  "selectAction": "",
+  "selectReagent": "",
+  "cancel": "",
+  "processing": "",
+  "remaining": "",
+  "notEnough": "",
+  "stepAt": "",
+  "stepFor": "",
+  "empty": "",
+  "actions": {
+    "combine": "",
+    "heat": "",
+    "distill": "",
+    "filter": "",
+    "wash": "",
+    "dry": ""
+  },
+  "projectName": "",
+  "successCreated": "",
+  "failed": ""
+}

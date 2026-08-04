@@ -1,0 +1,77 @@
+{
+  "pronoun": {
+    "0": {
+      "sub": "lui",
+      "obj": "lui",
+      "cap": "Lui",
+      "pos": "suo",
+      "was": "fu",
+      "is": "è",
+      "tries": "cerca",
+      "has": "ha",
+      "answers": "risponde",
+      "born": "Nato"
+    },
+    "1": {
+      "sub": "lei",
+      "obj": "lei",
+      "cap": "Lei",
+      "pos": "suo",
+      "was": "fu",
+      "is": "è",
+      "tries": "cerca",
+      "has": "ha",
+      "answers": "risponde",
+      "born": "Nata"
+    },
+    "2": {
+      "sub": "loro",
+      "obj": "loro",
+      "cap": "Loro",
+      "pos": "loro",
+      "was": "furono",
+      "is": "sono",
+      "tries": "cercano",
+      "has": "hanno",
+      "answers": "rispondono",
+      "born": "Nati"
+    },
+    "3": {
+      "sub": "xe",
+      "obj": "xe",
+      "cap": "Xe",
+      "pos": "loro",
+      "was": "furono",
+      "is": "sono",
+      "tries": "cercano",
+      "has": "hanno",
+      "answers": "rispondono",
+      "born": "Nati"
+    }
+  },
+  "adjective": [
+    "inquieta",
+    "curiosa",
+    "cauta",
+    "audace",
+    "silenziosa"
+  ],
+  "bio": {
+    "uncertainTimes": "tempi incerti",
+    "wildsNear": "nelle terre selvagge vicino a {city}",
+    "later": "In seguito {sub} {has} conosciuto {event}.",
+    "moral": {
+      "high": "{cap} {is} una persona di integrità incrollabile.",
+      "good": "{cap} {tries} di fare la cosa giusta, quasi sempre.",
+      "weary": "La vita ha lasciato a {obj} poche illusioni.",
+      "loose": "{cap} {has} imparato che le regole valgono per gli altri.",
+      "lawless": "{cap} non {answers} ad altro codice che il {pos}."
+    },
+    "creature": "Di {sub} si sa questo: {born} {place}, lontano dalle città degli uomini, creatura {adj} plasmata da {event}. {later} {moral}",
+    "turbulent": "{born} in {place} nel {year}, in un'epoca turbolenta: {sub} {has} vissuto {event}. {later} {moral}",
+    "warYears": "{born} negli anni di guerra, {sub} {has} passato l'infanzia in {place} e {has} assistito a {event}. {later} {moral}",
+    "postwar": "{born} nel {year} in {place}, {sub} {is} un'anima {adj} plasmata da {event}. {later} {moral}",
+    "modern": "{born} in {place} mentre il mondo si faceva strano, {sub} non {has} mai dimenticato {event}. {later} {moral}",
+    "bornMeta": "Nascita {year} · {place}"
+  }
+}

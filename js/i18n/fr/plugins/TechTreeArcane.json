@@ -1,0 +1,74 @@
+{
+  "name": "Arcanes",
+  "blurb": "Une discipline perdue dans l'Effondrement et reconstruite par relevé et mesure : intensités de champ, tolérances, variance selon la distance à une ligne. Les fausses pistes sont conservées au registre parce qu'elles aussi ont été mesurées.",
+  "nodes": {
+    "arc_leyline": {
+      "name": "Cartographie des Leyline",
+      "desc": "Un relevé du courant arcanique dans la croûte, mené avec trois instruments : une aiguille d'inclinaison qui lit la composante verticale, des sondes à saumure enfoncées à intervalles pour consigner la conductivité selon la profondeur, et une boussole dont la déviation est reproductible et donc utilisable comme relèvement. Parcourus en quadrillage, les trois donnent le tracé d'une ligne, sa profondeur et son débit à quelques pour cent près. Toute opération consignée ensuite est spécifiée par une distance et un relèvement depuis une ligne relevée, car aucune mesure d'une opération ne signifie rien sans cela."
+    },
+    "arc_tradeoff": {
+      "name": "Le Compromis Central",
+      "desc": "Le résultat central du relevé, mesuré sur quelque quatre cents répétitions à distances graduées. Le champ ambiant décroît à peu près comme l'inverse du carré de la distance à une ligne, tandis que le coefficient de variation du rayon, de la durée et de la cible d'une opération croît avec la proximité : sur la ligne même, le même rite délivre entre un tiers et quatre fois sa production nominale, et à deux cents pas il se répète à trois pour cent près d'un chiffre bien plus modeste. Il n'existe aucune distance où les deux soient favorables. Les mages de guerre travaillent le champ proche et les hôpitaux le champ lointain, et le choix est un choix de variance."
+    },
+    "arc_distillation": {
+      "name": "Distillation d'Essence Arcanique",
+      "desc": "Le ruissellement prélevé à moins de dix pas d'une ligne est concentré par congélations et décantations répétées, quelque quarante cycles, chacun écartant la fraction qui se solidifie. Le flacon scellé qui en résulte se lit comme une source ponctuelle assez forte pour détourner une boussole à quatre mètres, garde sa charge avec une fuite inférieure à un pour cent par mois, et se dose au volume : une dépense peut donc s'énoncer en millilitres plutôt qu'en intention. La densité de charge est proportionnelle au débit de la ligne source, et aucun procédé connu ne l'élève davantage."
+    },
+    "arc_dead_flats": {
+      "name": "Les Plaines de Magie Morte",
+      "desc": "Un bassin où le champ ambiant se lit sous le seuil de l'aiguille d'inclinaison sur quelque soixante kilomètres carrés, sans aucune ligne à moins d'une journée de marche. Là, le rayon, la durée et la cible d'une opération sont linéaires en mana dépensé, avec des résidus sous deux pour cent sur toute la plage, et le même rite se répète à une largeur de main près d'un jour sur l'autre. C'est le référentiel : un sort s'y calibre, ses coefficients s'y consignent, et son comportement partout ailleurs se cite comme un écart aux chiffres relevés dans les plaines."
+    },
+    "arc_names_power": {
+      "name": "Les Noms Sont Puissance",
+      "desc": "Un nom véritable lie par l'orthographe. L'incantation doit être proférée comme un seul mot fondu : toute soudure, toute pause de plus de quatre-vingts millisecondes environ, toute voyelle insérée ouvre une faille où la liaison échoue. La prononciation est l'analyseur, et un mot malformé n'échoue pas en silence, car le canal est déjà ouvert quand la faille est détectée et l'opération se décharge en sens inverse dans celui qui parle. Les modes de défaillance consignés sont classés selon l'endroit du mot où tombe la soudure, et le recul se mesure dans les mêmes unités que la production visée."
+    },
+    "arc_fidelity": {
+      "name": "Fidélité Rituelle",
+      "desc": "Une classe d'opérations qui ne tirent aucun mana mesurable, payant en temps de préparation. Le diagramme, la formulation et l'heure doivent être reproduits dans la tolérance : un sceau déplacé de plus d'une largeur de doigt, ou une heure manquée de plus d'un quart, annule entièrement l'opération. Il n'y a ni production partielle ni dégradation proportionnelle : la courbe de rendement contre fidélité est une marche. La durée croît avec le temps passé à tracer le diagramme, si bien que la méthode est utilisable dans les plaines mortes et inutilisable sous la pression."
+    },
+    "arc_charge": {
+      "name": "Rétention de Charge Éthérée",
+      "desc": "L'aether solidifié sous pression retient une charge stockée avec une demi-vie mesurée de quatre à sept mois, contre des heures pour le bois et des minutes pour le métal ouvré, qui fuient par leur propre conductivité. L'éclat reste inerte tant qu'aucun canal ne lui est ouvert et se charge à un débit limité par la section du contact. C'est l'étage réservoir standard : tout ce qui doit fonctionner loin d'une ligne se spécifie par la capacité de l'éclat qu'il porte et par le tirage que son canal autorise."
+    },
+    "arc_dream_prep": {
+      "name": "Préparation Onirique",
+      "desc": "La sélection des sorts effectuée pendant le sommeil puise dans le champ du rêve plutôt que dans la ligne locale : la préparation ne coûte donc rien sur place et fonctionne dans les plaines. L'ensemble choisi reste chargé au réveil. La fidélité de sélection est le défaut : sur les essais consignés, entre un tiers et la moitié de l'ensemble voulu est présent au réveil, le reste remplacé par des opérations que le dormeur connaît mais n'a pas choisies, et rien ne permet d'inspecter l'ensemble chargé avant de le lancer."
+    },
+    "arc_sympathetic": {
+      "name": "Couplage Sympathique",
+      "desc": "Un focus qui partage matière ou histoire avec une cible s'y couple : l'opération s'adresse au focus et se résout sur la cible, sans dépendance mesurée à la séparation jusqu'à la limite du relevé. La force du couplage croît avec la spécificité du lien et lui est à peu près logarithmique : un vêtement donne un couplage faible, un nom personnel un plus fort, cheveux et sang les plus forts consignés. Le couplage est symétrique, et rien dans la méthode n'empêche l'extrémité lointaine d'être celle qui s'adresse au focus."
+    },
+    "arc_geomancy_porphyrin": {
+      "name": "La Porphyrine et la Théorie du Pétrole",
+      "desc": "Tout gisement de pétrole brut porte des entités pétrodémoniaques liées, et les porphyrines déjà présentes dans le brut enfilent un canal entre gisement, offrande de sang et leyline. Le débit dépasse celui d'une ligne relevée de deux ordres de grandeur et ne décline pas avec le tirage, puisque le gisement n'est pas la source. Le canal conduit dans les deux sens et n'a pas d'étage de dosage : l'installation standard est donc une longueur de conduite avec une rupture dedans, et les incidents consignés sont tous des incidents de reflux."
+    },
+    "arc_convokation": {
+      "name": "Convokation des Soixante-Douze",
+      "desc": "Un cercle scellé, soixante-douze sceaux authentifiés posés dans l'ordre prescrit et une récitation ininterrompue lient et commandent toute la hiérarchie en une seule opération. La durée d'exécution va de trois à neuf jours selon l'ordre choisi, la récitation ne peut être interrompue plus longtemps qu'il n'en faut pour respirer, et l'on ne peut substituer d'opérateur de relève en cours de rite, la liaison étant accordée à une seule voix. Les échecs consignés sont des échecs de l'opérateur : épuisement, sceau posé hors séquence, nom donné au mauvais cas."
+    },
+    "arc_metamagic": {
+      "name": "Sublimation Métamagique",
+      "desc": "Chaque composante physique d'un rite, craie, parole, focus et heure, est remplacée par un équivalent imaginé tenu en mémoire de travail pour la durée. Sans substrat physique, les tolérances qui gouvernent toute méthode inférieure ne s'appliquent plus : le diagramme ne peut être déplacé puisqu'il n'est nulle part, et la production cesse de suivre la distance à une ligne. Ce qu'elle suit désormais, c'est l'opérateur, et les modes de défaillance consignés sont tous des modes de défaillance de l'opérateur."
+    },
+    "arc_crystal_healing": {
+      "name": "Guérison par les Cristaux",
+      "desc": "Quartz colorés posés sur le corps en des points fixés par la tradition, sur un mécanisme énoncé selon lequel le réseau cristallin concentre le champ ambiant dans les tissus. Instrumentées sur une ligne forte, les pierres concentrent bien un champ de quelques pour cent au-dessus de l'ambiant en surface, qui tombe sous le seuil de détection à deux centimètres de profondeur. Hors ligne, l'ambiant est déjà sous le seuil et la concentration porte sur rien. Les essais appariés contre du verre inerte de même couleur et de même poids rendent le même soulagement rapporté dans les deux bras."
+    },
+    "arc_talking_board": {
+      "name": "La Planche Parlante",
+      "desc": "Une planchette sur une planche à faible frottement, sous les doigts de plusieurs participants, épelle des lettres. Bander les yeux des participants, ou tourner la planche sans le leur dire, effondre la sortie en charabia, ce qui situe le moteur dans l'effet idéomoteur : une production musculaire inconsciente sommée sur les mains, celui qui connaît la réponse la fournissant. Sur une ligne forte, un résidu de séances produit une sortie qui survit au bandeau, à un taux un peu au-dessus de ce que donneraient les seules fréquences de lettres. De l'intérieur de la séance, les deux cas sont indiscernables, et aucun participant n'a jamais deviné dans lequel il se trouvait."
+    },
+    "arc_spirit_photography": {
+      "name": "Photographie Spirite",
+      "desc": "Un éclat éthéré câblé en travers de la plaque est censé sensibiliser l'émulsion au champ. L'examen image par image des poses rend compte des motifs par double exposition, reflet d'objectif, défauts d'émulsion et rebond d'obturateur, dans cet ordre de fréquence ; les visages sont fournis par celui qui regarde, et les plaques témoins tirées sans l'éclat en produisent au même taux. Là où l'éclat contribue bel et bien, l'écart entre plaques exposées et témoins reste sous le bruit de grain de l'émulsion : aucun tirage ne l'en fera sortir."
+    },
+    "arc_seventytwo_seals": {
+      "name": "Les Soixante-Douze Sceaux",
+      "desc": "Chacun des soixante-douze noms doit être apparié à son sceau authentifié avant que le cercle puisse être fermé. Le travail est de récupération et de vérification : les sceaux sont exhumés de ruines ou transcrits du rêve, collationnés avec les faux connus, et contrôlés sur les deux traits que les faux reproduisent mal, l'ordre des traits et la fermeture du bandeau extérieur. Un seul sceau non vérifié annule toute la convocation au moment où on l'atteint, le cercle étant déjà ouvert : la vérification se fait donc avant le tracé du cercle et jamais pendant."
+    },
+    "arc_imagination_discipline": {
+      "name": "La Discipline de l'Imagination Pure",
+      "desc": "Le rite doit être tenu entier dans l'esprit, sans dérive, aussi longtemps qu'il dure. L'entraînement se mesure en temps de maintien ininterrompu sous distraction, à partir de quelques secondes et jusqu'à des heures au fil des ans, avec un examen qui ajoute bruit, froid et interruption. Le mode de défaillance n'est pas une opération manquée : le substrat imaginé est ce sur quoi l'opérateur se tient pendant que le rite tourne, et les cas consignés de dérive au-delà d'une certaine profondeur se terminent sur un opérateur qui respire encore et ne revient pas."
+    }
+  }
+}

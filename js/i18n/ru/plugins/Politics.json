@@ -1,0 +1,230 @@
+{
+  "power": {
+    "holyvaticanempire": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": "",
+      "electorTitle": "",
+      "electorTitlePlural": ""
+    },
+    "ussr": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": "",
+      "electorTitle": "",
+      "electorTitlePlural": ""
+    },
+    "britannia": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "archivefoundation": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "ottomanempire": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "thegods": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "sanmarinorepublic": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "hypercapitalistcollective": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "goblinhorde": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": ""
+    },
+    "default": {
+      "govType": "",
+      "headTitle": "",
+      "legislature": "",
+      "partyKind": "",
+      "electorTitle": "",
+      "electorTitlePlural": ""
+    }
+  },
+  "election": {
+    "conclave": "",
+    "plenum": "",
+    "shareholder": "",
+    "moot": "",
+    "tournament": "",
+    "succession": "",
+    "examination": "",
+    "parliamentary": ""
+  },
+  "office": {
+    "mayor": "",
+    "guardCaptain": "",
+    "taxCollector": "",
+    "highPriest": ""
+  },
+  "policy": {
+    "taxRate": "",
+    "censorship": "",
+    "conscription": "",
+    "welfare": "",
+    "festivals": ""
+  },
+  "rumorKind": {
+    "affair": "",
+    "embezzlement": "",
+    "secretPact": "",
+    "forgedCredentials": "",
+    "midnightRitual": "",
+    "doubleLife": "",
+    "hiddenFortune": "",
+    "blackmail": ""
+  },
+  "gripe": {
+    "curfew": "",
+    "taxes": "",
+    "censors": "",
+    "draft": ""
+  },
+  "tag": {
+    "collectivist": "",
+    "freeMarketeer": "",
+    "libertarian": "",
+    "authoritarian": "",
+    "progressive": "",
+    "traditionalist": "",
+    "pacifist": "",
+    "militarist": "",
+    "rationalist": "",
+    "mystic": "",
+    "moderate": ""
+  },
+  "fallback": {
+    "nobody": "",
+    "noOne": "",
+    "oldGuard": "",
+    "partsUnknown": "",
+    "spoiledBallot": "",
+    "establishment": ""
+  },
+  "event": {
+    "founding": "",
+    "election": "",
+    "electionWithHead": "",
+    "scandal": "",
+    "edict": "",
+    "protest": "",
+    "riot": "",
+    "festival": "",
+    "referendum": "",
+    "coup": "",
+    "coupFailed": "",
+    "revolution": "",
+    "assassination": "",
+    "politicianDies": "",
+    "headDies": ""
+  },
+  "note": {
+    "coalition": "",
+    "conclaveBallots": {
+      "one": "",
+      "other": ""
+    },
+    "purged": "",
+    "officialResults": "",
+    "oneCreditOneVote": "",
+    "mootLoser": "",
+    "biggestWins": "",
+    "ascension": "",
+    "successionWar": "",
+    "successionCasualty": "",
+    "palaceIntrigue": "",
+    "examinationScore": ""
+  },
+  "identity": {
+    "sympathized": "",
+    "awakened": "",
+    "conversion": "",
+    "radicalized": "",
+    "grudge": "",
+    "electedMayor": "",
+    "appointed": ""
+  },
+  "story": {
+    "electedMayor": "",
+    "appointed": ""
+  },
+  "death": {
+    "wolfpigs": "",
+    "succession": "",
+    "assassinated": "",
+    "naturalCauses": ""
+  },
+  "report": {
+    "noPower": "",
+    "noIdentity": "",
+    "header": "",
+    "head": "",
+    "headValue": "",
+    "vacant": "",
+    "ruling": "",
+    "coalitionPartners": {
+      "one": "",
+      "other": ""
+    },
+    "meters1": "",
+    "meters2": "",
+    "policies": "",
+    "curfew": "",
+    "lastElection": "",
+    "nextElection": "",
+    "recentEvents": "",
+    "electionHeader": "",
+    "next": "",
+    "electionRow": "",
+    "snap": "",
+    "turnout": "",
+    "resultRow": "",
+    "seats": {
+      "one": "",
+      "other": ""
+    },
+    "citizen": "",
+    "sympathizes": "",
+    "leanings": "",
+    "engagement": "",
+    "apathetic": "",
+    "activist": "",
+    "holdsOffice": "",
+    "lastVote": "",
+    "grudge": ""
+  },
+  "officeState": {
+    "disgraced": "",
+    "deposed": ""
+  },
+  "accession": {
+    "elected": "",
+    "coup": ""
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "cropPlot": "Appezzamento",
+    "growingSeasons": "Stagioni di crescita:",
+    "growthDuration": "Durata della crescita:",
+    "days": "{count} giorni",
+    "yieldRange": "Resa:",
+    "goBackToMap": "Torna alla mappa.",
+    "emptyPlot": "Appezzamento vuoto",
+    "close": "Chiudi",
+    "selectASeed": "- Scegli un seme -"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "needs": {
+    "hungry": "is hungry",
+    "starving": "is starving!",
+    "noLongerHungry": "is no longer hungry",
+    "sleepy": "is sleepy",
+    "exhausted": "is exhausted!",
+    "noLongerSleepy": "is no longer sleepy",
+    "hygieneLow": "is getting dirty",
+    "hygieneCritical": "is filthy!",
+    "socialLow": "feels lonely",
+    "socialCritical": "is desperately lonely!",
+    "leisureLow": "is bored",
+    "leisureCritical": "is bored out of their mind!",
+    "hp": "HP",
+    "mp": "MP",
+    "mpRestored": "recovered all MP",
+    "vomited": "{name} vomited!",
+    "collapsed": "{name} collapsed from starvation!",
+    "outOfMp": "{name} ran out of MP!"
+  },
+  "sleepMenu": {
+    "titleMain": "Rest",
+    "titleSleep": "How long?",
+    "titlePostSleep": "Awakening",
+    "titleCryo": "Wake in which year?",
+    "titleWait": "Wait how long?",
+    "sleep": "Sleep",
+    "wait": "Wait",
+    "hoursWait": "%1 Hours",
+    "hourWait": "1 Hour",
+    "halfHour": "30 Minutes",
+    "cryo": "Cryogenic sleep",
+    "cryoYear": "%1",
+    "cryoFinalYear": "%1 (1 Jan)",
+    "save": "Save",
+    "respawn": "Set respawn point",
+    "cancel": "Cancel",
+    "hours": "%1 Hours",
+    "wakeup": "Wake up",
+    "dream": "Dream"
+  },
+  "hud": {
+    "food": "Food",
+    "temp": "Temp",
+    "noFood": "none",
+    "weatherClear": "Clear"
+  },
+  "needLabel": {
+    "hunger": "Hunger",
+    "sleep": "Sleep",
+    "hygiene": "Hygiene",
+    "social": "Social",
+    "leisure": "Fun"
+  }
+}

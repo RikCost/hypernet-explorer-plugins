@@ -1,0 +1,2639 @@
+{
+  "studioMapId": 1103,
+  "slotHours": [
+    6,
+    9,
+    12,
+    15,
+    18,
+    21,
+    24
+  ],
+  "programsPerWeek": 18,
+  "channels": [
+    {
+      "id": "history",
+      "name": "The History of Ages Channel",
+      "tone": "serious",
+      "color": 8,
+      "room": {
+        "x": 8,
+        "y": 8,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "chronicles",
+          "format": "history_doc",
+          "title": "Chronicles of the Age",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Bartholomew Crane",
+              "characterSprite": "Skab/!$Archivist",
+              "bustName": "Archivist"
+            }
+          ]
+        },
+        {
+          "id": "great_debates",
+          "format": "history_panel",
+          "title": "The Great Debates",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Bartholomew Crane",
+              "characterSprite": "Skab/!$Archivist",
+              "bustName": "Archivist"
+            },
+            {
+              "characterName": "Eleonora Vance",
+              "characterSprite": "Skab/!$ArchivistLibrarian",
+              "bustName": "ArchivistLibrarian"
+            },
+            {
+              "characterName": "Aurelius Vane",
+              "characterSprite": "Skab/!$MageSage",
+              "bustName": "MageSage"
+            }
+          ]
+        },
+        {
+          "id": "in_memoriam",
+          "format": "history_obituary",
+          "title": "In Memoriam",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Odile Marchetti",
+              "characterSprite": "Skab/!$OldNun",
+              "bustName": "OldNun"
+            }
+          ]
+        },
+        {
+          "id": "this_week_in_history",
+          "format": "history_doc",
+          "title": "This Week in History",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Eleonora Vance",
+              "characterSprite": "Skab/!$ArchivistLibrarian",
+              "bustName": "ArchivistLibrarian"
+            }
+          ]
+        },
+        {
+          "id": "before_the_tower",
+          "format": "history_doc",
+          "title": "Before The Tower",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Aurelius Vane",
+              "characterSprite": "Skab/!$MageSage",
+              "bustName": "MageSage"
+            }
+          ]
+        },
+        {
+          "id": "ninety_two",
+          "format": "documentary",
+          "title": "Ninety-Two: An Anatomy of the Squishing",
+          "tone": "serious",
+          "cast": []
+        },
+        {
+          "id": "kola_file",
+          "format": "documentary",
+          "title": "The Kola File",
+          "tone": "unsettling",
+          "cast": []
+        },
+        {
+          "id": "pillars",
+          "format": "history_panel",
+          "title": "Three Pillars, One Argument",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Aurelius Vane",
+              "characterSprite": "Skab/!$MageSage",
+              "bustName": "MageSage"
+            },
+            {
+              "characterName": "Hestia Colm",
+              "characterSprite": "Skab/!$Archeologist",
+              "bustName": "Archeologist"
+            }
+          ]
+        },
+        {
+          "id": "deicide_hour",
+          "format": "history_obituary",
+          "title": "The Deicide Hour",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Tobias Wren",
+              "characterSprite": "Skab/!$UndeadSage",
+              "bustName": "UndeadSage"
+            }
+          ]
+        },
+        {
+          "id": "falklands",
+          "format": "historical_epic",
+          "title": "Okeanus: The Falklands Reconstruction",
+          "tone": "serious",
+          "cast": []
+        },
+        {
+          "id": "road_of_ages",
+          "format": "historical_epic",
+          "title": "The Road of Ages",
+          "tone": "earnest",
+          "cast": []
+        },
+        {
+          "id": "archive_reading",
+          "format": "educational",
+          "title": "Reading Room: The Archive Explains",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Eleonora Vance",
+              "characterSprite": "Skab/!$ArchivistLibrarian",
+              "bustName": "ArchivistLibrarian"
+            }
+          ]
+        },
+        {
+          "id": "footnotes",
+          "format": "history_panel",
+          "title": "Footnotes & Grievances",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Bartholomew Crane",
+              "characterSprite": "Skab/!$Archivist",
+              "bustName": "Archivist"
+            },
+            {
+              "characterName": "Odile Marchetti",
+              "characterSprite": "Skab/!$OldNun",
+              "bustName": "OldNun"
+            }
+          ]
+        },
+        {
+          "id": "y2k_retrospective",
+          "format": "documentary",
+          "title": "Two Billion: A Y2K Retrospective",
+          "tone": "solemn",
+          "cast": []
+        },
+        {
+          "id": "ask_the_archive",
+          "format": "phone_in",
+          "title": "Ask The Archive",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Eleonora Vance",
+              "characterSprite": "Skab/!$ArchivistLibrarian",
+              "bustName": "ArchivistLibrarian"
+            },
+            {
+              "characterName": "Bartholomew Crane",
+              "characterSprite": "Skab/!$Archivist",
+              "bustName": "Archivist"
+            }
+          ]
+        },
+        {
+          "id": "long_reconstruction",
+          "format": "documentary",
+          "title": "The Long Reconstruction",
+          "tone": "earnest",
+          "cast": []
+        },
+        {
+          "id": "voices_from_the_loop",
+          "format": "talk_show",
+          "title": "Voices From The Loop",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Hestia Colm",
+              "characterSprite": "Skab/!$Archeologist",
+              "bustName": "Archeologist"
+            },
+            {
+              "characterName": "Tobias Wren",
+              "characterSprite": "Skab/!$UndeadSage",
+              "bustName": "UndeadSage"
+            }
+          ]
+        },
+        {
+          "id": "kola_tapes",
+          "format": "glitch",
+          "title": "The Kola Tapes",
+          "tone": "unsettling",
+          "cast": []
+        },
+        {
+          "id": "old_world_court",
+          "format": "court_report",
+          "title": "Court Records of the Old World",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Magistrate Orin Dace",
+              "characterSprite": "Skab/!$Judge",
+              "bustName": "Judge"
+            },
+            {
+              "characterName": "Eleonora Vance",
+              "characterSprite": "Skab/!$ArchivistLibrarian",
+              "bustName": "ArchivistLibrarian"
+            }
+          ]
+        },
+        {
+          "id": "ledger_of_empires",
+          "format": "market_report",
+          "title": "The Ledger of Empires",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Cassia Bellweather",
+              "characterSprite": "Skab/!$GoldTrader",
+              "bustName": "GoldTrader"
+            }
+          ]
+        },
+        {
+          "id": "antiques_parish",
+          "format": "talk_show",
+          "title": "Antiques of the Parish Hall",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Hettie Fairbrass",
+              "characterSprite": "Skab/!$Jeweler",
+              "bustName": "Jeweler"
+            },
+            {
+              "characterName": "Douglas Peake",
+              "characterSprite": "Skab/!$Pensioner",
+              "bustName": "Pensioner"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "news",
+      "name": "Temporal News 24/7",
+      "tone": "serious",
+      "color": 4,
+      "room": {
+        "x": 24,
+        "y": 8,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "evening_desk",
+          "format": "news_desk",
+          "title": "The Evening Desk",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Reginald Finch",
+              "characterSprite": "Skab/!$Journalist",
+              "bustName": "Journalist"
+            },
+            {
+              "characterName": "Seraphina Marlowe",
+              "characterSprite": "Skab/!$Reporter",
+              "bustName": "Reporter"
+            }
+          ]
+        },
+        {
+          "id": "breaking",
+          "format": "news_breaking",
+          "title": "Breaking Transmission",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Seraphina Marlowe",
+              "characterSprite": "Skab/!$Reporter",
+              "bustName": "Reporter"
+            }
+          ]
+        },
+        {
+          "id": "forecast",
+          "format": "weather",
+          "title": "The Reality Forecast",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Wendy Pallas",
+              "characterSprite": "Skab/!$Astronomer",
+              "bustName": "Astronomer"
+            }
+          ]
+        },
+        {
+          "id": "morning_brief",
+          "format": "news_desk",
+          "title": "Morning Brief",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Seraphina Marlowe",
+              "characterSprite": "Skab/!$Reporter",
+              "bustName": "Reporter"
+            }
+          ]
+        },
+        {
+          "id": "boundary_watch",
+          "format": "weather",
+          "title": "Boundary Watch",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Wendy Pallas",
+              "characterSprite": "Skab/!$Astronomer",
+              "bustName": "Astronomer"
+            },
+            {
+              "characterName": "Warden Voss",
+              "characterSprite": "Skab/!$OPSec",
+              "bustName": "OPSec"
+            }
+          ]
+        },
+        {
+          "id": "road_report",
+          "format": "road_report",
+          "title": "The Long Haul Report",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Duke Halloran",
+              "characterSprite": "Skab/!$Trucker",
+              "bustName": "Trucker"
+            }
+          ]
+        },
+        {
+          "id": "closing_bell",
+          "format": "market_report",
+          "title": "The Closing Bell",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Basil Quint",
+              "characterSprite": "Skab/!$Banker",
+              "bustName": "Banker"
+            }
+          ]
+        },
+        {
+          "id": "docket",
+          "format": "court_report",
+          "title": "The Docket from the Judiciary Dimension",
+          "tone": "unsettling",
+          "cast": [
+            {
+              "characterName": "Ambrose Kel",
+              "characterSprite": "Skab/!$Lawyer",
+              "bustName": "Lawyer"
+            }
+          ]
+        },
+        {
+          "id": "above_the_cloud",
+          "format": "science_report",
+          "title": "Above The Cloud",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Doctor Ilsa Renner",
+              "characterSprite": "Skab/!$Scientist",
+              "bustName": "Scientist"
+            }
+          ]
+        },
+        {
+          "id": "your_call",
+          "format": "phone_in",
+          "title": "Your Call, Our Signal",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Reginald Finch",
+              "characterSprite": "Skab/!$Journalist",
+              "bustName": "Journalist"
+            },
+            {
+              "characterName": "Seraphina Marlowe",
+              "characterSprite": "Skab/!$Reporter",
+              "bustName": "Reporter"
+            }
+          ]
+        },
+        {
+          "id": "civil_advisory",
+          "format": "emergency",
+          "title": "Civil Advisory Feed",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Warden Voss",
+              "characterSprite": "Skab/!$OPSec",
+              "bustName": "OPSec"
+            }
+          ]
+        },
+        {
+          "id": "goblin_ball",
+          "format": "sports",
+          "title": "Goblin-Ball Roundup",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Gorm Tuskbeat",
+              "characterSprite": "Skab/!$Announcer",
+              "bustName": "Announcer"
+            },
+            {
+              "characterName": "Marla Quick",
+              "characterSprite": "Skab/!$GymInstructor",
+              "bustName": "GymInstructor"
+            }
+          ]
+        },
+        {
+          "id": "correspondents",
+          "format": "talk_show",
+          "title": "Correspondents at Large",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Nadia Ostrow",
+              "characterSprite": "Skab/!$WarJournalist",
+              "bustName": "WarJournalist"
+            },
+            {
+              "characterName": "Reginald Finch",
+              "characterSprite": "Skab/!$Journalist",
+              "bustName": "Journalist"
+            }
+          ]
+        },
+        {
+          "id": "night_desk",
+          "format": "news_desk",
+          "title": "The Night Desk",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Cliff Vanterre",
+              "characterSprite": "Skab/!$AndroidJournalist",
+              "bustName": "AndroidJournalist"
+            }
+          ]
+        },
+        {
+          "id": "weekend_review",
+          "format": "history_panel",
+          "title": "The Weekend Review",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Reginald Finch",
+              "characterSprite": "Skab/!$Journalist",
+              "bustName": "Journalist"
+            },
+            {
+              "characterName": "Nadia Ostrow",
+              "characterSprite": "Skab/!$WarJournalist",
+              "bustName": "WarJournalist"
+            },
+            {
+              "characterName": "Basil Quint",
+              "characterSprite": "Skab/!$Banker",
+              "bustName": "Banker"
+            }
+          ]
+        },
+        {
+          "id": "foreign_desk",
+          "format": "documentary",
+          "title": "The Foreign Desk",
+          "tone": "serious",
+          "cast": []
+        },
+        {
+          "id": "ministerial",
+          "format": "royal_address",
+          "title": "The Ministerial Address",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Minister Aldous Pryne",
+              "characterSprite": "Skab/!$Regent",
+              "bustName": "Regent"
+            }
+          ]
+        },
+        {
+          "id": "late_bulletin",
+          "format": "news_breaking",
+          "title": "The Late Bulletin",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Cliff Vanterre",
+              "characterSprite": "Skab/!$AndroidJournalist",
+              "bustName": "AndroidJournalist"
+            }
+          ]
+        },
+        {
+          "id": "obituaries",
+          "format": "history_obituary",
+          "title": "The Obituaries",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Seraphina Marlowe",
+              "characterSprite": "Skab/!$Reporter",
+              "bustName": "Reporter"
+            }
+          ]
+        },
+        {
+          "id": "signal_check",
+          "format": "test_pattern",
+          "title": "Signal Check",
+          "tone": "serious",
+          "cast": []
+        },
+        {
+          "id": "consumer_corner",
+          "format": "talk_show",
+          "title": "Consumer Corner",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Priya Halloway",
+              "characterSprite": "Skab/!$Manager",
+              "bustName": "Manager"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chaos",
+      "name": "Chaos Broadcasting Co.",
+      "tone": "zany",
+      "color": 2,
+      "room": {
+        "x": 40,
+        "y": 8,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "wheel",
+          "format": "game_show",
+          "title": "Wheel of Temporal Fortune",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Bingo Malarkey",
+              "characterSprite": "Skab/!$CreepyJester",
+              "bustName": "CreepyJester"
+            },
+            {
+              "characterName": "Isolde Thorne",
+              "characterSprite": "Skab/!$PunkWitch",
+              "bustName": "PunkWitch"
+            }
+          ]
+        },
+        {
+          "id": "static_hour",
+          "format": "glitch",
+          "title": "The Static Hour",
+          "tone": "unsettling",
+          "cast": []
+        },
+        {
+          "id": "prophecy_corner",
+          "format": "prophetic",
+          "title": "Prophecy Corner",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Isolde Thorne",
+              "characterSprite": "Skab/!$PunkWitch",
+              "bustName": "PunkWitch"
+            }
+          ]
+        },
+        {
+          "id": "panic_at_six",
+          "format": "history_panel",
+          "title": "Panic At Six",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Gideon Graves",
+              "characterSprite": "Skab/!$ConspiracyTheorist",
+              "bustName": "ConspiracyTheorist"
+            },
+            {
+              "characterName": "Isolde Thorne",
+              "characterSprite": "Skab/!$PunkWitch",
+              "bustName": "PunkWitch"
+            },
+            {
+              "characterName": "Bingo Malarkey",
+              "characterSprite": "Skab/!$CreepyJester",
+              "bustName": "CreepyJester"
+            }
+          ]
+        },
+        {
+          "id": "bubble_house",
+          "format": "reality_tv",
+          "title": "Bubble House",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tammy Voss",
+              "characterSprite": "Skab/!$PunkGirl",
+              "bustName": "PunkGirl"
+            },
+            {
+              "characterName": "Rex Bramble",
+              "characterSprite": "Skab/!$Wrestler",
+              "bustName": "Wrestler"
+            },
+            {
+              "characterName": "Sim the Quiet",
+              "characterSprite": "Skab/!$BotLCD",
+              "bustName": "BotLCD"
+            },
+            {
+              "characterName": "Fiora Kell",
+              "characterSprite": "Skab/!$ElvenModel",
+              "bustName": "ElvenModel"
+            },
+            {
+              "characterName": "Gubbin",
+              "characterSprite": "Skab/!$GoblinEccentric",
+              "bustName": "GoblinEccentric"
+            },
+            {
+              "characterName": "Doctor Pell",
+              "characterSprite": "Skab/!$BrainSurgeon",
+              "bustName": "BrainSurgeon"
+            }
+          ]
+        },
+        {
+          "id": "who_remembers",
+          "format": "game_show",
+          "title": "Who Still Remembers This?",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Bingo Malarkey",
+              "characterSprite": "Skab/!$CreepyJester",
+              "bustName": "CreepyJester"
+            }
+          ]
+        },
+        {
+          "id": "signal_bleed",
+          "format": "glitch",
+          "title": "Signal Bleed",
+          "tone": "weird",
+          "cast": []
+        },
+        {
+          "id": "carrier_wave",
+          "format": "test_pattern",
+          "title": "Carrier Wave",
+          "tone": "unsettling",
+          "cast": []
+        },
+        {
+          "id": "corpse_paint_countdown",
+          "format": "music_video",
+          "title": "The Corpse Paint Countdown",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Vex Carrion",
+              "characterSprite": "Skab/!$BikerSkull",
+              "bustName": "BikerSkull"
+            }
+          ]
+        },
+        {
+          "id": "the_reckoning",
+          "format": "conspiracy",
+          "title": "The Reckoning with Gideon Graves",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Gideon Graves",
+              "characterSprite": "Skab/!$ConspiracyTheorist",
+              "bustName": "ConspiracyTheorist"
+            }
+          ]
+        },
+        {
+          "id": "flatmates",
+          "format": "sitcom",
+          "title": "Two Mages, One Leyline",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Fennwick Ash",
+              "characterSprite": "Skab/!$StreetMage",
+              "bustName": "StreetMage"
+            },
+            {
+              "characterName": "Marlo Pike",
+              "characterSprite": "Skab/!$CityMage",
+              "bustName": "CityMage"
+            },
+            {
+              "characterName": "Hilda Brack",
+              "characterSprite": "Skab/!$OgreWitch",
+              "bustName": "OgreWitch"
+            }
+          ]
+        },
+        {
+          "id": "dead_air",
+          "format": "test_pattern",
+          "title": "Dead Air",
+          "tone": "cryptic",
+          "cast": []
+        },
+        {
+          "id": "spin_again",
+          "format": "game_show",
+          "title": "Spin Again, Forever",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Bingo Malarkey",
+              "characterSprite": "Skab/!$CreepyJester",
+              "bustName": "CreepyJester"
+            },
+            {
+              "characterName": "Tammy Voss",
+              "characterSprite": "Skab/!$PunkGirl",
+              "bustName": "PunkGirl"
+            }
+          ]
+        },
+        {
+          "id": "open_lines",
+          "format": "phone_in",
+          "title": "Open Lines, Open Doors",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Isolde Thorne",
+              "characterSprite": "Skab/!$PunkWitch",
+              "bustName": "PunkWitch"
+            }
+          ]
+        },
+        {
+          "id": "unofficial_emergency",
+          "format": "emergency",
+          "title": "Emergency Broadcast (Unofficial)",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Gideon Graves",
+              "characterSprite": "Skab/!$ConspiracyTheorist",
+              "bustName": "ConspiracyTheorist"
+            }
+          ]
+        },
+        {
+          "id": "weather_probably",
+          "format": "weather",
+          "title": "The Weather, Probably",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Nix Halloway",
+              "characterSprite": "Skab/!$Astrologist",
+              "bustName": "Astrologist"
+            }
+          ]
+        },
+        {
+          "id": "chef_chaos",
+          "format": "cooking",
+          "title": "Chef Chaos",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Chef Vurst",
+              "characterSprite": "Skab/!$OrcCook",
+              "bustName": "OrcCook"
+            }
+          ]
+        },
+        {
+          "id": "sermon_of_static",
+          "format": "religious",
+          "title": "Sermon of the Static",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Deacon Static",
+              "characterSprite": "Skab/!$Cultist",
+              "bustName": "Cultist"
+            }
+          ]
+        },
+        {
+          "id": "chaos_docket",
+          "format": "court_report",
+          "title": "The Chaos Docket",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Judge Bramble",
+              "characterSprite": "Skab/!$OrcJester",
+              "bustName": "OrcJester"
+            }
+          ]
+        },
+        {
+          "id": "playtime_for_adults",
+          "format": "puppet_show",
+          "title": "Playtime For Adults",
+          "tone": "unsettling",
+          "cast": [
+            {
+              "characterName": "Mister Loam",
+              "characterSprite": "Skab/!$BotPuppet",
+              "bustName": "BotPuppet"
+            },
+            {
+              "characterName": "Lady Twine",
+              "characterSprite": "Skab/!$Mannequin",
+              "bustName": "Mannequin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kitchen",
+      "name": "The Alchemist's Kitchen",
+      "tone": "light",
+      "color": 3,
+      "room": {
+        "x": 8,
+        "y": 24,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "frugal",
+          "format": "cooking",
+          "title": "The Frugal Alchemist",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Genevieve Dubois",
+              "characterSprite": "Skab/!$GnomeChef",
+              "bustName": "GnomeChef"
+            }
+          ]
+        },
+        {
+          "id": "tavern_rescue",
+          "format": "talk_show",
+          "title": "Tavern Rescue",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Percival Croft",
+              "characterSprite": "Skab/!$OldChef",
+              "bustName": "OldChef"
+            },
+            {
+              "characterName": "Bram Tolliver",
+              "characterSprite": "Skab/!$VillageTavernkeeper",
+              "bustName": "VillageTavernkeeper"
+            }
+          ]
+        },
+        {
+          "id": "pixie_dust",
+          "format": "cooking",
+          "title": "A Pinch of Pixie Dust",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Genevieve Dubois",
+              "characterSprite": "Skab/!$GnomeChef",
+              "bustName": "GnomeChef"
+            }
+          ]
+        },
+        {
+          "id": "one_loop_meals",
+          "format": "cooking",
+          "title": "One-Loop Meals",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Marisol Quay",
+              "characterSprite": "Skab/!$SushiCook",
+              "bustName": "SushiCook"
+            }
+          ]
+        },
+        {
+          "id": "verden_table",
+          "format": "cooking",
+          "title": "The Verden Table",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Percival Croft",
+              "characterSprite": "Skab/!$OldChef",
+              "bustName": "OldChef"
+            }
+          ]
+        },
+        {
+          "id": "broken_leyline_bakes",
+          "format": "cooking",
+          "title": "Broken Leyline Bakes",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Nella Crust",
+              "characterSprite": "Skab/!$GnomeVillager",
+              "bustName": "GnomeVillager"
+            },
+            {
+              "characterName": "Genevieve Dubois",
+              "characterSprite": "Skab/!$GnomeChef",
+              "bustName": "GnomeChef"
+            }
+          ]
+        },
+        {
+          "id": "pantry_politics",
+          "format": "talk_show",
+          "title": "Pantry Politics",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Percival Croft",
+              "characterSprite": "Skab/!$OldChef",
+              "bustName": "OldChef"
+            },
+            {
+              "characterName": "Tobias Plum",
+              "characterSprite": "Skab/!$Trader",
+              "bustName": "Trader"
+            }
+          ]
+        },
+        {
+          "id": "field_rations",
+          "format": "documentary",
+          "title": "Field Rations of the Long Haul",
+          "tone": "earnest",
+          "cast": []
+        },
+        {
+          "id": "kitchen_calls",
+          "format": "phone_in",
+          "title": "Kitchen Calls",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Genevieve Dubois",
+              "characterSprite": "Skab/!$GnomeChef",
+              "bustName": "GnomeChef"
+            },
+            {
+              "characterName": "Marisol Quay",
+              "characterSprite": "Skab/!$SushiCook",
+              "bustName": "SushiCook"
+            }
+          ]
+        },
+        {
+          "id": "front_of_house",
+          "format": "sitcom",
+          "title": "Front of House",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Bram Tolliver",
+              "characterSprite": "Skab/!$VillageTavernkeeper",
+              "bustName": "VillageTavernkeeper"
+            },
+            {
+              "characterName": "Elsie Marr",
+              "characterSprite": "Skab/!$Maid",
+              "bustName": "Maid"
+            },
+            {
+              "characterName": "Victor Plum",
+              "characterSprite": "Skab/!$Butler",
+              "bustName": "Butler"
+            },
+            {
+              "characterName": "Gus Fennel",
+              "characterSprite": "Skab/!$FastfoodWorker",
+              "bustName": "FastfoodWorker"
+            }
+          ]
+        },
+        {
+          "id": "sunday_roast",
+          "format": "cooking",
+          "title": "The Very Long Sunday Roast",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Percival Croft",
+              "characterSprite": "Skab/!$OldChef",
+              "bustName": "OldChef"
+            }
+          ]
+        },
+        {
+          "id": "cellar_hour",
+          "format": "talk_show",
+          "title": "The Cellar Hour",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Bram Tolliver",
+              "characterSprite": "Skab/!$VillageTavernkeeper",
+              "bustName": "VillageTavernkeeper"
+            }
+          ]
+        },
+        {
+          "id": "market_morning",
+          "format": "market_report",
+          "title": "Market Morning",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Tobias Plum",
+              "characterSprite": "Skab/!$Trader",
+              "bustName": "Trader"
+            }
+          ]
+        },
+        {
+          "id": "larder_run",
+          "format": "road_report",
+          "title": "The Long Haul Larder",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Rollo Ganz",
+              "characterSprite": "Skab/!$TruckerShopkeeper",
+              "bustName": "TruckerShopkeeper"
+            }
+          ]
+        },
+        {
+          "id": "kitchen_court",
+          "format": "court_report",
+          "title": "Kitchen Court",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Magistrate Fen",
+              "characterSprite": "Skab/!$Judge",
+              "bustName": "Judge"
+            },
+            {
+              "characterName": "Genevieve Dubois",
+              "characterSprite": "Skab/!$GnomeChef",
+              "bustName": "GnomeChef"
+            }
+          ]
+        },
+        {
+          "id": "beagle_confidential",
+          "format": "documentary",
+          "title": "Kitchen Confidential: Beagle",
+          "tone": "wry",
+          "cast": []
+        },
+        {
+          "id": "recipe_emergency",
+          "format": "emergency",
+          "title": "Recipe Emergency",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Marisol Quay",
+              "characterSprite": "Skab/!$SushiCook",
+              "bustName": "SushiCook"
+            }
+          ]
+        },
+        {
+          "id": "sermon_roast",
+          "format": "religious",
+          "title": "The Sunday Sermon Roast",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Father Amos",
+              "characterSprite": "Skab/!$Priest",
+              "bustName": "Priest"
+            },
+            {
+              "characterName": "Percival Croft",
+              "characterSprite": "Skab/!$OldChef",
+              "bustName": "OldChef"
+            }
+          ]
+        },
+        {
+          "id": "allotment_hour",
+          "format": "educational",
+          "title": "The Allotment Hour",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Dennis Ottley",
+              "characterSprite": "Skab/!$Farmer",
+              "bustName": "Farmer"
+            },
+            {
+              "characterName": "Winnie Slade",
+              "characterSprite": "Skab/!$Botanist",
+              "bustName": "Botanist"
+            }
+          ]
+        },
+        {
+          "id": "two_rooms_ladder",
+          "format": "educational",
+          "title": "Two Rooms and a Ladder",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Ray Purdon",
+              "characterSprite": "Skab/!$Welder",
+              "bustName": "Welder"
+            },
+            {
+              "characterName": "Sam Ferreira",
+              "characterSprite": "Skab/!$Mechanic",
+              "bustName": "Mechanic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kids",
+      "name": "Memory Lane Playhouse",
+      "tone": "light",
+      "color": 14,
+      "room": {
+        "x": 24,
+        "y": 24,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "tommy",
+          "format": "children_show",
+          "title": "Temporal Tommy's Time Adventures",
+          "tone": "light",
+          "cast": []
+        },
+        {
+          "id": "rangers",
+          "format": "children_show",
+          "title": "Reality Rangers",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Ranger Ox",
+              "characterSprite": "Skab/!$ForestRanger",
+              "bustName": "ForestRanger"
+            },
+            {
+              "characterName": "Cadet Juno",
+              "characterSprite": "Skab/!$SoldierCadet",
+              "bustName": "SoldierCadet"
+            },
+            {
+              "characterName": "Cadet Bram",
+              "characterSprite": "Skab/!$WarCadet",
+              "bustName": "WarCadet"
+            }
+          ]
+        },
+        {
+          "id": "camelcase",
+          "format": "educational",
+          "title": "The Magic of CamelCase",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Professor Camel",
+              "characterSprite": "Skab/!$ScienceTeacher",
+              "bustName": "ScienceTeacher"
+            }
+          ]
+        },
+        {
+          "id": "sockington",
+          "format": "puppet_show",
+          "title": "Mister Sockington Explains The Rules",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Mister Sockington",
+              "characterSprite": "Skab/!$ElephantWeird",
+              "bustName": "ElephantWeird"
+            },
+            {
+              "characterName": "Marigold Plumb",
+              "characterSprite": "Skab/!$ElvenSinger",
+              "bustName": "ElvenSinger"
+            }
+          ]
+        },
+        {
+          "id": "eighty_song",
+          "format": "children_show",
+          "title": "The Eighty Song",
+          "tone": "light",
+          "cast": []
+        },
+        {
+          "id": "first_spell",
+          "format": "magic_lesson",
+          "title": "Your Very First Spell",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Madame Ferro",
+              "characterSprite": "Skab/!$Witch1",
+              "bustName": "Witch1"
+            }
+          ]
+        },
+        {
+          "id": "goblin_friends",
+          "format": "children_show",
+          "title": "Are Goblins Our Friends? (No)",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Beatrix Haven",
+              "characterSprite": "Skab/!$SchoolTeacher",
+              "bustName": "SchoolTeacher"
+            },
+            {
+              "characterName": "Snik",
+              "characterSprite": "Skab/!$GoblinRecruit",
+              "bustName": "GoblinRecruit"
+            }
+          ]
+        },
+        {
+          "id": "leyline_lessons",
+          "format": "educational",
+          "title": "Leyline Lessons",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Professor Camel",
+              "characterSprite": "Skab/!$ScienceTeacher",
+              "bustName": "ScienceTeacher"
+            }
+          ]
+        },
+        {
+          "id": "puppet_court",
+          "format": "puppet_show",
+          "title": "Sock Court",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Mister Sockington",
+              "characterSprite": "Skab/!$ElephantWeird",
+              "bustName": "ElephantWeird"
+            },
+            {
+              "characterName": "Judge Woolly",
+              "characterSprite": "Skab/!$Sheepman",
+              "bustName": "Sheepman"
+            }
+          ]
+        },
+        {
+          "id": "storytime",
+          "format": "children_show",
+          "title": "Storytime Before The Reset",
+          "tone": "light",
+          "cast": []
+        },
+        {
+          "id": "tower_tour",
+          "format": "educational",
+          "title": "A Very Tall Tower: A Tour",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Guide Ollo",
+              "characterSprite": "Skab/!$TowerController",
+              "bustName": "TowerController"
+            }
+          ]
+        },
+        {
+          "id": "pip_lost",
+          "format": "puppet_show",
+          "title": "Pip Gets Lost Again",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Pip the Friendly Pixie",
+              "characterSprite": "Skab/!$ElvenJester",
+              "bustName": "ElvenJester"
+            },
+            {
+              "characterName": "Beatrix Haven",
+              "characterSprite": "Skab/!$SchoolTeacher",
+              "bustName": "SchoolTeacher"
+            }
+          ]
+        },
+        {
+          "id": "cadet_lines",
+          "format": "phone_in",
+          "title": "Ranger Cadets Phone-In",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Cadet Juno",
+              "characterSprite": "Skab/!$SoldierCadet",
+              "bustName": "SoldierCadet"
+            },
+            {
+              "characterName": "Ranger Ox",
+              "characterSprite": "Skab/!$ForestRanger",
+              "bustName": "ForestRanger"
+            }
+          ]
+        },
+        {
+          "id": "very_small_news",
+          "format": "news_desk",
+          "title": "The Very Small News",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Tiny Tam",
+              "characterSprite": "Skab/!$GnomeVillager",
+              "bustName": "GnomeVillager"
+            }
+          ]
+        },
+        {
+          "id": "songs_from_the_road",
+          "format": "music_video",
+          "title": "Songs From The Road",
+          "tone": "light",
+          "cast": []
+        },
+        {
+          "id": "sports_day",
+          "format": "sports",
+          "title": "Sports Day",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Ranger Ox",
+              "characterSprite": "Skab/!$ForestRanger",
+              "bustName": "ForestRanger"
+            },
+            {
+              "characterName": "Pip the Friendly Pixie",
+              "characterSprite": "Skab/!$ElvenJester",
+              "bustName": "ElvenJester"
+            }
+          ]
+        },
+        {
+          "id": "pets_people",
+          "format": "children_show",
+          "title": "Pets and Their People",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Jo Bellamy",
+              "characterSprite": "Skab/!$Trainer",
+              "bustName": "Trainer"
+            },
+            {
+              "characterName": "Captain Barkley",
+              "characterSprite": "Skab/!$DogNoble",
+              "bustName": "DogNoble"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "latenight",
+      "name": "Midnight on the Road",
+      "tone": "weird",
+      "color": 6,
+      "room": {
+        "x": 40,
+        "y": 24,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "insomnia",
+          "format": "late_night",
+          "title": "The Insomnia Files",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Julian Blackwood",
+              "characterSprite": "Skab/!$DJ",
+              "bustName": "DJ"
+            }
+          ]
+        },
+        {
+          "id": "witching_hour",
+          "format": "late_night",
+          "title": "The Witching Hour Broadcast",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Rosalind Payne",
+              "characterSprite": "Skab/!$TarotWitch",
+              "bustName": "TarotWitch"
+            }
+          ]
+        },
+        {
+          "id": "after_dark",
+          "format": "talk_show",
+          "title": "After Hours Reality Check",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Julian Blackwood",
+              "characterSprite": "Skab/!$DJ",
+              "bustName": "DJ"
+            },
+            {
+              "characterName": "Rosalind Payne",
+              "characterSprite": "Skab/!$TarotWitch",
+              "bustName": "TarotWitch"
+            }
+          ]
+        },
+        {
+          "id": "long_haul_lines",
+          "format": "phone_in",
+          "title": "Long Haul Lines",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Sable Kray",
+              "characterSprite": "Skab/!$TruckerWanderer",
+              "bustName": "TruckerWanderer"
+            },
+            {
+              "characterName": "Julian Blackwood",
+              "characterSprite": "Skab/!$DJ",
+              "bustName": "DJ"
+            }
+          ]
+        },
+        {
+          "id": "third_shift",
+          "format": "late_night",
+          "title": "The Third Shift",
+          "tone": "unsettling",
+          "cast": [
+            {
+              "characterName": "Julian Blackwood",
+              "characterSprite": "Skab/!$DJ",
+              "bustName": "DJ"
+            }
+          ]
+        },
+        {
+          "id": "under_the_asphalt",
+          "format": "conspiracy",
+          "title": "Under The Asphalt",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Cormac Vell",
+              "characterSprite": "Skab/!$ConspiracyTheorist",
+              "bustName": "ConspiracyTheorist"
+            }
+          ]
+        },
+        {
+          "id": "who_owns_the_dark",
+          "format": "conspiracy",
+          "title": "Who Owns The Dark",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Cormac Vell",
+              "characterSprite": "Skab/!$ConspiracyTheorist",
+              "bustName": "ConspiracyTheorist"
+            },
+            {
+              "characterName": "Rosalind Payne",
+              "characterSprite": "Skab/!$TarotWitch",
+              "bustName": "TarotWitch"
+            }
+          ]
+        },
+        {
+          "id": "night_convoy",
+          "format": "road_report",
+          "title": "Night Convoy",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Sable Kray",
+              "characterSprite": "Skab/!$TruckerWanderer",
+              "bustName": "TruckerWanderer"
+            }
+          ]
+        },
+        {
+          "id": "the_estate",
+          "format": "drama",
+          "title": "The Estate at Marrow Hollow",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Cordelia Marrow",
+              "characterSprite": "Skab/!$Noblewoman",
+              "bustName": "Noblewoman"
+            },
+            {
+              "characterName": "Ashton Marrow",
+              "characterSprite": "Skab/!$NobleHeir",
+              "bustName": "NobleHeir"
+            },
+            {
+              "characterName": "Gareth Kane",
+              "characterSprite": "Skab/!$StoicGuard",
+              "bustName": "StoicGuard"
+            },
+            {
+              "characterName": "Mrs. Ondry",
+              "characterSprite": "Skab/!$Maid",
+              "bustName": "Maid"
+            },
+            {
+              "characterName": "Solicitor Quill",
+              "characterSprite": "Skab/!$Lawyer",
+              "bustName": "Lawyer"
+            }
+          ]
+        },
+        {
+          "id": "small_hours_music",
+          "format": "music_video",
+          "title": "Small Hours, Loud Gods",
+          "tone": "weird",
+          "cast": []
+        },
+        {
+          "id": "sign_off",
+          "format": "test_pattern",
+          "title": "Sign Off",
+          "tone": "cryptic",
+          "cast": []
+        },
+        {
+          "id": "unaired",
+          "format": "glitch",
+          "title": "The Unaired Tape",
+          "tone": "unsettling",
+          "cast": []
+        },
+        {
+          "id": "night_kitchen",
+          "format": "soap_opera",
+          "title": "Nobody Sleeps in Marrow Hollow",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Cordelia Marrow",
+              "characterSprite": "Skab/!$Noblewoman",
+              "bustName": "Noblewoman"
+            },
+            {
+              "characterName": "Ashton Marrow",
+              "characterSprite": "Skab/!$NobleHeir",
+              "bustName": "NobleHeir"
+            },
+            {
+              "characterName": "Lily Marrow",
+              "characterSprite": "Skab/!$ElvenModel",
+              "bustName": "ElvenModel"
+            },
+            {
+              "characterName": "Doctor Ives Pell",
+              "characterSprite": "Skab/!$Doctor2",
+              "bustName": "Doctor2"
+            },
+            {
+              "characterName": "Vera Sloane",
+              "characterSprite": "Skab/!$DarkWitch",
+              "bustName": "DarkWitch"
+            },
+            {
+              "characterName": "Gareth Kane",
+              "characterSprite": "Skab/!$StoicGuard",
+              "bustName": "StoicGuard"
+            },
+            {
+              "characterName": "Aunt Hessa",
+              "characterSprite": "Skab/!$OldNun",
+              "bustName": "OldNun"
+            },
+            {
+              "characterName": "The Gardener",
+              "characterSprite": "Skab/!$Woodworker",
+              "bustName": "Woodworker"
+            }
+          ]
+        },
+        {
+          "id": "small_hours_desk",
+          "format": "news_desk",
+          "title": "The Small Hours Desk",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Nell Corrigan",
+              "characterSprite": "Skab/!$AndroidJournalist",
+              "bustName": "AndroidJournalist"
+            }
+          ]
+        },
+        {
+          "id": "nightschool",
+          "format": "magic_lesson",
+          "title": "Nightschool",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Rosalind Payne",
+              "characterSprite": "Skab/!$TarotWitch",
+              "bustName": "TarotWitch"
+            }
+          ]
+        },
+        {
+          "id": "overnight_docket",
+          "format": "court_report",
+          "title": "The Overnight Docket",
+          "tone": "unsettling",
+          "cast": [
+            {
+              "characterName": "Magistrate Holt",
+              "characterSprite": "Skab/!$Judge",
+              "bustName": "Judge"
+            }
+          ]
+        },
+        {
+          "id": "cold_kitchen",
+          "format": "cooking",
+          "title": "Cold Kitchen",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Chef Mons",
+              "characterSprite": "Skab/!$Butcher",
+              "bustName": "Butcher"
+            }
+          ]
+        },
+        {
+          "id": "three_am_weather",
+          "format": "weather",
+          "title": "The 3AM Weather",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Ivo Frost",
+              "characterSprite": "Skab/!$Astrologist",
+              "bustName": "Astrologist"
+            }
+          ]
+        },
+        {
+          "id": "repeats",
+          "format": "historical_epic",
+          "title": "Repeats",
+          "tone": "weird",
+          "cast": []
+        },
+        {
+          "id": "late_quiz",
+          "format": "game_show",
+          "title": "The Late Quiz",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Vic Marlow",
+              "characterSprite": "Skab/!$Gambler",
+              "bustName": "Gambler"
+            },
+            {
+              "characterName": "Sandra Deen",
+              "characterSprite": "Skab/!$UniversityStudent",
+              "bustName": "UniversityStudent"
+            }
+          ]
+        },
+        {
+          "id": "night_bus",
+          "format": "talk_show",
+          "title": "The Night Bus",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Wes Tandy",
+              "characterSprite": "Skab/!$TaxiDriver",
+              "bustName": "TaxiDriver"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "faith",
+      "name": "Anoki Faith Hour",
+      "tone": "solemn",
+      "color": 17,
+      "room": {
+        "x": 8,
+        "y": 40,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "gospel",
+          "format": "religious",
+          "title": "The Gospel According to Margaret",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Alistair Finch",
+              "characterSprite": "Skab/!$Priest",
+              "bustName": "Priest"
+            }
+          ]
+        },
+        {
+          "id": "infinite_loops",
+          "format": "religious",
+          "title": "The Church of Infinite Loops",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Cardinal Ossian",
+              "characterSprite": "Skab/!$Cardinal",
+              "bustName": "Cardinal"
+            }
+          ]
+        },
+        {
+          "id": "testimony",
+          "format": "prophetic",
+          "title": "Temporal Testimony Time",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Oracle Nyx",
+              "characterSprite": "Skab/!$Oracle",
+              "bustName": "Oracle"
+            }
+          ]
+        },
+        {
+          "id": "ringtone_vespers",
+          "format": "religious",
+          "title": "Ringtone Vespers",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Sister Vela",
+              "characterSprite": "Skab/!$Vestal",
+              "bustName": "Vestal"
+            }
+          ]
+        },
+        {
+          "id": "the_stone_gods",
+          "format": "history_obituary",
+          "title": "The Stone Gods of the White Desert",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Brother Ilm",
+              "characterSprite": "Skab/!$Monk",
+              "bustName": "Monk"
+            }
+          ]
+        },
+        {
+          "id": "from_the_citadel",
+          "format": "royal_address",
+          "title": "From the Floating Citadel",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Archon Serel",
+              "characterSprite": "Skab/!$ArchPriest",
+              "bustName": "ArchPriest"
+            }
+          ]
+        },
+        {
+          "id": "the_widow_maat",
+          "format": "religious",
+          "title": "A Prayer for the Woman Under the Crust",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Mother Superior Agatha",
+              "characterSprite": "Skab/!$MotherNun",
+              "bustName": "MotherNun"
+            }
+          ]
+        },
+        {
+          "id": "discord_docket",
+          "format": "court_report",
+          "title": "The Mercy of Discord",
+          "tone": "unsettling",
+          "cast": [
+            {
+              "characterName": "Adjudicator Vek",
+              "characterSprite": "Skab/!$Inquisitor",
+              "bustName": "Inquisitor"
+            }
+          ]
+        },
+        {
+          "id": "open_line_to_heaven",
+          "format": "phone_in",
+          "title": "Open Line to Whatever Answers",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Alistair Finch",
+              "characterSprite": "Skab/!$Priest",
+              "bustName": "Priest"
+            },
+            {
+              "characterName": "Sister Vela",
+              "characterSprite": "Skab/!$Vestal",
+              "bustName": "Vestal"
+            }
+          ]
+        },
+        {
+          "id": "seven_artefacts",
+          "format": "documentary",
+          "title": "Seven Artefacts, One Night",
+          "tone": "solemn",
+          "cast": []
+        },
+        {
+          "id": "catechism",
+          "format": "educational",
+          "title": "Catechism for a Reduced Heaven",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Brother Ilm",
+              "characterSprite": "Skab/!$Monk",
+              "bustName": "Monk"
+            }
+          ]
+        },
+        {
+          "id": "the_signal_is_the_message",
+          "format": "prophetic",
+          "title": "The Signal Is The Message",
+          "tone": "cryptic",
+          "cast": [
+            {
+              "characterName": "Oracle Nyx",
+              "characterSprite": "Skab/!$Oracle",
+              "bustName": "Oracle"
+            }
+          ]
+        },
+        {
+          "id": "faithful_line",
+          "format": "phone_in",
+          "title": "The Faithful Line",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Mother Superior Agatha",
+              "characterSprite": "Skab/!$MotherNun",
+              "bustName": "MotherNun"
+            }
+          ]
+        },
+        {
+          "id": "sacred_science",
+          "format": "science_report",
+          "title": "Sacred Science",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Doctor Bede Ashgrove",
+              "characterSprite": "Skab/!$BioScientist",
+              "bustName": "BioScientist"
+            }
+          ]
+        },
+        {
+          "id": "reduced_miracle",
+          "format": "documentary",
+          "title": "The Reduced Miracle",
+          "tone": "solemn",
+          "cast": []
+        },
+        {
+          "id": "quiet_heaven",
+          "format": "music_video",
+          "title": "Hymns for a Quiet Heaven",
+          "tone": "solemn",
+          "cast": []
+        },
+        {
+          "id": "parish_notices",
+          "format": "news_desk",
+          "title": "Parish Notices",
+          "tone": "earnest",
+          "cast": [
+            {
+              "characterName": "Sister Vela",
+              "characterSprite": "Skab/!$Vestal",
+              "bustName": "Vestal"
+            }
+          ]
+        },
+        {
+          "id": "the_vigil",
+          "format": "test_pattern",
+          "title": "The Vigil",
+          "tone": "solemn",
+          "cast": []
+        }
+      ]
+    },
+    {
+      "id": "shopping",
+      "name": "Hypercapitalist Shopping Network",
+      "tone": "zany",
+      "color": 24,
+      "room": {
+        "x": 24,
+        "y": 40,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "midnight_deals",
+          "format": "infomercial",
+          "title": "Midnight Deals Marathon",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            },
+            {
+              "characterName": "Diana Crashcode",
+              "characterSprite": "Skab/!$Stylist",
+              "bustName": "Stylist"
+            }
+          ]
+        },
+        {
+          "id": "as_seen",
+          "format": "commercial",
+          "title": "As Seen On The Road",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Diana Crashcode",
+              "characterSprite": "Skab/!$Stylist",
+              "bustName": "Stylist"
+            }
+          ]
+        },
+        {
+          "id": "fire_sale",
+          "format": "infomercial",
+          "title": "Reality Anchor Fire Sale",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Diana Crashcode",
+              "characterSprite": "Skab/!$Stylist",
+              "bustName": "Stylist"
+            }
+          ]
+        },
+        {
+          "id": "loop_escape_hour",
+          "format": "infomercial",
+          "title": "The Loop Escape Hour",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            }
+          ]
+        },
+        {
+          "id": "warehouse_appears",
+          "format": "commercial",
+          "title": "It Simply Appeared In The Warehouse",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Foreman Gus",
+              "characterSprite": "Skab/!$FactoryWorker",
+              "bustName": "FactoryWorker"
+            }
+          ]
+        },
+        {
+          "id": "the_ticker",
+          "format": "market_report",
+          "title": "The Ticker",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Ledger Vane",
+              "characterSprite": "Skab/!$Banker",
+              "bustName": "Banker"
+            }
+          ]
+        },
+        {
+          "id": "pyramid_hour",
+          "format": "talk_show",
+          "title": "Opportunity Hour",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            },
+            {
+              "characterName": "Bree Halcyon",
+              "characterSprite": "Skab/!$Billionaire",
+              "bustName": "Billionaire"
+            }
+          ]
+        },
+        {
+          "id": "bid_your_memories",
+          "format": "game_show",
+          "title": "Bid Your Memories",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Ozzy Fell",
+              "characterSprite": "Skab/!$TicketMaster",
+              "bustName": "TicketMaster"
+            }
+          ]
+        },
+        {
+          "id": "customer_lines",
+          "format": "phone_in",
+          "title": "Customer Lines Are Open Forever",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            },
+            {
+              "characterName": "Verity Cross",
+              "characterSprite": "Skab/!$Secretary",
+              "bustName": "Secretary"
+            }
+          ]
+        },
+        {
+          "id": "unboxing_the_tower",
+          "format": "reality_tv",
+          "title": "Unboxing The Tower",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Diana Crashcode",
+              "characterSprite": "Skab/!$Stylist",
+              "bustName": "Stylist"
+            },
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            },
+            {
+              "characterName": "Peb",
+              "characterSprite": "Skab/!$GoblinCourier",
+              "bustName": "GoblinCourier"
+            }
+          ]
+        },
+        {
+          "id": "clearance",
+          "format": "infomercial",
+          "title": "Terminal Clearance",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            }
+          ]
+        },
+        {
+          "id": "brand_devotional",
+          "format": "religious",
+          "title": "A Devotional For The Market God",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Brother Margin",
+              "characterSprite": "Skab/!$Cultist",
+              "bustName": "Cultist"
+            }
+          ]
+        },
+        {
+          "id": "depot_report",
+          "format": "road_report",
+          "title": "Depot Report",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Hank Dole",
+              "characterSprite": "Skab/!$Trucker",
+              "bustName": "Trucker"
+            }
+          ]
+        },
+        {
+          "id": "unclaimed_auction",
+          "format": "game_show",
+          "title": "Auction of the Unclaimed",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Ozzy Fell",
+              "characterSprite": "Skab/!$TicketMaster",
+              "bustName": "TicketMaster"
+            },
+            {
+              "characterName": "Peb",
+              "characterSprite": "Skab/!$GoblinCourier",
+              "bustName": "GoblinCourier"
+            }
+          ]
+        },
+        {
+          "id": "complaints_line",
+          "format": "phone_in",
+          "title": "The Complaints Line",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Verity Cross",
+              "characterSprite": "Skab/!$Secretary",
+              "bustName": "Secretary"
+            }
+          ]
+        },
+        {
+          "id": "warehouse_live",
+          "format": "reality_tv",
+          "title": "Warehouse Live",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Foreman Gus",
+              "characterSprite": "Skab/!$FactoryWorker",
+              "bustName": "FactoryWorker"
+            },
+            {
+              "characterName": "Peb",
+              "characterSprite": "Skab/!$GoblinCourier",
+              "bustName": "GoblinCourier"
+            },
+            {
+              "characterName": "Unit Nine",
+              "characterSprite": "Skab/!$BotAssistant",
+              "bustName": "BotAssistant"
+            }
+          ]
+        },
+        {
+          "id": "sponsored_weather",
+          "format": "weather",
+          "title": "Sponsored Weather",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Diana Crashcode",
+              "characterSprite": "Skab/!$Stylist",
+              "bustName": "Stylist"
+            }
+          ]
+        },
+        {
+          "id": "before_the_boundary",
+          "format": "emergency",
+          "title": "Buy It Before The Boundary",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Tom Loopsworth",
+              "characterSprite": "Skab/!$SpacerSalesman",
+              "bustName": "SpacerSalesman"
+            }
+          ]
+        },
+        {
+          "id": "car_boot",
+          "format": "reality_tv",
+          "title": "The Car Boot",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Marge Pettifer",
+              "characterSprite": "Skab/!$Towner",
+              "bustName": "Towner"
+            },
+            {
+              "characterName": "Nev Cobb",
+              "characterSprite": "Skab/!$TravelingSalesman",
+              "bustName": "TravelingSalesman"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mediahex",
+      "name": "Mediahex",
+      "tone": "zany",
+      "color": 18,
+      "room": {
+        "x": 16,
+        "y": 16,
+        "dir": 8
+      },
+      "programs": [
+        {
+          "id": "slither_news",
+          "format": "news_desk",
+          "title": "Slither The News",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Ezio Greggs",
+              "characterSprite": "Skab/!$Actor",
+              "bustName": "Actor"
+            },
+            {
+              "characterName": "Enzo Yakketty",
+              "characterSprite": "Skab/!$Musician",
+              "bustName": "Musician"
+            },
+            {
+              "characterName": "Gubbibo",
+              "characterSprite": "Skab/!$ElephantMascotte",
+              "bustName": "ElephantMascotte"
+            }
+          ]
+        },
+        {
+          "id": "wheel_fortunes",
+          "format": "game_show",
+          "title": "The Wheel of Fortunes",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Merry Scott",
+              "characterSprite": "Skab/!$Businessman",
+              "bustName": "Businessman"
+            },
+            {
+              "characterName": "Paula Barrel",
+              "characterSprite": "Skab/!$SnobStylist",
+              "bustName": "SnobStylist"
+            }
+          ]
+        },
+        {
+          "id": "price_correct",
+          "format": "game_show",
+          "title": "OK, The Price Is Correct",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Eva Zannicky",
+              "characterSprite": "Skab/!$OperaGoddess",
+              "bustName": "OperaGoddess"
+            }
+          ]
+        },
+        {
+          "id": "papperissima",
+          "format": "reality_tv",
+          "title": "Papperissima",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Anthony Ritchie",
+              "characterSprite": "Skab/!$Mastermind",
+              "bustName": "Mastermind"
+            },
+            {
+              "characterName": "Gubbibo",
+              "characterSprite": "Skab/!$ElephantMascotte",
+              "bustName": "ElephantMascotte"
+            }
+          ]
+        },
+        {
+          "id": "sarabander",
+          "format": "game_show",
+          "title": "Sarabander",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Henry Poppy",
+              "characterSprite": "Skab/!$CityDJ",
+              "bustName": "CityDJ"
+            }
+          ]
+        },
+        {
+          "id": "not_the_rye",
+          "format": "music_video",
+          "title": "It Isn't The Rye",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Amber Angelino",
+              "characterSprite": "Skab/!$NobleSinger",
+              "bustName": "NobleSinger"
+            }
+          ]
+        },
+        {
+          "id": "costanza_show",
+          "format": "talk_show",
+          "title": "The Maurice Costanza Show",
+          "tone": "serious",
+          "cast": [
+            {
+              "characterName": "Maurice Costanza",
+              "characterSprite": "Skab/!$Wiseman",
+              "bustName": "Wiseman"
+            }
+          ]
+        },
+        {
+          "id": "forum_hex",
+          "format": "court_report",
+          "title": "Forum",
+          "tone": "wry",
+          "cast": [
+            {
+              "characterName": "Rita Della Church",
+              "characterSprite": "Skab/!$Matchmaker",
+              "bustName": "Matchmaker"
+            },
+            {
+              "characterName": "Judge Fabbione",
+              "characterSprite": "Skab/!$Judge",
+              "bustName": "Judge"
+            }
+          ]
+        },
+        {
+          "id": "lunch_served",
+          "format": "cooking",
+          "title": "Lunch Is Served",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Corrardo",
+              "characterSprite": "Skab/!$Innkeeper",
+              "bustName": "Innkeeper"
+            }
+          ]
+        },
+        {
+          "id": "telemick",
+          "format": "game_show",
+          "title": "Telemick",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Mick Bongiorney",
+              "characterSprite": "Skab/!$Instructor",
+              "bustName": "Instructor"
+            }
+          ]
+        },
+        {
+          "id": "studio_open",
+          "format": "news_desk",
+          "title": "Studio Open",
+          "tone": "urgent",
+          "cast": [
+            {
+              "characterName": "Emil Faith",
+              "characterSprite": "Skab/!$BotJournalist",
+              "bustName": "BotJournalist"
+            }
+          ]
+        },
+        {
+          "id": "beautifool",
+          "format": "soap_opera",
+          "title": "Beautifool",
+          "tone": "solemn",
+          "cast": [
+            {
+              "characterName": "Ridge Forrestier",
+              "characterSprite": "Skab/!$CharmingPrince",
+              "bustName": "CharmingPrince"
+            },
+            {
+              "characterName": "Brooke Loganberry",
+              "characterSprite": "Skab/!$WastelandModel",
+              "bustName": "WastelandModel"
+            },
+            {
+              "characterName": "Eric Forrestier",
+              "characterSprite": "Skab/!$CEO",
+              "bustName": "CEO"
+            },
+            {
+              "characterName": "Stephanie Forrestier",
+              "characterSprite": "Skab/!$Queen",
+              "bustName": "Queen"
+            },
+            {
+              "characterName": "Thorne Forrestier",
+              "characterSprite": "Skab/!$NobleKnight",
+              "bustName": "NobleKnight"
+            },
+            {
+              "characterName": "Taylor Hays",
+              "characterSprite": "Skab/!$AndroidPsychologist",
+              "bustName": "AndroidPsychologist"
+            },
+            {
+              "characterName": "Sally Spectrum",
+              "characterSprite": "Skab/!$Hairdresser",
+              "bustName": "Hairdresser"
+            }
+          ]
+        },
+        {
+          "id": "bim_bum_bang",
+          "format": "puppet_show",
+          "title": "Bim Bum Bang",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Paul Bonellis",
+              "characterSprite": "Skab/!$GnomeArtist",
+              "bustName": "GnomeArtist"
+            },
+            {
+              "characterName": "Wan",
+              "characterSprite": "Skab/!$BotMarionette",
+              "bustName": "BotMarionette"
+            }
+          ]
+        },
+        {
+          "id": "superchart",
+          "format": "music_video",
+          "title": "Superchart Show",
+          "tone": "light",
+          "cast": [
+            {
+              "characterName": "Maurice Seymand",
+              "characterSprite": "Skab/!$WastelandDJ",
+              "bustName": "WastelandDJ"
+            }
+          ]
+        },
+        {
+          "id": "coalpo_grosso",
+          "format": "late_night",
+          "title": "Coalpo Grosso",
+          "tone": "weird",
+          "cast": [
+            {
+              "characterName": "Humbert Smiley",
+              "characterSprite": "Skab/!$Partygoer",
+              "bustName": "Partygoer"
+            }
+          ]
+        },
+        {
+          "id": "know_the_latest",
+          "format": "talk_show",
+          "title": "Do You Know The Latest?",
+          "tone": "zany",
+          "cast": [
+            {
+              "characterName": "Pippa Frank",
+              "characterSprite": "Skab/!$Jester",
+              "bustName": "Jester"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

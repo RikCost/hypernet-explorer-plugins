@@ -1,0 +1,15 @@
+{
+  "title": "Guida TV",
+  "status": "{channels} canali  |  Mappa studio {map}  |  {slots} fasce giornaliere",
+  "noSignal": "Nessun segnale di trasmissione. (RandomTVTransmissionGenerator non caricato?)",
+  "endOfTransmission": "- fine della trasmissione -",
+  "narrator": "Narratore",
+  "format": "Formato:",
+  "tone": "Tono:",
+  "cast": "Cast:",
+  "watch": "▶ Guarda",
+  "programs": "Programmi",
+  "noPrograms": "Nessun programma in palinsesto.",
+  "transmission": "Trasmissione",
+  "tuneInHint": "Scegli un programma qui sopra per sintonizzarti."
+}

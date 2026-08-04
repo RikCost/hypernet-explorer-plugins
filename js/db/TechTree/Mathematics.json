@@ -1,0 +1,390 @@
+{
+  "id": "Mathematics",
+  "icon": 187,
+  "accent": "#2f6b5e",
+  "real": true,
+  "procCount": 3,
+  "nodes": [
+    {
+      "id": "math_aks",
+      "year": 2002,
+      "requires": [],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 100
+        },
+        {
+          "id": 853,
+          "qty": 100
+        },
+        {
+          "id": 867,
+          "qty": 60
+        }
+      ],
+      "buffs": {
+        "mat": 1
+      }
+    },
+    {
+      "id": "math_poincare",
+      "year": 2003,
+      "requires": [
+        "math_aks"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 100
+        },
+        {
+          "id": 867,
+          "qty": 140
+        },
+        {
+          "id": 852,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      },
+      "reward": {
+        "kind": "armor",
+        "id": 534,
+        "qty": 1
+      }
+    },
+    {
+      "id": "math_green_tao",
+      "year": 2004,
+      "requires": [
+        "math_aks"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 140
+        },
+        {
+          "id": 853,
+          "qty": 120
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "math_gimps_mersenne",
+      "year": 2008,
+      "requires": [
+        "math_aks"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 160
+        },
+        {
+          "id": 853,
+          "qty": 220
+        },
+        {
+          "id": 852,
+          "qty": 200
+        },
+        {
+          "id": 854,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "math_e8",
+      "year": 2007,
+      "requires": [
+        "math_green_tao",
+        "math_terabyte_linear_algebra"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 240
+        },
+        {
+          "id": 853,
+          "qty": 300
+        },
+        {
+          "id": 866,
+          "qty": 120
+        },
+        {
+          "id": 850,
+          "qty": 40
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "math_polymath",
+      "year": 2009,
+      "requires": [
+        "math_green_tao"
+      ],
+      "materials": [
+        {
+          "id": 852,
+          "qty": 180
+        },
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 861,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "luk": 2
+      }
+    },
+    {
+      "id": "math_pnp_claim",
+      "year": 2010,
+      "requires": [
+        "math_gimps_mersenne"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 200
+        },
+        {
+          "id": 852,
+          "qty": 240
+        },
+        {
+          "id": 853,
+          "qty": 180
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "math_fundamental_lemma",
+      "year": 2009,
+      "requires": [
+        "math_e8"
+      ],
+      "materials": [
+        {
+          "id": 850,
+          "qty": 60
+        },
+        {
+          "id": 866,
+          "qty": 160
+        },
+        {
+          "id": 851,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "math_abc",
+      "year": 2012,
+      "requires": [
+        "math_pnp_claim",
+        "math_iut_foundations"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 340
+        },
+        {
+          "id": 850,
+          "qty": 140
+        },
+        {
+          "id": 865,
+          "qty": 120
+        },
+        {
+          "id": 866,
+          "qty": 200
+        },
+        {
+          "id": 853,
+          "qty": 260
+        }
+      ],
+      "buffs": {
+        "mat": 4
+      },
+      "reward": {
+        "kind": "item",
+        "id": 393,
+        "qty": 1
+      }
+    },
+    {
+      "id": "math_time_cube",
+      "year": 2001,
+      "requires": [
+        "math_aks"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 859,
+          "qty": 120
+        },
+        {
+          "id": 861,
+          "qty": 100
+        },
+        {
+          "id": 852,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "math_bible_code",
+      "year": 2003,
+      "requires": [
+        "math_green_tao"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 861,
+          "qty": 140
+        },
+        {
+          "id": 859,
+          "qty": 100
+        },
+        {
+          "id": 853,
+          "qty": 80
+        }
+      ],
+      "buffs": {
+        "mdf": 1
+      }
+    },
+    {
+      "id": "math_sacred_geometry",
+      "year": 2005,
+      "requires": [
+        "math_poincare"
+      ],
+      "fringe": true,
+      "materials": [
+        {
+          "id": 866,
+          "qty": 120
+        },
+        {
+          "id": 867,
+          "qty": 140
+        },
+        {
+          "id": 861,
+          "qty": 100
+        }
+      ],
+      "buffs": {
+        "luk": 1
+      }
+    },
+    {
+      "id": "math_atlas_software",
+      "year": 2005,
+      "requires": [
+        "math_poincare"
+      ],
+      "materials": [
+        {
+          "id": 853,
+          "qty": 160
+        },
+        {
+          "id": 852,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 2
+      }
+    },
+    {
+      "id": "math_terabyte_linear_algebra",
+      "year": 2006,
+      "requires": [
+        "math_atlas_software"
+      ],
+      "materials": [
+        {
+          "id": 851,
+          "qty": 180
+        },
+        {
+          "id": 853,
+          "qty": 200
+        },
+        {
+          "id": 852,
+          "qty": 160
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    },
+    {
+      "id": "math_iut_foundations",
+      "year": 2010,
+      "requires": [
+        "math_fundamental_lemma"
+      ],
+      "materials": [
+        {
+          "id": 866,
+          "qty": 160
+        },
+        {
+          "id": 850,
+          "qty": 80
+        },
+        {
+          "id": 853,
+          "qty": 140
+        }
+      ],
+      "buffs": {
+        "mat": 3
+      }
+    }
+  ]
+}

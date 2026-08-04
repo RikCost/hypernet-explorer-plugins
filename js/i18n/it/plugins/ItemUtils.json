@@ -1,0 +1,22 @@
+{
+  "need": {
+    "hunger": "Fame",
+    "sleep": "Sonno",
+    "hygiene": "Igiene",
+    "social": "Socialità",
+    "leisure": "Svago"
+  },
+  "category": {
+    "materials": "Materiali",
+    "item": "Oggetto",
+    "food": "Cibo",
+    "tools": "Strumenti"
+  },
+  "rarity": {
+    "Common": "Comune",
+    "Uncommon": "Non comune",
+    "Rare": "Raro",
+    "Epic": "Epico",
+    "Legendary": "Leggendario"
+  }
+}

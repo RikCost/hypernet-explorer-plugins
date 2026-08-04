@@ -1,0 +1,634 @@
+{
+  "morning": {
+    "Nervous": [
+      "Già mattina?! Non ho ancora finito di preoccuparmi per metà di ieri!",
+      "Ho dormito pochissimo. E se oggi fosse peggio di ieri?",
+      "Ok. Lista del mattino. Dov'è la lista. DOV'È LA... ah. In tasca.",
+      "La mattina sono tutti così calmi. Sanno qualcosa che io non so?"
+    ],
+    "Calm": [
+      "Un mattino tranquillo. Prima il tè. Tutto il resto dopo.",
+      "La città si sveglia piano. Non vedo motivo di anticiparla.",
+      "Aria del mattino, pulita e fresca. Si comincia con dolcezza.",
+      "La prima luce non chiede niente. Per questo mi piace."
+    ],
+    "Aggressive": [
+      "Chi mi parla prima di colazione se ne pente.",
+      "Mattina. Cominciamo presto a litigare.",
+      "In piedi all'alba. Vince il primo che si muove.",
+      "Io e il gallo abbiamo un'intesa. Lui ha smesso."
+    ],
+    "Melancholic": [
+      "Un altro mattino. I giorni proprio insistono a continuare.",
+      "Sveglio di nuovo prima dell'alba. Le ore silenziose mi conoscono.",
+      "La luce del mattino è bella. Solo che arriva così implacabile.",
+      "Corrono tutti a cominciare la giornata. Verso cosa, mi chiedo."
+    ],
+    "Sanguine": [
+      "Mattina! La giornata è nuova di zecca e anch'io!",
+      "Senti che profumo di pane appena sfornato! La giornata sta già vincendo!",
+      "In piedi col sole! Non mi perderei un giorno nuovo per niente al mondo!",
+      "Buongiorno a tutti! Sì, anche a te, mugnaio brontolone!"
+    ],
+    "Cautious": [
+      "Pianifica la giornata prima che la giornata pianifichi te.",
+      "Rassegna mattutina: tempo, denaro, compiti. Poi la porta.",
+      "Partenza presto, meno sorprese.",
+      "Controlla che le serrature abbiano tenuto la notte, poi colazione."
+    ],
+    "Impulsive": [
+      "Sveglio! Cosa faccio per primo? Non importa, mi muovo!",
+      "Saltata la colazione. Troppo da fare. O da trovare. O da iniziare!",
+      "Mattina! Ora di impegnarmi in qualcosa che metterò in dubbio a mezzogiorno!",
+      "La giornata è fresca, vince la prima idea!"
+    ],
+    "Stoic": [
+      "Alzati. Comincia. L'ora non tratta.",
+      "Il mattino è una porta. Attraversala.",
+      "Dormito, svegliato, si continua.",
+      "L'alba non richiede altro che presenza."
+    ],
+    "Paranoid": [
+      "Chi si è alzato prima di me? Cosa mi sono perso mentre dormivo?",
+      "La porta era chiusa esattamente come l'avevo lasciata. O... quasi esattamente.",
+      "La mattina è quando ti osservano. Le abitudini di tutti in bella vista.",
+      "Ho dormito con un occhio aperto. L'altro si è perso delle cose, ne sono certo."
+    ],
+    "Empathetic": [
+      "Chissà come hanno dormito tutti. Stamattina certe facce sembrano pesanti.",
+      "La fornaia è in piedi da ore. Spero che prima o poi riposi.",
+      "Un buongiorno gentile può portare qualcuno fino a mezzogiorno.",
+      "Per certa gente la mattina è dura. Vale la pena ricordarlo."
+    ],
+    "Authoritative": [
+      "Prima il rapporto del mattino. Un giorno senza ordini è un giorno sprecato.",
+      "Ispezione all'alba. Se sono sveglio io, sono svegli tutti.",
+      "Le prime ore danno il tono. E il tono delle prime ore lo do io.",
+      "I piani si sono fatti ieri sera. Le mattine servono a eseguirli."
+    ],
+    "Scholarly": [
+      "La mente è più acuta prima di mezzogiorno. È ora dei capitoli difficili.",
+      "Due pagine lette prima di colazione fanno già una giornata in attivo.",
+      "Luce del mattino dalla finestra a est: ore di lettura, e preziose.",
+      "Ho sognato una risposta. Devo scriverla prima che evapori."
+    ],
+    "Artistic": [
+      "L'alba vuol dire un'intera giornata inesplorata davanti!",
+      "L'alba ha di nuovo disegnato i tetti a foglia d'oro. Che esibizionista.",
+      "La foschia del mattino fa un bellissimo lavoro di montaggio sulla città.",
+      "Prima luce, prime idee. Entrambe svaniscono in fretta: acchiappale."
+    ],
+    "Adventurous": [
+      "La luce del mattino è color miele. Non c'è nient'altro di simile.",
+      "La strada è vuota a quest'ora. Il momento migliore per macinare chilometri!",
+      "L'alba dalla cima della collina vale ogni minuto di sonno perso.",
+      "Mattina! Da qualche parte là fuori c'è la scoperta di oggi."
+    ],
+    "Nurturing": [
+      "Hanno mangiato tutti? Nessuno comincia la giornata a stomaco vuoto, non sotto la mia guardia.",
+      "La polenta è pronta. Venite a prenderla finché è calda.",
+      "La mattina è fatta di cibo caldo e parole gentili. Entrambi pronti.",
+      "Hai dormito bene? Sei pallido, caro. Siediti, mangia."
+    ],
+    "Mischievous": [
+      "La mattina sono tutti intontiti. Ora di punta per gli scherzi.",
+      "Ieri sera ho scambiato il sale con lo zucchero. La colazione sarà... memorabile.",
+      "Chi si alza presto trova il verme. Chi si alza prima nasconde i vermi.",
+      "Niente di personale, gente mattiniera. Ma siete sospetti."
+    ],
+    "Cynical": [
+      "Mattina. Il promemoria quotidiano che ricomincia tutto.",
+      "Su, alzati e splendi, dicono. Come se fossero opzionali.",
+      "Il sole è alto e scommetto che lo sono anche i prezzi.",
+      "Un'altra alba, un'altra fila per ogni cosa."
+    ],
+    "Disciplined": [
+      "In piedi alla stessa ora, come sempre. La routine è libertà.",
+      "Letto rifatto, stivali ai piedi, lista in mano. Si procede.",
+      "L'esercizio del mattino non salta nessuno. Men che meno me.",
+      "Cinque compiti prima di colazione. Standard."
+    ],
+    "Fatalistic": [
+      "Il sole sorge senza chiedercelo. Noi ci adeguiamo.",
+      "Di nuovo mattina. La ruota non rallenta nemmeno.",
+      "Oggi è stato deciso molto tempo fa. Io sono solo qui a presenziare.",
+      "Ci svegliamo perché ci siamo svegliati. Motivo sufficiente, a quanto pare."
+    ],
+    "Grumpy": [
+      "Le mattine. Chi le ha inventate mi deve del sonno.",
+      "Gli uccelli hanno cominciato alle CINQUE. Io e gli uccelli abbiamo chiuso.",
+      "Non dirmi 'buongiorno'. Prima dimostralo.",
+      "Caffè. Poi parole. Non prima."
+    ],
+    "Loyal": [
+      "Prima cosa: passo a vedere come stanno i miei.",
+      "Giro del mattino: forno, pozzo, veranda del mio vecchio amico. Ogni giorno.",
+      "Passa davanti a casa mia per andare al lavoro. Lo aspetto e ci vado insieme.",
+      "Avevo promesso di aiutare stamattina, ed è mattina."
+    ],
+    "Brave": [
+      "Un giorno nuovo. Qualunque cosa porti, sono pronto.",
+      "Alba. L'ora migliore per fare la cosa che temi.",
+      "Il coraggio del mattino è quello che costa meno. Fanne scorta.",
+      "In piedi prima del sole. Che sia lui a raggiungermi."
+    ],
+    "Timid": [
+      "Magari se comincio presto evito la folla...",
+      "Le strade sono ancora vuote. Mi piacciono così.",
+      "Bene. Non si è ancora alzato nessuno. Posso fare le commissioni in pace.",
+      "Una colazione tranquilla nel posto d'angolo. Inizio perfetto."
+    ],
+    "Hedonistic": [
+      "Ancora cinque minuti. Poi colazione. Una lunga.",
+      "Le mattine sono una diceria che mi rifiuto di confermare prima delle dieci.",
+      "Colazione a letto. Entrambe le colazioni, per la precisione.",
+      "Io e il cuscino abbiamo delle questioni in sospeso."
+    ],
+    "Apathetic": [
+      "Mattina. Di nuovo. Ok.",
+      "Sveglio. Ecco sistemato il risultato della giornata.",
+      "Il sole insiste, quindi eccomi qua.",
+      "Mattina, mezzogiorno. Stessa cosa, luce diversa."
+    ],
+    "default": [
+      "È già mattina. Dovrei sfruttare al meglio la luce.",
+      "Comincia un nuovo giorno.",
+      "È arrivata la mattina, ora di muoversi.",
+      "Già la prima luce. Dove va a finire la notte?"
+    ]
+  },
+  "afternoon": {
+    "Nervous": [
+      "Mezza giornata andata e la mia lista si è pure allungata!",
+      "È già così tardi?! Quando è successo? COME?",
+      "Sembrano tutti indaffarati. Sono abbastanza indaffarato io? Dovrei sembrarlo di più.",
+      "Il pranzo mi è rimasto sullo stomaco. O forse è la scadenza. O entrambi. Probabilmente entrambi."
+    ],
+    "Calm": [
+      "Mezzogiorno. Una pausa, un respiro, poi avanti.",
+      "Il brusio pomeridiano della città. Regolare. Rassicurante.",
+      "Mezza fatta o mezza da fare: è lo stesso, nessun allarme in un caso o nell'altro.",
+      "Ore calde. Buone per un lavoro senza fretta."
+    ],
+    "Aggressive": [
+      "Questo caldo rende tutti lenti e stupidi. Toglietevi di mezzo.",
+      "Di nuovo la fila di mezzogiorno. Muovetevi, gente.",
+      "Calo del pomeriggio? Tira dritto. Io lo faccio.",
+      "Chiunque stia martellando qui accanto farebbe bene a finire presto."
+    ],
+    "Melancholic": [
+      "Il pomeriggio si trascina i piedi, come faccio io.",
+      "Le ore luminose sembrano sempre le più lunghe, chissà perché.",
+      "Folla di mezzogiorno, e proprio per questo più solo.",
+      "Mezza giornata spesa. Per cosa, esattamente?"
+    ],
+    "Sanguine": [
+      "La parte migliore della giornata! Sono tutti in giro!",
+      "Sole pomeridiano e facce amiche ovunque. Lo adoro!",
+      "Il mercato è in fermento! Che baccano glorioso!",
+      "C'è ancora tantissima giornata! Possibilità infinite!"
+    ],
+    "Cautious": [
+      "Buoni progressi finora. Non sciupare tutto nel rettilineo finale.",
+      "Controllo di metà giornata: borsa, chiave di casa, lista. Tutto presente.",
+      "Il pomeriggio è quando si insinuano gli errori. Rallenta un pochino.",
+      "Finisci le cose importanti prima che cambi la luce."
+    ],
+    "Impulsive": [
+      "Calo del pomeriggio? Non io. Prossima cosa, adesso!",
+      "Pranzo? Mangiato camminando. Avanti!",
+      "Nuovo piano pomeridiano! Dimentica quello del mattino!",
+      "Mezza giornata è un'avventura intera, se ti sbrighi!"
+    ],
+    "Stoic": [
+      "La giornata è a metà. Spendi il resto con intenzione.",
+      "Caldo di mezzogiorno. Sopportalo come il resto.",
+      "Pomeriggio: il lungo mezzo. I mezzi forgiano il carattere.",
+      "Né la promessa del mattino né il riposo della sera. Solo lavoro. Bene."
+    ],
+    "Paranoid": [
+      "Strade affollate. Folla. Nella folla chiunque potrebbe essere chiunque.",
+      "Mezzogiorno: massimo dei testimoni... o massima copertura. Dipende chi lo chiede.",
+      "Quel venditore mi ha visto attraversare la piazza tre volte ormai.",
+      "A quest'ora sono tutti fuori 'per caso'. Tutti quanti. Insieme."
+    ],
+    "Empathetic": [
+      "A quest'ora sono tutti un po' fiacchi. Una parola gentile vale molto nel pomeriggio.",
+      "I facchini sembrano esausti. Spero che qualcuno porti loro dell'acqua.",
+      "La luce del pomeriggio rende oneste le facce stanche. Siate gentili con loro.",
+      "È a quella bancarella dall'alba. Le porto qualcosa."
+    ],
+    "Authoritative": [
+      "Controllo di metà giornata: chi è indietro con i compiti?",
+      "Il pomeriggio serve a colmare le lacune. Trova la tua.",
+      "Rapporti di metà giornata. Brevi. Ho una serata in programma.",
+      "La produttività cala alle tre. Non sotto la mia guardia."
+    ],
+    "Scholarly": [
+      "Passato mezzogiorno. Rivedo gli appunti del mattino finché sono freschi.",
+      "La biblioteca è più vuota a metà pomeriggio. Il mio pubblico preferito.",
+      "Pomeriggio: verificare ciò che l'io del mattino sosteneva con tanta sicurezza.",
+      "La luce è troppo piatta per il telescopio, perfetta per l'archivio."
+    ],
+    "Artistic": [
+      "Luce piatta a quest'ora. Il mondo diventa un po' prosa.",
+      "Le ombre di mezzogiorno sono cosine tozze. Quasi comiche.",
+      "Il pomeriggio andrebbe rivisto. Troppo lungo nella parte centrale.",
+      "Aria che tremola sopra i tetti: l'atmosfera stessa che disegna."
+    ],
+    "Adventurous": [
+      "Resta un sacco di luce. Resta un sacco di strada.",
+      "Il pomeriggio è per la commissione lontana, il giro lungo, la scorciatoia nuova.",
+      "Potrei ancora arrivare al crinale e tornare prima del buio. Tentante.",
+      "L'ora più battuta. Ora di battere qualcosa di meno battuto."
+    ],
+    "Nurturing": [
+      "Il pranzo è finito: e adesso di chi c'è da occuparsi questo pomeriggio?",
+      "Ora del riposino per i piccoli. Piedi leggeri, tutti quanti.",
+      "Il pranzo ha sfamato dodici persone. La pentola è già sul fuoco per la cena.",
+      "Il tè del pomeriggio ripara quel che la mattina ha ammaccato."
+    ],
+    "Mischievous": [
+      "Le pance piene fanno le guardie sonnolente. Dico per dire.",
+      "La calma del pomeriggio. Quando l'attenzione fa un pisolino e io no.",
+      "Dopo pranzo sono tutti prevedibili. Adorabilmente prevedibili.",
+      "Le tre: ora ufficiale delle torte incustodite."
+    ],
+    "Cynical": [
+      "Il pomeriggio: troppo tardi per cominciare qualcosa, troppo presto per smettere.",
+      "Ottimismo di mezzogiorno, ti presento la realtà del pomeriggio.",
+      "Sono tutti 'quasi a posto'. Nessuno è quasi a posto.",
+      "La giornata ha raggiunto il picco ore fa. Stiamo tutti solo scendendo per inerzia."
+    ],
+    "Disciplined": [
+      "Seconda metà del programma. Stesso passo della prima.",
+      "Pranzo: venti minuti. Ripresa: puntuale.",
+      "La stanchezza del pomeriggio è una diceria che rifiuto di prendere in considerazione.",
+      "Metà lista. Esattamente dove il piano dice che dovrei essere."
+    ],
+    "Fatalistic": [
+      "Il mezzogiorno scivola nel pomeriggio. La discesa arriva sempre.",
+      "La giornata ha già deciso come finisce. Il cardine è alle spalle.",
+      "Pomeriggio: la lunga espirazione prima del punto fermo della sera.",
+      "Le ombre si allungano puntuali. Come ogni cosa."
+    ],
+    "Grumpy": [
+      "È già sera? No? Svegliatemi quando lo è.",
+      "Il caldo del pomeriggio, il chiasso del pomeriggio, la gente del pomeriggio.",
+      "Altre tre ore a fingermi cordiale. Tic tac.",
+      "Chi ha programmato pomeriggi così lunghi dovrebbe risponderne."
+    ],
+    "Loyal": [
+      "È a metà giornata che la gente ha più bisogno di una mano. Faccio il giro.",
+      "Avevo detto che passavo dopo pranzo. E dopo pranzo sia.",
+      "La mia squadra cede a metà pomeriggio. È lì che mi presento.",
+      "Un favore pomeridiano vale due promesse mattutine."
+    ],
+    "Brave": [
+      "Giornata a metà e non ho ancora fatto un passo indietro.",
+      "Il compito difficile mi fissa da mezzogiorno. Adesso lo fisso io.",
+      "Il caldo del pomeriggio mette alla prova la volontà. La volontà dice: e va bene.",
+      "Tieni da parte un po' di fegato per il pomeriggio. È lì che conta."
+    ],
+    "Timid": [
+      "C'è troppa gente in giro adesso. Prendo le vie laterali.",
+      "Il mercato è più rumoroso a quest'ora. Ci vado... dopo. O domani.",
+      "Ho trovato una panchina all'ombra lontano dal trambusto. Adesso è mia.",
+      "Sembrano tutti occupati. Bene. Chi è occupato non si ferma a chiacchierare."
+    ],
+    "Hedonistic": [
+      "Pisolino pomeridiano. Tradizione, tecnicamente.",
+      "Un pranzo lungo scivola nella cena anticipata, se sai dosare i tempi.",
+      "Sono giunte le ore dell'amaca, amici.",
+      "Lavorare con questo caldo? Dopo questo riposino. O il prossimo."
+    ],
+    "Apathetic": [
+      "Pomeriggio. A metà strada verso niente in particolare.",
+      "Mezzogiorno. Il sole è rumoroso e lo sono anche tutti gli altri.",
+      "Mezza giornata rimasta. Nessun programma per nessuna delle due metà.",
+      "Il pomeriggio capita ogni giorno, sai. Non è una notizia."
+    ],
+    "default": [
+      "È metà giornata. Le cose vanno abbastanza bene.",
+      "Ore indaffarate, queste.",
+      "Il pomeriggio scorre.",
+      "Già mezzogiorno: la giornata corre."
+    ]
+  },
+  "evening": {
+    "Nervous": [
+      "Sta facendo buio e non ho ancora ricontrollato le serrature!",
+      "Già crepuscolo? Ho finito tutto? Non ho finito, vero.",
+      "Le ombre della sera sembrano... no. No, non è niente. Probabilmente niente.",
+      "Dovrei essere a casa. Perché non sono ancora a casa?!"
+    ],
+    "Calm": [
+      "La giornata si scioglie. Lasciala fare.",
+      "La sera rimette le cose a posto. Perfino me.",
+      "Luce di lampada e voci basse. Le ore gentili.",
+      "Quel che non è stato fatto aspetterà educatamente fino a domattina."
+    ],
+    "Aggressive": [
+      "La folla della sera è piena di sciocchi col coraggio liquido. Per me va bene.",
+      "Giornata lunga. Pazienza corta. Pesate le parole, gente.",
+      "L'ultimo che attacca briga prima di cena ne prende una gratis.",
+      "La giornata mi ha tirato tutto quel che aveva. Sono ancora in piedi."
+    ],
+    "Melancholic": [
+      "Il crepuscolo è onesto, almeno. Tutto svanisce.",
+      "Il tramonto è bello. È anche in partenza. Il solito.",
+      "Le sere servono a ricordare cose che sarebbe meglio non ricordare.",
+      "Un altro giorno ripiegato via. Si accatastano così in silenzio."
+    ],
+    "Sanguine": [
+      "Sera! Luce di lampada, buona compagnia, magari una canzone!",
+      "Guarda che tramonto! La giornata sta facendo l'inchino!",
+      "Odore di cena da ogni finestra. L'ora più bella della città!",
+      "La giornata è stata grande e la sera lo è ancora di più!"
+    ],
+    "Cautious": [
+      "A casa prima del buio pieno. Questa è la regola.",
+      "Lampade regolate, porta sbarrata, e poi mi rilasso. In quest'ordine.",
+      "Commissioni serali sbrigate presto. Il buio si tenga le sue sorprese.",
+      "Un ultimo sguardo su e giù per la strada, e poi dentro per la notte."
+    ],
+    "Impulsive": [
+      "La notte è giovane! Il sonno è un problema del me di dopo.",
+      "Programmi per la sera? Nessuno! I migliori!",
+      "Ancora una cosa prima del buio. Ok, altre tre cose.",
+      "Il tramonto dice stop. Il tramonto non è il mio capo."
+    ],
+    "Stoic": [
+      "La giornata finisce come è cominciata: un compito alla volta.",
+      "Sera. Fai il conto del giorno, incassa le lezioni, riposa.",
+      "Stanco è il modo giusto di finire una giornata.",
+      "La lampada arde bassa. Anch'io. Accettabile."
+    ],
+    "Paranoid": [
+      "Crepuscolo. L'ora in cui le sagome smettono di avere un volto.",
+      "Visite serali. Nessuna persona per bene bussa dopo il tramonto.",
+      "Conta le finestre illuminate. Adesso conta chi NON è in casa. Interessante.",
+      "La gente del giorno rientra. La gente della notte esce. Guarda il passaggio di consegne."
+    ],
+    "Empathetic": [
+      "Adoro guardare le finestre che si accendono. Ognuna è il ritorno a casa di qualcuno.",
+      "Piedi stanchi su ogni uscio. Si sono guadagnati tutti il riposo di stasera.",
+      "La sera è quando la solitudine morde più forte. Passa a trovare i più silenziosi.",
+      "Fumo di cena dal camino della vedova. Bene, sta mangiando."
+    ],
+    "Authoritative": [
+      "Rassegna di fine giornata. Gli ordini di domani non si scrivono da soli.",
+      "Appello serale, e poi tutti liberi. La disciplina compra il riposo.",
+      "I conti della giornata si chiudono prima che si spengano le lampade.",
+      "Il riposo fa parte del regime. Vedete di prenderlo."
+    ],
+    "Scholarly": [
+      "Sera: lampada, libro e le domande del giorno da sbrogliare.",
+      "Crepuscolo. L'ora in cui la mente smette di correre e comincia a pensare.",
+      "Ancora un capitolo. La notte è giovane e così questa argomentazione.",
+      "Ora blu: quando gli appunti di oggi diventano le domande di domani."
+    ],
+    "Artistic": [
+      "L'ora d'oro. Tutta la città diventa ambra.",
+      "Il tramonto spende colore come un erede ubriaco. Magnifico.",
+      "Il crepuscolo sfuma tutti gli spigoli. La città va in fuori fuoco.",
+      "La luce della sera perdona ogni muro brutto della città."
+    ],
+    "Adventurous": [
+      "Giornata finita? Le storie interessanti cominciano tutte dopo il tramonto.",
+      "Aria della sera, porta aperta, un posto dove andare. O da trovare.",
+      "Al crepuscolo la strada sembra diversa. Vale un'ultima passeggiata.",
+      "Ora del fuoco da campo. Anche in città mi manca lo scoppiettio."
+    ],
+    "Nurturing": [
+      "Cena che si scalda, lampade accese. Tornate tutti a casa adesso.",
+      "La sera è fatta di piatti pieni e preoccupazioni svuotate.",
+      "Lavatevi, sedetevi, raccontatemi la vostra giornata. Tutti quanti.",
+      "Il freddo della notte arriva in fretta. Una coperta in più su ogni letto."
+    ],
+    "Mischievous": [
+      "Ora blu. Difficile dire chi ha fatto cosa a chi. Perfetto.",
+      "Crepuscolo: quando gli scherzi di oggi maturano e si piantano quelli di domani.",
+      "Ora dei pettegolezzi serali. Ho... dei contributi.",
+      "Le lampade fanno ombre così interessanti. Alcune sono perfino vere."
+    ],
+    "Cynical": [
+      "Un altro giorno finito. Anticipazione: domani è uguale.",
+      "Il tramonto è gratis, almeno. L'unica cosa di oggi che lo era.",
+      "Sera: quando tutti mentono su com'è andata la giornata.",
+      "Accendono le lampade così possiamo vedere gli stessi problemi anche col buio."
+    ],
+    "Disciplined": [
+      "Lavoro della giornata registrato. La preparazione per domani comincia adesso.",
+      "Stivali puliti stasera fanno risparmiare minuti domani.",
+      "Routine serale: rivedere, preparare, riposare. Nessuna deviazione.",
+      "La giornata finisce quando finisce la lista. Ci siamo quasi."
+    ],
+    "Fatalistic": [
+      "La luce se ne va. Doveva andarsene comunque.",
+      "Ogni tramonto è una piccola prova generale.",
+      "Il giorno muore puntuale. Cosina precisa.",
+      "La sera viene per ogni mattina. Nessun appello."
+    ],
+    "Grumpy": [
+      "Finalmente. L'ora accettabile per smettere di fingersi socievoli.",
+      "Sera. Porta chiusa. Il mondo là fuori, io qua dentro. Perfetto.",
+      "Cena, pantofole, silenzio. In quest'ordine, senza sostituzioni.",
+      "Il sole se ne va. La cosa più intelligente che abbia fatto qualcuno oggi."
+    ],
+    "Loyal": [
+      "Giro serale, per assicurarmi che i miei amici siano tornati sani e salvi.",
+      "Finiamo la giornata come l'abbiamo cominciata: badando l'uno all'altro.",
+      "Un colpo alla sua porta prima che alla mia. Giusto per essere sicuro.",
+      "La cena divisa sa di meglio. Porto la mia dai vicini."
+    ],
+    "Brave": [
+      "Sta arrivando il buio. Bene. Dovrebbe essere lui ad avere più paura di me.",
+      "La giornata ha messo tutti alla prova. Fiero di chi è ancora in piedi.",
+      "Serve un volontario per la ronda notturna? L'avete trovato.",
+      "Il crepuscolo è solo il giorno che ti sfida a continuare."
+    ],
+    "Timid": [
+      "Sta facendo buio. Casa. Porta. Chiavistello. Coperta.",
+      "Mi piacciono le sere. Sono tutti troppo stanchi per fare rumore.",
+      "A casa prima dei lampionai. È la mia piccola gara.",
+      "La folla della sera è più mite. Comunque continuo a evitarla."
+    ],
+    "Hedonistic": [
+      "Adesso la giornata comincia davvero. Dov'è il vino?",
+      "Cena, dolce, secondo dolce. La sera fatta come si deve.",
+      "Crepuscolo: inizio ufficiale del non fare niente, splendidamente.",
+      "La sera è giovane, la bottiglia è piena, la poltrona è profonda."
+    ],
+    "Apathetic": [
+      "Il sole sta calando. Fa così.",
+      "Sera. La giornata che molla, in pratica. Mi ci ritrovo.",
+      "Lampade accese, lampade spente. Il piccolo rituale della città.",
+      "Giornata finita. Punteggio: nessuno."
+    ],
+    "default": [
+      "Sta arrivando la sera. Ora di pensare a rientrare.",
+      "La luce sta calando in fretta adesso.",
+      "Quasi ora di cena, a giudicare dal cielo.",
+      "La giornata sta finendo."
+    ]
+  },
+  "night": {
+    "Nervous": [
+      "Cos'era quel rumore? E QUELLO? Le notti non sono altro che rumori!",
+      "Controllo la serratura solo un'altra volta. La quinta è quella tranquilla.",
+      "È così buio. Là fuori potrebbe esserci qualsiasi cosa. QUALSIASI.",
+      "Dormire. Certo. Con tutta questa... notte che succede."
+    ],
+    "Calm": [
+      "La notte è immobile. Anch'io.",
+      "Stelle fuori, lampade basse. Il mondo finalmente sussurra.",
+      "L'aria della notte schiarisce la testa meglio di qualsiasi tonico.",
+      "Il buio è solo il giorno che riposa. Riposa con lui."
+    ],
+    "Aggressive": [
+      "Chi gironzola per la mia strada stanotte ha scelto la strada sbagliata.",
+      "Non riesco a dormire. Tanto vale fulminare il soffitto con lo sguardo. Ha battuto le ciglia per primo.",
+      "I rumori notturni non mi spaventano. Il rumore notturno SONO io.",
+      "L'ultima parola della giornata spetta a me. Sempre."
+    ],
+    "Melancholic": [
+      "Il buio non mi chiede di sorridere. Andiamo d'accordo, io e la notte.",
+      "I pensieri di mezzanotte sono i più pesanti. Conoscono la loro ora.",
+      "Tutta la città addormentata, e io a tenere compagnia al silenzio.",
+      "Le stelle sono solo luci lontane che se ne sono già andate. Appropriato."
+    ],
+    "Sanguine": [
+      "Guarda quelle stelle! Perfino la notte si mette in mostra!",
+      "Un cielo intero pieno di scintille ed è GRATIS!",
+      "Buonanotte, mondo! Ci vediamo di buon'ora!",
+      "Passeggiate notturne! Il bis della giornata!"
+    ],
+    "Cautious": [
+      "Ore tarde, strade vuote. Resta dove ci sono le lanterne.",
+      "Candela spenta, brace coperta, niente lasciato acceso. Adesso si dorme.",
+      "Se non si può fare in sicurezza di notte, aspetta il giorno. Semplice.",
+      "Tengo una lampada pronta vicino al letto. Solo buon senso."
+    ],
+    "Impulsive": [
+      "Non riesco a dormire. Non voglio dormire. Passeggiata di mezzanotte!",
+      "Mi è appena venuta un'idea fantastica! Non può assolutamente aspettare domattina!",
+      "Le stelle sono uscite e anch'io!",
+      "A letto? Prima o poi. Forse. La notte è troppo interessante!"
+    ],
+    "Stoic": [
+      "Guardia notturna o riposo notturno: entrambi sono doveri.",
+      "Il sonno è manutenzione. Eseguila.",
+      "Il buio non chiede pareri. Non ne riceve.",
+      "Giorno speso, notte guadagnata."
+    ],
+    "Paranoid": [
+      "Si muovono di notte, sai. È allora che si muovono tutti.",
+      "Tre serie di passi stanotte. La mia strada ha solo due case.",
+      "Dormo a turni. Faresti bene a chiederti perché.",
+      "La luce della lampada ha tremolato due volte. Segnali, ovviamente."
+    ],
+    "Empathetic": [
+      "Difficile dormire chiedendosi chi è là fuori senza un posto caldo.",
+      "La ronda notturna dev'essere così sola. Dovrei lasciare loro qualcosa di caldo.",
+      "Il bambino di qualcuno piangeva giù nel vicolo. Genitori alle prime armi. Che i loro cuori stanchi siano benedetti.",
+      "La notte rende ogni preoccupazione più pesante. Siate dolci con chi non dorme."
+    ],
+    "Authoritative": [
+      "La città dorme perché qualcuno mantiene l'ordine. Ricordatelo.",
+      "Ronde notturne fatte? Allora la giornata è ufficialmente conclusa.",
+      "Il coprifuoco non è crudeltà. È premura con la schiena dritta.",
+      "Dormirò quando la guardia farà rapporto. Non un minuto prima."
+    ],
+    "Scholarly": [
+      "Le costellazioni sono uscite. La mia biblioteca preferita non ha muri.",
+      "Silenzio notturno: finalmente, condizioni per pensare.",
+      "Una candela, un problema, una notte. Probabilità eque.",
+      "Gli antichi mappavano queste stesse stelle. Buona compagnia, i morti."
+    ],
+    "Artistic": [
+      "La notte riduce il mondo a sagome. Composizione pura.",
+      "Il chiaro di luna ridisegna tutta la città a punta d'argento.",
+      "La notte ha un contrasto migliore del giorno. E più audace.",
+      "Da qualche parte un violino. L'acustica notturna trasforma i dilettanti in angeli."
+    ],
+    "Adventurous": [
+      "Le strade di notte portano negli stessi posti, sono solo più emozionanti.",
+      "Gufi, stelle e sentieri aperti. Camminare di notte è sottovalutato.",
+      "La metà buia della mappa è pur sempre la mappa.",
+      "Ogni grande racconto ha un capitolo che accade dopo mezzanotte."
+    ],
+    "Nurturing": [
+      "Tutti rimboccati? Allora posso finalmente riposare anch'io.",
+      "Latte caldo per chi non riesce a dormire. C'è sempre qualcuno.",
+      "Ho coperto il fuoco così ci accoglie con dolcezza all'alba.",
+      "Buonanotte, casa. Tienili al sicuro fino a domattina."
+    ],
+    "Mischievous": [
+      "La gente onesta dorme. Quella divertente no.",
+      "Mezzanotte: quando gli scherzi di ieri ricevono gli ultimi ritocchi.",
+      "La notte nasconde il mio ghigno. Il ghigno è ampio.",
+      "Domani qualcuno troverà gli stivali sul tetto. Stanotte, ce li metto io."
+    ],
+    "Cynical": [
+      "Il buio non nasconde niente di nuovo. È lo stesso marciume, senza luce.",
+      "Sogni d'oro a tutti. Le bollette riprendono all'alba.",
+      "Stelle: belle, lontane, indifferenti. Almeno sono oneste al riguardo.",
+      "La notte è l'unico momento in cui questa città tace, e perfino quello è sospetto."
+    ],
+    "Disciplined": [
+      "Luci spente in orario. Domani lo esige.",
+      "Otto ore di riposo fanno parte dell'addestramento. Esegui.",
+      "Le notti tarde prendono in prestito dalle mattine presto. Io non faccio debiti.",
+      "Controllo finale completato. Sonno: avviato."
+    ],
+    "Fatalistic": [
+      "Finiamo ogni giornata esercitandoci per il sonno lungo.",
+      "Le stelle ardevano prima di noi e arderanno dopo. Buonanotte lo stesso.",
+      "Cala la notte. Non inciampa mai.",
+      "Il sonno prima o poi ci prende tutti. Stanotte, volontariamente."
+    ],
+    "Grumpy": [
+      "Finalmente silenzio. La parte migliore di ogni giornata è la sua fine.",
+      "Se quei gatti ricominciano stanotte, giuro...",
+      "Notte. Buia, silenziosa e senza visite. Il giorno dovrebbe prendere appunti.",
+      "Domani sarà seccante. Stanotte, almeno, è mia."
+    ],
+    "Loyal": [
+      "La notte è quando le promesse vengono messe alla prova. Le mie tengono.",
+      "Ho lasciato una lampada accesa alla finestra, nel caso un amico ne avesse bisogno.",
+      "Lui è di turno di notte. Gli porto qualcosa da mangiare.",
+      "Il vecchio cane dorme davanti alla mia porta. Ci facciamo la guardia a vicenda."
+    ],
+    "Brave": [
+      "Qualunque cosa ci sia in quel buio, può venire a salutare.",
+      "Turno di guardia notturno? Volentieri. Al buio serve qualcuno che non ne abbia paura.",
+      "Sono andato a controllare io quel rumore strano. È sempre un gatto. Sempre.",
+      "Dormi bene, città. Qualcuno di quasi coraggioso è sveglio."
+    ],
+    "Timid": [
+      "Non ho paura del buio. Lo rispetto e basta. Da sotto le coperte.",
+      "Coperta fino al mento. Difese notturne standard.",
+      "Il pavimento scricchiola da solo di notte. Ho deciso che è normale.",
+      "Buonanotte, lampada. Resta accesa ancora un pochino."
+    ],
+    "Hedonistic": [
+      "Spuntino di mezzanotte? Non mi tiro indietro.",
+      "I sogni migliori richiedono i cuscini migliori. Ho investito.",
+      "Bicchierino della staffa, poi a letto. Forse due bicchierini. È medicinale.",
+      "Dormire fino a tardi comincia col restare svegli. Io faccio la mia parte."
+    ],
+    "Apathetic": [
+      "Buio fuori. Il tempo passa.",
+      "Notte. Di nuovo il soffitto. Ciao, soffitto.",
+      "Stelle o non stelle. Occhi chiusi comunque.",
+      "Dormi, svegliati, ripeti. La grande routine."
+    ],
+    "default": [
+      "Si è fatto tardi. Meglio stare attenti al buio.",
+      "Le strade sono vuote a quest'ora.",
+      "Notte tranquilla, stanotte.",
+      "Ora di rientrare, è buio da un pezzo."
+    ]
+  }
+}

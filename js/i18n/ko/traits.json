@@ -1,0 +1,812 @@
+{
+  "traits": {
+    "obese": {
+      "name": "비만",
+      "description": "평균보다 무거움"
+    },
+    "underweight": {
+      "name": "저체중",
+      "description": "평균보다 가벼움"
+    },
+    "claustrophobic": {
+      "name": "폐소공포증",
+      "description": "좁은 공간을 두려워함"
+    },
+    "trigger_happy": {
+      "name": "트리거 해피",
+      "description": "쉽게 공격함"
+    },
+    "paranoid": {
+      "name": "편집증",
+      "description": "항상 경계 상태임"
+    },
+    "athletic": {
+      "name": "운동 능력자",
+      "description": "신체적으로 단련됨"
+    },
+    "genius": {
+      "name": "천재",
+      "description": "지적으로 매우 뛰어남"
+    },
+    "lucky": {
+      "name": "행운아",
+      "description": "운이 따름"
+    },
+    "narcoleptic": {
+      "name": "기면증",
+      "description": "예고 없이 잠에 빠짐"
+    },
+    "hot-headed": {
+      "name": "성급한 성격",
+      "description": "쉽게 화를 냄"
+    },
+    "defensive": {
+      "name": "방어적",
+      "description": "보호적인 태도를 선호함"
+    },
+    "marksman": {
+      "name": "명사수",
+      "description": "원거리 무기에 능숙함"
+    },
+    "nearsighted": {
+      "name": "근시",
+      "description": "안경 없이는 시력이 좋지 않음"
+    },
+    "lombrosian_physiognomy": {
+      "name": "롬브로조식 외모",
+      "description": "의심스러운 외모로 범죄자로 오해받음"
+    },
+    "hydrophobic": {
+      "name": "물공포증",
+      "description": "수영 불가, 물을 두려워함"
+    },
+    "silvertongue": {
+      "name": "말솜씨",
+      "description": "설득과 언변의 달인"
+    },
+    "vegan": {
+      "name": "비건",
+      "description": "동물성 식품을 섭취할 수 없음"
+    },
+    "vegetarian": {
+      "name": "채식주의자",
+      "description": "고기를 섭취할 수 없음"
+    },
+    "impostor_syndrome": {
+      "name": "가면 증후군",
+      "description": "자신의 능력을 지속적으로 의심함"
+    },
+    "vampire": {
+      "name": "뱀파이어",
+      "description": "밤을 지배하는 언데드"
+    },
+    "insomniac": {
+      "name": "불면증",
+      "description": "잠에 들기 어려움"
+    },
+    "alcoholic": {
+      "name": "알코올 의존증",
+      "description": "술에 의존함"
+    },
+    "germaphobe": {
+      "name": "결벽증",
+      "description": "위생에 과도하게 집착함"
+    },
+    "adrenaline_junkie": {
+      "name": "아드레날린 중독자",
+      "description": "위험과 자극을 즐김"
+    },
+    "pacifist": {
+      "name": "평화주의자",
+      "description": "폭력을 혐오함"
+    },
+    "pyromaniac": {
+      "name": "방화광",
+      "description": "불에 집착함"
+    },
+    "hoarder": {
+      "name": "수집광",
+      "description": "물건을 쉽게 버리지 못함"
+    },
+    "minimalist": {
+      "name": "미니멀리스트",
+      "description": "단순하고 적은 소유를 선호함"
+    },
+    "compulsive_liar": {
+      "name": "습관성 거짓말쟁이",
+      "description": "거짓말을 멈출 수 없음"
+    },
+    "perfectionist": {
+      "name": "완벽주의자",
+      "description": "모든 것이 완벽해야 함"
+    },
+    "masochist": {
+      "name": "마조히스트",
+      "description": "고통을 즐김"
+    },
+    "sociopath": {
+      "name": "소시오패스",
+      "description": "공감과 죄책감이 부족함"
+    },
+    "empath": {
+      "name": "공감 능력자",
+      "description": "타인의 감정을 잘 이해함"
+    },
+    "technophobe": {
+      "name": "기술 공포증",
+      "description": "현대 기술을 두려워함"
+    },
+    "tech_savvy": {
+      "name": "기술 숙련자",
+      "description": "현대 기술에 능숙함"
+    },
+    "superstitious": {
+      "name": "미신적",
+      "description": "징조와 미신을 믿음"
+    },
+    "skeptic": {
+      "name": "회의론자",
+      "description": "모든 것을 의심함"
+    },
+    "night_owl": {
+      "name": "야행성",
+      "description": "밤에 더 활발함"
+    },
+    "early_bird": {
+      "name": "아침형 인간",
+      "description": "아침에 더 활발함"
+    },
+    "workaholic": {
+      "name": "워커홀릭",
+      "description": "생산성에 집착함"
+    },
+    "photographic_memory": {
+      "name": "사진같은 기억력",
+      "description": "모든 것을 완벽하게 기억함"
+    },
+    "colorblind": {
+      "name": "색맹",
+      "description": "일부 색을 구분하지 못함"
+    },
+    "ambidextrous": {
+      "name": "양손잡이",
+      "description": "양손을 모두 능숙하게 사용함"
+    },
+    "blind": {
+      "name": "실명",
+      "description": "시각이 없으며 다른 감각에 의존함"
+    },
+    "deaf": {
+      "name": "청각 장애",
+      "description": "소리를 들을 수 없음"
+    },
+    "agoraphobic": {
+      "name": "광장 공포증",
+      "description": "넓거나 혼잡한 공간을 두려워함"
+    },
+    "sadist": {
+      "name": "사디스트",
+      "description": "타인의 고통에서 쾌감을 느낌"
+    },
+    "hemophobic": {
+      "name": "혈액 공포증",
+      "description": "피와 부상을 두려워함"
+    },
+    "kleptomaniac": {
+      "name": "도벽증",
+      "description": "충동적으로 물건을 훔침"
+    },
+    "ascetic": {
+      "name": "금욕주의자",
+      "description": "극도로 자기 자신을 절제함"
+    },
+    "acrophobic": {
+      "name": "고소공포증",
+      "description": "높은 곳을 두려워함"
+    },
+    "synesthete": {
+      "name": "공감각자",
+      "description": "감각이 서로 혼합되어 경험됨"
+    },
+    "berserker": {
+      "name": "광전사",
+      "description": "전투 상황에서 통제 불가능한 분노 상태에 빠짐"
+    },
+    "coward": {
+      "name": "겁쟁이",
+      "description": "위험에서 쉽게 도망침"
+    },
+    "xenophobic": {
+      "name": "외부인 혐오",
+      "description": "외부인을 두려워하거나 배척함"
+    },
+    "hypochondriac": {
+      "name": "건강염려증",
+      "description": "질병에 과도하게 집착함"
+    },
+    "eidetic_reader": {
+      "name": "완전 기억 독자",
+      "description": "모든 글을 완벽하게 기억함"
+    },
+    "amblyopic": {
+      "name": "약시",
+      "description": "한쪽 눈의 시력이 저하됨"
+    },
+    "prosopagnosic": {
+      "name": "안면 인식 장애",
+      "description": "얼굴을 인식하지 못함"
+    },
+    "megalomaniac": {
+      "name": "과대망상",
+      "description": "항상 과대한 망상에 빠져있음"
+    },
+    "albinism": {
+      "name": "아립노",
+      "description": "멜라닌 색소가 부족함"
+    },
+    "gigantism": {
+      "name": "거인증",
+      "description": "과도한 성장호르몬 분비로 거대해짐"
+    },
+    "dwarfism": {
+      "name": "왜소증",
+      "description": "유전적 요인으로 인해 키가 작음"
+    },
+    "hemophilia": {
+      "name": "혈우병",
+      "description": "피가 멎지 않음"
+    },
+    "marfan_syndrome": {
+      "name": "마르판 증후군",
+      "description": "결합조직 장애"
+    },
+    "hypermobility": {
+      "name": "관절 과가동성",
+      "description": "관절이 비정상적으로 많이 움직임"
+    },
+    "polydactyly": {
+      "name": "다지증",
+      "description": "손가락 또는 발가락이 더 존재함"
+    },
+    "hypertrichosis": {
+      "name": "다모증",
+      "description": "과도한 체모 성장"
+    },
+    "thalassemia": {
+      "name": "지중해빈혈",
+      "description": "유전성 혈액 질환"
+    },
+    "heterochromia": {
+      "name": "홍채 이색증",
+      "description": "눈 색이 서로 다름"
+    },
+    "sensitive": {
+      "name": "민감함",
+      "description": "초능력에 민감함"
+    },
+    "sickle_cell_trait": {
+      "name": "겸상 적혈구 형질",
+      "description": "변형된 적혈구 형태"
+    },
+    "ehlers-danlos": {
+      "name": "엘러스-단로스 증후군",
+      "description": "콜라겐 유전자의 변이로 인해 피부가 과도하게 늘어나고 관절이 쉽게 탈구됨"
+    },
+    "congenital_analgesia": {
+      "name": "선천성 무통각증",
+      "description": "신체적 고통이나 통증을 전혀 느끼지 못함"
+    },
+    "savant_syndrome": {
+      "name": "서번트 증후군",
+      "description": "발달 장애나 뇌 손상이 있으나 특정 인지 분야에서 경이로운 천재성을 보임"
+    },
+    "asthmatic": {
+      "name": "천식",
+      "description": "스트레스나 자극을 받으면 호흡 곤란에 빠짐"
+    },
+    "adhd": {
+      "name": "ADHD",
+      "description": "주의력이 결핍되고 충동적인 행동을 제어하지 못함"
+    },
+    "ocd": {
+      "name": "강박장애",
+      "description": "불안을 해소하기 위해 강박적 사고와 행동을 강박적으로 반복함"
+    },
+    "dyslexic": {
+      "name": "난독증",
+      "description": "글을 읽고 문자를 이해하는 데 어려움을 겪음"
+    },
+    "dyscalculic": {
+      "name": "난산증",
+      "description": "숫자의 개념을 인지하지 못함"
+    },
+    "charismatic": {
+      "name": "카리스마",
+      "description": "사람들의 마음을 단숨에 사로잡는 강력한 매력과 영향력을 지님"
+    },
+    "extrovert": {
+      "name": "외향형",
+      "description": "사교 활동에서 에너지를 얻음"
+    },
+    "introvert": {
+      "name": "내향형",
+      "description": "사교 활동에서 에너지가 소모됨"
+    },
+    "chronic_pain": {
+      "name": "만성 통증",
+      "description": "지속적인 신체적 통증을 겪음"
+    },
+    "ambitious": {
+      "name": "야망가",
+      "description": "성취를 향해 나아감"
+    },
+    "slothful": {
+      "name": "게으름",
+      "description": "최소한의 노력만을 선호함"
+    },
+    "greedy": {
+      "name": "탐욕스러운",
+      "description": "부와 소유에 집착함"
+    },
+    "generous": {
+      "name": "관대한",
+      "description": "다른 사람에게 아낌없이 줌"
+    },
+    "loyal": {
+      "name": "충성스러운",
+      "description": "동료에게 변함없이 헌신함"
+    },
+    "treacherous": {
+      "name": "배신자",
+      "description": "신뢰할 수 없음"
+    },
+    "proud": {
+      "name": "자만심",
+      "description": "과도하게 자기 자신을 치켜세움"
+    },
+    "humble": {
+      "name": "겸손한",
+      "description": "스스로를 낮추고 절제함"
+    },
+    "gluttonous": {
+      "name": "탐식",
+      "description": "음식을 과도하게 섭취함"
+    },
+    "hedonist": {
+      "name": "쾌락주의자",
+      "description": "쾌락을 최우선으로 함"
+    },
+    "stoic": {
+      "name": "금욕적인",
+      "description": "고통을 쉽게 견딤"
+    },
+    "tracker": {
+      "name": "추적자",
+      "description": "흔적을 따라가는 전문가"
+    },
+    "survivalist": {
+      "name": "생존 전문가",
+      "description": "가혹한 환경에 강함"
+    },
+    "tactician": {
+      "name": "전술가",
+      "description": "전략과 계획의 달인"
+    },
+    "cursed": {
+      "name": "저주받은",
+      "description": "초자연적 불운의 소유자"
+    },
+    "blessed": {
+      "name": "축복받은",
+      "description": "신의 은총을 받음"
+    },
+    "caffeine_dependent": {
+      "name": "카페인 의존",
+      "description": "카페인이 없으면 정상적인 기능이 불가능함"
+    },
+    "nicotine_addict": {
+      "name": "니코틴 중독",
+      "description": "담배에 의존함"
+    },
+    "gambling_addict": {
+      "name": "도박 중독",
+      "description": "충동적으로 도박을 함"
+    },
+    "drug_dependent": {
+      "name": "약물 의존",
+      "description": "약물에 중독됨"
+    },
+    "restrictive_eating": {
+      "name": "제한적 식이",
+      "description": "음식 섭취를 극도로 꺼림"
+    },
+    "binge_eating": {
+      "name": "폭식",
+      "description": "식욕을 통제할 수 없음"
+    },
+    "nyctophobic": {
+      "name": "야간 공포증",
+      "description": "어둠을 두려워함"
+    },
+    "thanatophobic": {
+      "name": "죽음 공포증",
+      "description": "죽음을 극도로 두려워함"
+    },
+    "entomophobic": {
+      "name": "곤충 공포증",
+      "description": "벌레를 두려워함"
+    },
+    "ophidiophobic": {
+      "name": "뱀 공포증",
+      "description": "뱀을 두려워함"
+    },
+    "cynophobic": {
+      "name": "개 공포증",
+      "description": "개를 두려워함"
+    },
+    "pyrophobic": {
+      "name": "불 공포증",
+      "description": "불을 두려워함"
+    },
+    "trypophobic": {
+      "name": "환공포증",
+      "description": "원이나 구멍 패턴을 두려워함"
+    },
+    "atychiphobic": {
+      "name": "실패 공포증",
+      "description": "실패를 두려워함"
+    },
+    "autophobic": {
+      "name": "고독 공포증",
+      "description": "혼자 있는 것을 두려워함"
+    },
+    "devout": {
+      "name": "신앙심",
+      "description": "종교적이고 신실함"
+    },
+    "atheist": {
+      "name": "무신론자",
+      "description": "종교적 믿음을 거부함"
+    },
+    "heretic": {
+      "name": "이단자",
+      "description": "다른 믿음을 가져 종교 공동체에서 추방됨"
+    },
+    "pilgrim": {
+      "name": "순례자",
+      "description": "영적 목적의 여행자"
+    },
+    "excommunicated": {
+      "name": "파문됨",
+      "description": "어떠한 이유로 종교 공동체에서 추방됨"
+    },
+    "monk-trained": {
+      "name": "수도사 수련",
+      "description": "수도원에서 훈련을 받음"
+    },
+    "prophetic": {
+      "name": "예언자",
+      "description": "미래의 환영을 봄"
+    },
+    "noble": {
+      "name": "귀족",
+      "description": "귀족 출신"
+    },
+    "street_urchin": {
+      "name": "거리 출신",
+      "description": "빈곤한 환경에서 성장"
+    },
+    "orphan": {
+      "name": "고아",
+      "description": "부모가 없음"
+    },
+    "bastard": {
+      "name": "서자",
+      "description": "혼외 출생"
+    },
+    "heir": {
+      "name": "상속자",
+      "description": "재산을 물려받음"
+    },
+    "twin": {
+      "name": "쌍둥이",
+      "description": "일란성 형제/자매가 있음"
+    },
+    "exiled": {
+      "name": "추방됨",
+      "description": "고향에서 추방됨"
+    },
+    "slave-born": {
+      "name": "노예 출생",
+      "description": "노예 신분으로 태어남"
+    },
+    "wealthy": {
+      "name": "부유함",
+      "description": "경제적 특권을 가짐"
+    },
+    "scholar": {
+      "name": "학자",
+      "description": "학문에 전념함"
+    },
+    "merchant": {
+      "name": "상인",
+      "description": "무역과 상업에 능숙함"
+    },
+    "criminal": {
+      "name": "범죄자",
+      "description": "전과가 있음"
+    },
+    "illiterate": {
+      "name": "문맹",
+      "description": "읽고 쓰지 못함"
+    },
+    "veteran": {
+      "name": "베테랑",
+      "description": "경험 많은 군인"
+    },
+    "farmer": {
+      "name": "농부",
+      "description": "농업 배경"
+    },
+    "herbalist": {
+      "name": "약초 전문가",
+      "description": "약용 식물을 잘 알고 있음"
+    },
+    "alchemist": {
+      "name": "연금술사",
+      "description": "연금술을 연구함"
+    },
+    "navigator": {
+      "name": "항해사",
+      "description": "길찾기와 항해에 능숙함"
+    },
+    "blacksmith": {
+      "name": "대장장이",
+      "description": "금속 제작 기술자"
+    },
+    "thief": {
+      "name": "도둑",
+      "description": "훔치는 일에 능통함"
+    },
+    "bard": {
+      "name": "음유시인",
+      "description": "음악가이자 이야기꾼"
+    },
+    "beautiful": {
+      "name": "아름다운",
+      "description": "매우 매력적임"
+    },
+    "scarred": {
+      "name": "흉터 있음",
+      "description": "눈에 보이는 상처가 있음"
+    },
+    "tall": {
+      "name": "키 큼",
+      "description": "평균보다 키가 큼"
+    },
+    "short": {
+      "name": "키 작음",
+      "description": "평균보다 키가 작음"
+    },
+    "muscular": {
+      "name": "근육질",
+      "description": "강한 신체 능력"
+    },
+    "frail": {
+      "name": "허약함",
+      "description": "약한 체력"
+    },
+    "left-handed": {
+      "name": "왼손잡이",
+      "description": "왼손을 주로 사용함"
+    },
+    "quick_reflexes": {
+      "name": "빠른 반사신경",
+      "description": "반응 속도가 매우 빠름"
+    },
+    "duelist": {
+      "name": "결투가",
+      "description": "일대일 전투 전문가"
+    },
+    "brawler": {
+      "name": "난투가",
+      "description": "길거리 싸움 전문가"
+    },
+    "archer": {
+      "name": "궁수",
+      "description": "활과 화살 숙련자"
+    },
+    "shield_master": {
+      "name": "방패 전문가",
+      "description": "방어 전술 전문가"
+    },
+    "assassin": {
+      "name": "암살자",
+      "description": "암살에 능통함"
+    },
+    "berserker_rage": {
+      "name": "광전사의 분노",
+      "description": "전투 상황에서 광기에 빠짐"
+    },
+    "mounted_combat": {
+      "name": "기마 전투",
+      "description": "기마 전투 전문가"
+    },
+    "martial_artist": {
+      "name": "무술가",
+      "description": "비무장 전투 달인"
+    },
+    "optimist": {
+      "name": "낙천주의자",
+      "description": "항상 긍정적으로 봄"
+    },
+    "pessimist": {
+      "name": "비관주의자",
+      "description": "최악을 예상함"
+    },
+    "nihilist": {
+      "name": "허무주의자",
+      "description": "삶에 의미가 없다고 믿음"
+    },
+    "idealist": {
+      "name": "이상주의자",
+      "description": "이상을 추구함"
+    },
+    "pragmatist": {
+      "name": "실용주의자",
+      "description": "현실적이고 실용적임"
+    },
+    "romantic": {
+      "name": "낭만주의자",
+      "description": "낭만을 중요하게 여김"
+    },
+    "cynic": {
+      "name": "냉소주의자",
+      "description": "타인의 동기를 의심함"
+    },
+    "vengeful": {
+      "name": "복수심",
+      "description": "원한을 쉽게 잊지 않음"
+    },
+    "forgiving": {
+      "name": "용서하는",
+      "description": "쉽게 용서함"
+    },
+    "jealous": {
+      "name": "질투심 많은",
+      "description": "끊임없이 질투함"
+    },
+    "spiteful": {
+      "name": "악의적인",
+      "description": "사소한 앙심을 품음"
+    },
+    "honest": {
+      "name": "정직한",
+      "description": "거짓말을 못함"
+    },
+    "blunt": {
+      "name": "직설적인",
+      "description": "생각하는 그대로를 말함"
+    },
+    "famous": {
+      "name": "유명한",
+      "description": "많은 사람들이 알고있음"
+    },
+    "infamous": {
+      "name": "악명 높은",
+      "description": "나쁜 일로 유명함"
+    },
+    "anonymous": {
+      "name": "무명",
+      "description": "알려지지 않음"
+    },
+    "wanted": {
+      "name": "수배 중",
+      "description": "당국에 의해 쫓김"
+    },
+    "hero": {
+      "name": "영웅",
+      "description": "인류의 구원자"
+    },
+    "disgraced": {
+      "name": "추락",
+      "description": "원래 가지고 있던 명예를 잃음"
+    },
+    "cold-blooded": {
+      "name": "냉기 적응",
+      "description": "추운 환경에 적응함"
+    },
+    "heat-adapted": {
+      "name": "열기 적응",
+      "description": "더운 환경에 적응함"
+    },
+    "mountain-born": {
+      "name": "산지 출신",
+      "description": "고지대에 적응함"
+    },
+    "island-raised": {
+      "name": "섬 출신",
+      "description": "해양 환경에 적응함"
+    },
+    "desert_dweller": {
+      "name": "사막 거주자",
+      "description": "건조 환경에 적응함"
+    },
+    "cave_dweller": {
+      "name": "동굴 거주자",
+      "description": "지하 생활에 적응함"
+    },
+    "animal_handler": {
+      "name": "동물 조련사",
+      "description": "동물과 쉽게 교감함"
+    },
+    "beast_whisperer": {
+      "name": "야수 소통자",
+      "description": "동물과 소통이 가능함"
+    },
+    "nature_attuned": {
+      "name": "자연 친화",
+      "description": "자연과 깊은 연결을 느낌"
+    },
+    "urban_native": {
+      "name": "도시형",
+      "description": "도시에 적응됨"
+    },
+    "feral": {
+      "name": "야생화됨",
+      "description": "야생에서 성장함"
+    },
+    "magically_gifted": {
+      "name": "마법 재능",
+      "description": "타고난 마법 능력을 지님"
+    },
+    "mana-starved": {
+      "name": "마나 결핍",
+      "description": "마법 에너지를 사용하지 못함"
+    },
+    "spell-scarred": {
+      "name": "마법 상처",
+      "description": "마법 사고로 인한 상처가 있음"
+    },
+    "witch-marked": {
+      "name": "마녀의 표식",
+      "description": "저주받은 흔적이 있음"
+    },
+    "possessed": {
+      "name": "빙의됨",
+      "description": "정령과 몸을 공유함"
+    },
+    "lycanthrope": {
+      "name": "늑대인간",
+      "description": "보름달에 늑대의 형태로 변신함"
+    },
+    "clairvoyant": {
+      "name": "투시 능력자",
+      "description": "사물을 관통해 볼 수 있는 인지 능력을 지님"
+    },
+    "booming_voice": {
+      "name": "우렁찬 목소리",
+      "description": "큰 목소리로 이목을 끔"
+    },
+    "soft-spoken": {
+      "name": "부드러운 말투",
+      "description": "조용하고 온화한 목소리를 지님"
+    },
+    "mute": {
+      "name": "언어 장애",
+      "description": "말할 수 없음"
+    },
+    "polyglot": {
+      "name": "다중 언어 구사자",
+      "description": "여러 언어를 사용함"
+    },
+    "prosopometamorphopsia": {
+      "name": "얼굴 왜곡 지각",
+      "description": "타인의 얼굴이 악마처럼 보이는 얼굴을 봄"
+    },
+    "gun_fu": {
+      "name": "건푸",
+      "description": "총이나 활로 펼치는 무술 스킬이 추가 공격으로 이어집니다"
+    }
+  }
+}

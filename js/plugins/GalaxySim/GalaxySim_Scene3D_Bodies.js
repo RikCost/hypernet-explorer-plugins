@@ -1,0 +1,1038 @@
+/*:
+ * @target MZ
+ * @plugindesc GalaxySim 3D Bodies - System-scale builders (star, planets, moons, orbits, ship)
+ * @author Omni-Lex + Nocoldiz
+ * @url
+ * @help
+ * ============================================================================
+ * GalaxySim 3D Bodies Module
+ * ============================================================================
+ * Builds the SYSTEM-scale content as real lit three.js meshes, reusing the
+ * procedural mesh/texture builders in GalaxySim_Renderer3D.js
+ * (buildPlanetGroup / buildStarGroup) instead of the offscreen 2D compositor.
+ *
+ * SYSTEM scale uses 1 world unit = 1 AU. Body visual sizes are exaggerated /
+ * clamped for readability (true astronomical scale would make planets invisible
+ * at AU orbits), the same compromise the legacy 2D view made.
+ *
+ * window.GalaxySim.Scene3DBodies.buildSystem(systemData) returns:
+ *   { group, pickables, animate(t), dispose(), outerRadius }
+ *
+ * LOAD ORDER: after GalaxySim_Renderer3D.js / GalaxySim_World3D.js,
+ * before GalaxySim_Scene3D.js. Requires THREE.js.
+ */
+
+(() => {
+  "use strict";
+
+  if (!window.GalaxySim) window.GalaxySim = {};
+  const GS = window.GalaxySim;
+
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+  // --- Visual sizing (world units = AU) -----------------------------------
+  // Stars, planets and moons all run through ONE compressor over their true
+  // radius expressed in Earth radii, so the relative order is always physically
+  // right (star > gas giant > rocky planet > moon) instead of three independent
+  // clamps that could invert it. True radii span 5 orders of magnitude at AU
+  // orbits, so the compressor is a power law: it keeps the ranking and a
+  // recognisable size spread while staying visible on screen.
+  //   Sun (109 R⊕) -> 1.00   Jupiter (11.2) -> 0.28   Earth (1) -> 0.075
+  //   Mercury (0.38) -> 0.043   Luna (0.27) -> 0.036
+  const SIZE_K = 0.075;   // world units for a 1 R⊕ body
+  const SIZE_EXP = 0.55;  // compression exponent
+  const R_SUN_IN_EARTH = 109.2;
+
+  function compressRadius(earthRadii) {
+    const r = earthRadii > 0 ? earthRadii : 0.05;
+    return clamp(SIZE_K * Math.pow(r, SIZE_EXP), 0.02, 2.4);
+  }
+  function starVisualRadius(system) {
+    const rSun = system && system.radius ? system.radius : 1; // solar radii
+    return clamp(compressRadius(rSun * R_SUN_IN_EARTH), 0.35, 2.4);
+  }
+  function planetVisualRadius(planet) {
+    return compressRadius(planet && planet.radius ? planet.radius : 1);
+  }
+  function moonVisualRadius(moon) {
+    return clamp(compressRadius(moon && moon.radius ? moon.radius : 0.27), 0.018, 0.14);
+  }
+  // Orbits stay near-linear in AU (the physically honest layout) with only a
+  // mild inner-system stretch so Mercury/Venus/Earth don't collapse onto the
+  // star's disc.
+  function planetOrbitWorld(orbitRadiusAu, starR) {
+    const au = orbitRadiusAu || 0;
+    return starR * 1.8 + Math.pow(au, 0.85) * 1.6;
+  }
+  // Kepler's third law: angular speed goes as sqrt(M)*a^-3/2, normalised so a
+  // 1 AU orbit around a Sun-mass star takes ~9 minutes of real time - a drift
+  // you notice while reading a system rather than a spinning clock.
+  // Floored so the outer giants still visibly drift instead of appearing
+  // frozen. The sqrt(mass) term matters most for low-mass red dwarfs (e.g.
+  // TRAPPIST-1, 0.089 M_sun): without it, their tightly-packed planets spun
+  // ~3x too fast because only the orbital radius was accounted for.
+  // Every orbiting body in every system - procedural or hand-authored - is
+  // timed from here, so this factor slows the whole sim uniformly.
+  const ORBIT_SLOWDOWN = 3;
+  function orbitSpeed(orbitRadiusAu, starMassSuns) {
+    const au = Math.max(0.02, orbitRadiusAu || 0.1);
+    const mass = Math.max(0.05, starMassSuns || 1);
+    return Math.max(0.002, (0.035 * Math.sqrt(mass)) / Math.pow(au, 1.5)) / ORBIT_SLOWDOWN;
+  }
+  // Deterministic per-body jitter in [0,1) from its name; used for orbital
+  // inclination and axial tilt so systems look like real systems (slightly
+  // out of plane, tilted spin axes) yet stay stable across rebuilds.
+  function hash01(name, salt) {
+    let h = 2166136261 ^ (salt || 0);
+    const s = String(name || "");
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return ((h >>> 0) % 100000) / 100000;
+  }
+
+  // Shared soft glow sprite (engine trail / beacon). Disposed by the caller.
+  function makeGlowSprite(hex, size) {
+    const s = 64;
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = s;
+    const ctx = cv.getContext("2d");
+    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    g.addColorStop(0, hex);
+    g.addColorStop(0.3, hex);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, s, s);
+    const tex = new THREE.CanvasTexture(cv);
+    const mat = new THREE.SpriteMaterial({
+      map: tex, transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const sp = new THREE.Sprite(mat);
+    sp.scale.set(size, size, 1);
+    return { sprite: sp, tex, mat };
+  }
+
+  // A small canvas label sprite ("YOUR SHIP" beacon tag). Additive so it reads
+  // as a glowing HUD marker over the star field. Disposed by the caller.
+  function makeLabelSprite(text, colorCss) {
+    const cv = document.createElement("canvas");
+    cv.width = 256; cv.height = 64;
+    const ctx = cv.getContext("2d");
+    ctx.font = "bold 34px 'Segoe UI',Arial,sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.shadowColor = "rgba(0,0,0,0.9)";
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = colorCss || "#bfe6ff";
+    ctx.fillText(text, 128, 34);
+    const tex = new THREE.CanvasTexture(cv);
+    const mat = new THREE.SpriteMaterial({
+      map: tex, transparent: true, depthWrite: false, depthTest: false,
+    });
+    const sp = new THREE.Sprite(mat);
+    sp.scale.set(1.6, 0.4, 1);
+    return { sprite: sp, tex, mat };
+  }
+
+  // The anomaly marker: a "?" hanging over the one world in the system that is
+  // signalling (see GalaxySim.Anomaly). Drawn on top of everything so it reads
+  // as a HUD tag rather than an object in the scene.
+  function makeQuestionSprite() {
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = 128;
+    const ctx = cv.getContext("2d");
+    ctx.font = "bold 92px 'Segoe UI',Arial,sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "rgba(0,0,0,0.85)";
+    ctx.strokeText("?", 64, 68);
+    ctx.shadowColor = "rgba(120,225,255,0.9)";
+    ctx.shadowBlur = 16;
+    ctx.fillStyle = "#eaf6ff";
+    ctx.fillText("?", 64, 68);
+    const tex = new THREE.CanvasTexture(cv);
+    const mat = new THREE.SpriteMaterial({
+      map: tex, transparent: true, depthWrite: false, depthTest: false,
+    });
+    const sp = new THREE.Sprite(mat);
+    sp.renderOrder = 1001;
+    return { sprite: sp, tex, mat };
+  }
+
+  // Overall length of the player ship in system/galaxy world units. The
+  // procedural model is authored at length ~1, so it is scaled down to sit at
+  // roughly the footprint the old placeholder hull occupied.
+  const SHIP_WORLD_LENGTH = 0.3;
+
+  /**
+   * Fallback craft used when GalaxySim_ShipModel failed to load: the original
+   * low-poly hull (swept fuselage + nose + swept-back wings + twin engine
+   * pods) with a tinted cockpit and an additive engine plume. Forward is +Z.
+   * Returns { group, update(t), dispose() } - the same shape ShipModel builds.
+   */
+  function buildPlaceholderHull() {
+    const hull = new THREE.Group();
+    hull.name = "gx-ship-hull";
+    // The starship reads as a small speck against a whole planet/star, so the
+    // craft itself is scaled well down (the galaxy-scale beacon still marks it).
+    hull.scale.setScalar(0.4);
+
+    const disposables = [];               // { geometry?, material?, dispose? }
+    const track = (o) => { disposables.push(o); return o; };
+
+    const bodyMat = track(new THREE.MeshPhongMaterial({
+      color: 0xd4dcea, specular: 0x9fc0e0, shininess: 70, emissive: 0x0e1420,
+    }));
+    const trimMat = track(new THREE.MeshPhongMaterial({
+      color: 0x5b6b86, specular: 0x88aacc, shininess: 40, emissive: 0x080c14,
+    }));
+    const glassMat = track(new THREE.MeshPhongMaterial({
+      color: 0x8fdcff, specular: 0xffffff, shininess: 120,
+      emissive: 0x123044, transparent: true, opacity: 0.85,
+    }));
+
+    // Fuselage: a stretched octahedral cylinder, nose cone at +Z, tapered tail.
+    const fuseGeo = track(new THREE.CylinderGeometry(0.05, 0.07, 0.26, 8));
+    const fuse = new THREE.Mesh(fuseGeo, bodyMat);
+    fuse.rotation.x = Math.PI / 2;
+    hull.add(fuse);
+
+    const noseGeo = track(new THREE.ConeGeometry(0.05, 0.16, 8));
+    const nose = new THREE.Mesh(noseGeo, bodyMat);
+    nose.rotation.x = Math.PI / 2;
+    nose.position.z = 0.20;
+    hull.add(nose);
+
+    // Cockpit blister on top of the fuselage.
+    const cockpitGeo = track(new THREE.SphereGeometry(0.045, 10, 8));
+    const cockpit = new THREE.Mesh(cockpitGeo, glassMat);
+    cockpit.position.set(0, 0.035, 0.06);
+    cockpit.scale.set(1, 0.7, 1.4);
+    hull.add(cockpit);
+
+    // Swept-back delta wings (one thin box, angled) + a tail fin.
+    const wingGeo = track(new THREE.BoxGeometry(0.34, 0.012, 0.12));
+    const wing = new THREE.Mesh(wingGeo, trimMat);
+    wing.position.z = -0.05;
+    wing.rotation.x = 0.12;
+    hull.add(wing);
+    const finGeo = track(new THREE.BoxGeometry(0.012, 0.1, 0.1));
+    const fin = new THREE.Mesh(finGeo, trimMat);
+    fin.position.set(0, 0.05, -0.1);
+    hull.add(fin);
+
+    // Twin engine pods either side of the tail.
+    const podGeo = track(new THREE.CylinderGeometry(0.022, 0.03, 0.1, 8));
+    [-0.09, 0.09].forEach((x) => {
+      const pod = new THREE.Mesh(podGeo, trimMat);
+      pod.rotation.x = Math.PI / 2;
+      pod.position.set(x, -0.005, -0.11);
+      hull.add(pod);
+    });
+
+    // Engine plume (additive glow) behind the tail.
+    const glow = makeGlowSprite("rgba(130,205,255,0.95)", 0.34);
+    glow.sprite.position.set(0, 0, -0.2);
+    hull.add(glow.sprite);
+
+    function disposeHull() {
+      disposables.forEach((o) => { if (o && o.dispose) o.dispose(); });
+      glow.tex.dispose(); glow.mat.dispose();
+      if (hull.parent) hull.parent.remove(hull);
+    }
+    return { group: hull, update() { }, dispose: disposeHull };
+  }
+
+  /**
+   * The player ship: the procedural GalaxySim_ShipModel hull (derived from the
+   * world seed until the player edits it in the vehicle menu, and hot-reloaded
+   * whenever that changes), falling back to the low-poly placeholder when that
+   * module is missing. Forward is +Z so orient()/lookAt aims the nose down the
+   * travel vector. Returns { group, hull, update(t), orient(v),
+   * setBeaconScale(s), dispose() }.
+   *
+   * @param {object} [opts] { beacon } - beacon adds an always-on-top pulsing
+   *   marker + label so the ship is easy to find at galaxy zoom.
+   */
+  function buildShip(opts) {
+    opts = opts || {};
+    const group = new THREE.Group();
+    group.name = "gx-ship";
+    const hull = new THREE.Group();       // the physical craft (bobs/banks)
+    group.add(hull);
+
+    const body = (GS.ShipModel && GS.ShipModel.buildLive)
+      ? GS.ShipModel.buildLive(SHIP_WORLD_LENGTH)
+      : buildPlaceholderHull();
+    hull.add(body.group);
+
+    // --- Optional galaxy-scale beacon --------------------------------------
+    // The beacon lives in its own group so Scene3D can scale it up with camera
+    // distance (keeping a roughly constant apparent size) without touching the
+    // physical ship. Drawn on top of everything so it is never lost behind a star.
+    let beaconGroup = null, beaconGlow = null, label = null,
+      beaconRing = null, ringGeo = null, ringMat = null;
+    if (opts.beacon) {
+      beaconGroup = new THREE.Group();
+      group.add(beaconGroup);
+
+      beaconGlow = makeGlowSprite("rgba(120,225,255,0.9)", 1.1);
+      beaconGlow.mat.depthTest = false;
+      beaconGlow.sprite.renderOrder = 999;
+      beaconGlow.sprite.position.set(0, 0, 0);
+      beaconGroup.add(beaconGlow.sprite);
+
+      ringGeo = new THREE.RingGeometry(0.55, 0.68, 32);
+      ringMat = new THREE.MeshBasicMaterial({
+        color: 0x8fe6ff, transparent: true, opacity: 0.85,
+        side: THREE.DoubleSide, depthTest: false, depthWrite: false,
+      });
+      beaconRing = new THREE.Mesh(ringGeo, ringMat);
+      beaconRing.renderOrder = 999;
+      beaconGroup.add(beaconRing);
+
+      label = makeLabelSprite("YOUR SHIP", "#cdefff");
+      label.mat.depthTest = false;
+      label.sprite.renderOrder = 1000;
+      label.sprite.position.set(0, 1.15, 0);
+      label.sprite.scale.set(2.4, 0.6, 1);
+      beaconGroup.add(label.sprite);
+    }
+
+    function update(t) {
+      // The body animates itself (drive plumes, blinkers, appearance reloads).
+      if (body.update) body.update(t);
+      // Gentle vertical bob only (translation, so it never fights an orient()
+      // lookAt); the beacon sprites face the camera on their own and just pulse.
+      hull.position.y = Math.sin(t * 1.1) * 0.015;
+      if (beaconGlow) {
+        const pulse = 1 + Math.sin(t * 3.0) * 0.18;
+        beaconGlow.sprite.scale.set(1.1 * pulse, 1.1 * pulse, 1);
+        if (ringMat) ringMat.opacity = 0.55 + 0.35 * (0.5 + 0.5 * Math.sin(t * 3.0));
+        // Keep the ring face-on to the camera without per-frame lookAt cost by
+        // spinning it slowly; it reads as a rotating targeting reticle.
+        if (beaconRing) beaconRing.rotation.z = t * 0.8;
+      }
+    }
+    // Aim the craft down a world-space vector without tilting the beacon/label
+    // (which must stay upright). +Z is the nose, so hull.lookAt aims the nose.
+    function orient(worldTarget) {
+      if (worldTarget) hull.lookAt(worldTarget);
+    }
+    // Scale the beacon (halo/ring/label) so it keeps a roughly constant apparent
+    // size as the camera pulls out to the whole galaxy. No-op without a beacon.
+    function setBeaconScale(s) {
+      if (beaconGroup) beaconGroup.scale.setScalar(Math.max(0.001, s || 1));
+    }
+    function dispose() {
+      if (body.dispose) body.dispose();
+      if (beaconGlow) { beaconGlow.tex.dispose(); beaconGlow.mat.dispose(); }
+      if (label) { label.tex.dispose(); label.mat.dispose(); }
+      if (ringGeo) ringGeo.dispose();
+      if (ringMat) ringMat.dispose();
+      if (group.parent) group.parent.remove(group);
+    }
+    return { group, hull, update, orient, setBeaconScale, dispose };
+  }
+
+  /** A faint circular orbit guide on the XZ plane, radius in world units. */
+  function buildOrbitLine(radius, colorCss, segments) {
+    segments = segments || 96;
+    const pts = [];
+    for (let i = 0; i <= segments; i++) {
+      const a = (i / segments) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
+    }
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    const mat = new THREE.LineBasicMaterial({
+      color: new THREE.Color(colorCss || "#5078c8"),
+      transparent: true,
+      opacity: 0.4,
+      depthWrite: false,
+    });
+    const line = new THREE.LineLoop(geo, mat);
+    line.name = "gx-orbit";
+    return line;
+  }
+
+  // How many moons a planet shows in the wide system view. Planets with more
+  // (e.g. Jupiter, 83) reveal the rest only when the planet is clicked/focused.
+  const SYSTEM_MOON_CAP = 4;
+  // Compact visual size for the cheap "extra" moonlets revealed on focus.
+  const extraMoonRadius = (moon) => clamp(moonVisualRadius(moon) * 0.8, 0.012, 0.09);
+
+  // True-scale bodies are sub-pixel at system framing distances, so each body
+  // is allowed to grow (never shrink) until it covers at least this many pixels
+  // of screen height, capped so the boost can't swallow its neighbours. Close
+  // up the boost is 1 and the physical sizing above is what you see.
+  const MIN_APPARENT_PX = { star: 5, planet: 3.2, moon: 2 };
+  const MAX_APPARENT_BOOST = { star: 1.6, planet: 7, moon: 9 };
+
+  /**
+   * Build the full SYSTEM-scale view for a star system data object.
+   * @param {object} systemData  DataManager system record
+   * @param {object} [opts]      { orbitColor }
+   */
+  function buildSystem(systemData, opts) {
+    opts = opts || {};
+    const R3D = GS.Renderer3D;
+    const root = new THREE.Group();
+    root.name = "gx-system:" + (systemData.name || "?");  // i18n-ignore  three.js object name
+
+    // Pickable bodies. Each carries the Object3D whose WORLD position is the
+    // body centre plus its world visual radius, so Scene3D can pick by
+    // screen-space proximity (reliable even for tiny far bodies).
+    const pickables = [];   // { object, radius, kind, data, system, planet }
+    const bodyGroups = [];  // groups built via R3D (release with disposeBodyGroup)
+    const extras = [];      // orbit lines / helpers we own outright
+    const orbiters = [];    // per-planet animation state
+    const planetHolders = {}; // planet name -> orbit holder (so the ship can dock)
+    const scalables = [];   // { group, pick, baseR, minPx, maxBoost } apparent-size entries
+    const anomalyMarkers = []; // { mark, pick, planet } "?" tags over signalling worlds
+    let focusMoonGeo = null;  // shared geometry for cheap focus moonlets (lazy)
+    const focusMats = [];     // cheap moonlet materials, disposed at teardown
+    let basePickCount = 0;    // pickables length before any planet focus
+
+    // --- Central body: a star, a black hole, an exotic stellar object or a
+    // lone starless rogue planet ---------------------------------------------
+    const starR = starVisualRadius(systemData);
+    const Cosmos = GS.Scene3DCosmos;
+    let starGroup = null;
+    let blackHole = null;
+    let exoticStar = null;  // custom-built central body (Cosmos.buildExoticStar)
+    let rogueGroup = null;  // ROGUE_PLANET systems: the dark world itself
+    // The central light adopts the star's character (a magnetar glows violet,
+    // a dead iron star barely at all, a rogue planet not at all).
+    let lightColor = 0xfff3e0;
+    let lightIntensity = 1.8;
+    // Either a legacy-authored hardcoded hole (blackHoleType) or a
+    // procedurally generated one (STAR_TYPES "BLACK_HOLE"/"SUPERMASSIVE_BLACK_HOLE" -
+    // without this check those fell through to a plain black sphere).
+    const isSupermassive = systemData.blackHoleType === "hypermassive" ||
+      systemData.type === "SUPERMASSIVE_BLACK_HOLE";
+    const isBlackHoleSystem = !!systemData.blackHoleType ||
+      systemData.type === "BLACK_HOLE" || systemData.type === "SUPERMASSIVE_BLACK_HOLE";
+    // Which holes are drawn as Gargantua: both giant classes the star field
+    // rolls (Renderer_Stars' determineBlackHoleType) plus the procedural
+    // SUPERMASSIVE type. Wider than isSupermassive, which also sets jet odds
+    // and stays as it was.
+    const isGrandHole = isBlackHoleSystem && (isSupermassive ||
+      systemData.blackHoleType === "supermassive");
+    const isRogue = systemData.type === "ROGUE_PLANET";
+    const isExotic = !isBlackHoleSystem && !isRogue && Cosmos &&
+      Cosmos.isExoticStarType && Cosmos.isExoticStarType(systemData.type);
+    if (isBlackHoleSystem && Cosmos && Cosmos.buildBlackHole) {
+      blackHole = Cosmos.buildBlackHole({
+        radius: starR * 0.9,
+        seed: Math.floor(hash01(systemData.name, 991) * 1e9),
+        // A quiet "regular" hole never beams; the bigger ones usually do, but
+        // the seeded roll keeps some of them dark so jets stay a spectacle.
+        // A hole caught feeding on a donor star is accreting hard by
+        // definition, so it always launches its beams.
+        jets: systemData.feeding ? true
+          : (systemData.blackHoleType === "regular" ? false : undefined),
+        jetChance: isSupermassive ? 0.8 : 0.45,
+        // The giants are drawn as Gargantua: a wide, near-uniform sheet of a
+        // disk with its far side lensed over and under the shadow. Stellar-mass
+        // holes keep the plain ring.
+        style: isGrandHole ? "interstellar" : undefined,
+      });
+      root.add(blackHole.group);
+      pickables.push({ object: blackHole.group, radius: starR * 0.9, kind: "star", data: systemData, system: systemData });
+      lightColor = 0xffd9b0;
+      lightIntensity = 1.1;
+    } else if (isRogue && R3D && R3D.buildPlanetGroup) {
+      // A planet with no star: rendered as a real textured world, but with the
+      // central light killed it shows only as a silhouette faintly touched by
+      // the scene's dim ambient - completely dark, exactly as it should be.
+      rogueGroup = R3D.buildPlanetGroup({
+        name: systemData.name,
+        type: systemData.planetType || "rocky",
+        color: "#3a3f4a",
+        radius: 1,
+      });
+      if (rogueGroup) {
+        rogueGroup.scale.setScalar(starR);
+        root.add(rogueGroup);
+        bodyGroups.push(rogueGroup);
+        // The faintest cold limb so the silhouette's edge can be found at all.
+        const rimGeo = new THREE.SphereGeometry(1.04, 24, 18);
+        const rimMat = new THREE.MeshBasicMaterial({
+          color: 0x3a4a66, transparent: true, opacity: 0.06,
+          side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false,
+        });
+        rogueGroup.add(new THREE.Mesh(rimGeo, rimMat));
+        if (rogueGroup._geos) rogueGroup._geos.push(rimGeo);
+        if (rogueGroup._mats) rogueGroup._mats.push(rimMat);
+        const pick = { object: rogueGroup, radius: starR, kind: "star", data: systemData, system: systemData };
+        pickables.push(pick);
+        scalables.push({
+          group: rogueGroup, pick, baseR: starR,
+          minPx: MIN_APPARENT_PX.star, maxBoost: MAX_APPARENT_BOOST.star,
+        });
+      }
+      lightIntensity = 0;
+    } else if (isExotic && Cosmos.buildExoticStar) {
+      // Built at unit radius and scaled like every other central body, so the
+      // apparent-size floor can drive the same group scale.
+      exoticStar = Cosmos.buildExoticStar(systemData, {
+        radius: 1, seed: Math.floor(hash01(systemData.name, 557) * 1e9),
+      });
+      if (exoticStar) {
+        exoticStar.group.scale.setScalar(starR);
+        root.add(exoticStar.group);
+        const pick = { object: exoticStar.group, radius: starR, kind: "star", data: systemData, system: systemData };
+        pickables.push(pick);
+        scalables.push({
+          group: exoticStar.group, pick, baseR: starR,
+          minPx: MIN_APPARENT_PX.star, maxBoost: MAX_APPARENT_BOOST.star,
+        });
+        lightColor = exoticStar.lightColor;
+        lightIntensity = exoticStar.lightIntensity;
+      }
+    } else {
+      starGroup = R3D && R3D.buildStarGroup ? R3D.buildStarGroup(systemData) : null;
+      if (starGroup) {
+        starGroup.scale.setScalar(starR);
+        root.add(starGroup);
+        bodyGroups.push(starGroup);
+        const pick = { object: starGroup, radius: starR, kind: "star", data: systemData, system: systemData };
+        pickables.push(pick);
+        scalables.push({
+          group: starGroup, pick, baseR: starR,
+          minPx: MIN_APPARENT_PX.star, maxBoost: MAX_APPARENT_BOOST.star,
+        });
+      }
+    }
+    // Light from the star at the orbit centre. distance=0 / decay=0 disables
+    // inverse-square falloff so outer planets aren't dark, while the central
+    // position still produces the correct day/night terminator as they orbit.
+    const starLight = new THREE.PointLight(lightColor, lightIntensity, 0, 0);
+    starLight.position.set(0, 0, 0);
+    root.add(starLight);
+
+    // --- Dyson sphere shell (Zeta Reticuli's intact pair, or the very rare
+    // abandoned derelicts found around procedural stars) ----------------------
+    let dyson = null;
+    if (systemData.dyson && !isRogue && Cosmos && Cosmos.buildDysonSphere) {
+      dyson = Cosmos.buildDysonSphere({
+        radius: starR * 2.4,
+        mode: systemData.dyson === "abandoned" ? "abandoned" : "active",
+        seed: Math.floor(hash01(systemData.name, 733) * 1e9),
+      });
+      root.add(dyson.group);
+    }
+
+    // --- Planets + moons ----------------------------------------------------
+    let outerRadius = starR + 2;
+    const planets = systemData.planets || [];
+    planets.forEach((planet) => {
+      const orbitWorld = planetOrbitWorld(planet.orbitRadius, starR);
+      outerRadius = Math.max(outerRadius, orbitWorld + 1);
+
+      // Real systems are not perfectly coplanar: give each planet a small,
+      // deterministic inclination (up to ~7 degrees, like the solar system) and
+      // tilt its orbit guide to match.
+      const inc = (hash01(planet.name, 11) - 0.5) * 0.24;
+      const node = hash01(planet.name, 29) * Math.PI * 2;
+
+      const line = buildOrbitLine(orbitWorld, opts.orbitColor);
+      line.rotation.set(inc, node, 0);
+      root.add(line);
+      extras.push(line);
+
+      // Unscaled holder positioned on the orbit; the planet/moons are scaled
+      // individually inside it so moon orbits aren't squashed by planet scale.
+      const holder = new THREE.Group();
+      root.add(holder);
+      if (planet.name) planetHolders[planet.name] = holder;
+
+      const pVisR = planetVisualRadius(planet);
+      const pg = R3D && R3D.buildPlanetGroup ? R3D.buildPlanetGroup(planet) : null;
+      const moonStates = [];
+      const allMoons = planet.moons || [];
+      if (pg) {
+        pg.scale.setScalar(pVisR);
+        // Out here a comet flies its whole tail (the portrait path keeps the
+        // cut-down default); animate() aims it away from the star each frame.
+        if (pg._fullTail) pg._fullTail();
+        // Axial tilt (0..~35 deg) so spin axes aren't all dead vertical.
+        pg.rotation.z = (hash01(planet.name, 71) - 0.5) * 1.2;
+        holder.add(pg);
+        bodyGroups.push(pg);
+        const pick = { object: holder, radius: pVisR, kind: "planet", data: planet, system: systemData };
+        pickables.push(pick);
+        scalables.push({
+          group: pg, pick, baseR: pVisR,
+          minPx: MIN_APPARENT_PX.planet, maxBoost: MAX_APPARENT_BOOST.planet,
+        });
+
+        // The world that is signalling wears a "?" until it has been answered.
+        const A = GS.Anomaly;
+        if (A && A.isAnomalous(systemData, planet)) {
+          const q = makeQuestionSprite();
+          q.sprite.visible = A.isPending(systemData, planet);
+          holder.add(q.sprite);
+          anomalyMarkers.push({ mark: q, pick, planet });
+        }
+
+        // Only the first few moons are shown in the wide system view; the rest
+        // are revealed (as cheap moonlets) when the planet is focused.
+        allMoons.slice(0, SYSTEM_MOON_CAP).forEach((moon, mi) => {
+          const mg = R3D.buildPlanetGroup(moon);
+          if (!mg) return;
+          const mVisR = moonVisualRadius(moon);
+          mg.scale.setScalar(mVisR);
+          const moonHolder = new THREE.Group();
+          holder.add(moonHolder);
+          moonHolder.add(mg);
+          bodyGroups.push(mg);
+          const mPick = { object: moonHolder, radius: mVisR, kind: "moon", data: moon, system: systemData, planet: planet };
+          pickables.push(mPick);
+          scalables.push({
+            group: mg, pick: mPick, baseR: mVisR,
+            minPx: MIN_APPARENT_PX.moon, maxBoost: MAX_APPARENT_BOOST.moon,
+          });
+          // Moon orbits are measured in planet radii (as they are in reality)
+          // instead of a fixed world offset, so a gas giant keeps its moons at
+          // a proportionate distance rather than glued to its surface.
+          const moonOrbit = pVisR * (2.6 + mi * 1.5) + 0.02;
+          moonStates.push({
+            holder: moonHolder, group: mg, orbit: moonOrbit,
+            // Kepler again, this time about the planet.
+            speed: 0.3 / Math.pow(1 + mi * 0.6, 1.5),
+            phase: moon.phase || 0,
+            inc: (hash01(moon.name, 5 + mi) - 0.5) * 0.35,
+            node: hash01(moon.name, 91 + mi) * Math.PI * 2,
+          });
+        });
+      }
+
+      orbiters.push({
+        holder,
+        group: pg,
+        planetData: planet,
+        planetVisR: pVisR,
+        allMoons,
+        baseMoonCount: moonStates.length,
+        orbit: orbitWorld,
+        inc,
+        node,
+        speed: orbitSpeed(planet.orbitRadius, systemData.mass),
+        phase: planet.phase || 0,
+        moons: moonStates,
+        _focused: false,
+        _extra: [], // { holder, mesh } moonlets added while focused
+      });
+    });
+
+    // --- Debris belts (asteroid belt, Kuiper belt) --------------------------
+    // A belt is drawn, not simulated: one mesh of a few thousand fragment specks
+    // laid on an annulus between two orbital radii, with the resonance gaps left
+    // empty. Declared per system as `belts: [{ innerAu, outerAu, ... }]`.
+    const beltMeshes = [];
+    (systemData.belts || []).forEach((belt, bi) => {
+      if (!R3D || !R3D.makeDebrisMesh) return;
+      const inner = planetOrbitWorld(belt.innerAu, starR);
+      const outer = planetOrbitWorld(belt.outerAu, starR);
+      const built = R3D.makeDebrisMesh({
+        count: belt.count || 1200,
+        rMin: inner,
+        rMax: outer,
+        thickness: belt.thickness != null ? belt.thickness : 0.3,
+        gaps: (belt.gapsAu || []).map((g) => [
+          planetOrbitWorld(g[0], starR), planetOrbitWorld(g[1], starR),
+        ]),
+        sizeMin: belt.sizeMin != null ? belt.sizeMin : 0.008,
+        sizeMax: belt.sizeMax != null ? belt.sizeMax : 0.026,
+        color: belt.color || "#9c9384",
+        opacity: belt.opacity != null ? belt.opacity : 0.85,
+        seed: Math.floor(hash01(belt.name || ("belt" + bi), 337) * 1e9) || 1,
+      });
+      if (!built) return;
+      root.add(built.mesh);
+      extras.push(built.mesh);
+      // Slow prograde drift, slower the wider the belt sits.
+      beltMeshes.push({ mesh: built.mesh, speed: orbitSpeed(belt.innerAu, systemData.mass) * 0.6 });
+      outerRadius = Math.max(outerRadius, outer + 1);
+    });
+
+    // --- Companion stars (binary .. N-ary) + feeding donor ------------------
+    // Every companion is a real, pickable star riding its own wide orbit; a
+    // feeding donor sits close in with a mass-transfer stream pouring onto the
+    // compact primary. starHolders lets the ship park at any of them by name.
+    const starHolders = {};
+    const companionUnits = [];
+    const companionRecords = [];
+    (systemData.companions || []).forEach((c) => companionRecords.push({ rec: c, feeding: false }));
+    if (systemData.feeding && systemData.feeding.donor) {
+      companionRecords.push({ rec: systemData.feeding.donor, feeding: true });
+    }
+    companionRecords.forEach((entry, ci) => {
+      const c = entry.rec;
+      // Tag the record so selection/travel code knows which system owns it.
+      if (!c._companionOf) c._companionOf = systemData.name;
+      const cR = clamp(starVisualRadius(c) * 0.85, 0.28, 1.8);
+      const holder = new THREE.Group();
+      root.add(holder);
+      if (c.name) starHolders[c.name] = holder;
+
+      let cObj = null;
+      let cGroup = null;
+      if (Cosmos && Cosmos.isExoticStarType && Cosmos.isExoticStarType(c.type) && Cosmos.buildExoticStar) {
+        cObj = Cosmos.buildExoticStar(c, {
+          radius: 1, seed: Math.floor(hash01(c.name, 613) * 1e9),
+        });
+        cGroup = cObj && cObj.group;
+      }
+      if (!cGroup && R3D && R3D.buildStarGroup) {
+        cGroup = R3D.buildStarGroup(c);
+        if (cGroup) bodyGroups.push(cGroup);
+      }
+      if (!cGroup) return;
+      cGroup.scale.setScalar(cR);
+      holder.add(cGroup);
+      const pick = { object: holder, radius: cR, kind: "star", data: c, system: systemData };
+      pickables.push(pick);
+      scalables.push({
+        group: cGroup, pick, baseR: cR,
+        minPx: MIN_APPARENT_PX.star, maxBoost: MAX_APPARENT_BOOST.star,
+      });
+
+      // The rim the stripped matter finally settles onto: the outer edge of an
+      // ordinary hole's disk sits at ~3.4 starR and a Gargantua-style one at
+      // ~8.5, while a feeding neutron star or pulsar has only the tight disk
+      // the stream builds for itself.
+      const rimR = starR * (isBlackHoleSystem ? (isGrandHole ? 8.5 : 3.4) : 1.8);
+      // Donors huddle close to the thing stripping them - but still well clear
+      // of that rim, or the stream has nowhere to wrap on its way in. True
+      // companions ride wide orbits (their orbitRadius is in AU, like planets).
+      const donorOrbit = (rimR / starR) * 2.35 + ci * 0.5;
+      const orbitWorld = entry.feeding
+        ? starR * donorOrbit
+        : planetOrbitWorld(c.orbitRadius || 20, starR) * 1.15;
+      outerRadius = Math.max(outerRadius, orbitWorld + 2);
+      const line = buildOrbitLine(orbitWorld, opts.orbitColor);
+      line.material.opacity = 0.2;
+      root.add(line);
+      extras.push(line);
+
+      // The companion lights its own neighbourhood (dimmer than the primary).
+      const cLight = new THREE.PointLight(
+        cObj ? cObj.lightColor : 0xfff3e0,
+        cObj ? Math.min(0.9, (cObj.lightIntensity || 1) * 0.4) : 0.6,
+        0, 0);
+      holder.add(cLight);
+
+      let stream = null;
+      if (entry.feeding && Cosmos && Cosmos.buildAccretionStream) {
+        stream = Cosmos.buildAccretionStream({
+          fromRadius: cR * 0.9,
+          toRadius: rimR,
+          length: orbitWorld,
+          seed: Math.floor(hash01(c.name, 811) * 1e9),
+        });
+        root.add(stream.group);
+      }
+
+      companionUnits.push({
+        holder, group: cGroup, obj: cObj, stream,
+        orbit: orbitWorld,
+        // A donor is locked to the thing eating it, and the pair turns slowly:
+        // fast enough to see over a while spent watching, never a carousel.
+        speed: entry.feeding ? 0.02 : orbitSpeed(c.orbitRadius || 20, systemData.mass) * 1.2,
+        phase: hash01(c.name, 17) * Math.PI * 2,
+      });
+    });
+
+    basePickCount = pickables.length;
+    const baseScalableCount = scalables.length;
+
+    // --- Player ship (positioned each frame by updateShip) -----------------
+    const ship = buildShip();
+    ship.group.position.set(0, 0.4, starR + 1.2);
+    root.add(ship.group);
+    const shipTmp = new THREE.Vector3();
+    const shipTmpTo = new THREE.Vector3();   // reused travel destination (no per-frame alloc)
+
+    // Reveal every moon of a focused planet, spreading the extras as a 3D
+    // swarm of cheap colored moonlets beyond the major moons. Returns framing
+    // info for the camera. Idempotent per planet.
+    function focusPlanet(planetData) {
+      const o = orbiters.find((x) => x.planetData === planetData ||
+        (planetData && x.planetData && x.planetData.name === planetData.name));
+      if (!o) return null;
+      if (!o._focused) {
+        o._focused = true;
+        const extra = o.allMoons.slice(SYSTEM_MOON_CAP);
+        if (extra.length) {
+          if (!focusMoonGeo) focusMoonGeo = new THREE.SphereGeometry(1, 12, 8);
+          // Planet-radius-relative, picking up just beyond the major moons
+          // (which sit out to ~7 planet radii).
+          const startR = o.planetVisR * 8;
+          const span = o.planetVisR * 14;
+          extra.forEach((moon, j) => {
+            const mVisR = extraMoonRadius(moon);
+            const mat = new THREE.MeshPhongMaterial({
+              color: new THREE.Color(moon.color || "#9aa0aa"),
+              shininess: 6, emissive: 0x05070b,
+            });
+            focusMats.push(mat);
+            const mesh = new THREE.Mesh(focusMoonGeo, mat);
+            mesh.scale.setScalar(mVisR);
+            const moonHolder = new THREE.Group();
+            o.holder.add(moonHolder);
+            moonHolder.add(mesh);
+            const frac = (j + 1) / extra.length;
+            o.moons.push({
+              holder: moonHolder, group: mesh,
+              orbit: startR + Math.sqrt(frac) * span,
+              speed: 0.17 + (1 - frac) * 0.17,
+              phase: moon.phase || (j * 2.399),
+              inc: (((j * 47) % 100) / 100 - 0.5) * 0.9,
+              node: (j * 2.399) % (Math.PI * 2),
+            });
+            o._extra.push({ holder: moonHolder, mesh: mesh });
+            const mPick = { object: moonHolder, radius: mVisR, kind: "moon", data: moon, system: systemData, planet: planetData };
+            pickables.push(mPick);
+            scalables.push({
+              group: mesh, pick: mPick, baseR: mVisR,
+              minPx: MIN_APPARENT_PX.moon, maxBoost: MAX_APPARENT_BOOST.moon,
+            });
+          });
+        }
+      }
+      const moonOuter = o.moons.length
+        ? o.moons[o.moons.length - 1].orbit + o.planetVisR
+        : o.planetVisR * 1.5;
+      return { object: o.holder, radius: o.planetVisR, moonOuter };
+    }
+
+    // Tear down whatever planet focus added (cheap moonlets + their pickables).
+    function clearPlanetFocus() {
+      orbiters.forEach((o) => {
+        if (!o._focused) return;
+        o._focused = false;
+        o._extra.forEach((e) => {
+          if (e.mesh.material && e.mesh.material.dispose) e.mesh.material.dispose();
+          e.holder.remove(e.mesh);
+          o.holder.remove(e.holder);
+        });
+        o._extra.length = 0;
+        o.moons.length = o.baseMoonCount;
+      });
+      focusMats.length = 0;
+      pickables.length = basePickCount;
+      scalables.length = baseScalableCount;
+    }
+
+    // --- Apparent-size floor -----------------------------------------------
+    // Bodies are sized physically (see compressRadius), which makes them
+    // sub-pixel when the whole system is framed. Each frame, grow - never
+    // shrink - anything below its minimum apparent size, capped per kind. Close
+    // up every boost falls back to 1 and the true relative sizes are what you
+    // see. `fovK` is (viewportHeight / 2) / tan(fov / 2): screen radius in
+    // pixels = worldRadius * fovK / distance.
+    const _apparentTmp = new THREE.Vector3();
+    // Reused by animate() when aiming comet tails away from the star.
+    const _tailFrom = new THREE.Vector3();
+    const _tailTo = new THREE.Vector3();
+    function updateApparentSizes(cameraPos, fovK) {
+      if (!cameraPos || !fovK) return;
+      for (const s of scalables) {
+        if (!s.group) continue;
+        s.group.getWorldPosition(_apparentTmp);
+        const dist = cameraPos.distanceTo(_apparentTmp);
+        if (dist <= 0) continue;
+        const px = (s.baseR * fovK) / dist;
+        const boost = px >= s.minPx ? 1 : clamp(s.minPx / px, 1, s.maxBoost);
+        const r = s.baseR * boost;
+        if (s.group.scale.x !== r) s.group.scale.setScalar(r);
+        if (s.pick) s.pick.radius = r; // keep click targets in sync with what's drawn
+      }
+      // The "?" rides on top of whatever the world is currently drawn at, so it
+      // stays legible whether the system is framed whole or the planet fills the
+      // screen.
+      for (const m of anomalyMarkers) {
+        const r = (m.pick && m.pick.radius) || 0.1;
+        m.mark.sprite.position.set(0, r * 2.1, 0);
+        const s = Math.max(r * 1.5, 0.05);
+        m.mark.sprite.scale.set(s, s, 1);
+      }
+    }
+
+    // --- Per-frame animation (t = elapsed seconds) -------------------------
+    function animate(t) {
+      if (starGroup && starGroup._body) starGroup._body.rotation.y = t * 0.05;
+      if (blackHole) blackHole.animate(t);
+      if (exoticStar) exoticStar.animate(t);
+      if (dyson) dyson.animate(t);
+      if (rogueGroup && rogueGroup._body) rogueGroup._body.rotation.y = t * 0.02;
+      for (const cu of companionUnits) {
+        const a = cu.phase + t * cu.speed;
+        cu.holder.position.set(Math.cos(a) * cu.orbit, 0, Math.sin(a) * cu.orbit);
+        if (cu.obj) cu.obj.animate(t);
+        else if (cu.group && cu.group._body) cu.group._body.rotation.y = t * 0.07;
+        if (cu.stream) {
+          // The stream runs from the live donor position onto the primary, and
+          // wraps around it, so it is cut to the full separation.
+          cu.stream.group.position.copy(cu.holder.position);
+          cu.stream.group.lookAt(0, 0, 0);
+          cu.stream.setLength(cu.orbit);
+          cu.stream.animate(t);
+        }
+      }
+      for (const b of beltMeshes) b.mesh.rotation.y = t * b.speed;
+      // A slow breath on the marker, and it goes out the moment the encounter
+      // it stands for has been answered.
+      if (anomalyMarkers.length) {
+        const A = GS.Anomaly;
+        const pulse = 0.72 + 0.28 * Math.sin(t * 2.2);
+        for (const m of anomalyMarkers) {
+          m.mark.sprite.visible = !A || A.isPending(systemData, m.planet);
+          m.mark.mat.opacity = pulse;
+        }
+      }
+      for (const o of orbiters) {
+        const a = o.phase + t * o.speed;
+        const px = Math.cos(a) * o.orbit, pz = Math.sin(a) * o.orbit;
+        if (o.inc) {
+          // Rx(inc) then Ry(node) - matching the guide line's XYZ Euler exactly,
+          // so the planet always rides its drawn orbit.
+          const py = -pz * Math.sin(o.inc), pz2 = pz * Math.cos(o.inc);
+          const cn = Math.cos(o.node), sn = Math.sin(o.node);
+          o.holder.position.set(px * cn + pz2 * sn, py, -px * sn + pz2 * cn);
+        } else {
+          o.holder.position.set(px, 0, pz);
+        }
+        if (o.group && o.group._body) {
+          o.group._body.rotation.y = t * 0.12 + (o.group._phase || 0);
+          if (o.group._clouds) o.group._clouds.rotation.y = t * 0.17 + (o.group._phase || 0);
+          // Debris shells, rings of dust: anything the body carries that keeps
+          // its own rate instead of the planet's day (see buildOrbitalDebris).
+          if (o.group._animateExtras) o.group._animateExtras(t);
+          // A comet's tail is blown by the star, so it points straight down the
+          // line from the star through the comet, whatever the comet is doing.
+          if (o.group._orientTail) {
+            o.holder.getWorldPosition(_tailFrom);
+            root.getWorldPosition(_tailTo);
+            _tailFrom.sub(_tailTo);
+            if (_tailFrom.lengthSq() > 1e-8) o.group._orientTail(_tailFrom.normalize());
+          }
+        }
+        for (const m of o.moons) {
+          const ma = m.phase + t * m.speed;
+          const ox = Math.cos(ma) * m.orbit, oz = Math.sin(ma) * m.orbit;
+          if (m.inc) {
+            // Tilt the orbit plane (inclination about X, node about Y) so the
+            // revealed swarm reads as a 3D cloud rather than a flat disc.
+            const y = oz * Math.sin(m.inc), z2 = oz * Math.cos(m.inc);
+            const cy = Math.cos(m.node), sy = Math.sin(m.node);
+            m.holder.position.set(ox * cy - z2 * sy, y, ox * sy + z2 * cy);
+          } else {
+            m.holder.position.set(ox, 0, oz);
+          }
+          if (m.group && m.group._body) m.group._body.rotation.y = t * 0.2;
+        }
+      }
+    }
+
+    // Position the ship in this view's local frame. Called by Scene3D each
+    // frame AFTER animate() (so planet holders are at their current spot).
+    //   state = { mode:'parkedStar'|'parkedPlanet'|'traveling',
+    //             planetName, fromName, toName, progress }
+    function updateShip(state, t) {
+      state = state || { mode: "parkedStar" };
+      const g = ship.group;
+      // The ship only exists in the system it is really in; every other system
+      // view keeps it hidden (fixes the ghost ship at unvisited systems).
+      if (state.mode === "hidden") {
+        if (g.visible) g.visible = false;
+        return;
+      }
+      if (!g.visible) g.visible = true;
+      if (state.mode === "traveling") {
+        // Reuse persistent temp vectors instead of clone()/new every frame.
+        // lerpVectors reads (does not mutate) its two args, so the live holder
+        // positions can be passed directly and the fallbacks reuse shipTmp*.
+        const from = state.fromName && planetHolders[state.fromName]
+          ? planetHolders[state.fromName].position
+          : shipTmp.set(0, 0.4, starR + 1.2);
+        const to = state.toName && planetHolders[state.toName]
+          ? planetHolders[state.toName].position
+          : shipTmpTo.set(0, 0, 0);
+        g.position.lerpVectors(from, to, Math.max(0, Math.min(1, state.progress || 0)));
+        g.position.y += 0.25;
+        g.lookAt(to);
+      } else if (state.mode === "parkedPlanet" && planetHolders[state.planetName]) {
+        const h = planetHolders[state.planetName].position;
+        const r = planetVisualRadius({ radius: 1 }) + 0.3;
+        // Very slow parking orbit around the planet.
+        const a = t * 0.03;
+        g.position.set(h.x + Math.cos(a) * r, h.y + 0.22, h.z + Math.sin(a) * r);
+        // Nose along the orbit, so the detailed hull reads bow-forward.
+        g.lookAt(h.x + Math.cos(a + 0.1) * r, h.y + 0.22, h.z + Math.sin(a + 0.1) * r);
+      } else {
+        // Parked at the primary by default; state.starName redirects the park
+        // orbit onto a named companion/donor star of an N-ary system.
+        let cx = 0, cz = 0, r = starR + 1.1;
+        const h = state.starName && starHolders[state.starName];
+        if (h) { cx = h.position.x; cz = h.position.z; r = 1.6; }
+        // Very slow drift around the star when parked at the system centre.
+        const a = t * 0.02;
+        g.position.set(cx + Math.cos(a) * r, 0.4, cz + Math.sin(a) * r);
+        g.lookAt(cx + Math.cos(a + 0.1) * r, 0.4, cz + Math.sin(a + 0.1) * r);
+      }
+      ship.update(t);
+    }
+
+    function dispose() {
+      if (R3D && R3D.disposeBodyGroup) {
+        bodyGroups.forEach((g) => R3D.disposeBodyGroup(g));
+      }
+      extras.forEach((o) => {
+        if (o.geometry && o.geometry.dispose) o.geometry.dispose();
+        if (o.material && o.material.dispose) o.material.dispose();
+      });
+      orbiters.forEach((o) => o._extra.forEach((e) => {
+        if (e.mesh.material && e.mesh.material.dispose) e.mesh.material.dispose();
+      }));
+      if (focusMoonGeo) focusMoonGeo.dispose();
+      anomalyMarkers.forEach((m) => { m.mark.tex.dispose(); m.mark.mat.dispose(); });
+      ship.dispose();
+      if (blackHole) blackHole.dispose();
+      if (exoticStar) exoticStar.dispose();
+      if (dyson) dyson.dispose();
+      for (const cu of companionUnits) {
+        if (cu.obj) cu.obj.dispose();
+        if (cu.stream) cu.stream.dispose();
+      }
+      if (root.parent) root.parent.remove(root);
+    }
+
+    return {
+      group: root, pickables, animate, updateShip, dispose, updateApparentSizes,
+      outerRadius, planetHolders, starHolders, focusPlanet, clearPlanetFocus,
+      // The live ship node, so the camera can centre on it wherever it is.
+      shipGroup: ship.group,
+    };
+  }
+
+  function disposeObject3D(root) {
+    const c = GS.Scene3DCosmos;
+    if (c && c.disposeObject3D) c.disposeObject3D(root);
+  }
+
+  GS.Scene3DBodies = {
+    buildSystem,
+    buildOrbitLine,
+    buildShip,
+    makeGlowSprite,
+    disposeObject3D,
+    starVisualRadius,
+    planetVisualRadius,
+  };
+})();

@@ -1,0 +1,204 @@
+{
+  "help": {
+    "lore__the_squishing": {
+      "title": "",
+      "description": ""
+    },
+    "lore__the_rule_of_80": {
+      "title": "",
+      "description": ""
+    },
+    "lore__the_encompassing_road": {
+      "title": "",
+      "description": ""
+    },
+    "lore__the_mages_guild": {
+      "title": "",
+      "description": ""
+    },
+    "lore__hypercapitalist_collective": {
+      "title": "",
+      "description": ""
+    },
+    "lore__em,_the_memory_witch": {
+      "title": "",
+      "description": ""
+    },
+    "lore__camelcase_magic": {
+      "title": "",
+      "description": ""
+    },
+    "lore__alagadda,_city_of_masks": {
+      "title": "",
+      "description": ""
+    },
+    "blade_seeds": {
+      "title": "",
+      "description": ""
+    },
+    "beginning_your_journey": {
+      "title": "",
+      "description": ""
+    },
+    "combat_system": {
+      "title": "",
+      "description": ""
+    },
+    "cooking_system": {
+      "title": "",
+      "description": ""
+    },
+    "crafting_(thinker_system)": {
+      "title": "",
+      "description": ""
+    },
+    "crime_&_law_system": {
+      "title": "",
+      "description": ""
+    },
+    "dating_system": {
+      "title": "",
+      "description": ""
+    },
+    "death_&_gravestones": {
+      "title": "",
+      "description": ""
+    },
+    "dungeon_system": {
+      "title": "",
+      "description": ""
+    },
+    "factions_&_reputation": {
+      "title": "",
+      "description": ""
+    },
+    "fog_of_war": {
+      "title": "",
+      "description": ""
+    },
+    "hunger_&_sleep": {
+      "title": "",
+      "description": ""
+    },
+    "hypernet_&_shopping": {
+      "title": "",
+      "description": ""
+    },
+    "lockpicking": {
+      "title": "",
+      "description": ""
+    },
+    "news_system": {
+      "title": "",
+      "description": ""
+    },
+    "party_system": {
+      "title": "",
+      "description": ""
+    },
+    "real_estate_market": {
+      "title": "",
+      "description": ""
+    },
+    "saving_your_game": {
+      "title": "",
+      "description": ""
+    },
+    "skills_&_training": {
+      "title": "",
+      "description": ""
+    },
+    "scaling_&_attributes": {
+      "title": "",
+      "description": ""
+    },
+    "status_effects": {
+      "title": "",
+      "description": ""
+    },
+    "stock_market": {
+      "title": "",
+      "description": ""
+    },
+    "travel_&_vehicles": {
+      "title": "",
+      "description": ""
+    },
+    "weather_&_time": {
+      "title": "",
+      "description": ""
+    },
+    "world_map": {
+      "title": "",
+      "description": ""
+    },
+    "state_arcane_surge": {
+      "title": "",
+      "description": ""
+    },
+    "state_berserk": {
+      "title": "",
+      "description": ""
+    },
+    "state_bleeding": {
+      "title": "",
+      "description": ""
+    },
+    "state_blind": {
+      "title": "",
+      "description": ""
+    },
+    "state_burned": {
+      "title": "",
+      "description": ""
+    },
+    "state_charm": {
+      "title": "",
+      "description": ""
+    },
+    "state_cold": {
+      "title": "",
+      "description": ""
+    },
+    "state_confusion": {
+      "title": "",
+      "description": ""
+    },
+    "state_shadow": {
+      "title": "",
+      "description": ""
+    },
+    "state_silence": {
+      "title": "",
+      "description": ""
+    },
+    "state_sleep": {
+      "title": "",
+      "description": ""
+    },
+    "state_static": {
+      "title": "",
+      "description": ""
+    },
+    "state_stun": {
+      "title": "",
+      "description": ""
+    },
+    "state_unbalanced": {
+      "title": "",
+      "description": ""
+    },
+    "state_vulnerability": {
+      "title": "",
+      "description": ""
+    },
+    "state_wet": {
+      "title": "",
+      "description": ""
+    },
+    "petro": {
+      "title": "",
+      "description": ""
+    }
+  }
+}

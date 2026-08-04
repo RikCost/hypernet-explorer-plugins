@@ -1,0 +1,38 @@
+{
+  "targetedMiss": "The targeted attack missed its mark!",
+  "elementVerb": {
+    "2": "burned",
+    "3": "frozen",
+    "4": "electrocuted",
+    "5": "drenched",
+    "6": "crushed",
+    "7": "blown away",
+    "8": "melted",
+    "9": "corrupted",
+    "10": "cursed"
+  },
+  "elementVerbDefault": "destroyed",
+  "partElementalHit": "{enemy}'s {part} has been {effect}!",
+  "partSevered": "{enemy}'s {part} has been severed!",
+  "partDestroyed": "{enemy}'s {part} has been destroyed!",
+  "customPartMessage": "{enemy}'s {message}",
+  "partSeverelyDamaged": "{part} severely damaged, but the monster is still too strong!",
+  "preciseStrike": "A precise strike to the {part}!",
+  "partWasHit": "{enemy}'s {part} was hit!",
+  "paramNames": [
+    "Max HP",
+    "Max MP",
+    "Attack",
+    "Magic",
+    "Defense",
+    "M.Defense",
+    "Agility",
+    "Luck"
+  ],
+  "statFallback": "Stat",
+  "elementLabel": "Element:",
+  "weakToLabel": "Weak to:",
+  "statesLabel": "States:",
+  "bodyParts": "Body Parts",
+  "none": "None"
+}

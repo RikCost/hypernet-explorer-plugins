@@ -1,0 +1,61 @@
+{
+  "monthAbbr": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "dayAbbr": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "loadError": "",
+  "stillFermenting": "",
+  "missingLine": "",
+  "missing": "",
+  "started": "",
+  "itemNumbered": "",
+  "units": "",
+  "stage": {
+    "primary": "",
+    "secondary": "",
+    "conditioning": "",
+    "ready": ""
+  },
+  "ui": {
+    "ready": "",
+    "loadingRecipes": "",
+    "barrel": "",
+    "status": "",
+    "state": "",
+    "empty": "",
+    "selectRecipeHint": "",
+    "beginBrewing": "",
+    "exit": "",
+    "harvest": "",
+    "fermenting": "",
+    "fermentingTitle": "",
+    "recipe": "",
+    "stage": "",
+    "timeRemaining": "",
+    "started": "",
+    "expectedOutput": "",
+    "back": "",
+    "brewery": "",
+    "recipes": "",
+    "ingredients": ""
+  }
+}

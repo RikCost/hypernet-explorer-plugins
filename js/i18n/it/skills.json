@@ -1,0 +1,5120 @@
+{
+  "1": {
+    "name": "Attacco",
+    "description": "Attacco di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "2": {
+    "name": "Guardia",
+    "description": "Guardia di base",
+    "message1": "%1 si difende.",
+    "message2": ""
+  },
+  "3": {
+    "name": "Mimic",
+    "description": "Utilizza un'abilità casuale del nemico o del\r\ngruppo",
+    "message1": "",
+    "message2": ""
+  },
+  "4": {
+    "name": "Esplosione PSI",
+    "description": "Esegue una serie di attacchi\\ncontro un nemico.",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "5": {
+    "name": "BurnSOUL",
+    "description": "Convoca un'entità bruciando le azioni SOUL",
+    "message1": "",
+    "message2": ""
+  },
+  "6": {
+    "name": "Allena abilità",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "7": {
+    "name": "Proiezione astrale",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "8": {
+    "name": "Evoca ANIMA",
+    "description": "Ottieni una quota temporanea di ANIME",
+    "message1": "",
+    "message2": ""
+  },
+  "9": {
+    "name": "Trova il percorso",
+    "description": "Mostra il nome del luogo in cui ti trovi.",
+    "message1": "",
+    "message2": ""
+  },
+  "10": {
+    "name": "Improvvisare",
+    "description": "Utilizza un'abilità o una magia casuale.",
+    "message1": "",
+    "message2": ""
+  },
+  "11": {
+    "name": "Convoka",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "12": {
+    "name": "Doppio attacco",
+    "description": "Esegue una serie di attacchi\\ncontro un nemico.",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "13": {
+    "name": "Doppio attacco",
+    "description": "Esegue un doppio attacco su un\\nnemico casuale.",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "14": {
+    "name": "Triplo attacco",
+    "description": "Esegue un triplo attacco su un\\nnemico casuale.",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "15": {
+    "name": "Fuga",
+    "description": "L’utilizzatore fugge dalla battaglia.",
+    "message1": "%1 fugge.",
+    "message2": ""
+  },
+  "16": {
+    "name": "Stare a vedere",
+    "description": "Sta a vedere cosa succede.",
+    "message1": "%1 sta aspettando.",
+    "message2": ""
+  },
+  "17": {
+    "name": "Succhia sangue",
+    "description": "Assorbe HP da un nemico.",
+    "message1": "%1 succhia il sangue!",
+    "message2": ""
+  },
+  "18": {
+    "name": "Meditare",
+    "description": "Ripristina gli HP dell'utilizzatore.",
+    "message1": "%1 medita!",
+    "message2": ""
+  },
+  "19": {
+    "name": "Tranquillizzante",
+    "description": "Trafigge un nemico con aghi\\nparalizzanti.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "20": {
+    "name": "Bodyslam",
+    "description": "Infligge danni e fa perdere\\nl'equilibrio a un nemico.",
+    "message1": "%1 esegue un bodyslam!",
+    "message2": ""
+  },
+  "21": {
+    "name": "Shock",
+    "description": "Infligge danni di tipo Fulmine\\ne lo stato Paralisi.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "22": {
+    "name": "Melma",
+    "description": "Ricopre un nemico di\\nmelma e ne abbassa la DEX.",
+    "message1": "%1 spara fuori della melma!",
+    "message2": ""
+  },
+  "23": {
+    "name": "Veleno",
+    "description": "Spruzza veleno su un nemico\\ne infligge lo stato avvelenato.",
+    "message1": "%1 spruzza veleno!",
+    "message2": ""
+  },
+  "24": {
+    "name": "Gridare",
+    "description": "Ridesta lo spirito combattivo dell'utilizzatore e ne\\nrafforza le capacità.",
+    "message1": "%1 risveglia il suo spirito combattivo!",
+    "message2": ""
+  },
+  "25": {
+    "name": "Danza bizzarra",
+    "description": "Assorbe MP da un nemico.",
+    "message1": "%1 balla in modo bizzarro!",
+    "message2": ""
+  },
+  "26": {
+    "name": "Pietrifica",
+    "description": "Fissa un nemico negli occhi e\\nlo paralizza.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "27": {
+    "name": "Cava gli occhi",
+    "description": "Un colpo rapido mirato agli occhi del nemico, \\npuò causare cecità.",
+    "message1": "%1 cava %2 occhi!",
+    "message2": ""
+  },
+  "28": {
+    "name": "Tempesta di sabbia",
+    "description": "Acceca tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "29": {
+    "name": "Flash",
+    "description": "Acceca tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "30": {
+    "name": "Nebbia tossica",
+    "description": "Avvelena tutti i nemici.",
+    "message1": "%1 rilascia una nebbia tossica!",
+    "message2": ""
+  },
+  "31": {
+    "name": "Ninna nanna",
+    "description": "Addormenta tutti i nemici.",
+    "message1": "%1 canta una ninna nanna!",
+    "message2": ""
+  },
+  "32": {
+    "name": "Melodia seducente",
+    "description": "Ammalia tutti i nemici.",
+    "message1": "%1 canta una melodia accattivante!",
+    "message2": ""
+  },
+  "33": {
+    "name": "Canto del silenzio",
+    "description": "Sigilla tutta la magia dei nemici.",
+    "message1": "%1 canta una canzone del silenzio!",
+    "message2": ""
+  },
+  "34": {
+    "name": "Onda sonica",
+    "description": "Confonde tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "35": {
+    "name": "Lancio di pietra",
+    "description": "Infligge danni di tipo Terra\\na tutti i nemici.",
+    "message1": "%1 lancia pietre!",
+    "message2": ""
+  },
+  "36": {
+    "name": "Diavolo di polvere",
+    "description": "Scaglia sabbia tagliente contro il nemico.",
+    "message1": "%1 lancia sabbia tagliente!",
+    "message2": ""
+  },
+  "37": {
+    "name": "Alito di fuoco",
+    "description": "Infligge danni di tipo Fuoco\\na tutti i nemici.",
+    "message1": "%1 sputa fuoco!",
+    "message2": ""
+  },
+  "38": {
+    "name": "Alito di ghiaccio",
+    "description": "Infligge danni di tipo Ghiaccio\\na tutti i nemici.",
+    "message1": "%1 respira ghiaccio!",
+    "message2": ""
+  },
+  "39": {
+    "name": "Terremoto",
+    "description": "Pesta il terreno e infligge danni di tipo\\nPetrolio a tutti i nemici.",
+    "message1": "%1 provoca un terremoto!",
+    "message2": ""
+  },
+  "40": {
+    "name": "Tsunami",
+    "description": "Infligge danni di tipo Acqua\\na tutti i nemici.",
+    "message1": "%1 provoca uno tsunami!",
+    "message2": ""
+  },
+  "41": {
+    "name": "Graffio",
+    "description": "Infligge danni a un nemico.",
+    "message1": "%1 da un graffio doloroso!",
+    "message2": ""
+  },
+  "42": {
+    "name": "Pugno rapido",
+    "description": "Una tecnica di pugni rapidi che\\ncolpisce il nemico più volte.",
+    "message1": "%1 scatena una raffica di pugni!",
+    "message2": ""
+  },
+  "43": {
+    "name": "Suplex",
+    "description": "Una potente proiezione dall'alto che\\nsbatte il nemico al suolo.",
+    "message1": "%1 esegue una suplex!",
+    "message2": ""
+  },
+  "44": {
+    "name": "Punto di pressione",
+    "description": "Un colpo preciso mirato ai punti\\ndi pressione del nemico, può causare paralisi.",
+    "message1": "%1 colpisce un punto di pressione!",
+    "message2": ""
+  },
+  "45": {
+    "name": "Presa di sottomissione",
+    "description": "Una presa che immobilizza il\\nnemico e ne prosciuga gradualmente gli HP.",
+    "message1": "%1 applica un blocco di invio!",
+    "message2": ""
+  },
+  "46": {
+    "name": "Calcio tornado",
+    "description": "Un devastante calcio rotante\\nche colpisce tutti i nemici.",
+    "message1": "%1 esegue un calcio tornado rotante!",
+    "message2": ""
+  },
+  "47": {
+    "name": "Posizione difensiva",
+    "description": "Una posizione difensiva che aumenta PSI\\ne tasso di contrattacco per 3 turni.",
+    "message1": "%1 assume una posizione difensiva!",
+    "message2": ""
+  },
+  "48": {
+    "name": "Meditazione Zen",
+    "description": "Una tecnica di meditazione che ripristina gli\\nHP dell'utilizzatore e rimuove gli stati negativi.",
+    "message1": "%1 esegue una meditazione profonda!",
+    "message2": ""
+  },
+  "49": {
+    "name": "Battipalo",
+    "description": "Fa cadere il nemico sulla testa,\\npuò causare KO immediato.",
+    "message1": "%1 esegue un piledriver!",
+    "message2": ""
+  },
+  "50": {
+    "name": "Calci uragano",
+    "description": "Una rapida serie di calci\\nche colpisce tutti i nemici più volte.",
+    "message1": "%1 scatena una raffica di calci!",
+    "message2": ""
+  },
+  "51": {
+    "name": "-----Tecniche di arti marziali",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "52": {
+    "name": "Pugno del drago",
+    "description": "La tecnica suprema delle arti marziali che\\nscatena danni devastanti sul nemico.",
+    "message1": "%1 usa la sua tecnica definitiva!",
+    "message2": ""
+  },
+  "53": {
+    "name": "Pos. dell’ubriaco",
+    "description": "Una danza marziale confusionaria\\nche lascia i nemici disorientati.",
+    "message1": "%1 assume la posizione dell'ubriaco!",
+    "message2": ""
+  },
+  "54": {
+    "name": "Focus Chi",
+    "description": "Concentra l'energia interiore per aumentare enormemente\\nAttacco e Tasso Critico per 3 turni.",
+    "message1": "%1 concentra il suo chi!",
+    "message2": ""
+  },
+  "55": {
+    "name": "Combo German suplex",
+    "description": "Una mossa di lotta che sbatte il\\nnemico al suolo più volte.",
+    "message1": "%1 esegue una serie di suplex!",
+    "message2": ""
+  },
+  "56": {
+    "name": "Palmo del tuono",
+    "description": "Un colpo di palmo fulmineo\\nche può paralizzare il nemico.",
+    "message1": "%1 colpisce con una forza impressionante!",
+    "message2": ""
+  },
+  "57": {
+    "name": "Calcio del drago ascendente",
+    "description": "Un potente calcio ascendente che\\nscaglia i nemici in aria.",
+    "message1": "%1 esegue un calcio del drago ascendente!",
+    "message2": ""
+  },
+  "58": {
+    "name": "Figure-Four Leg Lock",
+    "description": "Una mossa di lotta che blocca il\\nnemico in una dolorosa leva alla gamba.",
+    "message1": "%1 applica un figure-four leg lock!",
+    "message2": ""
+  },
+  "59": {
+    "name": "Sedia d’acciao",
+    "description": "Una mossa di lotta che colpisce il\\nnemico con una sedia. Ignora parte della COS.",
+    "message1": "%1 usa una sedia d'acciaio!",
+    "message2": ""
+  },
+  "60": {
+    "name": "Posizione del flusso d'acqua",
+    "description": "Una tecnica di arti marziali che\\naumenta enormemente la PSI per 3 turni.",
+    "message1": "%1 assume una posizione fluida!",
+    "message2": ""
+  },
+  "61": {
+    "name": "Pugno da 1cm",
+    "description": "Una tecnica letale di arti marziali che concentra\\ntutta l'energia in un unico colpo devastante.",
+    "message1": "%1 sferra un pugno da 1cm!",
+    "message2": ""
+  },
+  "62": {
+    "name": "Posizione di controtendenza",
+    "description": "Un contrattacco di arti marziali che scatta\\nquando si viene colpiti, con maggiore probabilità di critico.",
+    "message1": "%1 si prepara al contrattacco!",
+    "message2": ""
+  },
+  "63": {
+    "name": "Spezzaguardia",
+    "description": "Una presa che spezza la guardia\\ndel nemico e ne riduce la COS.",
+    "message1": "%1 rompe la guardia del nemico!",
+    "message2": ""
+  },
+  "64": {
+    "name": "Colpo combinato",
+    "description": "Una potente combinazione di pugni\\ne calci che colpisce più volte.",
+    "message1": "%1 esegue un attacco combo!",
+    "message2": ""
+  },
+  "65": {
+    "name": "Mossa finale",
+    "description": "Una devastante mossa finale di lotta che\\npuò mettere KO all'istante un avversario indebolito.",
+    "message1": "%1 esegue la sua mossa finale!",
+    "message2": ""
+  },
+  "66": {
+    "name": "Furia di gomito",
+    "description": "Una rapida serie di gomitate\\nche può sfondare le COS.",
+    "message1": "%1 scatena una raffica di gomitate!",
+    "message2": ""
+  },
+  "67": {
+    "name": "Ginocchiata volante",
+    "description": "Una potente ginocchiata in salto\\nche può stordire il nemico.",
+    "message1": "%1 sferra una ginocchiata volante!",
+    "message2": ""
+  },
+  "68": {
+    "name": "Colpo al punto vitale",
+    "description": "Una potente tecnica di arti marziali che\\nmira ai punti vitali, ignorando parte della COS.",
+    "message1": "%1 colpisce un punto vitale!",
+    "message2": ""
+  },
+  "69": {
+    "name": "Lariat",
+    "description": "Un potente attacco a clothesline\\nche può colpire più nemici.",
+    "message1": "%1 esegue un lariat!",
+    "message2": ""
+  },
+  "70": {
+    "name": "Pugno di Fuoco",
+    "description": "Una tecnica di arti marziali che incendia i pugni\\ncon l'energia interiore per un attacco infuocato.",
+    "message1": "%1 pugni ardenti di fuoco!",
+    "message2": ""
+  },
+  "71": {
+    "name": "Palmo gelato",
+    "description": "Una tecnica di arti marziali che incanala\\nl'energia del freddo per un attacco gelido.",
+    "message1": "%1 palmi irradiano freddo!",
+    "message2": ""
+  },
+  "72": {
+    "name": "Pugno addormentato",
+    "description": "Una tecnica ipnotica di arti marziali\\nche può addormentare i nemici.",
+    "message1": "%1 esegue una tecnica ipnotica!",
+    "message2": ""
+  },
+  "73": {
+    "name": "Powerbomb",
+    "description": "Una mossa di lotta che lancia il nemico in\\naria e lo riprende con un impatto devastante.",
+    "message1": "%1 esegue una powerbomb!",
+    "message2": ""
+  },
+  "74": {
+    "name": "Ddt",
+    "description": "Una mossa di lotta che sbatte\\nla testa del nemico al suolo.",
+    "message1": "%1 esegue un DDT!",
+    "message2": ""
+  },
+  "75": {
+    "name": "Armbar",
+    "description": "Una mossa di lotta che prende di mira il\\nbraccio del nemico, può abbassarne l'attacco.",
+    "message1": "%1 applica una armbar!",
+    "message2": ""
+  },
+  "76": {
+    "name": "Posizione di inversione",
+    "description": "Assume una postura specifica che rivolta i colpi\\ndel nemico contro di lui.",
+    "message1": "%1 si prepara a contrattaccare!",
+    "message2": ""
+  },
+  "77": {
+    "name": "Splash dalla terza corda",
+    "description": "Una mossa di lotta che salta dalle\\ncorde per colpire tutti i nemici.",
+    "message1": "%1 salta dalla corda più alta!",
+    "message2": ""
+  },
+  "78": {
+    "name": "Guarigione Chi",
+    "description": "Una tecnica di arti marziali che\\ncura le ferite con una rapida manipolazione del chi.",
+    "message1": "%1 canalizza il chi curativo!",
+    "message2": ""
+  },
+  "79": {
+    "name": "Posizione di potenza",
+    "description": "Una tecnica di arti marziali che\\naumenta enormemente l'Attacco per 3 turni.",
+    "message1": "%1 si potenzia!",
+    "message2": ""
+  },
+  "80": {
+    "name": "Colpo paralizzante",
+    "description": "Una tecnica di arti marziali che riduce\\nenormemente la DEX di un nemico per 3 turni.",
+    "message1": "%1 colpisce i punti di pressione!",
+    "message2": ""
+  },
+  "81": {
+    "name": "Cannone spirituale",
+    "description": "Una devastante tecnica suprema di arti\\nmarziali che attinge al potere interiore.",
+    "message1": "%1 scatena %2",
+    "message2": ""
+  },
+  "82": {
+    "name": "Esponi debolezze",
+    "description": "Rivela verità nascoste e debolezze del nemico.",
+    "message1": "%1 scava per trovare la verità!",
+    "message2": ""
+  },
+  "83": {
+    "name": "Titolo scandaloso",
+    "description": "Utilizza un dossier per confondere E demoralizzare\r\ntutti i nemici.",
+    "message1": "%1 pubblica un rapporto feroce!",
+    "message2": ""
+  },
+  "84": {
+    "name": "Cur Alleato",
+    "description": "Ripristina gli HP di un alleato.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "85": {
+    "name": "Gran Cura",
+    "description": "Ripristina gli HP di un alleato.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "86": {
+    "name": "Rigenega",
+    "description": "Ripristina gli HP di un alleato.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "87": {
+    "name": "Doccia Vitale",
+    "description": "Ripristina gli HP di tutti gli alleati.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "88": {
+    "name": "Ripristina gli umori",
+    "description": "Ripristina gli HP di tutti gli alleati.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "89": {
+    "name": "Cura Party",
+    "description": "Ripristina gli HP di tutti gli alleati.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "90": {
+    "name": "Disintossica",
+    "description": "Cura lo stato di Veleno, Paralisi\\no Sonno di un alleato.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "91": {
+    "name": "Normalizza",
+    "description": "Cura le alterazioni di stato di un\\nalleato tranne la Morte.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "92": {
+    "name": "Normalizzatore Tutti",
+    "description": "Cura le alterazioni di stato di tutti gli\\nalleati tranne la Morte.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "93": {
+    "name": "Resuscita",
+    "description": "Resuscita un alleato dal regno dei morti.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "94": {
+    "name": "Rivivifica",
+    "description": "Resuscita un alleato e ne ripristina gran parte\\ndegli HP.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "95": {
+    "name": "Veleno",
+    "description": "Avvelena tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "96": {
+    "name": "Acceca",
+    "description": "Acceca tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "97": {
+    "name": "Confondi",
+    "description": "Confonde tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "98": {
+    "name": "Silenzio",
+    "description": "Sigilla tutta la magia dei nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "99": {
+    "name": "Sonno",
+    "description": "Addormenta tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "100": {
+    "name": "Paralizzare",
+    "description": "Paralizza tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "101": {
+    "name": "Benedici Armi",
+    "description": "Aumenta la FRZ di un alleato.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "102": {
+    "name": "Maledici Armi",
+    "description": "Riduce la FRZ di tutti i nemici.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "103": {
+    "name": "Benedici Armatura",
+    "description": "Aumenta la COS di un alleato.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "104": {
+    "name": "Maledici Armatura",
+    "description": "Riduce la COS di tutti i nemici.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "105": {
+    "name": "Spirito Bless",
+    "description": "Aumenta l'INT di un alleato.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "106": {
+    "name": "Maledizione spirituale",
+    "description": "Riduce l'INT di tutti i nemici.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "107": {
+    "name": "Divino Bless",
+    "description": "Aumenta la SAG di un alleato.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "108": {
+    "name": "Maledizione Divina",
+    "description": "Riduce la SAG di tutti i nemici.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "109": {
+    "name": "Quicken Movement",
+    "description": "Aumenta la DEX di un alleato.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "110": {
+    "name": "Movimento lento",
+    "description": "Riduce la DEX di tutti i nemici.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "111": {
+    "name": "Assorbi Vita",
+    "description": "Assorbe HP da un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "112": {
+    "name": "Assorbi Mana",
+    "description": "Assorbe MP da un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "113": {
+    "name": "Palla Di Fuoco Gen.",
+    "description": "Infligge danni di tipo Fuoco\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "114": {
+    "name": "Ignizione Infernale",
+    "description": "Infligge danni di tipo Fuoco\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "115": {
+    "name": "Pirossi",
+    "description": "Infligge danni di tipo Fuoco\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "116": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "117": {
+    "name": "Jet Fiammante",
+    "description": "Infligge danni di tipo Fuoco\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "118": {
+    "name": "Magma Morfosi",
+    "description": "Infligge danni di tipo Fuoco\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "119": {
+    "name": "Spaccagiorno",
+    "description": "Infligge danni di tipo Fuoco\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "120": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "121": {
+    "name": "Crio Dardo",
+    "description": "Infligge danni di tipo Ghiaccio\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "122": {
+    "name": "Freddo Morso",
+    "description": "Infligge danni di tipo Ghiaccio\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "123": {
+    "name": "Grinder Glaciale",
+    "description": "Infligge danni di tipo Ghiaccio\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "124": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "125": {
+    "name": "Tormenta",
+    "description": "Infligge danni di tipo Ghiaccio\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "126": {
+    "name": "Raffreddamento Liquido",
+    "description": "Infligge danni di tipo Ghiaccio\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "127": {
+    "name": "Prigione Glaciale",
+    "description": "Infligge danni di tipo Ghiaccio\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "128": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "129": {
+    "name": "Snap Statico",
+    "description": "Infligge danni di tipo Fulmine\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "130": {
+    "name": "Volt Vandalo",
+    "description": "Infligge danni di tipo Fulmine\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "131": {
+    "name": "Tuon Tremore",
+    "description": "Infligge danni di tipo Fulmine\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "132": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "133": {
+    "name": "Tuono Schioppo",
+    "description": "Infligge danni di tipo Fulmine\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "134": {
+    "name": "Elettro Doom",
+    "description": "Infligge danni di tipo Fulmine\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "135": {
+    "name": "Globo Globulare",
+    "description": "Infligge danni di tipo Fulmine\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "136": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "137": {
+    "name": "Bolla",
+    "description": "Infligge danni di tipo Acqua\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "138": {
+    "name": "Torrente",
+    "description": "Infligge danni di tipo Acqua\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "139": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "140": {
+    "name": "Goccia Goccia",
+    "description": "Infligge danni di tipo Acqua\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "141": {
+    "name": "Paviment Acqua",
+    "description": "Infligge danni di tipo Acqua\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "142": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "143": {
+    "name": "Sasso Bonk",
+    "description": "Infligge danni di tipo Terra\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "144": {
+    "name": "Faccia Di Pietra",
+    "description": "Infligge danni di tipo Terra\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "145": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "146": {
+    "name": "Gran Tremore",
+    "description": "Infligge danni di tipo Terra\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "147": {
+    "name": "Faglia Di Varlenia",
+    "description": "Infligge danni di tipo Terra\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "148": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "149": {
+    "name": "Vorti Vortice",
+    "description": "Infligge danni di tipo Vento\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "150": {
+    "name": "Sgorgo Raffica",
+    "description": "Infligge danni di tipo Vento\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "151": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "152": {
+    "name": "Tornado",
+    "description": "Infligge danni di tipo Vento\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "153": {
+    "name": "Soulnado",
+    "description": "Infligge danni di tipo Vento\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "154": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "155": {
+    "name": "Santifica",
+    "description": "Infligge danni di tipo Luce\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "156": {
+    "name": "Cascata Di Luce",
+    "description": "Infligge danni di tipo Luce\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "157": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "158": {
+    "name": "Destino",
+    "description": "Infligge danni di tipo Luce\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "159": {
+    "name": "Demiurgus",
+    "description": "Infligge danni di tipo Luce\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "160": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "161": {
+    "name": "Dard Oscuro",
+    "description": "Infligge danni di tipo Oscurità\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "162": {
+    "name": "Vuoto Abbraccio",
+    "description": "Infligge danni di tipo Oscurità\\na un nemico.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "163": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "164": {
+    "name": "BucoPiùNero",
+    "description": "Infligge danni di tipo Oscurità\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "165": {
+    "name": "emTomb",
+    "description": "Infligge danni di tipo Oscurità\\na tutti i nemici.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "166": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "167": {
+    "name": "Dard Arcano",
+    "description": "Infligge danni a un\\nnemico ignorando la COS.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "168": {
+    "name": "Piercer Arcano",
+    "description": "Infligge danni a un\\nnemico ignorando la COS.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "169": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "170": {
+    "name": "Fusione",
+    "description": "Infligge danni a tutti i\\nnemici ignorando la COS.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "171": {
+    "name": "Blast Atomico",
+    "description": "Infligge danni a tutti i\\nnemici ignorando la COS.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "172": {
+    "name": "Colpo potente",
+    "description": "Esegue un potente\\nattacco su un nemico.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "173": {
+    "name": "Taglio",
+    "description": "Falcia il nemico con un attacco orizzontale.",
+    "message1": "%1 falcia il nemico!",
+    "message2": ""
+  },
+  "174": {
+    "name": "Bi-colpo",
+    "description": "Sferra due colpi perfettamente sincronizzati \\nche mirano ai punti deboli di un nemico.",
+    "message1": "%1 attacchi doppi!",
+    "message2": ""
+  },
+  "175": {
+    "name": "Forza di volontà",
+    "description": "Ridesta lo spirito combattivo dell'utilizzatore e ne aumenta\\nl'Attacco. Utilizzabile fino a 2 volte di fila.",
+    "message1": "%1 utilizza %2",
+    "message2": ""
+  },
+  "176": {
+    "name": "Primo soccorso",
+    "description": "Ripristina gli HP di un alleato.",
+    "message1": "%1 esegue %2",
+    "message2": ""
+  },
+  "177": {
+    "name": "Posizione della fanciulla",
+    "description": "Esegue un attacco potentissimo\\nsu un nemico.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "178": {
+    "name": "Schianto rotante",
+    "description": "Esegue un potente\\nattacco su tutti i nemici.",
+    "message1": "%1 falcia il nemico!",
+    "message2": ""
+  },
+  "179": {
+    "name": "Bomba inversa",
+    "description": "Una mossa di lotta che solleva e\\nsbatte il nemico sulla schiena.",
+    "message1": "%1 esegue una presa al corpo!",
+    "message2": ""
+  },
+  "180": {
+    "name": "Dropkick",
+    "description": "Una mossa di lotta che colpisce\\npiù nemici insieme con un dropkick.",
+    "message1": "%1 esegue un dropkick!",
+    "message2": ""
+  },
+  "181": {
+    "name": "Chop di karate",
+    "description": "Una mossa di arti marziali che colpisce\\nil collo del nemico con un potente taglio di mano.",
+    "message1": "%1 esegue un colpo di karate!",
+    "message2": ""
+  },
+  "182": {
+    "name": "Spazzata di gamba",
+    "description": "Una rapida serie di calci bassi\\nmirati alle gambe del nemico per ridurne la mobilità.",
+    "message1": "%1 mira alle gambe!",
+    "message2": ""
+  },
+  "183": {
+    "name": "Colpo di fulmine",
+    "description": "Una tecnica di arti marziali che colpisce\\ncon la rapidità del fulmine, difficile da schivare.",
+    "message1": "%1 colpisce come un fulmine!",
+    "message2": ""
+  },
+  "184": {
+    "name": "Calcio rotante",
+    "description": "Un potente calcio di arti marziali che\\ninfligge danni enormi a un singolo bersaglio.",
+    "message1": "%1 sferra un calcio devastante!",
+    "message2": ""
+  },
+  "185": {
+    "name": "-----Abilità del sacerdote e dello stregone",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "186": {
+    "name": "Barriera Magica",
+    "description": "Aumenta COS e SAG di tutti gli alleati.\\nUtilizzabile fino a 2 volte di fila.",
+    "message1": "%1 ha offerto una preghiera!",
+    "message2": ""
+  },
+  "187": {
+    "name": "ArcaneQuill",
+    "description": "Aumenta enormemente l'INT\\ndell'utilizzatore per 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "188": {
+    "name": "Urlo",
+    "description": "Ridesta lo spirito combattivo di tutti gli alleati e ne aumenta\\nl'Attacco. Utilizzabile fino a 2 volte di fila.",
+    "message1": "%1 incoraggia il Party!",
+    "message2": ""
+  },
+  "189": {
+    "name": "Meteora",
+    "description": "Infligge danni a tutti i\\nnemici ignorando la COS.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "190": {
+    "name": "Snap Fiammante",
+    "description": "Conferisce l'elemento Fuoco\\nper 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "191": {
+    "name": "Ghiaccifica",
+    "description": "Conferisce tipo Ghiaccio per 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "192": {
+    "name": "Tuono Arma",
+    "description": "Conferisce l'elemento Fulmine\\nper 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "193": {
+    "name": "Magi Specchio",
+    "description": "Riflette gli incantesimi diretti\\nall'utilizzatore per 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "194": {
+    "name": "Rompi Specchip",
+    "description": "Riflette gli incantesimi diretti\\nal gruppo per 5 turni.",
+    "message1": "%1 casta %2",
+    "message2": ""
+  },
+  "195": {
+    "name": "-----Abilità del cavaliere",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "196": {
+    "name": "Proteggi",
+    "description": "Protegge automaticamente gli alleati con\\npochi HP per 1 turno.",
+    "message1": "%1 protegge la squadra.",
+    "message2": ""
+  },
+  "197": {
+    "name": "Affondo del falco",
+    "description": "Esegue un attacco su un \\nnemico più veloce di quanto l'occhio possa vedere.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "198": {
+    "name": "Doppia affondo",
+    "description": "Esegue due attacchi\\nsu un nemico.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "199": {
+    "name": "Perfora armature",
+    "description": "Infligge danni a tutti i\\nnemici ignorando la COS.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "200": {
+    "name": "Grido di battaglia",
+    "description": "Ridesta lo spirito combattivo di tutti gli alleati e ne aumenta\\nl'Attacco.",
+    "message1": "%1 ha lanciato un grido di battaglia!",
+    "message2": ""
+  },
+  "201": {
+    "name": "Mulinare",
+    "description": "Attacco rotante.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "202": {
+    "name": "Schiarisci mente",
+    "description": "Aumenta leggermente\\ni TP dell'utilizzatore.",
+    "message1": "%1 ha schiarito la mente!",
+    "message2": ""
+  },
+  "203": {
+    "name": "Affondo selvaggio",
+    "description": "Esegue 4 attacchi casuali\\nsu 4 nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "204": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "205": {
+    "name": "-----Abilità da bandito",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "206": {
+    "name": "Dita negli occhi",
+    "description": "Acceca un nemico.",
+    "message1": "%1 colpisce l'occhio del nemico!",
+    "message2": ""
+  },
+  "207": {
+    "name": "Riscaldamento",
+    "description": "Aumenta la DES dell'utilizzatore.",
+    "message1": "%1 ha iniziato a riscaldarsi!",
+    "message2": ""
+  },
+  "208": {
+    "name": "Bagliore accecante",
+    "description": "Acceca tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "209": {
+    "name": "Occhio vigile",
+    "description": "Aumenta per un po' gli oggetti e il denaro ottenuti\\nin battaglia.",
+    "message1": "%1 osserva attentamente l'ambiente circostante.",
+    "message2": ""
+  },
+  "210": {
+    "name": "WindCall",
+    "description": "Infligge danni di tipo Vento\\na tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "211": {
+    "name": "Nasconditi",
+    "description": "Rende l'utilizzatore\\npiù difficile da bersagliare.",
+    "message1": "%1 si è nascost*.",
+    "message2": ""
+  },
+  "212": {
+    "name": "Invisibilità",
+    "description": "Rende l'utilizzatore invisibile.",
+    "message1": "%1 utilizza %2",
+    "message2": ""
+  },
+  "213": {
+    "name": "Torta dorata",
+    "description": "Sforna una torta dorata che ripristina gli HP \\na un alleato e profuma in modo meraviglioso.",
+    "message1": "%1 serve una torta dorata!",
+    "message2": ""
+  },
+  "214": {
+    "name": "Spuntino veloce",
+    "description": "Prepara uno spuntino energizzante che \\naumenta la DEX per 3 turni.",
+    "message1": "%1 si concede uno spuntino veloce!",
+    "message2": ""
+  },
+  "215": {
+    "name": "Piatto rovinato",
+    "description": "Cucina un piatto maledetto e lo lancia \\ncontro un nemico, riducendone la COS.",
+    "message1": "%1 lancia un piatto maledetto!",
+    "message2": ""
+  },
+  "216": {
+    "name": "Spazzataì",
+    "description": "Infligge danni e fa perdere\\nl'equilibrio a tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "217": {
+    "name": "Qigong",
+    "description": "Cura l'utilizzatore\\ndallo stato di debolezza.",
+    "message1": "%1 utilizza %2",
+    "message2": ""
+  },
+  "218": {
+    "name": "Calcio circolare",
+    "description": "Infligge danni enormi\\na tutti i nemici.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "219": {
+    "name": "Danza della tigre",
+    "description": "Infligge danni a un\\nnemico ignorando la COS.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "220": {
+    "name": "Stufato sostanzioso",
+    "description": "Cucina uno stufato sostanzioso che ripristina\\nuna piccola quantità di HP a tutti gli alleati.",
+    "message1": "%1 serve uno stufato caldo!",
+    "message2": ""
+  },
+  "221": {
+    "name": "Olio fiammeggiante",
+    "description": "Lancia olio infuocato contro tutti i nemici. \\nInfligge danni di tipo fuoco.",
+    "message1": "%1 lancia olio infuocato!",
+    "message2": ""
+  },
+  "222": {
+    "name": "Dolce sollievo",
+    "description": "Prepara un dessert sontuoso \\nche rimuove uno stato negativo da tutti gli alleati.",
+    "message1": "%1 presenta un dessert sontuoso!",
+    "message2": ""
+  },
+  "223": {
+    "name": "Brodo bollente",
+    "description": "Getta zuppa bollente su un nemico, \\ninfliggendo danni di tipo acqua.",
+    "message1": "%1 schizza zuppa bollente!",
+    "message2": ""
+  },
+  "224": {
+    "name": "Tè concentrato",
+    "description": "Prepara un tè concentrato che aumenta INT per 3\r\nturni.",
+    "message1": "%1 sorseggia il tè della concentrazione!",
+    "message2": ""
+  },
+  "225": {
+    "name": "Taglia e guarisci",
+    "description": "Trita gli ingredienti ad altissima velocità\\nper recuperare alcuni HP.",
+    "message1": "%1 taglia rapidamente!",
+    "message2": ""
+  },
+  "226": {
+    "name": "Tiro a segno",
+    "description": "Riduce l'ATT e la COS di un nemico.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "227": {
+    "name": "Colpo stordente",
+    "description": "Spara ai piedi di tutti i nemici e fa loro\\nperdere l'equilibrio.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "228": {
+    "name": "Tiro di squadra",
+    "description": "Infligge danni a\\nun nemico 5 volte.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "229": {
+    "name": "Colpo di pioggia",
+    "description": "Infligge danni a\\ntutti i nemici 2 volte.",
+    "message1": "%1 usa %2",
+    "message2": ""
+  },
+  "230": {
+    "name": "Colpo fulmineo",
+    "description": "Un devastante jab da pugile che\\ncolpisce con la rapidità e la precisione del fulmine.",
+    "message1": "%1 sferra un colpo fulmineo!",
+    "message2": ""
+  },
+  "231": {
+    "name": "Montante KO",
+    "description": "Un potente montante da pugile\\nche può far volare via i nemici.",
+    "message1": "%1 sferra un montante devastante!",
+    "message2": ""
+  },
+  "232": {
+    "name": "Raffica di pugni",
+    "description": "Una rapida serie di pugni\\nda boxe che travolgono le COS del nemico.",
+    "message1": "%1 scatena una raffica di pugni!",
+    "message2": ""
+  },
+  "233": {
+    "name": "Falciauomini",
+    "description": "Un potente gancio da\\npugile con potenziale da KO.",
+    "message1": "%1 sferra un duro colpo!",
+    "message2": ""
+  },
+  "234": {
+    "name": "Posizione Peek-a-boo",
+    "description": "Assume una guardia difensiva da pugile\\nche aumenta la PSI e la capacità di contrattacco.",
+    "message1": "%1 assume la posizione peek-a-boo!",
+    "message2": ""
+  },
+  "235": {
+    "name": "Colpi al corpo",
+    "description": "Prende di mira il corpo dell'avversario con\\npugni precisi, abbassandone la resistenza.",
+    "message1": "%1 sferra colpi al corpo!",
+    "message2": ""
+  },
+  "236": {
+    "name": "Colpo di precisione",
+    "description": "Una tecnica da pugile che mira ai\\npunti deboli dell'avversario per il massimo danno.",
+    "message1": "%1 trova il punto debole!",
+    "message2": ""
+  },
+  "237": {
+    "name": "Leggi l'avversario",
+    "description": "Studia gli schemi dell'avversario, aumentando\\nprecisione e tasso di colpo critico.",
+    "message1": "%1 studia il suo avversario!",
+    "message2": ""
+  },
+  "238": {
+    "name": "Combinazione di calci Taekwondo",
+    "description": "Una tecnica di Taekwondo che\\nsferra più calci ad altissima velocità.",
+    "message1": "%1 scatena una raffica di calci!",
+    "message2": ""
+  },
+  "239": {
+    "name": "Calcio rotante a gancio",
+    "description": "Un calcio rotante di Taekwondo\\nche colpisce tutti i nemici.",
+    "message1": "%1 esegue un calcio rotante a gancio!",
+    "message2": ""
+  },
+  "240": {
+    "name": "Calcio ascia",
+    "description": "Un potente calcio ad ascia di Taekwondo\\nche può sfondare le COS.",
+    "message1": "%1 sferra un calcio ascia!",
+    "message2": ""
+  },
+  "241": {
+    "name": "Roda",
+    "description": "Una tecnica di Capoeira brasiliana che unisce\\nmovenze di danza a un potente calcio.",
+    "message1": "%1 esegue un attacco di Capoeira!",
+    "message2": ""
+  },
+  "242": {
+    "name": "Armada",
+    "description": "Un calcio rotante di Capoeira\\nbrasiliana che colpisce tutti i nemici.",
+    "message1": "%1 esegue un'Armada!",
+    "message2": ""
+  },
+  "243": {
+    "name": "Ginga",
+    "description": "Un movimento evasivo di Capoeira\\nche aumenta DEX e PSI.",
+    "message1": "%1 esegue la Ginga!",
+    "message2": ""
+  },
+  "244": {
+    "name": "Sok Trong",
+    "description": "Una tradizionale gomitata frontale\\ndi Muay Thai che infligge danni pesanti.",
+    "message1": "%1 sferra un Sok Trong!",
+    "message2": ""
+  },
+  "245": {
+    "name": "Come Loi",
+    "description": "Una potente ginocchiata di Muay\\nThai che può stordire gli avversari.",
+    "message1": "%1 sferra una ginocchiata volante!",
+    "message2": ""
+  },
+  "246": {
+    "name": "Tae Chiang",
+    "description": "Un devastante calcio circolare di Muay Thai\\nmirato alle gambe per ridurne la mobilità.",
+    "message1": "%1 sferra un calcio alla gamba!",
+    "message2": ""
+  },
+  "247": {
+    "name": "Plum Khao",
+    "description": "Un clinch di Muay Thai con più\\nginocchiate che infligge danni enormi.",
+    "message1": "%1 stabilisce la presa!",
+    "message2": ""
+  },
+  "248": {
+    "name": "Tsuki",
+    "description": "Un pugno diretto di Karate giapponese\\nsferrato con forma e tempismo perfetti.",
+    "message1": "%1 esegue uno Tsuki perfetto!",
+    "message2": ""
+  },
+  "249": {
+    "name": "Mae Geri",
+    "description": "Un potente calcio frontale di\\nKarate mirato ai punti vitali.",
+    "message1": "%1 esegue Mae Geri!",
+    "message2": ""
+  },
+  "250": {
+    "name": "Seiken",
+    "description": "Un devastante pugno di Karate\\nche può penetrare le COS.",
+    "message1": "%1 esegue un potente Seiken!",
+    "message2": ""
+  },
+  "251": {
+    "name": "Pugni a catena",
+    "description": "Una tecnica cinese di Wing Chun\\nche sferra pugni a catena rapidissimi.",
+    "message1": "%1 scatena pugni a catena!",
+    "message2": ""
+  },
+  "252": {
+    "name": "Siu Nim Tau",
+    "description": "Una guardia difensiva di Wing Chun\\nche aumenta il tasso di contrattacco.",
+    "message1": "%1 assume la posizione del Wing Chun!",
+    "message2": ""
+  },
+  "253": {
+    "name": "Chi Sao",
+    "description": "Una tecnica di Wing Chun che rivolta\\nl'energia dell'avversario contro di lui.",
+    "message1": "%1 reindirizza l'attacco!",
+    "message2": ""
+  },
+  "254": {
+    "name": "Leva articolare Sambo",
+    "description": "Una tecnica di sottomissione del Sambo\\nrusso che può immobilizzare gli avversari.",
+    "message1": "%1 applica una leva articolare!",
+    "message2": ""
+  },
+  "255": {
+    "name": "Lancio stile Sambo",
+    "description": "Una potente tecnica di proiezione del Sambo che\\nsbatte l'avversario al suolo.",
+    "message1": "%1 esegue un lancio perfetto!",
+    "message2": ""
+  },
+  "256": {
+    "name": "Colpo Krav Maga",
+    "description": "Un devastante colpo di Krav Maga\\nmirato ai punti vitali per il massimo danno.",
+    "message1": "%1 prende di mira un punto vitale!",
+    "message2": ""
+  },
+  "257": {
+    "name": "Contrattacco Krav Maga",
+    "description": "Un contrattacco difensivo di Krav Maga che\\nrivolta la FRZ del nemico contro di lui.",
+    "message1": "%1 trasforma COS in un attacco!",
+    "message2": ""
+  },
+  "258": {
+    "name": "Esplosione Krav Maga",
+    "description": "Una rapida serie di colpi di\\nKrav Maga mirati a più nemici.",
+    "message1": "%1 scatena una raffica di attacchi!",
+    "message2": ""
+  },
+  "259": {
+    "name": "Combinazione del campione",
+    "description": "La combinazione suprema del pugilato che\\npuò mettere KO qualunque avversario.",
+    "message1": "%1 scatena la combinazione perfetta!",
+    "message2": ""
+  },
+  "260": {
+    "name": "Ippon Seoi Nage",
+    "description": "Una potente proiezione di Judo che\\nusa il peso dell'avversario contro di lui.",
+    "message1": "%1 esegue un perfetto Ippon Seoi Nage!",
+    "message2": ""
+  },
+  "261": {
+    "name": "Osoto Gari",
+    "description": "Una tecnica di Judo a spazzata che\\nfa cadere gli avversari a terra.",
+    "message1": "%1 esegue un Osoto Gari!",
+    "message2": ""
+  },
+  "262": {
+    "name": "Uki Goshi",
+    "description": "Una tecnica di Judo con proiezione\\nd'anca che ribalta l'avversario.",
+    "message1": "%1 esegue un Uki Goshi!",
+    "message2": ""
+  },
+  "263": {
+    "name": "Palmo Baguazhang",
+    "description": "Una tecnica cinese di Kung Fu\\nche usa potenti colpi di palmo.",
+    "message1": "%1 colpisce con il palmo!",
+    "message2": ""
+  },
+  "264": {
+    "name": "Camminata circolare Bagua",
+    "description": "Una tecnica circolare di Kung Fu che\\ncolpisce più volte in rapida successione.",
+    "message1": "%1 esegue la camminata circolare Bagua!",
+    "message2": ""
+  },
+  "265": {
+    "name": "Pugno dei cinque animali",
+    "description": "Una potente tecnica di Kung Fu\\nche può colpire tutti i nemici.",
+    "message1": "%1 scatena colpi di Kung Fu!",
+    "message2": ""
+  },
+  "266": {
+    "name": "Forma Tai Chi",
+    "description": "Una posizione di Tai Chi che\\naumenta la COS e permette i contrattacchi.",
+    "message1": "%1 assume forma Tai Chi!",
+    "message2": ""
+  },
+  "267": {
+    "name": "Spinta Tai Chi",
+    "description": "Una tecnica di Tai Chi che rivolta\\nl'energia dell'avversario contro di lui.",
+    "message1": "%1 reindirizza l'energia!",
+    "message2": ""
+  },
+  "268": {
+    "name": "Guarigione Tai Chi",
+    "description": "Una tecnica curativa di Tai Chi\\nche ripristina HP tramite la manipolazione del chi.",
+    "message1": "%1 canalizza il chi curativo!",
+    "message2": ""
+  },
+  "269": {
+    "name": "Colpo Eskrima",
+    "description": "Un tradizionale colpo di bastone\\ndelle arti marziali filippine.",
+    "message1": "%1 esegue un colpo di Eskrima!",
+    "message2": ""
+  },
+  "270": {
+    "name": "Combo Eskrima",
+    "description": "Una rapida serie di colpi di\\nEskrima mirati a più punti.",
+    "message1": "%1 esegue combinazioni di Eskrima!",
+    "message2": ""
+  },
+  "271": {
+    "name": "Disarmo Eskrima",
+    "description": "Una tecnica delle arti marziali\\nfilippine che può disarmare gli avversari.",
+    "message1": "%1 esegue una tecnica di disarmo!",
+    "message2": ""
+  },
+  "272": {
+    "name": "Powerslam",
+    "description": "Una potente mossa di lotta che\\nsolleva e sbatte al suolo l'avversario.",
+    "message1": "%1 esegue un powerslam slam devastante!",
+    "message2": ""
+  },
+  "273": {
+    "name": "Tuffo ad alta quota",
+    "description": "Una tecnica di wrestling professionistico dall'alto\\nche piomba addosso agli avversari.",
+    "message1": "%1 vola dalla corda più alta!",
+    "message2": ""
+  },
+  "274": {
+    "name": "Sharpshooter",
+    "description": "Una presa di sottomissione del wrestling professionistico\\nche prosciuga le energie dell'avversario.",
+    "message1": "%1 applica un blocco di invio!",
+    "message2": ""
+  },
+  "275": {
+    "name": "Punto di pressione Systema",
+    "description": "Una tecnica di combattimento Systema\\nche mira ai punti di pressione.",
+    "message1": "%1 colpisce i centri nevralgici!",
+    "message2": ""
+  },
+  "276": {
+    "name": "Flusso Systema",
+    "description": "Una tecnica di combattimento del Systema russo\\nincentrata su colpi fluidi ed efficaci.",
+    "message1": "%1 si muove con efficienza fluida!",
+    "message2": ""
+  },
+  "277": {
+    "name": "Respirazione Systema",
+    "description": "Una tecnica di respirazione del Systema\\nche ripristina resistenza e concentrazione.",
+    "message1": "%1 esegue una respirazione profonda!",
+    "message2": ""
+  },
+  "278": {
+    "name": "Attacco articolare Silat",
+    "description": "Una tecnica di arti marziali Silat\\nmirata alle articolazioni vulnerabili.",
+    "message1": "%1 colpisce le articolazioni deboli!",
+    "message2": ""
+  },
+  "279": {
+    "name": "Silat Sapuan",
+    "description": "Una tecnica indonesiana Silat a spazzata\\nche può colpire più bersagli.",
+    "message1": "%1 esegue un Silat Sapuan!",
+    "message2": ""
+  },
+  "280": {
+    "name": "Combo Silat",
+    "description": "Una rapida combinazione Silat\\ncon colpi multipli.",
+    "message1": "%1 scatena lo stile del Silat!",
+    "message2": ""
+  },
+  "281": {
+    "name": "Savate Chasse",
+    "description": "Una tecnica di Savate, la boxe francese,\\nche sferra un calcio preciso.",
+    "message1": "%1 esegue un calcio Savate!",
+    "message2": ""
+  },
+  "282": {
+    "name": "Savate Fouetté",
+    "description": "Una potente tecnica di Savate che\\nunisce gioco di gambe e calci devastanti.",
+    "message1": "%1 esegue un Savate Fouetté!",
+    "message2": ""
+  },
+  "283": {
+    "name": "Combo Savate",
+    "description": "Una combinazione di Savate che colpisce\\npiù bersagli con calci precisi.",
+    "message1": "%1 usa una combo Savate!",
+    "message2": ""
+  },
+  "284": {
+    "name": "Lancio Aikido",
+    "description": "Una potente proiezione di Aikido\\nche redirige l'energia dell'avversario.",
+    "message1": "%1 esegue una proiezione!",
+    "message2": ""
+  },
+  "285": {
+    "name": "Flusso Aikido",
+    "description": "Una tecnica di Aikido che aumenta la\\nPSI assecondando gli attacchi.",
+    "message1": "%1 scorre come l'acqua!",
+    "message2": ""
+  },
+  "286": {
+    "name": "Blocco articolare Aikido",
+    "description": "Una leva articolare di Aikido\\nche immobilizza gli avversari.",
+    "message1": "%1 applica un blocco Aikido!",
+    "message2": ""
+  },
+  "287": {
+    "name": "Sumo Tsuppari",
+    "description": "Una tecnica di Sumo con\\npotenti spinte di palmo.",
+    "message1": "%1 esegue una spinta di palmo Sumo!",
+    "message2": ""
+  },
+  "288": {
+    "name": "Sumo Yorikiri",
+    "description": "Una potente tecnica di Sumo che\\ncostringe l'avversario fuori posizione.",
+    "message1": "%1 esegue una spinta Sumo!",
+    "message2": ""
+  },
+  "289": {
+    "name": "Sumo Shiko",
+    "description": "Una tecnica di Sumo che\\naumenta enormemente COS e attacco.",
+    "message1": "%1 calpesta con autorità!",
+    "message2": ""
+  },
+  "290": {
+    "name": "Il segreto del Gran Maestro",
+    "description": "La tecnica suprema delle arti marziali\\nche unisce potenza, velocità e precisione.",
+    "message1": "%1 scatena la sua tecnica definitiva!",
+    "message2": ""
+  },
+  "291": {
+    "name": "T-Bone Suplex",
+    "description": "Una mossa di lotta in cui afferri il braccio e la gamba\\ndell'avversario e lo rovesci sulla schiena.",
+    "message1": "%1 esegue un T-Bone Suplex!",
+    "message2": ""
+  },
+  "292": {
+    "name": "Sunset Flip",
+    "description": "Una mossa di lotta in cui ribalti un avversario\\npiegato in avanti, afferrandolo mentre cade.",
+    "message1": "%1 esegue un Sunset Flip!",
+    "message2": ""
+  },
+  "293": {
+    "name": "Flying Forearm Smash",
+    "description": "Una mossa di lotta in cui salti dalle corde\\ne colpisci l'avversario con entrambi gli avambracci.",
+    "message1": "%1 esegue uno Smash Volante con l'Avambraccio!",
+    "message2": ""
+  },
+  "294": {
+    "name": "JC",
+    "description": "Una mossa di lotta in cui carichi l'avversario sulle\\nspalle e ti lasci cadere all'indietro",
+    "message1": "%1 esegue una F-U!",
+    "message2": ""
+  },
+  "295": {
+    "name": "Body Scissor",
+    "description": "Una mossa di sottomissione in cui avvolgi le gambe\\nattorno alla vita dell'avversario e stringi.",
+    "message1": "%1 applica una presa di sottomissione!",
+    "message2": ""
+  },
+  "296": {
+    "name": "Stunner",
+    "description": "Una mossa di lotta in cui afferri la testa dell'avversario e\\nti lasci cadere seduto, conficcandogli la mascella nella spalla.",
+    "message1": "%1 esegue una Stunner!",
+    "message2": ""
+  },
+  "297": {
+    "name": "Spinebuster",
+    "description": "Una mossa di lotta in cui metti la testa tra le gambe\\ndell'avversario, lo sollevi e lo sbatti al suolo.",
+    "message1": "%1 esegue uno Spinebuster!",
+    "message2": ""
+  },
+  "298": {
+    "name": "Pedigree",
+    "description": "Una mossa di lotta in cui prendi l'avversario in una\\npresa frontale alla testa e ti ribalti in avanti, conficcandogli la testa nel terreno.",
+    "message1": "%1 esegue un Pedigree!",
+    "message2": ""
+  },
+  "299": {
+    "name": "Skull-Crushing Finale",
+    "description": "Una devastante mossa di lotta in cui blocchi braccio e testa\\ndell'avversario, lo sollevi e lo fai roteare prima di sbatterlo al suolo.",
+    "message1": "%1 esegue un colpo finale schiacciante!",
+    "message2": ""
+  },
+  "300": {
+    "name": "Flying Elbow Drop",
+    "description": "Una mossa di lotta in cui salti dalle corde\\ne atterri col gomito sull'avversario.",
+    "message1": "%1 esegue un Flying Elbow Drop!",
+    "message2": ""
+  },
+  "301": {
+    "name": "Frog Splash",
+    "description": "Una mossa di lotta in cui ti tuffi da\\nuna posizione elevata su un avversario a terra.",
+    "message1": "%1 esegue uno Frog Splash!",
+    "message2": ""
+  },
+  "302": {
+    "name": "Lineage Crusher",
+    "description": "Una mossa di lotta in cui colpisci l'avversario al\\nventre, gli agganci le braccia e gli conficchi la testa nel terreno.",
+    "message1": "%1 esegue un Pedigree!",
+    "message2": ""
+  },
+  "303": {
+    "name": "Finalizzatore definitivo",
+    "description": "La mossa finale suprema del wrestling\\nche unisce potenza devastante e tecnica.",
+    "message1": "%1 scatena la sua mossa finale!",
+    "message2": ""
+  },
+  "304": {
+    "name": "Paradiso Finale",
+    "description": "La tecnica limite suprema che\\nscatena danni devastanti su un singolo nemico.",
+    "message1": "%1 scatena il paradiso finale!",
+    "message2": ""
+  },
+  "305": {
+    "name": "Hyperslash",
+    "description": "Una devastante tecnica di iper-fendenti che\\ncolpisce più volte un singolo nemico.",
+    "message1": "%1 esegue un Hyperslash!",
+    "message2": ""
+  },
+  "306": {
+    "name": "Assassinare",
+    "description": "Uccide all'istante i nemici comuni\\ncon un alto tasso di successo.",
+    "message1": "%1 sferra un colpo mortale!",
+    "message2": ""
+  },
+  "307": {
+    "name": "Barriera Assoluta",
+    "description": "Crea attorno a un alleato una barriera\\nimpenetrabile che annulla il prossimo attacco.",
+    "message1": "%1 lancia una barriera assoluta!",
+    "message2": ""
+  },
+  "308": {
+    "name": "Tristo Mietitore",
+    "description": "Evoca un avatar della morte che\\ninfligge danni oscuri devastanti a tutti i nemici.",
+    "message1": "%1 evoca il mietitore!",
+    "message2": ""
+  },
+  "309": {
+    "name": "Divina Egida",
+    "description": "Crea un'egida divina che cura tutti\\ngli alleati e rimuove ogni stato negativo.",
+    "message1": "%1 crea un'egida divina!",
+    "message2": ""
+  },
+  "310": {
+    "name": "Respiro Draconico",
+    "description": "Soffia un'enorme fiammata draconica\\nche infligge danni gravi a tutti i nemici.",
+    "message1": "%1 scatena il respiro del drago!",
+    "message2": ""
+  },
+  "311": {
+    "name": "Limit Break",
+    "description": "Una devastante tecnica di spada che concentra\\ntutta l'energia in un unico colpo.",
+    "message1": "%1 esegue la sua limit break!",
+    "message2": ""
+  },
+  "312": {
+    "name": "Sbarramento speciale",
+    "description": "Spara una raffica di munizioni speciali\\nche può colpire più volte tutti i nemici.",
+    "message1": "%1 scatena una speciale raffica di munizioni!",
+    "message2": ""
+  },
+  "313": {
+    "name": "Limit Release",
+    "description": "Attinge al potenziale nascosto per aumentare\\nenormemente tutte le statistiche per 3 turni.",
+    "message1": "%1 libera il potenziale nascosto!",
+    "message2": ""
+  },
+  "314": {
+    "name": "Emo Scambio",
+    "description": "Prosciuga una quantità notevole di HP da\\nun nemico e la divide con tutti gli alleati.",
+    "message1": "%1 scambia il plasma!",
+    "message2": ""
+  },
+  "315": {
+    "name": "Mana Sifone",
+    "description": "Prosciuga MP da un nemico\\ne li ripristina a chi lancia l'incantesimo.",
+    "message1": "%1 drena l'energia magica!",
+    "message2": ""
+  },
+  "316": {
+    "name": "Colpo rompi-spirito",
+    "description": "Una devastante tecnica di arti marziali\\nche unisce energia fisica e spirituale.",
+    "message1": "%1 esegue un colpo che spezza lo spirito!",
+    "message2": ""
+  },
+  "317": {
+    "name": "Tossina Mortifera",
+    "description": "Applica un potente veleno a tutti i\\nnemici che infligge danni nel tempo.",
+    "message1": "%1 rilascia una tossina mortale!",
+    "message2": ""
+  },
+  "318": {
+    "name": "Caos Campo",
+    "description": "Crea un campo di energia perturbante che\\nconfonde tutti i nemici e ne abbassa la precisione.",
+    "message1": "%1 crea un campo di caos!",
+    "message2": ""
+  },
+  "319": {
+    "name": "Paraliz Onda",
+    "description": "Paralizza tutti i nemici con\\nun'ondata di energia elettrica.",
+    "message1": "%1 lancia un'onda paralizzante!",
+    "message2": ""
+  },
+  "320": {
+    "name": "Indebolisci",
+    "description": "Riduce tutti i nemici a uno stato di debolezza,\\nabbassando contemporaneamente tutte le loro statistiche.",
+    "message1": "%1 lancia indebolimento!",
+    "message2": ""
+  },
+  "321": {
+    "name": "Eroic Aspirazione",
+    "description": "Potenzia tutti gli alleati con\\nstatistiche migliorate su tutta la linea.",
+    "message1": "%1 lancia un'ispirazione eroica!",
+    "message2": ""
+  },
+  "322": {
+    "name": "Campo del silenzio",
+    "description": "Crea un campo di silenzio che\\nimpedisce a tutti i nemici di usare abilità magiche.",
+    "message1": "%1 lancia il campo silenzio!",
+    "message2": ""
+  },
+  "323": {
+    "name": "Sonno profondo",
+    "description": "Una melodia rilassante che addormenta tutti\\ni nemici con un alto tasso di successo.",
+    "message1": "%1 canta una ninna nanna rilassante!",
+    "message2": ""
+  },
+  "324": {
+    "name": "Combo definitiva",
+    "description": "Una devastante combinazione di tecniche di arti\\nmarziali che sferra colpi multipli alla velocità della luce.",
+    "message1": "%1 scatena la combo definitiva!",
+    "message2": ""
+  },
+  "325": {
+    "name": "Colpo dello spirito del drago",
+    "description": "Evoca lo spirito di un drago\\nper potenziare un singolo attacco devastante.",
+    "message1": "%1 canalizza lo spirito del drago!",
+    "message2": ""
+  },
+  "326": {
+    "name": "Shadow Veil",
+    "description": "Aumenta enormemente il tasso di PSI\\ne la DEX di tutti gli alleati.",
+    "message1": "%1 proietta un velo d'ombra!",
+    "message2": ""
+  },
+  "327": {
+    "name": "SpiritoGuardiano",
+    "description": "Evoca un antico spirito guardiano che\\naumenta notevolmente la COS di tutti gli alleati per 3 turni.",
+    "message1": "%1 evoca lo spirito guardiano!",
+    "message2": ""
+  },
+  "328": {
+    "name": "Incub Ombra",
+    "description": "Fa sprofondare tutti i nemici in un\\nsonno profondo avvelenandoli al tempo stesso.",
+    "message1": "%1 proietta una nebbia da incubo!",
+    "message2": ""
+  },
+  "329": {
+    "name": "Velo dell'Oscurità",
+    "description": "Acceca tutti i nemici\\nabbassandone anche la precisione.",
+    "message1": "%1 getta un velo di oscurità!",
+    "message2": ""
+  },
+  "330": {
+    "name": "Campo di guarigione",
+    "description": "Crea un campo di guarigione continua che\\nripristina HP a tutti gli alleati nel tempo.",
+    "message1": "%1 crea un campo di guarigione!",
+    "message2": ""
+  },
+  "331": {
+    "name": "Devastazione Arcana",
+    "description": "Incanala energia magica e fisica\\nin un'esplosione devastante che ignora la COS.",
+    "message1": "%1 lancia devastazione arcana!",
+    "message2": ""
+  },
+  "332": {
+    "name": "Colpo lega-vita",
+    "description": "L'utilizzatore sacrifica HP per eseguire\\nun attacco supremo di potenza devastante.",
+    "message1": "%1 esegue un attacco che mette a rischio la vita!",
+    "message2": ""
+  },
+  "333": {
+    "name": "Trasferisci vita",
+    "description": "Incanala la forza vitale per resuscitare un alleato caduto\\ncon gli HP quasi al massimo.",
+    "message1": "%1 trasferisce forza vitale!",
+    "message2": ""
+  },
+  "334": {
+    "name": "Riflessione magica",
+    "description": "Crea una barriera magica che riflette gli attacchi\\nmagici contro chi li lancia per 3 turni.",
+    "message1": "%1 crea una barriera magica!",
+    "message2": ""
+  },
+  "335": {
+    "name": "Tocco mortale",
+    "description": "Una devastante tecnica di arti marziali che ha\\nla possibilità di sconfiggere all'istante un avversario.",
+    "message1": "%1 usa un tocco mortale!",
+    "message2": ""
+  },
+  "336": {
+    "name": "Colpi ciclone",
+    "description": "Colpisce tutti i nemici con\\nuna raffica di calci fulminei.",
+    "message1": "%1 esegue calci ciclone!",
+    "message2": ""
+  },
+  "337": {
+    "name": "Laser di precisione",
+    "description": "Spara un raggio concentrato di\\nenergia che perfora le COS.",
+    "message1": "%1 spara un raggio laser!",
+    "message2": ""
+  },
+  "338": {
+    "name": "Raffica di proiettili",
+    "description": "Spara una raffica di colpi\\ncontro tutti i nemici con precisione aumentata.",
+    "message1": "%1 scatena una raffica di proiettili!",
+    "message2": ""
+  },
+  "339": {
+    "name": "Modalità Berserker",
+    "description": "Aumenta enormemente l'Attacco dell'utilizzatore e\\ngarantisce colpi critici per 3 turni.",
+    "message1": "%1 entra in modalità berserker!",
+    "message2": ""
+  },
+  "340": {
+    "name": "Guarigione della forza vitale",
+    "description": "Attinge alla forza vitale interiore per ripristinare una quantità\\nnotevole di HP e rimuovere ogni stato negativo.",
+    "message1": "%1 attiva la guarigione della forza vitale!",
+    "message2": ""
+  },
+  "341": {
+    "name": "Fiamm Infusione",
+    "description": "Infonde nelle armi del gruppo il\\nfuoco elementale, aumentando i danni inflitti.",
+    "message1": "%1 infonde il fuoco nelle armi!",
+    "message2": ""
+  },
+  "342": {
+    "name": "Gel Infusione",
+    "description": "Infonde nelle armi del gruppo il\\nghiaccio elementale, aumentando i danni inflitti.",
+    "message1": "%1 infonde le armi con il ghiaccio!",
+    "message2": ""
+  },
+  "343": {
+    "name": "Tuon Infusione",
+    "description": "Infonde nelle armi del gruppo il\\nfulmine elementale, aumentando i danni inflitti.",
+    "message1": "%1 infonde le armi con i fulmini!",
+    "message2": ""
+  },
+  "344": {
+    "name": "Male Riduci",
+    "description": "Riduce enormemente Attacco, COS\\ne DEX di tutti i nemici.",
+    "message1": "%1 lancia una maledizione di indebolimento!",
+    "message2": ""
+  },
+  "345": {
+    "name": "Resa dei conti finale",
+    "description": "La mossa finale suprema del wrestling\\nche unisce potenza devastante e tecnica.",
+    "message1": "%1 scatena la sua mossa finale!",
+    "message2": ""
+  },
+  "346": {
+    "name": "Inferno Dantesco",
+    "description": "Evoca un inferno rovente che devasta\\nun singolo nemico con calore e miasma.",
+    "message1": "%1 porta l'inferno sulla Terra!",
+    "message2": ""
+  },
+  "347": {
+    "name": "Meteo Pioggia",
+    "description": "Fa piovere una pioggia di\\nfiamme meteoriche che danneggia tutti i nemici.",
+    "message1": "%1 invoca una pioggia di meteoriti!",
+    "message2": ""
+  },
+  "348": {
+    "name": "Zero Assoluto",
+    "description": "Avvolge tutti i nemici in una temperatura\\ndi zero assoluto, causando danni di ghiaccio enormi.",
+    "message1": "%1 scatena lo zero assoluto!",
+    "message2": ""
+  },
+  "349": {
+    "name": "Crio Scudo",
+    "description": "Crea una barriera di ghiaccio attorno a un\\nalleato che riduce i danni subiti e può contrattaccare.",
+    "message1": "%1 crea una barriera di ghiaccio!",
+    "message2": ""
+  },
+  "350": {
+    "name": "Temporale",
+    "description": "Fa calare una tempesta di fulmini enorme\\nche colpisce tutti i nemici più volte.",
+    "message1": "%1 evoca una tempesta devastante!",
+    "message2": ""
+  },
+  "351": {
+    "name": "Elettro Scarica",
+    "description": "Incanala il fulmine direttamente nel sistema nervoso del\\nbersaglio, causando danni proporzionali ai suoi HP massimi.",
+    "message1": "%1 canalizza sovraccarico elettrico!",
+    "message2": ""
+  },
+  "352": {
+    "name": "Monsone Furoioso",
+    "description": "Sommerge il campo di battaglia in acque furiose che\\ndanneggiano tutti i nemici e ne rallentano i movimenti.",
+    "message1": "%1 scatena un'inondazione furiosa!",
+    "message2": ""
+  },
+  "353": {
+    "name": "Dren Acqua",
+    "description": "Prosciuga la vitalità di un nemico attraverso la magia\\ndell'acqua e la trasferisce a chi lancia l'incantesimo.",
+    "message1": "%1 genera assorbimento d'acqua!",
+    "message2": ""
+  },
+  "354": {
+    "name": "Movimento Tettonico",
+    "description": "Provoca un terremoto enorme che infligge\\npesanti danni di tipo Petrolio a tutti i nemici.",
+    "message1": "%1 innesca uno spostamento tettonico!",
+    "message2": ""
+  },
+  "355": {
+    "name": "Geo Spunzoni",
+    "description": "Crea aculei di pietra affilati come rasoi che\\nperforano le COS di un nemico.",
+    "message1": "%1 crea punte di pietra!",
+    "message2": ""
+  },
+  "356": {
+    "name": "Uragan Forza",
+    "description": "Evoca un devastante ciclone che squarcia\\ntutti i nemici con danni da vento estremi.",
+    "message1": "%1 scatena un ciclone devastante!",
+    "message2": ""
+  },
+  "357": {
+    "name": "Vento Scudo",
+    "description": "Crea uno scudo di vento vorticoso\\nche aumenta enormemente la PSI di tutti gli alleati.",
+    "message1": "%1 crea una barriera antivento!",
+    "message2": ""
+  },
+  "358": {
+    "name": "Sacro Giudizio",
+    "description": "Fa calare il giudizio divino che causa\\nenormi danni sacri a tutti i nemici.",
+    "message1": "%1 invoca il giudizio divino!",
+    "message2": ""
+  },
+  "359": {
+    "name": "Sacra Benedizione",
+    "description": "Incanala l'energia divina per ripristinare una\\ngrande quantità di HP a tutti gli alleati.",
+    "message1": "%1 canalizza la guarigione divina!",
+    "message2": ""
+  },
+  "360": {
+    "name": "Squarcio Vuoto",
+    "description": "Incanala il potere del vuoto per causare \\ndevastanti danni di tipo Maledetto a tutti i nemici.",
+    "message1": "%1 apre il vuoto!",
+    "message2": ""
+  },
+  "361": {
+    "name": "Dren Anima",
+    "description": "Prosciuga la forza vitale di un\\nnemico, infliggendo danni e curando chi lancia l'incantesimo.",
+    "message1": "%1 drena la forza vitale!",
+    "message2": ""
+  },
+  "362": {
+    "name": "Annientamento Arcano",
+    "description": "Incanala un potere arcano inimmaginabile per infliggere\\ndevastanti danni non elementali a tutti i nemici.",
+    "message1": "%1 scatena l'annientamento arcano!",
+    "message2": ""
+  },
+  "363": {
+    "name": "Esplosione di fusione",
+    "description": "Unisce energia fisica e magica in\\nun'esplosione devastante che ignora la COS.",
+    "message1": "%1 crea un'esplosione di fusione!",
+    "message2": ""
+  },
+  "364": {
+    "name": "Restauro completo",
+    "description": "Ripristina completamente gli HP di un alleato\\ne rimuove ogni stato negativo.",
+    "message1": "%1 esegue il ripristino completo!",
+    "message2": ""
+  },
+  "365": {
+    "name": "Guarigione di gruppo",
+    "description": "Incanala energia curativa che ripristina una\\nquantità moderata di HP a tutti gli alleati.",
+    "message1": "%1 lancia cure di gruppo!",
+    "message2": ""
+  },
+  "366": {
+    "name": "Potenzia Guerra",
+    "description": "Aumenta enormemente Attacco, COS\\ne SAG di tutti gli alleati.",
+    "message1": "%1 lancia un potenziamento da battaglia!",
+    "message2": ""
+  },
+  "367": {
+    "name": "Male Riduci",
+    "description": "Riduce enormemente Attacco, COS\\ne DEX di tutti i nemici.",
+    "message1": "%1 lancia una maledizione di indebolimento!",
+    "message2": ""
+  },
+  "368": {
+    "name": "Auto-Torretta",
+    "description": "Schiera una torretta automatica che\\nattacca tutti i nemici con precisione tecnologica.",
+    "message1": "%1 schiera una torretta automatica!",
+    "message2": ""
+  },
+  "369": {
+    "name": "Sovraccarico del circuito",
+    "description": "Sovraccarica i circuiti elettrici vicini per\\ncreare una devastante esplosione di fulmini.",
+    "message1": "%1 causa un sovraccarico del circuito!",
+    "message2": ""
+  },
+  "370": {
+    "name": "Nano miglioramento",
+    "description": "Schiera nanomacchine che potenziano\\nla velocità e la PSI di un alleato.",
+    "message1": "%1 distribuisce nano-booster!",
+    "message2": ""
+  },
+  "371": {
+    "name": "Iper Raggio",
+    "description": "Concentra l'energia in un potente\\nraggio che ignora le COS nemiche.",
+    "message1": "%1 blasta un raggio!",
+    "message2": ""
+  },
+  "372": {
+    "name": "Onda di energia",
+    "description": "Genera una potente onda di\\nenergia che danneggia tutti i nemici.",
+    "message1": "%1 genera un'onda di energia!",
+    "message2": ""
+  },
+  "373": {
+    "name": "Nano-riparazione",
+    "description": "Usa nanomacchine per rimarginare\\nrapidamente le ferite e riparare i danni.",
+    "message1": "%1 attiva la nano-riparazione!",
+    "message2": ""
+  },
+  "374": {
+    "name": "Dispiegamento tossico",
+    "description": "Rilascia un gas tossico\\nche avvelena tutti i nemici.",
+    "message1": "%1 rilascia gas tossico!",
+    "message2": ""
+  },
+  "375": {
+    "name": "Scudo energetico",
+    "description": "Crea uno scudo di energia\\nche riduce notevolmente i danni subiti.",
+    "message1": "%1 attiva uno scudo energetico!",
+    "message2": ""
+  },
+  "376": {
+    "name": "Colpo di cecchino",
+    "description": "Un colpo da cecchino specializzato che infligge\\ndanni enormi a un singolo bersaglio.",
+    "message1": "%1 spara con un cecchino!",
+    "message2": ""
+  },
+  "377": {
+    "name": "Fuoco rapido",
+    "description": "Spara una rapida raffica\\ndi colpi contro tutti i nemici.",
+    "message1": "%1 spara una raffica rapida!",
+    "message2": ""
+  },
+  "378": {
+    "name": "Tiro al punto debole",
+    "description": "Un colpo preciso mirato al punto\\ndebole di un nemico, causando enormi danni critici.",
+    "message1": "%1 prende di mira un punto debole!",
+    "message2": ""
+  },
+  "379": {
+    "name": "Colpo perforante",
+    "description": "Un colpo specializzato\\nche perfora le COS.",
+    "message1": "%1 spara un colpo perforante!",
+    "message2": ""
+  },
+  "380": {
+    "name": "Proiettile esplosivo",
+    "description": "Spara un proiettile esplosivo\\nche danneggia più nemici.",
+    "message1": "%1 spara un proiettile esplosivo!",
+    "message2": ""
+  },
+  "381": {
+    "name": "Iniezione tranquillante",
+    "description": "Carica un dardo tranquillante che\\naddormenta un nemico.",
+    "message1": "%1 spara un dardo tranquillante!",
+    "message2": ""
+  },
+  "382": {
+    "name": "Scarica completa",
+    "description": "Un colpo devastante che scarica tutte le\\nmunizioni in una volta per danni enormi.",
+    "message1": "%1 utilizza la scarica completa della clip!",
+    "message2": ""
+  },
+  "383": {
+    "name": "Analisi chimica",
+    "description": "L'analisi di un chimico che rivela\\nle debolezze del nemico e ne abbassa la COS.",
+    "message1": "%1 esegue l'analisi chimica!",
+    "message2": ""
+  },
+  "384": {
+    "name": "Miscela tossica",
+    "description": "Lancia una miscela tossica che avvelena\\nun nemico e ne abbassa l'attacco.",
+    "message1": "%1 lancia una miscela tossica!",
+    "message2": ""
+  },
+  "385": {
+    "name": "Pozione curativa",
+    "description": "Prepara una pozione curativa che\\nripristina HP a un alleato.",
+    "message1": "%1 somministra una pozione curativa!",
+    "message2": ""
+  },
+  "386": {
+    "name": "Panacea",
+    "description": "Prepara un elisir che cura tutte\\nle alterazioni di stato di un alleato.",
+    "message1": "%1 somministra una panacea!",
+    "message2": ""
+  },
+  "387": {
+    "name": "Soluzione assorbente",
+    "description": "Prepara una miscela che prosciuga HP\\nda un nemico e cura l'utilizzatore.",
+    "message1": "%1 utilizza una soluzione drenante!",
+    "message2": ""
+  },
+  "388": {
+    "name": "Composto rinforzante",
+    "description": "Prepara un composto rinvigorente che\\naumenta la potenza d'attacco di un alleato.",
+    "message1": "%1 somministra un composto STRENANTE!",
+    "message2": ""
+  },
+  "389": {
+    "name": "Composto difensivo",
+    "description": "Prepara un composto difensivo\\nche aumenta la COS di un alleato.",
+    "message1": "%1 somministra un composto difensivo!",
+    "message2": ""
+  },
+  "390": {
+    "name": "Polvere accecante",
+    "description": "Prepara una polvere accecante\\nche acceca un nemico.",
+    "message1": "%1 lancia polvere accecante!",
+    "message2": ""
+  },
+  "391": {
+    "name": "Agente paralitico",
+    "description": "Prepara un agente paralizzante\\nche paralizza un nemico.",
+    "message1": "%1 applica un agente paralizzante!",
+    "message2": ""
+  },
+  "392": {
+    "name": "Composto esplosivo",
+    "description": "Lancia un composto instabile che crea\\nun'esplosione enorme che colpisce tutti i nemici.",
+    "message1": "%1 lancia un composto esplosivo!",
+    "message2": ""
+  },
+  "393": {
+    "name": "Pozione definitiva",
+    "description": "La miscela curativa suprema che ripristina\\nmetà degli HP massimi di un alleato.",
+    "message1": "%1 somministra una pozione suprema!",
+    "message2": ""
+  },
+  "394": {
+    "name": "Colpo di strappo",
+    "description": "Un'abilità da ladro che infligge danni e\\nha la possibilità di rubare un oggetto.",
+    "message1": "%1 esegue uno strappo!",
+    "message2": ""
+  },
+  "395": {
+    "name": "Tazza",
+    "description": "Tenta di rubare un oggetto al\\nbersaglio con maggiore probabilità di successo.",
+    "message1": "%1 tentativi di furto!",
+    "message2": ""
+  },
+  "396": {
+    "name": "Furtività",
+    "description": "Rende l'utilizzatore più difficile da individuare, aumentando\\nla PSI e la probabilità di fuggire dalla battaglia.",
+    "message1": "%1 diventa furtivo!",
+    "message2": ""
+  },
+  "397": {
+    "name": "Colpo vitale",
+    "description": "Un colpo preciso mirato\\nai punti deboli di un nemico.",
+    "message1": "%1 prende di mira un punto debole!",
+    "message2": ""
+  },
+  "398": {
+    "name": "Attacchi rapidi",
+    "description": "Esegue una serie di\\ncolpi rapidi su più nemici.",
+    "message1": "%1 esegue attacchi rapidi!",
+    "message2": ""
+  },
+  "399": {
+    "name": "Lancia sabbia",
+    "description": "Getta sabbia per accecare tutti i\\nnemici e abbassarne la precisione.",
+    "message1": "%1 lancia sabbia!",
+    "message2": ""
+  },
+  "400": {
+    "name": "Scassinamento",
+    "description": "Apre porte e forzieri\\nchiusi durante la battaglia.",
+    "message1": "%1 forza la serratura!",
+    "message2": ""
+  },
+  "401": {
+    "name": "Colpo trasfusione",
+    "description": "Un attacco specializzato che\\nprosciuga gli HP di un nemico.",
+    "message1": "%1 esegue una trasfusione!",
+    "message2": ""
+  },
+  "402": {
+    "name": "Colpo mortale",
+    "description": "Un colpo potente con\\nun'alta probabilità di morte istantanea.",
+    "message1": "%1 esegue un colpo mortale!",
+    "message2": ""
+  },
+  "403": {
+    "name": "Rilevamento delle trappole",
+    "description": "Permette al gruppo di individuare\\ntrappole e oggetti nascosti nei sotterranei.",
+    "message1": "%1 cerca trappole!",
+    "message2": ""
+  },
+  "404": {
+    "name": "Fuga rapida",
+    "description": "Aumenta enormemente le probabilità\\ndi fuggire dalla battaglia.",
+    "message1": "%1 scappa velocemente!",
+    "message2": ""
+  },
+  "405": {
+    "name": "Furto Maestro",
+    "description": "La tecnica suprema del ladro che infligge danni enormi e\\nha un'alta probabilità di rubare un oggetto raro.",
+    "message1": "%1 esegue un furto magistrale!",
+    "message2": ""
+  },
+  "406": {
+    "name": "Discorso ispiratore",
+    "description": "Pronuncia un discorso ispiratore che aumenta\\nil morale e l'Attacco di tutti gli alleati.",
+    "message1": "%1 fa un discorso stimolante!",
+    "message2": ""
+  },
+  "407": {
+    "name": "Semina discordia",
+    "description": "Usa tattiche di confusione su tutti i\\nnemici, spingendoli ad attaccarsi a vicenda.",
+    "message1": "%1 semina discordia tra i nemici!",
+    "message2": ""
+  },
+  "408": {
+    "name": "Formazione delle unità",
+    "description": "Crea unità tra tutti gli alleati,\\naumentando enormemente tutte le loro statistiche difensive.",
+    "message1": "%1 crea unità tra gli alleati!",
+    "message2": ""
+  },
+  "409": {
+    "name": "Fascino seducente",
+    "description": "Ammalia un nemico con un sorriso seducente,\\nspingendolo a passare temporaneamente dalla tua parte.",
+    "message1": "%1 usa un fascino seducente!",
+    "message2": ""
+  },
+  "410": {
+    "name": "Approfondimenti critici",
+    "description": "Fornisce intuizioni tattiche che aumentano notevolmente\\nil tasso di colpo critico di tutti gli alleati.",
+    "message1": "%1 condivide intuizioni critiche!",
+    "message2": ""
+  },
+  "411": {
+    "name": "Tregua negoziata",
+    "description": "Negozia con un nemico, rendendo meno probabile\\nche attacchi il tuo alleato più debole.",
+    "message1": "%1 negozia una tregua!",
+    "message2": ""
+  },
+  "412": {
+    "name": "Divergenza di provocazione",
+    "description": "Crea un diversivo che spinge tutti i\\nnemici a bersagliare te invece degli alleati.",
+    "message1": "%1 crea una deviazione!",
+    "message2": ""
+  },
+  "413": {
+    "name": "Incremento del morale",
+    "description": "Solleva il morale di un alleato, curandone\\ngli HP e aumentandone l'Attacco.",
+    "message1": "%1 aumenta il morale!",
+    "message2": ""
+  },
+  "414": {
+    "name": "Raduno eroico",
+    "description": "Raduna tutti gli alleati con passione, \\naumentando enormemente tutte le loro statistiche.",
+    "message1": "%1 realizza una manifestazione eroica!",
+    "message2": ""
+  },
+  "415": {
+    "name": "Demoralizzazione schiacciante",
+    "description": "Pronuncia un discorso devastante che\\nriduce enormemente tutte le statistiche.",
+    "message1": "%1 declama un discorso demoralizzante!",
+    "message2": ""
+  },
+  "416": {
+    "name": "Consigli tattici",
+    "description": "Condivide conoscenze tattiche che aumentano\\nla DEX di tutti gli alleati.",
+    "message1": "%1 condivide la conoscenza tattica!",
+    "message2": ""
+  },
+  "417": {
+    "name": "Coordinamento del team",
+    "description": "Migliora il coordinamento di squadra, aumentando\\nla DEX di tutti gli alleati.",
+    "message1": "%1 coordina il team!",
+    "message2": ""
+  },
+  "418": {
+    "name": "Tattiche difensive",
+    "description": "Condivide strategie difensive che aumentano\\nla COS di tutti gli alleati.",
+    "message1": "%1 condivide strategie difensive!",
+    "message2": ""
+  },
+  "419": {
+    "name": "Auto-realizzazione",
+    "description": "Concentra il potenziale interiore, aumentando enormemente\\ntutte le statistiche personali per 3 turni.",
+    "message1": "%1 concentra il proprio potenziale!",
+    "message2": ""
+  },
+  "420": {
+    "name": "Discorso motivazionale",
+    "description": "Pronuncia un discorso motivazionale che\\naumenta tutte le statistiche di tutti gli alleati.",
+    "message1": "%1 fa un discorso motivazionale!",
+    "message2": ""
+  },
+  "421": {
+    "name": "Intimidazione",
+    "description": "Usa l'intimidazione per ridurre\\nl'Attacco e la COS di un nemico.",
+    "message1": "%1 intimidisce il nemico!",
+    "message2": ""
+  },
+  "422": {
+    "name": "Interruzione mentale",
+    "description": "Usa tecniche di destabilizzazione mentale per ridurre\\nl'INT e la SAG di tutti i nemici.",
+    "message1": "%1 interrompe la concentrazione!",
+    "message2": ""
+  },
+  "423": {
+    "name": "Provocazione",
+    "description": "Provoca i nemici per ridurne\\nla DEX e la PSI",
+    "message1": "%1 provoca i nemici!",
+    "message2": ""
+  },
+  "424": {
+    "name": "Guerra psicologica",
+    "description": "Usa tecniche psicologiche per ridurre\\ntutte le statistiche di un nemico.",
+    "message1": "%1 usa la guerra psicologica!",
+    "message2": ""
+  },
+  "425": {
+    "name": "Complimento confuso",
+    "description": "Fa un complimento inaspettato a un nemico, aumentandone\\nl'Attacco ma abbassandone la COS.",
+    "message1": "%1 fa un complimento confuso!",
+    "message2": ""
+  },
+  "426": {
+    "name": "Hyperconfidenza",
+    "description": "Aumenta la sicurezza di un nemico ma lo rende\\nimprudente.",
+    "message1": "%1 rende il nemico troppo sicuro di sé!",
+    "message2": ""
+  },
+  "427": {
+    "name": "Eccessiva precauzione difensiva",
+    "description": "Condivide consigli tattici con un nemico,\\naumentandone la COS ma rallentandone la DEX.",
+    "message1": "%1 provoca un eccesso di cautela difensiva!",
+    "message2": ""
+  },
+  "428": {
+    "name": "Psicologia inversa",
+    "description": "Usa la psicologia inversa per confondere un\\nnemico aumentandone però la FRZ.",
+    "message1": "%1 condivide suggerimenti!",
+    "message2": ""
+  },
+  "429": {
+    "name": "Incoraggiamento genuino",
+    "description": "Incoraggia sinceramente un nemico,\\naumentando leggermente tutte le sue statistiche.",
+    "message1": "%1 incoraggia davvero il nemico!",
+    "message2": ""
+  },
+  "430": {
+    "name": "Alleanza temporanea",
+    "description": "Stringe un'alleanza temporanea con un\\nnemico, aumentandone COS e SAG.",
+    "message1": "%1 propone un'alleanza temporanea!",
+    "message2": ""
+  },
+  "431": {
+    "name": "Tattiche miste",
+    "description": "Condivide conoscenze tattiche con tutti i nemici,\\naumentandone la COS ma riducendone la DEX.",
+    "message1": "%1 offre conoscenze tattiche ai nemici!",
+    "message2": ""
+  },
+  "432": {
+    "name": "Ninna nanna ingannevole",
+    "description": "Canta una canzone rilassante che aumenta la SAG\\ndi tutti i nemici ma li addormenta.",
+    "message1": "%1 canta una ninna nanna!",
+    "message2": ""
+  },
+  "433": {
+    "name": "Incoraggiamento Berserk",
+    "description": "Aumenta enormemente l'Attacco e l'INT di\\nun alleato ma ne riduce la COS e la SAG.",
+    "message1": "%1 attiva la modalità berserk!",
+    "message2": ""
+  },
+  "434": {
+    "name": "Focus di precisione",
+    "description": "Aumenta enormemente la Precisione e la PSI di un\\nalleato ma ne riduce l'Attacco.",
+    "message1": "%1 focalizza il persaglio!",
+    "message2": ""
+  },
+  "435": {
+    "name": "Morso del predatore",
+    "description": "Un potente attacco di morso\\nche infligge danni fisici.",
+    "message1": "%1 morde il nemico",
+    "message2": ""
+  },
+  "436": {
+    "name": "Artigli Rasoio",
+    "description": "Artigli affilati squarciano\\nil nemico, causando danni da emorragia.",
+    "message1": "%1 colpisce con artigli affilati!",
+    "message2": ""
+  },
+  "437": {
+    "name": "Calcio posteriore",
+    "description": "Calci rapidi che colpiscono\\nun nemico più volte.",
+    "message1": "%1 sferra calci potenti!",
+    "message2": ""
+  },
+  "438": {
+    "name": "Incornata",
+    "description": "Un attacco schiacciante che usa\\nenormi corna o palchi.",
+    "message1": "%1 attacca con corna possenti!",
+    "message2": ""
+  },
+  "439": {
+    "name": "Carica impattante",
+    "description": "Carica a tutta velocità\\nper sferrare un impatto potente.",
+    "message1": "%1 carica a piena velocità!",
+    "message2": ""
+  },
+  "440": {
+    "name": "Nuvola accecante",
+    "description": "Acceca temporaneamente i nemici sollevando\\nterriccio o creando una nube d'inchiostro.",
+    "message1": "%1 crea una nuvola accecante!",
+    "message2": ""
+  },
+  "441": {
+    "name": "Veleno tossico",
+    "description": "Spruzza o secerne una\\nsostanza tossica che avvelena i nemici.",
+    "message1": "%1 spruzza veleno tossico!",
+    "message2": ""
+  },
+  "442": {
+    "name": "Disorientamento sonoro",
+    "description": "Emette un suono disorientante\\nche confonde i nemici.",
+    "message1": "%1 emette un suono disorientante!",
+    "message2": ""
+  },
+  "443": {
+    "name": "Puntura paralizzante",
+    "description": "Paralizza la preda con un\\npungiglione o una scarica elettrica.",
+    "message1": "%1 infligge una puntura paralizzante!",
+    "message2": ""
+  },
+  "444": {
+    "name": "Assorbi umori",
+    "description": "Prosciuga sangue o energia vitale\\nda un bersaglio per ripristinare HP.",
+    "message1": "%1 drena l'energia vitale!",
+    "message2": ""
+  },
+  "445": {
+    "name": "Intrappola",
+    "description": "Intrappola l'avversario in ragnatele,\\nrampicanti o tentacoli, limitandone i movimenti.",
+    "message1": "%1 intrappola il bersaglio!",
+    "message2": ""
+  },
+  "446": {
+    "name": "Raffica d'ala",
+    "description": "Sbatte rapidamente le ali per creare potenti\\nraffiche di vento che danneggiano i nemici.",
+    "message1": "%1 crea potenti raffiche di vento!",
+    "message2": ""
+  },
+  "447": {
+    "name": "Mesmerizzazione ipnotica",
+    "description": "Ipnotizza il bersaglio con un motivo o un\\nsuono ipnotico, addormentandolo.",
+    "message1": "%1 mesmerizza il nemico!",
+    "message2": ""
+  },
+  "448": {
+    "name": "Colpo velenoso",
+    "description": "Colpisce con un aculeo\\nvelenoso, causando danni e veleno.",
+    "message1": "%1 colpisce con un pungiglione velenoso!",
+    "message2": ""
+  },
+  "449": {
+    "name": "Scossa elettrica",
+    "description": "Scatena una potente scarica elettrica\\nche può paralizzare il bersaglio.",
+    "message1": "%1 scatena una scossa elettrica!",
+    "message2": ""
+  },
+  "450": {
+    "name": "Respiro infernale",
+    "description": "Scatena un devastante getto di \\nfiamma concentrata che incendia i nemici",
+    "message1": "%1 sputa fuoco!",
+    "message2": ""
+  },
+  "451": {
+    "name": "Alito di gelo",
+    "description": "Soffia un'ondata gelida\\nche danneggia e rallenta i nemici.",
+    "message1": "%1 respira gelo!",
+    "message2": ""
+  },
+  "452": {
+    "name": "Colpo di coda",
+    "description": "Sferra un colpo schiacciante\\ncon una coda possente.",
+    "message1": "%1 colpisce con la coda!",
+    "message2": ""
+  },
+  "453": {
+    "name": "Sbarramento tentacolare",
+    "description": "Attacca con più tentacoli,\\ncolpendo il bersaglio diverse volte.",
+    "message1": "%1 attacca con i tentacoli!",
+    "message2": ""
+  },
+  "454": {
+    "name": "Getto Pressurizzato",
+    "description": "Spara un potente getto\\nd'acqua ad alta pressione.",
+    "message1": "%1 spara un getto d'acqua!",
+    "message2": ""
+  },
+  "455": {
+    "name": "Pestone terremoto",
+    "description": "Fa tremare il terreno,\\ndanneggiando tutti i nemici.",
+    "message1": "%1 pesta il terreno e crea un terremoto!",
+    "message2": ""
+  },
+  "456": {
+    "name": "Agguato sinistro",
+    "description": "Balza all'improvviso sulla preda\\ncon velocità e potenza incredibili.",
+    "message1": "%1 si avventa alla velocità della luce!",
+    "message2": ""
+  },
+  "457": {
+    "name": "Ruggito terrificante",
+    "description": "Un ruggito devastante che\\ndanneggia e intimidisce tutti i nemici.",
+    "message1": "%1 emette un ruggito devastante!",
+    "message2": ""
+  },
+  "458": {
+    "name": "Stridio sonico",
+    "description": "Emette uno stridio ad alta frequenza\\nche danneggia e mette fuori uso i nemici.",
+    "message1": "%1 emette uno stridio penetrante!",
+    "message2": ""
+  },
+  "459": {
+    "name": "Secrezione curativa",
+    "description": "Secerne una sostanza curativa\\nche cura le alterazioni di stato.",
+    "message1": "%1 secerne enzimi curativi!",
+    "message2": ""
+  },
+  "460": {
+    "name": "Camuffamento",
+    "description": "Cambia colore o forma per confondersi\\ncon l'ambiente, aumentando la PSI.",
+    "message1": "%1 si mimetizza!",
+    "message2": ""
+  },
+  "461": {
+    "name": "Frenesia Berserk",
+    "description": "Una furiosa frenesia di\\nattacchi quando è messo alle strette o minacciato.",
+    "message1": "%1 entra in uno stato frenetico!",
+    "message2": ""
+  },
+  "462": {
+    "name": "Chiamata del branco",
+    "description": "Chiama alleati vicini della\\nstessa specie a unirsi allo scontro.",
+    "message1": "%1 chiama rinforzi!",
+    "message2": ""
+  },
+  "463": {
+    "name": "Colpo Apex",
+    "description": "L'attacco supremo del predatore che infligge\\ndanni enormi a un singolo bersaglio.",
+    "message1": "%1 scatena un attacco apex!",
+    "message2": ""
+  },
+  "464": {
+    "name": "Morso alla gola",
+    "description": "Un attacco feroce che mira\\nalla gola di un nemico.",
+    "message1": "%1 attacca la gola!",
+    "message2": ""
+  },
+  "465": {
+    "name": "Vuoti Viticci",
+    "description": "Evoca tentacoli d'ombra da un'altra dimensione\\nche afferrano e danneggiano il bersaglio.",
+    "message1": "%1 evoca viticci del vuoto!",
+    "message2": ""
+  },
+  "466": {
+    "name": "Frammento Stellare",
+    "description": "Manifesta un frammento di una\\nstella che esplode in luce cosmica.",
+    "message1": "%1 crea un frammento di stella!",
+    "message2": ""
+  },
+  "467": {
+    "name": "DistorciRealtà",
+    "description": "Crea un campo prismatico che\\ndistorce la realtà, causando danni imprevedibili.",
+    "message1": "%1 distorce la realtà!",
+    "message2": ""
+  },
+  "468": {
+    "name": "Fenditura Divorante",
+    "description": "Apre una piccola faglia che divora\\nun quarto della forza vitale del bersaglio.",
+    "message1": "%1 apre una fenditura divoratrice!",
+    "message2": ""
+  },
+  "469": {
+    "name": "Sens Inversione",
+    "description": "Inverte i sensi del bersaglio,\\ncausando confusione e inversione delle statistiche.",
+    "message1": "%1 inverte i sensi!",
+    "message2": ""
+  },
+  "470": {
+    "name": "Schema Frattale",
+    "description": "Crea un motivo geometrico perfetto\\nche frantuma la realtà attorno al bersaglio.",
+    "message1": "%1 crea uno schema frattale!",
+    "message2": ""
+  },
+  "471": {
+    "name": "Tempo Regressione",
+    "description": "Inverte il flusso del tempo attorno a una\\nferita, curandola come se non fosse mai esistita.",
+    "message1": "%1 inverte il tempo!",
+    "message2": ""
+  },
+  "472": {
+    "name": "Sguardo Dei Mille Occhi",
+    "description": "Evoca innumerevoli occhi dal vuoto\\nche fissano i nemici, causando danni psichici.",
+    "message1": "%1 evoca occhi che osservano!",
+    "message2": ""
+  },
+  "473": {
+    "name": "Rivelazioni",
+    "description": "Costringe il bersaglio ad assistere a una\\nverità inconoscibile, rischiando di farlo impazzire.",
+    "message1": "%1 rivela una verità sconosciuta!",
+    "message2": ""
+  },
+  "474": {
+    "name": "DuplicazioneQuantistica",
+    "description": "Divide chi lancia l'incantesimo in più\\nversioni quantistiche che esistono simultaneamente.",
+    "message1": "%1 crea duplicati quantici!",
+    "message2": ""
+  },
+  "475": {
+    "name": "Melodia deforma-realtà",
+    "description": "Crea una musica dissonante che rende\\nla realtà stessa instabile attorno ai nemici.",
+    "message1": "%1 suona note discordanti!",
+    "message2": ""
+  },
+  "476": {
+    "name": "TrasmutazioneDelDolore",
+    "description": "Incanala il dolore in potere, infliggendo danni\\nproporzionali agli HP mancanti di chi lancia l'incantesimo.",
+    "message1": "%1 trasforma il dolore in potere!",
+    "message2": ""
+  },
+  "477": {
+    "name": "TrasferimentoDIdentità",
+    "description": "Scambia posizione e alcuni aspetti\\ndell'identità tra chi lancia l'incantesimo e il bersaglio.",
+    "message1": "%1 esegue trasferisce la sua identità!",
+    "message2": ""
+  },
+  "478": {
+    "name": "ManipolazioneDellaProbabilità",
+    "description": "Crea un campo in cui la probabilità stessa\\nviene manipolata a favore di chi lancia l'incantesimo.",
+    "message1": "%1 manipola la probabilità!",
+    "message2": ""
+  },
+  "479": {
+    "name": "Fluido non euclideo",
+    "description": "Evoca un liquido che scorre\\ncontro gravità e dissolve la realtà.",
+    "message1": "%1 evoca un fluido non euclideo!",
+    "message2": ""
+  },
+  "480": {
+    "name": "FonemiIndicibili",
+    "description": "Parla in una lingua che la realtà\\nstessa non può comprendere.",
+    "message1": "%1 dice l'impronunciabile!",
+    "message2": ""
+  },
+  "481": {
+    "name": "Assorbi concetti",
+    "description": "Prosciuga concetti e idee dalla\\nmente del bersaglio.",
+    "message1": "%1 prosciuga i concetti!",
+    "message2": ""
+  },
+  "482": {
+    "name": "AssurditàMetamorfica",
+    "description": "Trasforma temporaneamente il bersaglio\\nin una forma bizzarra e inservibile.",
+    "message1": "%1 provoca una trasformazione surreale!",
+    "message2": ""
+  },
+  "483": {
+    "name": "Colori venuti dallo spazio",
+    "description": "Crea un vortice turbinante di colori\\nimpossibili che danneggiano la mente e il corpo.",
+    "message1": "%1 crea colori impossibili!",
+    "message2": ""
+  },
+  "484": {
+    "name": "Paesaggio onirico ricorsivo",
+    "description": "Fa sprofondare il bersaglio in un sogno dentro un\\nsogno, causando sonno profondo e confusione al risveglio.",
+    "message1": "%1 crea sogni ricorsivi!",
+    "message2": ""
+  },
+  "485": {
+    "name": "MortalitàMultiversale",
+    "description": "Fa sperimentare al bersaglio la propria\\nmorte in tutte le linee temporali possibili simultaneamente.",
+    "message1": "%1 rivela tutte le possibili morti!",
+    "message2": ""
+  },
+  "486": {
+    "name": "ParadossoTemporale",
+    "description": "Crea un anello paradossale nel\\ntempo che confonde e intrappola i nemici.",
+    "message1": "%1 crea un paradosso temporale!",
+    "message2": ""
+  },
+  "487": {
+    "name": "Inversione percettiva",
+    "description": "Inverte le percezioni del bersaglio così che\\nveda gli alleati come nemici e viceversa.",
+    "message1": "%1 inverte le percezioni!",
+    "message2": ""
+  },
+  "488": {
+    "name": "Evoca Esterno",
+    "description": "Evoca un'entità impossibile da oltre\\nla realtà che annienta tutto ciò che tocca.",
+    "message1": "%1 evoca un'entità impossibile!",
+    "message2": ""
+  },
+  "489": {
+    "name": "Spazial Dissonanza",
+    "description": "Fa sperimentare al bersaglio la sensazione\\ndi essere ovunque e in nessun luogo simultaneamente.",
+    "message1": "%1 crea dissonanza spaziale!",
+    "message2": ""
+  },
+  "490": {
+    "name": "FallimentoDellaRealtà",
+    "description": "Crea un guasto a cascata nel tessuto\\ndella realtà, causando danni basati su tutte le statistiche.",
+    "message1": "%1 provoca una cascata di realtà!",
+    "message2": ""
+  },
+  "491": {
+    "name": "Mini Fiamma",
+    "description": "Crea una fiammella minuscola\\nche a malapena strina il bersaglio.",
+    "message1": "%1 crea una piccola fiamma!",
+    "message2": ""
+  },
+  "492": {
+    "name": "Neve Fiocco",
+    "description": "Forma un singolo fiocco di neve che\\nsi scioglie al contatto col bersaglio.",
+    "message1": "%1 crea un fiocco di neve!",
+    "message2": ""
+  },
+  "493": {
+    "name": "Zap Statico",
+    "description": "Crea una piccola scarica statica\\nche a malapena sfiora il bersaglio.",
+    "message1": "%1 provoca elettricità statica!",
+    "message2": ""
+  },
+  "494": {
+    "name": "Idro Goccia",
+    "description": "Evoca qualche goccia\\nd'acqua che schizza il bersaglio.",
+    "message1": "%1 schizza acqua!",
+    "message2": ""
+  },
+  "495": {
+    "name": "Lancia Ciottolo",
+    "description": "Lancia un sassolino\\ncontro il bersaglio.",
+    "message1": "%1 lancia un sassolino!",
+    "message2": ""
+  },
+  "496": {
+    "name": "Gentil Brezza",
+    "description": "Crea una brezza leggera che a\\nmalapena scompiglia i capelli del bersaglio.",
+    "message1": "%1 crea una piccola brezza!",
+    "message2": ""
+  },
+  "497": {
+    "name": "Scinti Luce",
+    "description": "Crea un minuscolo scintillio di\\nluce più grazioso che dannoso.",
+    "message1": "%1 crea una scintilla!",
+    "message2": ""
+  },
+  "498": {
+    "name": "Surrurr Ombra",
+    "description": "Crea una piccola ombra che\\npassa brevemente sul bersaglio.",
+    "message1": "%1 crea una piccola ombra!",
+    "message2": ""
+  },
+  "499": {
+    "name": "Cura Carta",
+    "description": "Cura una quantità irrisoria\\ndi HP, a malapena percettibile.",
+    "message1": "%1 lancia una cura minore!",
+    "message2": ""
+  },
+  "500": {
+    "name": "Antidoto discutibile",
+    "description": "Ha una probabilità minima di\\ncurare il veleno, ma di solito non fa nulla.",
+    "message1": "%1 tenta di curare il veleno!",
+    "message2": ""
+  },
+  "501": {
+    "name": "Incoraggiamento Minimo",
+    "description": "Aumenta leggermente l'Attacco del bersaglio,\\nma l'effetto è a malapena percettibile.",
+    "message1": "%1 fornisce un incoraggiamento minimo!",
+    "message2": ""
+  },
+  "502": {
+    "name": "Consiglio Sussurrato",
+    "description": "Aumenta leggermente la COS del bersaglio,\\nma l'effetto è a malapena percettibile.",
+    "message1": "%1 sussurra consigli difensivi!",
+    "message2": ""
+  },
+  "503": {
+    "name": "Insulto Fiacco",
+    "description": "Tenta di ridurre l'Attacco di un\\nnemico, ma l'effetto è minimo.",
+    "message1": "%1 insulta l’avversario!",
+    "message2": ""
+  },
+  "504": {
+    "name": "Assorbi Vita",
+    "description": "Prosciuga una quantità irrisoria\\ndi HP dal bersaglio.",
+    "message1": "%1 prosciuga un granello di vita!",
+    "message2": ""
+  },
+  "505": {
+    "name": "Mana Sifone",
+    "description": "Prosciuga una quantità minima\\ndi MP dal bersaglio.",
+    "message1": "%1 succhia una goccia di mana!",
+    "message2": ""
+  },
+  "506": {
+    "name": "Puff Magico",
+    "description": "Crea un effetto magico davvero\\nirrisorio che infligge danni minimi.",
+    "message1": "%1 crea una nuvola magica!",
+    "message2": ""
+  },
+  "507": {
+    "name": "Riscald Armi",
+    "description": "Tenta di infondere il fuoco in un'arma,\\nma la rende solo un po' tiepida.",
+    "message1": "%1 scalda leggermente un'arma!",
+    "message2": ""
+  },
+  "508": {
+    "name": "Inutil Nevvia",
+    "description": "Crea una nebbiolina leggera che\\nnon offre alcun vantaggio tattico.",
+    "message1": "%1 crea una nebbia inutile!",
+    "message2": ""
+  },
+  "509": {
+    "name": "Scostamento Minore",
+    "description": "Fa vedere al bersaglio colori leggermente\\nalterati per qualche secondo.",
+    "message1": "%1 altera la percezione del colore!",
+    "message2": ""
+  },
+  "510": {
+    "name": "Melodia semplice",
+    "description": "Crea una melodia vagamente piacevole\\nche non ha alcun effetto in combattimento.",
+    "message1": "%1 suona una melodia semplice!",
+    "message2": ""
+  },
+  "511": {
+    "name": "Affondo di precisione",
+    "description": "Un affondo rapido e preciso mirato alle zone\\nvitali con una lama o un'arma appuntita.",
+    "message1": "%1 esegue un affondo preciso!",
+    "message2": ""
+  },
+  "512": {
+    "name": "Grande swing",
+    "description": "Un potente fendente orizzontale\\nche può colpire più nemici.",
+    "message1": "%1 esegue un ampio swing!",
+    "message2": ""
+  },
+  "513": {
+    "name": "Colpo dall'alto",
+    "description": "Un potente colpo dall'alto\\nsferrato con tutta la forza.",
+    "message1": "%1 mette a segno un colpo potente!",
+    "message2": ""
+  },
+  "514": {
+    "name": "Raffica di colpi",
+    "description": "Esegue una raffica di colpi\\nrapidi che colpiscono più volte.",
+    "message1": "%1 scatena una raffica di attacchi!",
+    "message2": ""
+  },
+  "515": {
+    "name": "Montante KO",
+    "description": "Un potente colpo ascendente\\nche può sfondare la COS",
+    "message1": "%1 esegue un colpo montante!",
+    "message2": ""
+  },
+  "516": {
+    "name": "Colpisci punti deboli",
+    "description": "Un colpo preciso mirato a un\\npunto debole nelle COS del nemico.",
+    "message1": "%1 colpisce un punto debole!",
+    "message2": ""
+  },
+  "517": {
+    "name": "Taglio vorticoso",
+    "description": "Un attacco rotante che\\ncolpisce tutti i nemici attorno a te.",
+    "message1": "%1 esegue un attacco rotante!",
+    "message2": ""
+  },
+  "518": {
+    "name": "Colpo lacerante",
+    "description": "Un attacco brutale che può\\ncausare danni da emorragia nel tempo.",
+    "message1": "%1 esegue un colpo lacerante!",
+    "message2": ""
+  },
+  "519": {
+    "name": "Scaraventa a terra",
+    "description": "Un colpo schiacciante che sbatte\\nil nemico al suolo.",
+    "message1": "%1 esegue un attacco slam!",
+    "message2": ""
+  },
+  "520": {
+    "name": "Colpo fulmineo",
+    "description": "Un colpo improvviso e fulmineo\\ndifficile da schivare.",
+    "message1": "%1 sferra un colpo rapido!",
+    "message2": ""
+  },
+  "521": {
+    "name": "Affondo rapido",
+    "description": "Una serie di affondi rapidi\\ncon un'arma appuntita.",
+    "message1": "%1 esegue più affondi!",
+    "message2": ""
+  },
+  "522": {
+    "name": "Colpo di pomolo",
+    "description": "Un colpo pesante col pomo o\\nl'elsa di un'arma, può stordire il bersaglio.",
+    "message1": "%1 sferra un colpo con il pomolo!",
+    "message2": ""
+  },
+  "523": {
+    "name": "Spazzata di gamba",
+    "description": "Un fendente mirato alle\\ngambe per rallentare il movimento del nemico.",
+    "message1": "%1 esegue una spazzata di gamba!",
+    "message2": ""
+  },
+  "524": {
+    "name": "Colpo piatto",
+    "description": "Un colpo schiacciante col lato piatto\\ndi un'arma, può causare stordimento.",
+    "message1": "%1 esegue un colpo piatto!",
+    "message2": ""
+  },
+  "525": {
+    "name": "Colpo d’elsa",
+    "description": "Un colpo potente con la guardia\\no l'elsa per colpire a distanza ravvicinata.",
+    "message1": "%1 esegue un colpo con l’elsa!",
+    "message2": ""
+  },
+  "526": {
+    "name": "Taglio diagonale",
+    "description": "Un potente fendente diagonale\\ndifficile da parare.",
+    "message1": "%1 esegue una barra diagonale!",
+    "message2": ""
+  },
+  "527": {
+    "name": "Taglio incrociato",
+    "description": "Una serie di tagli che formano\\nuna X sul bersaglio.",
+    "message1": "%1 esegue un taglio incrociato!",
+    "message2": ""
+  },
+  "528": {
+    "name": "Fendente circolare",
+    "description": "Una serie di fendenti rapidi e\\ncircolari che possono colpire più nemici.",
+    "message1": "%1 esegue un fendente circolare!",
+    "message2": ""
+  },
+  "529": {
+    "name": "Colpo di opportunità",
+    "description": "Un colpo calcolato nell'esatto\\nmomento in cui il nemico è vulnerabile.",
+    "message1": "%1 trova l'apertura perfetta!",
+    "message2": ""
+  },
+  "530": {
+    "name": "Affondo di potenza",
+    "description": "Un affondo devastante che concentra\\ntutta la potenza in un unico colpo.",
+    "message1": "%1 esegue un affondo potente!",
+    "message2": ""
+  },
+  "531": {
+    "name": "Tecnica del Maestro",
+    "description": "La tecnica suprema del corpo a corpo che unisce\\npiù movimenti in un unico attacco devastante.",
+    "message1": "%1 esegue la tecnica definitiva!",
+    "message2": ""
+  },
+  "532": {
+    "name": "Impatto Stellare",
+    "description": "Evoca una stella cadente che si schianta sui nemici,\\ncausando enormi danni di luce a tutti i bersagli.",
+    "message1": "%1 provoca un impatto stellare!",
+    "message2": ""
+  },
+  "533": {
+    "name": "Giungla Xylomante",
+    "description": "Comanda alle piante e agli oggetti di legno di attaccare,\\ninfliggendo danni di tipo Petrolio ai nemici.",
+    "message1": "%1 comanda il legno!",
+    "message2": ""
+  },
+  "534": {
+    "name": "Vuoto Desiderio",
+    "description": "Incanala il vuoto assoluto, creando un\\nsenso di struggimento che spegne la voglia di combattere dei nemici.",
+    "message1": "%1 canalizza il vuoto desideroso!",
+    "message2": ""
+  },
+  "535": {
+    "name": "Armonia Biotica",
+    "description": "Si armonizza con l'energia vitale naturale degli alleati,\\ncurandoli e rimuovendo gli stati negativi.",
+    "message1": "%1 crea armonia biotica!",
+    "message2": ""
+  },
+  "536": {
+    "name": "Decompo Raggio",
+    "description": "Spara un raggio che accelera la decomposizione,\\ncausando danni e abbassando la COS.",
+    "message1": "%1 spara un raggio di decomposizione!",
+    "message2": ""
+  },
+  "537": {
+    "name": "Eclisse Oscura",
+    "description": "Crea un'improvvisa esplosione di energia oscura durante\\nun'eclissi, danneggiando tutti i nemici.",
+    "message1": "%1 eclissa l'energia!",
+    "message2": ""
+  },
+  "538": {
+    "name": "Frattura Timeline",
+    "description": "Dirama la linea temporale, creando versioni alternative\\ndegli alleati che possono assorbire danni al posto loro.",
+    "message1": "%1 interrompe la sequenza temporale!",
+    "message2": ""
+  },
+  "539": {
+    "name": "Potenza Glifica",
+    "description": "Potenzia gli alleati con glifi antichi,\\nfornendo notevoli aumenti alle statistiche.",
+    "message1": "%1 attiva glifi antichi!",
+    "message2": ""
+  },
+  "540": {
+    "name": "Dissonanza armonica",
+    "description": "Crea toni dolorosamente dissonanti che danneggiano\\ni nemici e ne interrompono gli incantesimi.",
+    "message1": "%1 crea dissonanza armonica!",
+    "message2": ""
+  },
+  "541": {
+    "name": "Crio Raffica",
+    "description": "Spara una raffica di schegge di ghiaccio che\\ncolpisce tutti i nemici più volte.",
+    "message1": "%1 rilascia schegge di ghiaccio!",
+    "message2": ""
+  },
+  "542": {
+    "name": "Campo Di Giustapposizione",
+    "description": "Crea un campo in cui gli opposti coesistono,\\ncausando confusione e disorientamento.",
+    "message1": "%1 crea un campo di giustapposizione!",
+    "message2": ""
+  },
+  "543": {
+    "name": "Kaleido Visione",
+    "description": "Distorce la percezione visiva con motivi caleidoscopici,\\ncausando confusione e abbassando la precisione.",
+    "message1": "%1 crea motivi caleidoscopici!",
+    "message2": ""
+  },
+  "544": {
+    "name": "Luce Trasfigurante",
+    "description": "Trasforma il corpo di un alleato in energia luminosa,\\naumentando enormemente tutte le statistiche.",
+    "message1": "%1 si trasforma in energia luminosa!",
+    "message2": ""
+  },
+  "545": {
+    "name": "Magne Disgregazione",
+    "description": "Perturba i campi magnetici dei nemici, causando\\nnausea e abbassando varie statistiche.",
+    "message1": "%1 interrompe i campi magnetici!",
+    "message2": ""
+  },
+  "546": {
+    "name": "Necro Rituale",
+    "description": "Esegue un rituale oscuro che sacrifica parte degli\\nHP di chi lancia l'incantesimo per danneggiare tutti i nemici.",
+    "message1": "%1 esegue un rituale necromantico!",
+    "message2": ""
+  },
+  "547": {
+    "name": "Raggio orbitale",
+    "description": "Fa calare un potente raggio dall'orbita\\nche devasta un singolo bersaglio.",
+    "message1": "%1 richiede un attacco orbitale!",
+    "message2": ""
+  },
+  "548": {
+    "name": "Attira Fantasmi",
+    "description": "Crea un'illusione che attira i nemici ad\\nattaccare un bersaglio fantasma invece degli alleati.",
+    "message1": "%1 crea un'esca fantasmagorica!",
+    "message2": ""
+  },
+  "549": {
+    "name": "Manipola Quintessenza",
+    "description": "Manipola l'essenza fondamentale di tutte le cose,\\nripristinando HP e MP e aumentando tutte le statistiche.",
+    "message1": "%1 manipola la quintessenza!",
+    "message2": ""
+  },
+  "550": {
+    "name": "Shock Risonanza",
+    "description": "Crea un'onda d'urto di energia risonante che\\ndanneggia i nemici e disattiva le abilità magiche.",
+    "message1": "%1 crea uno shock di risonanza!",
+    "message2": ""
+  },
+  "551": {
+    "name": "Specchi Anima",
+    "description": "Crea un riflesso speculare dell'anima del bersaglio,\\nrivelando e potenzialmente invertendo gli stati alterati.",
+    "message1": "%1 crea uno specchio dell'anima!",
+    "message2": ""
+  },
+  "552": {
+    "name": "Inverti Temperatura",
+    "description": "Alterna rapidamente caldo e freddo estremi,\\nfrantumando le COS nemiche.",
+    "message1": "%1 inverte la temperatura!",
+    "message2": ""
+  },
+  "553": {
+    "name": "Sotto Portale",
+    "description": "Apre un portale sugli inferi che danneggia\\ni nemici e può causare morte istantanea.",
+    "message1": "%1 apre un portale degli inferi!",
+    "message2": ""
+  },
+  "554": {
+    "name": "Compre Vortice",
+    "description": "Comprime un vortice di energia in uno spazio minuscolo,\\ncreando un'esplosione che danneggia tutti i nemici.",
+    "message1": "%1 comprime un vortice!",
+    "message2": ""
+  },
+  "555": {
+    "name": "Sciam Etereo",
+    "description": "Evoca uno sciame di luci eteree che confondono\\ne distraggono i nemici infliggendo danni.",
+    "message1": "%1 evoca sciami di fuochi fatui!",
+    "message2": ""
+  },
+  "556": {
+    "name": "Nova Flash",
+    "description": "Crea un lampo di luce improvviso e accecante che\\ndanneggia e può accecare tutti i nemici.",
+    "message1": "%1 crea un novaflash!",
+    "message2": ""
+  },
+  "557": {
+    "name": "Falcia Sogni",
+    "description": "Raccoglie l'energia onirica dai bersagli addormentati,\\ninfliggendo danni e ripristinando MP a chi lancia l'incantesimo.",
+    "message1": "%1 raccoglie l'energia dei sogni!",
+    "message2": ""
+  },
+  "558": {
+    "name": "Inferno Serpentino",
+    "description": "Evoca un serpente fatto di\\nfiamma viva che si avvolge attorno ai\\nnemici e li brucia.",
+    "message1": "%1 evoca un serpente di fuoco!",
+    "message2": ""
+  },
+  "559": {
+    "name": "Tuono Cascata",
+    "description": "Fa calare un'enorme tempesta di\\nfulmini che rimbalzano tra\\npiù bersagli.",
+    "message1": "%1 crea una cascata di fulmini!",
+    "message2": ""
+  },
+  "560": {
+    "name": "Causti Vortice",
+    "description": "Crea un vortice di liquido\\ncaustico che dissolve rapidamente\\nle COS nemiche.",
+    "message1": "%1 evoca un vortice corrosivo!",
+    "message2": ""
+  },
+  "561": {
+    "name": "Crio Pugnali",
+    "description": "Evoca innumerevoli pugnali di\\nghiaccio che piovono dall'alto.",
+    "message1": "%1 invoca una pioggia di pugnali di ghiaccio!",
+    "message2": ""
+  },
+  "562": {
+    "name": "Vuoto Sifone",
+    "description": "Scatena tentacoli d'ombra che \\nemergono dal vuoto per succhiare la vita ai nemici.",
+    "message1": "%1 evoca viticci d'ombra!",
+    "message2": ""
+  },
+  "563": {
+    "name": "Caoti Convergenza",
+    "description": "Scatena il potere grezzo del caos, \\ncausando danni imprevedibili ma devastanti.",
+    "message1": "%1 scatena energia caotica!",
+    "message2": ""
+  },
+  "564": {
+    "name": "Cristal Guglia",
+    "description": "Solleva enormi guglie cristalline\\ndal terreno che impalano i\\nnemici e si frantumano.",
+    "message1": "%1 solleva guglie di cristallo!",
+    "message2": ""
+  },
+  "565": {
+    "name": "Rasoio Ciclone",
+    "description": "Crea un ciclone devastante\\nche fa a pezzi i nemici con\\nlame di vento affilate come rasoi.",
+    "message1": "%1 scatena un ciclone di lame!",
+    "message2": ""
+  },
+  "566": {
+    "name": "Nova Solare",
+    "description": "Incanala il potere di un\\nsole lontano.",
+    "message1": "%1 crea un'eruzione solare!",
+    "message2": ""
+  },
+  "567": {
+    "name": "Neuro Scarica",
+    "description": "Crea un campo di energia elettromagnetica \\nche sovraccarica i sistemi nervosi.",
+    "message1": "%1 crea un campo di sovraccarico neurale!",
+    "message2": ""
+  },
+  "568": {
+    "name": "Cuor Vulcano",
+    "description": "Evoca il nucleo di un vulcano che\\nerutta sotto i nemici, causando danni enormi.",
+    "message1": "%1 innesca un'eruzione vulcanica!",
+    "message2": ""
+  },
+  "569": {
+    "name": "Scoppio Elementale",
+    "description": "Fonde elementi opposti in una\\nmiscela volatile.",
+    "message1": "%1 crea un'esplosione di fusione elementale!",
+    "message2": ""
+  },
+  "570": {
+    "name": "Convergenza Celestiale",
+    "description": "Concentra l'energia celeste\\nin un raggio di luce.",
+    "message1": "%1 focalizza un raggio celeste!",
+    "message2": ""
+  },
+  "571": {
+    "name": "Terror Portale",
+    "description": "Apre un varco su una dimensione\\ndi incubi.",
+    "message1": "%1 apre una dimensione da incubo!",
+    "message2": ""
+  },
+  "572": {
+    "name": "EntitàDivoratrice",
+    "description": "Evoca un'entità interdimensionale \\nche divora la forza vitale dei nemici.",
+    "message1": "%1 evoca un'entità divoratrice!",
+    "message2": ""
+  },
+  "573": {
+    "name": "Maelstrom Tossico",
+    "description": "Crea un vortice di gas\\ncaustici che corrodono i nemici\\ndall'interno.",
+    "message1": "%1 crea un vortice tossico!",
+    "message2": ""
+  },
+  "574": {
+    "name": "Diluvio Corrosivo",
+    "description": "Trasforma l'acqua in un composto\\nfortemente acido che dissolve\\narmature e carne dei nemici.",
+    "message1": "%1 crea un'ondata di acido!",
+    "message2": ""
+  },
+  "575": {
+    "name": "Frammento Cascata",
+    "description": "Investe i nemici con\\nschegge di ossidiana affilate\\nche causano ferite sanguinanti.",
+    "message1": "%1 scatena frammenti di ossidiana!",
+    "message2": ""
+  },
+  "576": {
+    "name": "Campo Assoluto",
+    "description": "Crea un campo di temperatura\\ndi zero assoluto.",
+    "message1": "%1 crea un campo di zero assoluto!",
+    "message2": ""
+  },
+  "577": {
+    "name": "Implosione Supernova",
+    "description": "Evoca il cuore di una stella\\nmorente per creare una devastante\\nesplosione di calore e luce.",
+    "message1": "%1 crea una supernova!",
+    "message2": ""
+  },
+  "578": {
+    "name": "Tornado Cataclismico",
+    "description": "Crea un vortice atmosferico ululante \\nche riduce i nemici a brandelli con i detriti.",
+    "message1": "%1 evoca un tornado devastante!",
+    "message2": ""
+  },
+  "579": {
+    "name": "Tuono Sanzione",
+    "description": "Fa calare un'enorme saetta di\\nfulmine divino che colpisce i\\nnemici con l'ira celeste.",
+    "message1": "%1 invoca fulmini divini!",
+    "message2": ""
+  },
+  "580": {
+    "name": "FrammentaRealtà",
+    "description": "Squarcia una faglia nella realtà\\nche frammenta i nemici su\\npiù dimensioni.",
+    "message1": "%1 crea una frattura nella realtà!",
+    "message2": ""
+  },
+  "581": {
+    "name": "Contagio Virulento",
+    "description": "Infetta i nemici con una\\ntossina virulenta.",
+    "message1": "%1 rilascia una tossina contagiosa!",
+    "message2": ""
+  },
+  "582": {
+    "name": "Nuvola Scintillante",
+    "description": "Crea una densa nube di\\npolvere scintillante.",
+    "message1": "%1 crea una nuvola di polvere scintillante!",
+    "message2": ""
+  },
+  "583": {
+    "name": "Mental Frattura",
+    "description": "Proietta illusioni inquietanti che \\ntravolgono la mente dei nemici, causando grave confusione.",
+    "message1": "%1 proietta illusioni esasperanti!",
+    "message2": ""
+  },
+  "584": {
+    "name": "Canzone incantata",
+    "description": "Culla i nemici in un sonno\\nprofondo con un canto irresistibile",
+    "message1": "%1 canta una ninna nanna magica!",
+    "message2": ""
+  },
+  "585": {
+    "name": "Velo Assoluto",
+    "description": "Avvolge i nemici in un velo di\\nsilenzio magico.",
+    "message1": "%1 crea un silenzio arcano!",
+    "message2": ""
+  },
+  "586": {
+    "name": "Neuro Scarica",
+    "description": "Invia un impulso di energia elettrica\\nche blocca gli arti dei nemici",
+    "message1": "%1 crea un blocco neurale!",
+    "message2": ""
+  },
+  "587": {
+    "name": "Incanto Irresistibile",
+    "description": "Crea un travolgente senso\\ndi infatuazione.",
+    "message1": "%1 crea un incantesimo irresistibile!",
+    "message2": ""
+  },
+  "588": {
+    "name": "Gravi Impulso",
+    "description": "Crea un impulso gravitazionale che\\nfa perdere l'equilibrio ai nemici,\\nquasi garantendo l'atterramento.",
+    "message1": "%1 crea un impulso gravitazionale!",
+    "message2": ""
+  },
+  "589": {
+    "name": "Evocazione Fatale",
+    "description": "Invoca la forza inevitabile\\ndella mortalità,\\ncon la possibilità di causare morte\\nistantanea.",
+    "message1": "%1 evoca la forza della mortalità!",
+    "message2": ""
+  },
+  "590": {
+    "name": "NubeAllucinogena",
+    "description": "Crea una nube di spore\\nallucinogene che inducono\\nsia cecità che\\nconfusione.",
+    "message1": "%1 rilascia spore allucinogene!",
+    "message2": ""
+  },
+  "591": {
+    "name": "Neuro Soppressione",
+    "description": "Sferra uno shock neurale che\\nparalizza i nemici e al tempo\\nstesso li ammutolisce.",
+    "message1": "%1 infligge uno shock neurale!",
+    "message2": ""
+  },
+  "592": {
+    "name": "Iniezione velenosa",
+    "description": "Inietta una potente neurotossina\\nche avvelena gravemente i nemici\\ne ne rallenta i movimenti.",
+    "message1": "%1 inietta una neurotossina paralizzante!",
+    "message2": ""
+  },
+  "593": {
+    "name": "Ipno Trance",
+    "description": "Proietta un motivo ipnotico che \\nculla i nemici nel sonno e li ammalia",
+    "message1": "%1 crea uno schema ipnotico!",
+    "message2": ""
+  },
+  "594": {
+    "name": "Gravi Silenzio",
+    "description": "Crea un'anomalia\\ngravitazionale localizzata.",
+    "message1": "%1 crea un'anomalia gravitazionale!",
+    "message2": ""
+  },
+  "595": {
+    "name": "Neural Cascade",
+    "description": "Sovraccarica il sistema nervoso,\\ncausando paralisi.",
+    "message1": "%1 sovraccarica i percorsi neurali!",
+    "message2": ""
+  },
+  "596": {
+    "name": "Incubo Visione",
+    "description": "Evoca visioni da incubo\\nche causano confusione mentre\\nprosciugano la forza vitale delle vittime.",
+    "message1": "%1 evoca visioni da incubo!",
+    "message2": ""
+  },
+  "597": {
+    "name": "Lampo Oculare",
+    "description": "Emette un lampo accecante che\\ncompromette gravemente la vista\\ne la precisione dei nemici.",
+    "message1": "%1 crea un lampo accecante!",
+    "message2": ""
+  },
+  "598": {
+    "name": "Magnetic Cloud",
+    "description": "Evoca una nube di\\nparticelle magnetiche\\ndisorientanti che infliggono\\nconfusione e abbassano la precisione.",
+    "message1": "%1 crea disorientamento magnetico!",
+    "message2": ""
+  },
+  "599": {
+    "name": "Nesso Temporale",
+    "description": "Crea un'anomalia temporale\\nche causa grave\\ndisorientamento e confusione\\nnei nemici.",
+    "message1": "%1 crea una distorsione temporale!",
+    "message2": ""
+  },
+  "600": {
+    "name": "Nesso Acascata",
+    "description": "La magia di stato suprema che\\ninfligge molteplici condizioni\\ndebilitanti a tutti i nemici.",
+    "message1": "%1 scatena una maledizione a cascata!",
+    "message2": ""
+  },
+  "601": {
+    "name": "Necro Contagio",
+    "description": "Infetta i nemici con una maledizione che \\nsi propaga agli alleati quando muoiono, con possibile morte istantanea.",
+    "message1": "%1 scatena una piaga necromantica!",
+    "message2": ""
+  },
+  "602": {
+    "name": "Neuro Maledizione",
+    "description": "Blocca completamente il sistema\\nnervoso del bersaglio.",
+    "message1": "%1 induce paralisi terminale!",
+    "message2": ""
+  },
+  "603": {
+    "name": "Malattia incurabile",
+    "description": "Infetta i nemici con una tossina\\nche ne prosciuga di continuo gli HP",
+    "message1": "%1 scatena una tossina incurabile!",
+    "message2": ""
+  },
+  "604": {
+    "name": "Eterna Maledizione",
+    "description": "Ammutolisce in modo permanente il\\nbersaglio, impedendogli di usare\\nincantesimi per il resto della\\nbattaglia.",
+    "message1": "%1 sigilla permanentemente le abilità magiche!",
+    "message2": ""
+  },
+  "605": {
+    "name": "Annilazione Mana",
+    "description": "Crea un campo che prosciuga\\ntutta l'energia magica dai\\nnemici, azzerandone gli MP\\ne impedendone il recupero.",
+    "message1": "%1 crea un vuoto di mana!",
+    "message2": ""
+  },
+  "606": {
+    "name": "Cura Paradosso",
+    "description": "Inverte il tempo per il bersaglio,\\nfacendo sì che ogni cura gli\\ninfligga invece danni per diversi\\nturni.",
+    "message1": "%1 inverte il flusso della vita!",
+    "message2": ""
+  },
+  "607": {
+    "name": "Auto Fattura",
+    "description": "Infligge una maledizione che fa\\nsubire danni ai bersagli quando\\nusano abilità o oggetti.",
+    "message1": "%1 infligge una maledizione autolesionista!",
+    "message2": ""
+  },
+  "608": {
+    "name": "Campo Benedetto",
+    "description": "Annulla completamente tutti gli\\nstati positivi sui bersagli e\\nimpedisce che ne vengano applicati\\ndi nuovi.",
+    "message1": "%1 crea un campo di benedizione!",
+    "message2": ""
+  },
+  "609": {
+    "name": "Spiri Vortice",
+    "description": "Crea un'anomalia\\ngravitazionale che prosciuga di\\ncontinuo i TP dei nemici,\\nimpedendo le mosse speciali.",
+    "message1": "%1 crea un campo che prosciuga lo spirito!",
+    "message2": ""
+  },
+  "610": {
+    "name": "Fattura Irreversibile",
+    "description": "Costringe i nemici ad attaccare i\\npropri alleati contro la loro volontà e\\nli rende immuni alle cure per\\nl'ammaliamento.",
+    "message1": "%1 induce pazzia permanente!",
+    "message2": ""
+  },
+  "611": {
+    "name": "Fatal Sindrome",
+    "description": "Fa sprofondare i bersagli in un incubo\\nsenza fine che li danneggia a\\nogni turno finché non muoiono o\\nla battaglia non finisce.",
+    "message1": "%1 provoca un incubo fatale!",
+    "message2": ""
+  },
+  "612": {
+    "name": "Conteggio Inesorabile",
+    "description": "Marchia i bersagli con un conto alla rovescia mortale che li uccide \\ndopo tre turni a prescindere da ogni protezione.",
+    "message1": "%1 imposta un conto alla rovescia per la morte!",
+    "message2": ""
+  },
+  "613": {
+    "name": "Contratto Vitale",
+    "description": "Costringe i nemici a sacrificare i propri HP\\nper agire,",
+    "message1": "%1 stipula un contratto che prosciuga la vita!",
+    "message2": ""
+  },
+  "614": {
+    "name": "Perma Assorbi",
+    "description": "Prosciuga tutti i potenziamenti dai nemici\\ne ne riduce permanentemente le statistiche base.",
+    "message1": "%1 prosciuga il potenziale nemico!",
+    "message2": ""
+  },
+  "615": {
+    "name": "Total Blocco",
+    "description": "Rende i nemici completamente ciechi\\ne confusi invertendone i comandi di movimento.",
+    "message1": "%1 crea una totale interruzione sensoriale!",
+    "message2": ""
+  },
+  "616": {
+    "name": "Cataclisma Omnimaledizione",
+    "description": "L'incantesimo proibito supremo che \\ninfligge ogni stato negativo esistente.",
+    "message1": "%1 scatena l'annientamento totale!",
+    "message2": ""
+  },
+  "617": {
+    "name": "Onda d'urto PSI",
+    "description": "Incanala energia PSI per creare scariche\\nelettriche che colpiscono i nemici con precisione innaturale.",
+    "message1": "%1 scatena uno shock psichico!",
+    "message2": ""
+  },
+  "618": {
+    "name": "PSI KineticTempest",
+    "description": "Crea una tempesta di vento telecinetica \\nmanipolando le molecole d'aria con l'energia PSI.",
+    "message1": "%1 genera una tempesta di vento telecinetica!",
+    "message2": ""
+  },
+  "619": {
+    "name": "Combustione PSI",
+    "description": "Incendia l'aria attorno ai nemici con un'intensa \\nconcentrazione PSI, generando fiamme spontanee.",
+    "message1": "%1 infiamma l'aria con il potere della mente!",
+    "message2": ""
+  },
+  "620": {
+    "name": "PSI Cryo Freezing",
+    "description": "Rallenta il movimento molecolare con l'energia PSI\\ncongelando i nemici e ciò che li circonda.",
+    "message1": "%1 rallenta il movimento molecolare!",
+    "message2": ""
+  },
+  "621": {
+    "name": "PSI Metabolic Regen",
+    "description": "Usa l'energia PSI per accelerare la guarigione\\nnaturale nel corpo del bersaglio.",
+    "message1": "%1 accelera la guarigione naturale!",
+    "message2": ""
+  },
+  "622": {
+    "name": "PSI IllusionProjection",
+    "description": "Crea illusioni usando l'energia \\nPSI che confondono i nemici.",
+    "message1": "%1 crea illusioni psichiche!",
+    "message2": ""
+  },
+  "623": {
+    "name": "PSI Gravitokinetic Crush",
+    "description": "Manipola le forze gravitazionali\\nusando l'energia PSI per schiacciare gli avversari.",
+    "message1": "%1 manipola la gravità!",
+    "message2": ""
+  },
+  "624": {
+    "name": "Accel PSI",
+    "description": "Potenzia riflessi e tempi di reazione \\ncon l'energia PSI, aumentando enormemente la PSI.",
+    "message1": "%1 accelera le risposte neurali!",
+    "message2": ""
+  },
+  "625": {
+    "name": "PSI NeuroParalisi",
+    "description": "Disattiva le vie neurali usando l'energia PSI,\\nparalizzando completamente il bersaglio.",
+    "message1": "%1 interrompe i percorsi neurali!",
+    "message2": ""
+  },
+  "626": {
+    "name": "PSI IpnoSuggestione",
+    "description": "Proietta schemi mentali\\nrilassanti usando l'energia PSI,\\ninducendo il sonno nei bersagli.",
+    "message1": "%1 induce rilassamento neurale!",
+    "message2": ""
+  },
+  "627": {
+    "name": "Colpo precognitivo PSI",
+    "description": "Potenzia temporaneamente l'intuito da combattimento \\nusando l'energia PSI, aumentando enormemente il tasso di critico.",
+    "message1": "%1 migliora l'intuizione nel combattimento!",
+    "message2": ""
+  },
+  "628": {
+    "name": "Barriera cinetica PSI",
+    "description": "Crea una barriera PSI protettiva \\nche assorbe danni fisici e magici.",
+    "message1": "%1 crea una barriera PSI!",
+    "message2": ""
+  },
+  "629": {
+    "name": "Disgregazione sonora PSI",
+    "description": "Proietta pensieri dolorosi\\ndirettamente nella mente del\\nbersaglio, causando danni psichici.",
+    "message1": "%1 proietta pensieri dolorosi!",
+    "message2": ""
+  },
+  "630": {
+    "name": "PSI CecitàCinetica",
+    "description": "Perturba l'elaborazione visiva nel cervello del bersaglio con l'energia PSI, \\ncausando cecità.",
+    "message1": "%1 interrompe l'elaborazione visiva!",
+    "message2": ""
+  },
+  "631": {
+    "name": "PSI VampirismoMetabolico",
+    "description": "Stabilisce un legame PSI che\\nprosciuga l'energia vitale.",
+    "message1": "%1 stabilisce un collegamento psi-drain!",
+    "message2": ""
+  },
+  "632": {
+    "name": "PSI SoppressioneCinetica",
+    "description": "Blocca la capacità del bersaglio di\\nlanciare incantesimi o usare abilità speciali.",
+    "message1": "%1 crea un campo di interferenza psi!",
+    "message2": ""
+  },
+  "633": {
+    "name": "PSI ContrattaccoPrecognitivo",
+    "description": "Legge la mente del bersaglio per prevedere\\ne contrastare la sua prossima mossa con precisione PSI.",
+    "message1": "%1 legge le intenzioni del nemico!",
+    "message2": ""
+  },
+  "634": {
+    "name": "PSI Debilitazione",
+    "description": "Usa l'energia PSI per indebolire gravemente \\nle capacità fisiche del bersaglio.",
+    "message1": "%1 indebolisce le capacità fisiche!",
+    "message2": ""
+  },
+  "635": {
+    "name": "PSI CinetoMetabolico",
+    "description": "Usa l'energia PSI per purificare e \\nriparare gli squilibri mentali, rimuovendo le alterazioni di stato.",
+    "message1": "%1 stabilizza gli schemi mentali!",
+    "message2": ""
+  },
+  "636": {
+    "name": "PSI EsplosioneEnergetica",
+    "description": "Scatena una devastante esplosione\\ndi pura energia PSI che danneggia\\npiù bersagli.",
+    "message1": "%1 scatena pura energia psi!",
+    "message2": ""
+  },
+  "637": {
+    "name": "PSI TrasferimentoEnergetico",
+    "description": "Trasferisce parte dell'energia PSI \\ndell'utilizzatore per ripristinare i TP di un alleato.",
+    "message1": "%1 trasferisce energia psi!",
+    "message2": ""
+  },
+  "638": {
+    "name": "PSI Amplif. Metabolica",
+    "description": "Potenzia enormemente tutte le capacità \\nmentali usando l'energia PSI.",
+    "message1": "%1 potenzia le capacità mentali!",
+    "message2": ""
+  },
+  "639": {
+    "name": "PSI Sovraccarico",
+    "description": "Incanala energia PSI negativa per\\ncausare potenzialmente morte istantanea tramite",
+    "message1": "%1 induce lo spegnimento neurale!",
+    "message2": ""
+  },
+  "640": {
+    "name": "PSI Manifestazione",
+    "description": "La tecnica PSI suprema\\nche scatena tutto il potere PSIchico",
+    "message1": "%1 scatena il massimo potenziale psi!",
+    "message2": ""
+  },
+  "641": {
+    "name": "Assorbi Potenza",
+    "description": "Crea un campo incantato che riduce\\nenormemente l'Attacco e la COS nemici.",
+    "message1": "%1 crea un campo di indebolimento!",
+    "message2": ""
+  },
+  "642": {
+    "name": "Ruggin Manetta",
+    "description": "Circonda i nemici di catene arrugginite che ne limitano\\ngravemente il movimento e ne riducono la DEX.",
+    "message1": "%1 evoca catene arrugginite!",
+    "message2": ""
+  },
+  "643": {
+    "name": "Nube Oscura",
+    "description": "Crea una nebbia accecante che riduce\\ngravemente la Precisione e la PSI nemiche.",
+    "message1": "%1 crea una nube oscura!",
+    "message2": ""
+  },
+  "644": {
+    "name": "PSI NebbiaMentale",
+    "description": "Annebbia la mente di un nemico, riducendone\\nenormemente INT e SAG.",
+    "message1": "%1 offusca la mente del nemico!",
+    "message2": ""
+  },
+  "645": {
+    "name": "Total Indebolimento",
+    "description": "Crea un campo che indebolisce gravemente\\ntutte le statistiche nemiche simultaneamente.",
+    "message1": "%1 crea un campo di indebolimento!",
+    "message2": ""
+  },
+  "646": {
+    "name": "Grand Aura",
+    "description": "Aumenta enormemente l'Attacco e la COS di un alleato\\nal prezzo di una DEX ridotta.",
+    "message1": "%1 migliora il fisico dei suoi alleati!",
+    "message2": ""
+  },
+  "647": {
+    "name": "Veloci Aura",
+    "description": "Aumenta notevolmente la DEX e la PSI di un alleato\\nal prezzo di una COS ridotta.",
+    "message1": "%1 migliora la mobilità!",
+    "message2": ""
+  },
+  "648": {
+    "name": "Ment Aura",
+    "description": "Aumenta enormemente l'INT e la SAG di un alleato\\nal prezzo di un Attacco ridotto.",
+    "message1": "%1 migliora le capacità mentali!",
+    "message2": ""
+  },
+  "649": {
+    "name": "Coordi Fattura",
+    "description": "Fa perdere il controllo a un nemico,\\nriducendone enormemente la Precisione.",
+    "message1": "%1 interrompe il coordinamento del nemico!",
+    "message2": ""
+  },
+  "650": {
+    "name": "Sfasamento",
+    "description": "Concede a un alleato riflessi sovrannaturali,\\naumentandone enormemente la PSI.",
+    "message1": "%1 garantisce riflessi soprannaturali!",
+    "message2": ""
+  },
+  "651": {
+    "name": "Mira assistita",
+    "description": "Concede a un alleato una precisione sovrannaturale,\\naumentandone enormemente la Precisione.",
+    "message1": "%1 garantisce una precisione soprannaturale!",
+    "message2": ""
+  },
+  "652": {
+    "name": "Omni Potenziamento",
+    "description": "Aumenta enormemente tutte le statistiche di un singolo alleato\\nper un numero limitato di turni.",
+    "message1": "%1 crea un miglioramento perfetto!",
+    "message2": ""
+  },
+  "653": {
+    "name": "Omni Assorbi",
+    "description": "Priva un nemico di tutte le statistiche potenziate e\\nne riduce ulteriormente le capacità base.",
+    "message1": "%1 ruba il potenziale del nemico!",
+    "message2": ""
+  },
+  "654": {
+    "name": "Trance Rabbiosa",
+    "description": "Aumenta enormemente la FRZ e il tasso di critico di un\\nalleato riducendone però la COS.",
+    "message1": "%1 induce uno stato di berserk nei suoi alleati!",
+    "message2": ""
+  },
+  "655": {
+    "name": "Ferro Guscio",
+    "description": "Aumenta enormemente la COS e la SAG di un alleato\\nriducendone però Attacco e INT.",
+    "message1": "%1 crea un guscio difensivo!",
+    "message2": ""
+  },
+  "656": {
+    "name": "Stat Flusso",
+    "description": "Causa un disorientamento estremo in un nemico,\\ninvertendo l'effetto dei suoi potenziamenti.",
+    "message1": "%1 inverte i miglioramenti!",
+    "message2": ""
+  },
+  "657": {
+    "name": "Time Warp",
+    "description": "Permette a un alleato di muoversi con velocità incredibile,\\naumentandone enormemente la frequenza d'azione.",
+    "message1": "%1 garantisce una velocità eccezionale!",
+    "message2": ""
+  },
+  "658": {
+    "name": "Lento Ghiaccio",
+    "description": "Crea un campo di energia zero che riduce gravemente la velocità\\ndel bersaglio, congelandolo di fatto nel tempo.",
+    "message1": "%1 rallenta lo scorrere del tempo!",
+    "message2": ""
+  },
+  "659": {
+    "name": "Pietra Pelle",
+    "description": "Aumenta enormemente la COS di un alleato\\nal prezzo della sua immobilizzazione.",
+    "message1": "%1 crea una fortezza immobile!",
+    "message2": ""
+  },
+  "660": {
+    "name": "Divin Perfezione",
+    "description": "L'incantesimo di potenziamento supremo che massimizza\\ntutte le statistiche dell'intero gruppo per breve tempo.",
+    "message1": "%1 scatena il potenziamento definitivo!",
+    "message2": ""
+  },
+  "661": {
+    "name": "Assoluta Nullificazione",
+    "description": "L'incantesimo di debilitazione supremo che minimizza\\ntutte le statistiche di tutti i nemici per breve tempo.",
+    "message1": "%1 scatena la riduzione assoluta!",
+    "message2": ""
+  },
+  "662": {
+    "name": "Chaos Impetus",
+    "description": "Un incantesimo caotico di pura energia magica che causa\\ndanni elementali imprevedibili e stati alterati casuali.",
+    "message1": "%1 invoca la magia caotica!",
+    "message2": ""
+  },
+  "663": {
+    "name": "Voidus Consumere",
+    "description": "Evoca il vuoto tra i mondi per consumare i nemici,\\ncausando vari effetti debilitanti e possibile morte istantanea.",
+    "message1": "%1 evoca il vuoto tra i mondi!",
+    "message2": ""
+  },
+  "664": {
+    "name": "Temporis Distortio",
+    "description": "Distorce il tessuto del tempo attorno ai nemici, causando\\neffetti temporali casuali e possibili inversioni di statistiche.",
+    "message1": "%1 distorce il flusso del tempo!",
+    "message2": ""
+  },
+  "665": {
+    "name": "Tempestas Omnium",
+    "description": "Evoca una tempesta caotica che a caso danneggia,\\ncura, indebolisce o potenzia sia alleati che nemici.",
+    "message1": "%1 evoca una tempesta caotica!",
+    "message2": ""
+  },
+  "666": {
+    "name": "Numerus Bestia",
+    "description": "Invoca il numero della bestia per causare devastazione arcana,\\nprosciugando un terzo degli HP nemici e causando stati caotici.",
+    "message1": "%1 invoca la numerologia proibita!",
+    "message2": ""
+  },
+  "667": {
+    "name": "Fulmen Chaos",
+    "description": "Fa calare fulmini caotici che saltano in modo imprevedibile\\ntra i bersagli, causando danni e paralisi.",
+    "message1": "%1 evoca fulmini caotici!",
+    "message2": ""
+  },
+  "668": {
+    "name": "Ultimum Judicium",
+    "description": "Invoca il giudizio finale, causando a caso morte istantanea,\\ndanni enormi o riduzione totale delle statistiche di tutti i nemici.",
+    "message1": "%1 invoca il giudizio finale!",
+    "message2": ""
+  },
+  "669": {
+    "name": "Ignis Viventis",
+    "description": "Infonde nel corpo di chi lancia l'incantesimo un fuoco caotico che\\nbrucia i nemici e altera a caso le statistiche di tutti.",
+    "message1": "%1 diventa una fiamma del caos vivente!",
+    "message2": ""
+  },
+  "670": {
+    "name": "Aqua Primordialis",
+    "description": "Crea una pozza di acqua primordiale caotica che a caso\\ncura gli alleati o danneggia i nemici con effetti imprevedibili.",
+    "message1": "%1 evoca acque primordiali!",
+    "message2": ""
+  },
+  "671": {
+    "name": "Terra spezzata",
+    "description": "Squarcia la terra sotto i nemici, causando danni\\ne scambiandone a caso posizioni e statistiche.",
+    "message1": "%1 fa a pezzi la terra!",
+    "message2": ""
+  },
+  "672": {
+    "name": "Lux Divinus",
+    "description": "Fa calare una luce divina che giudica tutte le creature,\\nbenedicendo a caso gli alleati o colpendo i nemici.",
+    "message1": "%1 invoca il giudizio divino!",
+    "message2": ""
+  },
+  "673": {
+    "name": "Inversio Naturae",
+    "description": "Crea un campo di energia caotica che inverte\\na caso tutti gli stati alterati sul campo di battaglia.",
+    "message1": "%1 inverte l'ordine naturale!",
+    "message2": ""
+  },
+  "674": {
+    "name": "Salutis Prohibitum",
+    "description": "Un incantesimo curativo proibito che ripristina del tutto un alleato\\nma causa effetti caotici casuali a tutti gli altri.",
+    "message1": "%1 invoca una guarigione proibita!",
+    "message2": ""
+  },
+  "675": {
+    "name": "Venenum Chaos",
+    "description": "Infetta i nemici con un veleno magico caotico che\\nsi trasforma a caso in alterazioni di stato diverse.",
+    "message1": "%1 rilascia una tossina metamorfica!",
+    "message2": ""
+  },
+  "676": {
+    "name": "Vita Furtivus",
+    "description": "Prosciuga la forza vitale dei nemici trasferendone a caso\\ngli stati alterati a chi lancia l'incantesimo o ad altri nemici.",
+    "message1": "%1 drena la forza vitale caotica!",
+    "message2": ""
+  },
+  "677": {
+    "name": "Potentia Incertus",
+    "description": "Circonda un alleato di energia magica caotica che a caso\\npotenzia alcune statistiche riducendone altre a ogni turno.",
+    "message1": "%1 invoca un potenziamento caotico!",
+    "message2": ""
+  },
+  "678": {
+    "name": "Chaos Ultimatum",
+    "description": "L'incantesimo caotico supremo che crea un maelstrom di\\ntutte le energie magiche con effetti del tutto imprevedibili.",
+    "message1": "%1 scatena il caos più assoluto!",
+    "message2": ""
+  },
+  "679": {
+    "name": "Nozh'Krathek",
+    "description": "Ng'tleth vruk'nath shar'goleth...\\nK'thul mordiggian s'otheq nglui...",
+    "message1": "%1 canta: 'Vruk'nath shar'goleth!'",
+    "message2": ""
+  },
+  "680": {
+    "name": "Xhul'Morketh",
+    "description": "Ghz'reth malkur vy'heem k'goth...\\nShub'xhul nyar thol'eth naglui...",
+    "message1": "%1 sussurra: 'Malkur vy'heem k'goth...'",
+    "message2": ""
+  },
+  "681": {
+    "name": "Thezom'Vrux",
+    "description": "Vyr'zhul naqu'eth fha'gon thez...\\nGl'burtok shub'niggurath mogthol...",
+    "message1": "%1 urla: \"'VYR'ZHUL NAQU'ETH FHA'GON!\"",
+    "message2": ""
+  },
+  "682": {
+    "name": "Vril'Nazoketh",
+    "description": "Kl'yex nazog'eth vril'qux nathrak...\\nThoz'oth n'ghatal yr'kith ghatanothoa...",
+    "message1": "%1 urla: 'Kl'yex nazog'eth vril'qux!'",
+    "message2": ""
+  },
+  "683": {
+    "name": "Fhor'Qithor",
+    "description": "Zhul'thrak nyg'lathotep fhor'qith...\\nYib'ghul nogthul m'xathul krithek...",
+    "message1": "%1 intona: 'Zhul'thrak nyg'lathotep...'",
+    "message2": ""
+  },
+  "684": {
+    "name": "Ur'Akimoth",
+    "description": "Nith'drux vhal'qor zhoth'nax ur'akim...\\nGrah'nul sothoth nyog'sothep t'yogsoth...",
+    "message1": "%1 parla al contrario: 'Htoysgoy'T pehtos'goyn...'",
+    "message2": ""
+  },
+  "685": {
+    "name": "Zin'Tharaq",
+    "description": "Quhl'nek zin'thrak volguth sh'nagrath...\\nXhul'tharaq n'gathog ul'gynoth vhol'tek...",
+    "message1": "La voce di %1 riecheggia: 'Quhl'nek zin'thrak volguth...'",
+    "message2": ""
+  },
+  "686": {
+    "name": "Yog'Thulex",
+    "description": "Yth'nax zhul'guroth naq'thel bro'khazad...\\nGl'uthok yogsothoth krith'nex tha'nex...",
+    "message1": "%1 sangue ribolle: 'YTH'NAX ZHUL'GUROTH NAQ'THEL!'",
+    "message2": ""
+  },
+  "687": {
+    "name": "Nil'Zhothep",
+    "description": "Nith'ghuloth shar'thrak y'golnax zhot'grul...\\nXha'kul nyarlathotep shub'ygoth nith'zhol...",
+    "message1": "%1 occhi sanguinano: 'Nith'ghuloth shar'thrak...'",
+    "message2": ""
+  },
+  "688": {
+    "name": "Azath'Othep",
+    "description": "KTHUL'ZHOTEP NITH'GHULOQ YOG'XHUL NAK'THOTH...\\nAZA'THOGUA FTAGN CTHULHU R'LYEH...",
+    "message1": "%1 infrange la realtà: 'KTHUL'ZHOTEP nITH'GHULOQ\r\nyOG'XHUL!'",
+    "message2": ""
+  },
+  "689": {
+    "name": "Fiamma Purificante",
+    "description": "Incendia il tuo stesso corpo in fiamme purificatrici,\\nbruciando il 20% dei tuoi HP massimi.",
+    "message1": "%1 si accende in fiamme purificatrici!",
+    "message2": ""
+  },
+  "690": {
+    "name": "Consuma Carne",
+    "description": "Consuma la tua stessa carne con fuoco magico,\\ninfliggendo ustioni gravi e riducendo la FRZ.",
+    "message1": "%1 brucia con fiamme divoratrici!",
+    "message2": ""
+  },
+  "691": {
+    "name": "Sacrifi Caos",
+    "description": "Sacrifica HP e stabilità mentale a forze caotiche,\\ncausando confusione e grave vulnerabilità magica.",
+    "message1": "%1 fa un sacrificio caotico!",
+    "message2": ""
+  },
+  "692": {
+    "name": "Prosciuga Vita",
+    "description": "Prosciuga la tua stessa forza vitale nel nulla,\\ncausando emorragia e grave debolezza fisica.",
+    "message1": "%1 drena la propria forza vitale!",
+    "message2": ""
+  },
+  "693": {
+    "name": "Auto Elettrocuzione",
+    "description": "Incanala il fulmine attraverso il tuo stesso corpo,\\nparalizzandoti e riducendo la DEX.",
+    "message1": "%1 si fulmina!",
+    "message2": ""
+  },
+  "694": {
+    "name": "Sangue Freddo",
+    "description": "Congela il tuo stesso sangue con magia oscura del ghiaccio,\\nrallentando i movimenti e riducendo le capacità di combattimento.",
+    "message1": "%1 si congela il sangue!",
+    "message2": ""
+  },
+  "695": {
+    "name": "Ghigliottina Magica",
+    "description": "Recide il tuo legame con le energie magiche,\\nammutolendoti e prosciugando gli MP.",
+    "message1": "%1 interrompe la sua connessione magica!",
+    "message2": ""
+  },
+  "696": {
+    "name": "Riposo Mortale",
+    "description": "Ti fa sprofondare in un sonno profondo prosciugando al\\ntempo stesso l'energia vitale, causando una lunga incoscienza.",
+    "message1": "%1 cade in un sonno simile alla morte!",
+    "message2": ""
+  },
+  "697": {
+    "name": "Corromp Anima",
+    "description": "Invita l'oscurità nella tua anima, causando\\ngravi danni spirituali e vulnerabilità.",
+    "message1": "%1 invita l'oscurità nella propria anima!",
+    "message2": ""
+  },
+  "698": {
+    "name": "Spacca Ossa",
+    "description": "Frantuma le tue stesse ossa con la magia della terra,\\ncausando atterramento e grave debolezza fisica.",
+    "message1": "%1 si frantuma le ossa!",
+    "message2": ""
+  },
+  "699": {
+    "name": "Sacrificio Disperato",
+    "description": "Sacrifica quasi metà della tua forza vitale\\ninfliggendo al tempo stesso molteplici condizioni debilitanti.",
+    "message1": "%1 compie un terribile sacrificio di vita!",
+    "message2": ""
+  },
+  "700": {
+    "name": "Gran Distruzione",
+    "description": "L'incantesimo di autodistruzione supremo che quasi\\nuccide chi lo lancia distruggendone le capacità.",
+    "message1": "%1 si autodistrugge completamente!",
+    "message2": ""
+  },
+  "701": {
+    "name": "PSI AnelloDiMemoria",
+    "description": "Costringe il bersaglio a rivivere il suo ricordo peggiore\\nin un anello senza fine mentre la sua mente si sfalda lentamente.",
+    "message1": "%1 intrappola il nemico nel suo peggior ricordo!",
+    "message2": ""
+  },
+  "702": {
+    "name": "Nido Parassita",
+    "description": "Fa scavare a migliaia di insetti invisibili gallerie\\nsotto la pelle del bersaglio, divorandolo dall'interno.",
+    "message1": "%1 evoca parassiti invisibili che scavano la\r\ncarne!",
+    "message2": ""
+  },
+  "703": {
+    "name": "Strappa Ombra",
+    "description": "Strappa l'ombra dal corpo del bersaglio, facendone\\ndecomporre la forma mentre il suo riflesso lo assassina.",
+    "message1": "%1 strappa via l'ombra del nemico!",
+    "message2": ""
+  },
+  "704": {
+    "name": "InvertiEtà",
+    "description": "Intrappola il bersaglio in una dimensione tascabile dove il tempo\\nscorre a ritroso, invecchiandolo finché non resta che polvere.",
+    "message1": "%1 crea una sacca temporale inversa!",
+    "message2": ""
+  },
+  "705": {
+    "name": "Mille Morti",
+    "description": "Fa sperimentare al bersaglio la propria morte in\\nogni modo possibile simultaneamente attraverso gli incubi.",
+    "message1": "%1 provoca mille visioni di morte!",
+    "message2": ""
+  },
+  "706": {
+    "name": "Amplific Agonia",
+    "description": "Riconfigura il sistema nervoso del bersaglio così che i suoi\\nrecettori del dolore interpretino ogni sensazione come agonia atroce.",
+    "message1": "%1 amplifica tutti i recettori del dolore!",
+    "message2": ""
+  },
+  "707": {
+    "name": "Vuoto Sguardo",
+    "description": "Sostituisce gli occhi del bersaglio con finestre sul vuoto,\\ncostringendolo ad assistere a orrori oltre ogni comprensione.",
+    "message1": "%1 sostituisce gli occhi del nemico con finestre\r\nvuote!",
+    "message2": ""
+  },
+  "708": {
+    "name": "Estrai Anima",
+    "description": "Separa l'anima del bersaglio dal suo corpo\\nmentre ne distruggi la forma fisica.",
+    "message1": "%1 esegue l'estrazione dell'anima!",
+    "message2": ""
+  },
+  "709": {
+    "name": "Cancellamento Esistenziale",
+    "description": "Cancella temporaneamente il bersaglio dall'esistenza, costringendolo\\na sperimentare l'orrore del non essere.",
+    "message1": "%1 cancella temporaneamente il nemico\r\ndall'esistenza!",
+    "message2": ""
+  },
+  "710": {
+    "name": "Vetr Ossa",
+    "description": "Trasforma le ossa del bersaglio in vetro che si frantuma\\na ogni suo movimento, riempiendolo di schegge.",
+    "message1": "%1 trasforma le ossa in vetri rotti!",
+    "message2": ""
+  },
+  "711": {
+    "name": "Elettro Sangue",
+    "description": "Sostituisce il sangue del bersaglio con elettricità liquida,\\nfriggendone organi e sistema nervoso dall'interno.",
+    "message1": "%1 riempie di elettricità le vene del nemico!",
+    "message2": ""
+  },
+  "712": {
+    "name": "Cascata di traumi PSI",
+    "description": "Costringe il bersaglio a rivivere ogni momento doloroso della\\nsua vita simultaneamente in un anello mentale senza fine.",
+    "message1": "%1 crea una cascata di traumi!",
+    "message2": ""
+  },
+  "713": {
+    "name": "Obliterazione Esistenziale",
+    "description": "L'incantesimo d'orrore supremo che disfa il bersaglio\\ndalla realtà stessa, cancellandone l'intera esistenza.",
+    "message1": "%1 cancella il nemico dall'esistenza!",
+    "message2": ""
+  },
+  "714": {
+    "name": "PSI Combat Focus",
+    "description": "Concentra la mente sulle tecniche di combattimento,\\naumentando leggermente la potenza d'Attacco.",
+    "message1": "%1 si concentra sulle tecniche di combattimento!",
+    "message2": ""
+  },
+  "715": {
+    "name": "Guardia muscolare",
+    "description": "Contrai i muscoli in preparazione all'impatto,\\naumentando leggermente la COS.",
+    "message1": "%1 flette i muscoli ed è nel vuoto!",
+    "message2": ""
+  },
+  "716": {
+    "name": "Allungamento dinamico",
+    "description": "Esegui esercizi di stretching dinamico,\\naumentando leggermente la DEX.",
+    "message1": "%1 esegue allungamenti dinamici!",
+    "message2": ""
+  },
+  "717": {
+    "name": "Allenamento della posizione",
+    "description": "Migliora la tua postura e il gioco di gambe,\\naumentando leggermente la PSI.",
+    "message1": "%1 migliora la sua posizione!",
+    "message2": ""
+  },
+  "718": {
+    "name": "Trapano di precisione",
+    "description": "Esercitati nelle tecniche di colpo di precisione,\\naumentando leggermente la Precisione.",
+    "message1": "%1 pratica colpi di precisione!",
+    "message2": ""
+  },
+  "719": {
+    "name": "Controllo del respiro",
+    "description": "Esegui un rapido esercizio di respirazione che\\naumenta leggermente l'Energia e ripristina TP.",
+    "message1": "%1 esegue esercizi di respirazione!",
+    "message2": ""
+  },
+  "720": {
+    "name": "Analisi del campo di battaglia",
+    "description": "Analizza i movimenti dell'avversario,\\naumentando leggermente il tasso di colpo critico.",
+    "message1": "%1 analizza il suo avversario!",
+    "message2": ""
+  },
+  "721": {
+    "name": "Durante la pausa",
+    "description": "Spingi il corpo oltre i limiti normali,\\naumentando leggermente Attacco e DEX.",
+    "message1": "%1 supera i limiti normali!",
+    "message2": ""
+  },
+  "722": {
+    "name": "Allenamento di base",
+    "description": "Rafforza i muscoli del core,\\naumentando leggermente COS e SAG.",
+    "message1": "%1 Rafforza il loro nucleo!",
+    "message2": ""
+  },
+  "723": {
+    "name": "Vita lTargeting",
+    "description": "Concentra la mira sui punti vitali,\\naumentando leggermente Precisione e tasso di critico.",
+    "message1": "%1 prende di mira i punti vitali!",
+    "message2": ""
+  },
+  "724": {
+    "name": "Esercizio difensivo",
+    "description": "Esercitati nelle tecniche di schivata e parata,\\naumentando leggermente PSI e COS.",
+    "message1": "%1 pratica manovre difensive!",
+    "message2": ""
+  },
+  "725": {
+    "name": "Ripristino energetico",
+    "description": "Esegui un esercizio di recupero che\\nrinfresca mente e corpo, ripristinando HP e TP.",
+    "message1": "%1 esegue esercizi rigenerativi!",
+    "message2": ""
+  },
+  "726": {
+    "name": "Prontezza al combattimento",
+    "description": "Entra in uno stato di concentrazione elevata,\\naumentando leggermente tutte le capacità di combattimento.",
+    "message1": "%1 entra in uno stato di elevata concentrazione!",
+    "message2": ""
+  },
+  "727": {
+    "name": "Condizionamento rapido",
+    "description": "Esegui un allenamento intenso e rapido che\\ndà risultati veloci ma è fisicamente estenuante.",
+    "message1": "%1 esegue un allenamento rapido e intenso!",
+    "message2": ""
+  },
+  "728": {
+    "name": "Condizionamento difensivo",
+    "description": "Concentrati completamente sulle tecniche difensive,\\naumentando moderatamente la COS ma riducendo l'Attacco.",
+    "message1": "%1 si concentra sulle tecniche difensive!",
+    "message2": ""
+  },
+  "729": {
+    "name": "Condizionamento offensivo",
+    "description": "Concentrati completamente sulle tecniche offensive,\\naumentando moderatamente l'Attacco ma riducendo la COS.",
+    "message1": "%1 si concentra sulle tecniche offensive!",
+    "message2": ""
+  },
+  "730": {
+    "name": "Addestramento al combattimento",
+    "description": "Affronta un allenamento al combattimento intensivo che\\nmigliora moderatamente tutte le capacità fisiche.",
+    "message1": "%1 completa l'addestramento al combattimento!",
+    "message2": ""
+  },
+  "731": {
+    "name": "Luce Radiante",
+    "description": "Fa calare una colonna di luce sacra che cura gli alleati\\ne danneggia i nemici col giudizio divino.",
+    "message1": "%1 invoca la luce radiante!",
+    "message2": ""
+  },
+  "732": {
+    "name": "Barriera Divina",
+    "description": "Evoca una barriera divina che rivolta l'energia\\nnegativa di un nemico contro se stesso.",
+    "message1": "%1 crea una barriera divina!",
+    "message2": ""
+  },
+  "733": {
+    "name": "Giudizio Celeste",
+    "description": "Invoca la giustizia celeste per punire i malvagi\\ncon roventi colonne di fuoco sacro.",
+    "message1": "%1 scatena il giudizio celeste!",
+    "message2": ""
+  },
+  "734": {
+    "name": "Guarigione Divina",
+    "description": "Cura le ferite tramite l'intervento divino,\\nripristinando una quantità moderata di HP a un alleato.",
+    "message1": "%1 prega per la guarigione!",
+    "message2": ""
+  },
+  "735": {
+    "name": "Scrittura Guaritrice",
+    "description": "Recita le sacre scritture che curano le ferite\\ndi tutti gli alleati con la luce divina.",
+    "message1": "%1 recita le scritture curative!",
+    "message2": ""
+  },
+  "736": {
+    "name": "Benedizione Protettiva",
+    "description": "Benedici un alleato con la protezione sacra,\\naumentandone COS e SAG.",
+    "message1": "%1 conferisce una benedizione di protezione!",
+    "message2": ""
+  },
+  "737": {
+    "name": "Potenziamento Divino",
+    "description": "Prega la luce divina di potenziare un alleato,\\naumentandone FRZ e INT.",
+    "message1": "%1 prega per la FOR divina!",
+    "message2": ""
+  },
+  "738": {
+    "name": "Purifi Preghiera",
+    "description": "Purifica un alleato dagli stati negativi\\nattraverso il potere della sacra preghiera.",
+    "message1": "%1 esegue la purificazione rituale!",
+    "message2": ""
+  },
+  "739": {
+    "name": "Purifi Massa",
+    "description": "Esegui un rituale che purifica tutti gli alleati\\ndagli stati negativi.",
+    "message1": "%1 esegue una purificazione di massa!",
+    "message2": ""
+  },
+  "740": {
+    "name": "Resurrezione",
+    "description": "Resuscita un alleato caduto con una frazione\\ndei suoi HP ripristinata.",
+    "message1": "%1 esegue una preghiera di resurrezione!",
+    "message2": ""
+  },
+  "741": {
+    "name": "Sacro Cerchio",
+    "description": "Crea un cerchio di luce sacra che danneggia\\ntutti i nemici col potere divino.",
+    "message1": "%1 crea un cerchio di luce sacra!",
+    "message2": ""
+  },
+  "742": {
+    "name": "Divin Martello",
+    "description": "Fa calare un martello divino di luce che\\ncolpisce un singolo nemico con forza immensa.",
+    "message1": "%1 evoca un martello divino!",
+    "message2": ""
+  },
+  "743": {
+    "name": "Sacri Pilastri",
+    "description": "Crea pilastri di fuoco sacro che erompono dal\\nterreno sotto più nemici.",
+    "message1": "%1 evoca colonne di fuoco sacro!",
+    "message2": ""
+  },
+  "744": {
+    "name": "Egida Divina",
+    "description": "Crea uno scudo divino attorno a tutti gli alleati\\nche riduce i danni subiti.",
+    "message1": "%1 crea uno scudo divino!",
+    "message2": ""
+  },
+  "745": {
+    "name": "Cura Miracolosa",
+    "description": "Incanala un'energia curativa miracolosa che\\nripristina completamente gli HP di un alleato.",
+    "message1": "%1 esegue una guarigione miracolosa!",
+    "message2": ""
+  },
+  "746": {
+    "name": "Divina Resurrezione",
+    "description": "Benedici un alleato caduto con l'energia divina,\\nresuscitandolo con tutti gli HP.",
+    "message1": "%1 esegue una resurrezione divina!",
+    "message2": ""
+  },
+  "747": {
+    "name": "Guarigione di massa",
+    "description": "Prega per un'energia curativa miracolosa che\\nripristini HP a tutti gli alleati.",
+    "message1": "%1 prega per la guarigione di massa!",
+    "message2": ""
+  },
+  "748": {
+    "name": "Globo Divino",
+    "description": "Incanala l'ira divina in una sfera di energia sacra\\nche esplode al contatto con un nemico.",
+    "message1": "%1 crea un globo di ira divina!",
+    "message2": ""
+  },
+  "749": {
+    "name": "Rige Benedizione",
+    "description": "Lancia una benedizione divina su un alleato che ripristina\\nuna piccola quantità di HP a ogni turno.",
+    "message1": "%1 lancia benedizione rigenerativa!",
+    "message2": ""
+  },
+  "750": {
+    "name": "Giudizio Angelico",
+    "description": "Evoca un angelo del giudizio che infligge\\nla punizione divina a tutti i nemici.",
+    "message1": "%1 evoca un angelo del giudizio!",
+    "message2": ""
+  },
+  "751": {
+    "name": "Divino Annichilimento",
+    "description": "Incanala il potere divino supremo che annienta\\nil male con una luce sacra travolgente.",
+    "message1": "%1 scatena l'annientamento divino!",
+    "message2": ""
+  },
+  "752": {
+    "name": "Divina Intuizione",
+    "description": "Prega per l'intuizione divina, aumentando\\nleggermente l'INT e il recupero di MP.",
+    "message1": "%1 prega per la visione divina!",
+    "message2": ""
+  },
+  "753": {
+    "name": "Resilienza Divina",
+    "description": "Prega per la resilienza divina, aumentando\\nleggermente la SAG e il recupero di HP.",
+    "message1": "%1 prega per la resilienza divina!",
+    "message2": ""
+  },
+  "754": {
+    "name": "Meditazione scritturale",
+    "description": "Medita sulle sacre scritture, ripristinando\\nuna quantità moderata di MP.",
+    "message1": "%1 medita sulle sacre scritture!",
+    "message2": ""
+  },
+  "755": {
+    "name": "Sacro Canto",
+    "description": "Recita un canto sacro che accresce il tuo\\nlegame spirituale.",
+    "message1": "%1 recita un canto sacro!",
+    "message2": ""
+  },
+  "756": {
+    "name": "Voto Sacro",
+    "description": "Pronuncia un voto sacro che crea\\nuno scudo divino davanti a te.",
+    "message1": "%1 fa un voto sacro!",
+    "message2": ""
+  },
+  "757": {
+    "name": "Allenamento Spirituale",
+    "description": "Affronta un allenamento spirituale che migliora\\nnotevolmente SAG e INT.",
+    "message1": "%1 segue un percorso di formazione spirituale!",
+    "message2": ""
+  },
+  "758": {
+    "name": "Comunione Divina",
+    "description": "Entra in uno stato di comunione divina, potenziando\\nnotevolmente le tue capacità magiche.",
+    "message1": "%1 entra nella comunione divina!",
+    "message2": ""
+  },
+  "759": {
+    "name": "Lame Malizia",
+    "description": "Invoca i poteri oscuri per lacerare la carne del\\nbersaglio con lame invisibili di malvagità.",
+    "message1": "%1 evoca lame di malizia!",
+    "message2": ""
+  },
+  "760": {
+    "name": "Emo Corruzione",
+    "description": "Infonde nel sangue del bersaglio un agente corruttore\\nche ne rode la carne dall'interno.",
+    "message1": "%1 esegue un rituale di corruzione del sangue!",
+    "message2": ""
+  },
+  "761": {
+    "name": "Anima Rituale",
+    "description": "Invoca un vincolo oscuro che prosciuga la forza vitale\\ndel bersaglio potenziando chi lancia l'incantesimo.",
+    "message1": "%1 esegue un rituale che prosciuga l'anima!",
+    "message2": ""
+  },
+  "762": {
+    "name": "Branc Ombra",
+    "description": "Evoca un branco di segugi d'ombra che dilaniano\\nla carne di tutti i nemici con zanne infernali.",
+    "message1": "%1 evoca i segugi ombra!",
+    "message2": ""
+  },
+  "763": {
+    "name": "Vorti Corrotto",
+    "description": "Crea un vortice di energia corruttrice che\\ndecompone gradualmente il corpo e la mente del bersaglio.",
+    "message1": "%1 crea un vortice di corruzione!",
+    "message2": ""
+  },
+  "764": {
+    "name": "Marchio Dannato",
+    "description": "Imprime un marchio di dannazione sul bersaglio che\\nne fa ribollire e sciogliere la pelle.",
+    "message1": "%1 pone il marchio della dannazione!",
+    "message2": ""
+  },
+  "765": {
+    "name": "Teschio Urlannte",
+    "description": "Evoca teschi urlanti che volteggiano attorno a tutti\\ni nemici, causando terrore e danni spirituali.",
+    "message1": "%1 evoca teschi urlanti!",
+    "message2": ""
+  },
+  "766": {
+    "name": "Assorbi Vita",
+    "description": "Prosciuga l'energia vitale dal bersaglio e la\\nusa per ripristinare la vitalità di chi lancia l'incantesimo.",
+    "message1": "%1 esegue un rituale di drenaggio della vita!",
+    "message2": ""
+  },
+  "767": {
+    "name": "Mana Vampirismo",
+    "description": "Attinge energia magica dal bersaglio,\\nripristinando gli MP di chi lancia l'incantesimo.",
+    "message1": "%1 drena l'essenza magica!",
+    "message2": ""
+  },
+  "768": {
+    "name": "Emo Sacrificio",
+    "description": "Invoca un rituale proibito che sacrifica una parte\\ndei tuoi HP per scatenare un devastante potere oscuro.",
+    "message1": "%1 esegue un rituale di sacrificio di sangue!",
+    "message2": ""
+  },
+  "769": {
+    "name": "Piaga Velenosa",
+    "description": "Scatena una piaga di locuste dal morso velenoso\\nche sciamano e attaccano tutti i nemici.",
+    "message1": "%1 scatena un'invasione di locuste!",
+    "message2": ""
+  },
+  "770": {
+    "name": "Tentacoli Abissali",
+    "description": "Apre un portale sull'abisso che libera\\ntentacoli contorti per schiacciare un singolo nemico.",
+    "message1": "%1 apre un portale per l'abisso!",
+    "message2": ""
+  },
+  "771": {
+    "name": "Emo Barriera",
+    "description": "Sacrifica il sangue per creare una barriera protettiva che\\nriduce i danni e ne riflette una parte sugli aggressori.",
+    "message1": "%1 crea una barriera di sangue!",
+    "message2": ""
+  },
+  "772": {
+    "name": "Rituale Oscuro",
+    "description": "Stringe un patto con entità oscure che potenzia\\nla tua DEX e la tua potenza d'attacco.",
+    "message1": "%1 stringe un patto oscuro!",
+    "message2": ""
+  },
+  "773": {
+    "name": "Trasferisci Maledizione",
+    "description": "Trasferisce maledizioni e alterazioni di stato da te\\na un nemico, rubandogli al contempo gli effetti positivi.",
+    "message1": "%1 esegue un rituale di trasferimento della\r\nmaledizione!",
+    "message2": ""
+  },
+  "774": {
+    "name": "Ruba Cerchio",
+    "description": "Crea un cerchio di simboli arcani che\\nruba le abilità dei nemici.",
+    "message1": "%1 crea un cerchio di simboli arcani!",
+    "message2": ""
+  },
+  "775": {
+    "name": "Resurrezione Proibita",
+    "description": "Sacrifica HP per resuscitare un alleato caduto\\ncon una parte dei suoi HP e MP.",
+    "message1": "%1 esegue una resurrezione proibita!",
+    "message2": ""
+  },
+  "776": {
+    "name": "Blu Tempesta",
+    "description": "Crea una tempesta di lame che bloccano \\ngli incantesimi e recidono con precisione empia.",
+    "message1": "%1 evoca una tempesta di lame cremisi!",
+    "message2": ""
+  },
+  "777": {
+    "name": "Demoni Catastrofe",
+    "description": "Invoca il nome di un'antica entità demoniaca\\nper scatenare una distruzione catastrofica su tutti i nemici.",
+    "message1": "%1 invoca un antico nome demoniaco!",
+    "message2": ""
+  },
+  "778": {
+    "name": "Oscuro Potere",
+    "description": "Attinge potere da entità oscure per potenziare\\nla tua DEX e la tua precisione.",
+    "message1": "%1 trae energia dall'oscurità!",
+    "message2": ""
+  },
+  "779": {
+    "name": "Concentrazione Maligna",
+    "description": "Concentra la mente su intenzioni malvagie,\\naumentando il tuo tasso di colpo critico.",
+    "message1": "%1 si concentra sulle cattive intenzioni!",
+    "message2": ""
+  },
+  "780": {
+    "name": "Sacrificio Minore",
+    "description": "Ti tagli il palmo per attingere potere dal tuo stesso sangue,\\nripristinando TP ma sacrificando alcuni HP.",
+    "message1": "%1 esegue un piccolo sacrificio di sangue!",
+    "message2": ""
+  },
+  "781": {
+    "name": "Oscuro Incanalare",
+    "description": "Incanala energia oscura nei tuoi arti,\\naumentando FRZ e PSI.",
+    "message1": "%1 canalizza l'energia oscura!",
+    "message2": ""
+  },
+  "782": {
+    "name": "Trance Oscura",
+    "description": "Entra in uno stato di trance che ti permette di\\nmuoverti con rapidità sovrannaturale.",
+    "message1": "%1 entra in uno stato di trance oscura!",
+    "message2": ""
+  },
+  "783": {
+    "name": "Gran Sacrificio",
+    "description": "Compi un sacrificio di sangue significativo che potenzia\\nnotevolmente tutte le capacità fisiche ma prosciuga HP.",
+    "message1": "%1 compie un sacrificio di sangue significativo!",
+    "message2": ""
+  },
+  "784": {
+    "name": "Patt Ombroso",
+    "description": "Stringi un patto con le ombre che migliora notevolmente\\nle capacità di furtività e la PSI.",
+    "message1": "%1 stringe un patto con le ombre!",
+    "message2": ""
+  },
+  "785": {
+    "name": "Metamorfosi Profana",
+    "description": "Subisci una trasformazione\\nempia.",
+    "message1": "%1 subisce una trasformazione empia!",
+    "message2": ""
+  },
+  "786": {
+    "name": "Ordine esecutivo",
+    "description": "Sovraccarica i circuiti mentali dell'avversario\\ncon un urlo autoritario.",
+    "message1": "%1 grida con comando!",
+    "message2": ""
+  },
+  "787": {
+    "name": "Dominio del mercato",
+    "description": "Scatena la pressione psichica aziendale\\nsu tutti gli avversari.",
+    "message1": "%1 esercita un dominio psichico!",
+    "message2": ""
+  },
+  "788": {
+    "name": "Ondata sinergica",
+    "description": "Solleva il morale e la produttività del team,\\naumentando INT e SAG.",
+    "message1": "%1 fa un discorso di incoraggiamento aziendale!",
+    "message2": ""
+  },
+  "789": {
+    "name": "Esplosione trimestrale PSI",
+    "description": "Spara un getto concentrato di energia\\npsicocinetica su un singolo bersaglio.",
+    "message1": "%1 concentra un flusso psichico!",
+    "message2": ""
+  },
+  "790": {
+    "name": "PSI Dissonanza Cognitiva",
+    "description": "Annebbia la mente di un nemico,\\ncausando confusione.",
+    "message1": "%1 interrompe i pensieri di %2",
+    "message2": ""
+  },
+  "791": {
+    "name": "Protocollo semplificato",
+    "description": "Ottimizza tutti i processi,\\naumentando DEX e PSI del gruppo.",
+    "message1": "%1 ottimizza i flussi di lavoro del team!",
+    "message2": ""
+  },
+  "792": {
+    "name": "Matrice di delegazione",
+    "description": "Assegna ruoli e obiettivi chiari,\\naumentando DEF e MDF di tutti gli alleati.",
+    "message1": "%1 avvia la delegaziome delle attività!",
+    "message2": ""
+  },
+  "793": {
+    "name": "Pausa caffè",
+    "description": "Ripristina 5 TP all'utilizzatore\\ne concede un aumento temporaneo di velocità.",
+    "message1": "%1 beve un espresso per la produttività!",
+    "message2": ""
+  },
+  "794": {
+    "name": "Aumento di efficienza",
+    "description": "Accelera la mente di un singolo alleato,\\nconcedendogli un'azione extra in questo turno.",
+    "message1": "%1 aumenta la produttività al massimo!",
+    "message2": ""
+  },
+  "795": {
+    "name": "Raggio di terminazione",
+    "description": "Punisce l'inefficienza con uno shock mentale\\nche infligge danni e abbassa il MAT del bersaglio.",
+    "message1": "%1 licenzia qualcuno psichicamente!",
+    "message2": ""
+  },
+  "796": {
+    "name": "Bis",
+    "description": "Suona una melodia energizzante\\nche ripristina 10 TP a tutti gli alleati.",
+    "message1": "%1 suona una melodia trascinante!",
+    "message2": ""
+  },
+  "797": {
+    "name": "Presenza scenica",
+    "description": "Un'esibizione ipnotica che\\nha la possibilità di ammaliare tutti i nemici.",
+    "message1": "%1 incanta il pubblico!",
+    "message2": ""
+  },
+  "798": {
+    "name": "Assolo",
+    "description": "Un assolo improvvisato aumenta\\nl'ATK e il MAT dell'utilizzatore per 3 turni.",
+    "message1": "%1 esegue un assolo strepitoso!",
+    "message2": ""
+  },
+  "799": {
+    "name": "Notturno",
+    "description": "Una melodia inquietante che può\\nfar addormentare tutti i nemici.",
+    "message1": "%1 canticchia una ninna nanna...",
+    "message2": ""
+  },
+  "800": {
+    "name": "Esplosione di feedback",
+    "description": "Genera un muro di suono\\nche danneggia e assorda un singolo nemico.",
+    "message1": "%1 scatena il feedback sonoro!",
+    "message2": ""
+  },
+  "801": {
+    "name": "Cannone ad acqua",
+    "description": "Investe i nemici con acqua ad alta pressione,\\ncausando danni di tipo acqua a tutti gli avversari.",
+    "message1": "%1 attiva il cannone ad acqua!",
+    "message2": ""
+  },
+  "802": {
+    "name": "Spray soppressivo",
+    "description": "Investe un singolo nemico con un impatto\\nd'acqua. Ne abbassa leggermente la FRZ.",
+    "message1": "%1 spruzza la schiuma sul bersaglio!",
+    "message2": ""
+  },
+  "803": {
+    "name": "Trattamento delle ustioni",
+    "description": "Applica una pomata per ustioni a tutti gli alleati,\\nripristinando moderatamente gli HP.",
+    "message1": "%1 distribuisce materiale di primo soccorso!",
+    "message2": ""
+  },
+  "804": {
+    "name": "Ascia di salvataggio",
+    "description": "Rimuove i detriti di mezzo,\\nliberando gli alleati da stordimento e paralisi.",
+    "message1": "%1 libera il percorso!",
+    "message2": ""
+  },
+  "805": {
+    "name": "Uscita di emergenza",
+    "description": "Forza l'apertura delle uscite bloccate,\\npermettendo a tutti gli alleati di fuggire dalla battaglia.",
+    "message1": "%1 forza un'evacuazione di emergenza!",
+    "message2": ""
+  },
+  "806": {
+    "name": "Protocollo di alluvione",
+    "description": "Evoca un diluvio per spegnere gli incendi\\ne colpire tutti i nemici di tipo Fuoco.",
+    "message1": "%1 scatena il diluvio!",
+    "message2": ""
+  },
+  "807": {
+    "name": "Schiuma party",
+    "description": "Un rapido getto di schiuma riduce i danni\\nda fuoco subiti per 3 turni.",
+    "message1": "%1 ricopre %2 di schiuma!",
+    "message2": ""
+  },
+  "808": {
+    "name": "Trattamento sul campo",
+    "description": "Presta un rapido primo soccorso,\\ncurando un singolo alleato e le sue ustioni.",
+    "message1": "%1 somministra gli aiuti!",
+    "message2": ""
+  },
+  "809": {
+    "name": "Ventilazione",
+    "description": "Dirada fumo e detriti,\\naumentando precisione e PSI degli alleati.",
+    "message1": "%1 schiarisce la vista!",
+    "message2": ""
+  },
+  "810": {
+    "name": "Carica rompifuoco",
+    "description": "Carica attraverso le fiamme con l'equipaggiamento protettivo,\\ndanneggiando e stordendo un nemico.",
+    "message1": "%1 si fa strada tra le fiamme!",
+    "message2": ""
+  },
+  "811": {
+    "name": "Colpo di manganello",
+    "description": "Colpisce con un manganello, con la\\npossibilità di stordire il bersaglio.",
+    "message1": "%1 colpisce con fermezza!",
+    "message2": ""
+  },
+  "812": {
+    "name": "Fermo!",
+    "description": "Ordina a un bersaglio di non muoversi,\\ninfliggendo silenzio.",
+    "message1": "%1 grida: Fermo!",
+    "message2": ""
+  },
+  "813": {
+    "name": "Manette PSIchiche",
+    "description": "Immobilizza un avversario con manette psichiche,\\ninfliggendo il blocco.",
+    "message1": "%1 tenta un arresto psichico!",
+    "message2": ""
+  },
+  "814": {
+    "name": "Nebbia tattica",
+    "description": "Rilascia un gas non letale di contenimento\\nche causa confusione.",
+    "message1": "%1 utilizza gas di soppressione!",
+    "message2": ""
+  },
+  "815": {
+    "name": "Proiettile di gomma",
+    "description": "Spara un colpo stordente che infligge danni\\ne può paralizzare il bersaglio.",
+    "message1": "%1 spara un colpo stordente!",
+    "message2": ""
+  },
+  "816": {
+    "name": "Urlo autoritario",
+    "description": "Grida con autorità, abbassando\\nla FRZ e la SAG di tutti i nemici.",
+    "message1": "%1 comanda: Disperdetevi ora!",
+    "message2": ""
+  },
+  "817": {
+    "name": "Carica Antisommossa",
+    "description": "Carica con uno scudo antisommossa,\\ndanneggiando e respingendo l'avversario.",
+    "message1": "%1 attacca con lo scudo!",
+    "message2": ""
+  },
+  "818": {
+    "name": "De-escalamento",
+    "description": "Assorbe l'aggressività nemica,\\nripristinando alcuni TP all'utilizzatore.",
+    "message1": "%1 disinnesca l'incontro!",
+    "message2": ""
+  },
+  "819": {
+    "name": "Granata stordente",
+    "description": "Usa una granata accecante per abbassare la\\nprecisione di tutti i nemici.",
+    "message1": "%1 lancia una granata stordente!",
+    "message2": ""
+  },
+  "820": {
+    "name": "Riorganizzazione tattica",
+    "description": "Recupera rapidamente postura e compostezza,\\nrimuovendo confusione o paura.",
+    "message1": "%1 si riorganizza velocemente!",
+    "message2": ""
+  },
+  "821": {
+    "name": "FrustaDiLiane",
+    "description": "Colpisce un singolo nemico con tralci sferzanti.",
+    "message1": "%1 colpisce con le sue ciglia %2",
+    "message2": ""
+  },
+  "822": {
+    "name": "RadiciAvviluppanti",
+    "description": "Immobilizza il nemico con radici aggrovigliate.",
+    "message1": "%1 intrappola %2 nelle radici!",
+    "message2": ""
+  },
+  "823": {
+    "name": "NubeDiSpore",
+    "description": "Rilascia una nube di spore tossiche\\nche avvelena tutti i nemici.",
+    "message1": "%1 rilascia una nube di spore!",
+    "message2": ""
+  },
+  "824": {
+    "name": "ArmaturaDiSpine",
+    "description": "Si avvolge in un'armatura di spine\\nche danneggia gli aggressori.",
+    "message1": "%1 si circonda di spine!",
+    "message2": ""
+  },
+  "825": {
+    "name": "SemeVampiro",
+    "description": "Con il passare del tempo sottrae HP al nemico.",
+    "message1": "%1 inietta un seme di sanguisuga!",
+    "message2": ""
+  },
+  "826": {
+    "name": "Ricrescita",
+    "description": "Rigenera gli HP dell'utente.",
+    "message1": "%1 trae la vita dalla terra!",
+    "message2": ""
+  },
+  "827": {
+    "name": "TempestaDiFoglie",
+    "description": "Solleva una fiera tempesta di foglie\\nche colpisce ogni nemico.",
+    "message1": "%1 scatena una tempesta di foglie!",
+    "message2": ""
+  },
+  "828": {
+    "name": "GranataDiSemi",
+    "description": "Scaglia un seme indurito contro un nemico.",
+    "message1": "%1 lancia una bomba di semi a %2",
+    "message2": ""
+  },
+  "829": {
+    "name": "EvocazioneArborea",
+    "description": "Evoca un piccolo treant che combatte\\nal tuo fianco.",
+    "message1": "%1 evoca un alleato treant!",
+    "message2": ""
+  },
+  "830": {
+    "name": "Fotosintesi",
+    "description": "Incanala la luce solare per ripristinare i propri HP.",
+    "message1": "%1 assorbe la luce solare!",
+    "message2": ""
+  },
+  "831": {
+    "name": "Pelle di corteccia",
+    "description": "Indurisce la corteccia, aumentando la difesa.",
+    "message1": "%1 indurisce la sua corteccia!",
+    "message2": ""
+  },
+  "832": {
+    "name": "DiffusioneDiSemi",
+    "description": "Bombarda tutti i nemici con semi esplosivi.",
+    "message1": "%1 sparge semi esplosivi!",
+    "message2": ""
+  },
+  "833": {
+    "name": "SporePutrescenti",
+    "description": "Crea una nuvola che avvelena tutti i nemici.",
+    "message1": "%1 evoca marciume velenoso!",
+    "message2": ""
+  },
+  "834": {
+    "name": "OndataDiLiane",
+    "description": "I rampicanti rapidi colpiscono nemici casuali più volte.",
+    "message1": "Le viti si scagliano contro bersagli casuali!",
+    "message2": ""
+  },
+  "835": {
+    "name": "AbbraccioDellaForesta",
+    "description": "Cura tutti gli alleati con l'energia della foresta.",
+    "message1": "L'abbraccio della foresta ripristina gli HP!",
+    "message2": ""
+  },
+  "836": {
+    "name": "Parla",
+    "description": "Attacco di base",
+    "message1": "%1 parla al nemico!",
+    "message2": ""
+  },
+  "837": {
+    "name": "Sputo",
+    "description": "Attacco di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "838": {
+    "name": "Spinta",
+    "description": "Attacco di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "839": {
+    "name": "Esamina",
+    "description": "Esamina il nemico.",
+    "message1": "%1 esamina il nemico!",
+    "message2": ""
+  },
+  "840": {
+    "name": "Attacco DEX",
+    "description": "Attacco dex di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "841": {
+    "name": "Attacco MIX",
+    "description": "Attacco frz dex di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "842": {
+    "name": "Attacco PSI",
+    "description": "Attacco PSI di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "843": {
+    "name": "Attacco INT",
+    "description": "Attacco INT di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "844": {
+    "name": "Attacco COS",
+    "description": "Attacco COS di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "845": {
+    "name": "Attacco SAG",
+    "description": "Attacco SAG di base",
+    "message1": "%1 attacca",
+    "message2": ""
+  },
+  "846": {
+    "name": "Schivata",
+    "description": "Guardia di base",
+    "message1": "%1 si difende.",
+    "message2": ""
+  },
+  "847": {
+    "name": "Assistenza",
+    "description": "Usa un'abilità di un altro membro del gruppo, a\\ncosto ridotto se primaria o secondaria.",
+    "message1": "",
+    "message2": ""
+  },
+  "848": {
+    "name": "Vola",
+    "description": "Usa ali o levitazione per volare sulla mappa del mondo.",
+    "message1": "",
+    "message2": ""
+  },
+  "849": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "850": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "851": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "852": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  },
+  "853": {
+    "name": "",
+    "description": "",
+    "message1": "",
+    "message2": ""
+  }
+}

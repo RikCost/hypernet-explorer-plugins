@@ -1,0 +1,61 @@
+{
+  "action": {
+    "harvest": "Raccogli il miele",
+    "simulate": "Simula un giorno",
+    "exit": "Esci"
+  },
+  "caste": {
+    "eggs": "Uova",
+    "larvae": "Larve",
+    "pupae": "Pupe",
+    "workers": "Operaie",
+    "nurses": "Nutrici",
+    "guards": "Guardiane",
+    "foragers": "Bottinatrici",
+    "builders": "Costruttrici",
+    "scouts": "Esploratrici",
+    "drones": "Fuchi"
+  },
+  "resource": {
+    "honey": "Miele",
+    "pollen": "Polline",
+    "royalJelly": "Pappa reale",
+    "wax": "Cera",
+    "propolis": "Propoli",
+    "water": "Acqua"
+  },
+  "queenHealth": "Salute",
+  "eggsLaid": "Uova deposte",
+  "noQueen": "Nessuna regina presente!",
+  "threats": "Minacce: {list}",
+  "secure": "Colonia al sicuro",
+  "harvested": "Raccolti {amount} di miele.",
+  "notEnoughHoney": "Non c'è ancora abbastanza miele da raccogliere.",
+  "simulatedDay": "Simulate 24 ore di attività della colonia.",
+  "simulatedHours": "Simulate {hours} ore",
+  "honeyProduced": "Miele prodotto: {amount}",
+  "currentPopulation": "Popolazione attuale: {total}",
+  "ui": {
+    "back": "Indietro",
+    "apiary": "Apiario",
+    "colony": "Colonia",
+    "state": "Stato",
+    "mood": "Umore",
+    "efficiency": "Efficienza",
+    "queen": "Regina",
+    "environment": "Ambiente",
+    "season": "Stagione",
+    "weather": "Meteo",
+    "temp": "Temp",
+    "flowers": "Fiori",
+    "population": "Popolazione",
+    "total": "Totale",
+    "resources": "Risorse",
+    "statistics": "Statistiche",
+    "births": "Nascite",
+    "deaths": "Morti",
+    "honeyProduced": "Miele prodotto",
+    "enemiesRepelled": "Nemici respinti",
+    "swarms": "Sciamature"
+  }
+}

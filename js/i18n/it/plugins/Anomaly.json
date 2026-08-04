@@ -1,0 +1,3212 @@
+{
+  "ui": {
+    "investigate": "Indaga",
+    "resume": "Riprendi l'indagine",
+    "close": "Chiudi il registro",
+    "investigateHint": "Manda la squadra giù verso ciò che sta trasmettendo",
+    "where": "{planet} - {system}",
+    "signalRow": "Segnale",
+    "signalUnread": "anomalo, non risolto",
+    "signalLost": "Il segnale si sfalda prima che se ne possa ricavare qualcosa."
+  },
+  "reward": {
+    "artifact": "Recuperato: {name}.",
+    "gear": "Recuperato: {name}.",
+    "materials": "A bordo: {list}.",
+    "gold": "Rivenduto: {amount} EUR.",
+    "schrodingerite": "Schrodingerite: {units} unità.",
+    "exp": "Esperienza: {exp}.",
+    "harm": "La squadra torna con il {pct}% in meno.",
+    "heal": "Tornano tutti interi. Nessuno sa dire perché.",
+    "battle": "Non ha nessuna intenzione di lasciar andare qualcuno."
+  },
+  "relic": {
+    "nameTemplate": "{noun} {prefix} di {of}",
+    "description": "Prelevato da {planet}. Nessun archivio lo spiega.",
+    "prefix": [
+      "Sigillato",
+      "Lacrimante",
+      "Paziente",
+      "Spento",
+      "Ripiegato",
+      "Ricorsivo",
+      "Preso in prestito",
+      "Incompiuto",
+      "In ascolto",
+      "Cavo",
+      "In lutto",
+      "Obbediente"
+    ],
+    "noun": [
+      "Reliquiario",
+      "Lente",
+      "Fuso",
+      "Codice",
+      "Ancora",
+      "Coro",
+      "Chiave",
+      "Registro",
+      "Seme",
+      "Maschera",
+      "Bussola",
+      "Campana"
+    ]
+  },
+  "tokens": {
+    "instrument": [
+      "il drone da ricognizione",
+      "lo scanner portatile",
+      "il kit di campionamento",
+      "la telemetria della tuta"
+    ],
+    "maker": [
+      "chi l'ha costruito",
+      "quelli che se ne sono andati",
+      "gli inquilini precedenti",
+      "qualcosa con delle mani"
+    ],
+    "wrongness": [
+      "le letture vanno all'indietro per un secondo",
+      "gli orologi non concordano di quattro minuti",
+      "a tutti si tappano le orecchie insieme",
+      "le ombre cadono dalla parte sbagliata"
+    ],
+    "tone": [
+      "un tono basso, appena sotto l'udibile",
+      "uno schema che si ripete ogni nove secondi",
+      "una voce filtrata da troppa roccia",
+      "un conteggio, in una base che nessuno usa"
+    ]
+  },
+  "biomes": {
+    "AlienAcidOcean": {
+      "label": "mondo dall'oceano acido",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la riva corrosa",
+          "le secche gialle",
+          "il campo di fumarole"
+        ],
+        "ground": [
+          "pietra rosa fino a farsi merletto",
+          "schiuma cristallina lungo la battigia",
+          "una spiaggia di gusci disciolti"
+        ],
+        "hazard": [
+          "il vapore che sale dall'acqua",
+          "una guarnizione che cede sotto il braccio",
+          "spruzzi che bucherellano la visiera"
+        ],
+        "remnant": [
+          "uno scafo senza più vernice",
+          "una scala arrugginita fino a farsi merletto",
+          "una cassa che ha resistito più del suo padrone"
+        ],
+        "sound": [
+          "un frizzare costante",
+          "bolle che salgono a tre a tre",
+          "il sibilo dei filtri della tuta"
+        ]
+      }
+    },
+    "AlienCTypeAsteroid": {
+      "label": "asteroide carbonaceo",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia scura",
+          "la conca di regolite",
+          "la spaccatura"
+        ],
+        "ground": [
+          "polvere di carbonio che divora la luce",
+          "argilla più vecchia della stella",
+          "suolo che si attacca ai guanti"
+        ],
+        "hazard": [
+          "polvere in ogni guarnizione",
+          "una superficie senza punti di riferimento",
+          "carica che si accumula sulla regolite"
+        ],
+        "remnant": [
+          "una provetta lasciata in piedi",
+          "un portello a filo del suolo",
+          "graffi con lo schema di una mano"
+        ],
+        "sound": [
+          "polvere sulla visiera, senza fine",
+          "il rumore della tuta, e nient'altro",
+          "un raschio da sotto la regolite"
+        ]
+      }
+    },
+    "AlienCarbon": {
+      "label": "mondo di carbonio",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la terrazza di grafite",
+          "il mare di catrame",
+          "la piana di fuliggine"
+        ],
+        "ground": [
+          "grafite che trattiene l'impronta",
+          "fuliggine su roccia nera e dura",
+          "catrame che ricorda uno stivale"
+        ],
+        "hazard": [
+          "polvere che entra ovunque",
+          "una crosta sopra il catrame",
+          "un cielo che non restituisce luce"
+        ],
+        "remnant": [
+          "una mano premuta nel catrame",
+          "un pilastro nero fuori dalla piana",
+          "una torre di trivellazione sprofondata al ponte"
+        ],
+        "sound": [
+          "passi e nessuna eco",
+          "catrame che si muove lentissimo",
+          "un solo colpo, a cui si risponde"
+        ]
+      }
+    },
+    "AlienCentaur": {
+      "label": "centauro",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia rivolta al sole",
+          "il campo di sfiati",
+          "il lato in ombra"
+        ],
+        "ground": [
+          "ghiaccio sporco",
+          "una crosta di catrame e brina",
+          "ghiaia trattenuta da quasi niente"
+        ],
+        "hazard": [
+          "uno sfiato che si apre sotto gli stivali",
+          "un'orbita che nessuno ha risolto",
+          "il corpo che si sfalda scaldandosi"
+        ],
+        "remnant": [
+          "un'ancora a rampone piantata nel ghiaccio",
+          "un cavo che corre oltre l'orizzonte",
+          "un rifugio scavato nel lato in ombra"
+        ],
+        "sound": [
+          "gli sfiati, che sibilano a orario",
+          "ghiaccio che si muove sotto la crosta",
+          "una portante senza messaggio"
+        ]
+      }
+    },
+    "AlienChthonian": {
+      "label": "nucleo spogliato",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia nuda del nucleo",
+          "la scarpata spogliata",
+          "la piana metallica"
+        ],
+        "ground": [
+          "l'interno di un pianeta, all'aperto",
+          "metallo con una venatura",
+          "roccia che non doveva essere vista"
+        ],
+        "hazard": [
+          "un campo magnetico che strappa gli attrezzi di mano",
+          "la stella, vicina e non filtrata",
+          "suolo che si raffredda ancora dopo un'era"
+        ],
+        "remnant": [
+          "un pozzo antecedente allo spoglio",
+          "una porta blindata rimasta in piedi",
+          "una macchina cresciuta dentro il metallo"
+        ],
+        "sound": [
+          "metallo che conduce un suono da lontano",
+          "un ronzio che sta nel suolo, non nell'aria",
+          "il tuo battito, amplificato"
+        ]
+      }
+    },
+    "AlienColdJupiter": {
+      "label": "gigante freddo",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "lo strato di neve d'ammoniaca",
+          "la fascia scura",
+          "il vortice polare"
+        ],
+        "ground": [
+          "neve che cade verso l'alto nella corrente",
+          "nubi color avorio vecchio",
+          "un buio che inghiotte le lampade"
+        ],
+        "hazard": [
+          "freddo che irrigidisce le guarnizioni",
+          "il vortice che tira verso il polo",
+          "una notte lunga undici ore"
+        ],
+        "remnant": [
+          "una sonda congelata a metà trasmissione",
+          "una lampada ancora accesa su un ripetitore morto",
+          "un portello lasciato aperto"
+        ],
+        "sound": [
+          "neve sullo scafo, molto piano",
+          "una nota lunga dal polo",
+          "il microfono che non trova proprio niente"
+        ]
+      }
+    },
+    "AlienComet": {
+      "label": "cometa",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "lo sfiato attivo",
+          "il collo",
+          "la radice della coda"
+        ],
+        "ground": [
+          "ghiaccio che passa dritto a vapore",
+          "crosta nera su ghiaccio bianco",
+          "una superficie che se ne va mentre ci stai sopra"
+        ],
+        "hazard": [
+          "un getto che porterebbe via una persona",
+          "il suolo che sublima sotto i piedi",
+          "un nucleo prossimo a spaccarsi"
+        ],
+        "remnant": [
+          "una cima d'arpione allentata",
+          "un lander incastrato nel collo",
+          "uno strumento che registra ancora"
+        ],
+        "sound": [
+          "gli sfiati che cedono, uno alla volta",
+          "ghiaccio che si lacera sopra il collo",
+          "un sospiro attraverso la coda"
+        ]
+      }
+    },
+    "AlienDesert": {
+      "label": "mondo desertico",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il mare di dune",
+          "il canalone asciutto",
+          "la mesa scolpita dal vento"
+        ],
+        "ground": [
+          "sabbia con dentro del vetro",
+          "una crosta che si spezza come biscotto",
+          "pietra levigata da un milione di anni di vento"
+        ],
+        "hazard": [
+          "una tempesta all'orizzonte che si avvicina",
+          "acqua che finisce prima del previsto",
+          "la duna che si sposta nella notte"
+        ],
+        "remnant": [
+          "un longherone di metallo che spunta dalla sabbia",
+          "un pozzo con un coperchio",
+          "una strada che sparisce sotto le dune"
+        ],
+        "sound": [
+          "sabbia che sibila sulla visiera",
+          "le dune che rimbombano scivolando",
+          "vento con dentro una nota"
+        ]
+      }
+    },
+    "AlienDiamond": {
+      "label": "mondo di diamante",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la scarpata di diamante",
+          "il pozzo di luce",
+          "la piana trasparente"
+        ],
+        "ground": [
+          "cristallo in cui si vede per quaranta metri",
+          "faccette grandi come una casa",
+          "un suolo che disperde ogni lampada"
+        ],
+        "hazard": [
+          "spigoli che aprono una tuta al tocco",
+          "luce che arriva da sei direzioni",
+          "il tuo riflesso, fuori tempo"
+        ],
+        "remnant": [
+          "una forma incisa nel cristallo, dall'interno",
+          "un corpo trattenuto nella roccia trasparente",
+          "una lente molata da una mano"
+        ],
+        "sound": [
+          "un rintocco ogni volta che qualcosa tocca",
+          "il cristallo che porta le voci di traverso",
+          "una nota che non si ferma"
+        ]
+      }
+    },
+    "AlienDwarf": {
+      "label": "pianeta nano",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la macchia luminosa",
+          "il fondo del cratere",
+          "la dorsale di ghiaccio"
+        ],
+        "ground": [
+          "crosta di sale sul ghiaccio",
+          "polvere che resta sospesa dove la sollevi",
+          "ghiaccio con qualcosa di scuro sotto"
+        ],
+        "hazard": [
+          "gravità troppo lieve per fidarsi di un passo",
+          "un orizzonte a duecento metri",
+          "la crosta che sfiata quando si scalda"
+        ],
+        "remnant": [
+          "un lander con le zampe ripiegate",
+          "un foro di sonda ancora tappato",
+          "una bandiera senza nazione"
+        ],
+        "sound": [
+          "niente, e le pompe della tuta",
+          "ghiaccio che si crepa al calore delle lampade",
+          "un clic ogni dodici secondi"
+        ]
+      }
+    },
+    "AlienEarthLike": {
+      "label": "mondo simile alla Terra",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la valle terrazzata",
+          "il limite del bosco",
+          "la baia poco profonda"
+        ],
+        "ground": [
+          "un manto che è quasi erba",
+          "ghiaia di fiume",
+          "terra che ha l'odore giusto"
+        ],
+        "hazard": [
+          "il tempo che cambia in fretta",
+          "acqua che nessuno ha analizzato",
+          "qualunque cosa abbia tracciato quei sentieri"
+        ],
+        "remnant": [
+          "una staccionata che corre fino al mare",
+          "un campo diviso in quadrati",
+          "uno stipite senza casa"
+        ],
+        "sound": [
+          "un canto d'uccello che si ripete troppo uguale",
+          "vento tra le foglie",
+          "acqua corrente, da qualche parte più in basso"
+        ]
+      }
+    },
+    "AlienGasGiant": {
+      "label": "gigante gassoso",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il confine tra le fasce",
+          "l'ovale bianco",
+          "lo strato di ammoniaca"
+        ],
+        "ground": [
+          "cime di nubi che scorrono come fiumi",
+          "una tempesta più larga di un continente",
+          "niente, per undicimila chilometri"
+        ],
+        "hazard": [
+          "venti a cui la capsula non importa",
+          "fulmini più grandi della nave",
+          "una discesa senza fondo"
+        ],
+        "remnant": [
+          "una stazione ancorata al nulla",
+          "un paracadute frenante ancora in apertura",
+          "una sezione di scafo che cavalca la fascia"
+        ],
+        "sound": [
+          "vento, e la capsula che si lamenta",
+          "tuono senza pause",
+          "un fischio che sale mentre scendi"
+        ]
+      }
+    },
+    "AlienHabitable": {
+      "label": "mondo giardino",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il prato",
+          "i filari del frutteto",
+          "il lago immobile"
+        ],
+        "ground": [
+          "erba tenuta corta da qualcosa",
+          "terra rivoltata di recente",
+          "un sentiero tenuto sgombro"
+        ],
+        "hazard": [
+          "quanto di tutto questo sia stato disposto",
+          "aria così buona che la tuta protesta",
+          "la sensazione di essere contati"
+        ],
+        "remnant": [
+          "una panchina rivolta verso l'acqua",
+          "un cancello senza recinto",
+          "una fila di pietre con dei nomi sopra"
+        ],
+        "sound": [
+          "insetti, a comando",
+          "vento che arriva quando serve",
+          "un silenzio come un respiro trattenuto"
+        ]
+      }
+    },
+    "AlienHotJupiter": {
+      "label": "gioviano caldo",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la fornace del lato diurno",
+          "il getto del terminatore",
+          "lo strato di pioggia di ferro"
+        ],
+        "ground": [
+          "nubi che brillano dal basso",
+          "aria del colore di un filamento",
+          "un cielo che non si raffredda mai"
+        ],
+        "hazard": [
+          "una corrente a getto a quattro chilometri al secondo",
+          "metallo che condensa sullo scafo",
+          "calore che non ha dove andare"
+        ],
+        "remnant": [
+          "una piastrella di scudo di nessuna nave nota",
+          "una sonda che vola in cerchio perfetto",
+          "un'ala con la vernice bollita via"
+        ],
+        "sound": [
+          "un ruggito che satura il microfono",
+          "pioggia di ferro sullo scafo",
+          "lo scafo che risuona su una nota sola"
+        ]
+      }
+    },
+    "AlienIce": {
+      "label": "mondo di ghiaccio",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la dorsale di pressione",
+          "il crepaccio azzurro",
+          "la piana di ghiaccio"
+        ],
+        "ground": [
+          "ghiaccio duro come roccia",
+          "brina su neve vecchia",
+          "una crosta che cede sotto il piede"
+        ],
+        "hazard": [
+          "un freddo che trova ogni cucitura",
+          "un crepaccio sotto la neve fresca",
+          "il ghiaccio che si muove senza preavviso"
+        ],
+        "remnant": [
+          "un rifugio sotto due metri di ghiaccio",
+          "una bandiera congelata a mezzo schiocco",
+          "un foro tagliato e mai richiuso"
+        ],
+        "sound": [
+          "ghiaccio che geme molto lontano",
+          "lo scricchiolio di ogni passo",
+          "una nota tenuta sotto il ghiaccio"
+        ]
+      }
+    },
+    "AlienIceGiant": {
+      "label": "gigante di ghiaccio",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la foschia di metano",
+          "lo strato di diamante",
+          "l'equatore scuro"
+        ],
+        "ground": [
+          "un azzurro che scende fino in fondo",
+          "foschia con cristalli che la attraversano",
+          "aria pesante di metano"
+        ],
+        "hazard": [
+          "grandine di diamante sulla capsula",
+          "pressione che raddoppia ogni pochi minuti",
+          "un vento senza una direzione"
+        ],
+        "remnant": [
+          "un collettore ancora appeso nella foschia",
+          "un cavo tagliato netto a entrambi i capi",
+          "una capsula con gli obli verniciati"
+        ],
+        "sound": [
+          "cristalli che ticchettano sullo scafo",
+          "un sibilo che cambia tono con la quota",
+          "qualcosa che risponde al sonar"
+        ]
+      }
+    },
+    "AlienLavaOcean": {
+      "label": "mondo dall'oceano di lava",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la riva nera",
+          "la crosta in raffreddamento",
+          "la fontana di fuoco"
+        ],
+        "ground": [
+          "crosta tanto sottile da vederci attraverso",
+          "lava a corda raffreddata",
+          "pietra rossa al di sotto"
+        ],
+        "hazard": [
+          "una crosta che flette quando ci sali",
+          "il salto termico in un passo",
+          "una fontana che sale senza preavviso"
+        ],
+        "remnant": [
+          "una sonda inghiottita a metà",
+          "un binario che corre nel fuoco",
+          "un incavo a forma di mano nella roccia"
+        ],
+        "sound": [
+          "un ruggito senza bordi",
+          "crosta che si spacca come ghiaccio",
+          "il tono di allarme della tuta"
+        ]
+      }
+    },
+    "AlienLongPeriodComet": {
+      "label": "cometa a lungo periodo",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia della prima luce",
+          "il ghiaccio intatto",
+          "il lato lontano"
+        ],
+        "ground": [
+          "ghiaccio mai stato tiepido",
+          "brina di prima dei pianeti",
+          "una superficie su cui nulla è mai atterrato"
+        ],
+        "hazard": [
+          "un primo disgelo che avviene adesso",
+          "un'orbita che non torna nell'arco di una vita",
+          "freddo che ha avuto dieci milioni di anni per posarsi"
+        ],
+        "remnant": [
+          "qualcosa arrivato insieme al ghiaccio",
+          "una forma sotto la brina, non una roccia",
+          "un segnale più vecchio del sistema"
+        ],
+        "sound": [
+          "il ghiaccio che si sveglia",
+          "una crepa che corre via nel buio",
+          "una voce che stava aspettando"
+        ]
+      }
+    },
+    "AlienMTypeAsteroid": {
+      "label": "asteroide metallico",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia tagliata",
+          "il filone di nichel",
+          "la bocca della miniera"
+        ],
+        "ground": [
+          "metallo con dentro i segni della sega",
+          "un suolo lavorato, non formato",
+          "ferro-nichel, lucidato dal vuoto"
+        ],
+        "hazard": [
+          "spigoli lasciati da chi ha tagliato qui",
+          "un pozzo che va più a fondo di quanto dica il rilievo",
+          "metallo che trattiene una carica"
+        ],
+        "remnant": [
+          "una testa di taglio ancora nella roccia",
+          "un tabellone dei turni con dei nomi",
+          "una camera stagna azionata dall'interno"
+        ],
+        "sound": [
+          "metallo che porta lontano un colpo",
+          "macchinari in funzione da qualche parte sotto",
+          "una nota di sega, debolissima"
+        ]
+      }
+    },
+    "AlienMagmaPlanet": {
+      "label": "mondo di magma",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il bordo della caldera",
+          "il tunnel di lava",
+          "la piana di cenere"
+        ],
+        "ground": [
+          "cenere su pietra rovente",
+          "basalto che scricchiola ancora",
+          "un suolo che brilla nelle crepe"
+        ],
+        "hazard": [
+          "gas che sale dalla cenere",
+          "un soffitto di roccia su un tunnel attivo",
+          "calore che la tuta non riesce a smaltire"
+        ],
+        "remnant": [
+          "un pozzo scavato dritto in basso",
+          "uno scambiatore di calore che nessuno è tornato a prendere",
+          "una scala scavata nella parete del tunnel"
+        ],
+        "sound": [
+          "un lacerarsi profondo, molto sotto",
+          "cenere che cade sul casco",
+          "qualcosa che respira nel tunnel"
+        ]
+      }
+    },
+    "AlienMagnetar": {
+      "label": "superficie di magnetar",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal"
+      ],
+      "tokens": {
+        "place": [
+          "la linea di campo",
+          "la faglia della crosta",
+          "la cicatrice del brillamento"
+        ],
+        "ground": [
+          "crosta sotto un campo che riordina gli atomi",
+          "materia schiacciata fuori forma",
+          "una superficie su cui nessuna squadra può posarsi"
+        ],
+        "hazard": [
+          "un campo che riscrive la memoria della nave",
+          "un sismo stellare atteso da un momento all'altro",
+          "la fisica stessa, a questa distanza"
+        ],
+        "remnant": [
+          "una sonda stirata in una linea",
+          "un segnale più vecchio della nave",
+          "un messaggio che si ripete sulle linee di campo"
+        ],
+        "sound": [
+          "l'intera banda radio, che canta",
+          "un impulso esattamente al secondo",
+          "una voce dentro l'impulso"
+        ]
+      }
+    },
+    "AlienMegaIron": {
+      "label": "mondo di ferro",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la piana densa",
+          "la dorsale magnetica",
+          "il canyon del minerale"
+        ],
+        "ground": [
+          "ferro lucidato a specchio",
+          "minerale così puro che risuona",
+          "un suolo che trattiene gli stivali"
+        ],
+        "hazard": [
+          "gravità sproporzionata alle dimensioni",
+          "ogni cosa ferrosa che viene attirata",
+          "una bussola con un'opinione"
+        ],
+        "remnant": [
+          "un castello di miniera con la gabbia ancora giù",
+          "binario dritto per sessanta chilometri",
+          "una fonderia raffreddata"
+        ],
+        "sound": [
+          "il suolo che porta ogni passo",
+          "una nota di campana quando cade qualcosa",
+          "martellate, a tempo"
+        ]
+      }
+    },
+    "AlienMercurian": {
+      "label": "mondo di ferro craterizzato",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la catena di crateri",
+          "la scarpata",
+          "l'ombra polare"
+        ],
+        "ground": [
+          "ferro craterizzato",
+          "polvere ferma da un'era",
+          "roccia con un richiamo magnetico"
+        ],
+        "hazard": [
+          "lo sbalzo dal caldo diurno al gelo notturno",
+          "la caduta di micrometeoriti",
+          "il freddo dell'ombra polare"
+        ],
+        "remnant": [
+          "un rover rovesciato",
+          "impronte che vanno nella direzione sbagliata",
+          "un collare da trivella lasciato in piedi"
+        ],
+        "sound": [
+          "ferro che risuona sotto uno stivale",
+          "la radio della tuta che sibila",
+          "un lento ticchettio nel casco"
+        ]
+      }
+    },
+    "AlienMiniNeptune": {
+      "label": "mini-Nettuno",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "graveyard",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "lo strato di foschia",
+          "lo strato di taglio",
+          "il fondo di pressione"
+        ],
+        "ground": [
+          "nube senza nulla sotto",
+          "una foschia che le lampade non tagliano",
+          "aria abbastanza densa da nuotarci"
+        ],
+        "hazard": [
+          "uno scafo al limite di profondita",
+          "il taglio tra gli strati",
+          "nessun fondo su cui fermarsi"
+        ],
+        "remnant": [
+          "una sonda che cade ancora, da quarant'anni",
+          "un involucro di pallone afflosciato",
+          "un radiofaro che tiene la quota da solo"
+        ],
+        "sound": [
+          "vento oltre lo scafo, costante",
+          "lo scafo che parla da solo",
+          "tuono dal basso"
+        ]
+      }
+    },
+    "AlienOcean": {
+      "label": "mondo oceano",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la zattera di alghe alla deriva",
+          "il bordo della piattaforma",
+          "la chiazza di bonaccia"
+        ],
+        "ground": [
+          "onda lunga sotto la barca",
+          "acqua limpida fino a quaranta metri",
+          "un mare senza sponde"
+        ],
+        "hazard": [
+          "la profondita sotto lo scafo",
+          "un'onda che cresce dal nulla",
+          "qualunque cosa tenga limpida l'acqua"
+        ],
+        "remnant": [
+          "una boa ancora in stazione",
+          "un albero dritto in mare aperto",
+          "una rete piena di niente"
+        ],
+        "sound": [
+          "acqua contro lo scafo",
+          "qualcosa di grosso che espira",
+          "clic che si rispondono"
+        ]
+      }
+    },
+    "AlienPlanetesimal": {
+      "label": "planetesimo",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la sella di detriti",
+          "la cicatrice d'impatto",
+          "l'estremita instabile"
+        ],
+        "ground": [
+          "detriti tenuti insieme per abitudine",
+          "massi appoggiati sul nulla",
+          "ghiaia che risponde a un passo"
+        ],
+        "hazard": [
+          "un corpo che si sfalda se lo spingi",
+          "massi che vanno alla deriva una volta smossi",
+          "nessuna gravità degna del nome"
+        ],
+        "remnant": [
+          "una rete gettata sui detriti",
+          "una carica innescata e mai fatta esplodere",
+          "un cippo di concessione con un nome cancellato"
+        ],
+        "sound": [
+          "detriti che stridono attraverso gli stivali",
+          "niente, finché qualcosa non si muove",
+          "un colpo sull'altro lato"
+        ]
+      }
+    },
+    "AlienPlasma": {
+      "label": "mondo di plasma",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la guaina ionica",
+          "la colonna d'arco",
+          "il fronte luminoso"
+        ],
+        "ground": [
+          "materia con gli elettroni strappati",
+          "luce con una consistenza",
+          "una superficie che è solo un colore"
+        ],
+        "hazard": [
+          "carica che trova ogni conduttore a bordo",
+          "strumenti che leggono il proprio riflesso",
+          "un arco che salta alla capsula"
+        ],
+        "remnant": [
+          "un relitto tenuto nel campo, intatto",
+          "una forma che conserva il profilo nell'arco",
+          "uno scafo con ogni circuito fuso"
+        ],
+        "sound": [
+          "un crepitio che segue la nave",
+          "radio che urla su ogni banda",
+          "un ronzio che si alza quando gli parli"
+        ]
+      }
+    },
+    "AlienPuffy": {
+      "label": "mondo rarefatto",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "l'involucro esterno",
+          "la coda in fuga",
+          "il cuore rarefatto"
+        ],
+        "ground": [
+          "un mondo che si può attraversare in volo",
+          "gas che a stento si tiene insieme",
+          "un corpo con meno sostanza di una nube"
+        ],
+        "hazard": [
+          "un pianeta che se ne sta andando in tempo reale",
+          "una coda che sfila oltre gli obli",
+          "nessuna densità su cui frenare"
+        ],
+        "remnant": [
+          "un radiofaro alla deriva nell'involucro",
+          "una vela spiegata nel deflusso",
+          "un relitto portato via con l'atmosfera"
+        ],
+        "sound": [
+          "un fischio sottile, che se ne va",
+          "il deflusso oltre lo scafo",
+          "un segnale che si affievolisce ogni ora"
+        ]
+      }
+    },
+    "AlienQuarkPlanet": {
+      "label": "mondo di quark",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "shrine",
+        "signal"
+      ],
+      "tokens": {
+        "place": [
+          "la superficie, per quel che è",
+          "la piega",
+          "il confine di taglio"
+        ],
+        "ground": [
+          "materia senza atomi dentro",
+          "un suolo spesso un centimetro e più pesante di una luna",
+          "qualcosa che non si risolve nell'obiettivo"
+        ],
+        "hazard": [
+          "una marea che trova la differenza tra testa e piedi",
+          "materia che decide cosa debba essere la tua",
+          "una superficie alla scala sbagliata per essere toccata"
+        ],
+        "remnant": [
+          "un oggetto in stazione dove nulla può restare",
+          "una cicatrice nella superficie, deliberata",
+          "una forma della stessa dimensione da ogni distanza"
+        ],
+        "sound": [
+          "niente, a un volume che si sente",
+          "gli strumenti che si rifiutano di concordare",
+          "un tono sotto la soglia di ogni strumento"
+        ]
+      }
+    },
+    "AlienRainforest": {
+      "label": "mondo di foresta pluviale",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la radura nella volta",
+          "le radici a contrafforte",
+          "il suolo allagato"
+        ],
+        "ground": [
+          "lettiera di foglie profonda un metro",
+          "radici che si spostano se le guardi",
+          "fango che trattiene l'impronta"
+        ],
+        "hazard": [
+          "tutto qui ha un uso per la carne",
+          "spore tanto dense da vedersi",
+          "la luce che se ne va in quattro minuti"
+        ],
+        "remnant": [
+          "un muro che la foresta si è ripresa",
+          "una scala sotto le radici",
+          "un volto scolpito dove nessuno lo vedrebbe"
+        ],
+        "sound": [
+          "tutto che chiama insieme, poi niente",
+          "acqua che scivola dalle foglie",
+          "un richiamo che non è di un animale"
+        ]
+      }
+    },
+    "AlienRingedGasGiant": {
+      "label": "gigante con anelli",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "l'ombra degli anelli",
+          "il varco tra i satelliti pastori",
+          "lo strato di nubi sotto gli anelli"
+        ],
+        "ground": [
+          "nubi rigate dall'ombra degli anelli",
+          "luce che arriva a strisce",
+          "un cielo con una riga tracciata dentro"
+        ],
+        "hazard": [
+          "materiale degli anelli che scende come pioggia",
+          "il varco che si chiude sulla capsula",
+          "detriti pastori a velocità di collisione"
+        ],
+        "remnant": [
+          "una schiera di specchi tesa nel varco",
+          "uno scafo lucidato dalla polvere degli anelli",
+          "una boa di segnalazione dentro gli anelli"
+        ],
+        "sound": [
+          "polvere sullo scafo come pioggia",
+          "un ritmo che gli anelli tengono",
+          "rumore radio in scala ascendente"
+        ]
+      }
+    },
+    "AlienRogue": {
+      "label": "mondo senza stella",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il mare congelato",
+          "il cerchio delle lampade",
+          "la piana nera"
+        ],
+        "ground": [
+          "ghiaccio senza un sole che l'abbia fatto",
+          "aria congelata stesa come neve",
+          "suolo che non ha mai avuto un'ombra"
+        ],
+        "hazard": [
+          "buio senza nulla dietro",
+          "le lampade come unica luce che questo mondo abbia conosciuto",
+          "freddo misurato contro il nulla"
+        ],
+        "remnant": [
+          "una luce lasciata accesa",
+          "una porta nel ghiaccio",
+          "un segnale puntato su un cielo vuoto"
+        ],
+        "sound": [
+          "il silenzio più morto del catalogo",
+          "il tuo respiro, troppo forte",
+          "un colpo, dal basso"
+        ]
+      }
+    },
+    "AlienSTypeAsteroid": {
+      "label": "asteroide roccioso",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la dorsale illuminata",
+          "il giardino di massi",
+          "il labbro del cratere"
+        ],
+        "ground": [
+          "ghiaia silicatica",
+          "pietra nuda, affilata come il giorno in cui si spacco",
+          "polvere in lunghi raggi dal cratere"
+        ],
+        "hazard": [
+          "spigoli che tagliano un guanto",
+          "una rotazione che mette il sole dove non dovrebbe",
+          "nulla a cui aggrapparsi"
+        ],
+        "remnant": [
+          "una linea di chiodi che scavalca la dorsale",
+          "un radiofaro ancora sul treppiede",
+          "una carota di sondaggio disposta in ordine"
+        ],
+        "sound": [
+          "pietra sotto gli stivali, e radio",
+          "un ping dal radiofaro",
+          "ghiaia che cade dove non dovrebbe"
+        ]
+      }
+    },
+    "AlienShortPeriodComet": {
+      "label": "cometa a corto periodo",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la faccia consumata",
+          "la vecchia cicatrice di sfiato",
+          "il mantello di polvere"
+        ],
+        "ground": [
+          "una crosta ispessita da troppi passaggi",
+          "ghiaccio andato e tornato mille volte",
+          "polvere dove c'era il ghiaccio"
+        ],
+        "hazard": [
+          "un corpo a cui finisce ciò di cui è fatto",
+          "sfiati che sparano sul vecchio calendario",
+          "crosta senza nulla sotto"
+        ],
+        "remnant": [
+          "una targa di una visita che nessuno ha registrato",
+          "un'ancora di un'orbita precedente",
+          "provviste nascoste per un ritorno"
+        ],
+        "sound": [
+          "lo stesso sfiato che sibila puntuale",
+          "polvere che si posa senza avere dove",
+          "un conto alla rovescia, in un vecchio formato"
+        ]
+      }
+    },
+    "AlienSubEarth": {
+      "label": "piccolo mondo roccioso",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il letto asciutto del fiume",
+          "le colline basse",
+          "la scarpata del vento"
+        ],
+        "ground": [
+          "terra rossa e sottile",
+          "ghiaia senza nulla di vivo",
+          "crosta screpolata"
+        ],
+        "hazard": [
+          "aria troppo rarefatta per respirare",
+          "il vento che solleva graniglia",
+          "una gravità così lieve da farti inciampare"
+        ],
+        "remnant": [
+          "un muretto di pietre accatastate",
+          "un palo senza nulla sopra",
+          "un canale scavato che portava acqua"
+        ],
+        "sound": [
+          "vento e nient'altro",
+          "graniglia contro la visiera",
+          "un ronzio senza sorgente"
+        ]
+      }
+    },
+    "AlienSubMercurian": {
+      "label": "mondo interno bruciato",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "furnace",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la linea del terminatore",
+          "il bacino di scorie",
+          "la piana del lato diurno"
+        ],
+        "ground": [
+          "roccia vetrificata",
+          "graniglia di ferro",
+          "pietra cotta fino al vetro"
+        ],
+        "hazard": [
+          "il calore che sale attraverso gli stivali",
+          "la luce non filtrata",
+          "un circuito di raffreddamento al limite"
+        ],
+        "remnant": [
+          "un pilone fuso alla base",
+          "un'ombra bruciata nella roccia",
+          "un cumulo che nessuno può aver eretto di recente"
+        ],
+        "sound": [
+          "niente, e le ventole della tuta al lavoro",
+          "roccia che schiocca raffreddandosi",
+          "statica dal lato diurno"
+        ]
+      }
+    },
+    "AlienSuperEarth": {
+      "label": "mondo pesante",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la piana della pressione",
+          "la lunga dorsale",
+          "la conca"
+        ],
+        "ground": [
+          "pietra compattata dal proprio peso",
+          "roccia stratificata, piatta come un pavimento",
+          "polvere che non si solleva"
+        ],
+        "hazard": [
+          "una gravità che rende definitiva ogni caduta",
+          "aria densa come sciroppo",
+          "un servo della tuta che cede"
+        ],
+        "remnant": [
+          "una porta costruita bassa e larga",
+          "una rampa al posto di una scala",
+          "una macchina sprofondata nelle proprie fondamenta"
+        ],
+        "sound": [
+          "tutto un'ottava troppo bassa",
+          "il suolo che si porta via il suono",
+          "un boato che arriva in ritardo"
+        ]
+      }
+    },
+    "AlienTrojanAsteroid": {
+      "label": "asteroide troiano",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "graveyard",
+        "hollow",
+        "mirror",
+        "predator",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "il campo di coda",
+          "il punto di equilibrio",
+          "la secca di polvere"
+        ],
+        "ground": [
+          "polvere rossa mai smossa",
+          "ghiaccio e catrame in parti uguali",
+          "suolo fermo in una posizione da un'era"
+        ],
+        "hazard": [
+          "uno sciame di vicini nello stesso punto",
+          "nulla verso cui cadere",
+          "un orizzonte pieno di altre rocce"
+        ],
+        "remnant": [
+          "una cima tesa tra due rocce",
+          "un campo allestito per più gente di quanta sia tornata",
+          "una carta fissata alla roccia"
+        ],
+        "sound": [
+          "chiacchiericcio radio da rocce vuote",
+          "lo sciame che ticchetta sul sonar",
+          "una chiamata sul canale comune"
+        ]
+      }
+    },
+    "AlienTundra": {
+      "label": "mondo di tundra",
+      "scenarios": [
+        "bloom",
+        "castaway",
+        "derelict",
+        "graveyard",
+        "mirror",
+        "predator",
+        "ruins",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la steppa gelata",
+          "la pozza di disgelo",
+          "il campo di massi"
+        ],
+        "ground": [
+          "muschio congelato",
+          "terreno che cede e poi non più",
+          "pietre disposte in cerchi"
+        ],
+        "hazard": [
+          "il vento senza nulla che lo fermi",
+          "il disgelo che si apre sotto gli stivali",
+          "una notte che arriva presto"
+        ],
+        "remnant": [
+          "un cippo più alto di un uomo",
+          "un focolare con la cenere ancora dentro",
+          "un sentiero consumato nel muschio"
+        ],
+        "sound": [
+          "vento e il verso di un animale",
+          "acqua di disgelo sotto la superficie",
+          "un tamburo, o il sangue nelle orecchie"
+        ]
+      }
+    },
+    "AlienWarmJupiter": {
+      "label": "gigante tiepido",
+      "scenarios": [
+        "castaway",
+        "derelict",
+        "descent",
+        "shrine",
+        "signal",
+        "swarm"
+      ],
+      "tokens": {
+        "place": [
+          "la fascia calma",
+          "il canyon di nubi",
+          "il lungo anticiclone"
+        ],
+        "ground": [
+          "nubi in file ordinate",
+          "una foschia che prende la luce con delicatezza",
+          "aria abbastanza tiepida da aprirci una visiera"
+        ],
+        "hazard": [
+          "la calma che finisce senza preavviso",
+          "una corrente discendente senza fondo",
+          "la tentazione di scendere ancora"
+        ],
+        "remnant": [
+          "un habitat che cavalca la fascia calma",
+          "un pilone d'attracco senza nulla attraccato",
+          "una manica a vento, ancora in movimento"
+        ],
+        "sound": [
+          "vento con dentro una pausa",
+          "la capsula che scricchiola amichevolmente",
+          "un accordo, tenuto"
+        ]
+      }
+    }
+  },
+  "scenarios": {
+    "bloom": {
+      "title": "La fioritura",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Qualcosa sta crescendo a {place}, secondo uno schema, e lo schema è una spirale che si chiude su un punto invece di aprirsi da esso.\nÈ l'unica cosa viva che la scansione abbia trovato qui, copre nove ettari, e {instrument} dice che è raddoppiata da quando la nave è in orbita.",
+          "choices": [
+            {
+              "text": "Camminare fino al centro della spirale.",
+              "to": "a"
+            },
+            {
+              "text": "Prelevare un campione dal bordo.",
+              "to": "b"
+            },
+            {
+              "text": "Aprire un tagliafuoco e osservare la reazione.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "La crescita si fa più fitta e più silenziosa verso il centro. Al centro è cresciuta attorno a qualcosa che non ha generato lei, e ci ha messo attenzione.",
+          "choices": [
+            {
+              "text": "Tagliarlo fuori.",
+              "to": "a1"
+            },
+            {
+              "text": "Lasciarlo e registrare la posizione.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Il campione oppone resistenza alla lama. Non è coriaceo; è riluttante.\nNella provetta continua a muoversi, e quando la squadra torna al lander si è disposto nella stessa spirale, un centimetro di diametro.",
+          "choices": [
+            {
+              "text": "Tenerlo a bordo.",
+              "to": "b1"
+            },
+            {
+              "text": "Rimetterlo dov'era.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Il tagliafuoco brucia una linea netta lungo il braccio della spirale.\nLa crescita non prova ad attraversarlo. Lo aggira, in entrambe le direzioni, e si ricongiunge alle spalle della squadra in meno di quattro minuti.",
+          "choices": [
+            {
+              "text": "Aprirsi la strada fino al lander.",
+              "to": "c1"
+            },
+            {
+              "text": "Mollare tutto e correre.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Viene via in una manciata umida di steli e ciò che c'è dentro è stato tenuto in vita, di proposito, da qualcosa che non ha nessun motivo per tenere in vita alcunché.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "La squadra esce a ritroso sulle proprie tracce. Alle loro spalle la spirale richiude il varco a passo d'uomo, e il centro è esattamente dov'era, ed esattamente altrettanto nascosto.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Sigillato, monitorato, e di grande valore per il laboratorio giusto. Il reparto biologico della nave è più vivace di prima, e nessuno dorme altrettanto bene.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Viene riportato e posato sul bordo, e l'intera spirale si sposta di un metro verso il lander e poi si ferma, e tutti concordano di registrarlo come vento.\nSul {ground} dove stava il campione resta qualcosa.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "Non è una pianta e non brucia una seconda volta.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "Salgono tutti a bordo. I kit di campionamento, la cesoia e uno stivale no.\n{leader} è l'ultimo sulla scaletta e non si volta, e dopo dirà che non li stava inseguendo: li stava accompagnando alla porta.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "castaway": {
+      "title": "Qualcuno sta ancora parlando",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "La trasmissione è una voce, in una lingua che le tabelle della nave decifrano all'ottanta per cento, e chiede aiuto per nome. Non il nome della nave. Quello di {leader}.\nLa sorgente è un rifugio presso {place}, scavato contro {hazard} e ancora in pressione.",
+          "choices": [
+            {
+              "text": "Bussare.",
+              "to": "a"
+            },
+            {
+              "text": "Prima togliere corrente al rifugio.",
+              "to": "b"
+            },
+            {
+              "text": "Chiedergli come conosce quel nome.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "La porta si apre prima che qualcuno la tocchi. Dentro c'è una stanza, una sedia, una luce, e una persona in una tuta vecchia di due generazioni, seduta di spalle alla porta.\nNon si volta. Dice di essersi esercitata a lungo per questo momento.",
+          "choices": [
+            {
+              "text": "Sedersi e ascoltare.",
+              "to": "a1"
+            },
+            {
+              "text": "Girare la sedia.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "La squadra traccia l'alimentazione e la stacca. Il rifugio si spegne; la voce no.\nNon usa la corrente del rifugio da moltissimo tempo. Sta solo essendo educata.",
+          "choices": [
+            {
+              "text": "Entrare lo stesso.",
+              "to": "b1"
+            },
+            {
+              "text": "Spogliare il rifugio dei pezzi e andarsene.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La domanda ottiene una lunga pausa, che è la prima cosa onesta dello scambio.\nPoi: non conosce quel nome. Conosce la forma di chi ascolta, e ci adatta un nome. Adatta nomi agli ascoltatori da prima che questo mondo avesse un'atmosfera.",
+          "choices": [
+            {
+              "text": "Chiedere cosa vuole.",
+              "to": "c1"
+            },
+            {
+              "text": "Smettere di trasmettere. Andarsene.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Ci vuole un'ora. Erano in una ricognizione mai protocollata, sono soli da prima che la squadra nascesse, e non chiedono di essere salvati. Chiedono di essere ricordati.\nDanno a {leader} tutto ciò che resta loro, che non è molto, ed è più di quanto la nave meriti.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "La tuta è vuota, ed è vuota da moltissimo tempo, e la voce continua a parlare dalla sedia, dai muri, dai caschi della squadra.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Dentro ci sono trent'anni della calligrafia di qualcuno su ogni superficie piana, e alla fine, nell'ultimo spazio libero vicino alla porta, delle scuse indirizzate a chiunque sia venuto.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Buon materiale, ben tenuto, e la squadra riparte in novanta minuti. La voce è ancora sulla banda quando la nave accende per lasciare l'orbita.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 10
+          }
+        },
+        "c1": {
+          "text": "Vuole ciò che ha sempre voluto, e lo spiega a lungo, e niente di tutto ciò sopravvive al viaggio di ritorno in una forma ripetibile. Ciò che sopravvive è nelle mani di {leader}, e nessuno ricorda di averglielo consegnato.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "La banda tace. La squadra torna attraversando {ground} in un silenzio di cui tutti sono grati, e il rifugio non li richiama, che in qualche modo è la parte più crudele.",
+          "outcome": {
+            "kind": "none",
+            "mag": "small",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "derelict": {
+      "title": "Il relitto presso {place}",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Il segnale è una portante di soccorso, e va avanti da tanto che {a|nessuno si aspetta una risposta|l'energia che l'ha generata avrebbe dovuto esaurirsi due volte}. Arriva da {place}: uno scafo, spezzato a metà, con accanto {remnant}.\n{leader} porta giù la squadra. Da vicino il relitto è più vecchio della trasmissione, e la trasmissione è più vecchia di chiunque sia a bordo.",
+          "choices": [
+            {
+              "text": "Tagliare lo scafo pressurizzato.",
+              "to": "a"
+            },
+            {
+              "text": "Seguire il cavo che esce dal relitto.",
+              "to": "b"
+            },
+            {
+              "text": "Spogliare il relitto e andarsene.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Dentro, il compartimento equipaggio e asciutto, in ordine, tutto rizzato. Nessuno se n'è andato di fretta. Non ci sono corpi.\nUn armadietto in fondo è stato sigillato dall'esterno, e da dietro arriva {sound}.",
+          "choices": [
+            {
+              "text": "Aprire l'armadietto.",
+              "to": "a1"
+            },
+            {
+              "text": "Prendere il registratore di bordo e andare.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Il cavo corre su {ground} per due chilometri e finisce a un pilone piantato nella superficie, ancora alimentato, ancora puntato su un punto di cielo dove non c'è niente da puntare.\n{wrongness}.",
+          "choices": [
+            {
+              "text": "Abbattere il pilone e prendere il nucleo.",
+              "to": "b1"
+            },
+            {
+              "text": "Puntare il pilone sulla nave e ascoltare.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La squadra lavora il relitto come si lavora un relitto: pannelli via, celle fuori, tutto ciò che ha un numero di serie nei sacchi. Va in fretta.\nA metà lavoro, {instrument} segnala una seconda fonte di calore sotto lo scafo.",
+          "choices": [
+            {
+              "text": "Tirarla fuori.",
+              "to": "c1"
+            },
+            {
+              "text": "Prendere quello che c'è nei sacchi e decollare.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Il sigillo cede. Qualunque cosa l'equipaggio avesse chiuso li dentro aspettava con la pazienza di chi non ha bisogno di respirare, e viene fuori puntando prima {leader}.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "Il registratore esce con l'involucro intatto. Duecento ore di rapporti di guardia, e poi una voce, l'ultimo giorno, che dice che la nave non è dove la nave crede di essere.\nNessuno apre l'armadietto. La squadra e a bordo entro un'ora.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Il nucleo esce dal pilone tutto intero, più pesante di quanto abbia diritto di essere, e la portante di soccorso si spegne nell'istante in cui lascia l'alloggiamento. Il silenzio che segue è la cosa più forte nella registrazione.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Girato, il pilone riproduce gli ultimi undici secondi di tutto ciò che la squadra ha detto, con le loro stesse voci, prima che finiscano di dirlo.\n{leader} interrompe l'uscita. La squadra risale scossa e uno di loro non ne vuole parlare.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "Sotto lo scafo c'è un reattore grande come un barile, ancora acceso, ancora regolato, e un recupero di quella qualità non capita due volte in carriera.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "I sacchi risalgono pieni di celle, lamiera e cavo. Nessuno guarda più la seconda fonte di calore, e la nave e fuori dal sistema prima che qualcuno decida che avrebbero dovuto.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "descent": {
+      "title": "La discesa",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Non c'è suolo su cui posarsi. Il segnale arriva da una quota fissa in {place}, in stazione dentro un'atmosfera che avrebbe dovuto portar via qualunque cosa in un'ora.\n{leader} porta giù la capsula. {ground} chiude la vista dagli obli a nove chilometri.",
+          "choices": [
+            {
+              "text": "Portarsi alla sua quota e restare.",
+              "to": "a"
+            },
+            {
+              "text": "Scendere sotto e guardare in alto.",
+              "to": "b"
+            },
+            {
+              "text": "Agganciarlo e tirarlo su.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Alla quota giusta emerge dalla foschia: una struttura, non un relitto, costruita per galleggiare qui, con luci accese secondo uno schema che non serve alla navigazione.\nC'è un attracco. Ed è della misura giusta.",
+          "choices": [
+            {
+              "text": "Attraccare.",
+              "to": "a1"
+            },
+            {
+              "text": "Fotografare tutto e risalire.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Sotto, la pressione e al limite della capsula e la vista verso l'alto ne vale la pena: quella cosa non galleggia. E appoggiata su una colonna di qualcosa che scende oltre la capsula, oltre la portata del sonar, oltre qualunque fondo abbia questo mondo.",
+          "choices": [
+            {
+              "text": "Seguire la colonna verso il basso.",
+              "to": "b1"
+            },
+            {
+              "text": "Prelevare un campione della colonna e andare.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Il rampino fa presa al secondo passaggio. Qualunque cosa sia pesa molto meno del dovuto e sale senza sforzo per sei chilometri.\nA sei chilometri smette di salire, e il verricello continua a girare, e il cavo continua a rientrare.",
+          "choices": [
+            {
+              "text": "Continuare a recuperare.",
+              "to": "c1"
+            },
+            {
+              "text": "Tagliare il cavo.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "L'attracco accoglie la capsula come se fosse fatto apposta, perché lo è. Dentro c'è aria, e gravità, e un solo corridoio con una porta in fondo, e la porta si apre per {leader} e per nessun altro.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "Duecento fotogrammi di una città sospesa a cui nessuno crederà, e una risalita attraverso {hazard} che dura undici ore e costa uno scudo termico.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "La capsula supera i propri limiti nel tentativo di scoprire su cosa poggi la colonna. Risale con due obli crepati, le costole rotte a un membro dell'equipaggio, e la risposta, che nessuno è riuscito a mettere per iscritto.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "medium",
+            "exp": 20
+          }
+        },
+        "b2": {
+          "text": "Il braccio di campionamento torna con tre grammi di colonna nel contenitore, e il contenitore pesa undici chili, e si sta ancora raffreddando.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "Ciò che arriva in cima al cavo non è quello che il rampino aveva agganciato.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "La cesoia taglia il cavo e la capsula risale come un tappo. Impigliata nell'ultimo metro di cavo, ancora attaccata, c'è una lastra di qualcosa che non si scalfisce.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "furnace": {
+      "title": "Qualcosa vive nel calore",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Il calore qui basta a chiudere una discussione senza protezione in meno di un secondo, e il segnale arriva dal punto più caldo del rilievo.\nCiò che trasmette non si ripara da {hazard}. Se ne serve.",
+          "choices": [
+            {
+              "text": "Entrare con la tuta al massimo raffreddamento.",
+              "to": "a"
+            },
+            {
+              "text": "Mandare dentro il drone e restare fuori.",
+              "to": "b"
+            },
+            {
+              "text": "Aspettare la fase fredda.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Undici minuti di resistenza, e alla fine, in mezzo a {place}, c'è una forma che il calore aggira.\nÈ consapevole della squadra. Aspettava che la temperatura le portasse qualcuno.",
+          "choices": [
+            {
+              "text": "Tendere la mano verso di essa.",
+              "to": "a1"
+            },
+            {
+              "text": "Uscire finché la tuta tiene.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Il drone resiste quattro minuti, tre e mezzo più del previsto, e rimanda un'immagine di {remnant} in piedi nel fuoco, intatto.\nPoi qualcosa prende il drone. Con delicatezza. Il segnale finisce senza sfaldarsi.",
+          "choices": [
+            {
+              "text": "Andare a riprendersi il drone.",
+              "to": "b1"
+            },
+            {
+              "text": "Registrarlo come perduto.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La fase fredda arriva undici ore dopo e dura quaranta minuti, e la squadra entra su un terreno soltanto letale.\nLa sorgente è una cavità, e la cavità è rivestita, e il rivestimento non è naturale.",
+          "choices": [
+            {
+              "text": "Staccare il rivestimento.",
+              "to": "c1"
+            },
+            {
+              "text": "Entrare nella cavita.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Il guanto non brucia. Qualcosa gli viene messo dentro, di proposito, da qualcosa che non ha mani, e {leader} esce dal calore reggendo un oggetto freddo.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "La tuta regge fino all'uscita e cede nella camera stagna, che è il posto migliore in assoluto in cui una tuta possa cedere. Le scansioni raccolte valgono il ricambio.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Il drone e al margine del calore, posato rivolto verso l'esterno, con il registratore pieno e l'involucro riempito di qualcosa che a quella temperatura non dovrebbe esistere.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "La perdita finisce nel giornale con le altre dell'anno. I quattro minuti di riprese vengono copiati di nascosto da tre persone diverse prima che la nave raggiunga il sistema successivo.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "Si stacca a fogli, leggero come una lamina, e ogni foglio trattiene la temperatura come se avesse un'opinione in merito. Ce n'è abbastanza da rivestire una nave.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "La cavità è occupata, e la fase fredda non è una fase. È un'abitudine, e la squadra ci è appena entrata in mezzo.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "graveyard": {
+      "title": "Il lungo ancoraggio",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Qui ci sono undici navi, ormeggiate a {place} in fila ordinata, tutte diverse, nessuna proveniente da un registro che la nave abbia a bordo.\nNon sono relitti. Sono parcheggiate, e qualcuno ha spazzato {ground} tra l'una e l'altra.",
+          "choices": [
+            {
+              "text": "Salire a bordo della più vecchia.",
+              "to": "a"
+            },
+            {
+              "text": "Salire a bordo della più recente.",
+              "to": "b"
+            },
+            {
+              "text": "Scoprire chi spazza.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "La più vecchia è di pietra, o di qualcosa che è diventato pietra, e il suo portello è un foro tagliato a mano dall'esterno.\nDentro c'è una sola stanza, e la stanza è un nido, e viene usata da molto dopo che la nave ha smesso di volare.",
+          "choices": [
+            {
+              "text": "Frugare nel nido.",
+              "to": "a1"
+            },
+            {
+              "text": "Aspettare fuori chi ci vive.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "La più recente è qui da undici anni secondo il suo orologio e il suo scafo è in condizioni migliori di quello della nave della squadra.\nIl giornale di bordo finisce il giorno del loro arrivo, a metà frase, in mezzo a un inventario.",
+          "choices": [
+            {
+              "text": "Prendere le scorte della nave.",
+              "to": "b1"
+            },
+            {
+              "text": "Provare a rimetterla in servizio.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La spazzata avviene a un'ora fissa, e la squadra è appostata per vederla.\nCiò che esce a spazzare e piccolo, è vecchio, e fa tutto l'ancoraggio in novanta minuti, e si ferma a ogni nave a controllare la cima d'ormeggio.",
+          "choices": [
+            {
+              "text": "Offrirgli una cima d'ormeggio propria.",
+              "to": "c1"
+            },
+            {
+              "text": "Seguirlo fino a casa.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Sotto la lettiera ci sono quattrocento piccoli oggetti, ordinati per dimensione, e ognuno di essi viene da una nave diversa. Il migliore è l'ultimo della fila.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "Torna a casa alla fine del giro e non gradisce trovare la porta aperta.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "medium",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Undici anni di scorte, imballate da gente che sapeva il fatto suo, e la squadra ne prende quanto il lander riesce a sollevare.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "Il reattore si accende al terzo tentativo e la nave torna viva del tutto, ogni quadro verde, e poi non rilascia gli ormeggi, e nessun pannello spiega il perché.\nLa si rimette a dormire. Si lascia fare volentieri.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "Prende la cima, la prova, la avvolge come si deve, e ci ormeggia il lander, e poi consegna a {leader} la cosa che porta con se dall'arrivo della prima nave.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "Casa è un buco sotto l'ancoraggio, e dentro ci sono tutte le cime d'ormeggio mai cedute, impiombate di nuovo insieme, e gli attrezzi che le hanno impiombate.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "hollow": {
+      "title": "Non è piena",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "La massa non torna. Il corpo ha le dimensioni che dice il catalogo e pesa un terzo del dovuto, e l'impulso di rilevamento torna indietro da una parete interna.\nC'è un ingresso a {place}: un pozzo, dritto, scavato, con {remnant} al collare.",
+          "choices": [
+            {
+              "text": "Scendere nel pozzo.",
+              "to": "a"
+            },
+            {
+              "text": "Prima sondare tutto il corpo.",
+              "to": "b"
+            },
+            {
+              "text": "Allargare il pozzo con una carica e mandare il drone.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Quattrocento metri di pozzo, e poi si apre. L'interno del corpo è un unico spazio con il suolo che curva verso l'alto da ogni lato, e non è vuoto.\nQui dentro c'è il tempo atmosferico. Non dovrebbe esserci il tempo atmosferico.",
+          "choices": [
+            {
+              "text": "Attraversare fino al centro.",
+              "to": "a1"
+            },
+            {
+              "text": "Restare lungo la parete e mapparlo.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Il sondaggio richiede un giorno e ne rivela la forma: camere, e passaggi tra le camere, e una camera che non restituisce nulla, come se l'impulso entri e resti li.\n{wrongness}.",
+          "choices": [
+            {
+              "text": "Aprire la camera silenziosa.",
+              "to": "b1"
+            },
+            {
+              "text": "Sfruttare quelle che hanno risposto.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La carica apre il collare e il drone scende con il faro acceso. Rimanda undici minuti di un interno che nessuno potra mai visitare, e poi la telemetria finisce a metà fotogramma, senza nessuno dei soliti allarmi.",
+          "choices": [
+            {
+              "text": "Scendere a recuperarlo.",
+              "to": "c1"
+            },
+            {
+              "text": "Vendere le immagini e non tornare mai più.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Al centro c'è la cosa attorno a cui l'intero corpo è stato costruito, sospesa nel baricentro, in lenta rotazione, e lascia che {leader} ne prenda un pezzo senza opporre la minima resistenza.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "La mappatura richiede sei ore e vale ogni minuto: un rilievo interno completo di un mondo artificiale, con i suoi macchinari messi a nudo lungo la parete come un'anatomia.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Non è una camera. È un occupante, ed è stato ripiegato in quello spazio da più tempo di quanto il corpo sia in quest'orbita, e si dispiega.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "Le camere che rispondono sono magazzini, e i magazzini sono pieni, e chi li ha riempiti contava di tornare a prenderne il contenuto.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "Il drone è quaranta metri più in basso, intatto, e punta verso l'alto lungo il pozzo. Qualcosa lo ha posato con cura, gli ha messo qualcosa accanto, e se n'è andato.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "Undici minuti dell'interno di un mondo cavo si vendono a quanto si vende una piccola luna. L'acquirente non da un nome e non tratta, il che è già una risposta.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 10
+          }
+        }
+      }
+    },
+    "mirror": {
+      "title": "La seconda squadra",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Il segnale è la telemetria delle tute della squadra, cinque canali, intestazioni corrette, nomi dell'equipaggio corretti, e viene ricevuto da {place} undici minuti prima che la squadra vi atterri.\n{leader} atterra lo stesso.",
+          "choices": [
+            {
+              "text": "Seguire le tracce dell'altra squadra.",
+              "to": "a"
+            },
+            {
+              "text": "Sistemarsi e aspettare che arrivino.",
+              "to": "b"
+            },
+            {
+              "text": "Parlargli sul canale delle tute.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Le tracce sono gli stivali della squadra, nelle misure della squadra, impresse in {ground} prima che il lander toccasse terra.\nSi allontanano dal punto di atterraggio, fanno tutto ciò che la squadra sta per fare, e si fermano.",
+          "choices": [
+            {
+              "text": "Camminare fino a dove finiscono.",
+              "to": "a1"
+            },
+            {
+              "text": "Fare qualcosa che le tracce non hanno fatto.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Arrivano in orario, dalla direzione indicata dalla telemetria, in cinque, nelle stesse tute, con lo stesso passo della squadra.\nSi fermano a quaranta metri e aspettano che gli si rivolga la parola.",
+          "choices": [
+            {
+              "text": "Commerciare con loro.",
+              "to": "b1"
+            },
+            {
+              "text": "Non lasciarli avvicinare oltre.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Il canale è aperto in entrambi i sensi e la voce che ci sta sopra è quella di {leader}, in anticipo di mezzo secondo, che azzecca ogni parola prima che venga detta.\nChiede alla squadra di non venire a {place}. Lo fa con molta calma.",
+          "choices": [
+            {
+              "text": "Chiedere cosa succede la.",
+              "to": "c1"
+            },
+            {
+              "text": "Andarci.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Dove finiscono c'è un deposito, preparato da persone con le stesse mani, e un biglietto con la calligrafia di {leader} che dice solo: ne vale la pena, prendilo, non restare.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "{leader} si siede su {ground} e si rifiuta di muoversi per quattro minuti, per puro dispetto.\nFunziona. Le tracce smettono di precederli. Tutto ciò che è successo dall'atterraggio va rifatto, come si deve, e la squadra e stanca di una stanchezza che il sonno non tocca.",
+          "outcome": {
+            "kind": "harm",
+            "mag": "small",
+            "exp": 20
+          }
+        },
+        "b1": {
+          "text": "Commerciano lealmente, e duramente, e sanno esattamente di cosa la squadra può privarsi, che è la cosa più spaventosa dell'intero scambio.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "Si avvicinano.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "armor",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "Glielo dice. Ci mette quattro minuti e la squadra non ci va, e mentre tornano la voce li ringrazia, una volta, e si interrompe mezzo secondo prima del dovuto.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "c2": {
+          "text": "A {place} non c'è altro che {remnant} e una vista molto ampia, e tornano tutti, e il conteggio torna, e il giornale di bordo registrerà che il conteggio tornava.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 18
+          }
+        }
+      }
+    },
+    "predator": {
+      "title": "Qualcosa stava aspettando",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Il segnale è un transponder, standard di bordo, su una frequenza che nessuno usa da decenni, e si sta muovendo. Lentamente, su {ground}, lungo una linea che incrociera il cammino della squadra.\nSi ferma quando la squadra si ferma. Non è la prima volta che lo fa.",
+          "choices": [
+            {
+              "text": "Preparare un'imboscata e aspettarlo.",
+              "to": "a"
+            },
+            {
+              "text": "Aggirarlo e prenderlo alle spalle.",
+              "to": "b"
+            },
+            {
+              "text": "Trasmettere sulla stessa frequenza.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Due ore al riparo a {place}. Il transponder si accende all'ultima luce ed è portato, non indossato, da qualcosa grosso come una zampa di lander che si muove come se avesse tutto il tempo del mondo.\nTrascina una rete, e la rete è piena.",
+          "choices": [
+            {
+              "text": "Sparare.",
+              "to": "a1"
+            },
+            {
+              "text": "Lasciarlo passare e seguire la rete.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Prenderlo alle spalle funziona, nel senso che la squadra riesce a vederlo prima di essere vista.\nÈ accovacciato in una buca che si è scavato, ed è circondato da caschi di tuta, disposti in cerchio, tutti rivolti verso l'interno.",
+          "choices": [
+            {
+              "text": "Prendere un casco.",
+              "to": "b1"
+            },
+            {
+              "text": "Ritirarsi senza fare rumore.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "{leader} apre la vecchia frequenza e pronuncia la chiamata standard.\nLa risposta è la replica standard, parola per parola, con la voce di {leader}, e arriva da una sessantina di metri.",
+          "choices": [
+            {
+              "text": "Rispondere ancora.",
+              "to": "c1"
+            },
+            {
+              "text": "Andargli incontro.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Il primo colpo va a segno e ottiene solo che posi la rete.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 14
+          }
+        },
+        "a2": {
+          "text": "Trascina la rete a un deposito sotto uno strapiombo e la ripone con le altre. Ci sono quarant'anni di altre. La squadra ne prende una e sparisce prima che torni.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "b1": {
+          "text": "Dentro il casco c'è un nome stampigliato e nel collare un registratore con ancora undici secondi. Uscirne con entrambi è la camminata più dura che qualcuno faccia quell'anno.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "b2": {
+          "text": "Nessuno parla finché il portello del lander non è chiuso. Il transponder è ancora là fuori in movimento, e la nave registra la posizione e segna l'intero emisfero come un posto dove non tornare.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        },
+        "c1": {
+          "text": "Tre scambi e finisce le frasi registrate e comincia a costruirsene di sue, male, e il modo in cui sbaglia e ciò che tutti ricorderanno.\nSe ne va. Lascia qualcosa dietro di se, su {ground}, a metà strada.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "Aspettava da molto tempo che qualcuno gli camminasse incontro.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "ruins": {
+      "title": "Ciò che resta di loro",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "{place} ospita una città. Non un campo, non un avamposto: strade, canali di scolo, una piazza, e {remnant} al centro, dove starebbe un monumento.\nQui non è bruciato niente e non è crollato niente. Si sono semplicemente fermati, e {leader} e la prima cosa a percorrere queste strade da moltissimo tempo.",
+          "choices": [
+            {
+              "text": "Entrare nell'edificio più grande.",
+              "to": "a"
+            },
+            {
+              "text": "Seguire i canali di scolo verso il basso.",
+              "to": "b"
+            },
+            {
+              "text": "Leggere la piazza.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "È una sala, ed è piena di sedie rivolte a un palco, e sul palco c'è una macchina che ripete gli stessi sei secondi di qualcosa da quando ha corrente.\nOgni sedia è occupata. Non sono corpi. Sono le forme che i corpi lasciano in una stanza che nessuno ha più toccato.",
+          "choices": [
+            {
+              "text": "Far arrivare la macchina alla fine.",
+              "to": "a1"
+            },
+            {
+              "text": "Prendere la macchina.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "I canali sono asciutti, percorribili, e costruiti meglio delle strade sopra. Dopo duecento metri smettono di essere canali e diventano un corridoio.\n{sound}, da più avanti.",
+          "choices": [
+            {
+              "text": "Proseguire.",
+              "to": "b1"
+            },
+            {
+              "text": "Tornare indietro e sigillare l'ingresso.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "La piazza è un registro. Ogni superficie piana porta dei nomi, e i nomi sono in colonne, e le colonne sono datate, e le date si interrompono.\n{leader} capisce che l'ultima colonna non è un elenco di morti. È un turno di guardia.",
+          "choices": [
+            {
+              "text": "Scoprire a cosa davano il cambio.",
+              "to": "c1"
+            },
+            {
+              "text": "Copiare il registro e andarsene.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Ci vogliono nove minuti. È un messaggio, ed è una richiesta di perdono, e alla fine le sedie sono vuote in un modo in cui prima non lo erano, e tutta la squadra lo sente accadere.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "Esce dal palco in quattro pezzi e ogni pezzo vale più del lander. La sala è molto silenziosa mentre escono, e le sedie sono ancora occupate.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Il corridoio finisce a una porta chiusa da questo lato, a mano, in fretta, e ciò che hanno rinchiuso ha avuto moltissimo tempo per farci l'abitudine.",
+          "outcome": {
+            "kind": "battle",
+            "count": 2,
+            "mag": "large",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "La carica fa crollare il soffitto giusto sulla bocca del corridoio. Risalendo, la squadra stacca dalla parete una lastra di metallo lavorato: un cartello stradale, o una preghiera.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "Ciò che andava sorvegliato è sotto la piazza, ed è ancora lì, e l'ultimo nome del turno non ha mai avuto il cambio. La squadra glielo da, nell'unico modo rimasto, e porta su l'attrezzatura del posto.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "c2": {
+          "text": "Undicimila nomi nell'archivio della nave, nessuno dei quali si sa pronunciare. Qualcuno dell'equipaggio inizia a leggerli ad alta voce durante il viaggio, e non smette.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 16
+          }
+        }
+      }
+    },
+    "shrine": {
+      "title": "Il luogo custodito",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "A {place} c'è una struttura che nulla su questo mondo poteva costruire e che nulla su questo mondo ha toccato. È custodita. Qualcosa tiene pulito {ground} tutt'intorno.\nNe esce {sound}, in uno schema che {instrument} insiste essere una lingua.",
+          "choices": [
+            {
+              "text": "Entrare.",
+              "to": "a"
+            },
+            {
+              "text": "Lasciare qualcosa di proprio sul gradino.",
+              "to": "b"
+            },
+            {
+              "text": "Rilevarla da fuori senza toccare nulla.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "L'interno è una sola stanza e la stanza è molto più grande di quanto l'esterno consenta. La parete di fondo e lontanissima e davanti c'è una fila di {maker} in piedi, di spalle, in ordine perfetto.\nSono lì da abbastanza tempo da aver consumato solchi nel pavimento.",
+          "choices": [
+            {
+              "text": "Mettersi in fila.",
+              "to": "a1"
+            },
+            {
+              "text": "Prendere qualcosa dalla parete e correre.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "{leader} posa una scatoletta di razioni sul gradino, perché e ciò che c'è.\nLa scatoletta sparisce prima che la squadra abbia fatto dieci passi, e al suo posto, disposti con cura, ci sono attrezzi della misura giusta per mani che nessuno a bordo possiede.",
+          "choices": [
+            {
+              "text": "Prendere gli attrezzi.",
+              "to": "b1"
+            },
+            {
+              "text": "Lasciarli e posare qualcosa di meglio.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Tre ore di strumenti da quaranta metri. La struttura non ha giunture, non ha fondamenta, e una massa che cambia a seconda della direzione da cui la si misura.\nAl ritorno {leader} trova una traccia su {ground} che gira attorno a tutto il sito. E fresca.",
+          "choices": [
+            {
+              "text": "Seguire la traccia.",
+              "to": "c1"
+            },
+            {
+              "text": "Archiviare il rilievo e decollare.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "{leader} resta in fila per quattro minuti secondo l'orologio della tuta e sei ore secondo l'equipaggio di sopra. Davanti c'è una fessura, e ciò che sta dall'altra parte prende un ricordo e lascia qualcosa al suo posto.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 20
+          }
+        },
+        "a2": {
+          "text": "La fila si volta tutta insieme, e nessuno di loro ha il volto rivolto come i volti dovrebbero.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "large",
+            "reward": "artifact",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Si smontano e si rimontano in modi su cui l'officina della nave discutera per mesi. Due di essi hanno un uso che nessuno ha ancora trovato.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b2": {
+          "text": "La seconda offerta è una fotografia, la cosa più costosa che qualcuno abbia addosso.\nCiò che torna in cambio non è un oggetto. E un tratto di silenzio in mezzo alla squadra, e chiunque lo attraversi ne esce guarito.",
+          "outcome": {
+            "kind": "heal",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "c1": {
+          "text": "La traccia gira attorno al sito nove volte e poi punta dritta a un deposito interrato a un metro, imballato ed etichettato da chi si occupa delle pulizie, come in attesa di ritiro.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "c2": {
+          "text": "Il rilievo è il documento più prezioso che la nave abbia archiviato quest'anno, e ne discuteranno persone che non c'erano. Niente segue il lander verso l'alto.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    },
+    "signal": {
+      "title": "La cosa che sta contando",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Non è una chiamata di soccorso. È {tone}, e viene emesso da {place} {a|da quando il catalogo ha voci su questo sistema|da più tempo di quanto il catalogo ammetta}.\n{leader} scende alla sorgente. Il conteggio non cambia quando la squadra arriva, il che in qualche modo peggiora le cose.",
+          "choices": [
+            {
+              "text": "Rispondere con lo stesso schema.",
+              "to": "a"
+            },
+            {
+              "text": "Trovare il trasmettitore e aprirlo.",
+              "to": "b"
+            },
+            {
+              "text": "Disturbarlo.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "{leader} rimanda lo schema, in ritardo di un battito, sbagliato di proposito nell'ultima cifra.\nIl conteggio si ferma. Nove secondi dopo riparte, corretto, e adesso sta rispondendo all'errore invece di ripetersi.",
+          "choices": [
+            {
+              "text": "Tenere viva la conversazione.",
+              "to": "a1"
+            },
+            {
+              "text": "Spegnere la radio e allontanarsi.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Il trasmettitore e sepolto in {ground} con solo il collare in vista, e il collare è un portello. Si apre a mano. È stato costruito per aprirsi a mano.\nDentro: un meccanismo senza parti mobili, e {remnant} appoggiato sopra con cura, come un'offerta.",
+          "choices": [
+            {
+              "text": "Prendere il meccanismo.",
+              "to": "b1"
+            },
+            {
+              "text": "Prendere l'offerta e richiudere il portello.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "Il disturbatore va su un treppiede e la banda si appiattisce. Per undici minuti non c'è nulla su tutto lo spettro se non il respiro della squadra.\nPoi {hazard} si fa sentire, e il conteggio torna a tripla potenza.",
+          "choices": [
+            {
+              "text": "Tenere la posizione e bruciarlo.",
+              "to": "c1"
+            },
+            {
+              "text": "Ripiegare sul lander.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "Ci vogliono quattro ore per costruire un conteggio comune e altre due per scambiarsi dei nomi. Ciò che sta dall'altra parte non è vicino, non è vivo in nessun senso utile alla squadra, e regala a {leader} una serie di coordinate per il disturbo.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "a2": {
+          "text": "La radio si spegne. Il conteggio continua su {ground} alle loro spalle fino al lander, e la squadra fa gli ultimi cento metri più in fretta dei primi.",
+          "outcome": {
+            "kind": "none",
+            "mag": "small",
+            "exp": 14
+          }
+        },
+        "b1": {
+          "text": "Si solleva senza sforzo. Il conteggio si ferma, e ogni strumento che la squadra ha addosso segna la stessa ora al decimo di secondo, per la prima volta da quando hanno lasciato la Terra.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "large",
+            "exp": 14
+          }
+        },
+        "b2": {
+          "text": "Il portello si chiude dolcemente, come fanno le cose ben fatte. Il conteggio prosegue, e la squadra risale con qualcosa in un sacco per cui nessuno ha ancora una parola.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "armor",
+            "mag": "medium",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "Il disturbatore alla fine la spunta, e la sorgente muore con un rumore da respiro trattenuto e lasciato andare. La squadra poi tira fuori l'emettitore dalle scorie: è bellissimo, e vale una fortuna.",
+          "outcome": {
+            "kind": "gold",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "c2": {
+          "text": "Qualunque cosa possieda quel conteggio arriva al lander prima della squadra, ed e in piedi tra loro e il portello quando superano l'ultimo dosso.",
+          "outcome": {
+            "kind": "battle",
+            "count": 1,
+            "mag": "medium",
+            "reward": "gear",
+            "slot": "weapon",
+            "exp": 12
+          }
+        }
+      }
+    },
+    "swarm": {
+      "title": "La squadra di lavoro",
+      "start": "n0",
+      "nodes": {
+        "n0": {
+          "text": "Qui ci sono macchine, e sono occupate. Migliaia, nessuna più grande di una mano, che si muovono su {ground} a {place} in un lavoro che va avanti chiaramente da secoli.\nIgnorano completamente la squadra, il che non equivale a non averla notata.",
+          "choices": [
+            {
+              "text": "Capire cosa stiano costruendo.",
+              "to": "a"
+            },
+            {
+              "text": "Catturarne una.",
+              "to": "b"
+            },
+            {
+              "text": "Mettersi di traverso al loro lavoro.",
+              "to": "c"
+            }
+          ]
+        },
+        "a": {
+          "text": "Due ore di osservazione e lo schema si chiarisce. Non stanno costruendo. Stanno smontando qualcosa, molto lentamente, con molta cura, e dispongono i pezzi in ordine lungo una linea che corre fino all'orizzonte.\nLa cosa che stanno smontando è il mondo.",
+          "choices": [
+            {
+              "text": "Seguire la linea fino in fondo.",
+              "to": "a1"
+            },
+            {
+              "text": "Prendere un pezzo dalla linea.",
+              "to": "a2"
+            }
+          ]
+        },
+        "b": {
+          "text": "Sale nel guanto senza opporre resistenza, ripiega le zampe e si immobilizza.\nOgni altra macchina in vista si ferma nello stesso istante, resta ferma, e si volta verso il guanto.",
+          "choices": [
+            {
+              "text": "Posarla.",
+              "to": "b1"
+            },
+            {
+              "text": "Intascarla e camminare.",
+              "to": "b2"
+            }
+          ]
+        },
+        "c": {
+          "text": "{leader} posa una cassa di campionamento di traverso alla loro linea e si tira indietro.\nLo sciame si ferma, la considera per nove secondi, e poi la aggira. Passando, una di loro misura la cassa e ci scrive sopra la misura.",
+          "choices": [
+            {
+              "text": "Dargli qualcosa che valga la pena misurare.",
+              "to": "c1"
+            },
+            {
+              "text": "Riprendere la cassa e lasciarli lavorare.",
+              "to": "c2"
+            }
+          ]
+        },
+        "a1": {
+          "text": "L'altro capo è una catasta, ordinata per materiale, più alta del lander, e in cima c'è la prima cosa che abbiano mai tolto da questo mondo, etichettata in una notazione precedente allo sciame stesso.",
+          "outcome": {
+            "kind": "artifact",
+            "mag": "large",
+            "exp": 18
+          }
+        },
+        "a2": {
+          "text": "La linea colma il vuoto in undici secondi e per il resto non reagisce. Il pezzo è un blocco lavorato di qualcosa che l'analisi di bordo non sa nominare, e ce ne sono quattrocento chilometri.",
+          "outcome": {
+            "kind": "loot",
+            "mag": "large",
+            "exp": 12
+          }
+        },
+        "b1": {
+          "text": "Nell'istante in cui tocca {ground} l'intero campo torna al lavoro come se nulla fosse. Dove stava adesso c'è un piccolo oggetto che prima non c'era, ed è un dono, oppure una ricevuta.",
+          "outcome": {
+            "kind": "schrodingerite",
+            "mag": "medium",
+            "exp": 16
+          }
+        },
+        "b2": {
+          "text": "A quattrocento metri dal lander il campo decide cosa pensa del furto.",
+          "outcome": {
+            "kind": "battle",
+            "count": 3,
+            "mag": "medium",
+            "reward": "loot",
+            "exp": 12
+          }
+        },
+        "c1": {
+          "text": "La cesoia va sulla linea. La sommergono, la misurano, la smontano, e la rimontano migliorata, e la lasciano su {ground} puntata verso il lander.",
+          "outcome": {
+            "kind": "gear",
+            "slot": "weapon",
+            "mag": "large",
+            "exp": 16
+          }
+        },
+        "c2": {
+          "text": "La cassa torna con un numero sopra, in una base che nessuno usa, e lo sciame prosegue, e la squadra riparte prima che qualcuno debba scoprire cosa significhi quel numero.",
+          "outcome": {
+            "kind": "none",
+            "mag": "medium",
+            "exp": 14
+          }
+        }
+      }
+    }
+  },
+  "fallbackScenarios": [
+    "castaway",
+    "derelict",
+    "shrine",
+    "signal"
+  ]
+}

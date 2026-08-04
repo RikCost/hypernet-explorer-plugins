@@ -1,0 +1,256 @@
+/*:
+ * @plugindesc Displays the median level of map encounters in the map name display.
+ * @author Omni-Lex
+ * @version 1.3.0
+ * @target MZ
+ * @help
+ * ============================================================================
+ * OmniLex - Map Level Display
+ * ============================================================================
+ *
+ * This plugin automatically displays a median level for the current map
+ * based on the random encounters defined for it.
+ *
+ * When the player enters a map, the plugin will calculate the median level
+ * of all troop encounters and display it next to the map's name,
+ * for example: "Whispering Woods Lv. 15".
+ *
+ * If a map has no display name set, the plugin will use the map's actual
+ * name with any numeric prefix removed (e.g., "700 - Hardware store" 
+ * becomes "Hardware store").
+ *
+ * --- How to Set Up Troop Levels ---
+ *
+ * To set a level for a troop, you must follow a specific rule:
+ *
+ * 1. For a given Troop ID (e.g., Troop #5 in the database), you must define
+ * its level in the note box of the ENEMY with the SAME ID (e.g., Enemy #5).
+ *
+ * 2. The format in the enemy's note box must be:
+ * <Level:XX>
+ * (Where XX is the level number)
+ *
+ * For example, in the note box for Enemy #5:
+ * <Level:17>
+ *
+ * The plugin will read this number. If a troop encounter on the map
+ * (e.g., Troop #5) does not have a corresponding enemy with the same ID
+ * (Enemy #5) or that enemy does not have a valid <Level:X> tag, it will be
+ * ignored in the median calculation.
+ *
+ * If no valid troop levels can be found for a map, no level will be
+ * displayed.
+ *
+ */
+
+(() => {
+    'use strict';
+
+    // Alias Game_Map.setup to calculate the median level on map load.
+    const _Game_Map_setup = Game_Map.prototype.setup;
+    Game_Map.prototype.setup = function (mapId) {
+        _Game_Map_setup.call(this, mapId);
+        this.calculateMedianEncounterLevel();
+    };
+
+    // Add a new method to Game_Map to perform the calculation.
+    Game_Map.prototype.calculateMedianEncounterLevel = function () {
+        this._medianEncounterLevel = null;
+        const encounterList = this.encounterList();
+        if (!encounterList || encounterList.length === 0) {
+            return;
+        }
+
+        const troopLevels = [];
+        const levelRegex = /<Level:\s*(\d+)>/i;
+
+        // Use a Set to only process unique troop IDs, as the median should be
+        // based on the variety of troops, not encounter frequency.
+        const uniqueTroopIds = new Set(encounterList.map(encounter => encounter.troopId));
+
+        for (const troopId of uniqueTroopIds) {
+            // Per the request, check the enemy with the same ID as the troop.
+            const enemy = $dataEnemies[troopId];
+            if (enemy && enemy.note) {
+                const match = enemy.note.match(levelRegex);
+                if (match && match[1]) {
+                    troopLevels.push(parseInt(match[1], 10));
+                }
+            }
+        }
+
+        if (troopLevels.length > 0) {
+            troopLevels.sort((a, b) => a - b);
+            const mid = Math.floor(troopLevels.length / 2);
+            let median;
+            if (troopLevels.length % 2 === 0) {
+                // Even number of levels: average the two middle ones and round.
+                median = Math.round((troopLevels[mid - 1] + troopLevels[mid]) / 2);
+            } else {
+                // Odd number of levels: take the middle one.
+                median = troopLevels[mid];
+            }
+            this._medianEncounterLevel = median;
+        }
+    };
+
+    // Helper method to get the map name without numeric prefix
+    Game_Map.prototype.getCleanMapName = function () {
+        const mapInfo = $dataMapInfos[this._mapId];
+        if (!mapInfo || !mapInfo.name) {
+            return '';
+        }
+        // Remove numeric prefix pattern like "700 - " or "12 - " etc.
+        return mapInfo.name.replace(/^\d+\s*-\s*/, '');
+    };
+
+    // Alias Game_Map.displayName to append the calculated level.
+    const _Game_Map_displayName = Game_Map.prototype.displayName;
+    Game_Map.prototype.displayName = function () {
+        let mapName = _Game_Map_displayName.call(this);
+
+        // If display name is empty, fallback to cleaned map name
+        if (!mapName || mapName.trim() === '') {
+            mapName = this.getCleanMapName();
+        }
+
+        // Check for hardcoded biome name overrides for procedural maps
+        if (window.WorldGen && window.WorldGen.HardcodedBiomeNames) {
+            const procGenData = $gameSystem._procGenData;
+            if (procGenData && procGenData.originX !== undefined && procGenData.originY !== undefined) {
+                const coordKey = `${procGenData.originX},${procGenData.originY}`;
+                if (window.WorldGen.HardcodedBiomeNames[coordKey]) {
+                    mapName = window.WorldGen.HardcodedBiomeNames[coordKey];
+                }
+            }
+        }
+
+        // Check if player name is Test
+        let suffix = "";
+        if ($gameParty.leader() && $gameParty.leader().name() === "Test") {  // i18n-ignore  debug account name
+            const tileset = $gameMap.tileset();
+            if (tileset) {
+                suffix = ` [Tileset: ${tileset.id} - ${tileset.name}]`;  // i18n-ignore  debug suffix, Test account only
+            }
+        }
+
+        // Check if the map has a name and a median level was calculated.
+        if (mapName && this._medianEncounterLevel !== null) {
+            return `${mapName} Lv. ${this._medianEncounterLevel}${suffix}`;
+        }
+        return `${mapName}${suffix}`;
+    };
+
+    //-----------------------------------------------------------------------------
+    // Scene_Map
+    //
+    // Override the map name window creation to use our custom window.
+
+    const _Scene_Map_createMapNameWindow = Scene_Map.prototype.createMapNameWindow;
+    Scene_Map.prototype.createMapNameWindow = function () {
+        // Use our custom window instead of the default one
+        const rect = this.mapNameWindowRect();
+        this._mapNameWindow = new Window_MapNameWithBorder(rect);
+        this.addChild(this._mapNameWindow);
+    };
+
+    //-----------------------------------------------------------------------------
+    // Window_MapNameWithBorder
+    //
+    // A custom window that displays the map name with a crisp HTML/CSS parchment overlay.
+
+    function _msgGetScale() {
+        const el = document.getElementById('gameCanvas');
+        if (!el) return { sx: 1, sy: 1, ox: 0, oy: 0 };
+        const r = el.getBoundingClientRect();
+        return {
+            sx: r.width / Graphics.width,
+            sy: r.height / Graphics.height,
+            ox: r.left,
+            oy: r.top
+        };
+    }
+
+    class Window_MapNameWithBorder extends Window_MapName {
+        initialize(rect) {
+            super.initialize(rect);
+            this.x = 20;
+            this.visible = false;
+
+            // Remove stale overlay if any
+            const old = document.getElementById('html-map-name-overlay');
+            if (old) old.remove();
+
+            const root = document.createElement('div');
+            root.id = 'html-map-name-overlay';
+            
+            this._htmlMapNameRoot = root;
+            document.body.appendChild(root);
+        }
+
+        destroy(options) {
+            if (this._htmlMapNameRoot && this._htmlMapNameRoot.parentNode) {
+                this._htmlMapNameRoot.parentNode.removeChild(this._htmlMapNameRoot);
+            }
+            this._htmlMapNameRoot = null;
+            super.destroy(options);
+        }
+
+        update() {
+            super.update();
+            // Keep the canvas window hidden
+            this.visible = false;
+
+            if (!this._htmlMapNameRoot) return;
+
+            const s = this._htmlMapNameRoot.style;
+            const opacity = this.contentsOpacity;
+
+            // Hidden case (the common one): only the map-name fade being 0. Avoid
+            // recomputing displayName() and rewriting styles every frame — just
+            // hide once on the transition to hidden.
+            if (opacity <= 0) {
+                if (this._htmlShown) {
+                    s.display = 'none';
+                    this._htmlShown = false;
+                }
+                return;
+            }
+
+            const text = $gameMap.displayName();
+            if (!text) {
+                if (this._htmlShown) {
+                    s.display = 'none';
+                    this._htmlShown = false;
+                }
+                return;
+            }
+
+            // Reposition/restyle only when the text or layout inputs change (map
+            // change / resize), not every frame. Scale is captured here and reused.
+            const sc = _msgGetScale();
+            const layoutSig = text + '|' + sc.sx + ',' + sc.sy + ',' + sc.ox + ',' + sc.oy +
+                '|' + this.x + ',' + this.y;
+            if (!this._htmlShown || layoutSig !== this._htmlLayoutSig) {
+                this._htmlLayoutSig = layoutSig;
+                this._htmlMapNameRoot.textContent = text;
+                s.display = 'block';
+                s.left = (sc.ox + this.x * sc.sx) + 'px';
+                s.top = (sc.oy + this.y * sc.sy) + 'px';
+                const padX = Math.round(24 * sc.sx);
+                const padY = Math.round(10 * sc.sy);
+                s.padding = `${padY}px ${padX}px`;  // i18n-ignore  css value
+                const scaledFont = Math.round(24 * sc.sy * 0.85);
+                s.fontSize = scaledFont + 'px';
+                this._htmlShown = true;
+            }
+
+            // Opacity tracks the engine fade every frame.
+            s.opacity = (opacity / 255).toString();
+        }
+    }
+
+    // Make the class globally accessible
+    window.Window_MapNameWithBorder = Window_MapNameWithBorder;
+
+})();

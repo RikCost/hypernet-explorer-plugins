@@ -1,0 +1,13 @@
+{
+  "title": "Diario di Viaggio",
+  "pages": "Pagine",
+  "back": "Indietro",
+  "newPage": "Nuova Pagina",
+  "deletePage": "Strappa Pagina",
+  "editorHint": "Scrivi • Esc per le pagine",
+  "listHint": "Invio per aprire • Esc per chiudere",
+  "emptyPage": "Pagina",
+  "emptyPreview": "(pagina vuota)",
+  "emptyList": "Nessuna pagina.",
+  "untitled": "Senza titolo"
+}

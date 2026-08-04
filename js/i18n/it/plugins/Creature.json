@@ -1,0 +1,17 @@
+{
+  "selectABattler": "Seleziona un battler",
+  "baseline": "Base",
+  "hybrid": "Ibrido",
+  "selectAnArchetype": "Seleziona un archetipo...",
+  "selectCreationMode": "Seleziona Modalità",
+  "selectOneOrTwoArchetypes": "Seleziona uno o due archetipi",
+  "selectHybridArchetype": "Seleziona Archetipo Ibrido",
+  "selectABattlerImage": "Seleziona Immagine Battler",
+  "selectACharacterSprite": "Seleziona Sprite Personaggio",
+  "custom3D": "Personalizzato (3D)",
+  "skillFallback": "Abilità {id}",
+  "ui": {
+    "primaryBadge": "Pri",
+    "secondaryBadge": "Sec"
+  }
+}

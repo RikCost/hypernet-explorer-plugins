@@ -1,0 +1,324 @@
+{
+  "idle": {
+    "aquaticfish": [
+      "{name} nuota felice.",
+      "{name} soffia una scia di bollicine."
+    ],
+    "abyssalleviathan": [
+      "{name} ondeggia nel buio, senza badarti.",
+      "{name} emette un brontolio lontano."
+    ],
+    "amphibian": [
+      "{name} se ne sta in una pozza umida, sbattendo le palpebre.",
+      "{name} gracida piano tra sé."
+    ],
+    "frog": [
+      "{name} gracida soddisfatto.",
+      "{name} salta in un cerchietto."
+    ],
+    "octopus": [
+      "{name} arriccia i tentacoli e ti osserva.",
+      "{name} cambia colore, indifferente."
+    ],
+    "crustacean": [
+      "{name} fa schioccare le chele oziosamente.",
+      "{name} scivola di lato e aspetta."
+    ],
+    "snail": [
+      "{name} avanza lentissimo, lasciando una scia lucida.",
+      "{name} si ritira a metà nel guscio."
+    ],
+    "turtle": [
+      "{name} si ritrae e si crogiola pigramente.",
+      "{name} sbadiglia e si accomoda."
+    ],
+    "serpent": [
+      "{name} si arrotola e fa guizzare la lingua.",
+      "{name} ondeggia dolcemente, osservando."
+    ],
+    "reptilian": [
+      "{name} si scalda al sole, immobile.",
+      "{name} ti sbircia con un occhio assonnato."
+    ],
+    "insectoid": [
+      "{name} ronza qua e là.",
+      "{name} sfrega le zampe anteriori."
+    ],
+    "insectswarm": [
+      "{name} ronza in una nube pigra.",
+      "{name} vortica senza meta."
+    ],
+    "spider": [
+      "{name} armeggia con un filo di seta.",
+      "{name} tamburella una zampa e aspetta."
+    ],
+    "spiderhumanhybrid": [
+      "{name} fila tela tra le dita, distratto.",
+      "{name} fa schioccare piano le zanne."
+    ],
+    "scorpion": [
+      "{name} abbassa la coda e riposa.",
+      "{name} fa schioccare le pinze e resta fermo."
+    ],
+    "segmentworm": [
+      "{name} ondeggia lento nella terra.",
+      "{name} si interra un poco e aspetta."
+    ],
+    "bird": [
+      "{name} si liscia le piume.",
+      "{name} cinguetta qualche nota oziosa."
+    ],
+    "bat": [
+      "{name} pende a testa in giù, mezzo addormentato.",
+      "{name} svolazza pigramente sul posto."
+    ],
+    "bacterial": [
+      "{name} si divide in silenzio, ignorandoti.",
+      "{name} pulsa di un debole bagliore."
+    ],
+    "beast": [
+      "{name} annusa l'aria e sbadiglia.",
+      "{name} si gratta e si sdraia."
+    ],
+    "rabbit": [
+      "{name} muove il nasino e rosicchia.",
+      "{name} si pulisce le lunghe orecchie."
+    ],
+    "horse": [
+      "{name} agita la coda e bruca.",
+      "{name} sbuffa piano."
+    ],
+    "elephant": [
+      "{name} sventola le orecchie e resta calmo.",
+      "{name} barrisce una nota gentile."
+    ],
+    "hellhound": [
+      "{name} ansima, braci tra le fauci, ma resta fermo.",
+      "{name} gira una volta e si sdraia."
+    ],
+    "bird_of_prey": [
+      "{name} osserva dall'alto, immobile.",
+      "{name} arruffa le piume."
+    ],
+    "plant": [
+      "{name} ondeggia in una brezza che non senti.",
+      "{name} volge le foglie verso la luce."
+    ],
+    "tree": [
+      "{name} scricchiola piano e resta radicato.",
+      "{name} fa frusciare i rami."
+    ],
+    "mushroom": [
+      "{name} rilascia uno sbuffo di spore innocue.",
+      "{name} se ne sta quieto nell'umido."
+    ],
+    "scarecrow": [
+      "{name} pende inerte dal suo palo.",
+      "{name} sbatte al vento."
+    ],
+    "slime": [
+      "{name} traballa e gorgoglia.",
+      "{name} ondeggia sul posto."
+    ],
+    "spherical": [
+      "{name} rotola avanti e indietro dolcemente.",
+      "{name} canticchia tra sé."
+    ],
+    "ghost": [
+      "{name} fluttua e geme sommessamente.",
+      "{name} tremola, senza badarti."
+    ],
+    "undead": [
+      "{name} si trascina senza meta.",
+      "{name} geme e resta immobile."
+    ],
+    "skeleton": [
+      "{name} fa tintinnare le ossa e aspetta.",
+      "{name} tamburella le costole."
+    ],
+    "constructedundead": [
+      "{name} ha spasmi di vita prestata, ma non fa nulla.",
+      "{name} scricchiola e si placa."
+    ],
+    "vampire": [
+      "{name} si guarda le unghie, annoiato.",
+      "{name} ti osserva con vaga curiosità."
+    ],
+    "voidspawn": [
+      "{name} vibra di una quieta statica.",
+      "{name} fissa il nulla."
+    ],
+    "demon": [
+      "{name} sogghigna ma non si muove.",
+      "{name} agita la coda, disinteressato."
+    ],
+    "wingeddemon": [
+      "{name} ripiega le ali e aspetta.",
+      "{name} aleggia pigramente."
+    ],
+    "angel": [
+      "{name} canticchia un inno lontano.",
+      "{name} veglia su di te, sereno."
+    ],
+    "ophanim": [
+      "{name} ruota lento, anelli di luce in giro.",
+      "{name} risplende di calma luminosità."
+    ],
+    "fairy": [
+      "{name} svolazza, ridacchiando.",
+      "{name} sparge scintille innocue."
+    ],
+    "elemental": [
+      "{name} luccica sul posto.",
+      "{name} pulsa dolcemente."
+    ],
+    "fireelemental": [
+      "{name} crepita e tremola caldo.",
+      "{name} danza come un falò."
+    ],
+    "waterelemental": [
+      "{name} ondeggia e lambisce quieto.",
+      "{name} ruota in un gorgo calmo."
+    ],
+    "thunderelemental": [
+      "{name} scintilla piano, innocuo.",
+      "{name} crepita di statica oziosa."
+    ],
+    "stormelemental": [
+      "{name} fa girare una folata gentile attorno a sé.",
+      "{name} rimbomba flebile."
+    ],
+    "darkelemental": [
+      "{name} cova ombra, ma resta fermo.",
+      "{name} fluttua in una quieta penombra."
+    ],
+    "sacredelemental": [
+      "{name} brilla di una luce calma e pacifica.",
+      "{name} canticchia sereno."
+    ],
+    "metalelemental": [
+      "{name} tintinna e si placa.",
+      "{name} riflette la luce, immobile."
+    ],
+    "crystalentity": [
+      "{name} risuona flebile.",
+      "{name} rifrange la luce, fermo."
+    ],
+    "golem": [
+      "{name} sta come una statua.",
+      "{name} stride piano e aspetta."
+    ],
+    "robot": [
+      "{name} resta inattivo con un basso ronzio elettronico.",
+      "{name} lampeggia una spia, in attesa."
+    ],
+    "drone": [
+      "{name} aleggia sul posto, scandagliando pigro.",
+      "{name} emette un bip e aspetta."
+    ],
+    "roboticdefender": [
+      "{name} mantiene la posizione, armi abbassate.",
+      "{name} esegue una diagnostica silenziosa."
+    ],
+    "turret": [
+      "{name} ruota oziosa, senza bersaglio.",
+      "{name} spegne la canna."
+    ],
+    "mineral": [
+      "{name} sta inerte.",
+      "{name} luccica in silenzio."
+    ],
+    "chestmimic": [
+      "{name} se ne sta lì, identico a un baule innocuo.",
+      "{name} scricchiola il coperchio e resta fermo."
+    ],
+    "trashcreature": [
+      "{name} fruga dentro sé stesso, borbottando.",
+      "{name} tintinna e si accascia in un mucchio."
+    ],
+    "dragon": [
+      "{name} ripiega le ali e ti osserva, indifferente.",
+      "{name} soffia una pigra voluta di fumo."
+    ],
+    "hydra": [
+      "{name} ha le teste che bisticciano tra loro.",
+      "{name} si arrotola e riposa."
+    ],
+    "phoenix": [
+      "{name} si liscia le piume ardenti.",
+      "{name} cova caldo, in pace."
+    ],
+    "unicorn": [
+      "{name} bruca tranquillo, corno abbassato.",
+      "{name} scuote la criniera e osserva."
+    ],
+    "manticore": [
+      "{name} si lecca una zampa e si sdraia.",
+      "{name} agita la coda, disinteressata."
+    ],
+    "minotaur": [
+      "{name} scalpita ma non carica.",
+      "{name} sbuffa e resta fermo."
+    ],
+    "centaur": [
+      "{name} batte uno zoccolo e aspetta.",
+      "{name} abbassa l'arco, a suo agio."
+    ],
+    "gorgon": [
+      "{name} ha i serpenti che sibilano piano, poi si calmano.",
+      "{name} distoglie lo sguardo, innocua."
+    ],
+    "goblin": [
+      "{name} si agita e borbotta tra sé.",
+      "{name} stuzzica il terreno, annoiato."
+    ],
+    "gnome": [
+      "{name} armeggia con un aggeggio.",
+      "{name} canticchia una canzone di lavoro."
+    ],
+    "elven": [
+      "{name} sta in piedi con grazia, indifferente.",
+      "{name} ti guarda con occhi calmi."
+    ],
+    "ogre": [
+      "{name} si gratta la pancia e sbadiglia.",
+      "{name} grugnisce e si siede."
+    ],
+    "armoredknight": [
+      "{name} si appoggia alla lama, visiera abbassata.",
+      "{name} sta sull'attenti in silenzio."
+    ],
+    "humanoid": [
+      "{name} si sposta da un piede all'altro e aspetta.",
+      "{name} si guarda intorno, indifferente."
+    ],
+    "doubleheadedhumanoid": [
+      "{name} ha le due teste che chiacchierano tra loro.",
+      "{name} alza tutte le spalle."
+    ],
+    "mutant": [
+      "{name} ha spasmi strani, ma resta fermo.",
+      "{name} borbotta tra sé."
+    ],
+    "totem": [
+      "{name} sta silenzioso e vigile.",
+      "{name} canticchia una nota antica."
+    ],
+    "tentacledcreature": [
+      "{name} agita pigramente i tentacoli.",
+      "{name} si arriccia su sé stesso e aspetta."
+    ],
+    "spikymonster": [
+      "{name} si rizza, poi rilassa gli aculei.",
+      "{name} si raggomitola e riposa."
+    ],
+    "default": [
+      "{name} ti osserva con calma, senza muoversi.",
+      "{name} resta dov'è, in pace.",
+      "{name} sembra felice di essere lasciato in pace."
+    ]
+  },
+  "cmd": {
+    "talk": "Parla"
+  }
+}

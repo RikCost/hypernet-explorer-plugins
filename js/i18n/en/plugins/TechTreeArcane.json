@@ -1,0 +1,74 @@
+{
+  "name": "Arcane",
+  "blurb": "A discipline lost in the Collapse and being reconstructed by survey and measurement: field strengths, tolerances, variance against distance from a line. The false leads are kept in the record because they were measured too.",
+  "nodes": {
+    "arc_leyline": {
+      "name": "Leyline Cartography",
+      "desc": "A survey of the arcane current in the crust, run with three instruments: a dip needle that reads the vertical component, brine probes sunk at intervals to log conductivity against depth, and a compass whose deviation is repeatable and therefore usable as a bearing. Walked on a grid, the three yield a line's course, its depth, and its throughput to within a few percent. Every working recorded afterwards is specified as a distance and a bearing from a surveyed line, because no measurement of a working means anything without one."
+    },
+    "arc_tradeoff": {
+      "name": "The Central Tradeoff",
+      "desc": "The central result of the survey, measured over some four hundred repetitions at graded distances. Ambient field falls roughly as the inverse square of the distance from a line, while the coefficient of variation of a working's radius, duration and target rises with proximity: on the line itself the same rite delivers between a third and four times its nominal output, and at two hundred paces it repeats to within three percent of a much smaller figure. There is no distance at which both are favourable. Battlemages work the near field and hospitals the far, and the choice is a choice of variance."
+    },
+    "arc_distillation": {
+      "name": "Arcane Essence Distillation",
+      "desc": "Runoff drawn from within ten paces of a line is concentrated by repeated freezing and decanting, some forty cycles, each discarding the fraction that solidifies. The sealed vial that results reads as a point source strong enough to pull a compass off true at four metres, holds its charge with a leak rate under one percent a month, and can be metered out by volume, so an expenditure can be stated in millilitres instead of in intention. Charge density is proportional to the yield of the source line, and no process is known that raises it further."
+    },
+    "arc_dead_flats": {
+      "name": "The Dead-Magic Flats",
+      "desc": "A basin where the ambient field reads below the threshold of the dip needle across some sixty square kilometres, with no line within a day's walk. In it the radius, duration and target of a working are linear in the mana spent, with residuals under two percent across the whole range, and the same rite repeats to within a hand's breadth on consecutive days. It is the reference frame: a spell is calibrated here, its coefficients are recorded here, and its behaviour anywhere else is quoted as a departure from the figures taken in the flats."
+    },
+    "arc_names_power": {
+      "name": "Names Are Power",
+      "desc": "A true name binds by orthography. The incantation has to be uttered as one fused token: any seam, any pause longer than about eighty milliseconds, any inserted vowel opens a fault at which the binding fails. Pronunciation is the parser, and a malformed token does not fail quietly, since the channel is already open when the fault is detected and the working discharges back along it into the speaker. Recorded failure modes are graded by where in the token the seam falls, and the recoil is measured in the same units as the intended output."
+    },
+    "arc_fidelity": {
+      "name": "Ritual Fidelity",
+      "desc": "A class of workings that draw no measurable mana at all, paying in preparation time instead. The diagram, the wording and the hour must be reproduced inside tolerance: a sigil displaced by more than about a finger's width, or an hour missed by more than a quarter, voids the working entirely. There is no partial output and no proportional degradation, so the yield curve against fidelity is a step. Duration scales with the time spent laying the diagram, so the method is usable in the dead flats and unusable under pressure."
+    },
+    "arc_charge": {
+      "name": "Ethereal Charge-Holding",
+      "desc": "Aether solidified under pressure holds a stored charge with a measured half-life of four to seven months, against hours for wood and minutes for worked metal, which bleed through their own conductivity. The shard is inert until a channel is opened to it and takes charge at a rate limited by the cross-section of the contact. It is the standard reservoir stage: anything intended to work away from a line is specified by the capacity of the shard it carries and the draw its channel permits."
+    },
+    "arc_dream_prep": {
+      "name": "Dream Preparation",
+      "desc": "Spell selection performed during sleep draws on the field of the dreaming instead of the local line, so the preparation costs nothing at the site and works in the flats. The set chosen is held loaded on waking. Selection fidelity is the defect: across logged trials, between a third and a half of the intended set is present on waking, the remainder replaced by workings the sleeper knows but did not choose, and there is no way to inspect the loaded set before it is cast."
+    },
+    "arc_sympathetic": {
+      "name": "Sympathetic Coupling",
+      "desc": "A focus that shares material or history with a target couples to it, so the working is addressed to the focus and resolves on the target with no measured dependence on separation out to the limit of the survey. Coupling strength scales with the specificity of the link and is roughly logarithmic in it: a garment gives a weak coupling, a personal name a stronger one, hair and blood the strongest recorded. The coupling is symmetric, and nothing in the method prevents the far end from being the one that addresses the focus."
+    },
+    "arc_geomancy_porphyrin": {
+      "name": "Porphyrin and the Oil Theory",
+      "desc": "Every crude oil reservoir carries bound petrodemonic entities, and the porphyrins already present in the crude thread a channel between reservoir, blood offering and leyline. Throughput exceeds a surveyed line by two orders of magnitude and does not decline with draw, since the reservoir is not the source. The channel conducts in both directions and has no metering stage, so the standard installation is a length of line with a break in it, and the recorded incidents are all incidents of reverse flow."
+    },
+    "arc_convokation": {
+      "name": "Convokation of the Seventy-Two",
+      "desc": "A sealed ring, seventy-two authenticated seals laid in the prescribed order and an unbroken recitation bind and command the whole hierarchy in one working. Runtime is between three and nine days depending on the order chosen, the recitation may not be interrupted for longer than it takes to breathe, and relief operators cannot be substituted mid-rite because the binding is keyed to one voice. The recorded failures are failures of the operator: exhaustion, a seal laid out of sequence, a name given in the wrong case."
+    },
+    "arc_metamagic": {
+      "name": "Metamagic Sublimation",
+      "desc": "Every physical component of a rite, chalk, spoken word, focus and hour, is replaced by an imagined equivalent held in working memory for the duration. With no physical substrate the tolerances that govern every lower method do not apply: the diagram cannot be displaced because it is not anywhere, and output stops tracking distance from a line. What it tracks instead is the operator, and the failure modes recorded are all of them failure modes of the operator."
+    },
+    "arc_crystal_healing": {
+      "name": "Crystal Healing",
+      "desc": "Coloured quartz laid on the body at points fixed by tradition, on a stated mechanism by which the lattice focuses ambient field into tissue. Instrumented on a strong line, the stones do concentrate a field of a few percent above ambient at the surface, falling below the detection threshold at two centimetres of depth. Off a line, ambient is under threshold to begin with and the concentration is of nothing. Paired trials against inert glass of the same colour and weight return the same reported relief in both arms."
+    },
+    "arc_talking_board": {
+      "name": "The Talking Board",
+      "desc": "A planchette on a low-friction board under the fingers of several sitters spells out letters. Blindfolding the sitters, or rotating the board without telling them, collapses the output into nonsense, which places the drive in the ideomotor effect: unconscious muscular output summed across hands, with the sitter who knows the answer supplying it. On a strong line a residue of sessions produces output that survives the blindfold, at a rate a little above what the letter frequencies alone would give. From inside the session the two cases are indistinguishable, and no sitter has ever called which one they were in."
+    },
+    "arc_spirit_photography": {
+      "name": "Spirit Photography",
+      "desc": "An ethereal shard wired across the plate is meant to sensitise the emulsion to the field. Frame-by-frame examination of the exposures accounts for the features by double exposure, lens flare, emulsion defects and shutter bounce, in that order of frequency; the faces are supplied by the viewer, and control plates shot with the shard removed produce them at the same rate. Where the shard does contribute, the difference between exposed and control plates stays under the grain noise of the emulsion, so no amount of printing will lift it out."
+    },
+    "arc_seventytwo_seals": {
+      "name": "The Seventy-Two Seals",
+      "desc": "Each of the seventy-two names has to be matched to its authenticated seal before the ring can be closed. The work is recovery and verification: seals are dug out of ruins or transcribed from dream, collated against the known forgeries, and checked for the two features the forgeries reproduce wrongly, the stroke order and the closure of the outer band. A single unverified seal voids the entire convocation at the point it is reached, with the ring already open, so verification is done before the ring is drawn and never during."
+    },
+    "arc_imagination_discipline": {
+      "name": "The Discipline of Pure Imagination",
+      "desc": "The rite must be held whole in the mind, without drift, for as long as it takes to run. Training is measured as unbroken hold time under distraction, starting at seconds and reaching hours over years, with an examination that adds noise, cold and interruption. The failure mode is not a failed working: the imagined substrate is what the operator is standing on while the rite runs, and the recorded cases of drift past a certain depth end with an operator who is still breathing and does not come back."
+    }
+  }
+}

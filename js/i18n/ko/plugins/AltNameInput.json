@@ -1,0 +1,34 @@
+{
+  "script": {
+    "latin": "",
+    "latinExt": "",
+    "cyrillic": "",
+    "japanese": "",
+    "pinyin": "",
+    "zhuyin": "",
+    "hangul": "",
+    "symbols": ""
+  },
+  "btn": {
+    "halfWidth": "",
+    "fullWidth": "",
+    "clearBuffer": "",
+    "nextPage": "",
+    "defaultName": "",
+    "insertSpace": "",
+    "backspace": "",
+    "clearInput": "",
+    "prevPage": ""
+  },
+  "incantation": "",
+  "ui": {
+    "yourNameIs": "",
+    "space": "",
+    "backspace": "",
+    "synchronizeName": "",
+    "translationLayers": "",
+    "modifiersNavigation": "",
+    "abort": "",
+    "continue": ""
+  }
+}

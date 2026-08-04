@@ -1,0 +1,84 @@
+{
+  "menuCommand": "",
+  "mode": "",
+  "modeNormal": "",
+  "modeChaos": "",
+  "cheatMeterTitle": "",
+  "cheatMeterGain": "",
+  "cheatModeOn": "",
+  "cheatModeOff": "",
+  "cheatModeLeft": "",
+  "pressShift": "",
+  "chargeHint": "",
+  "blackStuck": "",
+  "blackPlays": "",
+  "blackPlaysNormally": "",
+  "whitePlays": "",
+  "whiteCheats": "",
+  "multiMoveStep": "",
+  "whiteWiped": "",
+  "blackWiped": "",
+  "chaosPiece": {
+    "bomb": "",
+    "egg": "",
+    "mushroom": "",
+    "chest": "",
+    "fish": "",
+    "campfire": "",
+    "stew": "",
+    "jug": "",
+    "candle": "",
+    "soda": ""
+  },
+  "taunt": {
+    "colorChange": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "relocate": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "transform": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "spawnPiece": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "spawnChaos": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "drain": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "multiMove": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "partsUnknown": "luoghi ignoti",
+  "jobFallback": "Lavoro {id}",
+  "moveReason": {
+    "bornHere": "nato qui",
+    "lookingForWork": "in cerca di lavoro",
+    "followingFamily": "al seguito della famiglia",
+    "chasingLove": "dietro a una storia d'amore",
+    "fleeingTrouble": "in fuga dai guai",
+    "freshStart": "per ricominciare da capo",
+    "cheapHousing": "attirato dagli affitti bassi",
+    "fallingOut": "dopo una rottura",
+    "changeOfAir": "per cambiare aria"
+  },
+  "marital": {
+    "married": "Sposato",
+    "dating": "Fidanzato",
+    "divorced": "Divorziato",
+    "widowed": "Vedovo",
+    "single": "Single"
+  },
+  "outcome": {
+    "broke up": "lasciati",
+    "divorced": "divorziati",
+    "abandoned": "abbandonato",
+    "wasAbandoned": "abbandonato",
+    "widowed": "vedovanza"
+  },
+  "event": {
+    "moved": "si è trasferito a {place}, {reason}",
+    "convictedSentenced": "condannato per {crime} a {days} giorni",
+    "convicted": "condannato per {crime}, {days} giorni di pena",
+    "arrestedNotConvicted": "arrestato per {crime} ma mai condannato",
+    "arrestedReleased": "arrestato per {crime} ma rilasciato senza condanna",
+    "caughtCommitting": "sorpreso a commettere {crime}",
+    "caughtRedHanded": "colto in flagrante: {what}",
+    "releasedFromPrison": "uscito di prigione dopo aver scontato la pena",
+    "servedAndReleased": "ha scontato la pena ed è stato rilasciato",
+    "retired": "andato in pensione a {age} anni dopo una vita di lavoro",
+    "changedJob": "ha lasciato il vecchio impiego per lavorare come {job}",
+    "foundWork": "ha trovato lavoro come {job}",
+    "lostJob": "ha perso il posto di {job} a causa della condanna",
+    "married": "ha sposato {name}",
+    "divorced": "ha divorziato da {name}",
+    "brokeUpWith": "si è lasciato con {name}",
+    "wasAbandonedBy": "è stato abbandonato da {name}",
+    "abandonedPartner": "ha abbandonato {name} senza voltarsi indietro",
+    "startedSeeing": "ha iniziato a frequentare {name}",
+    "bought": "ha comprato {item}",
+    "worldviewShifted": "la sua visione del mondo è cambiata"
+  },
+  "bio": {
+    "noLife": "{name}: nessuna vita registrata.",
+    "header": "{name}, {age} anni, nato il {date} a {place}.",
+    "hasLivedIn": "Ha vissuto a: {path}.",
+    "settledIn": "Si è stabilito a {place} nel {year}, {reason}.",
+    "neverLeft": "Non ha mai lasciato {place}.",
+    "inPrison": "Attualmente in prigione (rilascio: {date}).",
+    "retired": {
+      "one": "In pensione dopo una carriera con un solo impiego.",
+      "other": "In pensione dopo una carriera con {n} impieghi."
+    },
+    "worksAs": "Lavora come {job} (dal {year}).",
+    "betweenJobs": "Al momento senza lavoro.",
+    "pastWork": "Lavori passati: {jobs}.",
+    "pastJob": "{job} ({from}–{to})",
+    "marriedTo": "Sposato con {name}.",
+    "seeing": "Frequenta {name}.",
+    "formerPartner": "Ex partner: {name} ({from}–{to}, {outcome}).",
+    "cleanRecord": "Fedina penale pulita.",
+    "criminalRecord": "Precedenti penali: {convictions} ({served} scontate), l'ultima: {crime} ({year}).",
+    "convictionCount": {
+      "one": "1 condanna",
+      "other": "{n} condanne"
+    },
+    "sentenceCount": {
+      "one": "1 pena",
+      "other": "{n} pene"
+    },
+    "unsolved": {
+      "one": "Sospettato in 1 caso irrisolto.",
+      "other": "Sospettato in {n} casi irrisolti."
+    },
+    "standing": "Reputazione sociale: {value}/100."
+  }
+}

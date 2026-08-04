@@ -1,0 +1,30 @@
+{
+  "startingSpecializations": "Specializzazioni Iniziali",
+  "levelUpList": "Lista Abilità",
+  "stats": "Statistiche",
+  "skillCategories": "Categorie Abilità",
+  "prestige": "Prestigio",
+  "confirmClass": "Conferma classe",
+  "cancel": "Annulla",
+  "noLevelUpSkills": "Nessuna abilità di livello per questa classe.",
+  "noSkillCategories": "Nessuna categoria di abilità definita.",
+  "primary": "Primarie:",
+  "secondary": "Secondarie:",
+  "element": {
+    "1": "Fisico",
+    "2": "Fuoco",
+    "3": "Ghiaccio",
+    "4": "Fulmine",
+    "5": "Acqua",
+    "6": "Petro",
+    "7": "Vento",
+    "8": "Sacro",
+    "9": "Maledetto"
+  },
+  "noSkillsAtLevel1": "Nessuna abilità al livello 1",
+  "selectYourClass": "Seleziona la tua classe",
+  "ui": {
+    "covenantStamp": "PATTO"
+  },
+  "vocation": "Professione"
+}

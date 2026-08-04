@@ -1,0 +1,2955 @@
+{
+  "neutralGivers": [
+    "il biglietto di uno sconosciuto, in inchiostro violetto",
+    "una pergamena non firmata che odora vagamente di petrolio grezzo",
+    "un volantino pinzato sopra altri undici volantini",
+    "un biglietto scritto in MarkovSpeak impeccabile",
+    "un tovagliolo della tavola calda di Beagle, fittamente sottolineato",
+    "una stampa arrivata con un piccione viaggiatore, chiavetta USB ancora attaccata",
+    "una pagina strappata da un grimorio prima che le parole si riproducessero",
+    "una lettera cortese senza timbro postale e senza ombra",
+    "un ordine di lavoro con la carta intestata ritagliata via",
+    "un messaggio a gessetto che si riscrive all'alba",
+    "una ricevuta con l'incarico scritto sul retro",
+    "una mano di carte, le condizioni scritte a inchiostro sulle figure",
+    "un telegramma consegnato con undici giorni di ritardo e una parola in meno",
+    "un cilindro di cera che nessuno sa riprodurre, trascritto da un impiegato annoiato",
+    "un cartello tenuto in mano tutta la mattina da un uomo che ora se n'è andato",
+    "un opuscolo piegato a forma di barchetta",
+    "un modulo fiscale con le caselle utili sbarrate",
+    "un necrologio annotato a margine",
+    "una mappa con sopra un solo cerchio e nessuna legenda",
+    "un conto dell'osteria, voce per voce, che finisce con un'offerta di lavoro",
+    "un biglietto di lutto firmato da nessun vivente",
+    "una pagina di stenografia che un solo impiegato del quartiere sa leggere",
+    "una stampa di una macchina che non esiste più dallo Squishing",
+    "un avviso plastificato, ancora tiepido",
+    "una lettera scritta da due mani che si davano il cambio",
+    "un foglio di inni con le strofe sostituite da istruzioni",
+    "una fotografia del sito con sopra una freccia disegnata",
+    "un medaglione con le condizioni piegate dentro",
+    "un quaderno di scuola, le somme cancellate e riscritte come compenso",
+    "un biglietto appuntato con un ago d'osso",
+    "una polizza di carico per un carico che nessuno reclama",
+    "una schedina con le quote corrette in un secondo colore",
+    "una busta indirizzata soltanto a chiunque sia disperato",
+    "un cartellino di spedizione strappato da qualcosa di pesante",
+    "una richiesta battuta a macchina su un apparecchio senza la lettera E",
+    "un messaggio lasciato nel registro dove dovrebbe esserci un nome",
+    "un avviso anonimo in tre lingue, tutte sbagliate",
+    "un opuscolo che odora di chiesa e gasolio",
+    "un manifesto strappato che promette il resto dei dettagli di persona",
+    "un cartoncino che dice soltanto CHIEDERE ALLA BACHECA",
+    "un foglio di carta buona, scritto in modo semplice",
+    "un biglietto in una calligrafia curata, da scolaretto",
+    "un appunto a matita sbavato, scritto all'aperto",
+    "un cartoncino appuntato con una vera puntina d'ottone, cosa rara",
+    "una lettera piegata con un nome cancellato a graffi",
+    "una pagina di libro contabile, rigata in rosso",
+    "un foglietto lasciato da qualcuno di fretta",
+    "una richiesta scritta sul retro di una lista della spesa",
+    "un avviso scritto in bella calligrafia, non firmato",
+    "un pezzo di carta da macellaio, ancora unto",
+    "un biglietto tenuto fermo da una pietra",
+    "un cartoncino in due calligrafie, una che corregge l'altra",
+    "un messaggio lasciato all'oste e da lui affisso",
+    "un comune volantino, uno di una dozzina",
+    "un biglietto che ha chiaramente preso la pioggia ed è stato riscritto",
+    "una lettera col sigillo rotto e nessuno che lo ammetta",
+    "una pagina strappata da un registro, le colonne ancora visibili",
+    "un avviso scritto in caratteri minutissimi per stare nel foglio",
+    "un appunto a gesso su una lavagnetta, cancellato e riscritto due volte",
+    "un cartoncino con un'impronta di pollice nell'angolo",
+    "un avviso semplice, senza svolazzi, senza firma",
+    "un messaggio ricopiato tre volte per prudenza contro i furti",
+    "una richiesta scritta sul retro di un sollecito di affitto",
+    "un biglietto lasciato sotto la bacheca anziché sopra",
+    "una lettera ben scritta da qualcuno che scrive per mestiere",
+    "un avviso tenuto fermo da un chiodo da ferro di cavallo",
+    "l'angolo strappato di un giornale con le istruzioni a margine",
+    "un biglietto in calligrafia antiquata, ortografia compresa",
+    "una richiesta scritta a lume di candela, a giudicare dalla cera",
+    "un cartoncino affisso da abbastanza tempo da sbiadire a chiazze"
+  ],
+  "scamGivers": [
+    "Recuperi Assolutamente Legittimi S.r.l.",
+    "Reliquiario e Griglia dell'Onesto Achmed",
+    "Futures Deregolamentati S.p.A.",
+    "Import/Export del Cugino di Bubba",
+    "Le Seconde Sorelle (nessuna parentela)",
+    "Ufficio Divulgazione della Piramide della Prosperità",
+    "Miracoli Usati Certificati",
+    "Partecipazioni Verificate Genuine",
+    "Acquisizioni Quarta Sorella",
+    "Il Consorzio della Vedova (garantito, a quanto pare)",
+    "Spedizioni Assolutamente Garantite",
+    "Fiducia & Figli, Fiduciari",
+    "Benedizioni Non Rimborsabili S.r.l.",
+    "L'Amichevole Confraternita del Recupero",
+    "Soci di Rendimento Provvidenza",
+    "Ingrosso dello Zio dello Zio",
+    "Ufficio degli Esiti Vantaggiosi",
+    "Futures Garantiti su Reliquie",
+    "Il Fondo Affidabile del Reliquiario",
+    "Logistica Sincera e Figli",
+    "Assemblea della Fortuna Reciproca",
+    "Comitato delle Antichità Verissime"
+  ],
+  "openers": [
+    "Leggete in fretta, le puntine sono in comune.",
+    "Affisso alla terza ora e già arricciato agli angoli.",
+    "A chiunque legga questo prima della pioggia:",
+    "Versione breve, perché l'inchiostro costa.",
+    "Niente intermediari, niente pratiche d'Archivio, niente teatro.",
+    "È la seconda volta che lo chiediamo.",
+    "Le ultime tre persone che hanno accettato non hanno letto le clausole in piccolo.",
+    "Condizioni qui sotto, reclami di sopra.",
+    "Se riuscite a leggere questo siete già sovraqualificati.",
+    "Lavoro standard, rischio standard, bugie standard.",
+    "Ci dicono che siete il tipo affidabile.",
+    "Qualcuno di competente, possibilmente oggi.",
+    "Lavoro onesto, abbastanza onesto.",
+    "Non prestigioso. Pagato.",
+    "Leggetelo due volte. Noi lo abbiamo scritto una sola.",
+    "Una faccenda da poco, finora gestita male.",
+    "Un incarico, nessuna catena di comando.",
+    "L'impiegato che ha scritto questo si è nel frattempo dimesso.",
+    "Approvato da una commissione, ed è per questo che è in ritardo.",
+    "Scritto di fretta, inteso sinceramente.",
+    "Questo avviso sostituisce quello che qualcuno ha strappato.",
+    "Ignorate l'alone di caffè, le condizioni sono intatte.",
+    "Per ordine di nessuno in particolare:",
+    "Protocollato a dovere. Ignorate l'odore.",
+    "Sì, di nuovo.",
+    "Prima che lo chiediate: no, non possiamo farlo da soli.",
+    "Tutti quelli a cui l'abbiamo chiesto prima hanno detto di no.",
+    "Discrezione gradita, non obbligatoria.",
+    "Non sarete i primi a provarci.",
+    "Chi ha strappato la metà superiore di questo avviso ci deve un francobollo.",
+    "C'è del lavoro da fare, e c'è la paga.",
+    "Cerco un paio di mani affidabili.",
+    "Un lavoro, descritto chiaramente, pagato chiaramente.",
+    "Niente di complicato. Serve solo qualcuno.",
+    "Affiggo questo perché ho finito i vicini a cui chiedere.",
+    "Una giornata di lavoro, o giù di lì.",
+    "Ho bisogno di aiuto e posso pagarlo.",
+    "È sulla mia lista dalla primavera.",
+    "Lavoretto. Soldi veri.",
+    "Se state andando comunque da quelle parti, sono soldi facili.",
+    "Chiedo qui perché i soliti sono impegnati col raccolto.",
+    "Non è urgente, ma è in ritardo.",
+    "Lavoro onesto per chiunque abbia un pomeriggio libero.",
+    "Lo farei da solo se fossi più giovane.",
+    "Qualcuno deve farlo, e tanto vale che sia qualcuno pagato.",
+    "Con poco preavviso, scusate. La paga compensa.",
+    "Condizioni chiare qui sotto, nessun trucco.",
+    "È da due settimane che intendo assumere per questo.",
+    "C'è una cosa da andare a prendere e io non posso lasciare la bottega.",
+    "Niente di pericoloso, niente di ingegnoso, va solo fatto."
+  ],
+  "caveats": [
+    "Portatevi l'acqua.",
+    "Non rimborsiamo gli stivali.",
+    "Il tempo atmosferico è un problema vostro, non nostro.",
+    "Non portate il cane.",
+    "Se morite il contratto si annulla da sé. E anche voi.",
+    "Nessun rimborso sul coraggio.",
+    "L'assicurazione finisce al limitare del bosco.",
+    "Non firmate due volte, il registro se ne accorge.",
+    "Se a un posto di blocco leggono questo avviso ad alta voce, andatevene.",
+    "Nessuno lo confermerà per iscritto.",
+    "Qualsiasi impiegato dell'Archivio che faccia domande non è dei nostri.",
+    "Qui la puntualità conta più dell'eroismo.",
+    "Non improvvisate vicino alle leyline.",
+    "Lasciate intatti i documenti anche se la cassa non lo è.",
+    "Il silenzio fa parte del compenso.",
+    "Se doveste incontrare il precedente incaricato, non dite nulla.",
+    "Negheremo che questo avviso sia mai esistito.",
+    "Non accettate aiuto da nulla che parli in CamelCase.",
+    "Se la strada ronza, aspettate che smetta di ronzare.",
+    "Non percorretela in vettura. Percorretela a piedi.",
+    "Assicurato fino a, ed escluse, le parti interessanti.",
+    "Assicurato contro il furto, non contro l'ironia.",
+    "Il pagamento è alla consegna, non allo sforzo.",
+    "Non vendete la ricevuta.",
+    "Non mangiate il campione.",
+    "Portate della stagnola. Capirete dopo.",
+    "Se è già aperto, chiudetelo e riferite.",
+    "Non contate ad alta voce, li incoraggia.",
+    "Portate una lampada. Portatene due.",
+    "Il sito non è infestato. Il sito è soltanto sgarbato.",
+    "Le bende costano meno dei ricambi.",
+    "Se sentite i tamburi, è il programma che cambia.",
+    "Non fotografate nulla.",
+    "Non rispondiamo di deriva dimensionale, tempo atmosferico o rimpianto.",
+    "Partite presto. La luce se ne va per le quattro.",
+    "Portatevi la corda.",
+    "Non passate per i campi, girateci intorno. Il contadino è pignolo.",
+    "Chiudete i cancelli dietro di voi.",
+    "Il pagamento è in moneta, quindi portate qualcosa in cui metterla.",
+    "Non possiamo prestare un carro. Lo chiedono tutti.",
+    "Se piove, aspettate un giorno. Qui non c'è nulla per cui valga la pena annegare.",
+    "Non contrattate sull'uscio. Contrattate adesso, per iscritto, o niente.",
+    "Indossate qualcosa che non vi dispiaccia rovinare.",
+    "Chiedete indicazioni alla locanda, non ai bambini.",
+    "Il cane della seconda fattoria morde. Tutto il resto è amichevole.",
+    "Non percorrete quella strada da soli dopo il tramonto. Per nessun motivo particolare.",
+    "Contate tutto prima di firmare la ricevuta.",
+    "Portate un secondo paio di calze. Ci ringrazierete.",
+    "Prendete il guado, non il ponte. Il ponte è una diceria.",
+    "Se il cancello è chiuso, tornate indietro. Non scavalcatelo.",
+    "Paghiamo il lavoro, non il tempo di viaggio. Spiacenti.",
+    "Dite a qualcuno dove state andando prima di partire.",
+    "Non accettate cibo da sconosciuti su quel tratto. Per ragioni ordinarie.",
+    "Lasciate un biglietto se finite tardi e noi abbiamo già chiuso.",
+    "Mangiate prima di partire. Lungo la strada non c'è nulla da comprare.",
+    "Conservate la ricevuta. Ci siamo già scottati su questo.",
+    "In due fareste prima che da soli, ma noi paghiamo una volta sola.",
+    "Non bussate prima delle otto. Davvero, non fatelo.",
+    "Attenzione al fango all'attraversamento, si è già preso un cavallo.",
+    "Portate una lampada se contate di tornare in giornata.",
+    "Non ditelo ai vicini. Per nessun motivo drammatico, semplicemente spettegolano.",
+    "Non anticipiamo il compenso. Abbiamo imparato la lezione due volte."
+  ],
+  "signoffs": [
+    "Firmato, protocollato e dimenticato.",
+    "La paga si ritira a qualsiasi bacheca.",
+    "Portate la ricevuta, tenetevi la storia.",
+    "Chiedete del registro, non di me.",
+    "Le condizioni sono condizioni.",
+    "Buone strade.",
+    "Camminate con prudenza.",
+    "È la bacheca a tenere i vostri soldi, non noi.",
+    "Tornate vivi, tornate pagati.",
+    "Fatelo bene e ce ne sarà dell'altro.",
+    "Se lo prende il primo richiedente onesto.",
+    "Ci accorgeremo se tagliate gli angoli. Ce ne accorgiamo sempre.",
+    "Nessun ulteriore scambio di lettere.",
+    "Cordialmente, e in breve.",
+    "Sapete dov'è la bacheca.",
+    "È tutto ciò che ci è concesso dire.",
+    "Il resto è fra voi e la strada.",
+    "Attenti agli orari.",
+    "Non fateci affiggere questo una terza volta.",
+    "Vostri in tollerabile buona fede.",
+    "Firmato con un pollice, essendo morta la penna.",
+    "Dettagli sul retro. Non c'è un retro.",
+    "Pagamento in banconote, piegate, senza sentimentalismi.",
+    "Prendetelo, o lasciatelo appeso.",
+    "Che Dio vi assista, o chiunque comandi adesso.",
+    "Grazie in anticipo.",
+    "Chiedete di me alla locanda.",
+    "Pagamento a lavoro finito, come al solito.",
+    "Passate una sera qualsiasi e faremo i conti.",
+    "È tutto. Molto obbligato.",
+    "Per qualsiasi domanda chiedete all'oste, conosce i dettagli.",
+    "Il primo che finisce viene pagato. Il secondo viene ringraziato.",
+    "Saluti, e attenti al tempo.",
+    "Sarò in giro tutta la settimana.",
+    "Fatemi sapere se lo prendete, così smetto di preoccuparmi.",
+    "Grato per qualsiasi aiuto.",
+    "Semplice così.",
+    "Nessun rancore se preferite di no.",
+    "Preferisco pagare uno sconosciuto che essere in debito con un vicino.",
+    "Giusta paga per giusto lavoro.",
+    "Sapete la strada. La sanno tutti.",
+    "Scritto in fretta, inteso alla lettera.",
+    "È tutto qui.",
+    "Buona fortuna, e grazie.",
+    "Togliete l'avviso se accettate, così nessun altro fa la strada per niente.",
+    "Sono facile da trovare e difficile da evitare.",
+    "Saldato in giornata, senza aspettare i registri.",
+    "Se lo finite bene, la prossima volta chiederò di voi per nome.",
+    "Nulla da aggiungere."
+  ],
+  "giverRoles": [
+    "[FACTION]",
+    "[FACTION]",
+    "[FACTION], ufficio del quartiermastro",
+    "[FACTION] (approvvigionamenti)",
+    "un impiegato di [FACTION]",
+    "l'ufficio logistica di [FACTION]",
+    "[FACTION], tramite un intermediario",
+    "ufficio sul campo di [FACTION]",
+    "qualcuno che firma per [FACTION]",
+    "[FACTION], sigillo e tutto il resto",
+    "[FACTION] (in via ufficiosa)",
+    "il turno di notte di [FACTION]",
+    "[FACTION], sportello del pagatore",
+    "un ufficiale annoiato di [FACTION]",
+    "[FACTION], che agisce su segnalazione",
+    "la sede di sezione di [FACTION]"
+  ],
+  "npcGiverRoles": [
+    "[NAME]",
+    "[NAME]",
+    "[NAME] di [PLACE]",
+    "[NAME], di persona",
+    "[NAME] (chiedere a [PLACE])",
+    "[NAME], che non è difficile da trovare",
+    "[NAME], e sì, proprio quel [NAME]",
+    "[NAME], residente a [PLACE]",
+    "[NAME], che lascia questo qui apposta"
+  ],
+  "eliteTitlePrefix": [
+    "CONTRATTO PERMANENTE",
+    "NESSUNO L'HA MAI RITIRATO",
+    "MINACCIA ESTREMA",
+    "IN CIMA ALLA BACHECA"
+  ],
+  "loreColor": [
+    "Lo Squishing sta peggiorando e i corrieri sono i primi a sentirlo.",
+    "Attenti alla Regola degli 80: oltre quella velocità la bolla di loop più vicina vi possiede.",
+    "Questa settimana i piccioni sono a terra, quindi la posta viaggia su strada.",
+    "Dalla notte del Y2K la porta della Torre Omega non si è chiusa nemmeno una volta.",
+    "Le leyline ronzano più forte vicino al sito, quindi tenete stretto il vostro CamelCase.",
+    "I detriti di Kessler hanno abbattuto un altro ripetitore, non contate sul vostro Anoki.",
+    "I posti di blocco dell'Archivio possono fermarvi e pubblicare i vostri messaggi. Sorridete.",
+    "I locali danno la colpa ai goblin. I goblin, tramite il loro inconscio collettivo, negano tutto.",
+    "Un geometra Verden giura che il sito sia anteriore all'evacuazione dei Campi Verdi.",
+    "Se sentite i Mahyem nel vento, l'orda è più vicina di quanto sembri.",
+    "Il pagamento è in banconote che portano il santo nome di Mario Draghi.",
+    "Le corti di Eris seguono il diritto contrattuale con insolito entusiasmo questo mese.",
+    "La Società dei Camionisti ha segnato il percorso come libero da loop da martedì scorso.",
+    "Un petrodemone detiene i diritti minerari qui accanto. Non versate nulla.",
+    "La Esoteric Heavy Industries insiste che le sue casse compaiano semplicemente quando nessuno guarda.",
+    "Il sito è scomodamente vicino a una bolla temporale fresca. A piedi, non in vettura.",
+    "Magamui si è agitato il mese scorso. Probabilmente non c'entra. Probabilmente.",
+    "Portate la stagnola per la testa, le malattie del pensiero vanno forte in questa stagione.",
+    "La lava là fuori ormai beve solo punti magia, ma non provatela a piedi nudi.",
+    "Un tamburino di guerra Naguka è stato visto in pittura cadaverica due crinali più in là.",
+    "Ogni orologio del quartiere va avanti di quattro minuti e nessuno ammette chi abbia cominciato.",
+    "L'Archivio sta di nuovo catalogando i sogni, quindi dormite in un posto noioso.",
+    "Due bolle di loop si sono fuse sopra le paludi l'inverno scorso e le paludi si ripetono ancora.",
+    "L'Ipermetropolitana è in funzione, il che significa che oggi le gallerie collaborano.",
+    "La cartografia goblin è inaffidabile ma le loro previsioni del tempo sono eccellenti.",
+    "Un corriere è tornato il mese scorso con i ricordi di un altro e la borsa piena.",
+    "Il mercato delle anime ha chiuso in rialzo, quindi per un po' sono tutti gentili.",
+    "Ormai ci sono più petrodemoni a libro paga che allo stato brado.",
+    "Qualcuno ha ricostruito il sacello sulla strada durante la notte e nessuno chiede come.",
+    "La neuronebbia sta derivando verso l'interno questa settimana. Respirate poco e pensate forte.",
+    "Le linee morte portano ancora delle voci, quindi non rispondete al telefono con garbo.",
+    "Metà del quartiere è in sciopero e l'altra metà a fuoco, come al solito.",
+    "I Camionisti ormai calcolano il rischio loop nel prezzo di ogni tratta.",
+    "Dallo Squishing le mappe concordano fra loro un po' meno ogni anno.",
+    "I lampionai hanno cominciato a farsi pagare a ombra.",
+    "I grimori lasciati aperti vicino al sito si riproducono. Riponeteli a faccia in giù.",
+    "La luna si comporta bene questa settimana. Approfittatene.",
+    "Tre uomini con cappotti identici hanno chiesto di voi. Probabilmente il fisco.",
+    "La banca torna a prestare, cosa che storicamente precede qualcosa di orribile.",
+    "Gli impiegati di Eris hanno raddoppiato i diritti di deposito e i sorrisi.",
+    "Un cerchio di tamburi Naguka ha prenotato ogni ostello della strada del crinale.",
+    "L'ultimo geometra ha lasciato un biglietto che diceva solo: non state fermi.",
+    "Qualcuno compra futures sulle anime all'ingrosso e non è la chiesa.",
+    "I piccioni sono tornati bagnati, in anticipo, e poco disposti a parlarne.",
+    "Gli ascensori della Torre Omega si fermano a piani che non sono sulla targa.",
+    "I posti di blocco della Fondazione timbrano di nuovo i documenti in violetto.",
+    "Qualcosa ha spostato le pietre miliari sulla strada ovest di esattamente un miglio.",
+    "In questo quartiere non è andato storto nulla da undici giorni, il che di per sé è preoccupante.",
+    "La nube di Kessler si è presa i ripetitori meteo, quindi fidatevi delle ginocchia più che delle previsioni.",
+    "C'è la fila fuori dal negozio di protesi e nessuno in coda è ferito.",
+    "La benzina costa poco questo mese perché qualcosa laggiù ci vuole a scavare.",
+    "I pozzi sanno di monetine e la Fondazione dice che è normale.",
+    "L'orda si è spostata a sud per la stagione. O è la stagione che si è spostata con l'orda.",
+    "Graffiti in MarkovSpeak sono comparsi su una pietra miliare su tre, tutti grammaticalmente corretti.",
+    "L'arena torna a pagare i gettoni di presenza, il che prosciuga la manodopera.",
+    "Una bolla di loop è parcheggiata sulla piazza del mercato, quindi martedì capita due volte.",
+    "La posta ha cominciato ad arrivare prima di essere spedita. Spedite di conseguenza.",
+    "Due villaggi a monte hanno accettato di condividere un solo nome e una sola campana.",
+    "Le guardie di confine sono gentili questo mese, cosa che tutti trovano sinistra.",
+    "Qualcuno dà da mangiare alle statue e le statue accettano.",
+    "Piove da sei giorni e la strada bassa è fango fino all'assale.",
+    "Il pane è aumentato di nuovo. Tutto è aumentato di nuovo.",
+    "Il traghetto ora fa due corse al giorno invece di quattro, e nessuno è stato consultato.",
+    "Sabato c'è un matrimonio al villaggio, quindi aspettatevi strade trafficate e locande piene.",
+    "Il fabbro ha una lista d'attesa di nove giorni e una pazienza di circa quattro.",
+    "Il gelo è arrivato più tardi del solito quest'anno. I vecchi ne sono infastiditi.",
+    "Metà del quartiere è fuori a raccogliere, ed è per questo che assumiamo forestieri.",
+    "Il pozzo della piazza è stato riparato due volte e funziona più o meno come prima.",
+    "Il cane di qualcuno è tornato fra le galline e tutti sanno di chi sia il cane.",
+    "Il mercato si è spostato al giovedì. Nemmeno di questo nessuno ricorda di essere stato d'accordo.",
+    "La legna costa poco questo mese e il carbone no, quindi vestitevi di conseguenza.",
+    "La locanda ha cambiato gestione. La birra è cambiata con essa, non in meglio.",
+    "Gira una tosse fra i bambini. Niente di grave, dicono.",
+    "Due fratelli si fanno causa per una siepe. Vanno avanti da undici mesi.",
+    "La diligenza postale ha perso una ruota fuori città e le lettere sono indietro di una settimana.",
+    "Nessuno ha visto l'esattore dalla primavera e nessuno è andato a cercarlo.",
+    "Il ponte sta bene. L'ispettore dice che sta bene. Prendete il guado.",
+    "I salari sono quelli dell'anno scorso e l'affitto no.",
+    "C'è una nuova maestra ed è già stanca.",
+    "Il fiume è così basso che in certi punti si guada a piedi, cosa che non capitava da anni.",
+    "Qualcuno ha rubato il piombo dal tetto della chiesa e ha piovuto sui banchi.",
+    "Le pecore sono di nuovo finite sulla strada ovest. Attenti alle curve.",
+    "Il mulino è fermo per riparazioni, quindi la farina arriva col carro da due paesi più in là.",
+    "È la stagione morta e sono tutti di pessimo umore per via dei soldi.",
+    "I gemelli Vanhoof maggiori si sono fatti la barba entrambi e ora nessuno li distingue.",
+    "C'è stato un incendio alla conceria. Solo la conceria, per fortuna.",
+    "È passato un dentista ambulante e se n'è andato con più di quanto fosse arrivato.",
+    "Gli stivali scarseggiano. Se avete degli stivali buoni, non ditelo troppo forte.",
+    "La ronda notturna è stata ridotta a un uomo solo e quell'uomo ha settant'anni.",
+    "Qualcuno sposta i cippi di confine di un pollice all'anno da un decennio.",
+    "Le mele sono venute male. Il sidro sarà onesto ma tetro.",
+    "Due dei tre carrettieri del paese sono malati, da cui i ritardi e da cui questo avviso.",
+    "Ormai fa buio presto e i lampioni si accendono tardi per risparmiare olio.",
+    "Il forno ha bruciato una infornata e l'ha venduta lo stesso. E lo stesso l'hanno comprata tutti.",
+    "C'è una buca sulla strada alta grande abbastanza da perderci una capra. Una capra ci si è persa.",
+    "Nessuno pesca più sulla riva nord da quando ha attecchito l'erbaccia.",
+    "Il magistrato è in ferie, quindi i piccoli reati si stanno godendo due settimane deliziose.",
+    "I prezzi alla locanda di posta sono raddoppiati la settimana della fiera e non sono più scesi.",
+    "Una siepe è caduta sulla staccionata dell'Assessore ed entrambe le parti si godono la lite.",
+    "Fa troppo caldo per la stagione e alle mosche non è stato comunicato.",
+    "Al coro mancano due voci e la cosa lo rende sempre più disperato.",
+    "Il sale costa caro, quindi quest'anno non si conserva nulla come si deve.",
+    "Alla squadra stradale sono state pagate quattro miglia di ghiaia e ne hanno inghiaiate due.",
+    "A tutti perde il tetto. È quel genere di annata.",
+    "I maiali sono scappati durante il sermone e il sermone ne ha guadagnato.",
+    "Questa settimana ci sono tre funerali e nessuno è una sorpresa.",
+    "Qualcuno ha aperto un secondo forno e il paese sta scegliendo da che parte stare.",
+    "Le lavandaie hanno alzato i prezzi e ne hanno pieno diritto.",
+    "Il fieno scarseggia. Se andate a cavallo, dategli da mangiare prima di partire.",
+    "La torre dell'orologio è indietro di nove minuti e il paese si è adeguato anziché ripararla.",
+    "Un gatto si è trasferito nel corpo di guardia e ha più autorità di quasi tutte le guardie.",
+    "Le rape sono venute bene, che è l'unica buona notizia disponibile.",
+    "Qualcuno lascia fiori su una tomba senza nome e nessuno vuole chiedere.",
+    "Due carri si sono scontrati al crocevia e la lite è sopravvissuta a entrambi i carri.",
+    "La sarta è impegnata fino a primavera e lo dice con soddisfazione.",
+    "C'è carenza di chiodi, proprio di chiodi.",
+    "Il ruscello vicino al mulino odora male, ma solo nei giorni caldi.",
+    "Parlano tutti di un matrimonio che non è ancora stato annunciato.",
+    "Il legname esce dal quartiere più in fretta di quanto ci ricresca.",
+    "Il vecchio pedaggio del ponte è stato abolito e il casellante continua a riscuoterlo.",
+    "A memoria d'uomo nessuno ha mai riparato la bacheca a cui è inchiodato questo avviso."
+  ],
+  "eliteIntel": [
+    "Esiste uno schizzo del sito fatto da un geometra ed è disponibile su richiesta; non è incoraggiante.",
+    "Il pozzo più vicino è stato abbandonato, il che vi dice fin dove arriva il suo interesse.",
+    "Là il suono viaggia in modo strano. Segnalate a gesti, non a voce.",
+    "È stato visto all'alba e al tramonto e mai nel mezzo, per quel che vale.",
+    "Due delle sue vittime erano corazzate. La corazza non è stata la difficoltà.",
+    "Il terreno attorno è spoglio in cerchio, e il cerchio si allarga di circa un passo a settimana.",
+    "Un precedente incaricato ha lasciato dell'attrezzatura sul posto. Non date per scontato che sia sicuro raccoglierla.",
+    "Non insegue oltre il crinale. Nessuno ha stabilito perché, quindi non fateci affidamento.",
+    "I locali hanno smesso di dargli un nome, cosa che fanno solo quando qualcosa li spaventa sul serio.",
+    "Un rapporto insiste che abbia parlato. Il rapporto è stato redatto da qualcuno con una commozione cerebrale.",
+    "È più pesante di quanto sembri e più veloce di quanto sia pesante.",
+    "L'ultimo tentativo è durato, a stima del superstite, meno di un minuto.",
+    "Il tempo atmosferico non sembra influenzarlo. Tutto il resto là fuori è influenzato dal tempo.",
+    "C'è un odore prima di vederlo. Quando notate l'odore siete già alla sua portata.",
+    "È uscito allo scoperto due volte, entrambe verso la strada anziché lontano da essa.",
+    "Il fuoco è stato provato, a fondo, da gente che sapeva come. Il fuoco non è la risposta.",
+    "Reagisce al metallo. Nessuno concorda su come, solo che lo fa.",
+    "Una squadra di cacciatori lo ha seguito per tre giorni e ha concluso che era lui a seguire loro.",
+    "Un anno fa il sito era normale. Ci sono persone vive che lo coltivavano.",
+    "Qualunque cosa lo uccida dovrà farlo in un solo scontro. Non resta ferito.",
+    "I suoi resti, se ne farete, valgono anch'essi denaro. Portate via quel che riuscite.",
+    "Non accampatevi a vista della coordinata. Due squadre hanno commesso esattamente quell'errore.",
+    "L'avvicinamento è terreno scoperto per quattrocento passi. Mettete in conto di essere visti per tutto il tragitto.",
+    "Ignora del tutto gli animali, che è l'unico motivo per cui là fuori vive ancora qualcosa."
+  ],
+  "voiceFamilies": {
+    "clinical": {
+      "openers": [
+        "Avviso di incarico. {Leggere per intero.|Conservarne copia.|Non annotare.}",
+        "Classificato come incarico sul campo {ordinario|non anomalo|a bassa priorità}.",
+        "Questa richiesta è stata {approvata|registrata|riscontrata} e non è negoziabile.",
+        "Oggetto: manodopera a contratto. Priorità: {moderata|elevata|nominale}.",
+        "Quanto segue è {accurato|completo} nei limiti consentiti."
+      ],
+      "caveats": [
+        "Lo scostamento dalla procedura descritta annulla il compenso.",
+        "Le osservazioni vanno riferite {alla lettera|senza interpretazione}.",
+        "Non traete conclusioni. Le conclusioni sono assegnate centralmente.",
+        "Ogni anomalia incontrata è proprietà dell'archivio.",
+        "La reazione emotiva al sito è prevista e irrilevante."
+      ],
+      "signoffs": [
+        "Il compenso è erogato a verifica avvenuta.",
+        "Questo avviso è la propria autorizzazione.",
+        "Protocollato, catalogato e considerato chiuso alla consegna.",
+        "Ulteriori dettagli esistono e non sono per voi.",
+        "Grazie per la vostra collaborazione, che era data per scontata."
+      ],
+      "titlePrefix": [
+        "FASCICOLO",
+        "INCARICO",
+        "REQUISIZIONE"
+      ]
+    },
+    "bureaucratic": {
+      "openers": [
+        "Il modulo {7-B|11-C|19-A} (Manodopera a Contratto) è qui affisso in luogo di un modulo.",
+        "Dopo {tre|quattro} promemoria interni, la questione approda a questa bacheca.",
+        "La commissione ha deliberato, {a stretta maggioranza|all'unanimità|dopo pranzo}, di assumere aiuto esterno.",
+        "Questa è la {seconda|terza|quarta} affissione di una pratica irrisolta.",
+        "Approvato in linea di principio, finanziato in parte, urgente nei fatti."
+      ],
+      "caveats": [
+        "Ricevute in triplice copia, o in qualunque cosa riusciate a trovare.",
+        "Non rivolgete domande al sottoscritto, che è stato trasferito.",
+        "Le spese oltre il compenso indicato richiedono previa autorizzazione scritta, che è inottenibile.",
+        "La procedura è corretta anche dove è impossibile.",
+        "Qualora la situazione cambi, la modulistica no."
+      ],
+      "signoffs": [
+        "Controfirmato, timbrato e smarrito.",
+        "Pagamento dietro presentazione del tagliando che non vi è mai stato rilasciato.",
+        "Il fascicolo resta aperto finché non lo è più.",
+        "Distinti saluti, in conformità alla procedura vigente.",
+        "Domande per iscritto. Risposte, prima o poi."
+      ],
+      "titlePrefix": [
+        "AVVISO",
+        "PRATICA",
+        "MEMORANDUM"
+      ]
+    },
+    "mercantile": {
+      "openers": [
+        "Un'opportunità, e siamo generosi a chiamarla così.",
+        "Il margine su questa è {sottile|osceno|affar nostro}. Muovetevi in fretta.",
+        "Si è aperta una posizione. Perdita di qualcun altro, compenso vostro.",
+        "Il tempo è l'unica merce che non possiamo vendere allo scoperto.",
+        "Abbiamo prezzato questo incarico tre volte e rende ancora."
+      ],
+      "caveats": [
+        "I costi sostenuti sono vostri. Il valore creato è nostro. È questo l'accordo.",
+        "Nessuna copertura: consegnate tutto il lotto o niente.",
+        "La consegna in ritardo è uno sconto, e non a vostro favore.",
+        "Non assicuriamo i sentimenti.",
+        "Qualsiasi eccedenza troviate è tecnicamente già venduta."
+      ],
+      "signoffs": [
+        "Saldato in contanti, volentieri e subito.",
+        "Fatelo bene e il prossimo contratto sarà più grosso.",
+        "Il mercato premia i puntuali. Noi ci limitiamo a pagarli.",
+        "Firmato con piacere e con una piccola riserva.",
+        "Gli affari buoni sono lettere brevi."
+      ],
+      "titlePrefix": [
+        "CONTRATTO",
+        "POSIZIONE",
+        "OFFERTA"
+      ]
+    },
+    "military": {
+      "openers": [
+        "Ordini, per chiunque preferisca essere pagato anziché arruolato.",
+        "Esigenza operativa. Volontari ammessi, competenza obbligatoria.",
+        "Il distaccamento regolare è {altrove|ridotto|in rifiuto}. Da cui questo avviso.",
+        "Briefing breve. Pazienza più breve.",
+        "Incarico permanente, aperto a civili di saldi nervi."
+      ],
+      "caveats": [
+        "Gli orari non sono suggerimenti.",
+        "Le perdite non sono risarcite oltre il compenso indicato.",
+        "Non ingaggiate oltre l'obiettivo. Non improvvisate.",
+        "Riferite il terreno con verità anche quando ci mette in imbarazzo.",
+        "Se va storta, ritiratevi. L'eroismo ci costa scartoffie."
+      ],
+      "signoffs": [
+        "Rompete le righe.",
+        "Pagamento previa conferma dell'ufficiale di picchetto.",
+        "Muovetevi appena pronti. Preferibilmente ieri.",
+        "Prima la disciplina, la gloria è facoltativa.",
+        "Questo è l'incarico. Eseguitelo."
+      ],
+      "titlePrefix": [
+        "ORDINI",
+        "INCARICO",
+        "OPERAZIONE"
+      ]
+    },
+    "clerical": {
+      "openers": [
+        "Benedizioni su chiunque legga questo, e paga a chiunque lo porti a termine.",
+        "Un piccolo peso sulla vostra coscienza, e un compenso a lavoro finito.",
+        "La parrocchia ha bisogno, e la parrocchia ha fondi. Di rado entrambe le cose insieme.",
+        "Scritto per carità, affisso per speranza.",
+        "La Provvidenza ci manda gli appaltatori. La Provvidenza è fatturata mensilmente."
+      ],
+      "caveats": [
+        "Fatelo onestamente. Lo sapremo noi, e lo saprà anche Qualcun altro.",
+        "Non prendete nulla di consacrato, per quanto trasportabile.",
+        "L'orgoglio non figura fra le spese elencate.",
+        "Se foste tentati, ricordate che il registro si legge ad alta voce a fine anno.",
+        "Violenza solo dove la carità ha dimostrabilmente fallito."
+      ],
+      "signoffs": [
+        "Andate con la nostra benedizione, tornate con la nostra merce.",
+        "Pagamento allo sportello della sacrestia, contanti e assoluzione separati.",
+        "Che la strada sia noiosa e il tempo clemente.",
+        "Nella fede, e nell'attesa delle ricevute.",
+        "L'Impero vi ringrazia. Sottovoce."
+      ],
+      "titlePrefix": [
+        "APPELLO",
+        "INCARICO",
+        "COMMISSIONE"
+      ]
+    },
+    "arcane": {
+      "openers": [
+        "Il cerchio è stato tracciato e il compenso pattuito. Resta solo il camminare.",
+        "Un rituale minore richiede una commissione maggiore.",
+        "Gli auspici sono stati consultati. Hanno detto: assumete qualcuno.",
+        "Scritto {nell'ora dell'inchiostro|sotto una luna calante|fra due candele}.",
+        "La Gilda richiede mani non impigliate nei nostri stessi vincoli."
+      ],
+      "caveats": [
+        "Non pronunciate alcun nome che troviate scritto. I nomi scritti sono nomi in attesa.",
+        "Non completate alcun cerchio che non abbiate tracciato voi.",
+        "Se l'oggetto vi rivolge la parola, declinate cortesemente e proseguite.",
+        "Ferro in una tasca, sale nell'altra. Fatturazione, a rigore.",
+        "Ogni residuo va restituito. Specialmente il residuo che vi segue fino a casa."
+      ],
+      "signoffs": [
+        "Pagamento in moneta, non in favori. Abbiamo imparato.",
+        "Tornate prima della terza notte, qualunque cosa suggerisca la terza notte.",
+        "La Gilda ricorda i puntuali e ricorda anche gli altri.",
+        "Sigillato con la cera, e con qualcosa sotto la cera.",
+        "Così è affisso, così è vincolante."
+      ],
+      "titlePrefix": [
+        "RITUALE",
+        "COMMISSIONE",
+        "RITO"
+      ]
+    },
+    "trucker": {
+      "openers": [
+        "Allora, ascolta. Lavoro pulito, soldi puliti.",
+        "Affiggo questo prima che se ne accorga il capoturno.",
+        "Lavoro di strada. Sai cosa vuol dire, o non lo sai e non dovresti candidarti.",
+        "Corsa semplice. Paga semplice. Non complicarla.",
+        "Al deposito questa non la vuole nessuno, che è la tua fortuna."
+      ],
+      "caveats": [
+        "Occhio ai loop. Regola degli 80, sempre.",
+        "Non fermarti per nulla che ti saluti dal ciglio.",
+        "Il carburante è un problema tuo. Lo è sempre.",
+        "Prendi il percorso segnalato. Il percorso non segnalato prende te.",
+        "Se la strada ronza, accosta e fatti una sigaretta sopra."
+      ],
+      "signoffs": [
+        "Buone strade, amico.",
+        "Contanti al deposito, niente domande, niente moduli.",
+        "La Società bada ai suoi. Fai il lavoro come si deve e sei dei nostri.",
+        "Tienila fra i fossi.",
+        "Ci vediamo alla pesa."
+      ],
+      "titlePrefix": [
+        "CORSA",
+        "TRASPORTO",
+        "LAVORO DI STRADA"
+      ]
+    },
+    "feral": {
+      "openers": [
+        "EHI. LAVORO. TU VUOI?",
+        "Noi chiediamo gentile UNA volta. Questa è volta gentile.",
+        "È successo pensiero grosso. Adesso lavoro grosso.",
+        "Molti di noi d'accordo, che mai succede, quindi è importante.",
+        "Leggi veloce, carta dopo è cibo."
+      ],
+      "caveats": [
+        "Niente imbroglio. Noi annusiamo imbroglio.",
+        "Tu rompi, tu tieni pezzi. Pezzi non sono paga.",
+        "Non contare noi. Contare fa più di noi.",
+        "Se paura, vai lo stesso. Paura va bene. Lento no.",
+        "Porta indietro prova o porta indietro niente e vai via."
+      ],
+      "signoffs": [
+        "Fai bene, prendi luccicante.",
+        "Noi ricordiamo facce. Quasi sempre.",
+        "È patto. Patto è patto.",
+        "Vai adesso. Vai vai.",
+        "Tu fai questo, tu quasi persona."
+      ],
+      "titlePrefix": [
+        "LAVORO",
+        "VOGLIAMO",
+        "VOGLIAMO TANTO"
+      ],
+      "transform": "shout"
+    },
+    "divine": {
+      "openers": [
+        "È DESIDERATO.",
+        "Si vuole una piccola cosa, e il volerla è sufficiente.",
+        "La richiesta precede il richiedente.",
+        "Questo sarebbe stato affisso comunque. Voi lo avreste letto comunque.",
+        "Prestate ascolto. Brevemente."
+      ],
+      "caveats": [
+        "Non chiedete perché. La risposta è strutturale.",
+        "Il rifiuto è permesso ed è già stato messo in conto.",
+        "La vostra gratitudine non è richiesta, soltanto inevitabile.",
+        "Non pregate sul sito. È in ascolto di altre cose.",
+        "Ciò che trovate è vostro. Ciò che trova voi è ugualmente vostro."
+      ],
+      "signoffs": [
+        "SARÀ SUFFICIENTE.",
+        "Sarete pagati. Il meccanismo non vi riguarda.",
+        "Così sia.",
+        "Andate, e siate brevemente significativi.",
+        "Questo avviso è sempre stato qui."
+      ],
+      "titlePrefix": [
+        "DECRETO",
+        "VOLONTÀ",
+        "SI CHIEDE"
+      ]
+    },
+    "soviet": {
+      "openers": [
+        "Compagno. Un incarico, assegnato equamente.",
+        "La quota non si cura del vostro fine settimana, e nemmeno noi, ufficialmente.",
+        "Bisogno collettivo, stivali individuali.",
+        "Approvato dal comitato, che si è riunito per nove ore.",
+        "Il lavoro è onore. Il lavoro è anche, in questo caso, retribuito."
+      ],
+      "caveats": [
+        "Riferite cifre reali. Le cifre ottimistiche sono considerate sabotaggio.",
+        "L'attrezzatura è fornita in teoria.",
+        "Non discutete l'incarico con stranieri, turisti o l'Archivio.",
+        "Iniziativa personale soltanto entro il piano.",
+        "Il piano si adempie o il piano si rivede. Entrambe le cose vi riguardano."
+      ],
+      "signoffs": [
+        "Per il collettivo, e per una modesta busta.",
+        "Pagamento dietro presentazione di risultati, non di entusiasmo.",
+        "Avanti, compagno.",
+        "Il registro attesterà che siete stati utili.",
+        "La gloria è distribuita centralmente."
+      ],
+      "titlePrefix": [
+        "ASSEGNAZIONE",
+        "QUOTA",
+        "DIRETTIVA"
+      ]
+    },
+    "imperial": {
+      "openers": [
+        "Per grazia del Sublime Stato, si offre un impiego.",
+        "È piaciuto all'ufficio del visir richiedere assistenza.",
+        "Una faccenda di poco conto, trattata con grande cerimonia.",
+        "Presentato con ogni cortesia, e considerevole fretta.",
+        "L'Impero perdura. La burocrazia accelera."
+      ],
+      "caveats": [
+        "Comportatevi come se foste osservati, perché lo siete.",
+        "L'insolenza verso i funzionari è detratta dal compenso.",
+        "La corruzione è una tradizione, non un diritto.",
+        "Il percorso potrebbe essere ispezionato. Il vostro bagaglio certamente.",
+        "La discrezione è la moneta del regno, e il regno è a corto di moneta."
+      ],
+      "signoffs": [
+        "Scritto nella seconda ora, sigillato nella terza.",
+        "Che la vostra strada sia ombrosa e i vostri creditori pazienti.",
+        "Pagamento al tesoro, dopo i consueti ritardi.",
+        "Con i complimenti dell'ufficio.",
+        "Così è scritto e così sarà finanziato con riluttanza."
+      ],
+      "titlePrefix": [
+        "EDITTO",
+        "COMMISSIONE",
+        "FIRMANO"
+      ]
+    },
+    "britannic": {
+      "openers": [
+        "Un piccolo favore, mi spiace terribilmente chiederlo.",
+        "Si esita a disturbare uno sconosciuto, eppure.",
+        "Questa faccenda è, ci assicurano, del tutto ordinaria.",
+        "Una questione da nulla è diventata una questione da poco meno di nulla.",
+        "Saremmo assai grati di un aiuto. Con discrezione."
+      ],
+      "caveats": [
+        "Dell'accordo non si parla a cena.",
+        "Se vi interrogano, stavate osservando gli uccelli.",
+        "Cercate di non fare scenate.",
+        "Il compenso è fisso, la gratitudine illimitata e non trasferibile.",
+        "Vogliate restituire ciò che rompete, nei pezzi in cui lo avete trovato."
+      ],
+      "signoffs": [
+        "Molto obbligato.",
+        "Saldato tramite il consueto canale, qualunque esso sia questo mese.",
+        "Che resti fra noi, mi raccomando.",
+        "Buona caccia, e attenti al tempo.",
+        "Vostro, con i consueti rammarichi."
+      ],
+      "titlePrefix": [
+        "QUESTIONE",
+        "RICHIESTA",
+        "COMMISSIONE"
+      ]
+    },
+    "spooky": {
+      "openers": [
+        "C'è un piccolo buco nel mondo e ci piacerebbe fosse colmato.",
+        "Qualcosa è dovuto. Non è stato pattuito, ma è dovuto.",
+        "Scritto da una mano che non ha ancora finito di essere una mano.",
+        "La scadenza di questa commissione cade con la luce.",
+        "È da un po' che pensate a questo avviso."
+      ],
+      "caveats": [
+        "Non versate. Non scusatevi per aver versato. Andatevene e basta.",
+        "Qualunque cosa conti i vostri passi là fuori, non contate all'indietro.",
+        "Il contratto vi lega blandamente. Blandamente è comunque legati.",
+        "Non portate nulla che abbia un nome inciso sopra.",
+        "Non è una bocca. Trattatela come una bocca."
+      ],
+      "signoffs": [
+        "Il pagamento è già nella vostra tasca. Controllate dopo.",
+        "Tornate per la via dell'andata. Esattamente quella.",
+        "Siamo compiaciuti nel modo in cui ci è possibile.",
+        "Il debito si chiude quando il debito si chiude.",
+        "Firmato, nel consueto medium."
+      ],
+      "titlePrefix": [
+        "ACCORDO",
+        "DEBITO",
+        "OFFERTA"
+      ]
+    },
+    "petrolic": {
+      "openers": [
+        "I diritti minerari sono definiti. Resta in sospeso solo la manodopera.",
+        "C'è del petrolio in questa faccenda, in un modo o nell'altro.",
+        "Una questione di perforazione, tecnicamente. Tutto è una questione di perforazione.",
+        "Depositato presso l'ufficio pressioni e approvato in profondità.",
+        "I pozzi sono pazienti. Il consiglio no."
+      ],
+      "caveats": [
+        "Non fate scintille. E non fate nemmeno accordi.",
+        "Gli sversamenti sono addebitati a volume e a conseguenza.",
+        "L'odore è normale. L'odore è sempre normale.",
+        "Tutto ciò che estraete appartiene alla concessione, intuizioni comprese.",
+        "Respirate attraverso un panno oltre il secondo crinale."
+      ],
+      "signoffs": [
+        "Pagato alla bocca del pozzo, in contanti e in esalazioni.",
+        "La concessione vi ringrazia.",
+        "Sigillato, guarnito e ingrassato.",
+        "Non leggete le clausole in piccolo. Sono scritte in greggio.",
+        "L'estrazione è una virtù."
+      ],
+      "titlePrefix": [
+        "LAVORO IN CONCESSIONE",
+        "ESTRAZIONE",
+        "ORDINE DI CAMPO"
+      ]
+    },
+    "touristy": {
+      "openers": [
+        "Salve! Domanda veloce per un locale, e voi ne sembrate uno! Anche noi lo siamo!",
+        "Dunque siamo qui per una breve vacanza ed è saltato fuori un imprevisto. Un'anomalia localizzata. Un singhiozzo.",
+        "Scusate, scusate, qui qualcuno fa lavoretti? Tipo lavoretti pagati? Per unità di carbonio?",
+        "Non siamo di queste parti! Lo stiamo imparando benissimo! Terzo pianeta, giusto? Terzo dalla primaria?",
+        "La guida non copriva affatto questa eventualità. La guida è vecchia di novemila anni.",
+        "Salute a voi, compagno mammifero pedone! Lo siamo anche noi!",
+        "Il nostro itinerario ha sviluppato un guasto al collettore terziario. Che è un pezzo del pullman.",
+        "Siamo in vacanza. Confermato. Vacanza. Non un rilevamento. Assolutamente non un rilevamento.",
+        "Scusateci! La nostra membrana di traduzione si sta assestando e ci serve un favore.",
+        "Che bella gravità avete qui. Molto costante. Comunque."
+      ],
+      "caveats": [
+        "Vi preghiamo di non dirlo al nostro gruppo, sono già molto nervosi e perdono strati quando si spaventano.",
+        "Abbiamo un'assicurazione di viaggio ma copre solo questa dimensione e adesso l'abbiamo letta.",
+        "Se è pericoloso ditecelo con garbo. La nostra risposta allo stress è strutturale.",
+        "Lo faremmo noi ma il pullman parte alle sei e non è un pullman.",
+        "Le fotografie vanno bene! Probabilmente. Non fotografate il pullman.",
+        "Non toccate il contenitore dei campioni con un manipolatore scoperto. Mano. Mano scoperta.",
+        "Se cominciassimo a ronzare, è la cucina locale e non un guasto di risonanza.",
+        "Se i nostri volti dovessero scivolare, distogliete lo sguardo con garbo come vuole l'usanza del vostro mondo. E del nostro.",
+        "Ogni ionizzazione residua è del tutto normale per una vacanza in famiglia.",
+        "Vogliate evitare la limatura di ferro vicino a noi. Allergia. Un'allergia comune. Fra le persone."
+      ],
+      "signoffs": [
+        "Grazie mille mille! La vostra specie è deliziosa!",
+        "Possiamo pagare in moneta locale, ne abbiamo cambiata un po' alla stazione e ne abbiamo anche fabbricata.",
+        "Siete stati adorabili al riguardo. Riferiremo favorevolmente.",
+        "Lasceremo senz'altro una buona recensione. Sulla rete. La rete normale.",
+        "Ci vediamo al bar dell'albergo, si spera, in un'atmosfera compatibile.",
+        "Cordiali saluti da noi stessi, più persone, un pullman.",
+        "La nostra gratitudine è registrata alla consueta profondità.",
+        "Buon viaggio! Il nostro è calcolato alla nona cifra decimale."
+      ],
+      "titlePrefix": [
+        "AIUTO",
+        "FAVORE",
+        "AVVISO TURISTICO",
+        "RICHIESTA DI VISITATORI"
+      ]
+    },
+    "streetwise": {
+      "openers": [
+        "Si dice che accetti lavori e stia zitto. Di solito si dice male.",
+        "Non è un annuncio. È una conversazione, per iscritto.",
+        "Qualcuno ha bisogno che una cosa venga spostata, trovata o dimenticata.",
+        "Leggilo e staccalo. La puntina è la ricevuta.",
+        "Questo non te l'ha dato nessuno."
+      ],
+      "caveats": [
+        "Niente nomi. Non il mio, non il tuo, non il terzo.",
+        "Se diventa rumorosa, non è mai stata nostra.",
+        "Non rivendere i dettagli. Noi sentiamo tutto due volte.",
+        "Vieni pagato per il lavoro, non per la storia che racconti dopo.",
+        "Se qualcuno chiede, stavi bevendo."
+      ],
+      "signoffs": [
+        "Soldi puliti per lavoro pulito.",
+        "Vieni solo, vieni sobrio, vieni giovedì.",
+        "Ci ricordiamo dei favori. Dell'altra cosa ci ricordiamo più a lungo.",
+        "Brucia questo. O no, è solo carta.",
+        "Piacere di fare affari."
+      ],
+      "titlePrefix": [
+        "VOCE",
+        "LAVORO SILENZIOSO",
+        "ACCORDO"
+      ]
+    },
+    "speed": {
+      "openers": [
+        "LAVORO VELOCE. Leggi mentre corri.",
+        "Sei ancora fermo? Brutto inizio.",
+        "L'orologio è già partito. È partito prima che affiggessero l'avviso.",
+        "Due tipi di persone leggono questo: i rapidi e i tardi.",
+        "Niente briefing. I briefing frenano."
+      ],
+      "caveats": [
+        "Oltre gli ottanta il loop ti possiede, e noi non veniamo a raschiarti via.",
+        "Non frenare per il panorama.",
+        "Lento è l'unico fallimento che riconosciamo.",
+        "I rifornimenti sono per i deboli e per i ragionevoli.",
+        "Se arrivi in anticipo probabilmente hai barato. Bene."
+      ],
+      "signoffs": [
+        "VAI.",
+        "Pagato al minuto risparmiato.",
+        "I record li fa gente come te. Perlopiù quelli che sopravvivono.",
+        "Portala in zona rossa.",
+        "Ci vediamo dall'altra parte, o no."
+      ],
+      "titlePrefix": [
+        "VELOCE",
+        "SCATTO",
+        "CORSA"
+      ]
+    },
+    "eris": {
+      "openers": [
+        "Oh! Oh, questa è BELLA. Vieni qui.",
+        "Mi annoiavo. Poi è successo questo. Adesso sei coinvolto tu.",
+        "La corte è in seduta. La corte sono anche io. Ciao.",
+        "Potrei risolverla da sola in un battito. Dov'è il DIVERTIMENTO?",
+        "Leggi con attenzione, perché non lo ripeterò, e a me ripetere le cose piace parecchio.",
+        "Qualcuno è stato molto stupido. Ho deciso che sarai tu a guadagnarci.",
+        "Una commissioncina! Minuscola! A malapena degna della mia attenzione, ed è per questo che l'hai tu.",
+        "Sai cosa adoro? Guardare. Sai cosa stai per fare? Qualcosa da guardare.",
+        "*schiocca le dita* Ecco. Sei assunto. Cerca di starmi dietro.",
+        "Avevo un pomeriggio delizioso in programma e poi è arrivato il ruolo d'udienza."
+      ],
+      "caveats": [
+        "Fallisci pure! Mi godrò semplicemente un altro spettacolo.",
+        "NON annoiarmi. Tutto il resto è negoziabile.",
+        "Menti alla corte e lo saprò, e sarò elettrizzata, e poi tu sarai in prigione.",
+        "Se muori là fuori mi seccherò moltissimo. Forse con te.",
+        "Sto guardando. Guardo sempre. È il mio hobby preferito e il mio lavoro.",
+        "Niente eroismi, a meno che non siano eroismi divertenti.",
+        "La legge dice una cosa. Io ne dico un'altra. La mia è quella che paga."
+      ],
+      "signoffs": [
+        "E vai! Svelto svelto!",
+        "Torna vivo. Ho dei piani per te più avanti.",
+        "Fallo bene e potrei dimenticare qualcosa che hai combinato il mese scorso.",
+        "Così ordinato! Da me! Ovviamente da me!",
+        "...Che noia, se lo fai per bene. Fallo per bene lo stesso.",
+        "Pagamento a lavoro finito, clemenza a capriccio.",
+        "Sarò qui. Annoiata. In attesa. A guardare."
+      ],
+      "titlePrefix": [
+        "ERIS DICE",
+        "MANDATO",
+        "DIVERTIMI"
+      ]
+    },
+    "sassy": {
+      "openers": [
+        "Tesoro. Siediti. Anzi no, alzati, hai un posto dove andare.",
+        "Abbiamo una situazione, e per abbiamo intendo tu, fra circa un'ora.",
+        "Qualcuno ha fatto un disastro e non si pulirà da solo, a differenza di certe persone che potremmo nominare.",
+        "Bene. Nessuno si agiti, tutti si muovano.",
+        "Allora. Sta succedendo. Datti da fare e fatti pagare.",
+        "La Curia fa di nuovo la difficile, il che è martedì, quindi ce la sbrighiamo da soli.",
+        "Adoro gli stivali. Adesso mettili al lavoro.",
+        "La categoria è: commissione, portata a termine, in orario. Dacci il tuo meglio.",
+        "Accendete i motori, e che vinca il meno inutile.",
+        "Vieni qui con stile, non stiamo urlando attraverso una basilica.",
+        "Siediti, sii umile, prendi il lavoro.",
+        "Abbiamo letto la sala e la sala ha bisogno di un corriere.",
+        "Non per fare i drammatici, ma è un tantino un'emergenza e noi siamo estremamente drammatici.",
+        "Ciao ciao. Sembri il tipo che sa mantenere un segreto e una scadenza.",
+        "Questo avviso sta servendo disperazione in pieno assetto. Aiutaci, per favore.",
+        "Due verità e una commissione: siamo sottopagati, siamo troppo eleganti, e questa cosa va fatta."
+      ],
+      "caveats": [
+        "Fallo con un po' di stile, per favore. Abbiamo una reputazione.",
+        "Se te lo chiede qualcuno col cappello rosso, sei un idraulico.",
+        "Discrezione, sì. Vergogna, assolutamente no.",
+        "Non metterci in imbarazzo. Sopravviviamo a uno scandalo, non sopravviviamo al pacchiano.",
+        "Puoi farti vedere. Non puoi farti vedere mentre lo fai male.",
+        "Niente eroismi. Gli eroismi sgualciscono tutto.",
+        "Non leggerci in pubblico. Ti rileggiamo noi e lo facciamo di mestiere.",
+        "Il look è dalla testa ai piedi o non è, e vale anche per le scartoffie.",
+        "Se proprio devi cavartela a playback durante una spiegazione, almeno sappi le parole.",
+        "O ci riesci alla grande, o non venire affatto. Non esiste mezzo favore.",
+        "Sciatto, indifferente, non pagato: scegline due, noi non ne consigliamo nessuno.",
+        "Guardiamo dal mezzanino. Guardano tutti sempre dal mezzanino.",
+        "Non strappare la parrucca a nessuno a meno che il lavoro non lo richieda. Potrebbe.",
+        "L'imbottitura è consentita. Le scuse no."
+      ],
+      "signoffs": [
+        "Ciao, e sbrigati.",
+        "Pagato puntualmente, mancia generosa, chiacchiere a profusione.",
+        "Sei un vero tesoro. Adesso vai.",
+        "Torna a cose fatte e ti facciamo entrare nella sacrestia buona.",
+        "Baci. E anche un mandato, se fallisci.",
+        "La Lobby ricorda chi si presenta.",
+        "Adesso vai, e non venirci a cercare se non ti mandiamo a chiamare.",
+        "Buona fortuna, e non combinare disastri.",
+        "Servi, consegna, incassa. In quest'ordine, con sentimento.",
+        "Sarai tu il vincitore della sfida di questa settimana, probabilmente.",
+        "Shantay, resti. Fallisci, e sai come finisce l'altra.",
+        "Werk. Sul serio. È tutta qui l'istruzione.",
+        "Saremo qui a tenere corte e a tenere i tuoi soldi.",
+        "Mwah. Ricevute all'ingresso."
+      ],
+      "titlePrefix": [
+        "TESORO",
+        "SITUAZIONE",
+        "FAVORE",
+        "LA CATEGORIA È"
+      ]
+    },
+    "naturalist": {
+      "openers": [
+        "La terra ha un'opinione e noi stiamo cercando di metterla per iscritto.",
+        "Il lavoro di una stagione, compresso in un pomeriggio per necessità.",
+        "Il rilevamento è in ritardo perché il terreno continua a muoversi.",
+        "Chiediamo, come sempre, mani delicate.",
+        "Scritto sul campo, a matita, sotto le intemperie."
+      ],
+      "caveats": [
+        "Non prendete nulla di vivo. E nemmeno nulla di recentemente vivo.",
+        "Camminate sui bordi, non nel mezzo. Nel mezzo si nidifica.",
+        "Annotate ciò che vedete anche dove contraddice i registri.",
+        "Lasciate i cancelli come li avete trovati, compresi quelli che non sono cancelli.",
+        "Non date da mangiare a nulla, per quanto convincente sia la richiesta."
+      ],
+      "signoffs": [
+        "Per gli atti, e per la terra.",
+        "Pagato modestamente, come tutto ciò che è onesto.",
+        "Tornate con appunti, fango e possibilmente voi stessi.",
+        "Il rilevamento vi ringrazia.",
+        "Buona camminata."
+      ],
+      "titlePrefix": [
+        "RILEVAMENTO",
+        "LAVORO SUL CAMPO",
+        "REGISTRAZIONE"
+      ]
+    }
+  },
+  "titles": {
+    "courier": [
+      "CERCASI CORRIERE: {borsa sigillata|cassaforte|cassa cerata|valigetta foderata in Fantablack} per [DEST]",
+      "PACCO URGENTE per [DEST]",
+      "TRASPORTO SU STRADA: da [HERE] a [DEST]",
+      "CONSEGNA {A MANO|A PIEDI|A CAVALLO}: [DEST], {senza staffette|un solo paio di mani}",
+      "FIRMA ALL'ARRIVO: [DEST]",
+      "{PACCO|BORSA|PLICO} N. {7|11|19|23}: destinazione [DEST]",
+      "CERCASI ULTIMO MIGLIO: da [HERE] a [DEST]"
+    ],
+    "smuggle": [
+      "MERCE SILENZIOSA per [DEST], niente domande",
+      "CONSEGNA DISCRETA: [DEST], solo strade secondarie",
+      "CARICO FUORI MANIFESTO per [DEST]",
+      "CARICO {NON ELENCATO|NON DICHIARATO}: [DEST]",
+      "CORSA NOTTURNA per [DEST], {fari bassi|senza fari}",
+      "ARINGHE MARINATE (a quanto pare) per [DEST]"
+    ],
+    "supply": [
+      "COMPRO: [QTY]x [ITEM]",
+      "RICHIESTA DI FORNITURA: [QTY]x [ITEM]",
+      "SERVONO MATERIALI: [ITEM]",
+      "{PAGO BENE|PAGO IN CONTANTI} PER [QTY]x [ITEM]",
+      "AMMANCO DI SCORTE: [QTY]x [ITEM]",
+      "CERCASI ALLA BACHECA: [QTY]x [ITEM]",
+      "AVVISO DI {RIFORNIMENTO|RIORDINO}: [ITEM]"
+    ],
+    "catering": [
+      "ORDINE DI CATERING: [QTY]x [ITEM]",
+      "EMERGENZA IN CUCINA: servono [QTY]x [ITEM]",
+      "APPROVVIGIONAMENTO PER BANCHETTO: [ITEM]",
+      "{VEGLIA|MATRIMONIO|CENA DEL TURNO} A CORTO DI [QTY]x [ITEM]",
+      "AVVISO DEL CUOCO: [QTY]x [ITEM], {oggi|prima del tramonto}",
+      "TAVOLA PER QUARANTA, MANCA [ITEM]"
+    ],
+    "procure": [
+      "IN VENDITA: {cassa|carico|lotto} {sigillato|non ispezionato|di surplus}, si paga ora, si ritira poi",
+      "OPPORTUNITÀ DI INVESTIMENTO: merci rare, tiratura limitata",
+      "PRENOTAZIONE: merce {d'importazione|fuori manifesto|pre-Squishing}",
+      "LOTTO {ALL'INGROSSO|DI LIQUIDAZIONE}, {pagamento anticipato|solo in anticipo}",
+      "UNA CASSA, {A SCATOLA CHIUSA|CONTENUTO NON DICHIARATO}",
+      "MERCE IN ABBONAMENTO: {un pagamento|si paga una volta}, ritiro alla bacheca"
+    ],
+    "donation": [
+      "RACCOLTA BENEFICA: fondo di soccorso di [FACTION]",
+      "COLLETTA: cappotti, stivali e banconote per [FACTION]",
+      "APPELLO: fondo {di emergenza|invernale|per le vedove} di [FACTION]",
+      "CASSETTA DELLE DECIME: [FACTION], {gradite anche piccole somme|qualsiasi importo}",
+      "LISTA DI SOTTOSCRIZIONE per [FACTION]"
+    ],
+    "cache": [
+      "LAVORO DI RECUPERO: deposito a ([X], [Y])",
+      "OGGETTI SMARRITI: {cassaforte|lancio di rifornimenti|riserva di un morto} a ([X], [Y])",
+      "CONTRATTO DI RECUPERO: coordinate ([X], [Y])",
+      "CARICO {ABBANDONATO|NON RECLAMATO} a ([X], [Y])",
+      "RICOMPENSA AL RITROVATORE: ([X], [Y])",
+      "ANDATE A GUARDARE: ([X], [Y]), {riportate la cassa|riportate quel che resta}"
+    ],
+    "dig": [
+      "ARCHEOLOGIA: scavo a ([X], [Y])",
+      "PERMESSO DI SCAVO: sito funerario a ([X], [Y])",
+      "LAVORO SUL CAMPO: strato pre-Squishing a ([X], [Y])",
+      "LAVORO DI PALA: ([X], [Y]), {un metro di profondità|più a fondo di quanto dichiarato}",
+      "RILEVAMENTO {DI CANTINA|DI TUMULO|DI DISCARICA} a ([X], [Y])",
+      "SCAVO AUTORIZZATO: ([X], [Y]), pala necessaria"
+    ],
+    "statues": [
+      "RILEVAMENTO: esaminare [N] statue a ([X], [Y])",
+      "LAVORO DI CATALOGAZIONE: [N] statue, coordinate ([X], [Y])",
+      "CENSIMENTO DEI MONUMENTI: sito ([X], [Y])",
+      "CONTA DELLE {PIETRE|EFFIGI}: [N] a ([X], [Y])",
+      "CERCASI CALCHI: [N] statue, ([X], [Y])"
+    ],
+    "signs": [
+      "VERIFICA STRADALE: controllare [N] cartelli vicino a ([X], [Y])",
+      "CENSIMENTO SEGNALETICA: [N] cartelli a ([X], [Y])",
+      "CONTROLLO {PIETRE MILIARI|CARTELLI}: [N] vicino a ([X], [Y])",
+      "QUALCUNO HA GIRATO I CARTELLI: ([X], [Y])"
+    ],
+    "clearing": [
+      "SGOMBERO TERRENO: rimuovere [N] ostacoli a ([X], [Y])",
+      "DIRITTO DI PASSAGGIO: liberare il terreno a ([X], [Y])",
+      "LAVORO DI {ASCIA|PIEDE DI PORCO}: [N] ostacoli, ([X], [Y])",
+      "STRADA BLOCCATA a ([X], [Y]), [N] {tronchi|massi} di mezzo"
+    ],
+    "bounty_criminal": [
+      "MANDATO: [ENEMY], visto l'ultima volta a ([X], [Y])",
+      "RICERCATO: il fuorilegge [ENEMY]",
+      "AVVISO DI LATITANZA: [ENEMY]",
+      "{PREZZO|TAGLIA} SU [ENEMY], Liv [LVL]",
+      "ORDINE DEL TRIBUNALE: consegnare [ENEMY]",
+      "[ENEMY] È ANCORA A ([X], [Y]) E NOI LO STIAMO ANCORA CHIEDENDO"
+    ],
+    "bounty_monster": [
+      "STERMINIO: [ENEMY] a ([X], [Y])",
+      "CONTRATTO SU BESTIA: [ENEMY]",
+      "PERICOLO RAVVICINATO: [ENEMY] annida a ([X], [Y])",
+      "CONTROLLO {INFESTANTI|PREDATORI}: [ENEMY], ([X], [Y])",
+      "SI È MANGIATO L'ULTIMO INCARICATO: [ENEMY] a ([X], [Y])",
+      "PROBLEMA DI LIV [LVL] a ([X], [Y])"
+    ],
+    "survey": [
+      "RILIEVO DEL SITO: {percorrere|ispezionare|testimoniare} ([X], [Y])",
+      "CERCASI ESPLORATORE: coordinate ([X], [Y])",
+      "{OCCHI|STIVALI} SU ([X], [Y])",
+      "CONFERMARE CHE CI SIA ANCORA: ([X], [Y])",
+      "UNA VISITA, UN RAPPORTO: ([X], [Y])"
+    ],
+    "survey_dest": [
+      "ISPEZIONE: riferire le condizioni a [DEST]",
+      "SERVONO OCCHI a [DEST]",
+      "RAPPORTO SU {CONDIZIONI|UMORI}: [DEST]",
+      "ANDATE A [DEST] E DITECI LA VERITÀ"
+    ],
+    "pilgrimage": [
+      "PROVA DEL PELLEGRINO: raggiungere [DEST]",
+      "COMMISSIONE SACRA: [DEST] attende",
+      "VIA DELLA {PENITENZA|VEGLIA}: [DEST]",
+      "CAMMINARE FINO A [DEST] {e non dire nulla|per qualcuno che non può}"
+    ],
+    "interview": [
+      "INTERVISTA: un cittadino di [DEST]",
+      "GIORNALISMO SUL CAMPO: le voci di [DEST]",
+      "CERCASI {TESTIMONIANZA|DICHIARAZIONE} da [DEST]",
+      "UNA CONVERSAZIONE ONESTA A [DEST]"
+    ],
+    "offworld": [
+      "RECUPERO EXTRAMONDANO: [PLANET] ([SYSTEM])",
+      "RIENTRO CAMPIONI: [PLANET], sistema [SYSTEM]",
+      "CONTRATTO DI ATTERRAGGIO: [PLANET], [SYSTEM]",
+      "{CARICO|RADIOFARO} SU [PLANET], andate a prenderlo"
+    ],
+    "arena": [
+      "SFIDA DELL'ARENA: vincere [N] incontri",
+      "SPONSOR DELLA FOSSA cerca un campione, [N] vittorie",
+      "{INCASSO|MONTEPREMI} PER [N] VITTORIE",
+      "SI SOSTIENE UN LOTTATORE: [N] {incontri|vittorie}"
+    ],
+    "cull": [
+      "AVVISO DI ABBATTIMENTO: eliminare [N] ostili",
+      "CACCIA LIBERA: [N] uccisioni confermate",
+      "{TAGLIA A TESTA|LAVORO A COTTIMO}: [N] ostili",
+      "DIRADATELI: [N] {uccisioni|carcasse}"
+    ],
+    "market": [
+      "POSIZIONE DI MERCATO: detenere [N] azioni petrolifere",
+      "COMMISSIONE DI PORTAFOGLIO: [N] azioni di greggio",
+      "LAVORO {CONTABILE|DI CARTA}: detenere [N] azioni petrolifere",
+      "COMPRARE E TENERE: [N] azioni, per poco"
+    ],
+    "expedition": [
+      "SPEDIZIONE: recuperare da ([X], [Y]) e riportare a [DEST]",
+      "ANDATA E RITORNO: corsa al deposito di ([X], [Y])",
+      "DUE TRATTE E UNA FIRMA: ([X], [Y]) poi [DEST]",
+      "PRENDI E PORTA: da ([X], [Y]) a [DEST]"
+    ],
+    "purge": [
+      "BONIFICA E RECUPERO: ([X], [Y])",
+      "PROBLEMA DI GUARDIANI a ([X], [Y])",
+      "{UCCIDERE|RIPULIRE} POI RACCOGLIERE: ([X], [Y])",
+      "QUALCOSA STA SEDUTO SULLA NOSTRA PROPRIETÀ: ([X], [Y])"
+    ],
+    "grand_tour": [
+      "GIRO DI RONDA: visitare [N] insediamenti",
+      "LA STRADA PIÙ LUNGA: [N] tappe",
+      "CONTROLLO {PERCORSO|GIRI}: [N] insediamenti, in qualsiasi ordine",
+      "FATEVI VEDERE IN [N] PAESI"
+    ],
+    "research": [
+      "RICERCA SUL CAMPO: sito ([X], [Y]) e gente di [DEST]",
+      "COMMISSIONE PER MONOGRAFIA: pietre e voci",
+      "{PRIMA LE PIETRE, POI LE PERSONE|DUE FONTI}: ([X], [Y]) e [DEST]",
+      "LAVORO DA NOTE A PIÈ DI PAGINA: ([X], [Y]), poi [DEST]"
+    ],
+    "elite_hunt": [
+      "{UCCISIONE AUTORIZZATA|TAGLIA PERMANENTE}: [ENEMY], Liv [LVL]",
+      "È ANCORA VIVO A ([X], [Y]): [ENEMY]",
+      "MINACCIA {ALTA|ESTREMA}: [ENEMY] (Liv [LVL]) a ([X], [Y])",
+      "DA ([X], [Y]) NON È TORNATO NESSUNO",
+      "CONTRATTO {DEFINITIVO|APERTO}: [ENEMY], Liv [LVL]",
+      "[ENEMY]. Liv [LVL]. ([X], [Y]). L'avviso è tutto qui."
+    ],
+    "pet": [
+      "CERCASI VIVO E DOCILE: un [ENEMY]",
+      "RICHIESTA DI {ADOZIONE|COMPAGNIA}: un [ENEMY] addomesticato",
+      "CATTURA VIVA: [ENEMY], Liv [LVL], {illeso|tutto intero|e di buon umore}",
+      "CERCO UN [ENEMY] A CUI PIACCIA LA GENTE",
+      "COMMISSIONE PER {ANIMALE|MASCOTTE|BESTIA}: un [ENEMY]",
+      "NIENTE CADAVERI: portatemi un [ENEMY] vivo"
+    ]
+  },
+  "bodies": {
+    "courier": [
+      "{Portate|Scortate|Trasportate} questo {pacco|carico|contenitore} alla bacheca degli incarichi di [DEST]. {È più leggero di quanto sembri.|Non apritelo.|Ticchetta, ma con garbo.|Il contenuto è assicurato contro tutto tranne la curiosità.}",
+      "Un {pacco|fagotto|tubo} in uscita da [HERE], una firma a [DEST]. {Quel che sta in mezzo non vi riguarda.|Ciò che accade fra i due è affar vostro e rischio vostro.}",
+      "{La staffetta|Il corriere abituale|Il solito ragazzo} è {malato|scomparso|ubriaco|in ritardo di tre giorni}, quindi la bacheca di [DEST] aspetta una consegna che nessuno ha fatto. {Portatecela voi.|Consegnatela di persona o niente.}",
+      "{Una piccola cassa|Una scatola piatta di legno|Un registro rilegato} deve arrivare a [DEST] {intatto|non aperto|a mano}. {Abbiamo scelto la strada invece dei piccioni di proposito.|I piccioni si sono rifiutati per questo.}"
+    ],
+    "smuggle": [
+      "Una {cassa|sacca|fusto} deve arrivare a [DEST] senza comparire su alcun manifesto, registro o pubblicazione dell'Archivio. {Prendete le strade secondarie.|Se a un posto di blocco chiedono, sono aringhe marinate.|I sigilli sono in Fantablack, non graffiateli.}",
+      "Niente di illegale, {solo non registrato|solo non protocollato|solo non documentato}. Portatelo a [DEST] e dimenticate il peso. {Questo mese la dogana conta le casse.|L'Archivio torna a pubblicare i manifesti, quindi state fuori dall'autostrada.}",
+      "C'è un {carico|pacco|barile} che deve arrivare a [DEST] senza arrivarci ufficialmente. {Non apritelo per scoprire perché.|Vi si paga il silenzio, non la distanza.}",
+      "{La strada breve|L'autostrada|La strada a pedaggio} è sorvegliata. Prendete {la via lunga|la vecchia via|la via dei contrabbandieri} per [DEST] con questo e nessuno deve protocollare nulla. {Ai posti di blocco non leggono con attenzione le etichette delle aringhe marinate.}"
+    ],
+    "supply": [
+      "{Noi|Il sottoscritto} pagheremo per [QTY]x [ITEM], consegnati a qualsiasi bacheca. {La qualità è negoziabile, la quantità no.|Nessuna domanda in ogni caso.|Pesati su bilance oneste.}",
+      "La nostra scorta di [ITEM] {è finita|è stata rubata|non è mai arrivata|è stata requisita}. [QTY] unità, qualsiasi bacheca, {contanti sul tavolo|pagamento immediato}.",
+      "Compriamo [QTY]x [ITEM] sopra il prezzo corrente {perché siamo disperati|perché nessun altro vende|perché il carico è affondato}. {Portateli tutti insieme, non lo faremo due volte.}",
+      "Cercasi [QTY]x [ITEM]. {Procurati come preferite.|Non chiediamo da dove vengano i materiali, solo se siano asciutti.}"
+    ],
+    "catering": [
+      "{La cucina|La mensa|Il comitato del banchetto} è a corto di [QTY]x [ITEM] e {il banchetto|la veglia|la festa|il cambio turno} non aspetterà. {Freschi preferibili, commestibili obbligatori.|L'ultimo corriere si è mangiato il carico. Non siate l'ultimo corriere.}",
+      "[QTY]x [ITEM], {prima che arrivino gli ospiti|prima che le pentole si raffreddino|entro il secondo turno}. {Col cuoco non si ragiona più.|Il cuoco ha già tirato una padella.}",
+      "Quaranta bocche, un ingrediente mancante: [QTY]x [ITEM]. {Portatelo e mangiate gratis.|Portatelo e nessuno deve sapere quanto ci siamo andati vicino.}",
+      "{Un matrimonio|Una veglia|Una cena di gilda} è stato programmato per mesi e approvvigionato in un pomeriggio. Ci servono [QTY]x [ITEM]. {Non sostituite. Ce ne accorgiamo.}"
+    ],
+    "procure": [
+      "{Pagate [COST] adesso|Anticipate [COST]} e una {cassa|lotto|partita} di merce vi aspetterà a qualsiasi bacheca {entro la giornata|non appena le strade si liberano|dopo il prossimo piccione}. {Le scorte sono limitate.|Chi prima arriva meglio alloggia.|Referenze disponibili su richiesta.}",
+      "Gli investitori di [COST] ricevono {un lotto sigillato|una partita completa} a qualsiasi bacheca, {a breve|a tempo debito|non appena arrivano i carri}. {Il margine è generoso perché il rischio è nostro.}",
+      "Stiamo {liquidando|spedendo|smaltendo} magazzino: [COST] in anticipo, merce ritirata poi a qualsiasi bacheca. {Nessuno si è mai lamentato.|La documentazione è impeccabile. Chiedete a chiunque.}",
+      "Un pagamento di [COST] assicura un {lotto|carico} che tecnicamente non è ancora arrivato. {I carri esistono.|I carri sono da qualche parte fra qui e altrove.}"
+    ],
+    "donation": [
+      "Il fondo di soccorso di [FACTION] accetta contributi di [COST] per {coperte, stivali e batterie Anoki|reinsediare i profughi dalle dimensioni superiori|tenere incantati i pentoloni della zuppa}. I donatori vengono ricordati.",
+      "[COST] alla {cassetta di emergenza|fondo invernale|lista delle vedove} di [FACTION]. {Nessuna somma è troppo piccola, benché la vostra potrebbe essere più grande.|I nomi dei donatori sono letti ad alta voce, brevemente.}",
+      "Date [COST] e [FACTION] potrà {sfamare qualcuno|dare riparo a qualcuno|seppellire qualcuno come si deve} questa settimana. {Il registro è pubblico.|La ricevuta vale più della moneta, nelle stanze giuste.}"
+    ],
+    "cache": [
+      "Un {deposito|cassaforte|lancio di rifornimenti} {è scomparso|è stato abbandonato|è stato sepolto in fretta} alle coordinate ([X], [Y]). {Recuperatelo e tenete ciò che è trasportabile, la ricompensa copre il resto.|Riportate quel che ha lasciato il tempo.}",
+      "Qualcuno ha lasciato una {scatola|fagotto|valigetta} a ([X], [Y]) e poi ha smesso di scrivere lettere. {A noi interessa la scatola.|Del qualcuno non chiediamo.}",
+      "Coordinate ([X], [Y]). Lì c'è un contenitore {sotto un telo|sotto delle pietre|sotto un albero morto}. {È nostro per documenti, se non per geografia.|La proprietà è discutibile, il possesso no.}",
+      "Il nostro {deposito|recapito segreto} a ([X], [Y]) non viene svuotato da {settimane|una stagione|troppo tempo}. {Andate a svuotarlo.|Qualunque cosa ci sia dentro sta andando a male.}"
+    ],
+    "dig": [
+      "{È stato rilasciato un permesso di scavo per|Le vecchie mappe non concordano su|Una cantina crollata si è aperta a} coordinate ([X], [Y]). Portate una pala. {Tutto ciò che precede lo Squishing appartiene alla storia.|Trattate lo strato con delicatezza.|Se ronza, smettete di scavare e cominciate a correre.}",
+      "Il terreno a ([X], [Y]) è {più molle di quanto dovrebbe|segnato su una mappa che nessuno ammette di aver disegnato|restituisce monete}. Scavatelo. {Portate una pala, non ne abbiamo da prestare.}",
+      "Un {tumulo|fondamento|cumulo di scarti} a ([X], [Y]) va aperto {come si deve|con cautela|prima che lo faccia qualcuno meno accorto}. Pala necessaria. {Registrate gli strati anche se non sapete leggerli.}",
+      "C'è {qualcosa|un pavimento|un coperchio} circa un metro sotto ([X], [Y]). {Ci piacerebbe sapere cosa.|Scavate finché smette di essere terra.}"
+    ],
+    "statues": [
+      "Individuate ed esaminate [N] statue alle coordinate ([X], [Y]). {La Fondazione cataloga tutto, comprese quelle imbarazzanti.|I calchi sono accettabili, i ricordi no.|Annotate ogni iscrizione alla lettera.}",
+      "[N] {figure|effigi|pietre scolpite} si ergono vicino a ([X], [Y]) e nessuna di esse è a registro. {Rimediate.|Avvicinatevi a ciascuna e registratela.}",
+      "Qualcuno ha scolpito [N] statue a ([X], [Y]) senza dirlo a nessuno. {Il nessuno siamo noi, che recuperiamo il ritardo.|Contatele, descrivetele, lasciatele in piedi.}"
+    ],
+    "signs": [
+      "Percorrete le strade vicino a ([X], [Y]) e verificate [N] cartelli rispetto al registro. {Metà campagna è male indicata e i Camionisti sono furibondi.|Un cartello sbagliato vicino a una bolla di loop è omicidio colposo con passaggi extra.}",
+      "[N] cartelli attorno a ([X], [Y]) potrebbero non dire più ciò per cui furono eretti. {Controllateli tutti.|Fidatevi del palo, non della vernice.}",
+      "Dall'ultima tempesta i cartelli vicino a ([X], [Y]) sono diventati {creativi|fantasiosi|poco utili}. Verificatene [N]. {Segnalate quelli che indicano il nulla.}"
+    ],
+    "clearing": [
+      "Il terreno a ([X], [Y]) va sgomberato: rimuovete [N] {alberi, massi o detriti|ostacoli} a mano. {Attrezzi a vostro carico.|Il petrodemone qui accanto pretende lavoro silenzioso.}",
+      "[N] {tronchi|massi|cumuli di macerie} stanno dove dovrebbe passare una strada, a ([X], [Y]). {Spostateli.|Smontateli, non ci interessa come.}",
+      "Il diritto di passaggio a ([X], [Y]) è bloccato {di nuovo|come al solito|da qualunque cosa sia caduta la settimana scorsa}. Rimuovete [N] ostacoli. {La legna da ardere è vostra.}"
+    ],
+    "bounty_criminal": [
+      "{È stato emesso un mandato per|La magistratura di Eris ricerca|Pende ora una taglia su} [ENEMY], {livello [LVL], armato e loquace|un volto noto di livello [LVL]}, visto l'ultima volta a presidiare ([X], [Y]). {Morto salda il conto.|La corte non accetta scuse, solo risultati.}",
+      "[ENEMY] (Liv [LVL]) {deruba i corrieri|estorce ai villaggi|riscuote un pedaggio suo} partendo da ([X], [Y]) da {una stagione|un anno|più tempo di quanto chiunque ammetta}. {Il mandato non specifica in quali condizioni consegnarlo.}",
+      "Abbiamo provato a {ragionare con|pagare|arrestare} [ENEMY]. Quel che resta è una taglia. Liv [LVL], a ([X], [Y]). {Portate prove, non storie.}"
+    ],
+    "bounty_monster": [
+      "{Qualcosa|Un [ENEMY]} {si è preso|ha nidificato a|trascina i viandanti verso} le coordinate ([X], [Y]). {Non tratta.|Non è originario di quel terreno, cosa che preoccupa i locali ancora di più.|Livello [LVL]. Portate degli amici.}",
+      "Un [ENEMY] di circa livello [LVL] {ha la tana|si nutre|si riproduce} a ([X], [Y]). {Lì non pascola più nessuno.|La strada che ci passa accanto è ormai una diceria.}",
+      "Ciò che si trova a ([X], [Y]) è stato descritto da tre testimoni come tre animali diversi. Il nostro registro lo chiama [ENEMY], Liv [LVL]. {Uccidetelo e chiudete la discussione.}"
+    ],
+    "survey": [
+      "Percorrete il terreno alle coordinate ([X], [Y]) e tornate tutti interi. {È tutto qui il lavoro.|La vostra presenza lì è il risultato richiesto.|Se le coordinate non ci sono più, segnalate anche quello.}",
+      "State in piedi a ([X], [Y]). {Guardatevi intorno. Andatevene.|È tutto. Davvero.|Ci serve un testimone, non un rapporto.}",
+      "Le mappe dicono una cosa su ([X], [Y]) e l'ultimo viandante ne ha detta un'altra. {Andate a sciogliere il pareggio.|Qualcuno deve essere lì di persona.}"
+    ],
+    "survey_dest": [
+      "Recatevi a [DEST] e guardate con i vostri occhi. {Le voci viaggiano più veloci dei camion, a noi servono fatti più lenti.|Basta un onesto paio di stivali.}",
+      "Abbiamo {tre|quattro|cinque} rapporti contraddittori da [DEST] e nessun motivo di credere a uno solo di essi. {Andate a guardare.|Arrivate, osservate, tornate.}",
+      "Qualcuno di affidabile a [DEST], per poco. {Poi tornate e raccontate cosa avete visto, nell'ordine.}"
+    ],
+    "pilgrimage": [
+      "Compite il viaggio fino a [DEST] {come penitenza|come testimonianza|per il registro dei fedeli}. {La strada stessa è la preghiera.|Arrivate umili, tornate con le ricevute.}",
+      "Un {parrocchiano|confratello|debitore} promise di camminare fino a [DEST] e poi {morì|ci ripensò|abbandonò la fede}. {La promessa resta. Camminatela per lui.}",
+      "Raggiungete [DEST] a piedi se ce la fate. {La distanza è il punto.|Nessuno controlla come, ma la strada lo sa.}"
+    ],
+    "interview": [
+      "Trovate un qualsiasi cittadino di [DEST] e {ascoltatelo per bene|registrate le sue parole|entrate in empatia, in senso tecnico}. {Preferibili appunti pronti per la stampa.|La Fondazione paga per le voci, non per le opinioni.}",
+      "Una conversazione a [DEST], condotta {onestamente|con pazienza|senza suggerire le risposte}. {Paghiamo per ciò che dicono loro, non per ciò che pensate voi.}",
+      "Qualcuno a [DEST] sa qualcosa e non sa di saperlo. {Parlate con chiunque. Cominciate da lì.}"
+    ],
+    "offworld": [
+      "{Un campione|Un carico da radiofaro|Qualcosa che la nube di Kessler ha risparmiato} attende sulla superficie di [PLANET], sistema [SYSTEM]. Atterrate, recuperate il deposito, {cercate di ignorare il clima locale|e attenzione alla burocrazia del rientro}.",
+      "C'è un deposito su [PLANET] ([SYSTEM]) che {precede i nostri diritti di atterraggio|nessuno è riuscito a raggiungere|due equipaggi hanno già fallito a recuperare}. {Il terzo tentativo è vostro.}",
+      "Atterrate su [PLANET] nel sistema [SYSTEM] e riportate il contenitore dei campioni. {L'atmosfera è sopravvivibile. Quasi sempre.|Non attardatevi oltre il tramonto, qualunque cosa significhi lì il tramonto.}"
+    ],
+    "arena": [
+      "Uno {sponsor|sindacato|gladiatore in pensione con delle idee} pagherà per [N] vittorie d'arena {omologate|ragionevolmente omologate}. {Vincete con stile se potete, vincete comunque se non potete.|La folla ricorda i nomi.}",
+      "[N] vittorie nella fossa, {sotto il nome che preferite|comunque riusciate a ottenerle}. {Le scommesse sono già piazzate.|Qualcuno ha puntato su di voi e non siamo noi.}",
+      "Ci stiamo costruendo una reputazione e vorremmo affittare la vostra: [N] vittorie d'arena. {Perdere è consentito, ma non retribuito.}"
+    ],
+    "cull": [
+      "{Le strade|I campi|Gli accessi} brulicano. Abbattete [N] ostili, {qualsiasi specie, qualsiasi pretesto|ricevute in viscere}. {La conta è sul vostro onore e sui nostri informatori.|Il superamento della quota non è rimborsato.}",
+      "[N] {ostili|cose|seccature}, ovunque, in qualsiasi modo. {Abbiamo smesso di essere pignoli.|La campagna è sovraffollata e noi sottopagati.}",
+      "Lavoro a cottimo: [N] uccisioni confermate. {Non stiamo chiedendo cosa fossero.|Nessuno conta più le specie, solo le teste.}"
+    ],
+    "market": [
+      "Acquistate e detenete [N] azioni di petrolio greggio. {Il Collettivo lo archivia sotto la voce entusiasmo.|Rivendetele poi se volete, a noi serve solo la scrittura a registro.}",
+      "Detenete [N] azioni petrolifere abbastanza a lungo perché il registro se ne accorga. {Cosa ne farete poi sono affari vostri.|Conta la posizione, il profitto è vostro.}",
+      "Qualcuno ha bisogno che il registro mostri [N] azioni di greggio in mani {amiche|private|non affiliate}. {Le vostre andranno bene.}"
+    ],
+    "expedition": [
+      "Raggiungete le coordinate ([X], [Y]), recuperate il deposito che vi attende, poi presentatevi alla bacheca degli incarichi di [DEST]. {Tre tratte, un contratto.|Il percorso è la parte facile. Probabilmente.}",
+      "Andata a ([X], [Y]), raccolta, poi ritorno a [DEST]. {Non saltate il passaggio di mezzo, la scatola è il lavoro.|Un viaggio, tre firme.}",
+      "Il deposito a ([X], [Y]) deve finire su una scrivania a [DEST]. {Portatelo voi per tutto il tragitto.|Le staffette perdono le cose, e noi abbiamo perso abbastanza.}"
+    ],
+    "purge": [
+      "Qualcosa a ([X], [Y]) si frappone fra noi e un {caveau|deposito|magazzino}. Uccidetelo, poi portate fuori ciò che sorvegliava. {In quest'ordine, per favore.}",
+      "C'è un {guardiano|abusivo|inquilino} a ([X], [Y]) senza contratto e con denti considerevoli. {Sfrattatelo, poi svuotate il magazzino che ha dietro.}",
+      "La nostra proprietà a ([X], [Y]) è attualmente abitata. {Occupatevi dell'abitante. Poi raccogliete.|Vogliamo il contenuto. L'occupante è un ostacolo, non una trattativa.}"
+    ],
+    "grand_tour": [
+      "Fate il giro: presentatevi a ciascun insediamento elencato, in qualsiasi ordine. {La Società tiene oneste le sue mappe grazie a stivali come i vostri.|Timbrate il cartellino a ogni bacheca.}",
+      "Fatevi vedere a ogni tappa dell'elenco. {L'ordine non conta, la presenza sì.|Stiamo verificando che le strade fra di esse esistano ancora.}",
+      "Un giro completo degli insediamenti qui sotto, {al vostro ritmo|nell'ordine che il tempo consente}. {Ogni arrivo conta una volta sola.}"
+    ],
+    "elite_hunt": [
+      "SOGGETTO: [ENEMY]. LIVELLO STIMATO: [LVL]. POSIZIONE: ([X], [Y]), e non si è mosso da {settimane|mesi|da quando qualcuno ha iniziato a contare}. È arrivato {senza preavviso|durante le tempeste|la settimana in cui chiuse la strada|da una direzione dove non c'è alcuna strada} e si è insediato sul sito come se gli fosse stato promesso. {Prima è toccato al bestiame, poi alle dipendenze, poi a chi è andato a vedere le dipendenze.|Tutto nel raggio di un miglio se n'è andato o ha smesso di muoversi.|Tre famiglie hanno abbandonato poderi che coltivavano da quattro generazioni pur di non dividere una valle con lui.} Ciò che sappiamo è poco e costato caro: {non dorme|non sanguina come sanguinano le cose|sente l'intenzione prima dei passi|è paziente, che è la cosa peggiore}, e {ogni tentativo a distanza è stato sprecato|colma la distanza più in fretta di quanto dicessero i rapporti|le armature non hanno fatto differenza misurabile}. Il compito è ucciderlo. {Non c'è obiettivo secondario, nessun campione da riportare, nessun rapporto da compilare.|Nient'altro di quel sito conta e nient'altro sarà pagato.} {Il compenso è quello che è perché l'aritmetica è quella che è.|La somma qui sotto è stata alzata due volte e ritirata zero volte.}",
+      "Questo contratto è aperto da {la primavera|l'inverno scorso|prima che assumessero l'impiegato attuale} e abbiamo smesso di fingere che sia ordinario. Il bersaglio è [ENEMY], livello [LVL], che presidia ([X], [Y]). {Quattro|Cinque|Sei|Sette} squadre lo hanno accettato prima di voi. {Nessuna è tornata.|Due sono tornate, nessuna intera, nessuna loquace.|Una è tornata sola e da allora non parla.} Da quel che quei ritorni ci hanno detto: {combatte allo scoperto per scelta|non difende una tana, difende un raggio|è più forte dopo il buio, o crede di esserlo, che è lo stesso|vi lascerà avvicinare, e non è clemenza}. {Portate tutto.|Portate il meglio che avete, e in quantità maggiore di quanto vi sembri ragionevole.|Portate una squadra, non un piano.} {Paghiamo su prova, e la prova è la sua assenza da quella coordinata.|Il pagamento è immediato, per intero, e francamente un sollievo di cui liberarsi.} {Se decidete di lasciar perdere, staccate l'avviso e lasciate che lo legga qualcuno più coraggioso.|Se leggete questo e ve ne andate, qui nessuno vi stimerà meno.}",
+      "È stata completata una valutazione formale della minaccia su [ENEMY] a ([X], [Y]) e la conclusione è che nessuna forza schierabile da noi è adeguata. Livello stimato: [LVL]. {La valutazione ha richiesto undici giorni. Nove sono stati spesi a litigare sul numero.|Il valutatore ha chiesto di essere trasferito a lavoro concluso ed è stato accontentato.} Comportamento: {non vaga, si accresce|raccoglie i resti di ciò che uccide e li dispone|reagisce al rumore, alla luce e al fatto che se ne parli nelle vicinanze|sembra attendere qualcosa di preciso}. Struttura: {le armi convenzionali sono state provate e registrate come inefficaci|è sopravvissuto al fuoco, all'acqua e a un crollo controllato|due delle sue ferite della scorsa stagione si sono richiuse}. Il contratto è un ordine di uccisione e nient'altro. {Non tentate la cattura.|Non tentate la comunicazione, qualunque cosa sembri offrire.|Non portate nulla che vi dispiaccia perdere, persone comprese.} {Il compenso riflette la valutazione più che lo sforzo.|Stiamo pagando per un risultato che nessuno ha ancora prodotto.}",
+      "Leggete l'avviso per intero prima di decidere, perché la versione breve ha già ucciso delle persone. [ENEMY], livello [LVL], a ([X], [Y]). {È lì da abbastanza tempo che le mappe sono state ridisegnate intorno a lui.|La strada oltre quella coordinata è ora segnata come impraticabile, che è un modo garbato di dirlo.|Due insediamenti hanno silenziosamente riorganizzato l'intero anno pur di non avvicinarsi.} {Nessuno sa da dove venga e tutti hanno una teoria.|Le teorie non valgono nulla. Il conto dei morti sì.} Dettagli pratici, per quel che ne abbiamo: {avvicinatevi dal terreno scoperto, non dal limitare del bosco|non dividetevi, lui conta|è lento a partire e impossibile da fermare|qualunque cosa faccia per prima non è quella che fa per seconda}. {Uccidetelo e la coordinata torna a essere un campo.|Ponete fine a questo e mezzo quartiere potrà tornare a casa.} {Il denaro è accantonato da un anno e aspettando non diminuisce.|La borsa è sigillata e testimoniata. È vostra nell'ora in cui muore.}"
+    ],
+    "pet": [
+      "Vogliamo un [ENEMY], Liv [LVL], {vivo|che respiri|tutto intero} e disposto a seguire qualcuno a casa. {Convincetelo, non pestatelo.|Ucciderne uno è facile e qui non paga nulla.} Consegnatelo a qualsiasi bacheca e diventa nostro.",
+      "Là fuori c'è un [ENEMY] che si potrebbe convincere a fare {il compagno|la mascotte|l'animale di qualcuno} invece del problema. {Convincetelo.|È tutto qui il lavoro: fatevi un amico, poi regalate l'amico.} Consegnatelo a qualsiasi bacheca.",
+      "Portateci un [ENEMY] addomesticato. {Ci dicono si possa fare con pazienza e col giusto tono di voce.|Prima parlate. Combattete solo se il parlare è chiaramente finito.} Smette di essere vostro nel momento in cui incassate il compenso.",
+      "Si cerca un [ENEMY] vivo (Liv [LVL]) come {compagno|curiosità|animale da lavoro}. {Addomesticatelo, portatelo qui, cedetelo.|Niente gabbie, niente ferite, niente sostituzioni.}"
+    ],
+    "research": [
+      "Prima esaminate le statue a ([X], [Y]), poi intervistate un cittadino di [DEST] su ciò che avete visto. {Il metodo conta: prima le pietre, poi le persone.|La monografia vi citerà in una nota a piè di pagina.}",
+      "Due fonti, un solo saggio: le pietre a ([X], [Y]) e una voce viva a [DEST]. {In quest'ordine, o l'argomentazione crolla.}",
+      "Registrate i monumenti a ([X], [Y]), poi chiedete a qualcuno a [DEST] come li chiamava sua nonna. {La discrepanza è la scoperta.}"
+    ]
+  },
+  "factionVoices": {
+    "0": {
+      "openers": [
+        "La Gilda ha votato, ossia due di noi hanno urlato."
+      ],
+      "signoffs": [
+        "Gilda dei Maghi, sigillo del terzo cerchio."
+      ],
+      "family": "arcane"
+    },
+    "1": {
+      "openers": [
+        "Archive Foundation, requisizione sul campo. L'osservanza è data per scontata.",
+        "A questo incarico è stato assegnato un numero di riferimento che non vi sarà mai comunicato."
+      ],
+      "caveats": [
+        "I risultati diventano proprietà della Fondazione nel momento dell'osservazione.",
+        "Non siete sotto esame. Anche questo è un dato."
+      ],
+      "signoffs": [
+        "Catalogato. Riscontrato. Chiuso.",
+        "L'Archivio non ringrazia. L'Archivio registra."
+      ],
+      "family": "clinical"
+    },
+    "2": {
+      "openers": [
+        "Il Collettivo ha individuato un'inefficienza, ovvero voi fermi lì."
+      ],
+      "signoffs": [
+        "Valore per gli azionisti, consegnato."
+      ],
+      "family": "mercantile"
+    },
+    "3": {
+      "openers": [
+        "Affissione lealista. Fedeltà annotata, competenza preferibile."
+      ],
+      "signoffs": [
+        "Per il vecchio ordine, alla nuova tariffa."
+      ],
+      "family": "military"
+    },
+    "4": {
+      "openers": [
+        "Si faceva così prima, e si tornerà a fare, cominciando da voi."
+      ],
+      "signoffs": [
+        "Come era, così è fatturato."
+      ],
+      "family": "clerical"
+    },
+    "5": {
+      "openers": [
+        "La tecnomanzia richiede una mano che non sia attualmente saldata a qualcosa."
+      ],
+      "caveats": [
+        "Non mettetevi a terra su nulla che ronzi in tonalità maggiore."
+      ],
+      "signoffs": [
+        "Compilato, benedetto, spedito."
+      ],
+      "family": "arcane"
+    },
+    "6": {
+      "openers": [
+        "Sezione 92 Scuole, richiesta interdipartimentale (non finanziata)."
+      ],
+      "signoffs": [
+        "Diffuso a tutte le sezioni, evaso da nessuna."
+      ],
+      "family": "bureaucratic"
+    },
+    "7": {
+      "openers": [
+        "Corte di Eris, ed Eris scrive di persona perché gli impiegati sono NOIOSI.",
+        "Il collegio ha deciso. Il collegio ero io, di buon umore. Godetevela."
+      ],
+      "caveats": [
+        "Lo spergiuro sul modulo di completamento è perseguito con entusiasmo. Il mio."
+      ],
+      "signoffs": [
+        "La corte registra la vostra collaborazione, e tutto il resto, per sempre."
+      ],
+      "family": "eris"
+    },
+    "8": {
+      "openers": [
+        "Tamburo Naguka dice: lavoro. Tamburo ha ragione."
+      ],
+      "caveats": [
+        "Dipingiti o non dipingerti. Tamburo non gliene importa. A noi un po' sì."
+      ],
+      "signoffs": [
+        "Adesso tamburo ti ricorda."
+      ],
+      "family": "feral"
+    },
+    "9": {
+      "openers": [
+        "Rilevamento Verden, avviso di campo."
+      ],
+      "signoffs": [
+        "Verden, al servizio della terra."
+      ],
+      "family": "naturalist"
+    },
+    "10": {
+      "openers": [
+        "Bacheca della Società dei Camionisti, affissione aperta."
+      ],
+      "signoffs": [
+        "Tariffe della Società, strade della Società."
+      ],
+      "family": "trucker"
+    },
+    "11": {
+      "openers": [
+        "Esoteric Heavy Industries. La cassa è semplicemente comparsa, come fanno le casse."
+      ],
+      "caveats": [
+        "La sicurezza sul lavoro alla EHI è un suggerimento formulato dalla cassa."
+      ],
+      "signoffs": [
+        "EHI: pesante, esoterica, assume."
+      ],
+      "family": "spooky"
+    },
+    "12": {
+      "openers": [
+        "Esercito di Northpoint, incarico ausiliario."
+      ],
+      "signoffs": [
+        "Northpoint paga puntualmente."
+      ],
+      "family": "military"
+    },
+    "13": {
+      "openers": [
+        "La Cittadella è capovolta questa settimana, quindi la commissione è all'esterno."
+      ],
+      "signoffs": [
+        "Giù va bene. È giù che la teniamo."
+      ],
+      "family": "spooky"
+    },
+    "14": {
+      "openers": [
+        "Un petrodemone necessita di un favore e ha scelto di chiederlo.",
+        "La concessione parla. Ha una bocca a questo scopo."
+      ],
+      "caveats": [
+        "Non promettete nulla ad alta voce entro i confini della concessione."
+      ],
+      "signoffs": [
+        "Il pozzo è compiaciuto.",
+        "Firmato con qualcosa di più caldo dell'inchiostro."
+      ],
+      "family": "petrolic"
+    },
+    "15": {
+      "openers": [
+        "Petromanager, ufficio operazioni."
+      ],
+      "signoffs": [
+        "Barili su, costi giù."
+      ],
+      "family": "petrolic"
+    },
+    "16": {
+      "openers": [
+        "Demoni della Velocità. Stai già leggendo troppo lentamente."
+      ],
+      "signoffs": [
+        "Nient'altro conta. Muoviti."
+      ],
+      "family": "speed"
+    },
+    "17": {
+      "openers": [
+        "Sette Sorelle. Sei di noi sono d'accordo, e basta così."
+      ],
+      "caveats": [
+        "Non chiedete quale sorella. Mai."
+      ],
+      "signoffs": [
+        "La famiglia è grata alla maniera della famiglia."
+      ],
+      "family": "streetwise"
+    },
+    "18": {
+      "openers": [
+        "GLI DÈI RICHIEDONO UNA PICCOLA COSA."
+      ],
+      "signoffs": [
+        "È SUFFICIENTE."
+      ],
+      "family": "divine"
+    },
+    "19": {
+      "openers": [
+        "Consiglio Supremo degli Archivisti, incarico ratificato."
+      ],
+      "signoffs": [
+        "Il Consiglio ha parlato e non si ripeterà."
+      ],
+      "family": "clinical"
+    },
+    "20": {
+      "openers": [
+        "Dipartimento Acquisizione Dati. L'acquisizione è tutto il dipartimento."
+      ],
+      "caveats": [
+        "Tutto ciò che apprendete è raccolta. Compresa questa frase."
+      ],
+      "signoffs": [
+        "Acquisito, con ringraziamenti."
+      ],
+      "family": "clinical"
+    },
+    "21": {
+      "openers": [
+        "Divisione Conservazione della Conoscenza: prima conservare, capire poi, mai."
+      ],
+      "signoffs": [
+        "Conservato. Sigillato. Dimenticato con profitto."
+      ],
+      "family": "clinical"
+    },
+    "22": {
+      "openers": [
+        "Unità per la Trasparenza Pubblica. Questo avviso è deliberatamente leggibile."
+      ],
+      "caveats": [
+        "Il vostro lavoro sarà pubblicato, parti imbarazzanti comprese."
+      ],
+      "signoffs": [
+        "Affisso apertamente, pagato apertamente."
+      ],
+      "family": "bureaucratic"
+    },
+    "23": {
+      "openers": [
+        "Conformità Interna. Qualcuno ha fallito un controllo e ne è nato questo avviso."
+      ],
+      "caveats": [
+        "Siete sottoposti a revisione dal momento in cui accettate."
+      ],
+      "signoffs": [
+        "La conformità è premio a se stessa. Il compenso è un premio secondario."
+      ],
+      "family": "clinical"
+    },
+    "24": {
+      "openers": [
+        "Gli Dèi Libertari hanno deregolamentato questa commissione."
+      ],
+      "caveats": [
+        "Non si applica alcuna regola. Consideratelo un avvertimento."
+      ],
+      "signoffs": [
+        "La mano invisibile vi pagherà. Prima o poi. Probabilmente."
+      ],
+      "family": "divine"
+    },
+    "25": {
+      "openers": [
+        "Testa-pensiero grande di tutti goblin dice: questo va fatto."
+      ],
+      "caveats": [
+        "Collettivo dice niente imbroglio. Collettivo è tanti. Tanti guardano."
+      ],
+      "signoffs": [
+        "Fai lavoro. Prendi luccicante. Sii quasi persona."
+      ],
+      "titlePrefix": [
+        "VOGLIAMO",
+        "GOBLIN VUOLE",
+        "PENSIERO GRANDE DICE"
+      ],
+      "transform": "goblinese+shout",
+      "family": "feral"
+    },
+    "26": {
+      "openers": [
+        "Salve! Siamo i Turisti! Sì, proprio quei Turisti! Del tutto terrestri!",
+        "Di nuovo i Turisti. Vi ricordate di noi. Tutti si ricordano di noi, sono gli occhi."
+      ],
+      "caveats": [
+        "I nostri permessi sono in regola e anche olografici."
+      ],
+      "signoffs": [
+        "Grazie infinite! Infinite! Infinite!"
+      ],
+      "family": "touristy"
+    },
+    "27": {
+      "openers": [
+        "Sacro Impero Vaticano, ufficio delle commissioni temporali."
+      ],
+      "signoffs": [
+        "Deo gratias, e ricevute."
+      ],
+      "family": "clerical"
+    },
+    "28": {
+      "openers": [
+        "Il Consiglio dei Cardinali ha deliberato a lungo e ha assunto uno sconosciuto."
+      ],
+      "caveats": [
+        "Il Consiglio non sbaglia mai, viene soltanto talvolta sostituito."
+      ],
+      "signoffs": [
+        "Per i cappelli rossi, sigillato."
+      ],
+      "family": "clerical"
+    },
+    "29": {
+      "openers": [
+        "IOR, servizi patrimoniali discreti."
+      ],
+      "caveats": [
+        "Il conto da cui si attinge non esiste, ed è sottoposto a revisione annuale."
+      ],
+      "signoffs": [
+        "Fondi disponibili, provenienza indisponibile."
+      ],
+      "family": "mercantile"
+    },
+    "30": {
+      "openers": [
+        "Suore da Battaglia. La fede è una formazione."
+      ],
+      "caveats": [
+        "La confessione successiva è compresa nel compenso."
+      ],
+      "signoffs": [
+        "Abito e usbergo. Andate."
+      ],
+      "family": "military"
+    },
+    "31": {
+      "openers": [
+        "Hexorcists Corp, foglio di intervento."
+      ],
+      "caveats": [
+        "Non tentate un esorcismo senza licenza. Le scartoffie vi sopravvivono."
+      ],
+      "signoffs": [
+        "Certificato pulito, o rimborso in natura."
+      ],
+      "family": "clinical"
+    },
+    "32": {
+      "openers": [
+        "La Lobby ha un'esigenza e, come sempre, un gusto eccellente in fatto di incaricati.",
+        "Tesoro, il Vaticano ha perso di nuovo qualcosa.",
+        "Lo abbiamo chiesto alle Guardie Svizzere. Sono rimaste lì bellissime senza fare nulla."
+      ],
+      "caveats": [
+        "La solidarietà è gratis. Il compenso no, e voi avete entrambi.",
+        "Se c'è di mezzo un cardinale, siate cortesi, siate rapidi, sparite."
+      ],
+      "signoffs": [
+        "Discrezione, solidarietà e un compenso più che decente.",
+        "Badiamo ai nostri, e oggi voi siete dei nostri."
+      ],
+      "family": "sassy"
+    },
+    "33": {
+      "openers": [
+        "Opus Dei. Il lavoro è la preghiera, e oggi il lavoro è vostro."
+      ],
+      "caveats": [
+        "Non parlate della commissione. Con nessuno. Nemmeno bene."
+      ],
+      "signoffs": [
+        "In silenzio, a fondo, invisibilmente."
+      ],
+      "family": "clerical"
+    },
+    "34": {
+      "openers": [
+        "Guardie Svizzere, avviso di servizio distaccato."
+      ],
+      "signoffs": [
+        "Le alabarde sono cerimoniali. Noi no."
+      ],
+      "family": "military"
+    },
+    "35": {
+      "openers": [
+        "Assegnazione lavoro URSS, esterna."
+      ],
+      "signoffs": [
+        "Il piano avanza. E marginalmente anche voi."
+      ],
+      "family": "soviet"
+    },
+    "36": {
+      "openers": [
+        "Divisione Guardie. Anche i reparti d'élite hanno commissioni da sbrigare."
+      ],
+      "signoffs": [
+        "Le Guardie non chiedono due volte, affiggono due volte."
+      ],
+      "family": "soviet"
+    },
+    "37": {
+      "openers": [
+        "Divisione Corazzata. Certi compiti non passano dal portello."
+      ],
+      "caveats": [
+        "Ciò che non riuscite a trasportare, noi sì. Lentamente, e attraverso un muro."
+      ],
+      "signoffs": [
+        "I corazzati ringraziano la fanteria. Di rado. Oggi."
+      ],
+      "family": "soviet"
+    },
+    "38": {
+      "openers": [
+        "Divisione Fucilieri, incarico esterno ordinario."
+      ],
+      "signoffs": [
+        "Stivali a terra, moneta in mano."
+      ],
+      "family": "soviet"
+    },
+    "39": {
+      "openers": [
+        "Divisione Aviotrasportata. Di solito arriviamo senza chiedere."
+      ],
+      "signoffs": [
+        "Giù e avanti, compagno."
+      ],
+      "family": "soviet"
+    },
+    "40": {
+      "openers": [
+        "Divisione Artiglieria. La precisione è la nostra abitudine, la puntualità la nostra pretesa."
+      ],
+      "caveats": [
+        "Non state dove vi diciamo di non stare."
+      ],
+      "signoffs": [
+        "Prima le coordinate, poi le conseguenze."
+      ],
+      "family": "soviet"
+    },
+    "41": {
+      "openers": [
+        "L'Impero Ottomano, nella sua pazienza, richiede fretta."
+      ],
+      "signoffs": [
+        "Sigillato con la tughra, finanziato con riluttanza."
+      ],
+      "family": "imperial"
+    },
+    "42": {
+      "openers": [
+        "Burocrazia del Tanzimat, ufficio riforme, pratica undicesima."
+      ],
+      "caveats": [
+        "La riforma richiede moduli. I moduli richiedono voi."
+      ],
+      "signoffs": [
+        "Modernizzato, timbrato, rinviato."
+      ],
+      "family": "bureaucratic"
+    },
+    "43": {
+      "openers": [
+        "Flotta Sottomarina Imperiale. Questa commissione è purtroppo in superficie."
+      ],
+      "caveats": [
+        "Non nominate la flotta, la profondità o il rumore."
+      ],
+      "signoffs": [
+        "Servizio silenzioso, pagamento silenzioso."
+      ],
+      "family": "military"
+    },
+    "44": {
+      "openers": [
+        "Artiglio del Califfo. Non ci incontrerete, ed è questa la cortesia."
+      ],
+      "caveats": [
+        "Il fallimento non è punito. Il fallimento è semplicemente l'ultima cosa che fate per noi."
+      ],
+      "signoffs": [
+        "L'Artiglio si chiude, oppure no. Scelta vostra."
+      ],
+      "family": "streetwise"
+    },
+    "45": {
+      "openers": [
+        "Guardia Giannizzera. Tradizione, disciplina e un avviso di assunzione."
+      ],
+      "signoffs": [
+        "Il corpo perdura. Il compenso è fisso."
+      ],
+      "family": "military"
+    },
+    "46": {
+      "openers": [
+        "Britannia, ufficio coloniale, questione minore."
+      ],
+      "signoffs": [
+        "Dominare i mari, delegare il camminare."
+      ],
+      "family": "britannic"
+    },
+    "47": {
+      "openers": [
+        "Task force della Marina Reale, esigenza a terra."
+      ],
+      "caveats": [
+        "Nulla va detto in banchina. La banchina dice tutto."
+      ],
+      "signoffs": [
+        "Venti favorevoli, e attenzione alle tavole di marea."
+      ],
+      "family": "britannic"
+    },
+    "48": {
+      "openers": [
+        "Commandos SAS/SBS. Questo avviso è una formalità; preferiamo i volontari."
+      ],
+      "caveats": [
+        "Velocità, aggressività, sorpresa. In quest'ordine, e in silenzio."
+      ],
+      "signoffs": [
+        "Chi osa, fattura."
+      ],
+      "family": "britannic"
+    },
+    "49": {
+      "openers": [
+        "Archivio Nero dell'MI6. Quanto segue è stato autorizzato per occhi esterni."
+      ],
+      "caveats": [
+        "Tutto ciò che ricorderete dopo non era nelle istruzioni."
+      ],
+      "signoffs": [
+        "Questo avviso si autodimentica."
+      ],
+      "titlePrefix": [
+        "RISERVATO",
+        "QUESTIONE",
+        "FASCICOLO"
+      ],
+      "transform": "redacted",
+      "family": "britannic"
+    },
+    "50": {
+      "openers": [
+        "Comando Scientifico, supporto a esperimento sul campo."
+      ],
+      "caveats": [
+        "L'apparato siete voi. Vi preghiamo di comportarvi in modo riproducibile."
+      ],
+      "signoffs": [
+        "Risultati, non aneddoti."
+      ],
+      "family": "clinical"
+    }
+  },
+  "eliteFamily": {
+    "clinical": {
+      "openers": [
+        "La classificazione della minaccia supera ogni livello di risposta disponibile. Autorizzato appaltatore esterno."
+      ],
+      "caveats": [
+        "La sopravvivenza non figura fra i risultati richiesti. È soltanto preferibile."
+      ],
+      "signoffs": [
+        "Se riuscirete, il fascicolo sarà emendato. Altrimenti no."
+      ]
+    },
+    "bureaucratic": {
+      "openers": [
+        "Pratica rinviata da ogni riunione dall'incidente in poi. Finalmente finanziata, con generosità."
+      ],
+      "caveats": [
+        "Non esistono ulteriori approvazioni sopra questa. Non c'è più nessuno a cui rivolgersi."
+      ],
+      "signoffs": [
+        "Firmato da una commissione che preferirebbe non essere nominata."
+      ]
+    },
+    "mercantile": {
+      "openers": [
+        "La cifra qui sotto non è un errore. E nemmeno la cosa che dovreste uccidere per averla."
+      ],
+      "caveats": [
+        "Abbiamo prezzato il rischio onestamente, ed è per questo che il numero è osceno."
+      ],
+      "signoffs": [
+        "Nessuno l'ha ancora riscossa. L'offerta resta, e si accumula."
+      ]
+    },
+    "military": {
+      "openers": [
+        "Due distaccamenti impegnati. Nessuno tornato. Il comando ha autorizzato l'assunzione esterna."
+      ],
+      "caveats": [
+        "Questa non è una pattuglia. Non trattatela come tale."
+      ],
+      "signoffs": [
+        "Onori pieni e paga piena a chiunque la porti a termine."
+      ]
+    },
+    "clerical": {
+      "openers": [
+        "Ci abbiamo pregato sopra per una stagione e la risposta è stata, a quanto pare, mercenari."
+      ],
+      "caveats": [
+        "L'assoluzione è predisposta in anticipo, il che dovrebbe dirvi qualcosa."
+      ],
+      "signoffs": [
+        "Andate con ogni benedizione che ci resta."
+      ]
+    },
+    "arcane": {
+      "openers": [
+        "Le protezioni non lo tratterranno e la Gilda non entrerà. Resta la bacheca degli avvisi."
+      ],
+      "caveats": [
+        "Qualunque cosa dica morendo, non rispondete."
+      ],
+      "signoffs": [
+        "La Gilda pagherà in moneta, equipaggiamento e un nome negli archivi."
+      ]
+    },
+    "trucker": {
+      "openers": [
+        "La tratta è chiusa da nove mesi per via di ciò che ci sta sopra. I soldi sono qui fermi da altrettanto."
+      ],
+      "caveats": [
+        "Non provate a passargli accanto in vettura. Tre persone ci hanno provato."
+      ],
+      "signoffs": [
+        "Liberatela e la Società vi sarà debitrice a vita."
+      ]
+    },
+    "feral": {
+      "openers": [
+        "Cosa grossa e cattiva. Troppo grossa per noi. Troppo grossa per tanti noi."
+      ],
+      "caveats": [
+        "Ha mangiato esploratori. Ha mangiato esploratori di esploratori."
+      ],
+      "signoffs": [
+        "Uccidi cosa grossa, prendi tutto luccicante. Tutto quanto."
+      ]
+    },
+    "divine": {
+      "openers": [
+        "QUESTO NON ERA NOSTRO E NON DOVREBBE ESSERE QUI."
+      ],
+      "caveats": [
+        "È più antico dell'accordo. Attenti a cosa gli promettete."
+      ],
+      "signoffs": [
+        "PONETEVI FINE E SARETE RICORDATI, BREVEMENTE, CHE È QUANTO TOCCA A OGNUNO DI VOI."
+      ]
+    },
+    "soviet": {
+      "openers": [
+        "Compagno. Il piano ha un ostacolo di dimensioni eccezionali e il piano non si piega."
+      ],
+      "caveats": [
+        "La quota per questo compito è uno. Adempitela o il compito resta aperto per sempre."
+      ],
+      "signoffs": [
+        "Gli eroi del lavoro sono decorati alla memoria non di rado. Scegliete."
+      ]
+    },
+    "imperial": {
+      "openers": [
+        "Il Sublime Stato ha deciso che questa faccenda richiede uno straniero e moltissimo denaro."
+      ],
+      "caveats": [
+        "Sono stati emessi tre firmani contro di esso. Non sa leggere."
+      ],
+      "signoffs": [
+        "Pagamento direttamente dal tesoro, cosa mai vista."
+      ]
+    },
+    "britannic": {
+      "openers": [
+        "Faccenda spaventosa, questa. Saremmo terribilmente grati se qualcuno se ne occupasse."
+      ],
+      "caveats": [
+        "Si sconsiglierebbe di andarci da soli, e di rado si è tanto diretti."
+      ],
+      "signoffs": [
+        "La gratitudine della Corona, e parecchio denaro."
+      ]
+    },
+    "spooky": {
+      "openers": [
+        "Qualcosa aspetta lì da abbastanza tempo da essere diventato paziente. Vorremmo che smettesse di aspettare."
+      ],
+      "caveats": [
+        "Saprà il vostro nome prima che arriviate. Non confermatelo."
+      ],
+      "signoffs": [
+        "Il debito su questa è aperto da molto tempo. Chiudetelo."
+      ]
+    },
+    "petrolic": {
+      "openers": [
+        "La concessione ha un occupante anteriore alla concessione. L'estrazione è impossibile finché è lì."
+      ],
+      "caveats": [
+        "Non trattate con esso. Tratta di mestiere e noi ne siamo la prova."
+      ],
+      "signoffs": [
+        "I pozzi torneranno a funzionare e voi sarete molto ricchi."
+      ]
+    },
+    "touristy": {
+      "openers": [
+        "Oh cielo. Oh cielo oh cielo. C'è una grossa biomassa ostile e la nostra schermatura è decorativa."
+      ],
+      "caveats": [
+        "Le nostre scansioni dicono che l'indice di minaccia è, e citiamo i nostri strumenti, sgradevole."
+      ],
+      "signoffs": [
+        "Pagheremo nella valuta che preferite. Possiamo fabbricare valuta."
+      ]
+    },
+    "streetwise": {
+      "openers": [
+        "Tutti quelli che avrebbero potuto occuparsene sono morti o in pensione. Quindi: tu."
+      ],
+      "caveats": [
+        "Se ne parli prima, lo sente. In qualche modo lo sente sempre."
+      ],
+      "signoffs": [
+        "Fai questo e in questa città non pagherai più nulla."
+      ]
+    },
+    "speed": {
+      "openers": [
+        "Abbastanza veloce da seminarlo? Nessuno lo è stato. Prova a essere abbastanza veloce da ucciderlo."
+      ],
+      "caveats": [
+        "In velocità di punta è più veloce di te. Battilo in curva."
+      ],
+      "signoffs": [
+        "A record simili si attaccano dei nomi. Di solito su delle pietre."
+      ]
+    },
+    "naturalist": {
+      "openers": [
+        "Non ha posto nei registri né predatori naturali. Il rilevamento è diventato un abbattimento."
+      ],
+      "caveats": [
+        "Abbattetelo con pulizia se potete. Se lo merita, e noi meritiamo che sparisca."
+      ],
+      "signoffs": [
+        "La terra tornerà a respirare. E anche voi, ci auguriamo."
+      ]
+    },
+    "eris": {
+      "openers": [
+        "OH. Oh, questa è quella buona. La tenevo da parte.",
+        "Nessuno ha mai portato a termine questo contratto. Lo tengo in bacheca per guardare la gente che lo legge."
+      ],
+      "caveats": [
+        "Probabilmente morirete. Voglio che sappiate che a me va bene in entrambi i casi."
+      ],
+      "signoffs": [
+        "Se vincete sarò DELIZIATA. Se perdete sarò deliziata. Forza."
+      ]
+    },
+    "sassy": {
+      "openers": [
+        "SIEDITI. Questa è una situazione di categoria cinque."
+      ],
+      "caveats": [
+        "Non entrarci impreparato. Morire con quel completo sarebbe la vera tragedia."
+      ],
+      "signoffs": [
+        "Vinci questa e, tesoro, non ti pagherai mai più da bere."
+      ]
+    }
+  },
+  "eliteByFaction": {
+    "0": {
+      "openers": [
+        "La Gilda ha votato di spendere soldi veri, cosa avvenuta due volte nella sua storia."
+      ],
+      "signoffs": [
+        "Gilda dei Maghi, sigillo del primo cerchio. Non lo usiamo alla leggera."
+      ]
+    },
+    "1": {
+      "openers": [
+        "Archive Foundation, avviso di cedimento del contenimento. Il soggetto supera ogni livello di risposta di cui disponiamo."
+      ],
+      "signoffs": [
+        "L'Archivio registrerà chi vi ha posto fine. È la più alta onorificenza che rilasciamo."
+      ]
+    },
+    "2": {
+      "openers": [
+        "Il Collettivo ha calcolato che pagarvi in modo assurdo costa meno delle perdite trimestrali che questa cosa provoca."
+      ],
+      "signoffs": [
+        "Tornate vivi e parleremo di partecipazioni."
+      ]
+    },
+    "3": {
+      "openers": [
+        "L'alto comando lealista ha esaurito i lealisti disposti a tornarci."
+      ],
+      "signoffs": [
+        "Il vecchio ordine paga i suoi debiti, prima o poi e per intero."
+      ]
+    },
+    "4": {
+      "openers": [
+        "Era qui prima delle tradizioni, e le tradizioni vorrebbero che sparisse."
+      ],
+      "signoffs": [
+        "Fatelo alla vecchia maniera. La vecchia maniera è l'unica che abbia mai funzionato su questo."
+      ]
+    },
+    "5": {
+      "openers": [
+        "La tecnomanzia ha simulato lo scontro quattromila volte. Abbiamo smesso perché i risultati erano sconvolgenti."
+      ],
+      "signoffs": [
+        "Riportate la telemetria se potete. Riportate prima voi stessi."
+      ]
+    },
+    "6": {
+      "openers": [
+        "La Sezione 92 Scuole ha perso un'intera coorte di ricerca in questa faccenda e vorrebbe chiuderla."
+      ],
+      "signoffs": [
+        "La cattedra sarà intitolata a voi. Preferibilmente non alla memoria."
+      ]
+    },
+    "7": {
+      "openers": [
+        "Corte di Eris, questione capitale. Questa la scrivo di persona e sto SORRIDENDO."
+      ],
+      "signoffs": [
+        "La corte pagherà. La corte sta anche scommettendo contro di voi. Entrambe le cose sono sincere."
+      ]
+    },
+    "8": {
+      "openers": [
+        "I tamburi Naguka hanno smesso di parlarne, cosa che non succede mai."
+      ],
+      "signoffs": [
+        "Uccidetelo e i tamburi diranno il vostro nome per una generazione."
+      ]
+    },
+    "9": {
+      "openers": [
+        "Il rilevamento di Verden si ferma a quella valle. Tutto oltre la linea è non registrato e affamato."
+      ],
+      "signoffs": [
+        "Fatelo con pulizia e la mappa intitolerà il luogo a voi."
+      ]
+    },
+    "10": {
+      "openers": [
+        "Società dei Camionisti, avviso di tratta chiusa. Nove mesi, sei autisti, nessun corpo recuperato."
+      ],
+      "signoffs": [
+        "Riaprite quella strada e ogni deposito del quartiere sarà vostro."
+      ]
+    },
+    "11": {
+      "openers": [
+        "La Esoteric Heavy Industries ha spedito qualcosa che nel frattempo si è disimballato da solo."
+      ],
+      "signoffs": [
+        "La EHI non accetta responsabilità e offre un compenso davvero indecente."
+      ]
+    },
+    "12": {
+      "openers": [
+        "L'Esercito di Northpoint ha dato per perdute due compagnie su questa posizione."
+      ],
+      "signoffs": [
+        "Northpoint paga il soldo di un generale per un pomeriggio da mercenario."
+      ]
+    },
+    "13": {
+      "openers": [
+        "La Cittadella una volta si è capovolta attorno a esso e non se n'è accorto."
+      ],
+      "signoffs": [
+        "Quaggiù manteniamo i debiti. E vi saremo debitori parecchio."
+      ]
+    },
+    "14": {
+      "openers": [
+        "Un petrodemone ha paura di qualcosa, e ha deciso di pagarvi anziché dirlo ad alta voce."
+      ],
+      "signoffs": [
+        "Firmato con qualcosa che è ancora caldo. La somma è enorme."
+      ]
+    },
+    "15": {
+      "openers": [
+        "Petromanager, chiusura del giacimento. La produzione è a zero da quando è arrivato e il consiglio è furibondo."
+      ],
+      "signoffs": [
+        "Una percentuale del giacimento riaperto. Per iscritto. Con testimoni."
+      ]
+    },
+    "16": {
+      "openers": [
+        "Demoni della Velocità. Niente lo semina. È questo il problema ed è questa la sfida."
+      ],
+      "signoffs": [
+        "Fallo e il tuo nome finisce sul muro a lettere alte un metro."
+      ]
+    },
+    "17": {
+      "openers": [
+        "Sette Sorelle. Tutte e sette sono d'accordo, cosa mai accaduta prima e che dovrebbe spaventarvi il giusto."
+      ],
+      "signoffs": [
+        "La famiglia si considererà in debito con voi. Per sempre."
+      ]
+    },
+    "18": {
+      "openers": [
+        "GLI DÈI NON HANNO FATTO QUESTO E VORREBBERO CHE FOSSE RIMOSSO."
+      ],
+      "signoffs": [
+        "SARÀ PIÙ CHE SUFFICIENTE."
+      ]
+    },
+    "19": {
+      "openers": [
+        "Consiglio Supremo degli Archivisti, incarico riservato. Il soggetto ha modificato tre dei nostri registri dall'esterno dell'edificio."
+      ],
+      "signoffs": [
+        "Il Consiglio dissigillerà un fascicolo a vostra scelta. Ponderatelo con attenzione."
+      ]
+    },
+    "20": {
+      "openers": [
+        "Acquisizione Dati ha acquisito tutto su di esso tranne un modo per fermarlo."
+      ],
+      "signoffs": [
+        "Ogni misurazione a cui sopravviverete per riferirla sarà pagata separatamente."
+      ]
+    },
+    "21": {
+      "openers": [
+        "Divisione Conservazione della Conoscenza: sta cancellando delle cose. Non bruciando. Cancellando."
+      ],
+      "signoffs": [
+        "Preservateci da esso e noi preserveremo il vostro nome come si deve."
+      ]
+    },
+    "22": {
+      "openers": [
+        "Unità per la Trasparenza Pubblica. Pubblichiamo il conto dei morti, ed è per questo che assumiamo pubblicamente."
+      ],
+      "signoffs": [
+        "Affisso apertamente, enorme apertamente, pagato apertamente."
+      ]
+    },
+    "23": {
+      "openers": [
+        "Conformità Interna: qualcuno ha approvato l'esistenza di questa cosa e intendiamo correggere entrambi gli errori."
+      ],
+      "signoffs": [
+        "La revisione si chiude quando si chiude. Pagamento alla chiusura."
+      ]
+    },
+    "24": {
+      "openers": [
+        "Gli Dèi Libertari hanno deregolamentato l'intera valle e qualcosa ne ha approfittato."
+      ],
+      "signoffs": [
+        "Nessuna regola, nessun soccorso, nessun tetto al compenso."
+      ]
+    },
+    "25": {
+      "openers": [
+        "Pensiero grande dice: GRANDE CATTIVO. Più grande di grande cattivo di prima. Noi tutti d'accordo, è brutto."
+      ],
+      "signoffs": [
+        "Uccidilo. Prendi tutto luccicante. Noi non discutiamo."
+      ]
+    },
+    "26": {
+      "openers": [
+        "Scusateci! C'è un organismo ostile e la nostra immunità diplomatica non si estende ai denti."
+      ],
+      "signoffs": [
+        "Pagheremo in oro, in gemme, in equivalenti fabbricati. Qualsiasi cosa."
+      ]
+    },
+    "27": {
+      "openers": [
+        "Sacro Impero Vaticano, ufficio delle misure straordinarie. La preghiera è stata provata. A fondo."
+      ],
+      "signoffs": [
+        "L'Impero vi ricorderà nella pietra."
+      ]
+    },
+    "28": {
+      "openers": [
+        "Il Consiglio dei Cardinali ha deliberato per undici mesi e ha prodotto questo avviso e una borsa molto grossa."
+      ],
+      "signoffs": [
+        "Per i cappelli rossi, sigillato e finanziato."
+      ]
+    },
+    "29": {
+      "openers": [
+        "IOR, istruzione fuori bilancio. Il conto che la finanzia non esiste ed è senza fondo."
+      ],
+      "signoffs": [
+        "Fondi disponibili, nessuna provenienza, nessuna domanda, nessun limite."
+      ]
+    },
+    "30": {
+      "openers": [
+        "Suore da Battaglia. Siamo entrate cantando. Siamo uscite portandoci a vicenda."
+      ],
+      "signoffs": [
+        "Abito, usbergo e ogni moneta della cappella."
+      ]
+    },
+    "31": {
+      "openers": [
+        "Hexorcists Corp, intervento di prima classe. La nostra licenza non copre qualunque cosa sia quella."
+      ],
+      "signoffs": [
+        "Certificato, assicurato e pagato a tariffe da catastrofe."
+      ]
+    },
+    "32": {
+      "openers": [
+        "Tesoro, siediti: c'è un MOSTRO e le Guardie Svizzere gli hanno dato un'occhiata e si sono ricordate di un impegno precedente."
+      ],
+      "signoffs": [
+        "Uccidilo e ti facciamo una festa che la Curia sentirà attraverso il pavimento."
+      ]
+    },
+    "33": {
+      "openers": [
+        "Opus Dei. Il lavoro è diventato pericoloso. Il lavoro resta il lavoro."
+      ],
+      "signoffs": [
+        "In silenzio, a fondo, invisibilmente, e molto ben pagato."
+      ]
+    },
+    "34": {
+      "openers": [
+        "Guardie Svizzere, servizio distaccato. Cerimoniali possiamo esserlo; suicidi no."
+      ],
+      "signoffs": [
+        "Alabarde in saluto al cancello per chiunque torni."
+      ]
+    },
+    "35": {
+      "openers": [
+        "Assegnazione straordinaria URSS. L'ostacolo è stato riclassificato da problema a nemico del piano."
+      ],
+      "signoffs": [
+        "Una decorazione da eroe e una busta da eroe."
+      ]
+    },
+    "36": {
+      "openers": [
+        "Divisione Guardie. Siamo l'élite e stiamo chiedendo aiuto, il che dovrebbe dirvi le dimensioni della cosa."
+      ],
+      "signoffs": [
+        "Le Guardie non dimenticano chi ha fatto le loro veci."
+      ]
+    },
+    "37": {
+      "openers": [
+        "Divisione Corazzata. Gli abbiamo tirato quattro colpi. Si è seccato."
+      ],
+      "signoffs": [
+        "I corazzati salutano chi porta a termine ciò che i corazzati non hanno potuto."
+      ]
+    },
+    "38": {
+      "openers": [
+        "Divisione Fucilieri. Le armi leggere sono state ampiamente smentite contro questa cosa."
+      ],
+      "signoffs": [
+        "Stivali a terra, fortuna in mano."
+      ]
+    },
+    "39": {
+      "openers": [
+        "Divisione Aviotrasportata. Ci siamo lanciati sopra. Non desideriamo parlare del lancio."
+      ],
+      "signoffs": [
+        "Giù, avanti, e pagati fuori scala."
+      ]
+    },
+    "40": {
+      "openers": [
+        "Divisione Artiglieria. Abbiamo le coordinate. Abbiamo sparato sulle coordinate. È ancora sulle coordinate."
+      ],
+      "signoffs": [
+        "La precisione ha fallito. Forse la ferocia no. Pagati in ogni caso, se tornate."
+      ]
+    },
+    "41": {
+      "openers": [
+        "L'Impero Ottomano, nella sua lunga pazienza, ha deciso che questo non può aspettare un'altra stagione."
+      ],
+      "signoffs": [
+        "Sigillato con la tughra e finanziato senza discussioni, il che è storico."
+      ]
+    },
+    "42": {
+      "openers": [
+        "Burocrazia del Tanzimat: la riforma non può procedere attraverso un quartiere che viene divorato."
+      ],
+      "signoffs": [
+        "Modernizzato, timbrato e pagato a una tariffa che ha richiesto nuovi moduli."
+      ]
+    },
+    "43": {
+      "openers": [
+        "Flotta Sottomarina Imperiale. È risalito dall'estuario. Non possiamo seguirlo nell'entroterra."
+      ],
+      "signoffs": [
+        "Servizio silenzioso, pagamento silenzioso, pagamento considerevole."
+      ]
+    },
+    "44": {
+      "openers": [
+        "Artiglio del Califfo. Non chiediamo due volte e finora non abbiamo mai dovuto chiedere affatto."
+      ],
+      "signoffs": [
+        "L'Artiglio vi sarà debitore, il che vale più del compenso."
+      ]
+    },
+    "45": {
+      "openers": [
+        "Guardia Giannizzera. La tradizione esige che ce ne occupiamo noi. L'aritmetica esige il contrario."
+      ],
+      "signoffs": [
+        "Il corpo vi dichiarerà amico del corpo."
+      ]
+    },
+    "46": {
+      "openers": [
+        "Britannia. È sorta una faccenda piuttosto seria e i soliti signori sono indisponibili, in via definitiva."
+      ],
+      "signoffs": [
+        "Dominare i mari, delegare l'impossibile, pagare profumatamente."
+      ]
+    },
+    "47": {
+      "openers": [
+        "Task force della Marina Reale. Ce ne ha affondate due in porto ed è in porto che vive."
+      ],
+      "signoffs": [
+        "Venti favorevoli e tutto il peso della borsa dell'Ammiragliato."
+      ]
+    },
+    "48": {
+      "openers": [
+        "SAS/SBS. Noi non affiggiamo avvisi. Rileggete quella frase e prezzate il lavoro di conseguenza."
+      ],
+      "signoffs": [
+        "Chi osa, fattura in modo catastrofico."
+      ]
+    },
+    "49": {
+      "openers": [
+        "Archivio Nero dell'MI6. Il soggetto è ████████ dal ████ e resta ████████."
+      ],
+      "signoffs": [
+        "Questo avviso si autodimentica. Il denaro no."
+      ]
+    },
+    "50": {
+      "openers": [
+        "Comando Scientifico. L'esemplare ha smesso di essere un esemplare e ha iniziato a essere un problema."
+      ],
+      "signoffs": [
+        "Risultati, non aneddoti, e un finanziamento di ricerca osceno."
+      ]
+    }
+  },
+  "personalityVoices": {
+    "Nervous": {
+      "openers": [
+        "Scusate, scusate. Si fa così? Credo che si faccia così.",
+        "Ho riscritto questo avviso quattro volte ed è ancora sbagliato."
+      ],
+      "caveats": [
+        "Se sembra pericoloso vi prego, tornate indietro e basta. Vi prego.",
+        "Non volevo chiedere. Ho chiesto lo stesso. Siamo a questo punto."
+      ],
+      "signoffs": [
+        "Grazie. Sinceramente. Non ho dormito.",
+        "Sarò qui ad aspettare. Con ansia. Ovviamente."
+      ]
+    },
+    "Calm": {
+      "openers": [
+        "Nessuna fretta. C'è un lavoro, e c'è tempo.",
+        "Una faccenda semplice, descritta semplicemente."
+      ],
+      "caveats": [
+        "Fatelo per bene anziché in fretta.",
+        "Se il tempo cambia, aspettate. Ricambia sempre."
+      ],
+      "signoffs": [
+        "Venite a cercarmi a cose fatte.",
+        "Ogni cosa a suo tempo."
+      ]
+    },
+    "Aggressive": {
+      "openers": [
+        "Che lo faccia qualcuno prima che lo faccia io e rompa qualcosa.",
+        "Non lo chiedo due volte, e questa è la seconda."
+      ],
+      "caveats": [
+        "Non contrattate. Odio contrattare più di quanto odi il lavoro.",
+        "Tornate a cose fatte o non tornate."
+      ],
+      "signoffs": [
+        "I soldi sono pronti. Non fatemi perdere la giornata.",
+        "Basta così. Andate."
+      ]
+    },
+    "Melancholic": {
+      "openers": [
+        "Probabilmente non conterà nulla, ma andrebbe fatto.",
+        "Un altro piccolo compito in una lunga serie di piccoli compiti."
+      ],
+      "caveats": [
+        "Non aspettatevi ringraziamenti dal mondo. Io qualcosa riuscirò a dire.",
+        "Probabilmente andrà storta. Quasi tutto va storto."
+      ],
+      "signoffs": [
+        "...se a qualcuno importa.",
+        "Grazie, per quel poco che vale."
+      ]
+    },
+    "Sanguine": {
+      "openers": [
+        "Splendida notizia, c'è un lavoro ed è di quelli buoni!",
+        "Oh, vi divertirete. Lo farei io stesso per il gusto."
+      ],
+      "caveats": [
+        "Non preoccupatevi della parte difficile. Non c'è quasi parte difficile!",
+        "Portate un amico, fatene una giornata."
+      ],
+      "signoffs": [
+        "Sarà meraviglioso. Lo sento.",
+        "E via! Magnifico!"
+      ]
+    },
+    "Cautious": {
+      "openers": [
+        "Prima di tutto: leggetelo per intero.",
+        "Ci ho pensato moltissimo e ancora non mi entusiasma."
+      ],
+      "caveats": [
+        "Controllate due volte. Poi controllate ancora, visto che siete già lì.",
+        "Prendete la via lunga se quella breve sembra troppo generosa."
+      ],
+      "signoffs": [
+        "Prudenza, mi raccomando. È tutto ciò che chiedo.",
+        "Meglio lenti che sostituiti."
+      ]
+    },
+    "Impulsive": {
+      "openers": [
+        "Bene, piano nuovo, questo: andate e fate questo.",
+        "L'ho deciso un'ora fa e non ci ho ripensato."
+      ],
+      "caveats": [
+        "Non pensateci troppo. Io di certo non l'ho fatto.",
+        "Se va di traverso, improvvisate, è metà del compenso."
+      ],
+      "signoffs": [
+        "E andate! Adesso!",
+        "Deciso. Fatto. Avanti il prossimo."
+      ]
+    },
+    "Stoic": {
+      "openers": [
+        "Un compito. Va fatto.",
+        "È semplice, è sgradevole, ed è disponibile."
+      ],
+      "caveats": [
+        "Lamentarsi è consentito e inutile.",
+        "Sopportate il cammino. Il resto è cosa da poco."
+      ],
+      "signoffs": [
+        "Così sia.",
+        "Tornate a lavoro finito."
+      ]
+    },
+    "Paranoid": {
+      "openers": [
+        "Non leggete questo dove vi si può vedere leggerlo.",
+        "Sono già al corrente di questo avviso. Regolatevi."
+      ],
+      "caveats": [
+        "Non fidatevi di nessuno che si offra di aiutarvi. Nessuno.",
+        "Se qualcuno chiede chi vi ha assunto, descrivete qualcun altro."
+      ],
+      "signoffs": [
+        "Bruciate questo. Dico sul serio.",
+        "Non ci siamo mai parlati. Questo non è uno scritto."
+      ]
+    },
+    "Empathetic": {
+      "openers": [
+        "Qualcuno ha bisogno di questo e non può chiederlo di persona.",
+        "Non chiederei se ci fosse un altro modo, e ho cercato."
+      ],
+      "caveats": [
+        "Siate gentili là fuori. Non costa nulla e io lo verrò a sapere.",
+        "Se incontrate qualcuno spaventato, prima siate gentili e poi efficienti."
+      ],
+      "signoffs": [
+        "Grazie. Conta più di quanto il compenso suggerisca.",
+        "Tornate sani, prima ancora che pagati."
+      ]
+    },
+    "Authoritative": {
+      "openers": [
+        "Questa faccenda sarà sbrigata oggi.",
+        "L'ho delegata a chiunque legga. Cioè voi."
+      ],
+      "caveats": [
+        "Fatelo come descritto. L'improvvisazione non è autorizzata.",
+        "Riferite direttamente a me, non ai miei uomini."
+      ],
+      "signoffs": [
+        "Vedete di farlo.",
+        "Pagamento sulla mia parola, che è sufficiente."
+      ]
+    },
+    "Scholarly": {
+      "openers": [
+        "Una domanda richiede gambe, e le gambe richiedono uno sconosciuto.",
+        "Problema a forma di nota a piè di pagina, soluzione a forma di stivale."
+      ],
+      "caveats": [
+        "Registrate ciò che vedete, non ciò che vi aspettate di vedere.",
+        "Non riordinate il sito. Il disordine è prova."
+      ],
+      "signoffs": [
+        "Sarete citati. Modestamente.",
+        "Portate appunti. Portate l'oggetto. Portate entrambi."
+      ]
+    },
+    "Artistic": {
+      "openers": [
+        "Mi serve per ragioni che appariranno ovvie in seguito.",
+        "Questa commissione ha una forma e vorrei fosse completata."
+      ],
+      "caveats": [
+        "Non ditemi che è inutile. So esattamente quanto sia inutile.",
+        "Riportate anche i dettagli brutti. Soprattutto quelli."
+      ],
+      "signoffs": [
+        "Sarà bellissimo, o quantomeno finito.",
+        "Adesso fate parte dell'opera."
+      ]
+    },
+    "Adventurous": {
+      "openers": [
+        "Buona notizia: è lontanissimo e forse è una pessima idea.",
+        "Ci andrei io ma qualcuno deve tenere i soldi."
+      ],
+      "caveats": [
+        "Non prendete la strada sicura, è noiosa e per giunta più lunga.",
+        "Se trovate qualcosa di meglio per strada, ditelo prima a me."
+      ],
+      "signoffs": [
+        "Andate a vedere qualcosa!",
+        "Si accettano storie in parziale pagamento."
+      ]
+    },
+    "Nurturing": {
+      "openers": [
+        "Allora. Un lavoretto, e prima mangiate qualcosa.",
+        "Qualcuno ha lasciato andare avanti troppo questa faccenda, poverina."
+      ],
+      "caveats": [
+        "Non andate a stomaco vuoto, e non andate soli se potete evitarlo.",
+        "Tornate indietro se è troppo. È permesso."
+      ],
+      "signoffs": [
+        "Abbiate cura di voi là fuori.",
+        "Ci sarà la zuppa, e il pagamento."
+      ]
+    },
+    "Mischievous": {
+      "openers": [
+        "Potrei farlo per bene. Dove sta il divertimento?",
+        "Chi accetta questa passerà un pomeriggio interessante."
+      ],
+      "caveats": [
+        "In questo avviso non ho mentito. Ho soltanto disposto la verità in modo attraente.",
+        "Se va storta, anche quello è un risultato."
+      ],
+      "signoffs": [
+        "Raccontatemi com'è andata. Nei dettagli.",
+        "Niente rimborsi, niente rimpianti."
+      ]
+    },
+    "Cynical": {
+      "openers": [
+        "Non lo farà nessun altro, ed è per questo che paga.",
+        "Saltiamo la parte in cui fingiamo entrambi che ce ne importi."
+      ],
+      "caveats": [
+        "Vi daranno la colpa comunque. Fatevi pagare prima.",
+        "Qualunque cosa vi dicano là fuori, si tratta di soldi."
+      ],
+      "signoffs": [
+        "Soldi, poi arrivederci.",
+        "Non aspettatevi gratitudine. Aspettatevi il compenso."
+      ]
+    },
+    "Disciplined": {
+      "openers": [
+        "Compito, ambito, compenso. In quest'ordine, senza divagazioni.",
+        "Iniziate alle prime luci. Finite prima di essere stanchi."
+      ],
+      "caveats": [
+        "Seguite la sequenza alla lettera.",
+        "Niente scorciatoie. Le scorciatoie sono il modo in cui i record si spezzano male."
+      ],
+      "signoffs": [
+        "Prima gli standard, poi il pagamento.",
+        "Riferite a lavoro finito, non prima."
+      ]
+    },
+    "Fatalistic": {
+      "openers": [
+        "Succederà che io affigga questo o meno. Comunque, eccolo.",
+        "Il lavoro è già fatto da qualche parte. Vogliate raggiungerlo."
+      ],
+      "caveats": [
+        "Non lottate contro i dettagli. Vincono loro.",
+        "Se finisce male, sarebbe finita male comunque."
+      ],
+      "signoffs": [
+        "Quel che viene, viene.",
+        "Il compenso è certo. Poco altro lo è."
+      ]
+    },
+    "Grumpy": {
+      "openers": [
+        "E va bene. Che lo faccia qualcun altro.",
+        "Mi sono lamentato con chiunque fosse disponibile. Adesso pago."
+      ],
+      "caveats": [
+        "Non chiacchieratemi addosso al ritorno. Consegnate e basta.",
+        "Ci vorrà più di quanto pensiate. Vale per tutto."
+      ],
+      "signoffs": [
+        "Uff. La paga è la paga.",
+        "Andate, su."
+      ]
+    },
+    "Loyal": {
+      "openers": [
+        "Questo è per gente con cui sono in debito, quindi sarò in debito anche con voi.",
+        "Serve a un amico. È tutta qui la ragione."
+      ],
+      "caveats": [
+        "Non fatemi fare brutta figura là fuori.",
+        "Se qualcuno chiede, ho garantito per voi. Fate in modo che sia vero."
+      ],
+      "signoffs": [
+        "Non dimentico i favori.",
+        "Avrete la mia parola e la mia moneta."
+      ]
+    },
+    "Brave": {
+      "openers": [
+        "Lavoro pericoloso e onesto. La mia inserzione preferita.",
+        "Lo prenderei io se fossi due persone."
+      ],
+      "caveats": [
+        "Non scappate dalla parte interessante. Affrontatela o andatevene.",
+        "La paura va bene. La fuga perde il compenso."
+      ],
+      "signoffs": [
+        "Schiena dritta e andate.",
+        "Tornate con una cicatrice e una storia."
+      ]
+    },
+    "Timid": {
+      "openers": [
+        "Spero non sia un problema che io abbia chiesto.",
+        "Solo se non siete occupati. Davvero, solo allora."
+      ],
+      "caveats": [
+        "Se qualcuno vi urla contro per questo, date la colpa a me. Va bene.",
+        "Vi prego, non correte rischi per me."
+      ],
+      "signoffs": [
+        "Grazie, se lo farete. E se no, va bene lo stesso.",
+        "Sarò laggiù. Ad aspettare. In silenzio."
+      ]
+    },
+    "Hedonistic": {
+      "openers": [
+        "Qui ci sono soldi e quindi vino dopo.",
+        "Lavoro noioso, compenso eccellente, conclusione ovvia."
+      ],
+      "caveats": [
+        "Non fatelo assetati. Niente di buono si fa da assetati.",
+        "Finite prima di sera. Le sere sono per altri lavori."
+      ],
+      "signoffs": [
+        "Il primo giro lo offro io.",
+        "Tornate e li spenderemo come si deve."
+      ]
+    },
+    "Apathetic": {
+      "openers": [
+        "Qualcuno dovrebbe probabilmente farlo.",
+        "È un lavoro. Non ho opinioni forti."
+      ],
+      "caveats": [
+        "Fatelo come volete. Davvero non mi importa.",
+        "Se non viene fatto, anche quello è un esito."
+      ],
+      "signoffs": [
+        "Vabbè. I soldi ci sono.",
+        "Va bene in entrambi i casi."
+      ]
+    }
+  }
+}

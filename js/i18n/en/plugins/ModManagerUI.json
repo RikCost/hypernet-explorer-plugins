@@ -1,0 +1,16 @@
+{
+  "title": "Mod Manager",
+  "back": "Back",
+  "noMods": "No mods found in the mods/ folder.",
+  "source": "Source",
+  "path": "Path",
+  "toggle": "Toggle ON / OFF",
+  "moveUp": "Move Up ↑ (Higher Priority)",
+  "moveDown": "Move Down ↓ (Lower Priority)",
+  "local": "Local",
+  "workshop": "Steam Workshop",
+  "priority": "Priority",
+  "active": "Active",
+  "inactive": "Inactive",
+  "hint": "L1 / R1, reorder  ·  ← →, switch panel  ·  OK, toggle"
+}

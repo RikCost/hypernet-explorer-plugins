@@ -1,0 +1,17 @@
+{
+  "selectABattler": "",
+  "baseline": "",
+  "hybrid": "",
+  "selectAnArchetype": "",
+  "selectCreationMode": "",
+  "selectOneOrTwoArchetypes": "",
+  "selectHybridArchetype": "",
+  "selectABattlerImage": "",
+  "selectACharacterSprite": "",
+  "custom3D": "",
+  "skillFallback": "",
+  "ui": {
+    "primaryBadge": "",
+    "secondaryBadge": ""
+  }
+}

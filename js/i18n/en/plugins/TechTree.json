@@ -1,0 +1,285 @@
+{
+  "selectNodeHint": "Select a node with the arrow keys.",
+  "nobelWorthy": "Nobel-worthy",
+  "fringe": "Disputed / Fringe",
+  "speculative": "Speculative",
+  "researched": "Researched",
+  "knownAtFounding": "Known at the world's founding",
+  "discoveredBy": "Discovered by ",
+  "prereqIncomplete": "Prerequisites incomplete",
+  "activeProject": "Active Research Project",
+  "day": "day",
+  "materialsRequired": "Materials Required",
+  "requires": "Requires",
+  "permanentBuffs": "Permanent Party Buffs",
+  "yieldLabel": "Yield",
+  "exp": "EXP",
+  "gold": "Gold",
+  "complete": "Complete",
+  "locked": "Locked",
+  "research": "Research",
+  "clearProject": "Clear Active Project",
+  "setProject": "Set as Active Project",
+  "discovered": "Discovered: ",
+  "recoveredMaterials": "Recovered materials:",
+  "menuName": "Research",
+  "back": "Back",
+  "procName": "The {a} {b} {c}",
+  "procDesc": "A line of work that closed elsewhere and stayed open here. The result reproduces on this world's apparatus; no derivation for it has ever been published.",
+  "unknownDiscoverer": "Unknown",
+  "progressCleared": "\\C[3]Research progress cleared.\\C[0]",
+  "theme": {
+    "Physics": {
+      "a": [
+        "Anomalous",
+        "Coherent",
+        "Resonant",
+        "Vacuum",
+        "Entangled",
+        "Nonlocal",
+        "Casimir",
+        "Chiral"
+      ],
+      "b": [
+        "Field",
+        "Lattice",
+        "Phonon",
+        "Boson",
+        "Symmetry",
+        "Vortex",
+        "Plasma",
+        "Interferometer"
+      ],
+      "c": [
+        "Coupling",
+        "Condensate",
+        "Effect",
+        "Regime",
+        "Threshold",
+        "Resonance"
+      ]
+    },
+    "Astronomy": {
+      "a": [
+        "Occulted",
+        "Rogue",
+        "Trans-Neptunian",
+        "Circumbinary",
+        "Relic",
+        "Hypervelocity",
+        "Dark"
+      ],
+      "b": [
+        "Companion",
+        "Halo",
+        "Aurora",
+        "Transit",
+        "Nebula",
+        "Microlens",
+        "Ringlet"
+      ],
+      "c": [
+        "Survey",
+        "Catalogue",
+        "Ephemeris",
+        "Parallax",
+        "Occultation"
+      ]
+    },
+    "Mathematics": {
+      "a": [
+        "Sparse",
+        "Nonlinear",
+        "Recursive",
+        "Ergodic",
+        "Modular",
+        "Spectral",
+        "Abelian"
+      ],
+      "b": [
+        "Sieve",
+        "Lemma",
+        "Manifold",
+        "Automaton",
+        "Partition",
+        "Functor",
+        "Bound"
+      ],
+      "c": [
+        "Conjecture",
+        "Identity",
+        "Theorem",
+        "Criterion",
+        "Duality"
+      ]
+    },
+    "Alchemistry": {
+      "a": [
+        "Catalytic",
+        "Enantiopure",
+        "Supramolecular",
+        "Photoactive",
+        "Aqueous",
+        "Reductive"
+      ],
+      "b": [
+        "Ligand",
+        "Isomer",
+        "Reagent",
+        "Polymer",
+        "Complex",
+        "Substrate",
+        "Enzyme"
+      ],
+      "c": [
+        "Synthesis",
+        "Cascade",
+        "Pathway",
+        "Assay",
+        "Reaction"
+      ]
+    },
+    "SocialSciences": {
+      "a": [
+        "Networked",
+        "Behavioural",
+        "Emergent",
+        "Reflexive",
+        "Distributed",
+        "Informal"
+      ],
+      "b": [
+        "Cascade",
+        "Commons",
+        "Norm",
+        "Signal",
+        "Cohort",
+        "Contagion",
+        "Institution"
+      ],
+      "c": [
+        "Theory",
+        "Model",
+        "Study",
+        "Framework",
+        "Hypothesis"
+      ]
+    },
+    "Arcane": {
+      "a": [
+        "Sundered",
+        "Whispered",
+        "Waning",
+        "Sealed",
+        "Hollow",
+        "Ninefold",
+        "Umbral"
+      ],
+      "b": [
+        "Sigil",
+        "Ward",
+        "Rite",
+        "Conjuring",
+        "Veil",
+        "Circle",
+        "Litany"
+      ],
+      "c": [
+        "Working",
+        "Ascendance",
+        "Binding",
+        "Recollection",
+        "Awakening"
+      ]
+    },
+    "Technomagica": {
+      "a": [
+        "Wired",
+        "Compiled",
+        "Sanctified",
+        "Overclocked",
+        "Forked",
+        "Cached",
+        "Thaumic"
+      ],
+      "b": [
+        "Daemon",
+        "Kernel",
+        "Sigil-Chip",
+        "Runtime",
+        "Buffer",
+        "Protocol",
+        "Codepath"
+      ],
+      "c": [
+        "Engine",
+        "Framework",
+        "Build",
+        "Deployment",
+        "Compiler"
+      ]
+    },
+    "Theotecnical": {
+      "a": [
+        "Consecrated",
+        "Promulgated",
+        "Armoured",
+        "Canonical",
+        "Ordained",
+        "Anointed",
+        "Airborne"
+      ],
+      "b": [
+        "Coil",
+        "Reliquary",
+        "Choker",
+        "Pulpit",
+        "Bull",
+        "Buttress",
+        "Sacrament"
+      ],
+      "c": [
+        "Doctrine",
+        "Battery",
+        "Mission",
+        "Rite",
+        "Schema",
+        "Encyclical"
+      ]
+    }
+  },
+  "phase": {
+    "Platform": "Platform",
+    "Rediscovery": "Rediscovery",
+    "High Ritual": "High Ritual",
+    "False Lead": "False Lead",
+    "Vaporware": "Vaporware",
+    "Foundation": "Foundation",
+    "First Working": "First Working",
+    "Sympathy": "Sympathy",
+    "Sublimation": "Sublimation",
+    "Prototype": "Prototype",
+    "Toolchain": "Toolchain",
+    "Power": "Power",
+    "Classified": "Classified",
+    "Deployment": "Deployment",
+    "Speculative": "Speculative",
+    "Ascension": "Ascension",
+    "Ordnance": "Ordnance",
+    "Bulwark": "Bulwark",
+    "Mission": "Mission",
+    "Doctrine": "Doctrine",
+    "Apostasy": "Apostasy",
+    "Apotheosis": "Apotheosis"
+  },
+  "news": {
+    "fringe": "folk are peddling {name} again",
+    "procedural": "a strange new science they call {name} has surfaced",
+    "arcane": "the lost art of {name} has been relearned",
+    "technomagica": "Esoteric Heavy Industries has unveiled {name}",
+    "generic": "{name} was finally discovered",
+    "nobelSuffix": ", and there's talk of a Nobel Prize",
+    "credit": " Word credits {who} and their circle.",
+    "theotecnical": "the Holy Vatican Empire has promulgated {name}"
+  }
+}
