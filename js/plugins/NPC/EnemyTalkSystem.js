@@ -856,7 +856,10 @@
             // Recruited, not killed: hide the enemy so no collapse/corpse plays
             // and $gameTroop.isAllDead() becomes true, then end the battle as a
             // flee (result 1) so the BSE win path does not spawn a map corpse
-            // (#138 battle not ending, #142 corpse left behind).
+            // (#138 battle not ending, #142 corpse left behind). The recruit flag
+            // tells BSE to erase the source event all the same, otherwise the
+            // monster stays on the map next to its own recruited copy.
+            BattleManager._enemyRecruited = true;
             enemy.hide();
             this.closeTalkMenu();
             BattleManager.abort();
@@ -956,7 +959,10 @@
         window.skipLocalization = false;
 
         // Not killed: hide the enemy so no collapse/corpse plays, then abort the
-        // battle as a flee (matches the party-join recruit path).
+        // battle as a flee (matches the party-join recruit path). The recruit flag
+        // makes BSE erase the source event, so the tamed creature does not stay
+        // standing on the map beside the pet now following the party.
+        BattleManager._enemyRecruited = true;
         enemy.hide();
         this.closeTalkMenu();
         BattleManager.abort();

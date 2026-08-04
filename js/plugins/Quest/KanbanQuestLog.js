@@ -196,10 +196,15 @@
   pointer-events: none;
   background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 45%, rgba(20,10,4,0.42) 100%); }
 #kb-board-header { position: relative; z-index: 1; flex: 0 0 auto;
-  display: flex; align-items: baseline; gap: 18px; padding: 18px 34px 14px;
+  display: flex; align-items: center; gap: 18px; padding: 18px 34px 14px;
+  min-height: 2.6rem; /* the title is out of flow: keep the room it used to take */
   color: #f5ebd0; text-shadow: 1px 1px 3px #2b1008;
   border-bottom: 2px solid rgba(43,16,8,0.35); }
-.kb-board-title { font-size: 2.1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
+/* Centred on the board itself, not on whatever is left over between the back
+   button and the hint, so the two flanking items never push it off centre. */
+.kb-board-title { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; white-space: nowrap;
+  font-size: 2.1rem; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; }
 /* Shared .back-button look, but kept in the header's flex flow: the global rule
    pins it position:absolute;left:0, which here would resolve against the whole
    board overlay and land on top of the To Do column. */
@@ -1300,11 +1305,10 @@
             this._el = el;
             this._refresh();
 
-            // Right click closes the open sheet (and never raises a browser menu).
-            el.addEventListener('contextmenu', ev => {
-                ev.preventDefault();
-                if (this._selectedQuest) this._closeDetail();
-            });
+            // Right click acts as cancel (handled in update() through
+            // TouchInput.isCancelled, like every other menu); all this has to do
+            // is make sure the browser menu never comes up.
+            el.addEventListener('contextmenu', ev => ev.preventDefault());
             el.addEventListener('mouseover', ev => {
                 const card = ev.target.closest('.kb-card');
                 if (!card || this._selectedQuest) return;
@@ -1536,8 +1540,11 @@
             super.update();
             if (!this._el) return;
 
+            // Esc, the controller's B button and a right click all read as cancel.
+            const cancelled = Input.isTriggered('cancel') || TouchInput.isCancelled();
+
             if (this._selectedQuest) {
-                if (Input.isTriggered('cancel')) this._closeDetail();
+                if (cancelled) this._closeDetail();
                 else if (Input.isTriggered('shift')) this._showOnMap();
                 return;
             }
@@ -1567,7 +1574,7 @@
             } else if (Input.isTriggered('ok')) {
                 const q = QuestManager.getQuestsInColumn(COLS[this._focusCol])[this._focusRow];
                 if (q) this._openDetail(q);
-            } else if (Input.isTriggered('cancel')) {
+            } else if (cancelled) {
                 SoundManager.playCancel();
                 this.popScene();
             }

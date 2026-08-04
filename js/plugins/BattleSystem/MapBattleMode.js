@@ -2038,7 +2038,10 @@
             // counts as settled: it cannot be what is keeping the event alive.
             const wiped = entry.battlers.every(b => !b || b.isDead() || !b.isAppeared());
             if (wiped) {
-                MBM._recordCorpse(entry, mapId);
+                // Only something that actually died leaves a body: a monster that
+                // was recruited (hidden, still alive) or a reinforcement slot that
+                // never appeared is removed without a corpse.
+                if (entry.battlers.some(b => b && b.isDead())) MBM._recordCorpse(entry, mapId);
                 delete pData[entry.persistentId];
                 $gameMap.eraseEvent(entry.eventId);
                 if (mapId === 636) {

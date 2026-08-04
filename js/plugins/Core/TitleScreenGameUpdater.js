@@ -493,14 +493,27 @@
             return str.replace(/(\d+\.\d+\.)(\d+)/, (m, head) => head + build);
         },
 
+        // A build whose commit message is itself a version ("0.0.3a", "v1.2.0")
+        // already names the build outright. Returns that version, so the badge
+        // can show it alone instead of hanging it off the shipped number as a
+        // second version ("0.0.1a - 0.0.3a").
+        _versionName(name) {
+            const m = String(name || '').trim().match(/^v?(\d+\.\d+\.\d+[A-Za-z]*)$/);
+            return m ? m[1] : null;
+        },
+
         // Replaces whatever the version string says after the number with the
         // name of the build that is running ("0.0.42a - experimental" ->
         // "0.0.42a - feat: translation batch"), so the badge names the commit
-        // this copy sits on. A copy with no build name keeps the string as
-        // written, and so does one whose label carries no version number.
+        // this copy sits on. When that name is a version in its own right it
+        // becomes the whole label instead. A copy with no build name keeps the
+        // string as written, and so does one whose label carries no version
+        // number.
         applyBuildName(text) {
             const name = this.buildName();
             if (!name) return text;
+            const asVersion = this._versionName(name);
+            if (asVersion) return asVersion;
             const str = String(text === undefined || text === null ? '' : text);
             const head = str.match(/^\s*\d+\.\d+\.\d+[A-Za-z]*/);
             if (!head) return str;
@@ -1056,7 +1069,7 @@
                 } else if (scene._section === 'actions') {
                     SoundManager.playCancel();
                     scene._section = 'builds';
-                    scene._refreshDOM();
+                    scene._selectionChanged();
                 } else {
                     SoundManager.playCancel();
                     SceneManager.pop();
@@ -1069,16 +1082,16 @@
                 if (isUp && scene._buildIndex > 0) {
                     scene._buildIndex--;
                     SoundManager.playCursor();
-                    scene._refreshDOM();
+                    scene._selectionChanged();
                 } else if (isDown && scene._buildIndex < total - 1) {
                     scene._buildIndex++;
                     SoundManager.playCursor();
-                    scene._refreshDOM();
+                    scene._selectionChanged();
                 } else if (isRight) {
                     scene._section = 'actions';
                     scene._actionIndex = 0;
                     SoundManager.playCursor();
-                    scene._refreshDOM();
+                    scene._selectionChanged();
                 }
                 if (Input.isTriggered('ok')) scene._useSelectedBuild();
             } else {
@@ -1094,7 +1107,7 @@
                 } else if (isLeft) {
                     scene._section = 'builds';
                     SoundManager.playCursor();
-                    scene._refreshDOM();
+                    scene._selectionChanged();
                 }
                 if (Input.isTriggered('ok')) {
                     const action = actions[scene._actionIndex];
@@ -1140,6 +1153,8 @@
             this._progress     = null;
             this._status       = {};   // commit sha -> 'checking' | 'failed'
             this._progressDirty = false;
+            this._dom          = null; // the page, built once and then kept
+            this._cache        = {};   // region key -> the markup already on screen
 
             this._container = document.createElement('div');
             this._container.id = 'game-updater-container';
@@ -1188,6 +1203,8 @@
                 c.style.pointerEvents = 'none';
                 setTimeout(() => { if (c.parentNode) c.parentNode.removeChild(c); }, 200);
                 this._container = null;
+                this._dom = null;
+                this._cache = {};
             }
             Scene_MenuBase.prototype.terminate.call(this);
         }
@@ -1276,7 +1293,7 @@
                 this._section = 'actions';
                 this._actionIndex = 0;
                 SoundManager.playOk();
-                this._refreshDOM();
+                this._selectionChanged();
                 return;
             }
             this._runAction('check');
@@ -1385,16 +1402,95 @@
         }
 
         // -- HTML ------------------------------------------------------------
+        //
+        // The page is built once and then kept: every refresh writes a region
+        // only when that region's markup really changed, and the cursor itself
+        // is a class on nodes that are never rebuilt. Moving through the list
+        // therefore touches no innerHTML at all, so nothing flickers, no scroll
+        // position is lost and no hover state is dropped underneath the mouse.
 
-        _buildLeftPageHTML(T) {
+        _buildSkeleton(T) {
+            this._container.innerHTML = `
+                <div class="book-spread">
+                    <div class="left-page" id="gu-left-page">
+                        <div class="page-header-bar">
+                            <button class="back-button" id="gu-back-btn">${T.back}</button>
+                            <h2 class="title">${T.title}</h2>
+                        </div>
+                        <div class="gu-build-header" id="gu-build-header"></div>
+                        <div class="gu-build-list" id="gu-build-list"></div>
+                        <div class="gu-console" id="gu-console">
+                            <div class="gu-log" id="gu-log"></div>
+                            <div class="gu-progress gu-progress--idle" id="gu-progress">
+                                <div class="gu-progress-fill" id="gu-progress-fill"></div>
+                            </div>
+                        </div>
+                        <div class="mod-hint-bar" id="gu-hint"></div>
+                    </div>
+                    <div class="right-page" id="gu-right-page">
+                        <div class="item-inspect">
+                            <div class="inspect-header">
+                                <div class="inspect-title-box">
+                                    <div class="inspect-name" id="gu-name"></div>
+                                    <div class="inspect-rarity" id="gu-status"></div>
+                                </div>
+                            </div>
+                            <div class="gu-note" id="gu-note" style="display:none"></div>
+                            <div class="inspect-lore" id="gu-specs"></div>
+                            <div class="inspect-actions" id="gu-actions"></div>
+                            <div class="gu-files" id="gu-files" style="display:none"></div>
+                        </div>
+                    </div>
+                </div>`;
+
+            const q = (sel) => this._container.querySelector(sel);
+            this._dom = {
+                header:   q('#gu-build-header'),
+                hint:     q('#gu-hint'),
+                list:     q('#gu-build-list'),
+                log:      q('#gu-log'),
+                progress: q('#gu-progress'),
+                fill:     q('#gu-progress-fill'),
+                name:     q('#gu-name'),
+                status:   q('#gu-status'),
+                note:     q('#gu-note'),
+                specs:    q('#gu-specs'),
+                actions:  q('#gu-actions'),
+                files:    q('#gu-files')
+            };
+            this._cache = {};
+
+            // The back button lives in the skeleton, so it is wired once.
+            const back = q('#gu-back-btn');
+            if (back) {
+                back.addEventListener('click', () => {
+                    SoundManager.playCancel();
+                    if (GameUpdater.isBusy()) GameUpdater.cancel();
+                    else SceneManager.pop();
+                });
+            }
+        }
+
+        // Writes a region only when its markup differs from what is on screen,
+        // and says whether it had to.
+        _setRegion(key, node, html) {
+            if (!node || this._cache[key] === html) return false;
+            this._cache[key] = html;
+            node.innerHTML = html;
+            return true;
+        }
+
+        _buildListHTML(T) {
             const commits = GameUpdater.commits();
-            const rows = commits.length ? commits.map((commit, i) => {
-                const sel    = i === this._buildIndex && this._section === 'builds';
-                const status = this._buildStatus(commit);
+            if (!commits.length) return `<div class="gu-build-empty">${esc(this._emptyText(T))}</div>`;
+            // Neither the cursor nor the check badge is in here: both are
+            // applied to the standing nodes afterwards, so moving the cursor or
+            // checking a build never rewrites a single row.
+            return commits.map((commit, i) => {
                 const tag = GameUpdater.isInstalled(commit.sha) ? T.tagInstalled
                     : (i === 0 ? T.tagLatest : '');
                 return `
-                    <div class="gu-build${sel ? ' selected' : ''}" data-idx="${i}">
+                    <div class="gu-build" data-idx="${i}">
                         <div class="gu-build-head">
                             <span class="gu-build-sha">${esc(shortSha(commit.sha))}</span>
                             <span class="gu-build-date">${esc(formatDate(commit.date) || T.unknown)}</span>
@@ -1402,37 +1498,30 @@
                         </div>
                         <div class="gu-build-message">${esc(commit.message || T.unknown)}</div>
                         <div class="gu-build-foot">
-                            <span class="gu-badge ${status.cls}">${status.text}</span>
+                            <span class="gu-badge"></span>
                             <span class="gu-build-sub">${esc(commit.author || '')}</span>
                         </div>
                     </div>`;
-            }).join('') : `<div class="gu-build-empty">${esc(this._emptyText(T))}</div>`;
-
-            const logHTML = this._log.map(line => `<div class="gu-log-line">${esc(line)}</div>`).join('');
-            const pct = this._progress === null || this._progress === undefined
-                ? null : Math.round(Math.max(0, Math.min(1, this._progress)) * 100);
-
-            return `
-                <div class="page-header-bar">
-                    <button class="back-button" id="gu-back-btn">${T.back}</button>
-                    <h2 class="title">${T.title}</h2>
-                </div>
-                <div class="gu-build-header">${fmt(T.buildsOn, BRANCH)}</div>
-                <div class="gu-build-list" id="gu-build-list">${rows}</div>
-                <div class="gu-console" id="gu-console">
-                    <div class="gu-log" id="gu-log">${logHTML}</div>
-                    <div class="gu-progress${pct === null ? ' gu-progress--idle' : ''}" id="gu-progress">
-                        <div class="gu-progress-fill" id="gu-progress-fill" style="width:${pct === null ? 0 : pct}%"></div>
-                    </div>
-                </div>
-                <div class="mod-hint-bar">${T.hint}</div>`;
+            }).join('');
         }
 
-        _buildRightPageHTML(T) {
+        _renderBuildList(T) {
+            const node = this._dom.list;
+            const html = this._buildListHTML(T);
+            if (!node || this._cache.list === html) return;
+            // A rebuilt list would otherwise jump back to the top under the
+            // cursor, which reads as a flicker of its own.
+            const top = node.scrollTop;
+            this._cache.list = html;
+            node.innerHTML = html;
+            node.scrollTop = top;
+            this._wireBuildRows();
+        }
+
+        _specsHTML(T) {
             const commit = this._selectedBuild();
             const plan = commit ? GameUpdater.plan(commit.sha) : null;
             const installed = GameUpdater.installedInfo();
-            const status = this._buildStatus(commit);
             const position = commit ? GameUpdater.indexOf(commit.sha) : -1;
 
             const row = (label, value) => `
@@ -1461,117 +1550,153 @@
                 specs += row(DOWNLOADS_ENABLED ? T.toUpdate : T.changedFiles, plan.changed.length);
                 if (DOWNLOADS_ENABLED && plan.changed.length) specs += row(T.download, formatBytes(plan.bytes));
             }
-
-            const actions = this._actions().map((a, i) => {
-                const sel = this._section === 'actions' && i === this._actionIndex;
-                return `<button class="inspect-btn${sel ? ' selected' : ''}" data-action="${a.key}">${esc(a.label)}</button>`;
-            }).join('');
-
-            let fileList = '';
-            if (plan && plan.changed.length) {
-                const shown = plan.changed.slice(0, 60);
-                const rest  = plan.changed.length - shown.length;
-                fileList = `
-                    <div class="gu-files">
-                        <div class="gu-files-header">${DOWNLOADS_ENABLED ? T.listHeader : T.listHeaderChanged}</div>
-                        ${shown.map(c => `<div class="gu-file-row"><span class="gu-file-flag">${c.isNew ? '+' : '~'}</span><span class="gu-file-path">${esc(c.path)}</span><span class="gu-file-size">${formatBytes(c.size)}</span></div>`).join('')}
-                        ${rest > 0 ? `<div class="gu-file-more">${fmt(T.andMore, rest)}</div>` : ''}
-                    </div>`;
-            }
-
-            let note = '';
-            if (!isAvailable()) {
-                note = `<div class="gu-note gu-note--bad">${T.noNode}</div>`;
-            } else if (!DOWNLOADS_ENABLED) {
-                note = `<div class="gu-note">${T.downloadsOff}</div>`;
-            } else if (GameUpdater.needsRestart()) {
-                note = `<div class="gu-note">${T.restartNote}</div>`;
-            } else if (position > 0 && plan && plan.changed.length) {
-                // Installing this one walks the game backwards; say so plainly.
-                note = `<div class="gu-note">${esc(T.olderNote)}</div>`;
-            }
-
-            const heading = commit
-                ? fmt(T.buildName, shortSha(commit.sha))
-                : this._emptyText(T);
-
-            return `
-                <div class="item-inspect">
-                    <div class="inspect-header">
-                        <div class="inspect-title-box">
-                            <div class="inspect-name">${esc(heading)}</div>
-                            <div class="inspect-rarity">${status.text}</div>
-                        </div>
-                    </div>
-                    ${note}
-                    <div class="inspect-lore">
-                        ${specs}
-                        <div class="inspect-spec-row">
-                            <span class="inspect-spec-label">${esc(T.source)}</span>
-                            <span class="inspect-spec-value mod-path-value">${esc(GameUpdater.REPO_URL)}</span>
-                        </div>
-                    </div>
-                    <div class="inspect-actions">${actions}</div>
-                    ${fileList}
+            specs += `
+                <div class="inspect-spec-row">
+                    <span class="inspect-spec-label">${esc(T.source)}</span>
+                    <span class="inspect-spec-value mod-path-value">${esc(GameUpdater.REPO_URL)}</span>
                 </div>`;
+            return specs;
+        }
+
+        _filesHTML(T) {
+            const commit = this._selectedBuild();
+            const plan = commit ? GameUpdater.plan(commit.sha) : null;
+            if (!plan || !plan.changed.length) return '';
+            const shown = plan.changed.slice(0, 60);
+            const rest  = plan.changed.length - shown.length;
+            return `
+                <div class="gu-files-header">${DOWNLOADS_ENABLED ? T.listHeader : T.listHeaderChanged}</div>
+                ${shown.map(c => `<div class="gu-file-row"><span class="gu-file-flag">${c.isNew ? '+' : '~'}</span><span class="gu-file-path">${esc(c.path)}</span><span class="gu-file-size">${formatBytes(c.size)}</span></div>`).join('')}
+                ${rest > 0 ? `<div class="gu-file-more">${fmt(T.andMore, rest)}</div>` : ''}`;
+        }
+
+        _noteState(T) {
+            const commit = this._selectedBuild();
+            const plan = commit ? GameUpdater.plan(commit.sha) : null;
+            const position = commit ? GameUpdater.indexOf(commit.sha) : -1;
+            if (!isAvailable())            return { text: T.noNode, bad: true };
+            if (!DOWNLOADS_ENABLED)        return { text: T.downloadsOff, bad: false };
+            if (GameUpdater.needsRestart()) return { text: T.restartNote, bad: false };
+            // Installing an older build walks the game backwards; say so plainly.
+            if (position > 0 && plan && plan.changed.length) return { text: esc(T.olderNote), bad: false };
+            return { text: '', bad: false };
+        }
+
+        _renderInspect(T) {
+            const commit = this._selectedBuild();
+            const status = this._buildStatus(commit);
+            const heading = commit ? fmt(T.buildName, shortSha(commit.sha)) : this._emptyText(T);
+
+            this._setRegion('name', this._dom.name, esc(heading));
+            this._setRegion('status', this._dom.status, status.text);
+            this._setRegion('specs', this._dom.specs, this._specsHTML(T));
+
+            const note = this._noteState(T);
+            this._setRegion('note', this._dom.note, note.text);
+            if (this._dom.note) {
+                this._dom.note.style.display = note.text ? '' : 'none';
+                this._dom.note.classList.toggle('gu-note--bad', !!note.bad);
+            }
+
+            const files = this._filesHTML(T);
+            if (this._setRegion('files', this._dom.files, files) && this._dom.files) {
+                this._dom.files.scrollTop = 0;
+            }
+            if (this._dom.files) this._dom.files.style.display = files ? '' : 'none';
+
+            // The cursor is a class, so the button list only ever changes when
+            // the actions themselves do.
+            const actions = this._actions()
+                .map(a => `<button class="inspect-btn" data-action="${a.key}">${esc(a.label)}</button>`)
+                .join('');
+            if (this._setRegion('actions', this._dom.actions, actions)) this._wireActions();
         }
 
         _refreshDOM() {
             if (!this._container) return;
             const T = getT();
-            this._container.innerHTML = `
-                <div class="book-spread">
-                    <div class="left-page" id="gu-left-page">${this._buildLeftPageHTML(T)}</div>
-                    <div class="right-page" id="gu-right-page">${this._buildRightPageHTML(T)}</div>
-                </div>`;
-            this._wireEvents();
+            if (!this._dom) this._buildSkeleton(T);
+            this._setRegion('header', this._dom.header, fmt(T.buildsOn, BRANCH));
+            this._setRegion('hint', this._dom.hint, T.hint);
+            this._renderBuildList(T);
+            this._renderInspect(T);
+            this._updateProgressDOM();
+            this._updateBuildBadges();
+            this._updateBuildHighlight();
+            this._updateActionHighlight();
             this._scrollSelectedIntoView();
         }
 
         // The history is long enough to scroll, so the cursor has to drag the
         // list along with it.
         _scrollSelectedIntoView() {
-            if (!this._container || this._section !== 'builds') return;
-            const node = this._container.querySelector('.gu-build.selected');
+            if (!this._dom || this._section !== 'builds') return;
+            const node = this._dom.list.querySelector('.gu-build.selected');
             if (node && node.scrollIntoView) node.scrollIntoView({ block: 'nearest' });
         }
 
         // Progress ticks come in far faster than a full re-render can keep up
         // with, so they only touch the bar and the log.
         _updateProgressDOM() {
-            if (!this._container) return;
-            const log = this._container.querySelector('#gu-log');
-            if (log) {
-                log.innerHTML = this._log.map(line => `<div class="gu-log-line">${esc(line)}</div>`).join('');
+            if (!this._dom) return;
+            const log = this._dom.log;
+            const logHTML = this._log.map(line => `<div class="gu-log-line">${esc(line)}</div>`).join('');
+            if (log && this._cache.log !== logHTML) {
+                this._cache.log = logHTML;
+                log.innerHTML = logHTML;
                 log.scrollTop = log.scrollHeight;
             }
-            const bar  = this._container.querySelector('#gu-progress');
-            const fill = this._container.querySelector('#gu-progress-fill');
+            const bar  = this._dom.progress;
+            const fill = this._dom.fill;
             if (bar && fill) {
                 const idle = this._progress === null || this._progress === undefined;
                 bar.classList.toggle('gu-progress--idle', idle);
-                fill.style.width = idle ? '0%' : Math.round(Math.max(0, Math.min(1, this._progress)) * 100) + '%';
+                const width = idle ? '0%' : Math.round(Math.max(0, Math.min(1, this._progress)) * 100) + '%';
+                if (fill.style.width !== width) fill.style.width = width;
             }
         }
 
+        // A build going from unchecked to checking to checked only moves its
+        // own badge, so the row it sits in is left exactly where it is.
+        _updateBuildBadges() {
+            if (!this._dom) return;
+            const commits = GameUpdater.commits();
+            this._dom.list.querySelectorAll('.gu-build').forEach((node, i) => {
+                const badge = node.querySelector('.gu-badge');
+                if (!badge) return;
+                const status = this._buildStatus(commits[i]);
+                const cls = 'gu-badge ' + status.cls;
+                if (badge.className !== cls) badge.className = cls;
+                if (badge.textContent !== status.text) badge.textContent = status.text;
+            });
+        }
+
+        _updateBuildHighlight() {
+            if (!this._dom) return;
+            this._dom.list.querySelectorAll('.gu-build').forEach((node, i) => {
+                node.classList.toggle('selected', this._section === 'builds' && i === this._buildIndex);
+            });
+        }
+
         _updateActionHighlight() {
-            if (!this._container) return;
-            this._container.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
+            if (!this._dom) return;
+            this._dom.actions.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
                 btn.classList.toggle('selected', this._section === 'actions' && i === this._actionIndex);
             });
         }
 
-        _wireEvents() {
-            const back = this._container.querySelector('#gu-back-btn');
-            if (back) {
-                back.addEventListener('click', () => {
-                    SoundManager.playCancel();
-                    if (GameUpdater.isBusy()) GameUpdater.cancel();
-                    else SceneManager.pop();
-                });
-            }
+        // Selecting a build leaves both lists standing: only the cursor classes
+        // move and the inspect panel's own regions catch up.
+        _selectionChanged() {
+            if (!this._dom) return;
+            this._updateBuildHighlight();
+            this._renderInspect(getT());
+            this._updateActionHighlight();
+            this._scrollSelectedIntoView();
+        }
 
-            this._container.querySelectorAll('.gu-build').forEach(node => {
+        _wireBuildRows() {
+            this._dom.list.querySelectorAll('.gu-build').forEach(node => {
                 node.addEventListener('click', () => {
                     const idx = parseInt(node.dataset.idx, 10);
                     if (idx === this._buildIndex && this._section === 'builds') {
@@ -1580,12 +1705,14 @@
                         this._buildIndex = idx;
                         this._section = 'builds';
                         SoundManager.playCursor();
-                        this._refreshDOM();
+                        this._selectionChanged();
                     }
                 });
             });
+        }
 
-            this._container.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
+        _wireActions() {
+            this._dom.actions.querySelectorAll('.inspect-btn[data-action]').forEach((btn, i) => {
                 btn.addEventListener('mouseover', () => {
                     if (this._section !== 'actions') return;
                     this._actionIndex = i;

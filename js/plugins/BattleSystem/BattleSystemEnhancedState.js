@@ -132,6 +132,11 @@
     BattleManager.setup = function(troopId, canEscape, canLose) {
         _BattleManager_setup.call(this, troopId, canEscape, canLose);
 
+        // EnemyTalkSystem raises this when the monster leaves the fight with the
+        // party (recruited as an ally or as a pet). Cleared here so a stale flag
+        // from an interrupted battle can never erase the next fight's event.
+        this._enemyRecruited = false;
+
         // Apply wet status if battle starts on water tile. A title-launched arena
         // (or a save loaded straight into battle) can have $gameMap._mapId set while
         // $dataMap was never streamed in, so guard against the null map data too or
@@ -335,7 +340,25 @@
         const eId = BSE.State.currentEventId;
         const mId = BSE.State.currentMapId;
 
-        if (result === 1 && bId) { // Flee
+        if (result === 1 && this._enemyRecruited) {
+            // Recruited, not fled: the monster walked off the map with the party
+            // (ally or pet), so its event has to go the way a defeated one does,
+            // minus the corpse. Without this the flee path only locked it and the
+            // map kept a second copy of the creature standing where it was.
+            if (bId) delete pData[bId];
+            if (mId && eId) {
+                $gameSystem.setEventToDelete(mId, eId);
+                if ($gameMap.mapId() === 636) {
+                    if (!$gameSystem._procGenDefeatedEnemies) $gameSystem._procGenDefeatedEnemies = [];
+                    if (!$gameSystem._procGenDefeatedEnemies.includes(eId)) {
+                        $gameSystem._procGenDefeatedEnemies.push(eId);
+                    }
+                }
+            }
+            // Clear rewards: nothing was killed.
+            const r = BSE.State.battleRewards;
+            r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
+        } else if (result === 1 && bId) { // Flee
             const persistentData = pData[bId] || { enemyHp: {} };
             $gameTroop.members().forEach((enemy, index) => {
                 persistentData.enemyHp[index] = enemy.hp;
@@ -382,6 +405,7 @@
         saveEnemyPartDamage();
         $gameSystem.setBattleEnded(true);
         BSE.State.currentBattleEventId = null;
+        this._enemyRecruited = false;
 
         _BattleManager_endBattle.call(this, result);
     };
