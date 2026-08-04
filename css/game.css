@@ -273,6 +273,17 @@ body {
         transform: rotate(360deg);
     }
 }
+/* Title screen update notice, breathing so it is noticed in the corner without
+   moving anything around it. Opacity only: the title screen may be running a
+   3D background, and this is the one property that costs it nothing. */
+@keyframes title-update-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.68;
+    }
+}
 
 /* Hide scrollbars during game loading */
 html {

@@ -123,125 +123,125 @@
       }
     },
     "humanoid_roguelite": {
-      "name": "",
+      "name": "Humanoïde",
       "head": {
-        "name": ""
+        "name": "Tête"
       },
       "torso": {
-        "name": "",
-        "msg": ""
+        "name": "Torse",
+        "msg": "Torse broyé !"
       },
       "left_arm": {
-        "name": "",
-        "msg": ""
+        "name": "Bras gauche",
+        "msg": "Bras gauche arraché !"
       },
       "right_arm": {
-        "name": "",
-        "msg": ""
+        "name": "Bras droit",
+        "msg": "Bras droit arraché !"
       },
       "left_leg": {
-        "name": "",
-        "msg": ""
+        "name": "Jambe gauche",
+        "msg": "Jambe gauche tranchée !"
       },
       "right_leg": {
-        "name": "",
-        "msg": ""
+        "name": "Jambe droite",
+        "msg": "Jambe droite tranchée !"
       },
       "brain": {
-        "name": "",
-        "msg": ""
+        "name": "Cerveau",
+        "msg": "Cerveau commotionné !"
       },
       "left_eye": {
-        "name": "",
-        "msg": ""
+        "name": "Œil gauche",
+        "msg": "Œil gauche tuméfié !"
       },
       "right_eye": {
-        "name": "",
-        "msg": ""
+        "name": "Œil droit",
+        "msg": "Œil droit tuméfié !"
       },
       "nose": {
-        "name": "",
-        "msg": ""
+        "name": "Nez",
+        "msg": "Nez brisé !"
       },
       "left_ear": {
-        "name": "",
-        "msg": ""
+        "name": "Oreille gauche",
+        "msg": "Oreille gauche qui siffle !"
       },
       "right_ear": {
-        "name": "",
-        "msg": ""
+        "name": "Oreille droite",
+        "msg": "Oreille droite qui siffle !"
       },
       "mouth": {
-        "name": "",
-        "msg": ""
+        "name": "Bouche",
+        "msg": "Mâchoire déboîtée !"
       },
       "teeth": {
-        "name": "",
-        "msg": ""
+        "name": "Dents",
+        "msg": "Dents arrachées !"
       },
       "genitals": {
-        "name": "",
-        "msg": ""
+        "name": "Parties génitales",
+        "msg": "Parties génitales blessées !"
       },
       "heart": {
-        "name": "",
-        "msg": ""
+        "name": "Cœur",
+        "msg": "Cœur endommagé !"
       },
       "left_lung": {
-        "name": "",
-        "msg": ""
+        "name": "Poumon gauche",
+        "msg": "Poumon gauche affaissé !"
       },
       "right_lung": {
-        "name": "",
-        "msg": ""
+        "name": "Poumon droit",
+        "msg": "Poumon droit affaissé !"
       },
       "liver": {
-        "name": "",
-        "msg": ""
+        "name": "Foie",
+        "msg": "Foie lacéré !"
       },
       "stomach": {
-        "name": "",
-        "msg": ""
+        "name": "Estomac",
+        "msg": "Estomac rompu !"
       },
       "spleen": {
-        "name": "",
-        "msg": ""
+        "name": "Rate",
+        "msg": "Rate rompue !"
       },
       "intestines": {
-        "name": "",
-        "msg": ""
+        "name": "Intestins",
+        "msg": "Intestins perforés !"
       },
       "left_hand": {
-        "name": "",
-        "msg": ""
+        "name": "Main gauche",
+        "msg": "Main gauche broyée !"
       },
       "left_fingers": {
-        "name": "",
-        "msg": ""
+        "name": "Doigts gauches",
+        "msg": "Doigts gauches brisés !"
       },
       "right_hand": {
-        "name": "",
-        "msg": ""
+        "name": "Main droite",
+        "msg": "Main droite broyée !"
       },
       "right_fingers": {
-        "name": "",
-        "msg": ""
+        "name": "Doigts droits",
+        "msg": "Doigts droits brisés !"
       },
       "left_foot": {
-        "name": "",
-        "msg": ""
+        "name": "Pied gauche",
+        "msg": "Pied gauche blessé !"
       },
       "left_toes": {
-        "name": "",
-        "msg": ""
+        "name": "Orteils gauches",
+        "msg": "Orteils gauches écrasés !"
       },
       "right_foot": {
-        "name": "",
-        "msg": ""
+        "name": "Pied droit",
+        "msg": "Pied droit blessé !"
       },
       "right_toes": {
-        "name": "",
-        "msg": ""
+        "name": "Orteils droits",
+        "msg": "Orteils droits écrasés !"
       }
     },
     "beast": {

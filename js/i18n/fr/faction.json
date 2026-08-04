@@ -1,829 +1,829 @@
 {
   "factions": {
     "magesguild": {
-      "name": "",
-      "description": "",
+      "name": "Guilde des Mages",
+      "description": "L'antique institution bureaucratique qui régit l'usage de la magie sur tout le continent. Elle prise l'ordre, la tradition et les autorisations.",
       "troops": {
         "apprenticemage": {
-          "name": ""
+          "name": "Mage Apprenti"
         },
         "guildinitiate": {
-          "name": ""
+          "name": "Initié de la Guilde"
         },
         "guildwarden": {
-          "name": ""
+          "name": "Garde de la Guilde"
         },
         "certifiedmage": {
-          "name": ""
+          "name": "Mage Certifié"
         },
         "battlemage": {
-          "name": ""
+          "name": "Mage de Bataille"
         },
         "guildenforcer": {
-          "name": ""
+          "name": "Exécuteur de la Guilde"
         },
         "mysticarcher": {
-          "name": ""
+          "name": "Archer Mystique"
         },
         "seniormagister": {
-          "name": ""
+          "name": "Magister Principal"
         },
         "warwizard": {
-          "name": ""
+          "name": "Sorcier de Guerre"
         },
         "archmage": {
-          "name": ""
+          "name": "Archimage"
         },
         "spellsniper": {
-          "name": ""
+          "name": "Tireur d'Élite de Sorts"
         },
         "grandmasterwizard": {
-          "name": ""
+          "name": "Sorcier Grand Maître"
         },
         "scientist": {
-          "name": ""
+          "name": "Chercheur Arcanique"
         }
       }
     },
     "archivefoundation": {
-      "name": "",
-      "description": "",
+      "name": "Archive Foundation",
+      "description": "Une organisation secrète vouée à thésauriser l'histoire et à contrôler l'information. Elle tient le savoir pour dangereux et croit qu'il faut le contenir.",
       "troops": {
         "archiveclerk": {
-          "name": ""
+          "name": "Commis de l'Archive"
         },
         "juniorarchivist": {
-          "name": ""
+          "name": "Archiviste Junior"
         },
         "archivesentinel": {
-          "name": ""
+          "name": "Sentinelle de l'Archive"
         },
         "knowledgekeeper": {
-          "name": ""
+          "name": "Gardien du Savoir"
         },
         "crossbowarchivist": {
-          "name": ""
+          "name": "Archiviste Arbalétrier"
         },
         "archiveguardian": {
-          "name": ""
+          "name": "Gardien de l'Archive"
         },
         "seniorcurator": {
-          "name": ""
+          "name": "Conservateur Principal"
         },
         "vaultdefender": {
-          "name": ""
+          "name": "Défenseur du Coffre"
         },
         "knowledgesniper": {
-          "name": ""
+          "name": "Tireur d'Élite du Savoir"
         },
         "masterlibrarian": {
-          "name": ""
+          "name": "Maître Bibliothécaire"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit de l'Archive"
         }
       }
     },
     "hypercapitalistcollective": {
-      "name": "",
-      "description": "",
+      "name": "Collectif Hypercapitaliste",
+      "description": "Une alliance impitoyable de rois marchands et de magnats qui tiennent le libre marché pour le seul dieu véritable.",
       "troops": {
         "contractworker": {
-          "name": ""
+          "name": "Travailleur Contractuel"
         },
         "corporatesecurity": {
-          "name": ""
+          "name": "Sécurité d'Entreprise"
         },
         "corporatemarksman": {
-          "name": ""
+          "name": "Tireur d'Entreprise"
         },
         "hiredmercenary": {
-          "name": ""
+          "name": "Mercenaire à Gages"
         },
         "fieldmedic": {
-          "name": ""
+          "name": "Médecin de Terrain"
         },
         "eliteenforcer": {
-          "name": ""
+          "name": "Exécuteur d'Élite"
         },
         "corporatesniper": {
-          "name": ""
+          "name": "Tireur d'Élite d'Entreprise"
         },
         "executiveguard": {
-          "name": ""
+          "name": "Garde de Direction"
         },
         "combatspecialist": {
-          "name": ""
+          "name": "Spécialiste du Combat"
         },
         "corporateassassin": {
-          "name": ""
+          "name": "Assassin d'Entreprise"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste R&D"
         }
       }
     },
     "loyalists": {
-      "name": "",
-      "description": "",
+      "name": "Loyalistes",
+      "description": "Ceux qui s'en tiennent strictement aux décrets du Grand Maître et préfèrent la stabilité politique à l'innovation magique.",
       "troops": {
         "loyalacolyte": {
-          "name": ""
+          "name": "Acolyte Loyal"
         },
         "decreeenforcer": {
-          "name": ""
+          "name": "Exécuteur des Décrets"
         },
         "loyalbattlemage": {
-          "name": ""
+          "name": "Mage de Bataille Loyal"
         },
         "loyalsentinel": {
-          "name": ""
+          "name": "Sentinelle Loyale"
         },
         "grandmasterschampion": {
-          "name": ""
+          "name": "Champion du Grand Maître"
         },
         "scientist": {
-          "name": ""
+          "name": "Chercheur de Terrain"
         }
       }
     },
     "traditionalists": {
-      "name": "",
-      "description": "",
+      "name": "Traditionalistes",
+      "description": "Des intransigeants qui rejettent la technique et tiennent la magie pour devant rester pure, ésotérique et élitiste.",
       "troops": {
         "puristnovice": {
-          "name": ""
+          "name": "Novice Puriste"
         },
         "hermeticmage": {
-          "name": ""
+          "name": "Mage Hermétique"
         },
         "traditionalistguard": {
-          "name": ""
+          "name": "Garde Traditionaliste"
         },
         "esotericmaster": {
-          "name": ""
+          "name": "Maître Ésotérique"
         },
         "ancientsage": {
-          "name": ""
+          "name": "Sage Ancien"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit du Savoir"
         }
       }
     },
     "technomancers": {
-      "name": "",
-      "description": "",
+      "name": "Technomanciens",
+      "description": "Des radicaux qui tentent de fondre les sceaux arcaniques avec les moteurs à combustion et les machines lourdes.",
       "troops": {
         "techapprentice": {
-          "name": ""
+          "name": "Apprenti Technicien"
         },
         "gearwright": {
-          "name": ""
+          "name": "Forgeron d'Engrenages"
         },
         "steamfistbrawler": {
-          "name": ""
+          "name": "Bagarreur Poing-Vapeur"
         },
         "arcaneengineer": {
-          "name": ""
+          "name": "Ingénieur Arcanique"
         },
         "gunmage": {
-          "name": ""
+          "name": "Mage Fusilier"
         },
         "magitekspecialist": {
-          "name": ""
+          "name": "Spécialiste Magitek"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Technomancien"
         }
       }
     },
     "92schoolsbranch": {
-      "name": "",
-      "description": "",
+      "name": "Branche des 92 écoles",
+      "description": "Un groupe dissident et savant, obsédé par le classement de la moindre variation de lancement de sort en écoles rigides.",
       "troops": {
         "schoolscholar": {
-          "name": ""
+          "name": "Érudit d'École"
         },
         "specializedcaster": {
-          "name": ""
+          "name": "Lanceur Spécialisé"
         },
         "schooldefender": {
-          "name": ""
+          "name": "Défenseur d'École"
         },
         "schoolmaster": {
-          "name": ""
+          "name": "Maître d'École"
         },
         "polymathmage": {
-          "name": ""
+          "name": "Mage Polymathe"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit d'École"
         }
       }
     },
     "eriscourt": {
-      "name": "",
-      "description": "",
+      "name": "Cour d'Eris",
+      "description": "Les fidèles de la Déesse de la Discorde, qui cherchent à briser l'ordre ennuyeux des Guildes et de la Foundation.",
       "troops": {
         "chaoscultist": {
-          "name": ""
+          "name": "Cultiste du Chaos"
         },
         "chaosbrawler": {
-          "name": ""
+          "name": "Bagarreur du Chaos"
         },
         "discordagent": {
-          "name": ""
+          "name": "Agent de la Discorde"
         },
         "entropybringer": {
-          "name": ""
+          "name": "Porteur d'Entropie"
         },
         "chaosberserker": {
-          "name": ""
+          "name": "Berserker du Chaos"
         },
         "avatarofdiscord": {
-          "name": ""
+          "name": "Avatar de la Discorde"
         },
         "scientist": {
-          "name": ""
+          "name": "Alchimiste de la Cour"
         }
       }
     },
     "naguka": {
-      "name": "",
-      "description": "",
+      "name": "Naguka",
+      "description": "Une tribu de charognards des marais, connue pour sa résistance aux toxines industrielles.",
       "troops": {
         "swampscavenger": {
-          "name": ""
+          "name": "Charognard des Marais"
         },
         "blowdarthunter": {
-          "name": ""
+          "name": "Chasseur à la Sarbacane"
         },
         "toxicwarrior": {
-          "name": ""
+          "name": "Guerrier Toxique"
         },
         "poisonslinger": {
-          "name": ""
+          "name": "Lanceur de Poison"
         },
         "plaguebearer": {
-          "name": ""
+          "name": "Porteur de Peste"
         },
         "nagukashaman": {
-          "name": ""
+          "name": "Chaman Naguka"
         },
         "scientist": {
-          "name": ""
+          "name": "Herboriste Tribal"
         }
       }
     },
     "verden": {
-      "name": "",
-      "description": "",
+      "name": "Verden",
+      "description": "Des gobelins des forêts qui mènent une guérilla contre l'expansion de l'industrie lourde.",
       "troops": {
         "forestscout": {
-          "name": ""
+          "name": "Éclaireur des Forêts"
         },
         "saplingdefender": {
-          "name": ""
+          "name": "Défenseur des Jeunes Pousses"
         },
         "guerillafighter": {
-          "name": ""
+          "name": "Combattant de Guérilla"
         },
         "treeambusher": {
-          "name": ""
+          "name": "Embusqué des Arbres"
         },
         "natureswrath": {
-          "name": ""
+          "name": "Courroux de la Nature"
         },
         "forestchampion": {
-          "name": ""
+          "name": "Champion des Forêts"
         },
         "scientist": {
-          "name": ""
+          "name": "Chimiste Verden"
         }
       }
     },
     "truckerssociety": {
-      "name": "",
-      "description": "",
+      "name": "Société des Routiers",
+      "description": "Les âmes courageuses qui convoient les marchandises à travers les terres désolées. Ils sont le sang de l'économie et n'obéissent à aucun code de la route.",
       "troops": {
         "rookietrucker": {
-          "name": ""
+          "name": "Routier Débutant"
         },
         "highwaymarksman": {
-          "name": ""
+          "name": "Tireur de l'Autoroute"
         },
         "roadwarrior": {
-          "name": ""
+          "name": "Guerrier de la Route"
         },
         "convoysniper": {
-          "name": ""
+          "name": "Tireur d'Élite de Convoi"
         },
         "veterandriver": {
-          "name": ""
+          "name": "Conducteur Chevronné"
         },
         "roadmedic": {
-          "name": ""
+          "name": "Médecin de la Route"
         },
         "roadmaster": {
-          "name": ""
+          "name": "Maître de la Route"
         },
         "scientist": {
-          "name": ""
+          "name": "Mécanicien de Flotte"
         }
       }
     },
     "esotericheavyindustries": {
-      "name": "",
-      "description": "",
+      "name": "Esoteric Heavy Industries",
+      "description": "Un conglomérat immense et mystérieux.",
       "troops": {
         "factoryworker": {
-          "name": ""
+          "name": "Ouvrier d'Usine"
         },
         "industrialforeman": {
-          "name": ""
+          "name": "Contremaître Industriel"
         },
         "factorysharpshooter": {
-          "name": ""
+          "name": "Tireur d'Usine"
         },
         "heavymachinist": {
-          "name": ""
+          "name": "Machiniste Lourd"
         },
         "industrialengineer": {
-          "name": ""
+          "name": "Ingénieur Industriel"
         },
         "steelsentinel": {
-          "name": ""
+          "name": "Sentinelle d'Acier"
         },
         "corporatetitan": {
-          "name": ""
+          "name": "Titan d'Entreprise"
         },
         "assemblylinesniper": {
-          "name": ""
+          "name": "Tireur d'Élite de la Chaîne"
         },
         "industrialoverlord": {
-          "name": ""
+          "name": "Suzerain Industriel"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Industriel"
         }
       }
     },
     "northpointarmy": {
-      "name": "",
-      "description": "",
+      "name": "Armée de North Point",
+      "description": "Une force militaire disciplinée qui protège les frontières du nord de ce qui rôde dans les étendues gelées.",
       "troops": {
         "recruit": {
-          "name": ""
+          "name": "Recrue"
         },
         "regularsoldier": {
-          "name": ""
+          "name": "Soldat Régulier"
         },
         "northernarcher": {
-          "name": ""
+          "name": "Archer du Nord"
         },
         "frostranger": {
-          "name": ""
+          "name": "Rôdeur de Givre"
         },
         "battlecleric": {
-          "name": ""
+          "name": "Clerc de Bataille"
         },
         "winterguard": {
-          "name": ""
+          "name": "Garde d'Hiver"
         },
         "frostmarksman": {
-          "name": ""
+          "name": "Tireur de Givre"
         },
         "northernknight": {
-          "name": ""
+          "name": "Chevalier du Nord"
         },
         "winterpriest": {
-          "name": ""
+          "name": "Prêtre d'Hiver"
         },
         "marshalofthefrost": {
-          "name": ""
+          "name": "Maréchal du Givre"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Militaire"
         }
       }
     },
     "invertedcitadel": {
-      "name": "",
-      "description": "",
+      "name": "Citadelle Inversée",
+      "description": "Une forteresse suspendue au plafond d'une immense caverne, foyer des parias et des sombres érudits.",
       "troops": {
         "caveoutcast": {
-          "name": ""
+          "name": "Paria des Cavernes"
         },
         "voidarcher": {
-          "name": ""
+          "name": "Archer du Vide"
         },
         "darkacolyte": {
-          "name": ""
+          "name": "Acolyte Sombre"
         },
         "abyssalblade": {
-          "name": ""
+          "name": "Lame Abyssale"
         },
         "shadowscholar": {
-          "name": ""
+          "name": "Érudit de l'Ombre"
         },
         "darknesssniper": {
-          "name": ""
+          "name": "Tireur d'Élite des Ténèbres"
         },
         "umbralwarlock": {
-          "name": ""
+          "name": "Occultiste Ombral"
         },
         "shadowreaver": {
-          "name": ""
+          "name": "Ravageur de l'Ombre"
         },
         "citadelmaster": {
-          "name": ""
+          "name": "Maître de la Citadelle"
         },
         "scientist": {
-          "name": ""
+          "name": "Savant de la Citadelle"
         }
       }
     },
     "petrodemons": {
-      "name": "",
-      "description": "",
+      "name": "Pétrodémons",
+      "description": "Des entités nées des gisements de pétrole des profondeurs ; un carburant vivant qui brûle de malveillance.",
       "troops": {
         "oilimp": {
-          "name": ""
+          "name": "Diablotin de Pétrole"
         },
         "flameslinger": {
-          "name": ""
+          "name": "Lanceur de Flammes"
         },
         "crudefiend": {
-          "name": ""
+          "name": "Fielleux Brut"
         },
         "petrohellion": {
-          "name": ""
+          "name": "Hellion Pétro"
         },
         "burningarcher": {
-          "name": ""
+          "name": "Archer Ardent"
         },
         "infernalbaron": {
-          "name": ""
+          "name": "Baron Infernal"
         },
         "tarknight": {
-          "name": ""
+          "name": "Chevalier de Goudron"
         },
         "hellfiremarksman": {
-          "name": ""
+          "name": "Tireur du Feu Infernal"
         },
         "archdevilofoil": {
-          "name": ""
+          "name": "Archidiable du Pétrole"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Pétrochimique"
         }
       }
     },
     "petromanagers": {
-      "name": "",
-      "description": "",
+      "name": "Pétrogestionnaires",
+      "description": "Des cadres intermédiaires qui ont signé des pactes infernaux pour maximiser le rendement de l'extraction pétrolière.",
       "troops": {
         "juniormanager": {
-          "name": ""
+          "name": "Gestionnaire Junior"
         },
         "efficiencyanalyst": {
-          "name": ""
+          "name": "Analyste d'Efficacité"
         },
         "seniorpetromanager": {
-          "name": ""
+          "name": "Pétrogestionnaire Principal"
         },
         "infernalexecutive": {
-          "name": ""
+          "name": "Cadre Infernal"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste de Raffinerie"
         }
       }
     },
     "speeddemons": {
-      "name": "",
-      "description": "",
+      "name": "Démons de la vitesse",
+      "description": "Des accros à l'adrénaline et des coursiers qui vénèrent la vitesse et le carburant à haut indice d'octane.",
       "troops": {
         "speedfreak": {
-          "name": ""
+          "name": "Cinglé de Vitesse"
         },
         "nitrocourier": {
-          "name": ""
+          "name": "Coursier Nitro"
         },
         "velocitycultist": {
-          "name": ""
+          "name": "Cultiste de la Vélocité"
         },
         "sonicdemon": {
-          "name": ""
+          "name": "Démon Sonique"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur de Stand"
         }
       }
     },
     "sevensisters": {
-      "name": "",
-      "description": "",
+      "name": "Sept Sœurs",
+      "description": "Les sept familles régnantes qui détiennent le monopole de toute la production de carburant.",
       "troops": {
         "familyenforcer": {
-          "name": ""
+          "name": "Exécuteur de Famille"
         },
         "oilbaronguard": {
-          "name": ""
+          "name": "Garde du Baron du Pétrole"
         },
         "familychampion": {
-          "name": ""
+          "name": "Champion de Famille"
         },
         "heiressassassin": {
-          "name": ""
+          "name": "Héritière Assassine"
         },
         "scientist": {
-          "name": ""
+          "name": "Chimiste du Cartel"
         }
       }
     },
     "thegods": {
-      "name": "",
-      "description": "",
+      "name": "Les Dieux",
+      "description": "Le panthéon divin qui veille sur les royaumes, largement indifférent à la souffrance des mortels.",
       "troops": {
         "divineherald": {
-          "name": ""
+          "name": "Héraut Divin"
         },
         "heavenlyarcher": {
-          "name": ""
+          "name": "Archer Céleste"
         },
         "celestialguardian": {
-          "name": ""
+          "name": "Gardien Céleste"
         },
         "divinetemplar": {
-          "name": ""
+          "name": "Templier Divin"
         },
         "seraphimwarrior": {
-          "name": ""
+          "name": "Guerrier Séraphin"
         },
         "angelicsniper": {
-          "name": ""
+          "name": "Tireur d'Élite Angélique"
         },
         "highpriest": {
-          "name": ""
+          "name": "Grand Prêtre"
         },
         "demigodavatar": {
-          "name": ""
+          "name": "Avatar Demi-Dieu"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit Divin"
         }
       }
     },
     "supremearchivistcouncil": {
-      "name": "",
-      "description": "",
+      "name": "Conseil Suprême des Archivistes",
+      "description": "Les anciens qui décident quelles vérités seront gardées en mémoire et lesquelles seront effacées à jamais.",
       "troops": {
         "councilscribe": {
-          "name": ""
+          "name": "Scribe du Conseil"
         },
         "truthkeeper": {
-          "name": ""
+          "name": "Gardien de la Vérité"
         },
         "councilelder": {
-          "name": ""
+          "name": "Ancien du Conseil"
         },
         "scientist": {
-          "name": ""
+          "name": "Archiviste en Chef"
         }
       }
     },
     "dataacquisitiondepartment": {
-      "name": "",
-      "description": "",
+      "name": "Département d'Acquisition de Données",
+      "description": "Des agents de terrain et des espions chargés de dérober des secrets et de récupérer des artefacts perdus.",
       "troops": {
         "fieldagent": {
-          "name": ""
+          "name": "Agent de Terrain"
         },
         "acquisitionspy": {
-          "name": ""
+          "name": "Espion d'Acquisition"
         },
         "eliteinfiltrator": {
-          "name": ""
+          "name": "Infiltrateur d'Élite"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste de Données"
         }
       }
     },
     "knowledgepreservationdivision": {
-      "name": "",
-      "description": "",
+      "name": "Division de Préservation du Savoir",
+      "description": "Des bibliothécaires qui veillent à l'intégrité physique des livres et font taire les lecteurs bruyants... définitivement.",
       "troops": {
         "silentlibrarian": {
-          "name": ""
+          "name": "Bibliothécaire Silencieux"
         },
         "preservationguard": {
-          "name": ""
+          "name": "Garde de Préservation"
         },
         "masterconservator": {
-          "name": ""
+          "name": "Maître Conservateur"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit de la Préservation"
         }
       }
     },
     "publictransparencyunit": {
-      "name": "",
-      "description": "",
+      "name": "Unité de Transparence Publique",
+      "description": "L'aile de propagande. Leur nom est ironique : ils sont spécialistes du caviardage et de la désinformation.",
       "troops": {
         "propagandist": {
-          "name": ""
+          "name": "Propagandiste"
         },
         "spindoctor": {
-          "name": ""
+          "name": "Communicant de Crise"
         },
         "misinformationmaster": {
-          "name": ""
+          "name": "Maître de la Désinformation"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste des Registres"
         }
       }
     },
     "internalcomplianceunit": {
-      "name": "",
-      "description": "",
+      "name": "Unité de Conformité Interne",
+      "description": "La police secrète qui veille à ce qu'aucun archiviste ne divulgue de données au monde extérieur.",
       "troops": {
         "complianceofficer": {
-          "name": ""
+          "name": "Agent de Conformité"
         },
         "secretenforcer": {
-          "name": ""
+          "name": "Exécuteur Secret"
         },
         "internalinquisitor": {
-          "name": ""
+          "name": "Inquisiteur Interne"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste de Conformité"
         }
       }
     },
     "libertariangods": {
-      "name": "",
-      "description": "",
+      "name": "Dieux Libertariens",
+      "description": "Des divinités mineures qui n'exigent aucun culte, seulement des transactions mutuellement avantageuses.",
       "troops": {
         "freemarketangel": {
-          "name": ""
+          "name": "Ange du Libre Marché"
         },
         "contractenforcer": {
-          "name": ""
+          "name": "Exécuteur de Contrats"
         },
         "sovereignspirit": {
-          "name": ""
+          "name": "Esprit Souverain"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit Indépendant"
         }
       }
     },
     "goblincollectiveunconsciuous": {
-      "name": "",
-      "description": "",
+      "name": "Inconscient Collectif Gobelin",
+      "description": "Le lien psychique qui relie tous les esprits gobelins et conserve leur sagesse chaotique ancestrale.",
       "troops": {
         "psychicgoblin": {
-          "name": ""
+          "name": "Gobelin Psychique"
         },
         "mindstriker": {
-          "name": ""
+          "name": "Frappeur Mental"
         },
         "hivemindwarrior": {
-          "name": ""
+          "name": "Guerrier de l'Esprit-Ruche"
         },
         "psychicslinger": {
-          "name": ""
+          "name": "Lanceur Psychique"
         },
         "collectiveconduit": {
-          "name": ""
+          "name": "Conduit du Collectif"
         },
         "telepathicsniper": {
-          "name": ""
+          "name": "Tireur d'Élite Télépathe"
         },
         "ancestralecho": {
-          "name": ""
+          "name": "Écho Ancestral"
         },
         "scientist": {
-          "name": ""
+          "name": "Bricoleur Gobelin"
         }
       }
     },
     "thetourists": {
-      "name": "",
-      "description": "",
+      "name": "Les Touristes",
+      "description": "Des extraterrestres de Zeta Reticuli qui voient les conflits de ce monde comme un simple divertissement.",
       "troops": {
         "observerdrone": {
-          "name": ""
+          "name": "Drone Observateur"
         },
         "probescout": {
-          "name": ""
+          "name": "Sonde Éclaireur"
         },
         "alientourist": {
-          "name": ""
+          "name": "Touriste Extraterrestre"
         },
         "beamsniper": {
-          "name": ""
+          "name": "Tireur d'Élite à Rayon"
         },
         "realitymanipulator": {
-          "name": ""
+          "name": "Manipulateur de Réalité"
         },
         "enforcerconstruct": {
-          "name": ""
+          "name": "Golem Exécuteur"
         },
         "plasmarifleman": {
-          "name": ""
+          "name": "Fusilier à Plasma"
         },
         "zetanoverseer": {
-          "name": ""
+          "name": "Superviseur Zétan"
         },
         "scientist": {
-          "name": ""
+          "name": "Chercheur de Terrain"
         }
       }
     },
     "holyvaticanempire": {
-      "name": "",
-      "description": "",
+      "name": "Saint Empire du Vatican",
+      "description": "L'antique siège de la Papauté, un État-cité qui manie un immense pouvoir spirituel et temporel. Il fonctionne à la foi, à la tradition et aux opérations clandestines.",
       "troops": {
         "altarserver": {
-          "name": ""
+          "name": "Enfant de Chœur"
         },
         "vaticanguard": {
-          "name": ""
+          "name": "Garde du Vatican"
         },
         "holyarcher": {
-          "name": ""
+          "name": "Archer Saint"
         },
         "holyknight": {
-          "name": ""
+          "name": "Chevalier Saint"
         },
         "blessedmarksman": {
-          "name": ""
+          "name": "Tireur Béni"
         },
         "papalchampion": {
-          "name": ""
+          "name": "Champion Papal"
         },
         "vaticanpriest": {
-          "name": ""
+          "name": "Prêtre du Vatican"
         },
         "divinesniper": {
-          "name": ""
+          "name": "Tireur d'Élite Divin"
         },
         "cardinaltemplar": {
-          "name": ""
+          "name": "Templier Cardinal"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit Papal"
         }
       }
     },
     "cardinalscouncil": {
-      "name": "",
-      "description": "",
+      "name": "Conseil du Cardinal",
+      "description": "Le cercle intime et secret des cardinaux qui conseillent le Pape et commandent les manœuvres politiques de l'Église.",
       "troops": {
         "councildeacon": {
-          "name": ""
+          "name": "Diacre du Conseil"
         },
         "cardinaladvisor": {
-          "name": ""
+          "name": "Cardinal Conseiller"
         },
         "princeofthechurch": {
-          "name": ""
+          "name": "Prince de l'Église"
         },
         "scientist": {
-          "name": ""
+          "name": "Théologien de la Curie"
         }
       }
     },
     "ior": {
-      "name": "",
-      "description": "",
+      "name": "IOR",
+      "description": "L'Institut pour les Œuvres de Religion, la banque controversée du Vatican, que la rumeur dit gérer des fonds de provenance peu sainte.",
       "troops": {
         "bankclerk": {
-          "name": ""
+          "name": "Guichetier"
         },
         "financialanalyst": {
-          "name": ""
+          "name": "Analyste Financier"
         },
         "iorenforcer": {
-          "name": ""
+          "name": "Exécuteur de l'IOR"
         },
         "holybanker": {
-          "name": ""
+          "name": "Banquier Saint"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste Financier"
         }
       }
     },
     "battlenuns": {
-      "name": "",
+      "name": "Nonnes de Bataille",
       "description": "",
       "troops": {
         "novicesister": {

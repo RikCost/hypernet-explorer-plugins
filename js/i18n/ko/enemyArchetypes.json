@@ -123,125 +123,125 @@
       }
     },
     "humanoid_roguelite": {
-      "name": "",
+      "name": "인간형",
       "head": {
-        "name": ""
+        "name": "머리"
       },
       "torso": {
-        "name": "",
-        "msg": ""
+        "name": "몸통",
+        "msg": "몸통이 짓눌렸다!"
       },
       "left_arm": {
-        "name": "",
-        "msg": ""
+        "name": "왼팔",
+        "msg": "왼팔이 뜯겨나갔다!"
       },
       "right_arm": {
-        "name": "",
-        "msg": ""
+        "name": "오른팔",
+        "msg": "오른팔이 뜯겨나갔다!"
       },
       "left_leg": {
-        "name": "",
-        "msg": ""
+        "name": "왼다리",
+        "msg": "왼다리가 잘려나갔다!"
       },
       "right_leg": {
-        "name": "",
-        "msg": ""
+        "name": "오른다리",
+        "msg": "오른다리가 잘려나갔다!"
       },
       "brain": {
-        "name": "",
-        "msg": ""
+        "name": "뇌",
+        "msg": "뇌진탕을 일으켰다!"
       },
       "left_eye": {
-        "name": "",
-        "msg": ""
+        "name": "왼눈",
+        "msg": "왼눈이 부어 감겼다!"
       },
       "right_eye": {
-        "name": "",
-        "msg": ""
+        "name": "오른눈",
+        "msg": "오른눈이 부어 감겼다!"
       },
       "nose": {
-        "name": "",
-        "msg": ""
+        "name": "코",
+        "msg": "코가 부러졌다!"
       },
       "left_ear": {
-        "name": "",
-        "msg": ""
+        "name": "왼귀",
+        "msg": "왼귀가 울린다!"
       },
       "right_ear": {
-        "name": "",
-        "msg": ""
+        "name": "오른귀",
+        "msg": "오른귀가 울린다!"
       },
       "mouth": {
-        "name": "",
-        "msg": ""
+        "name": "입",
+        "msg": "턱이 빠졌다!"
       },
       "teeth": {
-        "name": "",
-        "msg": ""
+        "name": "이빨",
+        "msg": "이빨이 부러져 나갔다!"
       },
       "genitals": {
-        "name": "",
-        "msg": ""
+        "name": "생식기",
+        "msg": "생식기가 손상되었다!"
       },
       "heart": {
-        "name": "",
-        "msg": ""
+        "name": "심장",
+        "msg": "심장이 손상되었다!"
       },
       "left_lung": {
-        "name": "",
-        "msg": ""
+        "name": "왼폐",
+        "msg": "왼폐가 주저앉았다!"
       },
       "right_lung": {
-        "name": "",
-        "msg": ""
+        "name": "오른폐",
+        "msg": "오른폐가 주저앉았다!"
       },
       "liver": {
-        "name": "",
-        "msg": ""
+        "name": "간",
+        "msg": "간이 찢어졌다!"
       },
       "stomach": {
-        "name": "",
-        "msg": ""
+        "name": "위",
+        "msg": "위가 터졌다!"
       },
       "spleen": {
-        "name": "",
-        "msg": ""
+        "name": "비장",
+        "msg": "비장이 터졌다!"
       },
       "intestines": {
-        "name": "",
-        "msg": ""
+        "name": "창자",
+        "msg": "창자에 구멍이 났다!"
       },
       "left_hand": {
-        "name": "",
-        "msg": ""
+        "name": "왼손",
+        "msg": "왼손이 으스러졌다!"
       },
       "left_fingers": {
-        "name": "",
-        "msg": ""
+        "name": "왼손가락",
+        "msg": "왼손가락이 부러졌다!"
       },
       "right_hand": {
-        "name": "",
-        "msg": ""
+        "name": "오른손",
+        "msg": "오른손이 으스러졌다!"
       },
       "right_fingers": {
-        "name": "",
-        "msg": ""
+        "name": "오른손가락",
+        "msg": "오른손가락이 부러졌다!"
       },
       "left_foot": {
-        "name": "",
-        "msg": ""
+        "name": "왼발",
+        "msg": "왼발이 손상되었다!"
       },
       "left_toes": {
-        "name": "",
-        "msg": ""
+        "name": "왼발가락",
+        "msg": "왼발가락이 으스러졌다!"
       },
       "right_foot": {
-        "name": "",
-        "msg": ""
+        "name": "오른발",
+        "msg": "오른발이 손상되었다!"
       },
       "right_toes": {
-        "name": "",
-        "msg": ""
+        "name": "오른발가락",
+        "msg": "오른발가락이 으스러졌다!"
       }
     },
     "beast": {

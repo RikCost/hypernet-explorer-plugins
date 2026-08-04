@@ -1,829 +1,829 @@
 {
   "factions": {
     "magesguild": {
-      "name": "",
-      "description": "",
+      "name": "마법사 길드",
+      "description": "대륙 전역의 마법 사용을 관장하는 유서 깊은 관료 기관. 질서와 전통과 허가증을 중히 여긴다.",
       "troops": {
         "apprenticemage": {
-          "name": ""
+          "name": "견습 마법사"
         },
         "guildinitiate": {
-          "name": ""
+          "name": "길드 입문자"
         },
         "guildwarden": {
-          "name": ""
+          "name": "길드 감시관"
         },
         "certifiedmage": {
-          "name": ""
+          "name": "공인 마법사"
         },
         "battlemage": {
-          "name": ""
+          "name": "전투 마법사"
         },
         "guildenforcer": {
-          "name": ""
+          "name": "길드 집행관"
         },
         "mysticarcher": {
-          "name": ""
+          "name": "신비 궁수"
         },
         "seniormagister": {
-          "name": ""
+          "name": "선임 마기스터"
         },
         "warwizard": {
-          "name": ""
+          "name": "전쟁 마법사"
         },
         "archmage": {
-          "name": ""
+          "name": "대마법사"
         },
         "spellsniper": {
-          "name": ""
+          "name": "주문 저격수"
         },
         "grandmasterwizard": {
-          "name": ""
+          "name": "그랜드마스터 위저드"
         },
         "scientist": {
-          "name": ""
+          "name": "비전 연구원"
         }
       }
     },
     "archivefoundation": {
-      "name": "",
-      "description": "",
+      "name": "Archive Foundation",
+      "description": "역사를 그러모으고 정보를 통제하는 데 전념하는 비밀 조직. 지식은 위험하므로 가둬 두어야 한다고 믿는다.",
       "troops": {
         "archiveclerk": {
-          "name": ""
+          "name": "기록보관 서기"
         },
         "juniorarchivist": {
-          "name": ""
+          "name": "하급 기록관"
         },
         "archivesentinel": {
-          "name": ""
+          "name": "기록보관 파수꾼"
         },
         "knowledgekeeper": {
-          "name": ""
+          "name": "지식 관리인"
         },
         "crossbowarchivist": {
-          "name": ""
+          "name": "석궁 기록관"
         },
         "archiveguardian": {
-          "name": ""
+          "name": "기록보관 수호자"
         },
         "seniorcurator": {
-          "name": ""
+          "name": "선임 큐레이터"
         },
         "vaultdefender": {
-          "name": ""
+          "name": "금고 방어자"
         },
         "knowledgesniper": {
-          "name": ""
+          "name": "지식 저격수"
         },
         "masterlibrarian": {
-          "name": ""
+          "name": "수석 사서"
         },
         "scientist": {
-          "name": ""
+          "name": "기록보관 학자"
         }
       }
     },
     "hypercapitalistcollective": {
-      "name": "",
-      "description": "",
+      "name": "초자본주의 집단",
+      "description": "자유 시장이야말로 유일한 참된 신이라 믿는 상인왕과 거물들의 무자비한 동맹.",
       "troops": {
         "contractworker": {
-          "name": ""
+          "name": "계약직 노동자"
         },
         "corporatesecurity": {
-          "name": ""
+          "name": "기업 보안"
         },
         "corporatemarksman": {
-          "name": ""
+          "name": "기업 사수"
         },
         "hiredmercenary": {
-          "name": ""
+          "name": "고용 용병"
         },
         "fieldmedic": {
-          "name": ""
+          "name": "야전 의무병"
         },
         "eliteenforcer": {
-          "name": ""
+          "name": "정예 집행자"
         },
         "corporatesniper": {
-          "name": ""
+          "name": "기업 저격수"
         },
         "executiveguard": {
-          "name": ""
+          "name": "임원 경호"
         },
         "combatspecialist": {
-          "name": ""
+          "name": "전투 전문가"
         },
         "corporateassassin": {
-          "name": ""
+          "name": "기업 암살자"
         },
         "scientist": {
-          "name": ""
+          "name": "연구개발 분석가"
         }
       }
     },
     "loyalists": {
-      "name": "",
-      "description": "",
+      "name": "충성파",
+      "description": "마법의 혁신보다 정치적 안정을 앞세워 그랜드마스터의 칙령을 엄격히 따르는 자들.",
       "troops": {
         "loyalacolyte": {
-          "name": ""
+          "name": "충직한 시종"
         },
         "decreeenforcer": {
-          "name": ""
+          "name": "칙령 집행관"
         },
         "loyalbattlemage": {
-          "name": ""
+          "name": "충직한 전투 마법사"
         },
         "loyalsentinel": {
-          "name": ""
+          "name": "충직한 파수꾼"
         },
         "grandmasterschampion": {
-          "name": ""
+          "name": "그랜드마스터의 용사"
         },
         "scientist": {
-          "name": ""
+          "name": "현장 연구원"
         }
       }
     },
     "traditionalists": {
-      "name": "",
-      "description": "",
+      "name": "전통주의자",
+      "description": "기술을 배격하고 마법은 순수하고 비의적이며 선택받은 것으로 남아야 한다고 믿는 강경파.",
       "troops": {
         "puristnovice": {
-          "name": ""
+          "name": "순수주의 초심자"
         },
         "hermeticmage": {
-          "name": ""
+          "name": "헤르메스주의 마법사"
         },
         "traditionalistguard": {
-          "name": ""
+          "name": "전통주의 수호병"
         },
         "esotericmaster": {
-          "name": ""
+          "name": "비의의 대가"
         },
         "ancientsage": {
-          "name": ""
+          "name": "태고의 현자"
         },
         "scientist": {
-          "name": ""
+          "name": "전승 학자"
         }
       }
     },
     "technomancers": {
-      "name": "",
-      "description": "",
+      "name": "테크노맨서",
+      "description": "비전의 인장을 내연기관과 중장비에 융합하려 드는 급진파.",
       "troops": {
         "techapprentice": {
-          "name": ""
+          "name": "기술 견습생"
         },
         "gearwright": {
-          "name": ""
+          "name": "기어라이트"
         },
         "steamfistbrawler": {
-          "name": ""
+          "name": "증기주먹 격투가"
         },
         "arcaneengineer": {
-          "name": ""
+          "name": "비전 기술자"
         },
         "gunmage": {
-          "name": ""
+          "name": "총 마법사"
         },
         "magitekspecialist": {
-          "name": ""
+          "name": "마기테크 전문가"
         },
         "scientist": {
-          "name": ""
+          "name": "테크노맨서 기술자"
         }
       }
     },
     "92schoolsbranch": {
-      "name": "",
-      "description": "",
+      "name": "92개 학파 분파",
+      "description": "주문 시전의 사소한 변이 하나하나를 엄격한 학파로 분류하는 데 집착하는 학문적 분리 집단.",
       "troops": {
         "schoolscholar": {
-          "name": ""
+          "name": "학파 학자"
         },
         "specializedcaster": {
-          "name": ""
+          "name": "특화 시전자"
         },
         "schooldefender": {
-          "name": ""
+          "name": "학파 수호자"
         },
         "schoolmaster": {
-          "name": ""
+          "name": "학파 사범"
         },
         "polymathmage": {
-          "name": ""
+          "name": "박학 마법사"
         },
         "scientist": {
-          "name": ""
+          "name": "학파 학자"
         }
       }
     },
     "eriscourt": {
-      "name": "",
-      "description": "",
+      "name": "에리스의 궁정",
+      "description": "길드와 Foundation의 지루한 질서를 흐트러뜨리려는 불화의 여신의 추종자들.",
       "troops": {
         "chaoscultist": {
-          "name": ""
+          "name": "혼돈 교도"
         },
         "chaosbrawler": {
-          "name": ""
+          "name": "혼돈 격투가"
         },
         "discordagent": {
-          "name": ""
+          "name": "불화 요원"
         },
         "entropybringer": {
-          "name": ""
+          "name": "엔트로피를 부르는 자"
         },
         "chaosberserker": {
-          "name": ""
+          "name": "혼돈 광전사"
         },
         "avatarofdiscord": {
-          "name": ""
+          "name": "불화의 화신"
         },
         "scientist": {
-          "name": ""
+          "name": "궁정 연금술사"
         }
       }
     },
     "naguka": {
-      "name": "",
-      "description": "",
+      "name": "나구카",
+      "description": "산업 독소에 대한 내성으로 이름난 늪지 청소부 부족.",
       "troops": {
         "swampscavenger": {
-          "name": ""
+          "name": "늪 청소부"
         },
         "blowdarthunter": {
-          "name": ""
+          "name": "바람총 사냥꾼"
         },
         "toxicwarrior": {
-          "name": ""
+          "name": "독성 전사"
         },
         "poisonslinger": {
-          "name": ""
+          "name": "독 투척꾼"
         },
         "plaguebearer": {
-          "name": ""
+          "name": "역병 운반자"
         },
         "nagukashaman": {
-          "name": ""
+          "name": "나구카 주술사"
         },
         "scientist": {
-          "name": ""
+          "name": "부족 약초사"
         }
       }
     },
     "verden": {
-      "name": "",
-      "description": "",
+      "name": "베르덴",
+      "description": "중공업의 확장에 맞서 게릴라전을 벌이는 숲 고블린들.",
       "troops": {
         "forestscout": {
-          "name": ""
+          "name": "숲 척후"
         },
         "saplingdefender": {
-          "name": ""
+          "name": "묘목 수호자"
         },
         "guerillafighter": {
-          "name": ""
+          "name": "게릴라 전사"
         },
         "treeambusher": {
-          "name": ""
+          "name": "나무 매복자"
         },
         "natureswrath": {
-          "name": ""
+          "name": "자연의 진노"
         },
         "forestchampion": {
-          "name": ""
+          "name": "숲의 용사"
         },
         "scientist": {
-          "name": ""
+          "name": "베르덴 화학자"
         }
       }
     },
     "truckerssociety": {
-      "name": "",
-      "description": "",
+      "name": "트럭 운전사 협회",
+      "description": "황무지를 가로질러 물자를 나르는 용감한 이들. 경제의 핏줄이며 어떤 교통 법규도 따르지 않는다.",
       "troops": {
         "rookietrucker": {
-          "name": ""
+          "name": "신참 트럭 운전사"
         },
         "highwaymarksman": {
-          "name": ""
+          "name": "고속도로 사수"
         },
         "roadwarrior": {
-          "name": ""
+          "name": "로드 워리어"
         },
         "convoysniper": {
-          "name": ""
+          "name": "호송대 저격수"
         },
         "veterandriver": {
-          "name": ""
+          "name": "베테랑 운전사"
         },
         "roadmedic": {
-          "name": ""
+          "name": "도로 의무병"
         },
         "roadmaster": {
-          "name": ""
+          "name": "도로의 달인"
         },
         "scientist": {
-          "name": ""
+          "name": "차량단 정비사"
         }
       }
     },
     "esotericheavyindustries": {
-      "name": "",
-      "description": "",
+      "name": "Esoteric Heavy Industries",
+      "description": "거대하고 수수께끼 같은 복합기업.",
       "troops": {
         "factoryworker": {
-          "name": ""
+          "name": "공장 노동자"
         },
         "industrialforeman": {
-          "name": ""
+          "name": "산업 현장 감독"
         },
         "factorysharpshooter": {
-          "name": ""
+          "name": "공장 명사수"
         },
         "heavymachinist": {
-          "name": ""
+          "name": "중장비 기사"
         },
         "industrialengineer": {
-          "name": ""
+          "name": "산업 기술자"
         },
         "steelsentinel": {
-          "name": ""
+          "name": "강철 파수꾼"
         },
         "corporatetitan": {
-          "name": ""
+          "name": "기업 타이탄"
         },
         "assemblylinesniper": {
-          "name": ""
+          "name": "조립 라인 저격수"
         },
         "industrialoverlord": {
-          "name": ""
+          "name": "산업 대군주"
         },
         "scientist": {
-          "name": ""
+          "name": "산업 기술자"
         }
       }
     },
     "northpointarmy": {
-      "name": "",
-      "description": "",
+      "name": "노스포인트 군",
+      "description": "얼어붙은 황무지에 도사린 것으로부터 북쪽 국경을 지키는 기강 잡힌 군대.",
       "troops": {
         "recruit": {
-          "name": ""
+          "name": "신병"
         },
         "regularsoldier": {
-          "name": ""
+          "name": "정규 병사"
         },
         "northernarcher": {
-          "name": ""
+          "name": "북방 궁수"
         },
         "frostranger": {
-          "name": ""
+          "name": "서리 순찰병"
         },
         "battlecleric": {
-          "name": ""
+          "name": "전투 성직자"
         },
         "winterguard": {
-          "name": ""
+          "name": "겨울 근위"
         },
         "frostmarksman": {
-          "name": ""
+          "name": "서리 사수"
         },
         "northernknight": {
-          "name": ""
+          "name": "북방 기사"
         },
         "winterpriest": {
-          "name": ""
+          "name": "겨울 사제"
         },
         "marshalofthefrost": {
-          "name": ""
+          "name": "서리의 원수"
         },
         "scientist": {
-          "name": ""
+          "name": "군 공병"
         }
       }
     },
     "invertedcitadel": {
-      "name": "",
-      "description": "",
+      "name": "뒤집힌 성채",
+      "description": "거대한 동굴 천장에 매달린 요새로, 추방자와 어둠의 학자들의 보금자리.",
       "troops": {
         "caveoutcast": {
-          "name": ""
+          "name": "동굴 추방자"
         },
         "voidarcher": {
-          "name": ""
+          "name": "공허 궁수"
         },
         "darkacolyte": {
-          "name": ""
+          "name": "어둠의 시종"
         },
         "abyssalblade": {
-          "name": ""
+          "name": "심연의 칼날"
         },
         "shadowscholar": {
-          "name": ""
+          "name": "그림자 학자"
         },
         "darknesssniper": {
-          "name": ""
+          "name": "어둠 저격수"
         },
         "umbralwarlock": {
-          "name": ""
+          "name": "어둠의 흑마술사"
         },
         "shadowreaver": {
-          "name": ""
+          "name": "그림자 약탈자"
         },
         "citadelmaster": {
-          "name": ""
+          "name": "성채의 주인"
         },
         "scientist": {
-          "name": ""
+          "name": "성채의 석학"
         }
       }
     },
     "petrodemons": {
-      "name": "",
-      "description": "",
+      "name": "석유 악마",
+      "description": "땅속 깊은 석유 매장층에서 태어난 존재들. 악의로 타오르는 살아 있는 연료다.",
       "troops": {
         "oilimp": {
-          "name": ""
+          "name": "기름 임프"
         },
         "flameslinger": {
-          "name": ""
+          "name": "불꽃 투척꾼"
         },
         "crudefiend": {
-          "name": ""
+          "name": "원유 마귀"
         },
         "petrohellion": {
-          "name": ""
+          "name": "페트로 헬리온"
         },
         "burningarcher": {
-          "name": ""
+          "name": "불타는 궁수"
         },
         "infernalbaron": {
-          "name": ""
+          "name": "지옥의 남작"
         },
         "tarknight": {
-          "name": ""
+          "name": "타르 기사"
         },
         "hellfiremarksman": {
-          "name": ""
+          "name": "지옥불 사수"
         },
         "archdevilofoil": {
-          "name": ""
+          "name": "석유의 대악마"
         },
         "scientist": {
-          "name": ""
+          "name": "석유화학 기술자"
         }
       }
     },
     "petromanagers": {
-      "name": "",
-      "description": "",
+      "name": "석유 관리자",
+      "description": "석유 채굴 효율을 극대화하려 지옥의 계약에 서명한 중간 관리자들.",
       "troops": {
         "juniormanager": {
-          "name": ""
+          "name": "하급 관리자"
         },
         "efficiencyanalyst": {
-          "name": ""
+          "name": "효율 분석가"
         },
         "seniorpetromanager": {
-          "name": ""
+          "name": "선임 석유 관리자"
         },
         "infernalexecutive": {
-          "name": ""
+          "name": "지옥의 임원"
         },
         "scientist": {
-          "name": ""
+          "name": "정유소 분석가"
         }
       }
     },
     "speeddemons": {
-      "name": "",
-      "description": "",
+      "name": "스피드 데몬",
+      "description": "속도와 고옥탄 연료를 숭배하는 아드레날린 중독자와 배달꾼들.",
       "troops": {
         "speedfreak": {
-          "name": ""
+          "name": "스피드 광"
         },
         "nitrocourier": {
-          "name": ""
+          "name": "니트로 배달꾼"
         },
         "velocitycultist": {
-          "name": ""
+          "name": "속도 교도"
         },
         "sonicdemon": {
-          "name": ""
+          "name": "음속 악마"
         },
         "scientist": {
-          "name": ""
+          "name": "피트 기술자"
         }
       }
     },
     "sevensisters": {
-      "name": "",
-      "description": "",
+      "name": "일곱 자매",
+      "description": "모든 연료 생산을 독점한 일곱 지배 가문.",
       "troops": {
         "familyenforcer": {
-          "name": ""
+          "name": "가문 집행자"
         },
         "oilbaronguard": {
-          "name": ""
+          "name": "석유 남작 경호원"
         },
         "familychampion": {
-          "name": ""
+          "name": "가문의 용사"
         },
         "heiressassassin": {
-          "name": ""
+          "name": "후계자 암살자"
         },
         "scientist": {
-          "name": ""
+          "name": "카르텔 화학자"
         }
       }
     },
     "thegods": {
-      "name": "",
-      "description": "",
+      "name": "신들",
+      "description": "여러 세계를 굽어보되 필멸자의 고통에는 대체로 무심한 신들의 판테온.",
       "troops": {
         "divineherald": {
-          "name": ""
+          "name": "신성한 전령"
         },
         "heavenlyarcher": {
-          "name": ""
+          "name": "천상의 궁수"
         },
         "celestialguardian": {
-          "name": ""
+          "name": "천상의 수호자"
         },
         "divinetemplar": {
-          "name": ""
+          "name": "신성한 성전기사"
         },
         "seraphimwarrior": {
-          "name": ""
+          "name": "세라핌 전사"
         },
         "angelicsniper": {
-          "name": ""
+          "name": "천사 저격수"
         },
         "highpriest": {
-          "name": ""
+          "name": "대사제"
         },
         "demigodavatar": {
-          "name": ""
+          "name": "반신 화신"
         },
         "scientist": {
-          "name": ""
+          "name": "신성한 학자"
         }
       }
     },
     "supremearchivistcouncil": {
-      "name": "",
-      "description": "",
+      "name": "최고 기록관 평의회",
+      "description": "어떤 진실을 기억하고 어떤 진실을 영영 지울지 결정하는 원로들.",
       "troops": {
         "councilscribe": {
-          "name": ""
+          "name": "평의회 서기"
         },
         "truthkeeper": {
-          "name": ""
+          "name": "진실 관리인"
         },
         "councilelder": {
-          "name": ""
+          "name": "평의회 원로"
         },
         "scientist": {
-          "name": ""
+          "name": "수석 기록관"
         }
       }
     },
     "dataacquisitiondepartment": {
-      "name": "",
-      "description": "",
+      "name": "자료 획득부",
+      "description": "비밀을 훔치고 잃어버린 유물을 되찾는 임무를 맡은 현장 요원과 첩자들.",
       "troops": {
         "fieldagent": {
-          "name": ""
+          "name": "현장 요원"
         },
         "acquisitionspy": {
-          "name": ""
+          "name": "획득 첩자"
         },
         "eliteinfiltrator": {
-          "name": ""
+          "name": "정예 잠입자"
         },
         "scientist": {
-          "name": ""
+          "name": "자료 분석가"
         }
       }
     },
     "knowledgepreservationdivision": {
-      "name": "",
-      "description": "",
+      "name": "지식 보존부",
+      "description": "책의 물리적 온전함을 지키고 시끄러운 이용자를 조용히 시키는... 영원히 조용히 시키는 사서들.",
       "troops": {
         "silentlibrarian": {
-          "name": ""
+          "name": "침묵의 사서"
         },
         "preservationguard": {
-          "name": ""
+          "name": "보존 경비"
         },
         "masterconservator": {
-          "name": ""
+          "name": "수석 보존관"
         },
         "scientist": {
-          "name": ""
+          "name": "보존부 학자"
         }
       }
     },
     "publictransparencyunit": {
-      "name": "",
-      "description": "",
+      "name": "공공 투명성반",
+      "description": "선전 부서. 이름은 반어적이다. 이들의 전문은 삭제와 허위정보다.",
       "troops": {
         "propagandist": {
-          "name": ""
+          "name": "선전원"
         },
         "spindoctor": {
-          "name": ""
+          "name": "여론 조작가"
         },
         "misinformationmaster": {
-          "name": ""
+          "name": "허위정보의 달인"
         },
         "scientist": {
-          "name": ""
+          "name": "기록 분석가"
         }
       }
     },
     "internalcomplianceunit": {
-      "name": "",
-      "description": "",
+      "name": "내부 감찰반",
+      "description": "어떤 기록관도 바깥 세상에 자료를 흘리지 못하게 하는 비밀경찰.",
       "troops": {
         "complianceofficer": {
-          "name": ""
+          "name": "감찰관"
         },
         "secretenforcer": {
-          "name": ""
+          "name": "비밀 집행자"
         },
         "internalinquisitor": {
-          "name": ""
+          "name": "내부 심문관"
         },
         "scientist": {
-          "name": ""
+          "name": "감찰 분석가"
         }
       }
     },
     "libertariangods": {
-      "name": "",
-      "description": "",
+      "name": "자유지상주의 신들",
+      "description": "숭배가 아니라 서로에게 이로운 거래만을 요구하는 하급 신격들.",
       "troops": {
         "freemarketangel": {
-          "name": ""
+          "name": "자유시장 천사"
         },
         "contractenforcer": {
-          "name": ""
+          "name": "계약 집행자"
         },
         "sovereignspirit": {
-          "name": ""
+          "name": "주권의 정령"
         },
         "scientist": {
-          "name": ""
+          "name": "자유 계약 학자"
         }
       }
     },
     "goblincollectiveunconsciuous": {
-      "name": "",
-      "description": "",
+      "name": "고블린 집단 무의식",
+      "description": "모든 고블린의 마음을 잇고 그 조상 대대의 혼돈스러운 지혜를 담아두는 정신적 연결.",
       "troops": {
         "psychicgoblin": {
-          "name": ""
+          "name": "초능력 고블린"
         },
         "mindstriker": {
-          "name": ""
+          "name": "정신 타격자"
         },
         "hivemindwarrior": {
-          "name": ""
+          "name": "군집정신 전사"
         },
         "psychicslinger": {
-          "name": ""
+          "name": "초능력 투척꾼"
         },
         "collectiveconduit": {
-          "name": ""
+          "name": "집단의 통로"
         },
         "telepathicsniper": {
-          "name": ""
+          "name": "텔레파시 저격수"
         },
         "ancestralecho": {
-          "name": ""
+          "name": "조상의 메아리"
         },
         "scientist": {
-          "name": ""
+          "name": "고블린 땜장이"
         }
       }
     },
     "thetourists": {
-      "name": "",
-      "description": "",
+      "name": "투어리스트",
+      "description": "이 세계의 분쟁을 그저 오락거리로 여기는 제타 레티쿨리의 외계인들.",
       "troops": {
         "observerdrone": {
-          "name": ""
+          "name": "관측 드론"
         },
         "probescout": {
-          "name": ""
+          "name": "탐사 정찰기"
         },
         "alientourist": {
-          "name": ""
+          "name": "외계 관광객"
         },
         "beamsniper": {
-          "name": ""
+          "name": "빔 저격수"
         },
         "realitymanipulator": {
-          "name": ""
+          "name": "현실 조작자"
         },
         "enforcerconstruct": {
-          "name": ""
+          "name": "집행 구조물"
         },
         "plasmarifleman": {
-          "name": ""
+          "name": "플라스마 소총병"
         },
         "zetanoverseer": {
-          "name": ""
+          "name": "제타인 감독관"
         },
         "scientist": {
-          "name": ""
+          "name": "현장 안내 연구원"
         }
       }
     },
     "holyvaticanempire": {
-      "name": "",
-      "description": "",
+      "name": "신성 바티칸 제국",
+      "description": "막대한 영적, 세속적 권력을 휘두르는 교황청의 유서 깊은 본거지 도시국가. 신앙과 전통, 그리고 은밀한 공작으로 굴러간다.",
       "troops": {
         "altarserver": {
-          "name": ""
+          "name": "복사"
         },
         "vaticanguard": {
-          "name": ""
+          "name": "바티칸 근위병"
         },
         "holyarcher": {
-          "name": ""
+          "name": "성스러운 궁수"
         },
         "holyknight": {
-          "name": ""
+          "name": "성기사"
         },
         "blessedmarksman": {
-          "name": ""
+          "name": "축복받은 사수"
         },
         "papalchampion": {
-          "name": ""
+          "name": "교황의 용사"
         },
         "vaticanpriest": {
-          "name": ""
+          "name": "바티칸 사제"
         },
         "divinesniper": {
-          "name": ""
+          "name": "신성한 저격수"
         },
         "cardinaltemplar": {
-          "name": ""
+          "name": "추기경 성전기사"
         },
         "scientist": {
-          "name": ""
+          "name": "교황청 학자"
         }
       }
     },
     "cardinalscouncil": {
-      "name": "",
-      "description": "",
+      "name": "추기경 평의회",
+      "description": "교황을 보좌하고 교회의 정치 공작을 주무르는 은밀한 추기경 핵심 집단.",
       "troops": {
         "councildeacon": {
-          "name": ""
+          "name": "평의회 부제"
         },
         "cardinaladvisor": {
-          "name": ""
+          "name": "추기경 고문"
         },
         "princeofthechurch": {
-          "name": ""
+          "name": "교회의 대공"
         },
         "scientist": {
-          "name": ""
+          "name": "교황청 신학자"
         }
       }
     },
     "ior": {
-      "name": "",
-      "description": "",
+      "name": "IOR",
+      "description": "바티칸의 논란 많은 은행인 종교사업협회. 그리 성스럽지 않은 출처의 자금을 다룬다는 소문이 돈다.",
       "troops": {
         "bankclerk": {
-          "name": ""
+          "name": "은행 창구 직원"
         },
         "financialanalyst": {
-          "name": ""
+          "name": "재무 분석가"
         },
         "iorenforcer": {
-          "name": ""
+          "name": "IOR 집행자"
         },
         "holybanker": {
-          "name": ""
+          "name": "성스러운 은행가"
         },
         "scientist": {
-          "name": ""
+          "name": "재무 분석가"
         }
       }
     },
     "battlenuns": {
-      "name": "",
+      "name": "전투 수녀",
       "description": "",
       "troops": {
         "novicesister": {

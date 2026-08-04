@@ -61,9 +61,11 @@
  *   1. The branch history is read from the GitHub API and the player picks a
  *      build. The newest one is picked and checked on opening the screen.
  *   2. Every file in that build is compared with the local one by git blob
- *      hash, so only files that really differ are downloaded. Going back to an
- *      older build works the same way, it just replaces newer files with the
- *      older ones.
+ *      hash, so only files that really differ are downloaded, and only those
+ *      count toward the download size. A text file whose only difference is
+ *      CRLF line endings holds the same content as the LF blob the repository
+ *      stores, so it is left alone as well. Going back to an older build works
+ *      the same way, it just replaces newer files with the older ones.
  *   3. All of them are fetched into save/updater/tmp and verified against the
  *      hash the repository declared.
  *   4. Only once every file is downloaded and verified are they moved into
@@ -281,6 +283,30 @@
     function blobSha(buffer) {
         const header = Buffer.from('blob ' + buffer.length + '\0', 'utf8');
         return crypto.createHash('sha1').update(Buffer.concat([header, buffer])).digest('hex');
+    }
+
+    // Git's own binary test: a NUL byte near the head of the file means the
+    // bytes are data, not text, and must never be touched.
+    function looksBinary(buffer) {
+        const limit = Math.min(buffer.length, 8000);
+        for (let i = 0; i < limit; i++) {
+            if (buffer[i] === 0) return true;
+        }
+        return false;
+    }
+
+    // A text file checked out on Windows carries CRLF while the repository
+    // stores LF, so the same content hashes differently and would be fetched
+    // again on every single check. Hashing the LF form as well lets a file that
+    // only differs in its line endings be recognised as the one we already have.
+    function stripCR(buffer) {
+        const out = Buffer.allocUnsafe(buffer.length);
+        let n = 0;
+        for (let i = 0; i < buffer.length; i++) {
+            if (buffer[i] === 13 && buffer[i + 1] === 10) continue;
+            out[n++] = buffer[i];
+        }
+        return out.slice(0, n);
     }
     function sleepFrame() {
         return new Promise((resolve) => setTimeout(resolve, 0));
@@ -585,15 +611,24 @@
             writeJson(HASH_FILE, this.hashes());
         },
 
-        // Hash of a local file, cached on size + mtime so repeat checks are cheap.
-        async localSha(relPath, st) {
+        // Hashes of a local file, cached on size + mtime so repeat checks are
+        // cheap. `shaLF` is what the same file hashes to once CRLF endings are
+        // normalised away, which is the form the repository holds; it costs a
+        // second pass over the bytes, so it is only computed when asked for.
+        async localHash(relPath, st, withLF) {
             const cache = this.hashes();
             const hit = cache[relPath];
-            if (hit && hit.size === st.size && hit.mtimeMs === st.mtimeMs) return hit.sha;
+            if (hit && hit.size === st.size && hit.mtimeMs === st.mtimeMs &&
+                (!withLF || hit.shaLF !== undefined)) {
+                return hit;
+            }
             const buf = await readFileAsync(nodePath.join(BASE_DIR, relPath));
-            const sha = blobSha(buf);
-            cache[relPath] = { size: st.size, mtimeMs: st.mtimeMs, sha: sha };
-            return sha;
+            const record = { size: st.size, mtimeMs: st.mtimeMs, sha: blobSha(buf) };
+            if (withLF) {
+                record.shaLF = looksBinary(buf) ? null : blobSha(stripCR(buf));
+            }
+            cache[relPath] = record;
+            return record;
         },
 
         // ---------------------------------------------------------------------
@@ -688,15 +723,25 @@
                     const entry = blobs[i];
                     const local = nodePath.join(BASE_DIR, entry.path);
                     const st = await statAsync(local);
+                    const remoteSize = entry.size || 0;
                     if (!st || !st.isFile()) {
-                        changed.push({ path: entry.path, sha: entry.sha, size: entry.size || 0, isNew: true });
-                    } else if (st.size !== entry.size) {
-                        changed.push({ path: entry.path, sha: entry.sha, size: entry.size || 0, isNew: false });
-                    } else {
-                        const sha = await this.localSha(entry.path, st);
-                        if (sha !== entry.sha) {
-                            changed.push({ path: entry.path, sha: entry.sha, size: entry.size || 0, isNew: false });
+                        changed.push({ path: entry.path, sha: entry.sha, size: remoteSize, isNew: true });
+                    } else if (st.size === remoteSize) {
+                        // Same length: only the plain hash can make them equal.
+                        const hash = await this.localHash(entry.path, st, false);
+                        if (hash.sha !== entry.sha) {
+                            changed.push({ path: entry.path, sha: entry.sha, size: remoteSize, isNew: false });
                         }
+                    } else if (st.size > remoteSize) {
+                        // Longer than the blob: it may be the very same text with
+                        // CRLF endings, which is the only difference that makes a
+                        // local file grow. Anything else really has changed.
+                        const hash = await this.localHash(entry.path, st, true);
+                        if (hash.shaLF !== entry.sha) {
+                            changed.push({ path: entry.path, sha: entry.sha, size: remoteSize, isNew: false });
+                        }
+                    } else {
+                        changed.push({ path: entry.path, sha: entry.sha, size: remoteSize, isNew: false });
                     }
                     if (i % 40 === 0) {
                         report({ phase: 'check', text: fmt(T.logCompare, i + 1, blobs.length), ratio: (i + 1) / blobs.length });

@@ -41,7 +41,7 @@
           "name": "Grandmaster Wizard"
         },
         "scientist": {
-          "name": ""
+          "name": "Тайный исследователь"
         }
       }
     },
@@ -80,7 +80,7 @@
           "name": "Master Librarian"
         },
         "scientist": {
-          "name": ""
+          "name": "Учёный Архива"
         }
       }
     },
@@ -119,7 +119,7 @@
           "name": "Corporate Assassin"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик отдела разработок"
         }
       }
     },
@@ -143,7 +143,7 @@
           "name": "Grandmaster's Champion"
         },
         "scientist": {
-          "name": ""
+          "name": "Полевой исследователь"
         }
       }
     },
@@ -167,7 +167,7 @@
           "name": "Ancient Sage"
         },
         "scientist": {
-          "name": ""
+          "name": "Знаток преданий"
         }
       }
     },
@@ -194,7 +194,7 @@
           "name": "Magitek Specialist"
         },
         "scientist": {
-          "name": ""
+          "name": "Инженер-техномант"
         }
       }
     },
@@ -218,7 +218,7 @@
           "name": "Polymath Mage"
         },
         "scientist": {
-          "name": ""
+          "name": "Учёный школы"
         }
       }
     },
@@ -245,7 +245,7 @@
           "name": "Avatar of Discord"
         },
         "scientist": {
-          "name": ""
+          "name": "Придворный алхимик"
         }
       }
     },
@@ -272,7 +272,7 @@
           "name": "Naguka Shaman"
         },
         "scientist": {
-          "name": ""
+          "name": "Племенной травник"
         }
       }
     },
@@ -299,7 +299,7 @@
           "name": "Forest Champion"
         },
         "scientist": {
-          "name": ""
+          "name": "Химик Вердена"
         }
       }
     },
@@ -329,7 +329,7 @@
           "name": "Road Master"
         },
         "scientist": {
-          "name": ""
+          "name": "Механик автопарка"
         }
       }
     },
@@ -365,7 +365,7 @@
           "name": "Industrial Overlord"
         },
         "scientist": {
-          "name": ""
+          "name": "Промышленный инженер"
         }
       }
     },
@@ -404,7 +404,7 @@
           "name": "Marshal of the Frost"
         },
         "scientist": {
-          "name": ""
+          "name": "Военный инженер"
         }
       }
     },
@@ -440,7 +440,7 @@
           "name": "Citadel Master"
         },
         "scientist": {
-          "name": ""
+          "name": "Мудрец цитадели"
         }
       }
     },
@@ -476,7 +476,7 @@
           "name": "Archdevil of Oil"
         },
         "scientist": {
-          "name": ""
+          "name": "Инженер-нефтехимик"
         }
       }
     },
@@ -497,7 +497,7 @@
           "name": "Infernal Executive"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик нефтеперегонки"
         }
       }
     },
@@ -518,7 +518,7 @@
           "name": "Sonic Demon"
         },
         "scientist": {
-          "name": ""
+          "name": "Инженер пит-стопа"
         }
       }
     },
@@ -539,7 +539,7 @@
           "name": "Heiress Assassin"
         },
         "scientist": {
-          "name": ""
+          "name": "Химик картеля"
         }
       }
     },
@@ -572,7 +572,7 @@
           "name": "Demigod Avatar"
         },
         "scientist": {
-          "name": ""
+          "name": "Божественный учёный"
         }
       }
     },
@@ -590,7 +590,7 @@
           "name": "Council Elder"
         },
         "scientist": {
-          "name": ""
+          "name": "Главный архивариус"
         }
       }
     },
@@ -608,7 +608,7 @@
           "name": "Elite Infiltrator"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик данных"
         }
       }
     },
@@ -626,7 +626,7 @@
           "name": "Master Conservator"
         },
         "scientist": {
-          "name": ""
+          "name": "Учёный отдела сохранности"
         }
       }
     },
@@ -644,7 +644,7 @@
           "name": "Misinformation Master"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик записей"
         }
       }
     },
@@ -662,7 +662,7 @@
           "name": "Internal Inquisitor"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик надзора"
         }
       }
     },
@@ -680,7 +680,7 @@
           "name": "Sovereign Spirit"
         },
         "scientist": {
-          "name": ""
+          "name": "Вольный учёный"
         }
       }
     },
@@ -710,7 +710,7 @@
           "name": "Ancestral Echo"
         },
         "scientist": {
-          "name": ""
+          "name": "Гоблин-механик"
         }
       }
     },
@@ -743,7 +743,7 @@
           "name": "Zetan Overseer"
         },
         "scientist": {
-          "name": ""
+          "name": "Исследователь-полевик"
         }
       }
     },
@@ -779,7 +779,7 @@
           "name": "Cardinal Templar"
         },
         "scientist": {
-          "name": ""
+          "name": "Папский учёный"
         }
       }
     },
@@ -797,7 +797,7 @@
           "name": "Prince of the Church"
         },
         "scientist": {
-          "name": ""
+          "name": "Куриальный богослов"
         }
       }
     },
@@ -818,7 +818,7 @@
           "name": "Holy Banker"
         },
         "scientist": {
-          "name": ""
+          "name": "Финансовый аналитик"
         }
       }
     },
