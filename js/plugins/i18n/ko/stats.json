@@ -1,0 +1,15 @@
+{
+  "HP": "HP",
+  "MP": "MP",
+  "TP": "AP",
+  "ATT": "근력",
+  "DEF": "건강",
+  "M.ATT": "지능",
+  "M.DEF": "지혜",
+  "AGILITY": "민첩",
+  "LUCK": "행운",
+  "ARCANE": "비전",
+  "SUBSTANCE": "물질",
+  "STEALTH": "은신",
+  "INTIMIDATION": "위협"
+}

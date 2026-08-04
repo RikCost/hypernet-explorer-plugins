@@ -1,0 +1,253 @@
+{
+  "crime": {
+    "pettytheft": {
+      "name": "Мелкая кража"
+    },
+    "pickpocketing": {
+      "name": "Карманная кража"
+    },
+    "shoplifting": {
+      "name": "Кража из магазина"
+    },
+    "burglary": {
+      "name": "Кража со взломом"
+    },
+    "robbery": {
+      "name": "Ограбление"
+    },
+    "armedrobbery": {
+      "name": "Разбой"
+    },
+    "bankrobbery": {
+      "name": "Ограбление банка"
+    },
+    "grandtheft": {
+      "name": "Кража в особо крупном размере"
+    },
+    "assault": {
+      "name": "Причинение легкого вреда здоровью"
+    },
+    "battery": {
+      "name": "Нанесение побоев"
+    },
+    "aggravatedassault": {
+      "name": "Причинение тяжкого вреда здоровью"
+    },
+    "murder": {
+      "name": "Убийство"
+    },
+    "manslaughter": {
+      "name": "Причинение смерти по неосторожности"
+    },
+    "serialkilling": {
+      "name": "Убийство трех или более лиц"
+    },
+    "vandalism": {
+      "name": "Вандализм"
+    },
+    "graffiti": {
+      "name": "Граффити"
+    },
+    "arson": {
+      "name": "Поджог"
+    },
+    "propertydestruction": {
+      "name": "Уничтожение имущества"
+    },
+    "publicdisturbance": {
+      "name": "Мелкое хулиганство"
+    },
+    "disorderlyconduct": {
+      "name": "Хулиганство"
+    },
+    "trespassing": {
+      "name": "Нарушение неприкосновенности жилища"
+    },
+    "breakingandentering": {
+      "name": "Незаконное проникновение со взломом"
+    },
+    "unlawfulentry": {
+      "name": "Незаконное проникновение"
+    },
+    "drugpossession": {
+      "name": "Незаконное хранение наркотических веществ"
+    },
+    "drugdealing": {
+      "name": "Незаконное распространение наркотических веществ"
+    },
+    "drugtrafficking": {
+      "name": "Незаконная перевозка наркотических веществ"
+    },
+    "smuggling": {
+      "name": "Контрабанда"
+    },
+    "contraband": {
+      "name": "Владение контрабандными товарами"
+    },
+    "fraud": {
+      "name": "Мошенничество"
+    },
+    "embezzlement": {
+      "name": "Растрата чужого имущества"
+    },
+    "bribery": {
+      "name": "Дача взятки"
+    },
+    "corruption": {
+      "name": "Получение взятки"
+    },
+    "taxevasion": {
+      "name": "Уклонение от уплаты налогов"
+    },
+    "moneylaundering": {
+      "name": "Отмывание денег"
+    },
+    "forgery": {
+      "name": "Изготовление поддельных документов"
+    },
+    "counterfeiting": {
+      "name": "Фальсификация"
+    },
+    "identitytheft": {
+      "name": "Кража цифровой личности"
+    },
+    "cybercrime": {
+      "name": "Киберпреступление"
+    },
+    "hacking": {
+      "name": "Неправомерный доступ к цифровой информации"
+    },
+    "datatheft": {
+      "name": "Кража данных"
+    },
+    "piracy": {
+      "name": "Нарушение цифровых авторских прав"
+    },
+    "extortion": {
+      "name": "Вымогательство"
+    },
+    "blackmail": {
+      "name": "Шантаж"
+    },
+    "kidnapping": {
+      "name": "Похищение физического лица"
+    },
+    "hostage": {
+      "name": "Захват заложника"
+    },
+    "humantrafficking": {
+      "name": "Торговля людьми"
+    },
+    "slavery": {
+      "name": "Использование рабского труда"
+    },
+    "poaching": {
+      "name": "Браконьерство"
+    },
+    "illegalhunting": {
+      "name": "Незаконная охота"
+    },
+    "animalcruelty": {
+      "name": "Жестокое обращение с животными"
+    },
+    "environmentalcrime": {
+      "name": "Нарушение правил охраны окружающей среды"
+    },
+    "pollutionviolation": {
+      "name": "Нарушение правил защиты окружающей среды"
+    },
+    "illegaldumping": {
+      "name": "Незаконная свалка мусора"
+    },
+    "speedingminor": {
+      "name": "Превышение скорости"
+    },
+    "speedingmajor": {
+      "name": "Значительное превышение скорости"
+    },
+    "recklessdriving": {
+      "name": "Нарушение ПДД"
+    },
+    "dui": {
+      "name": "Вождение в состоянии опьянения"
+    },
+    "hitandrun": {
+      "name": "Побег с места ДТП"
+    },
+    "vehicletheft": {
+      "name": "Угон транспортного средства"
+    },
+    "carjacking": {
+      "name": "Разбойный угон траспортного средства"
+    },
+    "illegalracing": {
+      "name": "Незаконные уличные гонки"
+    },
+    "publicintoxication": {
+      "name": "Появление в общественном месте в опьянении"
+    },
+    "underagedrinking": {
+      "name": "Употребление алкоголя несовершеннолетними"
+    },
+    "disturbing": {
+      "name": "Нарушение общественного порядка"
+    },
+    "loitering": {
+      "name": "Праздношатание"
+    },
+    "jaywalking": {
+      "name": "Переход улицы в неположенном месте"
+    },
+    "littering": {
+      "name": "Сброс мусора вне отведенных мест"
+    },
+    "noisepollution": {
+      "name": "Нарушение закона 'о тишине'"
+    },
+    "perjury": {
+      "name": "Дача заведомо ложных показаний"
+    },
+    "contemptofcourt": {
+      "name": "Неуважение к суду"
+    },
+    "obstructingjustice": {
+      "name": "Преступления против правосудия"
+    },
+    "resistingarrest": {
+      "name": "Сопротивление при аресте"
+    },
+    "escapingcustody": {
+      "name": "Побег из-под ареста"
+    },
+    "prisonbreak": {
+      "name": "Побег из места лишения свободы"
+    },
+    "weaponspossession": {
+      "name": "Незаконное хранение оружия"
+    },
+    "illegalweapons": {
+      "name": "Незаконное изготовление оружия"
+    },
+    "weaponstrafficking": {
+      "name": "Незаконный сбыт оружия"
+    },
+    "terrorism": {
+      "name": "Террористический акт"
+    },
+    "treason": {
+      "name": "Государственная измена"
+    },
+    "espionage": {
+      "name": "Шпионаж"
+    },
+    "warcrimes": {
+      "name": "Военное преступление"
+    },
+    "genocide": {
+      "name": "Геноцид"
+    },
+    "crimesagainsthumanity": {
+      "name": "Преступление против человечества"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "rent": {
+    "rent_question": "Louer",
+    "free_access": "Accès gratuit",
+    "already_rented": "Vous avez déjà loué cette chambre",
+    "for_24h_rent": "pour 24 h de location",
+    "cancel": "Annuler",
+    "free_access_granted": "Accès gratuit accordé à",
+    "access_restored": "Accès rétabli pour",
+    "rented_for_24h": "Profitez de votre séjour !",
+    "for_24_hours": "pour 24 heures !",
+    "not_enough_gold": "Pas assez d'euros !",
+    "error_event_id": "Erreur : impossible de déterminer l'ID de l'événement",
+    "rented": "Louée",
+    "expired": "Expirée",
+    "available_rooms": "Chambres disponibles",
+    "hours_remaining": "heures restantes",
+    "rent_now": "Louer maintenant",
+    "no_rooms": "Aucune chambre disponible"
+  }
+}
