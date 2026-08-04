@@ -272,7 +272,7 @@
   },
   "leader": {
     "unknown": "",
-    "unknownIdeology": ""
+    "unknownIdeology": "미상"
   },
   "government": {
     "Theocracy": "",
@@ -286,7 +286,7 @@
     "Warband Confederacy": "",
     "Free Confederation": "",
     "Crown Protectorate": "",
-    "Punitive Colony Regime": "",
+    "Punitive Colony Regime": "유형 식민지 체제",
     "Puppet Government": "",
     "Parliamentary Republic": "",
     "Constitutional Monarchy": "",
@@ -312,56 +312,56 @@
   "artifactName": {
     "template": "",
     "adjectives": [
+      "전설의",
+      "고대의",
+      "수수께끼의",
+      "이계의",
+      "신성한",
+      "저주받은",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "양자의",
+      "잊혀진",
+      "별의"
     ],
     "adjectivesFem": [
+      "전설의",
+      "고대의",
+      "수수께끼의",
+      "이계의",
+      "신성한",
+      "저주받은",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "양자의",
+      "잊혀진",
+      "별의"
     ],
     "nounGender": {},
     "itemNouns": [
+      "핵",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "수정",
+      "프리즘",
+      "장치",
+      "고문서",
+      "우상"
     ],
     "weaponNouns": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
+      "검",
+      "도끼",
+      "지팡이",
+      "활",
+      "언월도",
+      "망치",
       ""
     ],
     "armorNouns": [
+      "이지스",
+      "판갑",
+      "망토",
+      "방패",
+      "투구",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "흉갑"
     ]
   },
   "reason": {
@@ -389,6 +389,9 @@
     "stoleFrom": "",
     "discovered": "",
     "action": {
+      "discovered": "",
+      "crafted": "",
+      "exhumed": "",
       "seized": "",
       "purchased": "",
       "inherited": "",
@@ -427,9 +430,9 @@
     "fact": ""
   },
   "ui": {
-    "back": "",
-    "continue": "",
-    "artifactBadge": "",
+    "back": "뒤로",
+    "continue": "계속하기",
+    "artifactBadge": "아티팩트",
     "military": "",
     "economy": ""
   }

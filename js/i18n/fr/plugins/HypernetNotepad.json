@@ -6,8 +6,8 @@
   "menuEdit": "",
   "menuFormat": "",
   "menuHelp": "",
-  "save": "",
-  "exit": "",
+  "save": "Sauvegarder",
+  "exit": "Quitter",
   "savePrompt": "",
   "writeError": ""
 }

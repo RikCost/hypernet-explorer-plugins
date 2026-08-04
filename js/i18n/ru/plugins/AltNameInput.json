@@ -1,34 +1,34 @@
 {
   "script": {
-    "latin": "",
-    "latinExt": "",
-    "cyrillic": "",
-    "japanese": "",
-    "pinyin": "",
-    "zhuyin": "",
-    "hangul": "",
-    "symbols": ""
+    "latin": "Латиница",
+    "latinExt": "Латиница расш.",
+    "cyrillic": "Кириллица",
+    "japanese": "Японский",
+    "pinyin": "Пиньинь (упр.)",
+    "zhuyin": "Чжуинь (трад.)",
+    "hangul": "Хангыль (кор.)",
+    "symbols": "Символы"
   },
   "btn": {
-    "halfWidth": "",
-    "fullWidth": "",
-    "clearBuffer": "",
-    "nextPage": "",
-    "defaultName": "",
-    "insertSpace": "",
-    "backspace": "",
-    "clearInput": "",
-    "prevPage": ""
+    "halfWidth": "Полуширинные",
+    "fullWidth": "Полноширинные",
+    "clearBuffer": "Очистить буфер",
+    "nextPage": "След. страница",
+    "defaultName": "Имя по умолчанию",
+    "insertSpace": "Вставить пробел",
+    "backspace": "Стереть символ",
+    "clearInput": "Очистить ввод",
+    "prevPage": "Пред. страница"
   },
-  "incantation": "",
+  "incantation": "✦ Написание заклинания: \"{text}\"",
   "ui": {
-    "yourNameIs": "",
-    "space": "",
-    "backspace": "",
-    "synchronizeName": "",
-    "translationLayers": "",
-    "modifiersNavigation": "",
-    "abort": "",
-    "continue": ""
+    "yourNameIs": "Твоё имя",
+    "space": "Космос",
+    "backspace": "Стереть символ",
+    "synchronizeName": "Синхронизировать имя",
+    "translationLayers": "Слои перевода Кодекса",
+    "modifiersNavigation": "Модификаторы и навигация",
+    "abort": "Прервать",
+    "continue": "Продолжить"
   }
 }

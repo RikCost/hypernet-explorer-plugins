@@ -1,15 +1,15 @@
 {
-  "noThree": "",
-  "player": "",
-  "cpu": "",
-  "cpuLiningUp": "",
-  "aimPrompt": "",
-  "powerPrompt": "",
-  "setTouch": "",
-  "itsGood": "",
-  "swish": "",
-  "score": "",
-  "miss": "",
-  "finalScore": "",
-  "pressOkExit": ""
+  "noThree": "three.js n'est pas chargé, le basket est indisponible.",
+  "player": "Joueur",
+  "cpu": "Ordi",
+  "cpuLiningUp": "L'ordi se met en position...",
+  "aimPrompt": "Joueur : Gauche/Droite pour viser, OK",
+  "powerPrompt": "Règle la puissance et appuie sur OK",
+  "setTouch": "Règle ton toucher et appuie sur OK",
+  "itsGood": "C'EST DEDANS !",
+  "swish": "SWISH !",
+  "score": "PANIER !",
+  "miss": "RATÉ",
+  "finalScore": "Joueur : {player}  Ordi : {cpu}",
+  "pressOkExit": "Appuie sur OK pour quitter"
 }

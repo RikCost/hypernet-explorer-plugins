@@ -107,15 +107,17 @@
     // entry that predates it) still shows the shipped label.
     //
     // The third field of the version is the build number, i.e. how many commits
-    // the installed build sits past the numbering origin, so a copy that has
-    // updated says which build it is running. The updater owns that number and
-    // rewrites the string; a copy that has never updated (or a web build, where
-    // there is no updater at all) keeps the label exactly as written.
+    // the installed build sits past the numbering origin, and the name after it
+    // is that build's commit message, so the badge says which build is running
+    // and what it was. The updater owns both and rewrites the string; a copy
+    // that has never updated (or a web build, where there is no updater at all)
+    // keeps the label exactly as written.
     const VERSION_TEXT = () => {
         const raw = pathParams.VersionText;
         if (raw !== undefined && String(raw).trim() === '') return '';
         const text = T.param(raw, 'Titlescreen.version.text');
         const updater = window.GameUpdater;
+        if (updater && updater.versionLabel) return updater.versionLabel(text);
         return (updater && updater.applyBuildNumber) ? updater.applyBuildNumber(text) : text;
     };
 

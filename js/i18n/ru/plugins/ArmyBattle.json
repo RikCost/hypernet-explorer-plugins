@@ -1,21 +1,21 @@
 {
-  "zoom": "",
-  "controls": "",
-  "playerArmy": "",
-  "enemyArmy": "",
-  "rallyBanner": "",
-  "healBanner": "",
-  "inspireBanner": "",
-  "clickSquad": "",
+  "zoom": "Масштаб: {pct}%",
+  "controls": "Масштаб: колесо | Панорама: перетаскивание/стрелки | Q/W/E: способности | TAB: скрыть/показать панель",
+  "playerArmy": "Армия игрока: {count}",
+  "enemyArmy": "Армия врага: {count}",
+  "rallyBanner": "СБОР! +20 к боевому духу (сплочено бойцов: {count})",
+  "healBanner": "ЛЕЧЕНИЕ! +25% ОЗ для {count} бойцов",
+  "inspireBanner": "ВООДУШЕВЛЕНИЕ! +50% к атаке и максимальный боевой дух!",
+  "clickSquad": "Нажмите на отряд,\nчтобы отдать приказ",
   "ability": {
-    "rally": "",
-    "heal": "",
-    "inspire": ""
+    "rally": "Сплотить войска",
+    "heal": "Вылечить отряд",
+    "inspire": "Воодушевить"
   },
   "command": {
-    "hold": "",
-    "attack": "",
-    "defend": "",
-    "retreat": ""
+    "hold": "Держать",
+    "attack": "Атаковать",
+    "defend": "Обороняться",
+    "retreat": "Отступить"
   }
 }

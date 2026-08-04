@@ -1,6 +1,6 @@
 {
-  "mapFallback": "",
-  "shopkeeperFallback": "",
+  "mapFallback": "Carte {id}",
+  "shopkeeperFallback": "Commerçant",
   "frontier": "",
   "placeOfCountry": "",
   "placeSettlement": "",

@@ -6,8 +6,8 @@
   "menuEdit": "",
   "menuFormat": "",
   "menuHelp": "",
-  "save": "",
-  "exit": "",
+  "save": "Сохраниться",
+  "exit": "Выход",
   "savePrompt": "",
   "writeError": ""
 }

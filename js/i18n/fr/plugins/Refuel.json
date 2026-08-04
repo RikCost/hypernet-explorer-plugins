@@ -3,7 +3,7 @@
   "exitStation": "",
   "liters": "",
   "fillTank": "",
-  "back": "",
+  "back": "Retour",
   "selectVehicle": "",
   "vehicleTitle": "",
   "genericVehicle": "",
@@ -11,7 +11,7 @@
   "confirmHeader": "",
   "confirmBody": "",
   "confirm": "",
-  "cancel": "",
+  "cancel": "Annuler",
   "completeHeader": "",
   "added": "",
   "insufficientFunds": "",
@@ -22,7 +22,7 @@
     "fuelOverview": "",
     "vehicleFuel": "",
     "cost": "",
-    "level": "",
+    "level": "Niveau",
     "pricePerLitre": "",
     "wallet": ""
   }

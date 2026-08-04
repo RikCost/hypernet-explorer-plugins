@@ -1,6 +1,6 @@
 {
   "title": "",
-  "back": "",
+  "back": "뒤로",
   "noMods": "",
   "source": "",
   "path": "",
@@ -10,7 +10,7 @@
   "local": "",
   "workshop": "",
   "priority": "",
-  "active": "",
-  "inactive": "",
+  "active": "활성",
+  "inactive": "비활성",
   "hint": ""
 }

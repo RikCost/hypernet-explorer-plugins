@@ -2,8 +2,8 @@
   "installBodypart": "",
   "removeBodypart": "",
   "replaceBodypart": "",
-  "installImplant": "",
-  "cancel": "",
+  "installImplant": "임플란트 이식",
+  "cancel": "취소",
   "owned": "",
   "vital": {
     "hp": "",
@@ -77,21 +77,21 @@
   "chooseArchetypeCode": "",
   "suppliersAvailable": "",
   "paramNames": [
+    "최대 HP",
+    "최대 MP",
     "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
+    "명중률",
+    "지능",
+    "체력",
+    "민첩",
     ""
   ],
-  "statFallback": "",
+  "statFallback": "능력치",
   "genderNames": [
+    "남성",
+    "여성",
     "",
-    "",
-    "",
-    ""
+    "코쿤"
   ],
   "notAvailable": "",
   "reproductionNames": {
@@ -100,9 +100,9 @@
     "2": "",
     "3": "",
     "4": "",
-    "-1": ""
+    "-1": "없음"
   },
-  "unknown": "",
+  "unknown": "미상",
   "classless": "",
   "levelShort": "",
   "dossierTitle": "",
@@ -111,9 +111,9 @@
   "ability": {
     "str": "",
     "con": "",
-    "dex": "",
-    "int": "",
-    "wis": "",
+    "dex": "민첩",
+    "int": "지능",
+    "wis": "지혜",
     "psi": ""
   },
   "surgeryFee": "",

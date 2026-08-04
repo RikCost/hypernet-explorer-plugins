@@ -839,7 +839,7 @@
           "name": "Mother Superior"
         },
         "scientist": {
-          "name": ""
+          "name": "Боевой капеллан-учёный"
         }
       }
     },
@@ -860,7 +860,7 @@
           "name": "Master Hexorcist"
         },
         "scientist": {
-          "name": ""
+          "name": "Исследователь экзорцизма"
         }
       }
     },
@@ -878,7 +878,7 @@
           "name": "Shadow Diplomat"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик политики"
         }
       }
     },
@@ -899,7 +899,7 @@
           "name": "Supernumerary Elite"
         },
         "scientist": {
-          "name": ""
+          "name": "Учёный-догматик"
         }
       }
     },
@@ -920,7 +920,7 @@
           "name": "Swiss Commander"
         },
         "scientist": {
-          "name": ""
+          "name": "Ватиканский инженер"
         }
       }
     },
@@ -953,7 +953,7 @@
           "name": "Soviet Commander"
         },
         "scientist": {
-          "name": ""
+          "name": "Советский учёный"
         }
       }
     },
@@ -980,7 +980,7 @@
           "name": "Guards Major"
         },
         "scientist": {
-          "name": ""
+          "name": "Дивизионный инженер"
         }
       }
     },
@@ -1007,7 +1007,7 @@
           "name": "Armored Brigade Leader"
         },
         "scientist": {
-          "name": ""
+          "name": "Инженер по бронетехнике"
         }
       }
     },
@@ -1034,7 +1034,7 @@
           "name": "Elite Marksman"
         },
         "scientist": {
-          "name": ""
+          "name": "Исследователь баллистики"
         }
       }
     },
@@ -1061,7 +1061,7 @@
           "name": "Spetsnaz Paratrooper"
         },
         "scientist": {
-          "name": ""
+          "name": "Инженер-авиатор"
         }
       }
     },
@@ -1088,7 +1088,7 @@
           "name": "Rocket Artillery Master"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик баллистики"
         }
       }
     },
@@ -1121,7 +1121,7 @@
           "name": "Grand Vizier's Elite"
         },
         "scientist": {
-          "name": ""
+          "name": "Имперский учёный"
         }
       }
     },
@@ -1142,7 +1142,7 @@
           "name": "Emin Effendi (High Official)"
         },
         "scientist": {
-          "name": ""
+          "name": "Бюрократический аналитик"
         }
       }
     },
@@ -1163,7 +1163,7 @@
           "name": "Submarine Commander"
         },
         "scientist": {
-          "name": ""
+          "name": "Корабельный инженер"
         }
       }
     },
@@ -1184,7 +1184,7 @@
           "name": "Grand Intelligencer"
         },
         "scientist": {
-          "name": ""
+          "name": "Учёный халифата"
         }
       }
     },
@@ -1205,7 +1205,7 @@
           "name": "Ağa of the Koruma"
         },
         "scientist": {
-          "name": ""
+          "name": "Янычарский тактик"
         }
       }
     },
@@ -1238,7 +1238,7 @@
           "name": "Guard Commander"
         },
         "scientist": {
-          "name": ""
+          "name": "Королевский учёный"
         }
       }
     },
@@ -1262,7 +1262,7 @@
           "name": "Fleet Commander"
         },
         "scientist": {
-          "name": ""
+          "name": "Военно-морской аналитик"
         }
       }
     },
@@ -1283,7 +1283,7 @@
           "name": "SAS Counter-Terrorist"
         },
         "scientist": {
-          "name": ""
+          "name": "Полевой техник"
         }
       }
     },
@@ -1304,7 +1304,7 @@
           "name": "Section Chief (The Controller)"
         },
         "scientist": {
-          "name": ""
+          "name": "Аналитик разведки"
         }
       }
     },
@@ -1325,7 +1325,7 @@
           "name": "Chief Scientist (Kineticist)"
         },
         "scientist": {
-          "name": ""
+          "name": "Ведущий учёный"
         }
       }
     }

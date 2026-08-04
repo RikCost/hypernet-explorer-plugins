@@ -57,9 +57,9 @@
     "selectIngredients": "",
     "cookTheseItems": ""
   },
-  "back": "",
+  "back": "뒤로",
   "ingredients": "",
-  "cooking": "",
+  "cooking": "요리",
   "nutritionalBase": "",
   "aromaticBinder": "",
   "yourBackpackContainsNoEdible": "",
@@ -68,16 +68,16 @@
   "extraordinaryEffect50": "",
   "minorEffect25": "",
   "disastrousEffect75": "",
-  "calories": "",
-  "protein": "",
+  "calories": "열량",
+  "protein": "단백질",
   "fat": "",
   "satietyPerMember": "",
   "split": "",
   "combineANutritionalBaseAnd": "",
-  "clearSelection": "",
+  "clearSelection": "선택 해제",
   "nutrition": {
-    "calories": "",
-    "protein": "",
+    "calories": "열량",
+    "protein": "단백질",
     "fat": ""
   }
 }

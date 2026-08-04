@@ -3,8 +3,8 @@
   "confirm": "",
   "noBonusesYet": "",
   "confirmTraits": "",
-  "yes": "",
-  "no": "",
+  "yes": "예",
+  "no": "아니오",
   "headerText": "",
   "selectedTraitsLabel": "",
   "emptySlot": "",
@@ -16,7 +16,7 @@
   "finalSkills": "",
   "noSkills": "",
   "tabGenetic": "",
-  "tabPhysical": "",
+  "tabPhysical": "물리",
   "tabMental": "",
   "tabMagical": ""
 }

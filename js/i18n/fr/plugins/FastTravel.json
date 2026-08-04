@@ -2,9 +2,9 @@
   "transport": {
     "walking": "",
     "bicycle": "",
-    "horse": "",
+    "horse": "Cheval",
     "carsharing": "",
-    "camper": "",
+    "camper": "Camping-car",
     "bus": "",
     "train": "",
     "taxi": "",
@@ -31,8 +31,8 @@
     "time_machine": "",
     "dimensional": ""
   },
-  "defaultDestination": "",
-  "trainStationTitle": "",
+  "defaultDestination": "Anvers",
+  "trainStationTitle": "Gare",
   "stationBadge": "",
   "stationLabel": "",
   "fuelRate": "",
@@ -47,7 +47,7 @@
   "destFuel": "",
   "destCost": "",
   "ui": {
-    "back": "",
+    "back": "Retour",
     "edit": "",
     "print": "",
     "stations": "",
@@ -59,7 +59,7 @@
     "cost": "",
     "travelTime": "",
     "transportPlaceholder": "",
-    "cancel": "",
+    "cancel": "Annuler",
     "travel": ""
   }
 }

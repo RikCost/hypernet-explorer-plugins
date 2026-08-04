@@ -389,6 +389,9 @@
     "stoleFrom": "stole from {holder}",
     "discovered": "discovered",
     "action": {
+      "discovered": "discovered",
+      "crafted": "crafted",
+      "exhumed": "exhumed",
       "seized": "seized",
       "purchased": "purchased",
       "inherited": "inherited",

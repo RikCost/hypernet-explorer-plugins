@@ -824,508 +824,508 @@
     },
     "battlenuns": {
       "name": "Nonnes de Bataille",
-      "description": "",
+      "description": "Un ordre de nonnes militantes formées aux Écritures comme au combat moderne, qui servent de forces spéciales au Vatican.",
       "troops": {
         "novicesister": {
-          "name": ""
+          "name": "Sœur Novice"
         },
         "battlesister": {
-          "name": ""
+          "name": "Sœur de Bataille"
         },
         "sistersuperior": {
-          "name": ""
+          "name": "Sœur Supérieure"
         },
         "mothersuperior": {
-          "name": ""
+          "name": "Mère Supérieure"
         },
         "scientist": {
-          "name": ""
+          "name": "Aumônier de Combat Érudit"
         }
       }
     },
     "hexorcistscorp": {
-      "name": "",
-      "description": "",
+      "name": "Corps des Hexorcistes",
+      "description": "Une unité spécialisée de tech-prêtres qui combattent le code démoniaque, les IA devenues folles et autres hérésies numériques.",
       "troops": {
         "cyberacolyte": {
-          "name": ""
+          "name": "Cyber-Acolyte"
         },
         "techpriest": {
-          "name": ""
+          "name": "Tech-Prêtre"
         },
         "digitalexorcist": {
-          "name": ""
+          "name": "Exorciste Numérique"
         },
         "masterhexorcist": {
-          "name": ""
+          "name": "Maître Hexorciste"
         },
         "scientist": {
-          "name": ""
+          "name": "Chercheur en Exorcisme"
         }
       }
     },
     "gaylobby": {
-      "name": "",
-      "description": "",
+      "name": "Lobby Gay",
+      "description": "Un groupe de l'ombre puissant et influent au sein du Vatican, qui plaide pour des réformes progressistes depuis l'intérieur de l'antique institution.",
       "troops": {
         "progressivepriest": {
-          "name": ""
+          "name": "Prêtre Progressiste"
         },
         "reformadvocate": {
-          "name": ""
+          "name": "Avocat de la Réforme"
         },
         "shadowdiplomat": {
-          "name": ""
+          "name": "Diplomate de l'Ombre"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste des Politiques"
         }
       }
     },
     "opusdei": {
-      "name": "",
-      "description": "",
+      "name": "Opus Dei",
+      "description": "Une organisation laïque profondément conservatrice et secrète, connue pour la dévotion inébranlable de ses membres et son influence dans la société séculière.",
       "troops": {
         "devotednumerary": {
-          "name": ""
+          "name": "Numéraire Dévot"
         },
         "secularagent": {
-          "name": ""
+          "name": "Agent Séculier"
         },
         "opusdeizealot": {
-          "name": ""
+          "name": "Zélote de l'Opus Dei"
         },
         "supernumeraryelite": {
-          "name": ""
+          "name": "Surnuméraire d'Élite"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit Doctrinal"
         }
       }
     },
     "swissguards": {
-      "name": "",
-      "description": "",
+      "name": "Garde Suisse",
+      "description": "Les mercenaires d'élite au costume bariolé mais redoutables, jurés de protéger le Pape, maniant hallebardes et fusils à plasma avancés.",
       "troops": {
         "swissrecruit": {
-          "name": ""
+          "name": "Recrue Suisse"
         },
         "halberdier": {
-          "name": ""
+          "name": "Hallebardier"
         },
         "plasmaguard": {
-          "name": ""
+          "name": "Garde à Plasma"
         },
         "swisscommander": {
-          "name": ""
+          "name": "Commandant Suisse"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur du Vatican"
         }
       }
     },
     "ussr": {
-      "name": "",
-      "description": "",
+      "name": "URSS",
+      "description": "La puissante force militaire de l'Union soviétique, réputée pour sa discipline, ses effectifs massifs et son idéologie inébranlable.",
       "troops": {
         "redarmyrecruit": {
-          "name": ""
+          "name": "Recrue de l'Armée Rouge"
         },
         "sovietrifleman": {
-          "name": ""
+          "name": "Fusilier Soviétique"
         },
         "commissar": {
-          "name": ""
+          "name": "Commissaire"
         },
         "redveteran": {
-          "name": ""
+          "name": "Vétéran Rouge"
         },
         "sovietsniper": {
-          "name": ""
+          "name": "Tireur d'Élite Soviétique"
         },
         "redofficer": {
-          "name": ""
+          "name": "Officier Rouge"
         },
         "elitesoldier": {
-          "name": ""
+          "name": "Soldat d'Élite"
         },
         "sovietcommander": {
-          "name": ""
+          "name": "Commandant Soviétique"
         },
         "scientist": {
-          "name": ""
+          "name": "Scientifique Soviétique"
         }
       }
     },
     "guardsdivision": {
-      "name": "",
-      "description": "",
+      "name": "Division de la Garde",
+      "description": "Des unités soviétiques d'élite qui se sont distinguées au combat et portent le prestigieux titre de « Garde ».",
       "troops": {
         "guardsprivate": {
-          "name": ""
+          "name": "Soldat de la Garde"
         },
         "guardssergeant": {
-          "name": ""
+          "name": "Sergent de la Garde"
         },
         "guardsmarksman": {
-          "name": ""
+          "name": "Tireur de la Garde"
         },
         "guardslieutenant": {
-          "name": ""
+          "name": "Lieutenant de la Garde"
         },
         "guardscaptain": {
-          "name": ""
+          "name": "Capitaine de la Garde"
         },
         "guardsmajor": {
-          "name": ""
+          "name": "Major de la Garde"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur de Division"
         }
       }
     },
     "tankdivision": {
-      "name": "",
-      "description": "",
+      "name": "Division Blindée",
+      "description": "Des forces blindées équipées de T-34 et de chars lourds, le poing de fer de l'Armée rouge.",
       "troops": {
         "tankcrewman": {
-          "name": ""
+          "name": "Équipier de Char"
         },
         "t34driver": {
-          "name": ""
+          "name": "Pilote de T-34"
         },
         "tankcommander": {
-          "name": ""
+          "name": "Chef de Char"
         },
         "heavytankoperator": {
-          "name": ""
+          "name": "Servant de Char Lourd"
         },
         "tankace": {
-          "name": ""
+          "name": "As des Blindés"
         },
         "armoredbrigadeleader": {
-          "name": ""
+          "name": "Chef de Brigade Blindée"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Blindé"
         }
       }
     },
     "rifledivision": {
-      "name": "",
-      "description": "",
+      "name": "Division de Fusiliers",
+      "description": "L'épine dorsale de l'Armée rouge, de braves fusiliers qui tiennent la ligne contre toute attente.",
       "troops": {
         "rifleman": {
-          "name": ""
+          "name": "Fusilier"
         },
         "veteranrifleman": {
-          "name": ""
+          "name": "Fusilier Vétéran"
         },
         "riflesquadleader": {
-          "name": ""
+          "name": "Chef d'Escouade de Fusiliers"
         },
         "sharpshooter": {
-          "name": ""
+          "name": "Tireur d'Élite"
         },
         "riflecompanycommander": {
-          "name": ""
+          "name": "Commandant de Compagnie de Fusiliers"
         },
         "elitemarksman": {
-          "name": ""
+          "name": "Tireur d'Élite Émérite"
         },
         "scientist": {
-          "name": ""
+          "name": "Chercheur en Balistique"
         }
       }
     },
     "airbornedivision": {
-      "name": "",
-      "description": "",
+      "name": "Division Aéroportée",
+      "description": "Des parachutistes d'élite et des forces aéroportées, qui frappent du ciel derrière les lignes ennemies.",
       "troops": {
         "paratrooper": {
-          "name": ""
+          "name": "Parachutiste"
         },
         "airborneassault": {
-          "name": ""
+          "name": "Assaut Aéroporté"
         },
         "jumpmaster": {
-          "name": ""
+          "name": "Chef Largueur"
         },
         "airbornesniper": {
-          "name": ""
+          "name": "Tireur d'Élite Aéroporté"
         },
         "airbornecommander": {
-          "name": ""
+          "name": "Commandant Aéroporté"
         },
         "spetsnazparatrooper": {
-          "name": ""
+          "name": "Parachutiste Spetsnaz"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Aéronautique"
         }
       }
     },
     "artillerydivision": {
-      "name": "",
-      "description": "",
+      "name": "Division d'Artillerie",
+      "description": "L'artillerie lourde et les forces de roquettes, le « Dieu de la Guerre » qui fait pleuvoir la destruction sur l'ennemi.",
       "troops": {
         "artillerygunner": {
-          "name": ""
+          "name": "Servant d'Artillerie"
         },
         "howitzercrew": {
-          "name": ""
+          "name": "Équipe d'Obusier"
         },
         "katyushaoperator": {
-          "name": ""
+          "name": "Servant de Katioucha"
         },
         "artilleryspotter": {
-          "name": ""
+          "name": "Observateur d'Artillerie"
         },
         "heavyartillerycommander": {
-          "name": ""
+          "name": "Commandant d'Artillerie Lourde"
         },
         "rocketartillerymaster": {
-          "name": ""
+          "name": "Maître de l'Artillerie à Roquettes"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste en Balistique"
         }
       }
     },
     "ottomanempire": {
-      "name": "",
-      "description": "",
+      "name": "Empire Ottoman",
+      "description": "Le Grand Empire qui n'est jamais tombé. Une vaste puissance multiethnique qui règne depuis Istanbul, mêlant des traditions séculaires à une technique militaire et clandestine moderne. Il est mené par le Sultan-Calife.",
       "troops": {
         "sipahicavalry": {
-          "name": ""
+          "name": "Cavalerie Sipahi"
         },
         "janissarytrooper": {
-          "name": ""
+          "name": "Soldat Janissaire"
         },
         "imperialengineer": {
-          "name": ""
+          "name": "Ingénieur Impérial"
         },
         "modernjanissary": {
-          "name": ""
+          "name": "Janissaire Moderne"
         },
         "bashibazoukmercenary": {
-          "name": ""
+          "name": "Mercenaire Bachi-Bouzouk"
         },
         "pashasadvisor": {
-          "name": ""
+          "name": "Conseiller du Pacha"
         },
         "ottomanguard": {
-          "name": ""
+          "name": "Garde Ottoman"
         },
         "grandvizierselite": {
-          "name": ""
+          "name": "Élite du Grand Vizir"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit Impérial"
         }
       }
     },
     "tanzimatbureaucracy": {
-      "name": "",
-      "description": "",
+      "name": "Bureaucratie du Tanzimat",
+      "description": "Le cœur administratif tentaculaire, très structuré et souvent corrompu de l'Empire, qui se modernise avec une efficacité impitoyable.",
       "troops": {
         "registryclerk": {
-          "name": ""
+          "name": "Commis aux Registres"
         },
         "mfettiinspector": {
-          "name": ""
+          "name": "Müfettiş (Inspecteur)"
         },
         "viziersdiplomat": {
-          "name": ""
+          "name": "Diplomate du Vizir"
         },
         "emineffendihighofficial": {
-          "name": ""
+          "name": "Emin Effendi (Haut Fonctionnaire)"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste Bureaucratique"
         }
       }
     },
     "imperialsubmarinefleet": {
-      "name": "",
-      "description": "",
+      "name": "Flotte Impériale de Sous-Marins",
+      "description": "Le service silencieux de la marine ottomane. Il use de furtivité et de systèmes de torpilles de pointe pour garder la maîtrise de la Méditerranée et de la mer Noire.",
       "troops": {
         "submarinecadet": {
-          "name": ""
+          "name": "Cadet Sous-Marinier"
         },
         "sonartechnician": {
-          "name": ""
+          "name": "Technicien Sonar"
         },
         "torpedooperator": {
-          "name": ""
+          "name": "Servant de Torpilles"
         },
         "submarinecommander": {
-          "name": ""
+          "name": "Commandant de Sous-Marin"
         },
         "scientist": {
-          "name": ""
+          "name": "Ingénieur Naval"
         }
       }
     },
     "talonofthecaliph": {
-      "name": "",
-      "description": "",
+      "name": "Serre du Calife",
+      "description": "La police secrète et le service de renseignement du Sultan-Calife, qui traite aussi bien la dissidence intérieure que l'espionnage étranger. Ils sont les véritables « yeux et oreilles » de l'Empire.",
       "troops": {
         "informant": {
-          "name": ""
+          "name": "Informateur"
         },
         "shadowoperative": {
-          "name": ""
+          "name": "Agent de l'Ombre"
         },
         "assassinationspecialist": {
-          "name": ""
+          "name": "Spécialiste de l'Assassinat"
         },
         "grandintelligencer": {
-          "name": ""
+          "name": "Grand Renseigneur"
         },
         "scientist": {
-          "name": ""
+          "name": "Érudit du Califat"
         }
       }
     },
     "janissaryguard": {
-      "name": "",
-      "description": "",
+      "name": "Garde Janissaire",
+      "description": "Un petit détachement de janissaires modernes, très entraînés, qui sert de garde personnelle au Sultan-Calife et de troupes de choc d'élite.",
       "troops": {
         "janissarynovice": {
-          "name": ""
+          "name": "Janissaire Novice"
         },
         "korumatrooper": {
-          "name": ""
+          "name": "Soldat Koruma"
         },
         "janissarycaptain": {
-          "name": ""
+          "name": "Capitaine Janissaire"
         },
         "aaofthekoruma": {
-          "name": ""
+          "name": "Ağa des Koruma"
         },
         "scientist": {
-          "name": ""
+          "name": "Tacticien Janissaire"
         }
       }
     },
     "britannia": {
-      "name": "",
-      "description": "",
+      "name": "Britannia",
+      "description": "L'héritier de l'Empire britannique, une puissance mondiale définie par sa supériorité technique, les vastes ressources du Commonwealth et une armée disciplinée. Dirigé par une monarchie constitutionnelle moderne.",
       "troops": {
         "commonwealthtrooper": {
-          "name": ""
+          "name": "Soldat du Commonwealth"
         },
         "royalmarinerifleman": {
-          "name": ""
+          "name": "Fusilier des Royal Marines"
         },
         "fieldmedic": {
-          "name": ""
+          "name": "Médecin de Terrain"
         },
         "imperialgrenadier": {
-          "name": ""
+          "name": "Grenadier Impérial"
         },
         "highlandermarksman": {
-          "name": ""
+          "name": "Tireur Highlander"
         },
         "staffofficer": {
-          "name": ""
+          "name": "Officier d'État-Major"
         },
         "veteranfusilier": {
-          "name": ""
+          "name": "Fusilier Vétéran"
         },
         "guardcommander": {
-          "name": ""
+          "name": "Commandant de la Garde"
         },
         "scientist": {
-          "name": ""
+          "name": "Scientifique Royal"
         }
       }
     },
     "royalnavytaskforce": {
-      "name": "",
-      "description": "",
+      "name": "Force Navale de la Royal Navy",
+      "description": "Le cœur de la puissance de Britannia, qui déploie frégates avancées, porte-avions et transports à hydroptère pour tenir les routes maritimes du monde.",
       "troops": {
         "seamanrecruit": {
-          "name": ""
+          "name": "Recrue Matelot"
         },
         "frigatecrewman": {
-          "name": ""
+          "name": "Équipier de Frégate"
         },
         "radartechnician": {
-          "name": ""
+          "name": "Technicien Radar"
         },
         "hydrofoilofficer": {
-          "name": ""
+          "name": "Officier d'Hydroptère"
         },
         "fleetcommander": {
-          "name": ""
+          "name": "Commandant de Flotte"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste Naval"
         }
       }
     },
     "sassbscommandos": {
-      "name": "",
-      "description": "",
+      "name": "Commandos SAS/SBS",
+      "description": "Les légendaires Special Air Service et Special Boat Service. Très entraînés, furtifs, et dotés de systèmes personnels avancés de camouflage et de données.",
       "troops": {
         "reconspecialist": {
-          "name": ""
+          "name": "Spécialiste de Reconnaissance"
         },
         "demolitionsexpert": {
-          "name": ""
+          "name": "Expert en Démolition"
         },
         "sbsfrogman": {
-          "name": ""
+          "name": "Nageur de Combat SBS"
         },
         "sascounterterrorist": {
-          "name": ""
+          "name": "Antiterroriste SAS"
         },
         "scientist": {
-          "name": ""
+          "name": "Technicien de Terrain"
         }
       }
     },
     "mi6blackarchive": {
-      "name": "",
-      "description": "",
+      "name": "Archive Noire du MI6",
+      "description": "La division de renseignement la plus clandestine de Britannia, versée dans l'espionnage technique de haut niveau, la guerre psychologique et la manipulation politique mondiale.",
       "troops": {
         "analysthandler": {
-          "name": ""
+          "name": "Officier Traitant"
         },
         "covertagent": {
-          "name": ""
+          "name": "Agent Clandestin"
         },
         "psychologicalwarfareexpert": {
-          "name": ""
+          "name": "Expert en Guerre Psychologique"
         },
         "sectionchiefthecontroller": {
-          "name": ""
+          "name": "Chef de Section (Le Contrôleur)"
         },
         "scientist": {
-          "name": ""
+          "name": "Analyste du Renseignement"
         }
       }
     },
     "sciencecommand": {
-      "name": "",
-      "description": "",
+      "name": "Commandement Scientifique",
+      "description": "Une division mixte militaire et scientifique chargée de mettre au point et de déployer armement à plasma de pointe, systèmes de défense cinétique et armures motorisées.",
       "troops": {
         "labtechnician": {
-          "name": ""
+          "name": "Technicien de Laboratoire"
         },
         "plasmaengineer": {
-          "name": ""
+          "name": "Ingénieur Plasma"
         },
         "powerarmortrooper": {
-          "name": ""
+          "name": "Soldat en Armure Motorisée"
         },
         "chiefscientistkineticist": {
-          "name": ""
+          "name": "Scientifique en Chef (Cinéticien)"
         },
         "scientist": {
-          "name": ""
+          "name": "Scientifique Principal"
         }
       }
     }

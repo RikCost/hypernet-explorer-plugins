@@ -41,7 +41,7 @@
   "declared": "",
   "custodyHearings": "",
   "custodyBlurb": "",
-  "turnYourselfIn": "",
+  "turnYourselfIn": "Se rendre",
   "surrenderBlurb": "",
   "requestHearing": "",
   "hearingBlurb": "",
@@ -56,7 +56,7 @@
   "hearingConfirmClean": "",
   "requestOk": "",
   "courtOffline": "",
-  "cancel": "",
+  "cancel": "Annuler",
   "record": {
     "heading": "",
     "blurb": ""

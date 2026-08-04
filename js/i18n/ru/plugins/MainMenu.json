@@ -1,37 +1,37 @@
 {
   "cmd": {
-    "sandbox": "",
-    "backpack": "",
-    "equip": "",
-    "skills": "",
-    "status": "",
+    "sandbox": "Песочница",
+    "backpack": "Рюкзак",
+    "equip": "Экипировать",
+    "skills": "Навыки",
+    "status": "Статус",
     "specializations": "",
     "biologics": "",
     "dynamics": "",
     "thinker": "",
     "pets": "",
     "workforce": "",
-    "worldMap": "",
+    "worldMap": "Карта мира",
     "vehicles": "",
     "wait": "",
-    "cooking": "",
-    "build": "",
+    "cooking": "Готовка",
+    "build": "Сборка",
     "training": "",
     "research": "",
     "questLog": "",
-    "bestiary": "",
-    "archive": "",
+    "bestiary": "Бестиарий",
+    "archive": "Архив",
     "factions": "",
-    "assets": "",
+    "assets": "Активы",
     "hypernet": "",
     "multiplayer": "",
-    "save": "",
+    "save": "Сохраниться",
     "preferences": "",
-    "tools": "",
-    "resign": "",
+    "tools": "Инструменты",
+    "resign": "Отойти от Дел",
     "returnToShip": "",
     "teleportToShip": "",
-    "returnToWorldMap": ""
+    "returnToWorldMap": "Вернуться на карту мира"
   },
   "dynamics": {
     "roster": "",
@@ -41,7 +41,7 @@
     "history": "",
     "historyHint": "",
     "inactiveHint": "",
-    "inactiveTitle": "",
+    "inactiveTitle": "Выключено",
     "inactiveEmpty": "",
     "inactiveWorldHint": "",
     "inactiveFull": "",
@@ -53,7 +53,7 @@
     "isLeader": "",
     "cannotRetire": "",
     "nowInactive": "",
-    "back": "",
+    "back": "Назад",
     "title": "",
     "rosterTitle": "",
     "noMembers": "",
@@ -65,9 +65,9 @@
   },
   "roster": {
     "travelling": "",
-    "inactive": "",
+    "inactive": "Выключено",
     "departed": "",
-    "dead": "",
+    "dead": "Мертв",
     "joined": "",
     "died": "",
     "retired": "",
@@ -77,13 +77,13 @@
     "follower": "",
     "pet": "",
     "classless": "",
-    "none": "",
+    "none": "Нет",
     "left": "",
     "levelAbbr": "",
     "thatMember": "",
     "following": "",
     "setActive": "",
-    "repair": "",
+    "repair": "Починить",
     "leader": "",
     "makeLeader": "",
     "confirm": "",
@@ -96,7 +96,7 @@
     "hunger": "",
     "sleep": "",
     "hygiene": "",
-    "social": "",
+    "social": "Социальная",
     "fun": ""
   },
   "place": {
@@ -106,33 +106,33 @@
     "localSector": ""
   },
   "reproduction": {
-    "none": "",
-    "testicles": "",
+    "none": "Нет",
+    "testicles": "Семенники (мужской)",
     "uterus": "",
     "oviparous": "",
     "plant": "",
     "mitosis": "",
-    "unknown": ""
+    "unknown": "Неизвестно"
   },
   "gender": {
-    "male": "",
-    "female": "",
+    "male": "Мужской",
+    "female": "Женский",
     "nonBinary": "",
-    "cocoon": "",
-    "fluid": ""
+    "cocoon": "Кокон",
+    "fluid": "Жидкость"
   },
   "weather": {
     "clear": ""
   },
   "page": {
-    "tools": "",
+    "tools": "Инструменты",
     "pets": "",
     "vehicles": ""
   },
   "vital": {
-    "hp": "",
-    "mp": "",
-    "ap": ""
+    "hp": "ХП",
+    "mp": "МП",
+    "ap": "АП"
   },
   "label": {
     "location": "",

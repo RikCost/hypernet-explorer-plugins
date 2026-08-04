@@ -80,8 +80,8 @@
   "office": {
     "mayor": "",
     "guardCaptain": "",
-    "taxCollector": "",
-    "highPriest": ""
+    "taxCollector": "세금 징수원",
+    "highPriest": "대사제"
   },
   "policy": {
     "taxRate": "",

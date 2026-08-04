@@ -3,10 +3,10 @@
   "foundWithTier": "",
   "foundMessage": "",
   "tier": {
-    "common": "",
-    "uncommon": "",
-    "rare": "",
+    "common": "흔한",
+    "uncommon": "비범",
+    "rare": "희귀",
     "epic": "",
-    "legendary": ""
+    "legendary": "전설의"
   }
 }

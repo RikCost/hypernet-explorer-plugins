@@ -1,9 +1,9 @@
 {
-  "unknownLocation": "",
+  "unknownLocation": "알 수 없는 위치",
   "getOut": "",
   "lockpick": "",
   "bash": "",
-  "cancel": "",
+  "cancel": "취소",
   "doorLocked": "",
   "usedSkeletonKey": "",
   "groundFloor": "",

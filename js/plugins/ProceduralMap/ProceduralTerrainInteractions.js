@@ -793,13 +793,14 @@
     return U.createSeededRandom(seed);
   }
 
-  // Per-tile container id for Sack/Crate loot (independent of any real event),
-  // seeded once and thereafter idempotent (generateContainerItems bails out if
-  // the container already holds anything).
+  // Per-tile container id for Sack/Crate loot (independent of any real event).
   function proceduralContainerId(featureName, x, y) {
     return `proc:${featureName}:${currentMapKey()}:${x},${y}`;
   }
 
+  // Stocked once and once only: ContainerManager keeps the ledger, so a crate
+  // the player has emptied is not refilled with the same seeded loot on the
+  // next Open.
   function generateSeededLoot(containerId, cat1, cat2, cat3, maxItems, seedRng) {
     const CM = window.ContainerManager;
     if (!CM) return;

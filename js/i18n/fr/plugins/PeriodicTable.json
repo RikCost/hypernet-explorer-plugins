@@ -1,7 +1,7 @@
 {
   "ui": {
-    "title": "",
-    "back": "",
+    "title": "Tableau Périodique",
+    "back": "Retour",
     "lanthanides": "",
     "actinides": "",
     "esotericSection": "",
@@ -33,7 +33,7 @@
     "solid": "",
     "liquid": "",
     "gas": "",
-    "unknown": "",
+    "unknown": "Inconnu",
     "mythical": "",
     "superposed": ""
   },
@@ -223,7 +223,7 @@
       "desc": ""
     },
     "Ag": {
-      "name": "",
+      "name": "Argent",
       "desc": ""
     },
     "Cd": {
@@ -291,7 +291,7 @@
       "desc": ""
     },
     "Au": {
-      "name": "",
+      "name": "Or",
       "desc": ""
     },
     "Hg": {
@@ -543,12 +543,12 @@
       "desc": ""
     }
   },
-  "unknownDiscoverer": "",
+  "unknownDiscoverer": "Inconnu",
   "eras": {
-    "ancient": "",
+    "ancient": "Antique",
     "primordial": "",
     "eternal": "",
-    "unknown": "",
+    "unknown": "Inconnu",
     "antediluvian": "",
     "arcaneAge": "",
     "unobserved": ""

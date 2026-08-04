@@ -3,11 +3,11 @@
     "system": "",
     "galaxy": "",
     "localGroup": "",
-    "supercluster": "",
+    "supercluster": "Сверхскопление Девы",
     "filaments": "",
     "observable": "",
     "universe": "",
-    "unknown": "",
+    "unknown": "Неизвестно",
     "planet": "",
     "cluster": "",
     "web": "",
@@ -26,9 +26,9 @@
   },
   "cluster": {
     "virgo": "",
-    "hydra": "",
-    "centaurus": "",
-    "pavoIndus": ""
+    "hydra": "Скопление Гидры",
+    "centaurus": "Скопление Центавра",
+    "pavoIndus": "Сверхскопление Павлина, Индейца"
   },
   "travel": {
     "yourDestination": "",
@@ -61,7 +61,7 @@
     "elliptical galaxy": ""
   },
   "row": {
-    "type": "",
+    "type": "Тип",
     "diameter": "",
     "members": "",
     "stars": "",
@@ -83,8 +83,8 @@
     "orbit": "",
     "period": "",
     "atmosphere": "",
-    "yes": "",
-    "no": "",
+    "yes": "Да",
+    "no": "Нет",
     "breathableAir": "",
     "life": "",
     "detected": "",
@@ -125,7 +125,7 @@
     "hyperflux": "",
     "schrD": "",
     "mapFuel": "",
-    "refuel": "",
+    "refuel": "Заправиться",
     "orbit": "",
     "chooseLandingSite": "",
     "cancel": "",
@@ -143,8 +143,8 @@
     "stripMine": "",
     "serviceTelescope": "",
     "serviced": "",
-    "repair": "",
-    "close": "",
+    "repair": "Починить",
+    "close": "Закрыть",
     "landingGridHelp": "",
     "refuelTooltip": "",
     "orbitHint": "",
@@ -349,7 +349,7 @@
     "loggedInCatalog": ""
   },
   "refuel": {
-    "refuel": "",
+    "refuel": "Заправиться",
     "stop": "",
     "refuelling": "",
     "onArrival": "",

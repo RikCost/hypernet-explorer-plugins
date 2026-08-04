@@ -1,20 +1,20 @@
 {
   "stage": {
-    "baby": "",
-    "adult": ""
+    "baby": "새끼",
+    "adult": "성체"
   },
-  "collected": "",
-  "mapNumbered": "",
-  "itemNumbered": "",
-  "petNote": "",
-  "cannotKeep": "",
-  "noAnimalToSell": "",
-  "sold": "",
-  "nothingToCollect": "",
+  "collected": "\\I[{icon}]\\c[14]{item}\\c[0] ×{qty} 수확!",
+  "mapNumbered": "맵 {id}",
+  "itemNumbered": "아이템 #{id}",
+  "petNote": "{place}에서 기른 {stage} {animal}.",
+  "cannotKeep": "여기서는 동물을 기를 수 없습니다.",
+  "noAnimalToSell": "여기에는 팔 동물이 없습니다.",
+  "sold": "\\c[14]{animal}\\c[0]을(를) €{amount}에 팔았다!",
+  "nothingToCollect": "아직 수확할 것이 없습니다.",
   "youngAnimal": {
-    "one": "",
-    "other": ""
+    "one": "어린 \\c[14]{animal}\\c[0]. 약 {count}일 뒤에 다 자랍니다.",
+    "other": "어린 \\c[14]{animal}\\c[0]. 약 {count}일 뒤에 다 자랍니다."
   },
-  "pleased": "",
-  "nothingReady": ""
+  "pleased": "\\c[14]{animal}\\c[0]이(가) 당신을 보고 기뻐합니다.",
+  "nothingReady": "\\c[14]{animal}\\c[0]은(는) 아직 준비된 것이 없습니다."
 }

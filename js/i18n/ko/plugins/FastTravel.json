@@ -2,12 +2,12 @@
   "transport": {
     "walking": "",
     "bicycle": "",
-    "horse": "",
+    "horse": "말",
     "carsharing": "",
-    "camper": "",
-    "bus": "",
+    "camper": "캠핑카",
+    "bus": "버스",
     "train": "",
-    "taxi": "",
+    "taxi": "택시",
     "boat": "",
     "ferry": "",
     "airplane_economy": "",
@@ -31,8 +31,8 @@
     "time_machine": "",
     "dimensional": ""
   },
-  "defaultDestination": "",
-  "trainStationTitle": "",
+  "defaultDestination": "안트베르펀",
+  "trainStationTitle": "기차역",
   "stationBadge": "",
   "stationLabel": "",
   "fuelRate": "",
@@ -47,7 +47,7 @@
   "destFuel": "",
   "destCost": "",
   "ui": {
-    "back": "",
+    "back": "뒤로",
     "edit": "",
     "print": "",
     "stations": "",
@@ -59,7 +59,7 @@
     "cost": "",
     "travelTime": "",
     "transportPlaceholder": "",
-    "cancel": "",
+    "cancel": "취소",
     "travel": ""
   }
 }

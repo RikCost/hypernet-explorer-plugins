@@ -3,11 +3,11 @@
     "system": "",
     "galaxy": "",
     "localGroup": "",
-    "supercluster": "",
+    "supercluster": "처녀자리 초은하단",
     "filaments": "",
     "observable": "",
     "universe": "",
-    "unknown": "",
+    "unknown": "미상",
     "planet": "",
     "cluster": "",
     "web": "",
@@ -26,9 +26,9 @@
   },
   "cluster": {
     "virgo": "",
-    "hydra": "",
-    "centaurus": "",
-    "pavoIndus": ""
+    "hydra": "바다뱀자리 초은하단",
+    "centaurus": "센타우루스자리 초은하단",
+    "pavoIndus": "공작자리-인디언자리 초은하단"
   },
   "travel": {
     "yourDestination": "",
@@ -61,7 +61,7 @@
     "elliptical galaxy": ""
   },
   "row": {
-    "type": "",
+    "type": "유형",
     "diameter": "",
     "members": "",
     "stars": "",
@@ -83,8 +83,8 @@
     "orbit": "",
     "period": "",
     "atmosphere": "",
-    "yes": "",
-    "no": "",
+    "yes": "예",
+    "no": "아니오",
     "breathableAir": "",
     "life": "",
     "detected": "",
@@ -125,10 +125,10 @@
     "hyperflux": "",
     "schrD": "",
     "mapFuel": "",
-    "refuel": "",
+    "refuel": "연료 보급",
     "orbit": "",
     "chooseLandingSite": "",
-    "cancel": "",
+    "cancel": "취소",
     "servicingBay": "",
     "stripMining": "",
     "cutLasers": "",
@@ -143,8 +143,8 @@
     "stripMine": "",
     "serviceTelescope": "",
     "serviced": "",
-    "repair": "",
-    "close": "",
+    "repair": "수리",
+    "close": "닫기",
     "landingGridHelp": "",
     "refuelTooltip": "",
     "orbitHint": "",
@@ -248,7 +248,7 @@
   },
   "core": {
     "noSpaceports": "",
-    "cancel": "",
+    "cancel": "취소",
     "theStar": "",
     "refuellingFrom": "",
     "distanceLy": "",
@@ -349,7 +349,7 @@
     "loggedInCatalog": ""
   },
   "refuel": {
-    "refuel": "",
+    "refuel": "연료 보급",
     "stop": "",
     "refuelling": "",
     "onArrival": "",

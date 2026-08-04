@@ -824,508 +824,508 @@
     },
     "battlenuns": {
       "name": "전투 수녀",
-      "description": "",
+      "description": "성서와 현대전을 함께 익힌 전투 수녀들의 수도회로, 바티칸의 특수부대 노릇을 한다.",
       "troops": {
         "novicesister": {
-          "name": ""
+          "name": "수련 수녀"
         },
         "battlesister": {
-          "name": ""
+          "name": "전투 수녀"
         },
         "sistersuperior": {
-          "name": ""
+          "name": "수녀 장상"
         },
         "mothersuperior": {
-          "name": ""
+          "name": "수녀원장"
         },
         "scientist": {
-          "name": ""
+          "name": "전투 군종 학자"
         }
       }
     },
     "hexorcistscorp": {
-      "name": "",
-      "description": "",
+      "name": "헥소시스트 군단",
+      "description": "악마의 코드와 폭주 AI, 그 밖의 디지털 이단과 싸우는 기술사제 특수 부대.",
       "troops": {
         "cyberacolyte": {
-          "name": ""
+          "name": "사이버 시종"
         },
         "techpriest": {
-          "name": ""
+          "name": "기술사제"
         },
         "digitalexorcist": {
-          "name": ""
+          "name": "디지털 퇴마사"
         },
         "masterhexorcist": {
-          "name": ""
+          "name": "헥소시스트 사범"
         },
         "scientist": {
-          "name": ""
+          "name": "퇴마 연구원"
         }
       }
     },
     "gaylobby": {
-      "name": "",
-      "description": "",
+      "name": "게이 로비",
+      "description": "유서 깊은 기관 안쪽에서 진보적 개혁을 주창하는, 바티칸 내부의 강력하고 영향력 있는 그림자 집단.",
       "troops": {
         "progressivepriest": {
-          "name": ""
+          "name": "진보 사제"
         },
         "reformadvocate": {
-          "name": ""
+          "name": "개혁 옹호자"
         },
         "shadowdiplomat": {
-          "name": ""
+          "name": "그림자 외교관"
         },
         "scientist": {
-          "name": ""
+          "name": "정책 분석가"
         }
       }
     },
     "opusdei": {
-      "name": "",
-      "description": "",
+      "name": "오푸스 데이",
+      "description": "구성원들의 흔들림 없는 헌신과 세속 사회에서의 영향력으로 이름난, 깊이 보수적이고 은밀한 평신도 조직.",
       "troops": {
         "devotednumerary": {
-          "name": ""
+          "name": "헌신적인 수인"
         },
         "secularagent": {
-          "name": ""
+          "name": "세속 요원"
         },
         "opusdeizealot": {
-          "name": ""
+          "name": "오푸스 데이 광신도"
         },
         "supernumeraryelite": {
-          "name": ""
+          "name": "정예 협조자"
         },
         "scientist": {
-          "name": ""
+          "name": "교리 학자"
         }
       }
     },
     "swissguards": {
-      "name": "",
-      "description": "",
+      "name": "스위스 근위대",
+      "description": "화려한 복장이지만 치명적인 정예 용병들. 교황을 지키기로 맹세했으며 미늘창과 첨단 플라스마 소총을 함께 다룬다.",
       "troops": {
         "swissrecruit": {
-          "name": ""
+          "name": "스위스 신병"
         },
         "halberdier": {
-          "name": ""
+          "name": "미늘창병"
         },
         "plasmaguard": {
-          "name": ""
+          "name": "플라스마 근위병"
         },
         "swisscommander": {
-          "name": ""
+          "name": "스위스 지휘관"
         },
         "scientist": {
-          "name": ""
+          "name": "바티칸 공병"
         }
       }
     },
     "ussr": {
-      "name": "",
-      "description": "",
+      "name": "소련",
+      "description": "기강과 압도적인 수, 흔들림 없는 이념으로 이름난 소비에트 연방의 강대한 군사력.",
       "troops": {
         "redarmyrecruit": {
-          "name": ""
+          "name": "붉은 군대 신병"
         },
         "sovietrifleman": {
-          "name": ""
+          "name": "소비에트 소총병"
         },
         "commissar": {
-          "name": ""
+          "name": "정치위원"
         },
         "redveteran": {
-          "name": ""
+          "name": "붉은 군대 노병"
         },
         "sovietsniper": {
-          "name": ""
+          "name": "소비에트 저격수"
         },
         "redofficer": {
-          "name": ""
+          "name": "붉은 군대 장교"
         },
         "elitesoldier": {
-          "name": ""
+          "name": "정예 병사"
         },
         "sovietcommander": {
-          "name": ""
+          "name": "소비에트 지휘관"
         },
         "scientist": {
-          "name": ""
+          "name": "소비에트 과학자"
         }
       }
     },
     "guardsdivision": {
-      "name": "",
-      "description": "",
+      "name": "근위 사단",
+      "description": "전투에서 공을 세워 명예로운 '근위' 칭호를 받은 소비에트 정예 부대.",
       "troops": {
         "guardsprivate": {
-          "name": ""
+          "name": "근위 병사"
         },
         "guardssergeant": {
-          "name": ""
+          "name": "근위 하사관"
         },
         "guardsmarksman": {
-          "name": ""
+          "name": "근위 명사수"
         },
         "guardslieutenant": {
-          "name": ""
+          "name": "근위 중위"
         },
         "guardscaptain": {
-          "name": ""
+          "name": "근위 대위"
         },
         "guardsmajor": {
-          "name": ""
+          "name": "근위 소령"
         },
         "scientist": {
-          "name": ""
+          "name": "사단 공병"
         }
       }
     },
     "tankdivision": {
-      "name": "",
-      "description": "",
+      "name": "전차 사단",
+      "description": "T-34와 중전차로 무장한 기갑 부대, 붉은 군대의 철권.",
       "troops": {
         "tankcrewman": {
-          "name": ""
+          "name": "전차 승무원"
         },
         "t34driver": {
-          "name": ""
+          "name": "T-34 조종수"
         },
         "tankcommander": {
-          "name": ""
+          "name": "전차장"
         },
         "heavytankoperator": {
-          "name": ""
+          "name": "중전차 조작수"
         },
         "tankace": {
-          "name": ""
+          "name": "전차 에이스"
         },
         "armoredbrigadeleader": {
-          "name": ""
+          "name": "기갑 여단장"
         },
         "scientist": {
-          "name": ""
+          "name": "기갑 정비 기사"
         }
       }
     },
     "rifledivision": {
-      "name": "",
-      "description": "",
+      "name": "소총 사단",
+      "description": "온갖 불리함 속에서도 전선을 지키는 용감한 소총병들, 붉은 군대의 척추.",
       "troops": {
         "rifleman": {
-          "name": ""
+          "name": "소총병"
         },
         "veteranrifleman": {
-          "name": ""
+          "name": "노련한 소총병"
         },
         "riflesquadleader": {
-          "name": ""
+          "name": "소총 분대장"
         },
         "sharpshooter": {
-          "name": ""
+          "name": "명사수"
         },
         "riflecompanycommander": {
-          "name": ""
+          "name": "소총 중대장"
         },
         "elitemarksman": {
-          "name": ""
+          "name": "정예 명사수"
         },
         "scientist": {
-          "name": ""
+          "name": "탄도학 연구원"
         }
       }
     },
     "airbornedivision": {
-      "name": "",
-      "description": "",
+      "name": "공수 사단",
+      "description": "하늘에서 적진 후방으로 내리꽂는 정예 낙하산병과 공수 부대.",
       "troops": {
         "paratrooper": {
-          "name": ""
+          "name": "낙하산병"
         },
         "airborneassault": {
-          "name": ""
+          "name": "공수 돌격병"
         },
         "jumpmaster": {
-          "name": ""
+          "name": "강하 지휘관"
         },
         "airbornesniper": {
-          "name": ""
+          "name": "공수 저격수"
         },
         "airbornecommander": {
-          "name": ""
+          "name": "공수 지휘관"
         },
         "spetsnazparatrooper": {
-          "name": ""
+          "name": "스페츠나츠 낙하산병"
         },
         "scientist": {
-          "name": ""
+          "name": "항공 기술자"
         }
       }
     },
     "artillerydivision": {
-      "name": "",
-      "description": "",
+      "name": "포병 사단",
+      "description": "적에게 파괴를 쏟아붓는 '전쟁의 신', 중포와 로켓 부대.",
       "troops": {
         "artillerygunner": {
-          "name": ""
+          "name": "포수"
         },
         "howitzercrew": {
-          "name": ""
+          "name": "곡사포 반"
         },
         "katyushaoperator": {
-          "name": ""
+          "name": "카츄샤 조작수"
         },
         "artilleryspotter": {
-          "name": ""
+          "name": "포병 관측수"
         },
         "heavyartillerycommander": {
-          "name": ""
+          "name": "중포 지휘관"
         },
         "rocketartillerymaster": {
-          "name": ""
+          "name": "로켓 포병 사범"
         },
         "scientist": {
-          "name": ""
+          "name": "탄도 분석가"
         }
       }
     },
     "ottomanempire": {
-      "name": "",
-      "description": "",
+      "name": "오스만 제국",
+      "description": "끝내 무너지지 않은 대제국. 이스탄불에서 다스리는 광대한 다민족 강국으로, 수백 년의 전통에 현대 군사 기술과 은밀한 기술을 섞는다. 술탄-칼리프가 이끈다.",
       "troops": {
         "sipahicavalry": {
-          "name": ""
+          "name": "시파히 기병"
         },
         "janissarytrooper": {
-          "name": ""
+          "name": "예니체리 병사"
         },
         "imperialengineer": {
-          "name": ""
+          "name": "제국 공병"
         },
         "modernjanissary": {
-          "name": ""
+          "name": "현대식 예니체리"
         },
         "bashibazoukmercenary": {
-          "name": ""
+          "name": "바시보주크 용병"
         },
         "pashasadvisor": {
-          "name": ""
+          "name": "파샤의 고문"
         },
         "ottomanguard": {
-          "name": ""
+          "name": "오스만 근위병"
         },
         "grandvizierselite": {
-          "name": ""
+          "name": "대재상의 정예"
         },
         "scientist": {
-          "name": ""
+          "name": "제국 학자"
         }
       }
     },
     "tanzimatbureaucracy": {
-      "name": "",
-      "description": "",
+      "name": "탄지마트 관료제",
+      "description": "방대하고 고도로 짜여 있으며 종종 부패한 제국의 행정 중추로, 무자비한 효율로 근대화를 밀어붙인다.",
       "troops": {
         "registryclerk": {
-          "name": ""
+          "name": "등기 서기"
         },
         "mfettiinspector": {
-          "name": ""
+          "name": "Müfettiş (감찰관)"
         },
         "viziersdiplomat": {
-          "name": ""
+          "name": "재상의 외교관"
         },
         "emineffendihighofficial": {
-          "name": ""
+          "name": "에민 에펜디 (고위 관료)"
         },
         "scientist": {
-          "name": ""
+          "name": "관료 분석가"
         }
       }
     },
     "imperialsubmarinefleet": {
-      "name": "",
-      "description": "",
+      "name": "제국 잠수함대",
+      "description": "오스만 해군의 침묵의 병과. 첨단 은밀 기술과 어뢰 체계로 지중해와 흑해의 통제권을 지킨다.",
       "troops": {
         "submarinecadet": {
-          "name": ""
+          "name": "잠수함 후보생"
         },
         "sonartechnician": {
-          "name": ""
+          "name": "음탐 기술병"
         },
         "torpedooperator": {
-          "name": ""
+          "name": "어뢰수"
         },
         "submarinecommander": {
-          "name": ""
+          "name": "잠수함장"
         },
         "scientist": {
-          "name": ""
+          "name": "해군 기술자"
         }
       }
     },
     "talonofthecaliph": {
-      "name": "",
-      "description": "",
+      "name": "칼리프의 발톱",
+      "description": "술탄-칼리프의 비밀경찰이자 정보기관으로, 국내 반체제와 해외 첩보를 함께 다룬다. 이들이야말로 제국의 진짜 '눈과 귀'다.",
       "troops": {
         "informant": {
-          "name": ""
+          "name": "정보원"
         },
         "shadowoperative": {
-          "name": ""
+          "name": "그림자 요원"
         },
         "assassinationspecialist": {
-          "name": ""
+          "name": "암살 전문가"
         },
         "grandintelligencer": {
-          "name": ""
+          "name": "대정보관"
         },
         "scientist": {
-          "name": ""
+          "name": "칼리프국 학자"
         }
       }
     },
     "janissaryguard": {
-      "name": "",
-      "description": "",
+      "name": "예니체리 근위",
+      "description": "술탄-칼리프의 친위대이자 정예 충격 부대로 복무하는, 고도로 훈련된 소수의 현대식 예니체리 파견대.",
       "troops": {
         "janissarynovice": {
-          "name": ""
+          "name": "예니체리 수련생"
         },
         "korumatrooper": {
-          "name": ""
+          "name": "코루마 병사"
         },
         "janissarycaptain": {
-          "name": ""
+          "name": "예니체리 대장"
         },
         "aaofthekoruma": {
-          "name": ""
+          "name": "코루마의 아아"
         },
         "scientist": {
-          "name": ""
+          "name": "예니체리 전술가"
         }
       }
     },
     "britannia": {
-      "name": "",
-      "description": "",
+      "name": "브리타니아",
+      "description": "기술적 우위와 방대한 연방 자원, 기강 잡힌 군대로 규정되는 대영제국의 후계 세계 강국. 현대적 입헌군주제가 다스린다.",
       "troops": {
         "commonwealthtrooper": {
-          "name": ""
+          "name": "연방 병사"
         },
         "royalmarinerifleman": {
-          "name": ""
+          "name": "왕립 해병 소총병"
         },
         "fieldmedic": {
-          "name": ""
+          "name": "야전 의무병"
         },
         "imperialgrenadier": {
-          "name": ""
+          "name": "제국 척탄병"
         },
         "highlandermarksman": {
-          "name": ""
+          "name": "하일랜더 명사수"
         },
         "staffofficer": {
-          "name": ""
+          "name": "참모 장교"
         },
         "veteranfusilier": {
-          "name": ""
+          "name": "노련한 퓨질리어"
         },
         "guardcommander": {
-          "name": ""
+          "name": "근위 지휘관"
         },
         "scientist": {
-          "name": ""
+          "name": "왕립 과학자"
         }
       }
     },
     "royalnavytaskforce": {
-      "name": "",
-      "description": "",
+      "name": "왕립 해군 기동부대",
+      "description": "브리타니아의 핵심 전력. 첨단 프리깃과 항공모함, 수중익선 수송함을 배치해 세계 항로를 지킨다.",
       "troops": {
         "seamanrecruit": {
-          "name": ""
+          "name": "수병 신병"
         },
         "frigatecrewman": {
-          "name": ""
+          "name": "프리깃 승조원"
         },
         "radartechnician": {
-          "name": ""
+          "name": "레이더 기술병"
         },
         "hydrofoilofficer": {
-          "name": ""
+          "name": "수중익선 장교"
         },
         "fleetcommander": {
-          "name": ""
+          "name": "함대 사령관"
         },
         "scientist": {
-          "name": ""
+          "name": "해군 분석가"
         }
       }
     },
     "sassbscommandos": {
-      "name": "",
-      "description": "",
+      "name": "SAS/SBS 특수부대",
+      "description": "전설적인 공수특전단과 특전보트대. 고도로 훈련되고 은밀하며 첨단 개인 광학 위장과 자료 체계를 갖췄다.",
       "troops": {
         "reconspecialist": {
-          "name": ""
+          "name": "정찰 전문가"
         },
         "demolitionsexpert": {
-          "name": ""
+          "name": "폭파 전문가"
         },
         "sbsfrogman": {
-          "name": ""
+          "name": "SBS 잠수 대원"
         },
         "sascounterterrorist": {
-          "name": ""
+          "name": "SAS 대테러 요원"
         },
         "scientist": {
-          "name": ""
+          "name": "야전 기술병"
         }
       }
     },
     "mi6blackarchive": {
-      "name": "",
-      "description": "",
+      "name": "MI6 블랙 아카이브",
+      "description": "고차원 기술 첩보와 심리전, 세계 정치 공작을 다루는 브리타니아의 가장 은밀한 정보 부서.",
       "troops": {
         "analysthandler": {
-          "name": ""
+          "name": "담당 분석관"
         },
         "covertagent": {
-          "name": ""
+          "name": "비밀 요원"
         },
         "psychologicalwarfareexpert": {
-          "name": ""
+          "name": "심리전 전문가"
         },
         "sectionchiefthecontroller": {
-          "name": ""
+          "name": "과장 (컨트롤러)"
         },
         "scientist": {
-          "name": ""
+          "name": "정보 분석가"
         }
       }
     },
     "sciencecommand": {
-      "name": "",
-      "description": "",
+      "name": "과학 사령부",
+      "description": "첨단 플라스마 무기와 운동에너지 방어 체계, 파워 아머의 개발과 배치를 맡은 군-과학 합동 부서.",
       "troops": {
         "labtechnician": {
-          "name": ""
+          "name": "실험실 기술원"
         },
         "plasmaengineer": {
-          "name": ""
+          "name": "플라스마 기술자"
         },
         "powerarmortrooper": {
-          "name": ""
+          "name": "파워 아머 병사"
         },
         "chiefscientistkineticist": {
-          "name": ""
+          "name": "수석 과학자 (운동학자)"
         },
         "scientist": {
-          "name": ""
+          "name": "선임 과학자"
         }
       }
     }

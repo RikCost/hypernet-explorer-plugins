@@ -79,9 +79,9 @@
   "ideology.death_metal_inner_circle": "데스메탈 결사단체",
   "ideology.rowdy_horde": "난폭한 무리",
   "ideology.violent_marauders": "폭력적인 약탈자들",
-  "ideology.free_states_confederation": "",
-  "ideology.crown_colony_administration": "",
-  "ideology.punitive_colony_regime": "",
-  "ideology.continental_unionist": "",
-  "ideology.thaumo_industrialist": ""
+  "ideology.free_states_confederation": "자유주 연합",
+  "ideology.crown_colony_administration": "왕령 식민지 행정부",
+  "ideology.punitive_colony_regime": "유형 식민지 체제",
+  "ideology.continental_unionist": "대륙 통합주의",
+  "ideology.thaumo_industrialist": "타우마-산업주의"
 }

@@ -11,7 +11,7 @@
   "gamepadReset": "",
   "commandNames": {
     "ok": "",
-    "cancel": "",
+    "cancel": "취소",
     "shift": "",
     "menu": "",
     "pageup": "",
@@ -23,7 +23,7 @@
     "zoomIn": "",
     "zoomOut": "",
     "kick": "",
-    "run": ""
+    "run": "달리기"
   },
   "unassigned": ""
 }

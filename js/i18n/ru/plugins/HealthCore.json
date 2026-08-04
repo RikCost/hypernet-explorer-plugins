@@ -2,16 +2,16 @@
   "biologics": "",
   "damaged": "",
   "switchPlayer": "",
-  "statFallback": "",
+  "statFallback": "Характеристика",
   "paramNames": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "Макс. ОЗ",
+    "Макс. ОМ",
+    "СИЛ",
+    "Меткость",
+    "ИНТ",
+    "ТЕЛ",
+    "ЛОВ",
+    "ПСИ"
   ],
   "vitalOrganDestroyed": "",
   "partDestroyed": ""

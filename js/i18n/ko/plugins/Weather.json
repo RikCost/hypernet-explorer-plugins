@@ -2,8 +2,8 @@
   "name": {
     "Clear": "",
     "Rain": "",
-    "Storm": "",
+    "Storm": "폭풍",
     "Snow": "",
-    "Unknown": ""
+    "Unknown": "미상"
   }
 }

@@ -3,6 +3,8 @@
     "adjectives": [
       "",
       "",
+      "Cramoisi",
+      "Creux",
       "",
       "",
       "",
@@ -15,15 +17,13 @@
       "",
       "",
       "",
+      "Émeraude",
+      "",
+      "de l'Oubli",
       "",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
+      "Antique",
+      "Perdu",
       ""
     ],
     "nouns": [
@@ -41,10 +41,10 @@
       "",
       "",
       "",
+      "Seuil",
+      "Méridien",
       "",
-      "",
-      "",
-      "",
+      "Creux",
       "",
       "",
       "",
@@ -55,7 +55,7 @@
     "fallback": ""
   },
   "ui": {
-    "artifactBadge": "",
+    "artifactBadge": "ARTEFACT",
     "military": "",
     "economy": ""
   }

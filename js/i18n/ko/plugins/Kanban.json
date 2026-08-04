@@ -1,6 +1,6 @@
 {
   "resolved": "",
-  "failed": "",
+  "failed": "실패한",
   "urgent": "",
   "reward": "",
   "readyToCollect": "",
@@ -12,13 +12,13 @@
   "objectives2": "",
   "terms": "",
   "log": "",
-  "close": "",
+  "close": "닫기",
   "toDo": "",
   "inProgress": "",
   "done": "",
   "noQuests": "",
   "colShiftMoveCardOk": "",
-  "back": "",
+  "back": "뒤로",
   "questLog": "",
   "appName": "",
   "questCompleted": "",
@@ -27,7 +27,7 @@
     "",
     "",
     "",
-    ""
+    "실패한"
   ],
   "showOnMapAt": "",
   "notify": {

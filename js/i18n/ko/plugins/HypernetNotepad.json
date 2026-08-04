@@ -6,8 +6,8 @@
   "menuEdit": "",
   "menuFormat": "",
   "menuHelp": "",
-  "save": "",
-  "exit": "",
+  "save": "저장",
+  "exit": "종료",
   "savePrompt": "",
   "writeError": ""
 }

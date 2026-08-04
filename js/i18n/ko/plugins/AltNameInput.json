@@ -1,34 +1,34 @@
 {
   "script": {
-    "latin": "",
-    "latinExt": "",
-    "cyrillic": "",
-    "japanese": "",
-    "pinyin": "",
-    "zhuyin": "",
-    "hangul": "",
-    "symbols": ""
+    "latin": "라틴",
+    "latinExt": "라틴 확장",
+    "cyrillic": "키릴",
+    "japanese": "일본어",
+    "pinyin": "병음 (간체)",
+    "zhuyin": "주음 (번체)",
+    "hangul": "한글",
+    "symbols": "기호"
   },
   "btn": {
-    "halfWidth": "",
-    "fullWidth": "",
-    "clearBuffer": "",
-    "nextPage": "",
-    "defaultName": "",
-    "insertSpace": "",
-    "backspace": "",
-    "clearInput": "",
-    "prevPage": ""
+    "halfWidth": "반각",
+    "fullWidth": "전각",
+    "clearBuffer": "버퍼 비우기",
+    "nextPage": "다음 페이지",
+    "defaultName": "기본 이름",
+    "insertSpace": "공백 삽입",
+    "backspace": "백스페이스",
+    "clearInput": "입력 지우기",
+    "prevPage": "이전 페이지"
   },
-  "incantation": "",
+  "incantation": "✦ 주문 표기: \"{text}\"",
   "ui": {
-    "yourNameIs": "",
-    "space": "",
-    "backspace": "",
-    "synchronizeName": "",
-    "translationLayers": "",
-    "modifiersNavigation": "",
-    "abort": "",
-    "continue": ""
+    "yourNameIs": "당신의 이름은",
+    "space": "우주",
+    "backspace": "백스페이스",
+    "synchronizeName": "이름 동기화",
+    "translationLayers": "코덱스 번역 계층",
+    "modifiersNavigation": "수정자 및 이동",
+    "abort": "중단",
+    "continue": "계속하기"
   }
 }

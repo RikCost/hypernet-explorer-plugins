@@ -18,101 +18,101 @@
     ]
   },
   "moonPhase": {
-    "newMoon": "",
-    "waxingCrescent": "",
-    "firstQuarter": "",
-    "waxingGibbous": "",
-    "fullMoon": "",
-    "waningGibbous": "",
-    "lastQuarter": "",
-    "waningCrescent": ""
+    "newMoon": "삭",
+    "waxingCrescent": "초승달",
+    "firstQuarter": "상현달",
+    "waxingGibbous": "상현망간",
+    "fullMoon": "보름달",
+    "waningGibbous": "하현망간",
+    "lastQuarter": "하현달",
+    "waningCrescent": "그믐달"
   },
   "option": {
     "backgroundModes": [
-      "",
-      "",
-      ""
+      "생물군계",
+      "환각",
+      "없음"
     ]
   },
-  "unknownMap": "",
+  "unknownMap": "알 수 없는 맵",
   "healthProtection": {
     "messages": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "{actor}이(가) 아슬아슬하게 죽음을 피했다!",
+      "{actor}이(가) 신의 개입으로 구원받았다!",
+      "{actor}이(가) 의지로 목숨을 붙들었다!",
+      "{actor}이(가) 포기하기를 거부했다!",
+      "{actor}이(가) 순전한 의지력으로 살아남았다!",
+      "{actor}이(가) 운명의 보호를 받았다!"
     ],
-    "reset": "",
-    "available": "",
-    "used": "",
-    "status": ""
+    "reset": "모든 캐릭터의 생명 보호가 초기화되었다!",
+    "available": "사용 가능",
+    "used": "사용됨",
+    "status": "{actor}: 보호 {status}"
   },
   "popup": {
-    "miss": "",
-    "evaded": ""
+    "miss": "빗나감",
+    "evaded": "회피"
   },
   "join": {
-    "friendly": "",
-    "hostile": ""
+    "friendly": "{name}이(가) 전투에 합류한다!",
+    "hostile": "{name}이(가) 뛰어든다!"
   },
-  "rangeLabel": "",
+  "rangeLabel": "사거리 {range}",
   "card": {
-    "deckCount": "",
-    "useCard": "",
-    "passTurn": ""
+    "deckCount": "덱 {n}",
+    "useCard": "카드 사용",
+    "passTurn": "턴 넘기기"
   },
   "cmd": {
-    "move": "",
-    "defense": "",
-    "skill": "",
-    "skills": "",
-    "basic": "",
-    "reload": "",
-    "run": ""
+    "move": "이동",
+    "defense": "방어력",
+    "skill": "스킬",
+    "skills": "기술",
+    "basic": "기본적인",
+    "reload": "재장전",
+    "run": "달리기"
   },
   "states": {
-    "removalHeader": "",
-    "atBattleEnd": "",
-    "byRestriction": "",
-    "byDamage": "",
-    "byWalking": "",
-    "byWalkingSteps": "",
-    "statusEffects": "",
-    "navHint": ""
+    "removalHeader": "해제 조건",
+    "atBattleEnd": "전투 종료 시 해제",
+    "byRestriction": "제약으로 해제",
+    "byDamage": "피해로 해제",
+    "byWalking": "걸으면 해제",
+    "byWalkingSteps": "{label} ({steps}걸음)",
+    "statusEffects": "상태 효과",
+    "navHint": "↑↓ 이동 · Esc 닫기"
   },
   "spirit": {
-    "switchCommand": "",
-    "selectSlot": "",
-    "rosterFull": "",
-    "notEnoughGold": "",
-    "slot": "",
-    "unknown": "",
-    "empty": "",
-    "free": "",
-    "entry": ""
+    "switchCommand": "교체",
+    "selectSlot": "빈 슬롯을 고른 뒤 추가할 정령을 선택하세요.",
+    "rosterFull": "정원이 가득 찼습니다! 더 이상 정령을 추가할 수 없습니다.",
+    "notEnoughGold": "골드가 부족합니다!",
+    "slot": "슬롯 {n}:",
+    "unknown": "- 알 수 없음 -",
+    "empty": "- 비어 있음 -",
+    "free": " (무료)",
+    "entry": "{name} - 레벨: {level}{cost}"
   },
   "throw": {
-    "aimHelp": "",
-    "destroyed": "",
-    "missingItem": "",
-    "pickUpPrompt": "",
-    "pickUp": "",
-    "cancel": "",
-    "pickedUp": ""
+    "aimHelp": "방향키로 조준, 확인으로 던지기, 취소로 중단",
+    "destroyed": "아이템이 파괴되었다!",
+    "missingItem": "그 아이템이 없습니다!",
+    "pickUpPrompt": "아이템을 주울까요?",
+    "pickUp": "줍기",
+    "cancel": "취소",
+    "pickedUp": "{item}을(를) 주웠다!"
   },
   "mimic": {
-    "mirrored": "",
-    "hasLearned": "",
-    "learnedFromEnemy": "",
-    "learnableSkills": ""
+    "mirrored": "{actor}이(가) 적의 능력을 그대로 따라했다!",
+    "hasLearned": "{actor}이(가) {skill}을(를) 배웠다!",
+    "learnedFromEnemy": "{actor}이(가) 적에게서 {skill}을(를) 배웠다!",
+    "learnableSkills": "배울 수 있는 스킬:"
   },
   "summon": {
-    "battleOnly": "",
-    "alreadyActive": "",
-    "summoned": ""
+    "battleOnly": "소환은 전투 중에만 사용할 수 있습니다!",
+    "alreadyActive": "이미 소환이 활성화되어 있습니다!",
+    "summoned": "{name}을(를) 소환했다!"
   },
-  "actorDied": "",
-  "bulletHellDamage": ""
+  "actorDied": "{actor}이(가) 사망했다.",
+  "bulletHellDamage": "총 탄막 피해량: {amount}"
 }

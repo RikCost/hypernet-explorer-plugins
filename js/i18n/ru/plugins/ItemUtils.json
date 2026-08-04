@@ -3,20 +3,20 @@
     "hunger": "",
     "sleep": "",
     "hygiene": "",
-    "social": "",
+    "social": "Социальная",
     "leisure": ""
   },
   "category": {
-    "materials": "",
+    "materials": "Материалы",
     "item": "",
-    "food": "",
-    "tools": ""
+    "food": "Еда",
+    "tools": "Инструменты"
   },
   "rarity": {
-    "Common": "",
-    "Uncommon": "",
-    "Rare": "",
+    "Common": "Обыкновенный",
+    "Uncommon": "Необычная",
+    "Rare": "Редкая",
     "Epic": "",
-    "Legendary": ""
+    "Legendary": "Легенды"
   }
 }

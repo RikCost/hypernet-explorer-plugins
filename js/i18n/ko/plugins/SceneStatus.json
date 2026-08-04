@@ -4,10 +4,10 @@
   "traits": "",
   "noTraits": "",
   "states": "",
-  "none": "",
+  "none": "없음",
   "more": "",
-  "total": "",
-  "next": "",
+  "total": "합계",
+  "next": "다음",
   "defaultDescriptions": {
     "warrior": "",
     "mage": "",
@@ -16,7 +16,7 @@
     "archer": "",
     "default": ""
   },
-  "back": "",
+  "back": "뒤로",
   "descriptionSet": "",
   "invalidIndex": "",
   "actorLine": "",
@@ -24,7 +24,7 @@
     "hunger": "",
     "sleep": "",
     "hygiene": "",
-    "social": "",
+    "social": "사회",
     "leisure": ""
   },
   "classAbility": "",

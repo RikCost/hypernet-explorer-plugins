@@ -18,101 +18,101 @@
     ]
   },
   "moonPhase": {
-    "newMoon": "",
-    "waxingCrescent": "",
-    "firstQuarter": "",
-    "waxingGibbous": "",
-    "fullMoon": "",
-    "waningGibbous": "",
-    "lastQuarter": "",
-    "waningCrescent": ""
+    "newMoon": "Новолуние",
+    "waxingCrescent": "Растущий серп",
+    "firstQuarter": "Первая четверть",
+    "waxingGibbous": "Растущая луна",
+    "fullMoon": "Полнолуние",
+    "waningGibbous": "Убывающая луна",
+    "lastQuarter": "Последняя четверть",
+    "waningCrescent": "Убывающий серп"
   },
   "option": {
     "backgroundModes": [
-      "",
-      "",
-      ""
+      "Биом",
+      "Психоделия",
+      "Нет"
     ]
   },
-  "unknownMap": "",
+  "unknownMap": "Неизвестная карта",
   "healthProtection": {
     "messages": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "{actor} едва избежал смерти!",
+      "{actor} спасён божественным вмешательством!",
+      "{actor} упрямо уцепился за жизнь!",
+      "{actor} отказался сдаваться!",
+      "{actor} выжил на одной силе воли!",
+      "{actor} был защищён самой судьбой!"
     ],
-    "reset": "",
-    "available": "",
-    "used": "",
-    "status": ""
+    "reset": "Защита здоровья сброшена для всех персонажей!",
+    "available": "Доступна",
+    "used": "Использована",
+    "status": "{actor}: защита {status}"
   },
   "popup": {
-    "miss": "",
-    "evaded": ""
+    "miss": "Промах",
+    "evaded": "Уклонение"
   },
   "join": {
-    "friendly": "",
-    "hostile": ""
+    "friendly": "{name} вступает в бой!",
+    "hostile": "{name} бросается в схватку!"
   },
-  "rangeLabel": "",
+  "rangeLabel": "Дальность {range}",
   "card": {
-    "deckCount": "",
-    "useCard": "",
-    "passTurn": ""
+    "deckCount": "Колода {n}",
+    "useCard": "Разыграть карту",
+    "passTurn": "Пропустить ход"
   },
   "cmd": {
-    "move": "",
-    "defense": "",
-    "skill": "",
-    "skills": "",
-    "basic": "",
-    "reload": "",
-    "run": ""
+    "move": "Движение",
+    "defense": "Защита",
+    "skill": "Умение",
+    "skills": "Навыки",
+    "basic": "Нормальный",
+    "reload": "Перезарядка",
+    "run": "Убежать"
   },
   "states": {
-    "removalHeader": "",
-    "atBattleEnd": "",
-    "byRestriction": "",
-    "byDamage": "",
-    "byWalking": "",
-    "byWalkingSteps": "",
-    "statusEffects": "",
-    "navHint": ""
+    "removalHeader": "Условия снятия",
+    "atBattleEnd": "Снимается в конце боя",
+    "byRestriction": "Снимается по ограничению",
+    "byDamage": "Снимается от урона",
+    "byWalking": "Снимается при ходьбе",
+    "byWalkingSteps": "{label} (шагов: {steps})",
+    "statusEffects": "Состояния",
+    "navHint": "↑↓ навигация · Esc закрыть"
   },
   "spirit": {
-    "switchCommand": "",
-    "selectSlot": "",
-    "rosterFull": "",
-    "notEnoughGold": "",
-    "slot": "",
-    "unknown": "",
-    "empty": "",
-    "free": "",
-    "entry": ""
+    "switchCommand": "Сменить",
+    "selectSlot": "Выберите пустой слот, затем выберите духа для добавления.",
+    "rosterFull": "Состав заполнен! Больше духов добавить нельзя.",
+    "notEnoughGold": "Не хватает золота!",
+    "slot": "Слот {n}:",
+    "unknown": "- Неизвестно -",
+    "empty": "- Пусто -",
+    "free": " (БЕСПЛАТНО)",
+    "entry": "{name} - уровень: {level}{cost}"
   },
   "throw": {
-    "aimHelp": "",
-    "destroyed": "",
-    "missingItem": "",
-    "pickUpPrompt": "",
-    "pickUp": "",
+    "aimHelp": "Стрелки для прицела, ОК чтобы бросить, Отмена чтобы прервать",
+    "destroyed": "Предмет уничтожен!",
+    "missingItem": "У вас нет этого предмета!",
+    "pickUpPrompt": "Подобрать предмет?",
+    "pickUp": "Подобрать",
     "cancel": "",
-    "pickedUp": ""
+    "pickedUp": "Подобрано: {item}!"
   },
   "mimic": {
-    "mirrored": "",
-    "hasLearned": "",
-    "learnedFromEnemy": "",
-    "learnableSkills": ""
+    "mirrored": "{actor} отразил способности врага!",
+    "hasLearned": "{actor} выучил {skill}!",
+    "learnedFromEnemy": "{actor} перенял {skill} у врага!",
+    "learnableSkills": "Доступные для изучения умения:"
   },
   "summon": {
-    "battleOnly": "",
-    "alreadyActive": "",
-    "summoned": ""
+    "battleOnly": "Призывы можно использовать только в бою!",
+    "alreadyActive": "Призыв уже активен!",
+    "summoned": "Призван {name}!"
   },
-  "actorDied": "",
-  "bulletHellDamage": ""
+  "actorDied": "{actor} погиб.",
+  "bulletHellDamage": "Общий урон в буллет-хелле: {amount}"
 }

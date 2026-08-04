@@ -1,21 +1,21 @@
 {
-  "zoom": "",
-  "controls": "",
-  "playerArmy": "",
-  "enemyArmy": "",
-  "rallyBanner": "",
-  "healBanner": "",
-  "inspireBanner": "",
-  "clickSquad": "",
+  "zoom": "확대: {pct}%",
+  "controls": "확대: 휠 | 이동: 드래그/방향키 | Q/W/E: 능력 | TAB: 사이드바 숨기기/보기",
+  "playerArmy": "아군 병력: {count}",
+  "enemyArmy": "적 병력: {count}",
+  "rallyBanner": "집결! 사기 +20 (병사 {count}명 집결)",
+  "healBanner": "치유! 병사 {count}명에게 HP +25%",
+  "inspireBanner": "고무! 공격력 +50%, 사기 최대!",
+  "clickSquad": "분대를 클릭해\n명령하세요",
   "ability": {
-    "rally": "",
-    "heal": "",
-    "inspire": ""
+    "rally": "병사 집결",
+    "heal": "분대 치유",
+    "inspire": "고무"
   },
   "command": {
-    "hold": "",
-    "attack": "",
-    "defend": "",
-    "retreat": ""
+    "hold": "대기",
+    "attack": "공격",
+    "defend": "방어",
+    "retreat": "후퇴"
   }
 }

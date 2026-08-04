@@ -12,8 +12,8 @@
     "socialCritical": "",
     "leisureLow": "",
     "leisureCritical": "",
-    "hp": "",
-    "mp": "",
+    "hp": "ХП",
+    "mp": "МП",
     "mpRestored": "",
     "vomited": "",
     "collapsed": "",
@@ -22,7 +22,7 @@
   "sleepMenu": {
     "titleMain": "",
     "titleSleep": "",
-    "titlePostSleep": "",
+    "titlePostSleep": "Пробуждение",
     "titleCryo": "",
     "titleWait": "",
     "sleep": "",
@@ -33,16 +33,16 @@
     "cryo": "",
     "cryoYear": "%1",
     "cryoFinalYear": "",
-    "save": "",
-    "respawn": "",
+    "save": "Сохраниться",
+    "respawn": "Установить точку возрождения",
     "cancel": "",
     "hours": "",
-    "wakeup": "",
-    "dream": ""
+    "wakeup": "Проснуться",
+    "dream": "Увидеть сон"
   },
   "hud": {
-    "food": "",
-    "temp": "",
+    "food": "Еда",
+    "temp": "Темп.",
     "noFood": "",
     "weatherClear": ""
   },
@@ -50,7 +50,7 @@
     "hunger": "",
     "sleep": "",
     "hygiene": "",
-    "social": "",
+    "social": "Социальная",
     "leisure": ""
   }
 }

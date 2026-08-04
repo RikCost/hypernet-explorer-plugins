@@ -3,10 +3,10 @@
   "foundWithTier": "",
   "foundMessage": "",
   "tier": {
-    "common": "",
-    "uncommon": "",
+    "common": "Commun",
+    "uncommon": "Peu commun",
     "rare": "",
     "epic": "",
-    "legendary": ""
+    "legendary": "Légendaire"
   }
 }

@@ -79,9 +79,9 @@
   "ideology.death_metal_inner_circle": "Внутренний Круг Дэт-Металлистов",
   "ideology.rowdy_horde": "Буйная Орда",
   "ideology.violent_marauders": "Жестокие Мародеры",
-  "ideology.free_states_confederation": "",
-  "ideology.crown_colony_administration": "",
-  "ideology.punitive_colony_regime": "",
-  "ideology.continental_unionist": "",
-  "ideology.thaumo_industrialist": ""
+  "ideology.free_states_confederation": "Конфедерация свободных штатов",
+  "ideology.crown_colony_administration": "Управление коронной колонии",
+  "ideology.punitive_colony_regime": "Режим каторжной колонии",
+  "ideology.continental_unionist": "Континентальный унионист",
+  "ideology.thaumo_industrialist": "Тавмо-индустриалист"
 }

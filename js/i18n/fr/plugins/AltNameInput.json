@@ -1,34 +1,34 @@
 {
   "script": {
-    "latin": "",
-    "latinExt": "",
-    "cyrillic": "",
-    "japanese": "",
-    "pinyin": "",
-    "zhuyin": "",
-    "hangul": "",
-    "symbols": ""
+    "latin": "Latin",
+    "latinExt": "Latin étendu",
+    "cyrillic": "Cyrillique",
+    "japanese": "Japonais",
+    "pinyin": "Pinyin (simpl.)",
+    "zhuyin": "Zhuyin (trad.)",
+    "hangul": "Hangeul (cor.)",
+    "symbols": "Symboles"
   },
   "btn": {
-    "halfWidth": "",
-    "fullWidth": "",
-    "clearBuffer": "",
-    "nextPage": "",
-    "defaultName": "",
-    "insertSpace": "",
-    "backspace": "",
-    "clearInput": "",
-    "prevPage": ""
+    "halfWidth": "Demi-chasse",
+    "fullWidth": "Pleine chasse",
+    "clearBuffer": "Vider le tampon",
+    "nextPage": "Page suivante",
+    "defaultName": "Nom par défaut",
+    "insertSpace": "Insérer une espace",
+    "backspace": "Retour arrière",
+    "clearInput": "Effacer la saisie",
+    "prevPage": "Page précédente"
   },
-  "incantation": "",
+  "incantation": "✦ Graphie de l'incantation : \"{text}\"",
   "ui": {
-    "yourNameIs": "",
-    "space": "",
-    "backspace": "",
-    "synchronizeName": "",
-    "translationLayers": "",
-    "modifiersNavigation": "",
-    "abort": "",
-    "continue": ""
+    "yourNameIs": "Ton nom est",
+    "space": "Espace",
+    "backspace": "Retour arrière",
+    "synchronizeName": "Synchroniser le nom",
+    "translationLayers": "Couches de traduction du Codex",
+    "modifiersNavigation": "Modificateurs et navigation",
+    "abort": "Abandonner",
+    "continue": "Continuer"
   }
 }

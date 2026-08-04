@@ -1,18 +1,18 @@
 {
   "1": {
-    "name": "",
+    "name": "Attaquer",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "2": {
-    "name": "",
+    "name": "Garde",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "3": {
-    "name": "",
+    "name": "Mimique",
     "description": "",
     "message1": "",
     "message2": ""
@@ -108,7 +108,7 @@
     "message2": ""
   },
   "19": {
-    "name": "",
+    "name": "Tranquillisant",
     "description": "",
     "message1": "",
     "message2": ""
@@ -372,7 +372,7 @@
     "message2": ""
   },
   "63": {
-    "name": "",
+    "name": "Brise-Garde",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1046,7 +1046,7 @@
   "175": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 utilise %2 !",
     "message2": ""
   },
   "176": {
@@ -1128,7 +1128,7 @@
     "message2": ""
   },
   "189": {
-    "name": "",
+    "name": "Météore",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1170,7 +1170,7 @@
     "message2": ""
   },
   "196": {
-    "name": "",
+    "name": "Protection",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1200,7 +1200,7 @@
     "message2": ""
   },
   "201": {
-    "name": "",
+    "name": "Moulin à Vent",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1260,7 +1260,7 @@
     "message2": ""
   },
   "211": {
-    "name": "",
+    "name": "Discret",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1268,7 +1268,7 @@
   "212": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 utilise %2 !",
     "message2": ""
   },
   "213": {
@@ -1298,7 +1298,7 @@
   "217": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 utilise %2 !",
     "message2": ""
   },
   "218": {
@@ -1314,7 +1314,7 @@
     "message2": ""
   },
   "220": {
-    "name": "",
+    "name": "Ragoût Roboratif",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1638,7 +1638,7 @@
     "message2": ""
   },
   "274": {
-    "name": "",
+    "name": "Tireur d'Élite",
     "description": "",
     "message1": "",
     "message2": ""
@@ -2370,7 +2370,7 @@
     "message2": ""
   },
   "396": {
-    "name": "",
+    "name": "Discrétion",
     "description": "",
     "message1": "",
     "message2": ""
@@ -4908,7 +4908,7 @@
     "message2": ""
   },
   "819": {
-    "name": "",
+    "name": "Grenade Aveuglante",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5010,7 +5010,7 @@
     "message2": ""
   },
   "836": {
-    "name": "",
+    "name": "Parler",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5070,7 +5070,7 @@
     "message2": ""
   },
   "846": {
-    "name": "",
+    "name": "Esquive",
     "description": "",
     "message1": "",
     "message2": ""

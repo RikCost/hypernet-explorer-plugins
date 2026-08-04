@@ -1,21 +1,21 @@
 {
-  "zoom": "",
-  "controls": "",
-  "playerArmy": "",
-  "enemyArmy": "",
-  "rallyBanner": "",
-  "healBanner": "",
-  "inspireBanner": "",
-  "clickSquad": "",
+  "zoom": "Zoom : {pct}%",
+  "controls": "Zoom : Molette | Déplacer : Glisser/Flèches | Q/W/E : Capacités | TAB : Masquer/Afficher la barre latérale",
+  "playerArmy": "Armée du joueur : {count}",
+  "enemyArmy": "Armée ennemie : {count}",
+  "rallyBanner": "RALLIEMENT ! +20 Moral ({count} soldats ralliés)",
+  "healBanner": "SOINS ! +25 % PV pour {count} soldats",
+  "inspireBanner": "INSPIRATION ! +50 % Attaque et Moral maximal !",
+  "clickSquad": "Clique sur une escouade\npour la commander",
   "ability": {
-    "rally": "",
-    "heal": "",
-    "inspire": ""
+    "rally": "Rallier les troupes",
+    "heal": "Soigner l'escouade",
+    "inspire": "Inspirer"
   },
   "command": {
-    "hold": "",
-    "attack": "",
-    "defend": "",
-    "retreat": ""
+    "hold": "Tenir",
+    "attack": "Attaquer",
+    "defend": "Défendre",
+    "retreat": "Battre en retraite"
   }
 }

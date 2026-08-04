@@ -396,6 +396,9 @@
     "stoleFrom": "ha rubato a {holder}",
     "discovered": "ha scoperto",
     "action": {
+      "discovered": "ha scoperto",
+      "crafted": "ha forgiato",
+      "exhumed": "ha riesumato",
       "seized": "si è impossessato di",
       "purchased": "ha acquistato",
       "inherited": "ha ereditato",

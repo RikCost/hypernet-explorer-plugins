@@ -1,5 +1,5 @@
 {
-  "stat": "",
+  "stat": "Statistique",
   "fighter": "",
   "uses": "",
   "no3d": "",
@@ -14,7 +14,7 @@
   "youLost": "",
   "champion": "",
   "youWon": "",
-  "skillAttack": "",
+  "skillAttack": "Attaquer",
   "skillFinish": "",
   "ui": {
     "hintCycle": "",

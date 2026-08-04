@@ -87,7 +87,7 @@
     "wait": "",
     "sleepHowLong": "",
     "waitHowLong": "",
-    "wakeup": "",
+    "wakeup": "일어나기",
     "dream": "",
     "menuWorkforce": "",
     "menuWait": "",
@@ -97,7 +97,7 @@
     "menuBiologics": "",
     "menuResign": ""
   },
-  "camper": "",
+  "camper": "캠핑카",
   "theBeast": "",
   "noCharacterToSave": "",
   "presetUpdated": "",
@@ -111,7 +111,7 @@
   "retiredLoreDated": "",
   "theParty": "",
   "companion": "",
-  "unknownClass": "",
+  "unknownClass": "미상",
   "statsExplanation": "",
   "stat": {
     "str": {

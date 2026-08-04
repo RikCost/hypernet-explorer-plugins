@@ -80,8 +80,8 @@
   "office": {
     "mayor": "",
     "guardCaptain": "",
-    "taxCollector": "",
-    "highPriest": ""
+    "taxCollector": "Percepteur d'Impôts",
+    "highPriest": "Grand Prêtre"
   },
   "policy": {
     "taxRate": "",

@@ -1,11 +1,11 @@
 {
   "needDivingSuit": "",
-  "returnToWorldMap": "",
+  "returnToWorldMap": "Retour à la carte du monde",
   "goToSurface": "",
   "goUnderground": "",
   "toggleWorldMap": "",
   "openWorldMap": "",
-  "cancel": "",
+  "cancel": "Annuler",
   "visit": "",
   "makeCamp": "",
   "icebushBlocked": "",

@@ -3,8 +3,8 @@
   "confirm": "",
   "noBonusesYet": "",
   "confirmTraits": "",
-  "yes": "",
-  "no": "",
+  "yes": "Да",
+  "no": "Нет",
   "headerText": "",
   "selectedTraitsLabel": "",
   "emptySlot": "",
@@ -16,7 +16,7 @@
   "finalSkills": "",
   "noSkills": "",
   "tabGenetic": "",
-  "tabPhysical": "",
+  "tabPhysical": "Физическая",
   "tabMental": "",
   "tabMagical": ""
 }

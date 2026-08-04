@@ -20,19 +20,19 @@
   "preciseStrike": "",
   "partWasHit": "",
   "paramNames": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "Макс. ОЗ",
+    "Макс. ОМ",
+    "Атаковать",
+    "Магия",
+    "Защита",
+    "Маг. защита",
+    "Ловкость",
+    "Удача"
   ],
-  "statFallback": "",
-  "elementLabel": "",
+  "statFallback": "Характеристика",
+  "elementLabel": "Стихия:",
   "weakToLabel": "",
   "statesLabel": "",
   "bodyParts": "",
-  "none": ""
+  "none": "Нет"
 }

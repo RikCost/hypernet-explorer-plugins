@@ -1,18 +1,18 @@
 {
   "1": {
-    "name": "",
+    "name": "Атаковать",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "2": {
-    "name": "",
+    "name": "Защита",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "3": {
-    "name": "",
+    "name": "Мимик",
     "description": "",
     "message1": "",
     "message2": ""
@@ -108,7 +108,7 @@
     "message2": ""
   },
   "19": {
-    "name": "",
+    "name": "Транквилизатор",
     "description": "",
     "message1": "",
     "message2": ""
@@ -126,7 +126,7 @@
     "message2": ""
   },
   "22": {
-    "name": "",
+    "name": "Слизень",
     "description": "",
     "message1": "",
     "message2": ""
@@ -168,7 +168,7 @@
     "message2": ""
   },
   "29": {
-    "name": "",
+    "name": "Вспышка",
     "description": "",
     "message1": "",
     "message2": ""
@@ -372,7 +372,7 @@
     "message2": ""
   },
   "63": {
-    "name": "",
+    "name": "Взломщик защиты",
     "description": "",
     "message1": "",
     "message2": ""
@@ -564,13 +564,13 @@
     "message2": ""
   },
   "95": {
-    "name": "",
+    "name": "Отравление",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "96": {
-    "name": "",
+    "name": "Слепота",
     "description": "",
     "message1": "",
     "message2": ""
@@ -582,7 +582,7 @@
     "message2": ""
   },
   "98": {
-    "name": "",
+    "name": "Молчание",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1046,7 +1046,7 @@
   "175": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 использует %2!",
     "message2": ""
   },
   "176": {
@@ -1128,7 +1128,7 @@
     "message2": ""
   },
   "189": {
-    "name": "",
+    "name": "Метеор",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1170,7 +1170,7 @@
     "message2": ""
   },
   "196": {
-    "name": "",
+    "name": "Защита",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1200,7 +1200,7 @@
     "message2": ""
   },
   "201": {
-    "name": "",
+    "name": "Ветряная мельница",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1260,7 +1260,7 @@
     "message2": ""
   },
   "211": {
-    "name": "",
+    "name": "Сокрытие",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1268,7 +1268,7 @@
   "212": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 использует %2!",
     "message2": ""
   },
   "213": {
@@ -1298,7 +1298,7 @@
   "217": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1 использует %2!",
     "message2": ""
   },
   "218": {
@@ -1314,7 +1314,7 @@
     "message2": ""
   },
   "220": {
-    "name": "",
+    "name": "Сытная похлёбка",
     "description": "",
     "message1": "",
     "message2": ""
@@ -2370,7 +2370,7 @@
     "message2": ""
   },
   "396": {
-    "name": "",
+    "name": "Скрытность",
     "description": "",
     "message1": "",
     "message2": ""
@@ -2520,7 +2520,7 @@
     "message2": ""
   },
   "421": {
-    "name": "",
+    "name": "Запугивание",
     "description": "",
     "message1": "",
     "message2": ""
@@ -4908,7 +4908,7 @@
     "message2": ""
   },
   "819": {
-    "name": "",
+    "name": "Светошумовая граната",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5010,7 +5010,7 @@
     "message2": ""
   },
   "836": {
-    "name": "",
+    "name": "Говорить",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5070,7 +5070,7 @@
     "message2": ""
   },
   "846": {
-    "name": "",
+    "name": "Уворот",
     "description": "",
     "message1": "",
     "message2": ""

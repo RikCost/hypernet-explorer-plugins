@@ -87,7 +87,7 @@
     "wait": "",
     "sleepHowLong": "",
     "waitHowLong": "",
-    "wakeup": "",
+    "wakeup": "Se lever",
     "dream": "",
     "menuWorkforce": "",
     "menuWait": "",
@@ -97,7 +97,7 @@
     "menuBiologics": "",
     "menuResign": ""
   },
-  "camper": "",
+  "camper": "Camping-car",
   "theBeast": "",
   "noCharacterToSave": "",
   "presetUpdated": "",
@@ -111,7 +111,7 @@
   "retiredLoreDated": "",
   "theParty": "",
   "companion": "",
-  "unknownClass": "",
+  "unknownClass": "Inconnu",
   "statsExplanation": "",
   "stat": {
     "str": {

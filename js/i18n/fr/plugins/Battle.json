@@ -18,101 +18,101 @@
     ]
   },
   "moonPhase": {
-    "newMoon": "",
-    "waxingCrescent": "",
-    "firstQuarter": "",
-    "waxingGibbous": "",
-    "fullMoon": "",
-    "waningGibbous": "",
-    "lastQuarter": "",
-    "waningCrescent": ""
+    "newMoon": "Nouvelle lune",
+    "waxingCrescent": "Premier croissant",
+    "firstQuarter": "Premier quartier",
+    "waxingGibbous": "Lune gibbeuse croissante",
+    "fullMoon": "Pleine lune",
+    "waningGibbous": "Lune gibbeuse décroissante",
+    "lastQuarter": "Dernier quartier",
+    "waningCrescent": "Dernier croissant"
   },
   "option": {
     "backgroundModes": [
-      "",
-      "",
-      ""
+      "Biome",
+      "Psyché",
+      "Aucun"
     ]
   },
-  "unknownMap": "",
+  "unknownMap": "Carte inconnue",
   "healthProtection": {
     "messages": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "{actor} a échappé de justesse à la mort !",
+      "{actor} a été sauvé par une intervention divine !",
+      "{actor} s'est accroché à la vie avec détermination !",
+      "{actor} a refusé d'abandonner !",
+      "{actor} a survécu par pure force de volonté !",
+      "{actor} a été protégé par le destin !"
     ],
-    "reset": "",
-    "available": "",
-    "used": "",
-    "status": ""
+    "reset": "Protection de santé réinitialisée pour tous les personnages !",
+    "available": "Disponible",
+    "used": "Utilisée",
+    "status": "{actor} : Protection {status}"
   },
   "popup": {
-    "miss": "",
-    "evaded": ""
+    "miss": "Manqué",
+    "evaded": "Esquivé"
   },
   "join": {
-    "friendly": "",
-    "hostile": ""
+    "friendly": "{name} rejoint le combat !",
+    "hostile": "{name} se jette dans la mêlée !"
   },
-  "rangeLabel": "",
+  "rangeLabel": "Portée {range}",
   "card": {
-    "deckCount": "",
-    "useCard": "",
-    "passTurn": ""
+    "deckCount": "Deck {n}",
+    "useCard": "Jouer la carte",
+    "passTurn": "Passer le tour"
   },
   "cmd": {
-    "move": "",
-    "defense": "",
-    "skill": "",
-    "skills": "",
-    "basic": "",
-    "reload": "",
-    "run": ""
+    "move": "Se déplacer",
+    "defense": "Défense",
+    "skill": "Compétence",
+    "skills": "Compétences",
+    "basic": "Basique",
+    "reload": "Recharger",
+    "run": "Courir"
   },
   "states": {
-    "removalHeader": "",
-    "atBattleEnd": "",
-    "byRestriction": "",
-    "byDamage": "",
-    "byWalking": "",
-    "byWalkingSteps": "",
-    "statusEffects": "",
-    "navHint": ""
+    "removalHeader": "Conditions de disparition",
+    "atBattleEnd": "Disparaît à la fin du combat",
+    "byRestriction": "Disparaît par restriction",
+    "byDamage": "Disparaît avec les dégâts",
+    "byWalking": "Disparaît en marchant",
+    "byWalkingSteps": "{label} ({steps} pas)",
+    "statusEffects": "Altérations d'état",
+    "navHint": "↑↓ naviguer · Échap fermer"
   },
   "spirit": {
-    "switchCommand": "",
-    "selectSlot": "",
-    "rosterFull": "",
-    "notEnoughGold": "",
-    "slot": "",
-    "unknown": "",
-    "empty": "",
-    "free": "",
-    "entry": ""
+    "switchCommand": "Changer",
+    "selectSlot": "Choisis un emplacement vide, puis choisis un esprit à ajouter.",
+    "rosterFull": "L'effectif est complet ! Tu ne peux plus ajouter d'esprits.",
+    "notEnoughGold": "Pas assez d'or !",
+    "slot": "Emplacement {n} :",
+    "unknown": "- Inconnu -",
+    "empty": "- Vide -",
+    "free": " (GRATUIT)",
+    "entry": "{name} - Niveau : {level}{cost}"
   },
   "throw": {
-    "aimHelp": "",
-    "destroyed": "",
-    "missingItem": "",
-    "pickUpPrompt": "",
-    "pickUp": "",
-    "cancel": "",
-    "pickedUp": ""
+    "aimHelp": "Utilise les flèches pour viser, OK pour lancer, Annuler pour abandonner",
+    "destroyed": "L'objet a été détruit !",
+    "missingItem": "Tu n'as pas cet objet !",
+    "pickUpPrompt": "Ramasser l'objet ?",
+    "pickUp": "Ramasser",
+    "cancel": "Annuler",
+    "pickedUp": "{item} ramassé !"
   },
   "mimic": {
-    "mirrored": "",
-    "hasLearned": "",
-    "learnedFromEnemy": "",
-    "learnableSkills": ""
+    "mirrored": "{actor} a reproduit les capacités de l'ennemi !",
+    "hasLearned": "{actor} a appris {skill} !",
+    "learnedFromEnemy": "{actor} a appris {skill} de l'ennemi !",
+    "learnableSkills": "Compétences apprenables :"
   },
   "summon": {
-    "battleOnly": "",
-    "alreadyActive": "",
-    "summoned": ""
+    "battleOnly": "Les invocations ne peuvent servir qu'au combat !",
+    "alreadyActive": "Une invocation est déjà active !",
+    "summoned": "{name} invoqué !"
   },
-  "actorDied": "",
-  "bulletHellDamage": ""
+  "actorDied": "{actor} est mort.",
+  "bulletHellDamage": "Dégâts totaux en bullet hell : {amount}"
 }

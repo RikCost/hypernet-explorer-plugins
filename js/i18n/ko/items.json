@@ -1,2439 +1,2439 @@
 {
   "1": {
-    "name": "",
-    "description": ""
+    "name": "휴대전화",
+    "description": "튼튼한 아오킨 휴대전화."
   },
   "2": {
-    "name": "",
-    "description": ""
+    "name": "배낭",
+    "description": "편안한 배낭"
   },
   "3": {
-    "name": "",
-    "description": ""
+    "name": "손목시계",
+    "description": "시간을 정확하게 \n알려주는 믿음직한 \n손목시계."
   },
   "4": {
-    "name": "",
-    "description": ""
+    "name": "우산",
+    "description": "비가 와도 몸을 젖지 않게 \n해주는 접이식 우산"
   },
   "5": {
-    "name": "",
-    "description": ""
+    "name": "보온 물병",
+    "description": "음료를 차갑게 또는 뜨겁게 \n유지하는 다회용 물병"
   },
   "6": {
-    "name": "",
-    "description": ""
+    "name": "멀티툴",
+    "description": "여러 기능을 갖춘 멀티툴."
   },
   "7": {
-    "name": "",
-    "description": ""
+    "name": "에너지 드링크",
+    "description": "HP를 500포인트 회복한다."
   },
   "8": {
-    "name": "",
-    "description": ""
+    "name": "젠더 셰이크",
+    "description": "HP를 1500포인트 회복한다."
   },
   "9": {
-    "name": "",
-    "description": ""
+    "name": "에너지 젤",
+    "description": "HP를 모두 회복한다."
   },
   "10": {
-    "name": "",
-    "description": ""
+    "name": "마나 강장제",
+    "description": "MP를 100포인트 회복한다."
   },
   "11": {
-    "name": "",
-    "description": ""
+    "name": "각성 소금",
+    "description": "쓰러진 전사를 되살린다."
   },
   "12": {
-    "name": "",
-    "description": ""
+    "name": "의료용 스프레이",
+    "description": "모든 상태 이상을 없앤다."
   },
   "13": {
-    "name": "",
-    "description": ""
+    "name": "근육 이완제",
+    "description": "마비 상태를 치료한다."
   },
   "14": {
-    "name": "",
-    "description": ""
+    "name": "파이터 부스터",
+    "description": "HP와 MP를 절반 회복한다."
   },
   "15": {
-    "name": "",
-    "description": ""
+    "name": "챔피언의 정수",
+    "description": "HP와 MP를 모두 회복한다."
   },
   "16": {
-    "name": "",
-    "description": ""
+    "name": "보조 배터리",
+    "description": "전자기기를 충전하는 \n휴대용 배터리 팩"
   },
   "17": {
-    "name": "",
-    "description": ""
+    "name": "볼펜",
+    "description": "품질 좋은 볼펜."
   },
   "18": {
-    "name": "",
-    "description": ""
+    "name": "그립 파우더",
+    "description": "적의 DEX를 낮춘다."
   },
   "19": {
-    "name": "",
-    "description": ""
+    "name": "집중의 반다나",
+    "description": "치명타 확률을 높인다."
   },
   "20": {
-    "name": "",
-    "description": ""
+    "name": "섬광탄",
+    "description": "눈부신 섬광이 모든 적을 기절시킨다."
   },
   "21": {
-    "name": "",
-    "description": ""
+    "name": "Body Slam EP:",
+    "description": "강력한 바디 슬램을 불러낸다."
   },
   "22": {
-    "name": "",
-    "description": ""
+    "name": "포켓 수첩",
+    "description": "빠르게 적어두기 좋은 \n작은 포켓 수첩."
   },
   "23": {
-    "name": "",
-    "description": ""
+    "name": "지구력 주사",
+    "description": "최대 HP를 50포인트 올린다."
   },
   "24": {
-    "name": "",
-    "description": ""
+    "name": "정신 집중 훈련",
+    "description": "최대 MP를 10포인트 올린다."
   },
   "25": {
-    "name": "",
-    "description": ""
+    "name": "스테로이드",
+    "description": "STR을 3포인트 올린다."
   },
   "26": {
-    "name": "",
-    "description": ""
+    "name": "강철피부 스테로이드",
+    "description": "CON을 3포인트 올린다."
   },
   "27": {
-    "name": "",
-    "description": ""
+    "name": "기 수련",
+    "description": "INT를 3포인트 올린다."
   },
   "28": {
-    "name": "",
-    "description": ""
+    "name": "실전 수련",
+    "description": "WIS를 3포인트 올린다."
   },
   "29": {
-    "name": "",
-    "description": ""
+    "name": "속도 훈련",
+    "description": "DEX를 3포인트 올리는 \n풋워크 훈련.\n"
   },
   "30": {
-    "name": "",
-    "description": ""
+    "name": "초능력 수련",
+    "description": "PSI를 3포인트 올린다."
   },
   "31": {
-    "name": "",
-    "description": ""
+    "name": "무선 이어폰",
+    "description": "차음 성능이 뛰어난 \n노이즈 캔슬링 이어폰"
   },
   "32": {
-    "name": "",
-    "description": ""
+    "name": "Vital Strike EP:",
+    "description": "급소를 노리는 강력한 \n연타를 불러낸다."
   },
   "33": {
-    "name": "",
-    "description": ""
+    "name": "Freezing Moon EP:",
+    "description": "얼음처럼 차가운 주먹의 \n빠른 연타를 불러낸다."
   },
   "34": {
-    "name": "",
-    "description": ""
+    "name": "Blazing Kick EP:",
+    "description": "모든 적을 후려치는 회전 \n돌려차기를 불러낸다."
   },
   "35": {
-    "name": "",
-    "description": ""
+    "name": "가드 브레이커",
+    "description": "방어를 뚫어버리는 \n파괴적인 폭탄."
   },
   "36": {
-    "name": "",
-    "description": ""
+    "name": "LED 손전등",
+    "description": "밝기를 조절할 수 있는 \n소형 손전등."
   },
   "37": {
-    "name": "",
-    "description": ""
+    "name": "프로 스테이터스가드",
+    "description": "5턴 동안 상태 이상을 막는다.\n"
   },
   "38": {
-    "name": "",
-    "description": ""
+    "name": "Perfect Block EP:",
+    "description": "일시적인 방어막을 불러낸다."
   },
   "39": {
-    "name": "",
-    "description": ""
+    "name": "파이터의 집중",
+    "description": "사용자를 집중된 무아지경에 \n빠뜨릴 수 있는 각성제."
   },
   "40": {
-    "name": "",
-    "description": ""
+    "name": "별빛 테이프",
+    "description": "MP 재생을 부여한다."
   },
   "41": {
-    "name": "",
-    "description": ""
+    "name": "커피 한 잔",
+    "description": "기운을 북돋우는 \n상쾌한 커피 한 잔."
   },
   "42": {
-    "name": "",
-    "description": ""
+    "name": "사범의 장갑",
+    "description": "사용자와 융합해 \nSTR을 1 올리는\n전설의 장갑"
   },
   "43": {
-    "name": "",
-    "description": ""
+    "name": "천둥용의 부츠",
+    "description": "천둥의 기운을 흘려보내는\n고대의 신발. 부서지며 사용자와 융합한다."
   },
   "44": {
-    "name": "",
-    "description": ""
+    "name": "제왕의 정",
+    "description": "HP를 영구히 200 \n올려주는 \n전설의 영약."
   },
   "45": {
-    "name": "",
-    "description": ""
+    "name": "금단의 두루마리",
+    "description": "비전 기술이 적힌 두루마리."
   },
   "46": {
-    "name": "",
-    "description": ""
+    "name": "장미",
+    "description": "보라색 장미"
   },
   "47": {
-    "name": "",
-    "description": ""
+    "name": "토너먼트 각성제",
+    "description": "HP를 25% 회복한다,"
   },
   "48": {
-    "name": "",
-    "description": ""
+    "name": "코너 컷맨 키트",
+    "description": "부기를 가라앉히고 가벼운 \n상처를 치료한다"
   },
   "49": {
-    "name": "",
-    "description": ""
+    "name": "스피드 스프레이",
+    "description": "다섯 턴 동안 DEX를 올린다."
   },
   "50": {
-    "name": "",
-    "description": ""
+    "name": "방어 자세 알약",
+    "description": "CON을 올리지만 DEX를 낮춘다."
   },
   "51": {
-    "name": "",
-    "description": ""
+    "name": "무선 헤드폰",
+    "description": "배터리가 오래가는 \n편안한 무선 \n헤드폰."
   },
   "52": {
-    "name": "",
-    "description": ""
+    "name": "열쇠 너클",
+    "description": "거리 싸움을 위한 \n즉석 무기."
   },
   "53": {
-    "name": "",
-    "description": ""
+    "name": "강철 파이프",
+    "description": "적을 기절시킬 수 있는, 거리 싸움용 \n즉석 둔기."
   },
   "54": {
-    "name": "",
-    "description": ""
+    "name": "모래 뿌리기",
+    "description": "모래 뿌리기!"
   },
   "55": {
-    "name": "",
-    "description": ""
+    "name": "화염병",
+    "description": "즉석에서 만든 소이 장치."
   },
   "56": {
-    "name": "",
-    "description": ""
+    "name": "Karate Combo EP:",
+    "description": "가라테의 타격 기술을 \n불러낸다."
   },
   "57": {
-    "name": "",
-    "description": ""
+    "name": "Judo Throw EP:",
+    "description": "유도의 메치기 기술을 \n불러낸다."
   },
   "58": {
-    "name": "",
-    "description": ""
+    "name": "Taekwondo Kicks EP:",
+    "description": "태권도의 발차기 기술을 \n불러낸다."
   },
   "59": {
-    "name": "",
-    "description": ""
+    "name": "그래놀라 바",
+    "description": "빠르게 기운을 \n북돋우는 영양 \n그래놀라 바."
   },
   "60": {
-    "name": "",
-    "description": ""
+    "name": "펜타 프로틴 프로그램",
+    "description": "최대 HP를 100포인트 \n올린다."
   },
   "61": {
-    "name": "",
-    "description": ""
+    "name": "파워 인핸서",
+    "description": "STR과 CON을 각각 5\n포인트 올린다."
   },
   "62": {
-    "name": "",
-    "description": ""
+    "name": "반사 신경 인핸서",
+    "description": "DEX를 8포인트 올린다."
   },
   "63": {
-    "name": "",
-    "description": ""
+    "name": "얼티밋 부스터",
+    "description": "5턴 동안 모든 능력치를 \n일시적으로 올린다."
   },
   "64": {
-    "name": "",
-    "description": ""
+    "name": "접이식 우산",
+    "description": "배낭에 쏙 들어가는\n가볍고 접히는 우산."
   },
   "65": {
-    "name": "",
-    "description": ""
+    "name": "Flowing Water EP:",
+    "description": "전설적인 반격 기술을 불러낸다."
   },
   "66": {
-    "name": "",
-    "description": ""
+    "name": "용의 눈 영약",
+    "description": "감각이 예민해진 \n일시적 상태를 만든다."
   },
   "67": {
-    "name": "",
-    "description": ""
+    "name": "Ki Strike EP:",
+    "description": "내면의 기운을 근거리 타격으로 \n흘려보내는 기술을 불러낸다."
   },
   "68": {
-    "name": "",
-    "description": ""
+    "name": "포켓 양산",
+    "description": "비와 햇빛을 모두 막아준다."
   },
   "69": {
-    "name": "",
-    "description": ""
+    "name": "수정 러닝화",
+    "description": "10턴이 지나면 부서지는 \n수정 러닝화 한 켤레."
   },
   "70": {
-    "name": "",
-    "description": ""
+    "name": "교황청의 비약",
+    "description": "대부분의 부정적 상태 이상을 \n즉시 치료한다."
   },
   "71": {
-    "name": "",
-    "description": ""
+    "name": "광전사의 부적",
+    "description": "광폭 상태를 일으킬 수 있다."
   },
   "72": {
-    "name": "",
-    "description": ""
+    "name": "부서진 냉동전지",
+    "description": "조금만 스쳐도 터지며 \n얼어붙는다."
   },
   "73": {
-    "name": "",
-    "description": ""
+    "name": "떠다니는 해골",
+    "description": "치명타에 면역이 되게 \n해준다."
   },
   "74": {
-    "name": "",
-    "description": ""
+    "name": "영혼 기생충",
+    "description": "AP를 즉시 50 회복하지만 \nMP를 모두 소모한다."
   },
   "75": {
-    "name": "",
-    "description": ""
+    "name": "생수 한 병",
+    "description": "수분을 채워주는 \n상쾌한 \n생수 한 병."
   },
   "76": {
-    "name": "",
-    "description": ""
+    "name": "Iron Strike EP:",
+    "description": "꿰뚫는 공격을 불러낸다."
   },
   "77": {
-    "name": "",
-    "description": ""
+    "name": "Eight Pillars EP:",
+    "description": "4턴 동안 모든 능력치를 일시적으로 \n올리는 전설의 기술을 불러낸다"
   },
   "78": {
-    "name": "",
-    "description": ""
+    "name": "모르핀",
+    "description": "통증 차단제."
   },
   "79": {
-    "name": "",
-    "description": ""
+    "name": "붉은 코카인",
+    "description": "지옥에서 온\n사악한 코카인."
   },
   "80": {
-    "name": "",
-    "description": ""
+    "name": "천사의 가루",
+    "description": "PSI를 올리는 \n초능력 물질."
   },
   "81": {
-    "name": "",
-    "description": ""
+    "name": "트립토카인",
+    "description": "극도로 위험한 약물"
   },
   "82": {
-    "name": "",
-    "description": ""
+    "name": "스피드",
+    "description": "6턴 동안 DEX를 올리는 \n각성제."
   },
   "83": {
-    "name": "",
-    "description": ""
+    "name": "크랭크",
+    "description": "ATK와 WIS를 올리는 \n중독성 \n물질."
   },
   "84": {
-    "name": "",
-    "description": ""
+    "name": "암시장 칵테일",
+    "description": "모든 능력치를 올리는\n부식성 약물."
   },
   "85": {
-    "name": "",
-    "description": ""
+    "name": "진정제",
+    "description": "통증을 무디게 하는 물질."
   },
   "86": {
-    "name": "",
-    "description": ""
+    "name": "검 열쇠고리",
+    "description": "열쇠를 전부 걸 수 있는 \n튼튼한 열쇠고리."
   },
   "87": {
-    "name": "",
-    "description": ""
+    "name": "오메가 각성제",
+    "description": "극도로 위험한 전투용 \n약물."
   },
   "88": {
-    "name": "",
-    "description": ""
+    "name": "자외선 차단 선글라스",
+    "description": "자외선을 막아주는\n다용도 \n선글라스 한 벌."
   },
   "89": {
-    "name": "",
-    "description": ""
+    "name": "챔피언 벨트",
+    "description": "MAX 격투 대회에서 받은 \n금빛 챔피언 벨트."
   },
   "90": {
-    "name": "",
-    "description": ""
+    "name": "사인 글러브",
+    "description": "전설적인 파이터의 \n사인이 담긴 글러브."
   },
   "91": {
-    "name": "",
-    "description": ""
+    "name": "토너먼트 트로피",
+    "description": "지역 무술 대회에서 받은 \n트로피."
   },
   "92": {
-    "name": "",
-    "description": ""
+    "name": "고대 격투 주화",
+    "description": "고대 무술을 새긴 \n희귀한 주화."
   },
   "93": {
-    "name": "",
-    "description": ""
+    "name": "빈티지 격투 포스터",
+    "description": "유명한 지하 격투장의 \n빈티지 포스터"
   },
   "94": {
-    "name": "",
-    "description": ""
+    "name": "파이터의 메달",
+    "description": "뛰어난 파이터에게 \n수여되는 메달."
   },
   "95": {
-    "name": "",
-    "description": ""
+    "name": "챔피언의 이빨",
+    "description": "유명한 파이터에게서 \n빠진 이빨."
   },
   "96": {
-    "name": "",
-    "description": ""
+    "name": "역사적인 링 캔버스",
+    "description": "전설적인 경기의\n링 매트 \n조각."
   },
   "97": {
-    "name": "",
-    "description": ""
+    "name": "파이터 피규어",
+    "description": "유명한 파이터의 희귀\n액션 피규어."
   },
   "98": {
-    "name": "",
-    "description": ""
+    "name": "민들레",
+    "description": "들에 핀 민들레."
   },
   "99": {
-    "name": "",
-    "description": ""
+    "name": "황금 주먹 조각상",
+    "description": "전설적인 파이터의 주먹을 \n금박으로 본뜬 복제품."
   },
   "100": {
-    "name": "",
-    "description": ""
+    "name": "고대 두루마리",
+    "description": "격투 기술 그림이 담긴 \n고대의 두루마리."
   },
   "101": {
-    "name": "",
-    "description": ""
+    "name": "골동품 중량기구",
+    "description": "완벽하게 보존된 고대의 \n훈련용 중량기구."
   },
   "102": {
-    "name": "",
-    "description": ""
+    "name": "역사적인 경기 글러브",
+    "description": "전설의 MAX 경기에서 실제로 낀 \n진짜 복싱 글러브."
   },
   "103": {
-    "name": "",
-    "description": ""
+    "name": "다이아몬드 주먹",
+    "description": "주먹 모양으로 세공한\n커다란 다이아몬드."
   },
   "104": {
-    "name": "",
-    "description": ""
+    "name": "손 소독제",
+    "description": "세균을 막아주는\n작은 손 소독제 튜브."
   },
   "105": {
-    "name": "",
-    "description": ""
+    "name": "찢어진 글러브",
+    "description": "못 쓰게 된 격투 \n글러브 한 켤레."
   },
   "106": {
-    "name": "",
-    "description": ""
+    "name": "낡은 체육관 명패",
+    "description": "체육관 사물함에서 떼어낸 \n찌그러진 금속 명패."
   },
   "107": {
-    "name": "",
-    "description": ""
+    "name": "쓰던 핸드랩",
+    "description": "파이터의 손에 감았던 \n쓰던 붕대."
   },
   "108": {
-    "name": "",
-    "description": ""
+    "name": "격투 티켓 조각 모음",
+    "description": "여러 격투 대회에서 나온\n티켓 조각 모음."
   },
   "109": {
-    "name": "",
-    "description": ""
+    "name": "금 간 마우스피스",
+    "description": "거리 싸움에서 부서진 \n마우스피스."
   },
   "110": {
-    "name": "",
-    "description": ""
+    "name": "식기 세트",
+    "description": "포크와 나이프, 스포크로 이루어진 \n기본 식기 한 벌."
   },
   "111": {
-    "name": "",
-    "description": ""
+    "name": "지역 지도",
+    "description": "약간 빛바랜 소박한 지역 지도."
   },
   "112": {
-    "name": "",
-    "description": ""
+    "name": "빈 수통",
+    "description": "가죽과 금속으로 만든 \n기본 물통."
   },
   "113": {
-    "name": "",
-    "description": ""
+    "name": "등반 로프",
+    "description": "오르는 데 쓸모 있는 \n소박한 밧줄."
   },
   "114": {
-    "name": "",
-    "description": ""
+    "name": "쓰레기",
+    "description": "쓰레기 약간"
   },
   "115": {
-    "name": "",
-    "description": ""
+    "name": "숫돌",
+    "description": "칼날과 검을 가는 \n소박한 숫돌."
   },
   "116": {
-    "name": "",
-    "description": ""
+    "name": "반짇고리",
+    "description": "옷과 장비를 손보는 \n기본 반짇고리."
   },
   "117": {
-    "name": "",
-    "description": ""
+    "name": "양초",
+    "description": "유리 촛대에 꽂힌 소박한 \n양초. 희미한 빛을 낸다."
   },
   "118": {
-    "name": "",
-    "description": ""
+    "name": "낚싯대",
+    "description": "작은 물고기를 잡는 \n기본 낚싯바늘과 낚싯줄."
   },
   "119": {
-    "name": "",
-    "description": ""
+    "name": "토기 항아리",
+    "description": "물이나 다른 액체를 담는 \n소박한 토기 항아리."
   },
   "120": {
-    "name": "",
-    "description": ""
+    "name": "여행 일지",
+    "description": "생각을 적어두는 \n기본 가죽 일지."
   },
   "121": {
-    "name": "",
-    "description": ""
+    "name": "지팡이",
+    "description": "긴 여정에 요긴한\n소박한 나무 지팡이"
   },
   "122": {
-    "name": "",
-    "description": ""
+    "name": "플라스틱 그릇 세트",
+    "description": "일회용 플라스틱 \n식기 기본 세트"
   },
   "123": {
-    "name": "",
-    "description": ""
+    "name": "나무 의자",
+    "description": "소박한 나무 의자."
   },
   "124": {
-    "name": "",
-    "description": ""
+    "name": "랜턴",
+    "description": "부드럽고 따뜻한 빛을 내는 \n기본 랜턴."
   },
   "125": {
-    "name": "",
-    "description": ""
+    "name": "여행 배낭",
+    "description": "주머니가 여럿 달린 \n낡은 가죽 배낭"
   },
   "126": {
-    "name": "",
-    "description": ""
+    "name": "잠자리 말이",
+    "description": "야외나 소박한 숙소에서 \n자기 위한 간단한\n잠자리 말이."
   },
   "127": {
-    "name": "",
-    "description": ""
+    "name": "요리 냄비",
+    "description": "불 위에서 식사를 준비하는 \n기본 냄비"
   },
   "128": {
-    "name": "",
-    "description": ""
+    "name": "식기 세트",
+    "description": "스포크가 포함된 \n기본 식기 한 벌."
   },
   "129": {
-    "name": "",
-    "description": ""
+    "name": "아세트아미노펜 정",
+    "description": "진통과 \n해열에 쓴다."
   },
   "130": {
-    "name": "",
-    "description": ""
+    "name": "이부프로펜 캡슐",
+    "description": "통증과 부기를 가라앉히는 \n소염제."
   },
   "131": {
-    "name": "",
-    "description": ""
+    "name": "칼슘 제산제",
+    "description": "위산을 중화하는 \n제산정"
   },
   "132": {
-    "name": "",
-    "description": ""
+    "name": "세티리진",
+    "description": "알레르기를 완화하는 \n항히스타민제."
   },
   "133": {
-    "name": "",
-    "description": ""
+    "name": "덱스트로메토르판",
+    "description": "끈질긴 기침을 가라앉히는 \n진해제"
   },
   "134": {
-    "name": "",
-    "description": ""
+    "name": "슈도에페드린 정",
+    "description": "코막힘과 콧물을 뚫어주는 \n충혈 완화제."
   },
   "135": {
-    "name": "",
-    "description": ""
+    "name": "시메티콘 방울",
+    "description": "가스와 더부룩함을 줄여주는 \n소화 보조제."
   },
   "136": {
-    "name": "",
-    "description": ""
+    "name": "비사코딜 정",
+    "description": "이따금 오는 변비를 \n풀어주는 \n완하제."
   },
   "137": {
-    "name": "",
-    "description": ""
+    "name": "바시트라신 연고",
+    "description": "가벼운 상처와 자상에 바르는 \n국소 항생 연고"
   },
   "138": {
-    "name": "",
-    "description": ""
+    "name": "로페라미드 캡슐",
+    "description": "빠르게 효과를 내는 \n지사제."
   },
   "139": {
-    "name": "",
-    "description": ""
+    "name": "하이드로코르티손 크림",
+    "description": "가벼운 피부 상처를 달래고 \n보호하는 로션."
   },
   "140": {
-    "name": "",
-    "description": ""
+    "name": "전해질 분말",
+    "description": "전해질을 보충하는 \n경구 수분 보충염."
   },
   "141": {
-    "name": "",
-    "description": ""
+    "name": "멘톨 드롭스",
+    "description": "인후통을 가라앉히는 \n목 사탕."
   },
   "142": {
-    "name": "",
-    "description": ""
+    "name": "메틸살리실산",
+    "description": "근육과 관절 통증을 덜어주는\n의약 크림."
   },
   "143": {
-    "name": "",
-    "description": ""
+    "name": "클로트리마졸",
+    "description": "여러 피부 진균 감염을 치료하는 \n항진균 크림."
   },
   "144": {
-    "name": "",
-    "description": ""
+    "name": "식염수 코 스프레이",
+    "description": "코막힘을 일시적으로 \n덜어주는 코 스프레이"
   },
   "145": {
-    "name": "",
-    "description": ""
+    "name": "최소 활력 팅크",
+    "description": "내면의 기운을 고르게 하고 아주 \n미미한 회복을 준다는 \n극도로 희석한 약초 요법."
   },
   "146": {
-    "name": "",
-    "description": ""
+    "name": "치유의 물방울",
+    "description": "몸을 자극한다고 여겨지는 \n섬세한 약초 정수"
   },
   "147": {
-    "name": "",
-    "description": ""
+    "name": "양자 영약",
+    "description": "식물 추출물을 \n무한히 희석한 것으로, \n미시적인 기운의 도움을 준다고 주장한다."
   },
   "148": {
-    "name": "",
-    "description": ""
+    "name": "에테르 용액",
+    "description": "체액을 조화롭게 한다는 \n거의 감지할 수 없는 약."
   },
   "149": {
-    "name": "",
-    "description": ""
+    "name": "활력의 정수",
+    "description": "건강을 부드럽게 밀어준다는 \n미시적 주입액."
   },
   "150": {
-    "name": "",
-    "description": ""
+    "name": "공명의 안개",
+    "description": "감각을 자극한다고 주장하는 \n속삭임처럼 가벼운 조제물."
   },
   "151": {
-    "name": "",
-    "description": ""
+    "name": "진동 혈청",
+    "description": "몸의 가장 미묘한 자가 치유\n기제를 깨운다고 주장하는 \n극도로 희석한 혼합물."
   },
   "152": {
-    "name": "",
-    "description": ""
+    "name": "정렬 방울",
+    "description": "최소한의 개입으로 몸의 기운\n통로를 다시 맞춘다는 \n거미줄처럼 얇은 액체."
   },
   "153": {
-    "name": "",
-    "description": ""
+    "name": "재생 나나이트",
+    "description": "건강을 완전히 회복시키고 \n모든 능력치를 일시적으로 \n100퍼센트 올리는 나나이트 재생 혈청."
   },
   "154": {
-    "name": "",
-    "description": ""
+    "name": "게놈 최적화기",
+    "description": "모든 기본 능력치를 영구히 \n50포인트 올리고 모든 \n부정적 상태 이상을 없애는 유전자 재프로그래밍 주사."
   },
   "155": {
-    "name": "",
-    "description": ""
+    "name": "크로노스 영약",
+    "description": "불멸을 부여하는 실험용 \n시간 유동 각성제"
   },
   "156": {
-    "name": "",
-    "description": ""
+    "name": "오버드라이브 임플란트",
+    "description": "사용자를 초인적인 전투 \n기계로 즉시 바꿔놓는 \n초첨단 사이버네틱 강화 장치."
   },
   "157": {
-    "name": "",
-    "description": ""
+    "name": "뉴로-양자 증폭기",
+    "description": "완전한 정신 지배를 부여하는 \n초능력 증폭 약물"
   },
   "158": {
-    "name": "",
-    "description": ""
+    "name": "양자 부활 규약",
+    "description": "실험용 물질 \n재구성 혈청."
   },
   "159": {
-    "name": "",
-    "description": ""
+    "name": "잠재력 촉매",
+    "description": "극도의 행운을 부여하는 \n차원 간 기운 주입액"
   },
   "160": {
-    "name": "",
-    "description": ""
+    "name": "오메가 특이점 혈청",
+    "description": "사용자를 궁극의 무기로 \n바꾸되 그 힘의 대가로 \n존재의 정수마저 삼키는 금단의 생명공학 경이."
   },
   "161": {
-    "name": "",
-    "description": ""
+    "name": "안락 침낭",
+    "description": "눕는 즉시 잠들게 하는 \n포근한 휴대용 침낭"
   },
   "162": {
-    "name": "",
-    "description": ""
+    "name": "기분 좋아지는 만찬",
+    "description": "허기를 완전히 채워주는\n3인분 휴대용 완전식"
   },
   "163": {
-    "name": "",
-    "description": ""
+    "name": "이완 목욕 세트",
+    "description": "한 번 쓰는 거품 목욕제."
   },
   "164": {
-    "name": "",
-    "description": ""
+    "name": "사교 연결 게임",
+    "description": "플레이어들의 진짜 비밀을 이용해 먹는\n초자본주의 보드게임."
   },
   "165": {
-    "name": "",
-    "description": ""
+    "name": "홈 피트니스 시스템",
+    "description": "한 번 쓰는 휴대용 종합 \n운동 스테이션."
   },
   "166": {
-    "name": "",
-    "description": ""
+    "name": "몰입형 오락 허브",
+    "description": "최첨단 오락 시스템 \nVR 바이저"
   },
   "167": {
-    "name": "",
-    "description": ""
+    "name": "로맨틱 만남 세트",
+    "description": "짝짓기 확률을 즉시 높여주는\n휴대용 로맨틱 세팅"
   },
   "168": {
-    "name": "",
-    "description": ""
+    "name": "커리어 패키지",
+    "description": "종합적인 경력 개발 \n카세트."
   },
   "169": {
-    "name": "",
-    "description": ""
+    "name": "스트레스 해소 프로그램",
+    "description": "스트레스를 완전히 없애주는 \n선 명상 프로그램."
   },
   "170": {
-    "name": "",
-    "description": ""
+    "name": "포켓 분재",
+    "description": "작고 들고 다닐 수 있는 \n실내 화초."
   },
   "171": {
-    "name": "",
-    "description": ""
+    "name": "담뱃갑",
+    "description": "담배 한 갑."
   },
   "172": {
-    "name": "",
-    "description": ""
+    "name": "수녀 맥주",
+    "description": "노스포인트 수도원에서 빚은\n트라피스트 맥주 한 병."
   },
   "173": {
-    "name": "",
-    "description": ""
+    "name": "헥스폰 통신기",
+    "description": "현대식 헥스폰."
   },
   "174": {
-    "name": "",
-    "description": ""
+    "name": "장수명 건전지",
+    "description": "여러 날 쓰는 오래가는 \n건전지 한 팩."
   },
   "175": {
-    "name": "",
-    "description": ""
+    "name": "프리미엄 위스키",
+    "description": "고급 위스키 한 병."
   },
   "176": {
-    "name": "",
-    "description": ""
+    "name": "휴대용 카페이네이터",
+    "description": "들고 다니는 커피 메이커"
   },
   "177": {
-    "name": "",
-    "description": ""
+    "name": "포켓 음향 시스템",
+    "description": "작은 블루투스 스피커."
   },
   "178": {
-    "name": "",
-    "description": ""
+    "name": "익스트림 에너지 팩",
+    "description": "에너지 드링크 한 묶음."
   },
   "179": {
-    "name": "",
-    "description": ""
+    "name": "몰입형 소음 차단기",
+    "description": "노이즈 캔슬링 \n헤드폰 한 벌."
   },
   "180": {
-    "name": "",
-    "description": ""
+    "name": "디지털 음악 플레이어",
+    "description": "최첨단 MP3 플레이어."
   },
   "181": {
-    "name": "",
-    "description": ""
+    "name": "EHI 파일럿 PDA",
+    "description": "Hypernet에 연결되는\nE.H.I. 개인용 디지털 \n보조기기"
   },
   "182": {
-    "name": "",
-    "description": ""
+    "name": "CD 케이스",
+    "description": "혁신적인 휴대용 CD \n플레이어."
   },
   "183": {
-    "name": "",
-    "description": ""
+    "name": "디지털 카메라",
+    "description": "사진을 최대 20장까지 저장할 수 있는 \n두툼한 디지털 카메라"
   },
   "184": {
-    "name": "",
-    "description": ""
+    "name": "컬러 폴더 휴대전화",
+    "description": "인터넷 연결이 제한적인\n최첨단 폴더폰."
   },
   "185": {
-    "name": "",
-    "description": ""
+    "name": "휴대용 게임기",
+    "description": "흑백 화면을 쓰는 \n휴대용 게임 기기."
   },
   "186": {
-    "name": "",
-    "description": ""
+    "name": "휴대용 GPS 내비게이터",
+    "description": "혁신적인 정확도로 당신의 위치를\n짚어내는 휴대용 GPS \n항법 기기."
   },
   "187": {
-    "name": "",
-    "description": ""
+    "name": "대용량 저장 장치",
+    "description": "무려 512MB를 담는 \n혁신적인 외장 하드 드라이브."
   },
   "188": {
-    "name": "",
-    "description": ""
+    "name": "포켓 비디오 레코더",
+    "description": "비현실을 담아낼 수 있는 \n휴대용 디지털 비디오 레코더-"
   },
   "189": {
-    "name": "",
-    "description": ""
+    "name": "포켓 번역기",
+    "description": "휴대용 언어 번역기."
   },
   "190": {
-    "name": "",
-    "description": ""
+    "name": "탈출 키트",
+    "description": "PC방으로 도망칠 수 있게\n해준다."
   },
   "191": {
-    "name": "",
-    "description": ""
+    "name": "체력 물약",
+    "description": "건강을 즉시 되돌려주는 \n신비로운 붉은 물약."
   },
   "192": {
-    "name": "",
-    "description": ""
+    "name": "마나 물약",
+    "description": "마법의 기운을 되돌려주는 \n반짝이는 푸른 영약."
   },
   "193": {
-    "name": "",
-    "description": ""
+    "name": "불사조 고추",
+    "description": "쓰러진 아군을 되살릴 수 있는 \n황금빛 고추."
   },
   "194": {
-    "name": "",
-    "description": ""
+    "name": "바를레니아의 영약",
+    "description": "모든 중독과 병을 \n낫게 하는 만능 해독제."
   },
   "195": {
-    "name": "",
-    "description": ""
+    "name": "거인의 물약",
+    "description": "STR을 일시적으로 \n올려주는 물약."
   },
   "196": {
-    "name": "",
-    "description": ""
+    "name": "질풍의 영약",
+    "description": "DEX를 올려주는 \n초록 물약."
   },
   "197": {
-    "name": "",
-    "description": ""
+    "name": "용비늘 장벽",
+    "description": "마신 이의 주위에 보이지 않는 \n장벽을 만드는 물약."
   },
   "198": {
-    "name": "",
-    "description": ""
+    "name": "대마법사의 영약",
+    "description": "마법 능력을 일시적으로 \n강화하는 물약."
   },
   "199": {
-    "name": "",
-    "description": ""
+    "name": "화염구 두루마리",
+    "description": "파괴적인 화염구를 \n터뜨리는 마법 두루마리."
   },
   "200": {
-    "name": "",
-    "description": ""
+    "name": "번개 두루마리",
+    "description": "번개를 내리치게 하는 \n마법 두루마리."
   },
   "201": {
-    "name": "",
-    "description": ""
+    "name": "방패 두루마리",
+    "description": "마법 보호 장벽을 만드는 \n두루마리."
   },
   "202": {
-    "name": "",
-    "description": ""
+    "name": "투명화 두루마리",
+    "description": "사용자를 일시적으로 \n투명하게 만드는 두루마리."
   },
   "203": {
-    "name": "",
-    "description": ""
+    "name": "엘프 여행빵",
+    "description": "절대 굳지 않고 놀랄 만큼 \n든든한 마법의 빵."
   },
   "204": {
-    "name": "",
-    "description": ""
+    "name": "엘프 밧줄",
+    "description": "마법이 걸린 엘프의 머리카락으로 \n꼰 밧줄. 믿기 힘들 만큼 질기고 가볍다."
   },
   "205": {
-    "name": "",
-    "description": ""
+    "name": "요정 랜턴",
+    "description": "붙잡힌 요정이 든 랜턴으로, \n밝은 마법의 빛을 낸다."
   },
   "206": {
-    "name": "",
-    "description": ""
+    "name": "만능 열쇠",
+    "description": "평범한 자물쇠라면 무엇이든 \n열 수 있는 작고 검은 열쇠."
   },
   "207": {
-    "name": "",
-    "description": ""
+    "name": "현자의 영약",
+    "description": "건강과 마나를 모두 \n되돌려주는 전설의 영약."
   },
   "208": {
-    "name": "",
-    "description": ""
+    "name": "천둥 수정",
+    "description": "번개 정령을 가둬 놓은 \n섬세한 수정."
   },
   "209": {
-    "name": "",
-    "description": ""
+    "name": "마법 깃펜",
+    "description": "잉크가 마르지 않고 어떤 표면에도 \n쓸 수 있는 마법 깃펜."
   },
   "210": {
-    "name": "",
-    "description": ""
+    "name": "꿈의 가루",
+    "description": "생물을 홀릴 수 있는 마법 가루가 \n담긴 작은 주머니."
   },
   "211": {
-    "name": "",
-    "description": ""
+    "name": "황금 사과",
+    "description": "HP를 영구히 올려주는 \n마법의 열매."
   },
   "212": {
-    "name": "",
-    "description": ""
+    "name": "마법사의 수정",
+    "description": "먹으면 INT를 영구히\n올려주는 마법 보석."
   },
   "213": {
-    "name": "",
-    "description": ""
+    "name": "용비늘 부적",
+    "description": "무작위 물건을 소환하는\n마법 물품."
   },
   "214": {
-    "name": "",
-    "description": ""
+    "name": "서리 방호 반지",
+    "description": "얼음 피해에 대한 저항을 \n주는 마법 반지."
   },
   "215": {
-    "name": "",
-    "description": ""
+    "name": "그림자 망토",
+    "description": "착용자가 그림자에 섞여들도록\n도와주는 마법 망토."
   },
   "216": {
-    "name": "",
-    "description": ""
+    "name": "길잡이의 나침반",
+    "description": "사용자가 가려는 곳을 언제나 \n가리키는 마법 나침반."
   },
   "217": {
-    "name": "",
-    "description": ""
+    "name": "잡동사니 가방",
+    "description": "겉보기보다 안이 훨씬 \n큰 굉장한 가방."
   },
   "218": {
-    "name": "",
-    "description": ""
+    "name": "신속의 사슬",
+    "description": "강력한 바람 마법이 걸린 \n사슬."
   },
   "219": {
-    "name": "",
-    "description": ""
+    "name": "위력의 건틀릿",
+    "description": "착용자의 힘을 \n키워주는 마법 건틀릿."
   },
   "220": {
-    "name": "",
-    "description": ""
+    "name": "투척용 단검",
+    "description": "면도날처럼 날카롭고 완벽하게 \n균형 잡힌 투척용 단검."
   },
   "221": {
-    "name": "",
-    "description": ""
+    "name": "수리검",
+    "description": "날카로운 끝이 달린 무게 실린 \n금속 별 한 벌."
   },
   "222": {
-    "name": "",
-    "description": ""
+    "name": "화염 항아리",
+    "description": "부딪히면 깨지는 \n연금술 불꽃을 담은 토기 항아리."
   },
   "223": {
-    "name": "",
-    "description": ""
+    "name": "마름쇠",
+    "description": "바닥에 흩뿌려지는 \n마름쇠가 든 작은 주머니."
   },
   "224": {
-    "name": "",
-    "description": ""
+    "name": "서리 폭탄",
+    "description": "부딪히면 터지는 \n얼어붙는 액체가 든 유리병."
   },
   "225": {
-    "name": "",
-    "description": ""
+    "name": "독기 병",
+    "description": "썩고 유독한 독기를 담은 \n작은 병."
   },
   "226": {
-    "name": "",
-    "description": ""
+    "name": "투척용 도끼",
+    "description": "전투에서 던지기 위해 특별히 \n만든 묵직한 도끼."
   },
   "227": {
-    "name": "",
-    "description": ""
+    "name": "사냥 그물",
+    "description": "상대를 옭아매도록 만든 \n무게 실린 그물."
   },
   "228": {
-    "name": "",
-    "description": ""
+    "name": "햇살 수정",
+    "description": "눈부신 빛의 섬광을 만드는\n마법 수정."
   },
   "229": {
-    "name": "",
-    "description": ""
+    "name": "경고의 부적",
+    "description": "위험이 가까우면 빛나는 \n마법 부적."
   },
   "230": {
-    "name": "",
-    "description": ""
+    "name": "계시의 렌즈",
+    "description": "보이지 않는 물건과 생물을 \n드러내는 마법 렌즈."
   },
   "231": {
-    "name": "",
-    "description": ""
+    "name": "재생의 약초",
+    "description": "먹으면 MP 재생을 \n크게 앞당긴다"
   },
   "232": {
-    "name": "",
-    "description": ""
+    "name": "파괴의 두루마리",
+    "description": "파괴 주문이 담긴\n강력한 두루마리."
   },
   "233": {
-    "name": "",
-    "description": ""
+    "name": "숙련의 서클릿",
+    "description": "마법 은과 미스릴로 만든 관으로 \n정신 능력을 끌어올린다."
   },
   "234": {
-    "name": "",
-    "description": ""
+    "name": "부양의 깃털",
+    "description": "일시적으로 떠오를 수 있게 \n해주는 마법 깃털."
   },
   "235": {
-    "name": "",
-    "description": ""
+    "name": "일회용 제트팩",
+    "description": "일시적으로 떠오를 수 있게 \n해주는 마법 깃털."
   },
   "236": {
-    "name": "",
-    "description": ""
+    "name": "용의 피 영약",
+    "description": "용의 피의 정수를 담은 \n믿기 힘들 만큼 희귀한 영약."
   },
   "237": {
-    "name": "",
-    "description": ""
+    "name": "위그드라실의 열매",
+    "description": "천 년에 한 번 꽃피는 세계수의 \n신성한 열매."
   },
   "238": {
-    "name": "",
-    "description": ""
+    "name": "술사의 영혼 수정",
+    "description": "고대 대마법사의 갇힌 영혼을 \n품은 전설의 유물."
   },
   "239": {
-    "name": "",
-    "description": ""
+    "name": "암브로시아",
+    "description": "신들의 음료라 일컫는 \n축복받은 황금 감로."
   },
   "240": {
-    "name": "",
-    "description": ""
+    "name": "소원을 이루는 오브",
+    "description": "사용자에게 소원 하나를 이뤄주는 \n상상할 수 없는 힘의 유물."
   },
   "241": {
-    "name": "",
-    "description": ""
+    "name": "Forbidden War EP:",
+    "description": "검열된 전쟁의 기억을 불러낸다.\n어느 정도 재사용할 수 있는데, EP: 치고는 드문 일이다"
   },
   "242": {
-    "name": "",
-    "description": ""
+    "name": "크로노스의 모래시계",
+    "description": "시간 그 자체를 담은\n마법의 모래시계."
   },
   "243": {
-    "name": "",
-    "description": ""
+    "name": "기적의 영약",
+    "description": "불사조의 깃털과 유니콘의 눈물로 \n빚어낸 신비의 혼합물."
   },
   "244": {
-    "name": "",
-    "description": ""
+    "name": "세계수의 씨앗",
+    "description": "즉시 자라나 임시 거처가 되는 \n전설의 씨앗."
   },
   "245": {
-    "name": "",
-    "description": ""
+    "name": "바깥 존재들의 두루마리",
+    "description": "옛 신의 참된 이름이 적힌 \n강력한 두루마리."
   },
   "246": {
-    "name": "",
-    "description": ""
+    "name": "옛 이름의 두루마리",
+    "description": "옛 신의 참된 이름이 적힌 \n강력한 두루마리."
   },
   "247": {
-    "name": "",
-    "description": ""
+    "name": "가짜 치유 물약",
+    "description": "마법처럼 보이지만 \n맛은 그냥 과일 주스인 물약."
   },
   "248": {
-    "name": "",
-    "description": ""
+    "name": "가짜 수정구",
+    "description": "미래를 보여준다고들 하는 \n수수께끼의 구슬."
   },
   "249": {
-    "name": "",
-    "description": ""
+    "name": "장난감 마법 지팡이",
+    "description": "끝에 별이 달려 반짝이를 뿌리고 \n음악을 트는 지팡이."
   },
   "250": {
-    "name": "",
-    "description": ""
+    "name": "빈 마법서",
+    "description": "화려한 표지에 속은 \n백지인 책."
   },
   "251": {
-    "name": "",
-    "description": ""
+    "name": "쓸모없는 부적",
+    "description": "악령을 물리친다고\n주장하는 부적."
   },
   "252": {
-    "name": "",
-    "description": ""
+    "name": "희미한 반투명 물약",
+    "description": "마신 이를 투명하게 만든다고 \n주장하는 물약."
   },
   "253": {
-    "name": "",
-    "description": ""
+    "name": "빈 악마 상자",
+    "description": "악마를 가둬 두었다고들 하는 \n화려한 상자."
   },
   "254": {
-    "name": "",
-    "description": ""
+    "name": "가짜 보물지도",
+    "description": "전설의 보물로 이어진다고들 하는\n지도."
   },
   "255": {
-    "name": "",
-    "description": ""
+    "name": "평범한 빛나는 돌",
+    "description": "다른 차원에서 왔다고들 하는 \n돌멩이."
   },
   "256": {
-    "name": "",
-    "description": ""
+    "name": "거짓 불멸",
+    "description": "불멸을 준다고들 하는 \n물약."
   },
   "257": {
-    "name": "",
-    "description": ""
+    "name": "애완돌",
+    "description": "눈알 스티커를 붙여 놓은\n완전히 평범한 돌멩이."
   },
   "258": {
-    "name": "",
-    "description": ""
+    "name": "짐승의 혀 영약",
+    "description": "동물과 말할 수 있게 해준다고들 하는 \n물약."
   },
   "259": {
-    "name": "",
-    "description": ""
+    "name": "그다지 마법 같지 않은 콩",
+    "description": "구름에 닿는 콩나무로 자란다고들 하는 \n씨앗."
   },
   "260": {
-    "name": "",
-    "description": ""
+    "name": "날지 않는 망토",
+    "description": "날 수 있게 해준다고들 하는 \n망토."
   },
   "261": {
-    "name": "",
-    "description": ""
+    "name": "미약한 음향의 반지",
+    "description": "소원을 들어준다고들 하는 \n반지."
   },
   "262": {
-    "name": "",
-    "description": ""
+    "name": "용의 트림 물약",
+    "description": "불을 뿜을 수 있게 해준다고들 하는 \n탄산음료."
   },
   "263": {
-    "name": "",
-    "description": ""
+    "name": "가짜 불사조 깃털",
+    "description": "불사조에게서 나왔다고들 하는 \n신비로워 보이는 깃털."
   },
   "264": {
-    "name": "",
-    "description": ""
+    "name": "가짜 용의 알",
+    "description": "마법 생물이 부화한다고들 하는 \n수수께끼의 알."
   },
   "265": {
-    "name": "",
-    "description": ""
+    "name": "희미한 착색 물약",
+    "description": "벽 너머를 볼 수 있게 해준다고들 하는 \n물약."
   },
   "266": {
-    "name": "",
-    "description": ""
+    "name": "가짜 변성 가루",
+    "description": "물을 포도주로 바꾼다고들 하는\n가루."
   },
   "267": {
-    "name": "",
-    "description": ""
+    "name": "바보의 연금 가루",
+    "description": "마법 가루를 그럴듯하게 \n흉내 낸 것"
   },
   "268": {
-    "name": "",
-    "description": ""
+    "name": "장인의 배낭",
+    "description": "여러 칸을 갖춘, 솜씨 좋게 \n지은 가죽 배낭."
   },
   "269": {
-    "name": "",
-    "description": ""
+    "name": "장인의 투척 단검 세트",
+    "description": "가죽 홀스터에 담긴 정교하게 \n균형 잡힌 투척 단검 한 벌."
   },
   "270": {
-    "name": "",
-    "description": ""
+    "name": "항해자의 나침반",
+    "description": "정교한 새김을 넣은, 황동과 은으로 \n솜씨 좋게 만든 나침반."
   },
   "271": {
-    "name": "",
-    "description": ""
+    "name": "제화공의 부츠",
+    "description": "밑창을 보강한, 최고급 가죽을 \n손바느질로 지은 부츠."
   },
   "272": {
-    "name": "",
-    "description": ""
+    "name": "직조공의 망토",
+    "description": "최상급 양모와 비단을 섞어 \n아름답게 짜낸 망토."
   },
   "273": {
-    "name": "",
-    "description": ""
+    "name": "시계공의 시계",
+    "description": "정교한 톱니와 기구를 넣어 \n정밀하게 만든 시계."
   },
   "274": {
-    "name": "",
-    "description": ""
+    "name": "필경사의 깃펜",
+    "description": "펜촉을 완벽하게 깎아낸 \n아름답게 만든 깃펜."
   },
   "275": {
-    "name": "",
-    "description": ""
+    "name": "연장장이의 멀티툴",
+    "description": "수십 가지 기능을 갖춘, \n공들여 만든 멀티툴."
   },
   "276": {
-    "name": "",
-    "description": ""
+    "name": "활장이의 활",
+    "description": "희귀한 주목 한 덩이를 깎아 만든 \n완벽하게 균형 잡힌 활."
   },
   "277": {
-    "name": "",
-    "description": ""
+    "name": "안경사의 렌즈",
+    "description": "광을 낸 황동 틀에 끼운\n정교하게 만든 유리 렌즈."
   },
   "278": {
-    "name": "",
-    "description": ""
+    "name": "치즈장이의 치즈 덩이",
+    "description": "치즈 명인이 만들어 \n곱게 숙성시킨 치즈."
   },
   "279": {
-    "name": "",
-    "description": ""
+    "name": "완벽한 빵",
+    "description": "옛 기법으로 완벽하게 구워낸 \n빵 한 덩이."
   },
   "280": {
-    "name": "",
-    "description": ""
+    "name": "로스터의 커피",
+    "description": "희귀한 원두로 내린, 남다른 \n풍미의 커피."
   },
   "281": {
-    "name": "",
-    "description": ""
+    "name": "약초사의 연고",
+    "description": "희귀한 약초를 정확한 배합으로 \n손수 만든 약용 연고."
   },
   "282": {
-    "name": "",
-    "description": ""
+    "name": "도검장의 단검",
+    "description": "화려한 손잡이와 면도날 같은 칼날을 지닌 \n완벽하게 균형 잡힌 단검."
   },
   "283": {
-    "name": "",
-    "description": ""
+    "name": "장갑장이의 손장갑",
+    "description": "최고급 가죽으로 몸에 맞춰 지은 \n장갑 한 벌."
   },
   "284": {
-    "name": "",
-    "description": ""
+    "name": "마술사의 피리",
+    "description": "음정이 완벽한, 아름답게 깎아 만든 \n나무 피리."
   },
   "285": {
-    "name": "",
-    "description": ""
+    "name": "바를레니아의 포도주",
+    "description": "희귀한 포도를 옛 기법으로 \n완벽하게 숙성시킨 포도주."
   },
   "286": {
-    "name": "",
-    "description": ""
+    "name": "마물도감",
+    "description": "질 좋은 양피지를 쓴, 정교하게 만든\n가죽 장정 마물도감."
   },
   "287": {
-    "name": "",
-    "description": ""
+    "name": "목조각가의 지팡이",
+    "description": "희귀한 고목을 깎아 만든 \n완벽하게 균형 잡힌 지팡이."
   },
   "288": {
-    "name": "",
-    "description": ""
+    "name": "픽시 가루 병",
+    "description": "이 세상 것이 아닌 빛으로 반짝이는 \n발광 가루가 든 작은 병."
   },
   "289": {
-    "name": "",
-    "description": ""
+    "name": "황혼의 이슬방울",
+    "description": "황혼의 정원에서 얻은 \n결정화된 이슬방울."
   },
   "290": {
-    "name": "",
-    "description": ""
+    "name": "속삭이는 숲 도토리 반지",
+    "description": "반지처럼 끼면 나무와 숲 생물의\n속삭임을 알아들을 수 있게 해주는\n완벽한 도토리 깍정이."
   },
   "291": {
-    "name": "",
-    "description": ""
+    "name": "요정의 소환 종",
+    "description": "필멸자가 흔들면 아무 소리도 나지 \n않지만, 진짜로 절박할 때는\n보이지 않는 조력자를 부르는 작은 종."
   },
   "292": {
-    "name": "",
-    "description": ""
+    "name": "영원히 피는 장미",
+    "description": "여름 여왕의 정원에서 기른, \n결코 시들지 않는 장미."
   },
   "293": {
-    "name": "",
-    "description": ""
+    "name": "속성 성장 씨앗",
+    "description": "심는 즉시 싹이 트는\n수수께끼의 씨앗."
   },
   "294": {
-    "name": "",
-    "description": ""
+    "name": "진실을 보는 거울",
+    "description": "비밀을 드러내는, 갈아낸 \n월장석으로 만든 거울,"
   },
   "295": {
-    "name": "",
-    "description": ""
+    "name": "버섯 성배",
+    "description": "버섯 갓 하나를 통째로 깎아 만든 잔으로, \n하루에 한 번 달콤한 감로가\n다시 차오른다."
   },
   "296": {
-    "name": "",
-    "description": ""
+    "name": "요정 흙 주머니",
+    "description": "요정 나라의 중심에서 가져온 \n마법 흙이 든 작은 주머니."
   },
   "297": {
-    "name": "",
-    "description": ""
+    "name": "기억의 호박",
+    "description": "호박 속에 갇힌 나비.\n으깨면 기억이 흘러나온다."
   },
   "298": {
-    "name": "",
-    "description": ""
+    "name": "예언자의 골무",
+    "description": "빗물이 담긴 작은 은 \n골무."
   },
   "299": {
-    "name": "",
-    "description": ""
+    "name": "달꽃 화관",
+    "description": "한밤에만 피는 달꽃을 \n엮어 만든 섬세한 \n화관."
   },
   "300": {
-    "name": "",
-    "description": ""
+    "name": "연금술사의 촉매",
+    "description": "연금술 명인이 만든 \n촉매 한 병."
   },
   "301": {
-    "name": "",
-    "description": ""
+    "name": "필경사의 프리즘 잉크",
+    "description": "희귀한 광물과 생물로 만든\n특수 잉크."
   },
   "302": {
-    "name": "",
-    "description": ""
+    "name": "천문학자의 아스트롤라베",
+    "description": "천체의 위치를 계산하려 천문학자들이\n쓰는 정밀 기구."
   },
   "303": {
-    "name": "",
-    "description": ""
+    "name": "의사의 기구 세트",
+    "description": "솜씨 좋게 만든 외과 \n기구 한 벌."
   },
   "304": {
-    "name": "",
-    "description": ""
+    "name": "보석상의 확대경",
+    "description": "보석 명인이 만든 \n전용 렌즈."
   },
   "305": {
-    "name": "",
-    "description": ""
+    "name": "대장장이의 용제",
+    "description": "대장장이들이 쓰는 약초와\n광물의 복잡한 혼합물."
   },
   "306": {
-    "name": "",
-    "description": ""
+    "name": "식물학자의 씨앗 모음",
+    "description": "희귀하고 마법적인 식물의 \n여러 씨앗이 든 가죽 주머니."
   },
   "307": {
-    "name": "",
-    "description": ""
+    "name": "학자의 법전",
+    "description": "통상적인 법률과 판례가 담긴\n두꺼운 책."
   },
   "308": {
-    "name": "",
-    "description": ""
+    "name": "도공의 마법 점토",
+    "description": "도공들이 쓰는 특별히\n손질한 점토."
   },
   "309": {
-    "name": "",
-    "description": ""
+    "name": "가죽장인의 여행 배낭",
+    "description": "비밀 수납칸이 여럿 딸린\n정교하게 만든 배낭."
   },
   "310": {
-    "name": "",
-    "description": ""
+    "name": "도검장의 영원한 숫돌",
+    "description": "결코 닳지 않는 \n빼어난 숫돌."
   },
   "311": {
-    "name": "",
-    "description": ""
+    "name": "요리사의 향신료 배합",
+    "description": "명인 요리사가 마련한 희귀한 \n향신료와 약초 모음."
   },
   "312": {
-    "name": "",
-    "description": ""
+    "name": "화가의 비전 팔레트",
+    "description": "이 세상 솜씨가 아닌 \n붓과 안료 한 벌."
   },
   "313": {
-    "name": "",
-    "description": ""
+    "name": "극지 고래기름",
+    "description": "북극 포유류의 지방에서 \n짜낸 기름 한 병."
   },
   "314": {
-    "name": "",
-    "description": ""
+    "name": "빙하 심장 수정",
+    "description": "결코 녹지 않는 태고의 빙하 \n얼음이 굳어 이룬 수정."
   },
   "315": {
-    "name": "",
-    "description": ""
+    "name": "서리 추적자의 렌즈",
+    "description": "완벽하게 투명한 얼음으로 \n공들여 만든 렌즈."
   },
   "316": {
-    "name": "",
-    "description": ""
+    "name": "설이끼 차",
+    "description": "극북의 눈 아래에서 자라는\n희귀한 이끼."
   },
   "317": {
-    "name": "",
-    "description": ""
+    "name": "서리곰 부적",
+    "description": "무시무시한 북방 서리곰의 \n이빨."
   },
   "318": {
-    "name": "",
-    "description": ""
+    "name": "북방 페미컨",
+    "description": "영양이 풍부한 말린 북극 \n열매를 갈무리한 혼합물."
   },
   "319": {
-    "name": "",
-    "description": ""
+    "name": "설토끼 직물",
+    "description": "북극토끼의 털로 짠, 얇지만 \n믿기 힘들 만큼 따뜻한 천."
   },
   "320": {
-    "name": "",
-    "description": ""
+    "name": "오로라의 정수",
+    "description": "극지 얼음 아래를 \n흐르는 발광 액체."
   },
   "321": {
-    "name": "",
-    "description": ""
+    "name": "길잡이의 북",
+    "description": "사람 가죽을 팽팽히 씌워 만든 \n전통 북."
   },
   "322": {
-    "name": "",
-    "description": ""
+    "name": "이글루 축조 블록",
+    "description": "북방 부족들이 비상 대피처를 지을 때 \n쓰는 특수한 눈."
   },
   "323": {
-    "name": "",
-    "description": ""
+    "name": "완벽한 눈송이",
+    "description": "완벽한 결정 형태 그대로 \n보존한 눈송이 하나."
   },
   "324": {
-    "name": "",
-    "description": ""
+    "name": "서리 유목민의 지도",
+    "description": "북극을 가로지르는 길목을 표시해, 무두질한 \n물범 가죽에 새긴 지도."
   },
   "325": {
-    "name": "",
-    "description": ""
+    "name": "든든한 북극 스튜",
+    "description": "몸속에서 열을 내게 하는, 알래스카에서\n특별히 만든 요리."
   },
   "326": {
-    "name": "",
-    "description": ""
+    "name": "제왕나비 독 날개",
+    "description": "천연 독을 지닌 \n선명한 나비 날개."
   },
   "327": {
-    "name": "",
-    "description": ""
+    "name": "재규어 사향샘",
+    "description": "정글 포식자에게서 얻은\n강력한 사향샘."
   },
   "328": {
-    "name": "",
-    "description": ""
+    "name": "타이탄 딱정벌레 등딱지",
+    "description": "거대한 정글 딱정벌레의 \n튼튼한 껍데기."
   },
   "329": {
-    "name": "",
-    "description": ""
+    "name": "에메랄드 살무사 독",
+    "description": "희귀한 정글 뱀에게서 얻은\n농축 독."
   },
   "330": {
-    "name": "",
-    "description": ""
+    "name": "정글의 심장",
+    "description": "가장 깊은 정글에서만 자라는 \n기이한 열매."
   },
   "331": {
-    "name": "",
-    "description": ""
+    "name": "낙원의 깃털",
+    "description": "희귀한 열대 새의 \n무지갯빛 깃털."
   },
   "332": {
-    "name": "",
-    "description": ""
+    "name": "반얀나무 수액",
+    "description": "주변의 마법 기운을 빨아들이는 \n고목의 수액."
   },
   "333": {
-    "name": "",
-    "description": ""
+    "name": "알파 표범 발톱",
+    "description": "정글 최상위 포식자의 \n강력한 발톱."
   },
   "334": {
-    "name": "",
-    "description": ""
+    "name": "발광 포자",
+    "description": "어두운 정글 동굴에서 자라는 \n발광 균류에서 모은 포자."
   },
   "335": {
-    "name": "",
-    "description": ""
+    "name": "황금 울음주머니",
+    "description": "희귀한 청개구리 종의 \n울음주머니."
   },
   "336": {
-    "name": "",
-    "description": ""
+    "name": "왕실 육식 꿀",
+    "description": "식충 식물이 만들어내는 \n특수한 꿀"
   },
   "337": {
-    "name": "",
-    "description": ""
+    "name": "뱀의 위석",
+    "description": "고대 뱀의 위장에서 나온 \n기묘한 돌."
   },
   "338": {
-    "name": "",
-    "description": ""
+    "name": "달빛 나무 수지",
+    "description": "특정 달의 위상에만 나무에서 \n흘러나오는 희귀한 수지."
   },
   "339": {
-    "name": "",
-    "description": ""
+    "name": "밤사냥꾼의 눈",
+    "description": "완전한 어둠 속에서 사냥하는 \n정글 포식자의 눈."
   },
   "340": {
-    "name": "",
-    "description": ""
+    "name": "기자의 무한 수첩",
+    "description": "결코 다 쓰이지 않는 특수 종이를 쓴 \n고급 수첩."
   },
   "341": {
-    "name": "",
-    "description": ""
+    "name": "마감 커피",
+    "description": "정신을 또렷하고 예민하게 \n지켜주는 고급 커피 블렌드."
   },
   "342": {
-    "name": "",
-    "description": ""
+    "name": "조사관의 카메라",
+    "description": "빼어난 선명도와 줌 성능을 갖춘 \n소형 카메라."
   },
   "343": {
-    "name": "",
-    "description": ""
+    "name": "진실을 드러내는 용액",
+    "description": "숨은 글씨와 지문을 드러내는\n특수 약품 한 벌."
   },
   "344": {
-    "name": "",
-    "description": ""
+    "name": "기자증 모음",
+    "description": "여러 기관에서 발급한 \n기자 자격증 모음."
   },
   "345": {
-    "name": "",
-    "description": ""
+    "name": "투명 잉크 펜",
+    "description": "쓴 글씨를 일시적으로 보이지 않게 \n만드는 특수 조성 잉크."
   },
   "346": {
-    "name": "",
-    "description": ""
+    "name": "은닉 녹음기",
+    "description": "감도를 높이고 잡음을 걸러내는 \n소형 음성 녹음기."
   },
   "347": {
-    "name": "",
-    "description": ""
+    "name": "연설가의 영약",
+    "description": "두뇌 회전과 말솜씨를 \n끌어올리는 특제 강장제."
   },
   "348": {
-    "name": "",
-    "description": ""
+    "name": "제보자 연락망 명부",
+    "description": "사회 여러 분야에 걸친 \n연줄 명부."
   },
   "349": {
-    "name": "",
-    "description": ""
+    "name": "잠입 변장 세트",
+    "description": "변장 재료와 빠른 갈아입기 \n소품이 든 작은 세트."
   },
   "350": {
-    "name": "",
-    "description": ""
+    "name": "진정 차",
+    "description": "신경을 가라앉히고 집중을 되돌려주는\n특별히 만든 약초 차."
   },
   "351": {
-    "name": "",
-    "description": ""
+    "name": "현장 분석 키트",
+    "description": "여러 물질을 탐지하고 분석할 수 있는 \n휴대용 기기."
   },
   "352": {
-    "name": "",
-    "description": ""
+    "name": "기억의 세이지",
+    "description": "기억을 돋우고 생각을 \n정리하게 도와주는 희귀한 약초."
   },
   "353": {
-    "name": "",
-    "description": ""
+    "name": "조사용 노트북",
+    "description": "조사에 특화된 소프트웨어를 갖춘\n작고 튼튼한 노트북."
   },
   "354": {
-    "name": "",
-    "description": ""
+    "name": "정밀 전자저울",
+    "description": "완벽한 정확도와 조작 불가 교정을 갖춘 \n전자저울."
   },
   "355": {
-    "name": "",
-    "description": ""
+    "name": "비표시 포장 키트",
+    "description": "표시가 없는 작은 \n포장재 모음."
   },
   "356": {
-    "name": "",
-    "description": ""
+    "name": "거리 연락망",
+    "description": "중요한 정보를 물어다 주는 \n믿을 만한 거리 정보원 연락망."
   },
   "357": {
-    "name": "",
-    "description": ""
+    "name": "지하 에너지 드링크",
+    "description": "정신을 또렷하고 집중되게 지켜주는 \n합성 강화 에너지 음료."
   },
   "358": {
-    "name": "",
-    "description": ""
+    "name": "암호화 대포폰",
+    "description": "암호화와 보안 메시지를 갖추도록 \n특별히 개조한 스마트폰."
   },
   "359": {
-    "name": "",
-    "description": ""
+    "name": "흔적 제거 분말",
+    "description": "지문과 DNA 흔적을 \n없애는 특수 분말."
   },
   "360": {
-    "name": "",
-    "description": ""
+    "name": "위조 신분 키트",
+    "description": "가짜 신분증과 면허, \n자격증 모음."
   },
   "361": {
-    "name": "",
-    "description": ""
+    "name": "협상가의 안내서",
+    "description": "적을 설득해 당신을 내버려 두게 만든다."
   },
   "362": {
-    "name": "",
-    "description": ""
+    "name": "보안 운반 케이스",
+    "description": "숨은 수납칸과 경보 장치를 갖춘 \n보강 서류가방."
   },
   "363": {
-    "name": "",
-    "description": ""
+    "name": "고급 견본",
+    "description": "제품 품질을 보여주는 데 쓰는\n고급 향수 견본 모음."
   },
   "364": {
-    "name": "",
-    "description": ""
+    "name": "암호 주머니",
+    "description": "거래와 고객을 암호로 적어둔 \n수첩."
   },
   "365": {
-    "name": "",
-    "description": ""
+    "name": "거리 블렌드",
+    "description": "감각과 반사 신경을 끌어올리는 \n강력한 화학 혼합물."
   },
   "366": {
-    "name": "",
-    "description": ""
+    "name": "경로 지도",
+    "description": "Omega Tower 전역의 경로와\n은신처 모음."
   },
   "367": {
-    "name": "",
-    "description": ""
+    "name": "제품 검사 키트",
+    "description": "제품의 순도와 성분을 검사하는 \n전용 키트."
   },
   "368": {
-    "name": "",
-    "description": ""
+    "name": "든든한 스튜",
+    "description": "고기와 채소가 큼직하게 든 \n든든한 스튜."
   },
   "369": {
-    "name": "",
-    "description": ""
+    "name": "갓 구운 빵",
+    "description": "방금 구워낸 빵 \n한 덩이.\n소박하지만 든든하다."
   },
   "370": {
-    "name": "",
-    "description": ""
+    "name": "아삭한 사과",
+    "description": "딱 알맞게 익은\n즙 많은 사과."
   },
   "371": {
-    "name": "",
-    "description": ""
+    "name": "치즈 덩이",
+    "description": "농장에서 갓 짠 우유로 만든 \n치즈 덩이.\n진하고 든든하다."
   },
   "372": {
-    "name": "",
-    "description": ""
+    "name": "구운 생선",
+    "description": "그 지역 물에서 잡아\n구운 생선."
   },
   "373": {
-    "name": "",
-    "description": ""
+    "name": "야생 꿀",
+    "description": "숲속 벌집에서 거둔 \n달콤한 꿀 한 병."
   },
   "374": {
-    "name": "",
-    "description": ""
+    "name": "견과 모둠",
+    "description": "오래된 나무에서 모은 \n고소한 견과."
   },
   "375": {
-    "name": "",
-    "description": ""
+    "name": "과일 페이스트리",
+    "description": "과일 잼을 채운 \n달콤한 페이스트리."
   },
   "376": {
-    "name": "",
-    "description": ""
+    "name": "약초 차",
+    "description": "희귀한 약초로 우린 \n상쾌한 약용 차."
   },
   "377": {
-    "name": "",
-    "description": ""
+    "name": "매운 카레",
+    "description": "혀를 불타게 만드는 \n매운 요리."
   },
   "378": {
-    "name": "",
-    "description": ""
+    "name": "야생 열매",
+    "description": "산 덤불에서 따온 \n한 줌의 열매."
   },
   "379": {
-    "name": "",
-    "description": ""
+    "name": "지혜의 영약",
+    "description": "옛 조리법으로 빚은\n의례용 음료."
   },
   "380": {
-    "name": "",
-    "description": ""
+    "name": "구운 채소",
+    "description": "향긋한 허브를 곁들인 \n구운 채소 요리."
   },
   "381": {
-    "name": "",
-    "description": ""
+    "name": "고급 초콜릿",
+    "description": "제과 명인이 만든 \n호화로운 초콜릿 디저트."
   },
   "382": {
-    "name": "",
-    "description": ""
+    "name": "고기 파이",
+    "description": "바삭한 껍질을 두른 \n든든한 고기 파이."
   },
   "383": {
-    "name": "",
-    "description": ""
+    "name": "샘물",
+    "description": "산속 샘에서 나온\n맑고 상쾌한 물."
   },
   "384": {
-    "name": "",
-    "description": ""
+    "name": "베리 펀치",
+    "description": "그 지역 열매로 만든 \n새콤달콤한 과일 펀치."
   },
   "385": {
-    "name": "",
-    "description": ""
+    "name": "신선한 우유",
+    "description": "풀을 먹인 소에게서 짠 \n진하고 부드러운 우유."
   },
   "386": {
-    "name": "",
-    "description": ""
+    "name": "민트 차",
+    "description": "은은한 민트 향이 도는 \n편안한 약초 차."
   },
   "387": {
-    "name": "",
-    "description": ""
+    "name": "갓 짠 레모네이드",
+    "description": "신선한 레몬으로 만든 \n산뜻한 레모네이드."
   },
   "388": {
-    "name": "",
-    "description": ""
+    "name": "진한 커피",
+    "description": "감각을 깨우는 \n진하고 카페인 가득한 커피."
   },
   "389": {
-    "name": "",
-    "description": ""
+    "name": "코코넛 스무디",
+    "description": "열대의 풍미가 도는 \n달콤한 코코넛 밀크 음료."
   },
   "390": {
-    "name": "",
-    "description": ""
+    "name": "핫초코",
+    "description": "위에 휘핑크림을 올린 \n따뜻한 초콜릿 음료."
   },
   "391": {
-    "name": "",
-    "description": ""
+    "name": "독한 에일",
+    "description": "그 지역 장인이 빚은 \n독하고 호박빛 도는 에일."
   },
   "392": {
-    "name": "",
-    "description": ""
+    "name": "숙성 포도주",
+    "description": "오크통에서 숙성시킨 \n좋은 포도주."
   },
   "393": {
-    "name": "",
-    "description": ""
+    "name": "독한 위스키",
+    "description": "발효 곡물로 증류한\n독한 술."
   },
   "394": {
-    "name": "",
-    "description": ""
+    "name": "꿀 미드",
+    "description": "꿀로 빚은 가볍고\n톡 쏘는 미드."
   },
   "395": {
-    "name": "",
-    "description": ""
+    "name": "용의 숨결 칵테일",
+    "description": "이국의 향신료를 넣은 \n불같고 화려한 칵테일."
   },
   "396": {
-    "name": "",
-    "description": ""
+    "name": "광전사의 술",
+    "description": "광전사들이 즐겼다고 전해지는 \n고대의 술."
   },
   "397": {
-    "name": "",
-    "description": ""
+    "name": "탄산음료",
+    "description": "달콤한 과일 맛이 나는\n톡 쏘는 탄산음료."
   },
   "398": {
-    "name": "",
-    "description": ""
+    "name": "스파게티 볼로네제",
+    "description": "진한 토마토소스와 허브를 곁들인\n고전적인 파스타."
   },
   "399": {
-    "name": "",
-    "description": ""
+    "name": "피자 마르게리타",
+    "description": "모차렐라와 바질을 올린 \n갓 구운 피자."
   },
   "400": {
-    "name": "",
-    "description": ""
+    "name": "버섯 리소토",
+    "description": "버섯과 파르미자노를 넣어 끓인 \n크리미한 쌀 요리."
   },
   "401": {
-    "name": "",
-    "description": ""
+    "name": "소고기 카르파초",
+    "description": "루콜라와 파르미자노를 올린 \n얇게 저민 소고기."
   },
   "402": {
-    "name": "",
-    "description": ""
+    "name": "아란치니",
+    "description": "치즈와 고기를 채워 튀긴 \n라이스볼."
   },
   "403": {
-    "name": "",
-    "description": ""
+    "name": "라자냐",
+    "description": "파스타와 소스, 치즈를 \n진하게 켜켜이 쌓은 요리."
   },
   "404": {
-    "name": "",
-    "description": ""
+    "name": "브루스케타",
+    "description": "토마토와 올리브유를 얹은 \n바삭한 빵."
   },
   "405": {
-    "name": "",
-    "description": ""
+    "name": "판나코타",
+    "description": "캐러멜라이즈한 설탕을 올린 \n달콤한 커스터드 디저트."
   },
   "406": {
-    "name": "",
-    "description": ""
+    "name": "티라미수",
+    "description": "마스카르포네를 켜켜이 쌓은 \n커피 향 디저트."
   },
   "407": {
-    "name": "",
-    "description": ""
+    "name": "Pasta con le sarde",
+    "description": "전형적인 시칠리아 요리"
   },
   "408": {
-    "name": "",
-    "description": ""
+    "name": "Prosciutto e Melone",
+    "description": "멜론을 곁들인 얇게 저민 \n생햄."
   },
   "409": {
-    "name": "",
-    "description": ""
+    "name": "Fritto Misto",
+    "description": "해산물과 채소를 바삭하게 튀긴 \n프리터."
   },
   "410": {
-    "name": "",
-    "description": ""
+    "name": "오소부코",
+    "description": "그레몰라타를 곁들여 오래 익힌\n송아지 정강이."
   },
   "411": {
-    "name": "",
-    "description": ""
+    "name": "스파게티 카르보나라",
+    "description": "달걀과 치즈, 판체타, 후추를 \n넣은 파스타."
   },
   "412": {
-    "name": "",
-    "description": ""
+    "name": "스트루폴리",
+    "description": "꿀을 뿌린 \n바삭하게 튀긴 반죽."
   },
   "413": {
-    "name": "",
-    "description": ""
+    "name": "와규 스테이크",
+    "description": "트러플 버터를 곁들여 \n솜씨 좋게 구운 스테이크."
   },
   "414": {
-    "name": "",
-    "description": ""
+    "name": "벨루가 캐비아",
+    "description": "은은한 짭짤함이 도는 \n섬세한 생선알."
   },
   "415": {
-    "name": "",
-    "description": ""
+    "name": "블랙 트러플 리소토",
+    "description": "크리미한 리소토에 우아하게 \n섞어 넣은 블랙 트러플."
   },
   "416": {
-    "name": "",
-    "description": ""
+    "name": "푸아그라 코냑 젤리",
+    "description": "코냑 젤리를 곁들인 \n호사스러운 오리 간 파테."
   },
   "417": {
-    "name": "",
-    "description": ""
+    "name": "버터 포치드 랍스터",
+    "description": "진한 버터 소스에 담긴 \n더없이 부드러운 랍스터."
   },
   "418": {
-    "name": "",
-    "description": ""
+    "name": "송이버섯 소테",
+    "description": "허브와 마늘로 볶아낸 \n귀한 버섯."
   },
   "419": {
-    "name": "",
-    "description": ""
+    "name": "사프란 부야베스",
+    "description": "사프란을 우려낸 \n절묘한 해산물 스튜."
   },
   "420": {
-    "name": "",
-    "description": ""
+    "name": "금박 수플레",
+    "description": "금박을 올린 \n완벽한 초콜릿 디저트."
   },
   "421": {
-    "name": "",
-    "description": ""
+    "name": "가든 인스피레이션 샐러드",
+    "description": "식용 꽃을 곁들인 \n맛의 교향곡."
   },
   "422": {
-    "name": "",
-    "description": ""
+    "name": "수비드 립",
+    "description": "고급 소고기를 오래 익혀 \n완벽하게 완성했다."
   },
   "423": {
-    "name": "",
-    "description": ""
+    "name": "이국 과일 조각",
+    "description": "이국의 과일을 깎아 만든\n먹을 수 있는 걸작."
   },
   "424": {
-    "name": "",
-    "description": ""
+    "name": "카르다몸 로즈 마카롱",
+    "description": "남다른 향미를 지닌 \n섬세한 단과자."
   },
   "425": {
-    "name": "",
-    "description": ""
+    "name": "연기의 환상",
+    "description": "연기를 쓴 분자 요리의 \n걸작."
   },
   "426": {
-    "name": "",
-    "description": ""
+    "name": "체리 글레이즈 오리",
+    "description": "체리와 팔각으로 윤을 낸\n부드러운 오리."
   },
   "427": {
-    "name": "",
-    "description": ""
+    "name": "골드 리저브",
+    "description": "가장 귀한 커피 원두를 \n완벽하게 내렸다."
   },
   "428": {
-    "name": "",
-    "description": ""
+    "name": "디럭스 치즈버거",
+    "description": "치즈와 상추, 특제 소스를 넣은 \n육즙 가득한 버거."
   },
   "429": {
-    "name": "",
-    "description": ""
+    "name": "바삭한 감자튀김",
+    "description": "소금과 케첩을 곁들인\n바삭하고 노릇한 감자튀김."
   },
   "430": {
-    "name": "",
-    "description": ""
+    "name": "치킨 한 통",
+    "description": "바삭한 튀김옷을 입힌 \n프라이드치킨 조각들."
   },
   "431": {
-    "name": "",
-    "description": ""
+    "name": "점보 콜라",
+    "description": "크고 달콤한 탄산 \n음료."
   },
   "432": {
-    "name": "",
-    "description": ""
+    "name": "페퍼로니 피자 한 조각",
+    "description": "페퍼로니와 치즈를 듬뿍 올린 \n얇은 도우 피자."
   },
   "433": {
-    "name": "",
-    "description": ""
+    "name": "치즈 프레첼",
+    "description": "소금과 치즈 소스를 곁들인\n부드럽고 따뜻한 프레첼."
   },
   "434": {
-    "name": "",
-    "description": ""
+    "name": "매운 치킨 샌드위치",
+    "description": "매콤하게 튀긴 치킨을 부드러운 \n번에 넣고 소스를 곁들였다."
   },
   "435": {
-    "name": "",
-    "description": ""
+    "name": "어니언링",
+    "description": "튀김옷을 입혀 바삭하게 \n튀긴 양파링."
   },
   "436": {
-    "name": "",
-    "description": ""
+    "name": "초콜릿 셰이크",
+    "description": "초콜릿 시럽을 얹은 \n차가운 달콤한 간식."
   },
   "437": {
-    "name": "",
-    "description": ""
+    "name": "소고기 타코",
+    "description": "양념한 고기와 치즈를 넣은 \n부드러운 타코."
   },
   "438": {
-    "name": "",
-    "description": ""
+    "name": "모차렐라 스틱",
+    "description": "마리나라 소스를 곁들여 \n튀겨낸 모차렐라 스틱."
   },
   "439": {
-    "name": "",
-    "description": ""
+    "name": "글레이즈 도넛",
+    "description": "알록달록한 스프링클을 뿌린 \n달콤한 도넛."
   },
   "440": {
-    "name": "",
-    "description": ""
+    "name": "트리플 버거 세트",
+    "description": "버거와 감자튀김, 음료를 모두 \n갖춘 완전 세트."
   },
   "441": {
-    "name": "",
-    "description": ""
+    "name": "브렉퍼스트 샌드위치",
+    "description": "달걀과 치즈, 베이컨을 넣은\n아침 샌드위치."
   },
   "442": {
-    "name": "",
-    "description": ""
+    "name": "핫퍼지 선데",
+    "description": "토핑을 얹은 달콤하고 진한\n아이스크림 선데."
   },
   "443": {
-    "name": "",
-    "description": ""
+    "name": "돌처럼 딱딱한 빵",
+    "description": "이가 부러질 만큼 \n말라 굳은 빵."
   },
   "444": {
-    "name": "",
-    "description": ""
+    "name": "정체불명 고기",
+    "description": "출처가 미심쩍은 \n기묘한 고기."
   },
   "445": {
-    "name": "",
-    "description": ""
+    "name": "남은 죽",
+    "description": "어제 남은 것들을 섞어 \n정체를 알 수 없게 만든 죽."
   },
   "446": {
-    "name": "",
-    "description": ""
+    "name": "수상한 수프",
+    "description": "무언가의 조각이 떠다니는 \n멀건 국물..."
   },
   "447": {
-    "name": "",
-    "description": ""
+    "name": "유통기한 지난 치즈",
+    "description": "진작 버렸어야 할 \n곰팡이 핀 치즈."
   },
   "448": {
-    "name": "",
-    "description": ""
+    "name": "탄 콩",
+    "description": "알아볼 수 없을 만큼 \n타버린 콩.\n엉뚱한 데서 바삭거린다."
   },
   "449": {
-    "name": "",
-    "description": ""
+    "name": "하루 지난 생선",
+    "description": "너무 오래 밖에 \n내놓았던 생선."
   },
   "450": {
-    "name": "",
-    "description": ""
+    "name": "덩어리진 죽",
+    "description": "덩어리가 가득한 \n맛없는 곤죽."
   },
   "451": {
-    "name": "",
-    "description": ""
+    "name": "멀건 채소 수프",
+    "description": "미심쩍은 채소 몇 조각이 \n떠다니는 물."
   },
   "452": {
-    "name": "",
-    "description": ""
+    "name": "싹 난 감자",
+    "description": "오래 방치되어 \n초라해진 감자."
   },
   "453": {
-    "name": "",
-    "description": ""
+    "name": "멍든 사과",
+    "description": "온통 갈색 반점이 진\n물러진 사과."
   },
   "454": {
-    "name": "",
-    "description": ""
+    "name": "새까맣게 탄 토스트",
+    "description": "알아볼 수 없게 탔지만\n그래도 먹을 수는 있다."
   },
   "455": {
-    "name": "",
-    "description": ""
+    "name": "싸구려 단백질 바",
+    "description": "상상할 수 있는 가장 싼 \n고기 대체품."
   },
   "456": {
-    "name": "",
-    "description": ""
+    "name": "곰팡이 핀 리소토",
+    "description": "푸르스름한 빛이 돌고 발 냄새가\n난다."
   },
   "457": {
-    "name": "",
-    "description": ""
+    "name": "불경한 음식 흉물",
+    "description": "상상할 수 있는 최악의 \n음식."
   },
   "458": {
-    "name": "",
-    "description": ""
+    "name": "가공육 통조림",
+    "description": "보존료를 넣어 대량 생산한\n고기 통조림."
   },
   "459": {
-    "name": "",
-    "description": ""
+    "name": "치즈 맛 과자",
+    "description": "인공 색소를 넣은 \n치즈 맛 과자."
   },
   "460": {
-    "name": "",
-    "description": ""
+    "name": "봉지 라면",
+    "description": "스프가 딸린 \n포장 면."
   },
   "461": {
-    "name": "",
-    "description": ""
+    "name": "원기 강장제",
+    "description": "보존료와 인공 색소를 넣은 \n설탕물."
   },
   "462": {
-    "name": "",
-    "description": ""
+    "name": "영양 강화 바",
+    "description": "합성 비타민을 넣어 압축한 \n영양 바."
   },
   "463": {
-    "name": "",
-    "description": ""
+    "name": "알록달록 설탕 시리얼",
+    "description": "인공 색소와 향료를 넣은 \n아침용 시리얼."
   },
   "464": {
-    "name": "",
-    "description": ""
+    "name": "크림 스낵 케이크",
+    "description": "도무지 상하지 않을 것 같은 \n과자."
   },
   "465": {
-    "name": "",
-    "description": ""
+    "name": "전자레인지 패티",
+    "description": "미리 익혀 얼렸다가 \n다시 데운 고기 패티."
   },
   "466": {
-    "name": "",
-    "description": ""
+    "name": "통조림 채소",
+    "description": "소금과 화학 약품에 절인 \n채소."
   },
   "467": {
-    "name": "",
-    "description": ""
+    "name": "알록달록 젤리 디저트",
+    "description": "인공 색소를 넣은 \n과일 맛 젤리."
   },
   "468": {
-    "name": "",
-    "description": ""
+    "name": "감자 칩",
+    "description": "감자를 재구성한 반죽을\n칩 모양으로 찍어낸 것."
   },
   "469": {
-    "name": "",
-    "description": ""
+    "name": "전자레인지 정찬",
+    "description": "몇 분 만에 데워 먹는 \n냉동 식사."
   },
   "470": {
-    "name": "",
-    "description": ""
+    "name": "대체육 패티",
+    "description": "대두 단백으로 만든 \n합성 고기 대체품."
   },
   "471": {
-    "name": "",
-    "description": ""
+    "name": "초콜릿 맛 바",
+    "description": "제대로 녹지도 않는 \n초콜릿 비슷한 물질."
   },
   "472": {
-    "name": "",
-    "description": ""
+    "name": "전술 야전 전투식량",
+    "description": "오래 보관되는 군용 등급 \n완전 식사."
   },
   "473": {
-    "name": "",
-    "description": ""
+    "name": "빛나는 별방울",
+    "description": "결정 같은 과육을 지닌 \n반짝이는 푸른 열매."
   },
   "474": {
-    "name": "",
-    "description": ""
+    "name": "달빛 열매",
+    "description": "달빛 아래에서만 자라는 \n희귀한 열매."
   },
   "475": {
-    "name": "",
-    "description": ""
+    "name": "나선 열매",
+    "description": "최면 같은 무늬가 도는 \n나선 모양의 자주색 열매."
   },
   "476": {
-    "name": "",
-    "description": ""
+    "name": "용의 숨결 열매",
+    "description": "기운이 반짝이는 \n불타는 듯 붉은 열매."
   },
   "477": {
-    "name": "",
-    "description": ""
+    "name": "황금 태양 열매",
+    "description": "가장 높은 산에서 나는 \n황금빛 열매."
   },
   "478": {
-    "name": "",
-    "description": ""
+    "name": "수정 감로 열매",
+    "description": "무지갯빛 감로가 가득 찬 \n반투명한 열매."
   },
   "479": {
-    "name": "",
-    "description": ""
+    "name": "마나 석류",
+    "description": "푸른 막이 맥동하는 \n여러 방으로 나뉜 열매."
   },
   "480": {
-    "name": "",
-    "description": ""
+    "name": "공허 스타프루트",
+    "description": "작은 빛점이 박힌 \n검고 별 모양인 열매."
   },
   "481": {
-    "name": "",
-    "description": ""
+    "name": "구름 열매 퍼프",
+    "description": "중력을 거스르는 \n떠다니는 가벼운 열매."
   },
   "482": {
-    "name": "",
-    "description": ""
+    "name": "프리즘 반짝 열매",
+    "description": "익어가며 색이 바뀌는 \n반짝이는 열매."
   },
   "483": {
-    "name": "",
-    "description": ""
+    "name": "심연 발광 열매",
+    "description": "가장 깊은 해구에서 나는\n열매."
   },
   "484": {
-    "name": "",
-    "description": ""
+    "name": "요정의 마법 열매",
+    "description": "요정 나라에서만 자란다고 전해지는 \n신화 속 열매."
   },
   "485": {
-    "name": "",
-    "description": ""
+    "name": "잉걸 고추 열매",
+    "description": "화산토에서 자라는 \n작고 선명한 열매."
   },
   "486": {
-    "name": "",
-    "description": ""
+    "name": "식(蝕)의 열매",
+    "description": "일식과 월식 때만 나타나는\n전설의 열매."
   },
   "487": {
-    "name": "",
-    "description": ""
+    "name": "한밤의 속삭임 멜론",
+    "description": "자정을 알리는 순간에만 \n익는 열매."
   },
   "488": {
-    "name": "",
-    "description": ""
+    "name": "고급 사시미",
+    "description": "날생선과 양념한 밥으로 만든 \n귀한 별미."
   },
   "489": {
-    "name": "",
-    "description": ""
+    "name": "향신료 비리야니",
+    "description": "향신료와 채소를 넣어 지은 \n향긋한 밥."
   },
   "490": {
-    "name": "",
-    "description": ""
+    "name": "딤섬 모둠",
+    "description": "이국의 재료를 채운\n작은 찐만두들."
   },
   "491": {
-    "name": "",
-    "description": ""
+    "name": "모로코 타진",
+    "description": "올리브와 절인 레몬을 넣어 \n오래 끓인 고기 스튜."
   },
   "492": {
-    "name": "",
-    "description": ""
+    "name": "매운 김치",
+    "description": "알싸하게 매운\n발효 배추.\n새콤하고 기운이 난다."
   },
   "493": {
-    "name": "",
-    "description": ""
+    "name": "향신료 케밥",
+    "description": "이국의 향신료를 묻혀 구운 \n고기 꼬치."
   },
   "494": {
-    "name": "",
-    "description": ""
+    "name": "터키 아이스크림",
+    "description": "독특한 식감의 달고\n쫀득한 아이스크림."
   },
   "495": {
-    "name": "",
-    "description": ""
+    "name": "꿀 바클라바",
+    "description": "견과와 꿀을 켜켜이 쌓은 \n얇은 페이스트리."
   },
   "496": {
-    "name": "",
-    "description": ""
+    "name": "똠 카 수프",
+    "description": "코코넛 밀크와 이국의 허브를 넣은 \n매콤한 수프."
   },
   "497": {
-    "name": "",
-    "description": ""
+    "name": "속을 채운 파라타",
+    "description": "양념한 감자와 채소를 채운 \n납작빵."
   },
   "498": {
-    "name": "",
-    "description": ""
+    "name": "열대 과일 샐러드",
+    "description": "라임과 향신료를 살짝 곁들인 \n열대 과일 모둠."
   },
   "499": {
-    "name": "",
-    "description": ""
+    "name": "잎에 싼 생선",
+    "description": "허브와 함께 바나나 잎에 싸서\n구운 생선."
   },
   "500": {
-    "name": "",
-    "description": ""
+    "name": "해산물 검보",
+    "description": "오크라와 채소, 새우를 넣은 \n진한 스튜."
   },
   "501": {
-    "name": "",
-    "description": ""
+    "name": "생 스프링롤",
+    "description": "신선한 채소와 허브를 \n라이스페이퍼에 만 것."
   },
   "502": {
-    "name": "",
-    "description": ""
+    "name": "바를레니아의 커피",
+    "description": "독특한 풍미를 지닌 \n세계에서 가장 비싼 커피."
   },
   "503": {
-    "name": "",
-    "description": ""
+    "name": "소고기 쌀국수",
+    "description": "부드러운 소고기 편육과 면을 \n감칠맛 나는 육수에 담았다."
   },
   "504": {
-    "name": "",
-    "description": ""
+    "name": "망고 찰밥",
+    "description": "달콤한 망고와 코코넛 크림을 곁들인 \n찰밥."
   },
   "505": {
-    "name": "",
-    "description": ""
+    "name": "샤오롱바오",
+    "description": "감칠맛 나는 소를 채운\n한입 크기 돼지고기 만두."
   },
   "506": {
-    "name": "",
-    "description": ""
+    "name": "연어 니기리",
+    "description": "양념한 밥 위에 얇게 저민 \n생선을 올렸다."
   },
   "507": {
-    "name": "",
-    "description": ""
+    "name": "팟타이",
+    "description": "채소와 단백질을 넣어 볶은 \n국수."
   },
   "508": {
-    "name": "",
-    "description": ""
+    "name": "비빔밥",
+    "description": "밥과 채소, 달걀을 담은 \n뜨거운 돌솥."
   },
   "509": {
-    "name": "",
-    "description": ""
+    "name": "샤부샤부",
+    "description": "얇게 저민 소고기와 채소를 \n소스와 함께 낸다."
   },
   "510": {
-    "name": "",
-    "description": ""
+    "name": "순두부찌개",
+    "description": "해산물을 넣고 보글보글 끓인 \n매운 순두부찌개."
   },
   "511": {
-    "name": "",
-    "description": ""
+    "name": "베이징 덕",
+    "description": "얇은 전병과 하이센 소스를 곁들인\n바삭한 오리."
   },
   "512": {
-    "name": "",
-    "description": ""
+    "name": "팥죽 속의 떡",
+    "description": "달콤한 팥죽에 든 \n쫄깃한 떡."
   },
   "513": {
-    "name": "",
-    "description": ""
+    "name": "구아바오",
+    "description": "새콤한 소스를 곁들인 \n바삭한 고기와 채소."
   },
   "514": {
-    "name": "",
-    "description": ""
+    "name": "오코노미야키",
+    "description": "해산물과 채소를 넣은 \n짭조름한 부침개."
   },
   "515": {
-    "name": "",
-    "description": ""
+    "name": "똠얌꿍",
+    "description": "새우와 레몬그라스를 넣은 \n새콤하고 매운 수프."
   },
   "516": {
-    "name": "",
-    "description": ""
+    "name": "팥 바오쯔",
+    "description": "달콤한 소를 채운\n한입 크기 찐빵."
   },
   "517": {
-    "name": "",
-    "description": ""
+    "name": "오향 돼지고기 조림",
+    "description": "향긋한 오향 배합으로\n오래 익힌 고기."
   },
   "518": {
-    "name": "",
-    "description": ""
+    "name": "멧돼지 뒷다리 구이",
+    "description": "통째로 구운 커다란 \n멧돼지 다리."
   },
   "519": {
-    "name": "",
-    "description": ""
+    "name": "와인 소스 꿩 요리",
+    "description": "진한 와인 소스에 오래 익힌\n사냥한 새고기."
   },
   "520": {
-    "name": "",
-    "description": ""
+    "name": "사슴고기 포타주",
+    "description": "뿌리채소와 함께 끓인 \n부드러운 사슴고기."
   },
   "521": {
-    "name": "",
-    "description": ""
+    "name": "사슴고기 페이스트리",
+    "description": "향신료와 육즙을 넣어 \n페이스트리에 봉한 고기."
   },
   "522": {
-    "name": "",
-    "description": ""
+    "name": "사냥꾼의 스튜",
+    "description": "여러 사냥감 고기를 함께 끓인 \n진한 스튜."
   },
   "523": {
-    "name": "",
-    "description": ""
+    "name": "토끼 구이",
+    "description": "허브와 베이컨을 곁들여 천천히 \n구운 토끼고기."
   },
   "524": {
-    "name": "",
-    "description": ""
+    "name": "베이컨 감싼 비둘기",
+    "description": "베이컨으로 감싸 완벽하게 \n구워낸 비둘기."
   },
   "525": {
-    "name": "",
-    "description": ""
+    "name": "염장 곰고기",
+    "description": "소금에 절여 갈무리한 \n귀한 곰고기 별미."
   },
   "526": {
-    "name": "",
-    "description": ""
+    "name": "수사슴 구이",
+    "description": "귀히 여기는 숲 수사슴의 고기를 \n꼬치에 꿰어 구웠다."
   },
   "527": {
-    "name": "",
-    "description": ""
+    "name": "사슴 심장 구이",
+    "description": "사냥꾼들이 전리품으로 여기는 \n부드러운 사슴 심장."
   },
   "528": {
-    "name": "",
-    "description": ""
+    "name": "산양 조림",
+    "description": "야생 산양을 부드러워질 때까지 \n천천히 고았다."
   },
   "529": {
-    "name": "",
-    "description": ""
+    "name": "선지 순대",
+    "description": "다진 고기와 허브를 채운\n창자."
   },
   "530": {
-    "name": "",
-    "description": ""
+    "name": "사슴고기 육포",
+    "description": "소금과 향신료를 뿌려 길게 \n말린 고기."
   },
   "531": {
-    "name": "",
-    "description": ""
+    "name": "훈제 멧돼지 목살",
+    "description": "숲 멧돼지의 기름진 목살을 \n훈제했다."
   },
   "532": {
-    "name": "",
-    "description": ""
+    "name": "왕실 백조 구이",
+    "description": "연회를 위해 마련한 \n백조 왕실 요리."
   },
   "533": {
-    "name": "",
-    "description": ""
+    "name": "용의 송곳니",
+    "description": "용의 아가리에서 뽑은\n거대한 송곳니."
   },
   "534": {
-    "name": "",
-    "description": ""
+    "name": "물의 정령 비늘",
+    "description": "물의 정령에게서 얻은\n반짝이는 비늘."
   },
   "535": {
-    "name": "",
-    "description": ""
+    "name": "골렘 핵",
+    "description": "쓰러진 골렘에게서 거둔\n맥동하는 구체."
   },
   "536": {
-    "name": "",
-    "description": ""
+    "name": "픽시 날개",
+    "description": "요정 생물의 \n반투명한 날개."
   },
   "537": {
-    "name": "",
-    "description": ""
+    "name": "유니콘 뿔",
+    "description": "전설의 유니콘에게서 \n얻은 뿔."
   },
   "538": {
-    "name": "",
-    "description": ""
+    "name": "밴시의 눈물",
+    "description": "밴시에게서 얻은 \n결정화된 눈물."
   },
   "539": {
-    "name": "",
-    "description": ""
+    "name": "늑대인간 발톱",
+    "description": "사나운 늑대인간의 발톱."
   },
   "540": {
-    "name": "",
-    "description": ""
+    "name": "흡혈귀 나무 조각",
+    "description": "흡혈귀 관의 파편."
   },
   "541": {
-    "name": "",
-    "description": ""
+    "name": "비홀더 눈자루",
+    "description": "비홀더 생물의 \n눈."
   },
   "542": {
-    "name": "",
-    "description": ""
+    "name": "기괴한 촉수",
+    "description": "우주적 공포의 촉수."
   },
   "543": {
-    "name": "",
-    "description": ""
+    "name": "파수기 CPU",
+    "description": "기계 파수꾼에게서 떼어낸 \n회로 기판."
   },
   "544": {
-    "name": "",
-    "description": ""
+    "name": "공허 플라스마",
+    "description": "차원 균열에서 나온 \n젤 같은 물질."
   },
   "545": {
-    "name": "",
-    "description": ""
+    "name": "영혼의 수의",
+    "description": "원한 서린 유령의 \n너덜너덜한 수의."
   },
   "546": {
-    "name": "",
-    "description": ""
+    "name": "외계 합금 조각",
+    "description": "쓰러진 외계 외골격에서 나온 \n금속 덩어리."
   },
   "547": {
-    "name": "",
-    "description": ""
+    "name": "좀비 손",
+    "description": "되살아난 시체에서 \n잘려 나온 손."
   },
   "548": {
-    "name": "",
-    "description": ""
+    "name": "결정화된 우즈",
+    "description": "산성 우즈 생물에게서 나온 \n굳은 점액."
   },
   "549": {
-    "name": "",
-    "description": ""
+    "name": "그리핀 알",
+    "description": "신화 속 그리핀에게서 나온 \n기이한 알."
   },
   "550": {
-    "name": "",
-    "description": ""
+    "name": "거대 딱정벌레 등딱지",
+    "description": "거대 곤충의 외골격 \n한 조각."
   },
   "551": {
-    "name": "",
-    "description": ""
+    "name": "만티코어 꼬리",
+    "description": "독가시가 그대로 달린 \n만티코어의 꼬리."
   },
   "552": {
-    "name": "",
-    "description": ""
+    "name": "얼어붙은 용의 숨결",
+    "description": "얼음 드레이크의 \n결정화된 숨결."
   },
   "553": {
-    "name": "",
-    "description": ""
+    "name": "그림자 정수",
+    "description": "차원 사이로 빠져나간 \n그림자 생물의 잔해."
   },
   "554": {
-    "name": "",
-    "description": ""
+    "name": "드리아드 꽃봉오리",
+    "description": "자아 있는 식물 생물에게서 \n난 작은 봉오리 모양의 돌기."
   },
   "555": {
-    "name": "",
-    "description": ""
+    "name": "심연 발광 기관",
+    "description": "기이한 심해 생물에게서 나온\n맥동하는 기관."
   },
   "556": {
-    "name": "",
-    "description": ""
+    "name": "사이보그 기억 코어",
+    "description": "사이버네틱 생물에게서 나온 \n작은 저장 장치."
   },
   "557": {
-    "name": "",
-    "description": ""
+    "name": "악몽의 발톱",
+    "description": "악몽 생물의 \n길쭉한 손가락."
   },
   "558": {
-    "name": "",
-    "description": ""
+    "name": "운석 핵 파편",
+    "description": "운석 짐승에게서 떨어진 \n기이한 돌."
   },
   "559": {
-    "name": "",
-    "description": ""
+    "name": "전갈 독주머니",
+    "description": "거대 전갈의 독이 든 \n작은 병."
   },
   "560": {
-    "name": "",
-    "description": ""
+    "name": "차원 간 유물",
+    "description": "다른 차원에서 온 \n기이한 뼈 같은 구조물."
   },
   "561": {
-    "name": "",
-    "description": ""
+    "name": "고대 비룡 비늘",
+    "description": "고대 비룡의\n비늘 한 장."
   },
   "562": {
-    "name": "",
-    "description": ""
+    "name": "가고일 심장",
+    "description": "돌 가고일의 \n뛰는 심장."
   },
   "563": {
-    "name": "",
+    "name": "미확인 물품",
     "description": ""
   },
   "564": {
-    "name": "",
-    "description": ""
+    "name": "자물쇠 따개",
+    "description": "문을 연다"
   },
   "565": {
-    "name": "",
-    "description": ""
+    "name": "강철 광석",
+    "description": "제작 재료"
   },
   "566": {
-    "name": "",
-    "description": ""
+    "name": "타이타늄 광석",
+    "description": "제작 재료"
   },
   "567": {
-    "name": "",
-    "description": ""
+    "name": "바를레니아 광석",
+    "description": "제작 재료"
   },
   "568": {
-    "name": "",
-    "description": ""
+    "name": "수정",
+    "description": "제작 재료"
   },
   "569": {
-    "name": "",
-    "description": ""
+    "name": "유리",
+    "description": "제작 재료"
   },
   "570": {
-    "name": "",
-    "description": ""
+    "name": "목재",
+    "description": "제작 재료"
   },
   "571": {
-    "name": "",
-    "description": ""
+    "name": "가죽",
+    "description": "제작 재료"
   },
   "572": {
-    "name": "",
-    "description": ""
+    "name": "천",
+    "description": "제작 재료"
   },
   "573": {
-    "name": "",
-    "description": ""
+    "name": "뼈",
+    "description": "제작 재료"
   },
   "574": {
-    "name": "",
-    "description": ""
+    "name": "고기",
+    "description": "제작 재료"
   },
   "575": {
-    "name": "",
-    "description": ""
+    "name": "식물성 재료",
+    "description": "제작 재료"
   },
   "576": {
-    "name": "",
-    "description": ""
+    "name": "약초 추출물",
+    "description": "제작 재료"
   },
   "577": {
-    "name": "",
-    "description": ""
+    "name": "기름병",
+    "description": "제작 재료"
   },
   "578": {
-    "name": "",
-    "description": ""
+    "name": "산성 용액",
+    "description": "제작 재료"
   },
   "579": {
-    "name": "",
-    "description": ""
+    "name": "비전의 정수",
+    "description": "제작 재료"
   },
   "580": {
-    "name": "",
-    "description": ""
+    "name": "에테르 파편",
+    "description": "제작 재료"
   },
   "581": {
-    "name": "",
-    "description": ""
+    "name": "양자 코어",
+    "description": "제작 재료"
   },
   "582": {
-    "name": "",
-    "description": ""
+    "name": "회로 기판",
+    "description": "제작 재료"
   },
   "583": {
-    "name": "",
-    "description": ""
+    "name": "마이크로칩",
+    "description": "제작 재료"
   },
   "584": {
-    "name": "",
-    "description": ""
+    "name": "배터리 셀",
+    "description": "제작 재료"
   },
   "585": {
-    "name": "",
-    "description": ""
+    "name": "플라스틱 폴리머",
+    "description": "제작 재료"
   },
   "586": {
-    "name": "",
-    "description": ""
+    "name": "복합 수지",
+    "description": "제작 재료"
   },
   "587": {
-    "name": "",
-    "description": ""
+    "name": "나노튜브 모듈",
+    "description": "제작 재료"
   },
   "588": {
-    "name": "",
-    "description": ""
+    "name": "신문",
+    "description": "유럽에서 온 최신 소식."
   },
   "589": {
-    "name": "",
+    "name": "리미널 수갑",
     "description": ""
   },
   "590": {
-    "name": "",
-    "description": ""
+    "name": "아케이드 토큰",
+    "description": "오락기에 넣어 쓴다"
   },
   "591": {
-    "name": "",
-    "description": ""
+    "name": "초대장",
+    "description": "Archive Foundation이 펴낸 소책자."
   },
   "592": {
-    "name": "",
-    "description": ""
+    "name": "연료 탱크",
+    "description": "연료 25리터가 들어 있다"
   },
   "593": {
-    "name": "",
-    "description": ""
+    "name": "던전 열쇠",
+    "description": "던전의 문을 연다"
   },
   "594": {
-    "name": "",
-    "description": ""
+    "name": "긁고 저주하라",
+    "description": "비의 즉석 복권\n"
   },
   "595": {
-    "name": "",
-    "description": ""
+    "name": "긁고 벌어라",
+    "description": "기업 즉석 복권\n"
   },
   "596": {
-    "name": "",
-    "description": ""
+    "name": "긁고 쌓아라",
+    "description": "초자본주의 즉석 복권\n"
   },
   "597": {
-    "name": "",
-    "description": ""
+    "name": "긁고 쉬어라",
+    "description": "휴가를 주제로 한 즉석 복권\n"
   },
   "598": {
-    "name": "",
-    "description": ""
+    "name": "실용 자동차",
+    "description": "자동차를 불러내는 마법 열쇠"
   },
   "599": {
-    "name": "",
-    "description": ""
+    "name": "칼날 씨앗",
+    "description": "칼날 정령이 들어 있으며, 결속\n과정은 되돌릴 수 없다."
   },
   "600": {
-    "name": "",
-    "description": ""
+    "name": "디지털 마물도감",
+    "description": "질 좋은 양피지를 쓴, 정교하게 만든\n가죽 장정 마물도감."
   },
   "601": {
-    "name": "",
-    "description": ""
+    "name": "비료 포대",
+    "description": "산업용 등급 비료."
   },
   "602": {
-    "name": "",
-    "description": ""
+    "name": "인간 정자 표본",
+    "description": "임신하게 만든다."
   },
   "603": {
-    "name": "",
-    "description": ""
+    "name": "임신 가속기",
+    "description": "태아 발달을 앞당기는 나나이트."
   },
   "604": {
-    "name": "",
-    "description": ""
+    "name": "고블린 정자 표본",
+    "description": "임신하게 만든다."
   },
   "605": {
-    "name": "",
-    "description": ""
+    "name": "엘프 정자 표본",
+    "description": "임신하게 만든다."
   },
   "606": {
-    "name": "",
-    "description": ""
+    "name": "드워프 정자 표본",
+    "description": "임신하게 만든다."
   },
   "607": {
-    "name": "",
-    "description": ""
+    "name": "미상의 정자 표본",
+    "description": "임신하게 만든다."
   },
   "608": {
-    "name": "",
-    "description": ""
+    "name": "신곡 - 연옥",
+    "description": "단테 알리기에리의 『연옥』 인쇄본"
   },
   "609": {
-    "name": "",
-    "description": ""
+    "name": "신곡 - 연옥",
+    "description": "단테 알리기에리의 『연옥』 인쇄본"
   },
   "610": {
     "name": "",
@@ -2464,24 +2464,24 @@
     "description": ""
   },
   "617": {
-    "name": "",
-    "description": ""
+    "name": "망원경",
+    "description": "휴대용 망원경"
   },
   "618": {
-    "name": "",
-    "description": ""
+    "name": "성도",
+    "description": "휴대용 성도"
   },
   "619": {
-    "name": "",
-    "description": ""
+    "name": "삽",
+    "description": "땅속으로 굴을 판다."
   },
   "620": {
-    "name": "",
-    "description": ""
+    "name": "공명 탐지기",
+    "description": "지하 공간을 찾아낸다."
   },
   "621": {
-    "name": "",
-    "description": ""
+    "name": "라만 탐침",
+    "description": "분광 분석을 수행한다"
   },
   "622": {
     "name": "",
@@ -2556,144 +2556,144 @@
     "description": ""
   },
   "640": {
-    "name": "",
-    "description": ""
+    "name": "소돔 120일",
+    "description": "사드 후작의 『소돔 120일』 인쇄본"
   },
   "641": {
-    "name": "",
-    "description": ""
+    "name": "사무엘상",
+    "description": "사무엘상(성경) 인쇄본"
   },
   "642": {
-    "name": "",
-    "description": ""
+    "name": "단편 2",
+    "description": "알아볼 수 없는 단편의 인쇄본"
   },
   "643": {
-    "name": "",
-    "description": ""
+    "name": "단편 3",
+    "description": "알아볼 수 없는 단편의 인쇄본"
   },
   "644": {
-    "name": "",
-    "description": ""
+    "name": "최선의 계획",
+    "description": "에버렛 B. 콜의 『The Best Made Plans』 인쇄본"
   },
   "645": {
-    "name": "",
-    "description": ""
+    "name": "불타는 세계",
+    "description": "마거릿 캐번디시의 『불타는 세계』 인쇄본"
   },
   "646": {
-    "name": "",
-    "description": ""
+    "name": "목수",
+    "description": "윌리엄 D. 오코너의 『The Carpenter』 인쇄본"
   },
   "647": {
-    "name": "",
-    "description": ""
+    "name": "지구 속 여행 I",
+    "description": "쥘 베른의 『지구 속 여행』(1권) 인쇄본"
   },
   "648": {
-    "name": "",
-    "description": ""
+    "name": "지구 속 여행 II",
+    "description": "쥘 베른의 『지구 속 여행』(2권) 인쇄본"
   },
   "649": {
-    "name": "",
-    "description": ""
+    "name": "데카메론 I",
+    "description": "조반니 보카치오의 『데카메론』(1권) 인쇄본"
   },
   "650": {
-    "name": "",
-    "description": ""
+    "name": "데카메론 II",
+    "description": "조반니 보카치오의 『데카메론』(2권) 인쇄본"
   },
   "651": {
-    "name": "",
-    "description": ""
+    "name": "지옥편",
+    "description": "단테 알리기에리의 『신곡: 지옥편』 인쇄본"
   },
   "652": {
-    "name": "",
-    "description": ""
+    "name": "천국편",
+    "description": "단테 알리기에리의 『신곡: 천국편』 인쇄본"
   },
   "653": {
-    "name": "",
-    "description": ""
+    "name": "에티켓",
+    "description": "에밀리 포스트의 『에티켓』 인쇄본"
   },
   "654": {
-    "name": "",
-    "description": ""
+    "name": "출애굽기",
+    "description": "출애굽기(성경) 인쇄본"
   },
   "655": {
-    "name": "",
-    "description": ""
+    "name": "파이돈",
+    "description": "플라톤의 『파이돈』 인쇄본"
   },
   "656": {
-    "name": "",
-    "description": ""
+    "name": "파리의 배 I",
+    "description": "에밀 졸라의 『파리의 배』(1권) 인쇄본"
   },
   "657": {
-    "name": "",
-    "description": ""
+    "name": "파리의 배 II",
+    "description": "에밀 졸라의 『파리의 배』(2권) 인쇄본"
   },
   "658": {
-    "name": "",
-    "description": ""
+    "name": "창세기",
+    "description": "창세기(성경) 인쇄본"
   },
   "659": {
-    "name": "",
-    "description": ""
+    "name": "노움",
+    "description": "노움에 관한 논고의 인쇄본 \n(작자 미상)"
   },
   "660": {
-    "name": "",
-    "description": ""
+    "name": "황금 그릇",
+    "description": "헨리 제임스의 『황금 그릇』 인쇄본"
   },
   "661": {
-    "name": "",
-    "description": ""
+    "name": "어둠의 심연",
+    "description": "조지프 콘래드의 『어둠의 심연』 인쇄본"
   },
   "662": {
-    "name": "",
-    "description": ""
+    "name": "헨리 4세",
+    "description": "윌리엄 셰익스피어의 『헨리 4세』 인쇄본"
   },
   "663": {
-    "name": "",
-    "description": ""
+    "name": "Lorem Ipsum",
+    "description": "키케로의 『De finibus bonorum et malorum』 인쇄본"
   },
   "664": {
-    "name": "",
-    "description": ""
+    "name": "로시의 후작",
+    "description": "조지 맥도널드의 『로시의 후작』 인쇄본"
   },
   "665": {
-    "name": "",
-    "description": ""
+    "name": "메이플라워 문서",
+    "description": "메이플라워 서약(역사) 인쇄본"
   },
   "666": {
-    "name": "",
-    "description": ""
+    "name": "금속 괴물",
+    "description": "에이브러햄 메릿의 『금속 괴물』 인쇄본"
   },
   "667": {
-    "name": "",
-    "description": ""
+    "name": "파크레인의 빈자",
+    "description": "윌리엄 르 큐의 『The Pauper of Park Lane』 인쇄본"
   },
   "668": {
-    "name": "",
-    "description": ""
+    "name": "자주색 구름",
+    "description": "M. P. 실의 『자주색 구름』 인쇄본"
   },
   "669": {
-    "name": "",
-    "description": ""
+    "name": "룻기",
+    "description": "룻기(성경) 인쇄본"
   },
   "670": {
-    "name": "",
-    "description": ""
+    "name": "강자들의 자리",
+    "description": "길버트 파커의 『The Seats of the Mighty』 인쇄본"
   },
   "671": {
-    "name": "",
-    "description": ""
+    "name": "테스트",
+    "description": "테스트용 책의 인쇄본"
   },
   "672": {
-    "name": "",
-    "description": ""
+    "name": "우주 전쟁 I",
+    "description": "H. G. 웰스의 『우주 전쟁』(1권) 인쇄본"
   },
   "673": {
-    "name": "",
-    "description": ""
+    "name": "우주 전쟁 II",
+    "description": "H. G. 웰스의 『우주 전쟁』(2권) 인쇄본"
   },
   "674": {
-    "name": "",
-    "description": ""
+    "name": "우주 전쟁 III",
+    "description": "H. G. 웰스의 『우주 전쟁』(3권) 인쇄본"
   },
   "675": {
     "name": "",

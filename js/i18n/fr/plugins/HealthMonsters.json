@@ -20,19 +20,19 @@
   "preciseStrike": "",
   "partWasHit": "",
   "paramNames": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "PV max",
+    "PM max",
+    "Attaquer",
+    "Magie",
+    "Défense",
+    "Défense magique",
+    "Agilité",
+    "Chance"
   ],
-  "statFallback": "",
-  "elementLabel": "",
+  "statFallback": "Statistique",
+  "elementLabel": "Élément :",
   "weakToLabel": "",
   "statesLabel": "",
   "bodyParts": "",
-  "none": ""
+  "none": "Aucun"
 }

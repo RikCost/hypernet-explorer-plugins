@@ -2,8 +2,8 @@
   "installBodypart": "",
   "removeBodypart": "",
   "replaceBodypart": "",
-  "installImplant": "",
-  "cancel": "",
+  "installImplant": "Installer un implant",
+  "cancel": "Annuler",
   "owned": "",
   "vital": {
     "hp": "",
@@ -77,21 +77,21 @@
   "chooseArchetypeCode": "",
   "suppliersAvailable": "",
   "paramNames": [
+    "PV max",
+    "PM max",
+    "FOR",
+    "Taux de réussite",
     "",
-    "",
-    "",
-    "",
-    "",
-    "",
+    "CON",
     "",
     ""
   ],
-  "statFallback": "",
+  "statFallback": "Statistique",
   "genderNames": [
+    "Homme",
+    "Femme",
     "",
-    "",
-    "",
-    ""
+    "Cocon"
   ],
   "notAvailable": "",
   "reproductionNames": {
@@ -100,20 +100,20 @@
     "2": "",
     "3": "",
     "4": "",
-    "-1": ""
+    "-1": "Aucun"
   },
-  "unknown": "",
+  "unknown": "Inconnu",
   "classless": "",
   "levelShort": "",
   "dossierTitle": "",
   "dossierPrompt": "",
   "genderReprLine": "",
   "ability": {
-    "str": "",
+    "str": "FOR",
     "con": "",
     "dex": "",
     "int": "",
-    "wis": "",
+    "wis": "SAG",
     "psi": ""
   },
   "surgeryFee": "",

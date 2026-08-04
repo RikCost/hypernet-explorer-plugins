@@ -3,7 +3,7 @@
   "exitStation": "",
   "liters": "",
   "fillTank": "",
-  "back": "",
+  "back": "뒤로",
   "selectVehicle": "",
   "vehicleTitle": "",
   "genericVehicle": "",
@@ -11,7 +11,7 @@
   "confirmHeader": "",
   "confirmBody": "",
   "confirm": "",
-  "cancel": "",
+  "cancel": "취소",
   "completeHeader": "",
   "added": "",
   "insufficientFunds": "",
@@ -22,7 +22,7 @@
     "fuelOverview": "",
     "vehicleFuel": "",
     "cost": "",
-    "level": "",
+    "level": "레벨",
     "pricePerLitre": "",
     "wallet": ""
   }

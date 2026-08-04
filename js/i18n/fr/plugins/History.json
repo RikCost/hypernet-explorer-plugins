@@ -272,7 +272,7 @@
   },
   "leader": {
     "unknown": "",
-    "unknownIdeology": ""
+    "unknownIdeology": "Inconnu"
   },
   "government": {
     "Theocracy": "",
@@ -286,7 +286,7 @@
     "Warband Confederacy": "",
     "Free Confederation": "",
     "Crown Protectorate": "",
-    "Punitive Colony Regime": "",
+    "Punitive Colony Regime": "Régime de Colonie Pénitentiaire",
     "Puppet Government": "",
     "Parliamentary Republic": "",
     "Constitutional Monarchy": "",
@@ -310,58 +310,58 @@
   },
   "artifactDescription": "",
   "artifactName": {
-    "template": "",
+    "template": "{noun} {adj}",
     "adjectives": [
+      "Légendaire",
+      "Antique",
+      "Énigmatique",
+      "Extraterrestre",
       "",
       "",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Quantique",
+      "de l'Oubli",
+      "des Astres"
     ],
     "adjectivesFem": [
+      "Légendaire",
+      "Antique",
+      "Énigmatique",
+      "Extraterrestre",
       "",
       "",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Quantique",
+      "de l'Oubli",
+      "des Astres"
     ],
     "nounGender": {},
     "itemNouns": [
+      "Noyau",
+      "Relique",
+      "Cristal",
+      "Prisme",
+      "Dispositif",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Idole"
     ],
     "weaponNouns": [
+      "Lame",
+      "Hache",
+      "Bâton",
+      "Arc",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
+      "Marteau",
       ""
     ],
     "armorNouns": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Égide",
+      "Cuirasse",
+      "Cape",
+      "Bouclier",
+      "Heaume",
+      "Manteau",
+      "Plastron"
     ]
   },
   "reason": {
@@ -389,6 +389,9 @@
     "stoleFrom": "",
     "discovered": "",
     "action": {
+      "discovered": "",
+      "crafted": "",
+      "exhumed": "",
       "seized": "",
       "purchased": "",
       "inherited": "",
@@ -427,9 +430,9 @@
     "fact": ""
   },
   "ui": {
-    "back": "",
-    "continue": "",
-    "artifactBadge": "",
+    "back": "Retour",
+    "continue": "Continuer",
+    "artifactBadge": "ARTEFACT",
     "military": "",
     "economy": ""
   }

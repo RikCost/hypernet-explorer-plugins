@@ -1,8 +1,8 @@
 {
-  "bgOpacity": "",
-  "bareFists": "",
-  "attacksWith": "",
-  "dodged": "",
-  "listPair": "",
-  "listLast": ""
+  "bgOpacity": "Opacité du fond du journal de combat",
+  "bareFists": "Poings nus",
+  "attacksWith": "%1 attaque avec %2 !",
+  "dodged": "%1 a esquivé.",
+  "listPair": " et ",
+  "listLast": ", et "
 }

@@ -57,9 +57,9 @@
     "selectIngredients": "",
     "cookTheseItems": ""
   },
-  "back": "",
+  "back": "Retour",
   "ingredients": "",
-  "cooking": "",
+  "cooking": "Cuisine",
   "nutritionalBase": "",
   "aromaticBinder": "",
   "yourBackpackContainsNoEdible": "",
@@ -69,15 +69,15 @@
   "minorEffect25": "",
   "disastrousEffect75": "",
   "calories": "",
-  "protein": "",
+  "protein": "Protéines",
   "fat": "",
   "satietyPerMember": "",
   "split": "",
   "combineANutritionalBaseAnd": "",
-  "clearSelection": "",
+  "clearSelection": "Effacer la sélection",
   "nutrition": {
     "calories": "",
-    "protein": "",
+    "protein": "Protéines",
     "fat": ""
   }
 }

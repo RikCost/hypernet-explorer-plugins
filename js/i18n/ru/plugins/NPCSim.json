@@ -1,6 +1,6 @@
 {
   "anItem": "",
-  "mapFallback": "",
+  "mapFallback": "Карта {id}",
   "homePool": {
     "huts": "",
     "houses": "",
@@ -45,5 +45,5 @@
     "summary": "",
     "quiet": ""
   },
-  "unknownDate": ""
+  "unknownDate": "Неизвестно"
 }

@@ -6,8 +6,8 @@
   "Stunning": "",
   "Vampiric": "",
   "Focusing": "",
-  "Berserk": "",
-  "Perfect": "",
+  "Berserk": "Берсерк",
+  "Perfect": "Идеальный",
   "Dull": "",
   "Chipped": "",
   "Broken": "",
@@ -17,5 +17,5 @@
   "Retaliating": "",
   "Insulated": "",
   "Antidote": "",
-  "Blessed": ""
+  "Blessed": "Благословение"
 }

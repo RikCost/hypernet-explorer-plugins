@@ -76,7 +76,7 @@
   },
   "wings": {
     "none": "",
-    "delta": "",
+    "delta": "델타",
     "swept": "",
     "forward": "",
     "xwing": "",
@@ -104,7 +104,7 @@
     "radiator": ""
   },
   "pods": {
-    "none": "",
+    "none": "없음",
     "tanks": "",
     "cargo": "",
     "missiles": "",
@@ -113,7 +113,7 @@
     "lifeboats": ""
   },
   "dishes": {
-    "none": "",
+    "none": "없음",
     "dish": "",
     "phased": "",
     "mast": "",
@@ -121,7 +121,7 @@
     "spine": ""
   },
   "rings": {
-    "none": "",
+    "none": "없음",
     "hab": "",
     "drive": "",
     "dual": "",
@@ -129,8 +129,8 @@
   },
   "greebles": {
     "clean": "",
-    "light": "",
-    "heavy": "",
+    "light": "경량 무기",
+    "heavy": "중장비 무기",
     "baroque": ""
   },
   "wears": {
@@ -148,7 +148,7 @@
     "dark": ""
   },
   "grunges": {
-    "none": "",
+    "none": "없음",
     "concrete": "",
     "smoke": "",
     "slate": "",
@@ -165,7 +165,7 @@
     "lights": "",
     "greebles": "",
     "ring": "",
-    "dish": "",
+    "dish": "센서 배열",
     "pods": "",
     "tail": "",
     "cockpit": "",
@@ -186,6 +186,7 @@
     "",
     "",
     "",
+    "텅 빈",
     "",
     "",
     "",
@@ -199,11 +200,17 @@
     "",
     "",
     "",
-    "",
-    ""
+    "유리"
   ],
   "nameB": [
     "",
+    "랜턴",
+    "",
+    "순례자",
+    "경맥",
+    "",
+    "",
+    "닻",
     "",
     "",
     "",
@@ -211,14 +218,7 @@
     "",
     "",
     "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
+    "문턱",
     "",
     "",
     "",
@@ -230,7 +230,7 @@
   "randomize": "",
   "worldSeed": "",
   "apply": "",
-  "cancel": "",
+  "cancel": "취소",
   "editorHint": "",
   "editorHintPad": "",
   "rotateHintPad": ""

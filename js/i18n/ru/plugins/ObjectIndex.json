@@ -6,10 +6,10 @@
   "objectsCatalogued": "",
   "searchIndex": "",
   "uncatalogued": "",
-  "itemNumbered": "",
+  "itemNumbered": "Предмет №{id}",
   "nutrition": {
-    "calories": "",
-    "protein": "",
+    "calories": "Калории",
+    "protein": "Белки",
     "fat": "",
     "caffeine": ""
   },
@@ -20,7 +20,7 @@
     "3": ""
   },
   "scope": {
-    "0": "",
+    "0": "Нет",
     "1": "",
     "2": "",
     "3": "",
@@ -44,8 +44,8 @@
   "commerce": "",
   "declaredValue": "",
   "consumable": "",
-  "yes": "",
-  "no": "",
+  "yes": "Да",
+  "no": "Нет",
   "yesLower": "",
   "keyReference": "",
   "physicalProperties": "",

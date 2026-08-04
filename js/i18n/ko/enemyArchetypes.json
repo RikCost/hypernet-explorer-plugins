@@ -502,7 +502,7 @@
         "name": "머리"
       },
       "cephalothorax": {
-        "name": "",
+        "name": "두흉부",
         "msg": ""
       },
       "abdomen": {

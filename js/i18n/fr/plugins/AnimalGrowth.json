@@ -1,20 +1,20 @@
 {
   "stage": {
-    "baby": "",
-    "adult": ""
+    "baby": "Bébé",
+    "adult": "Adulte"
   },
-  "collected": "",
-  "mapNumbered": "",
-  "itemNumbered": "",
-  "petNote": "",
-  "cannotKeep": "",
-  "noAnimalToSell": "",
-  "sold": "",
-  "nothingToCollect": "",
+  "collected": "\\I[{icon}]\\c[14]{item}\\c[0] ×{qty} récolté !",
+  "mapNumbered": "Carte {id}",
+  "itemNumbered": "Objet n°{id}",
+  "petNote": "Un {animal} {stage} élevé à {place}.",
+  "cannotKeep": "Tu ne peux pas garder d'animaux ici.",
+  "noAnimalToSell": "Aucun animal à vendre ici.",
+  "sold": "\\c[14]{animal}\\c[0] vendu pour {amount} € !",
+  "nothingToCollect": "Rien à récolter pour l'instant.",
   "youngAnimal": {
-    "one": "",
-    "other": ""
+    "one": "Un jeune \\c[14]{animal}\\c[0]. Adulte dans environ {count} jour.",
+    "other": "Un jeune \\c[14]{animal}\\c[0]. Adulte dans environ {count} jours."
   },
-  "pleased": "",
-  "nothingReady": ""
+  "pleased": "Le \\c[14]{animal}\\c[0] est content de te voir.",
+  "nothingReady": "Le \\c[14]{animal}\\c[0] n'a encore rien de prêt."
 }

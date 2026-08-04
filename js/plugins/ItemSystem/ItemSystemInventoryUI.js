@@ -209,6 +209,11 @@
 
     // ---- Item grid ----
     let gridHTML = '';
+    // Signature of what the grid actually shows (identity, order, stack size,
+    // favorite mark). Equipping swaps one weapon out and the replaced one back
+    // in, so the list length alone never notices the change and the slots keep
+    // their stale onclick indices.
+    let gridSignature = '';
     if (itemsList.length === 0) {
       gridHTML = `<div class="item-grid-empty">${T('Inventory.empty')}</div>`;
     } else {
@@ -219,6 +224,8 @@
         const weightTotal = ((weight * count) / 1000).toFixed(2);
         const canvasId   = `item-canvas-${idx}`;
         const rarity     = this.getUIItemRarity(item);
+        const kind       = DataManager.isWeapon(item) ? 'w' : DataManager.isArmor(item) ? 'a' : 'i';
+        gridSignature   += `${kind}${item.id}x${count}${this.isItemFavorited(item) ? '*' : ''},`;
         gridHTML += `
           <div class="item-slot ${isFocused}" data-icon-index="${item.iconIndex}" data-canvas-id="${canvasId}" onclick="SceneManager._scene.selectUIItem(${idx})">
             <div class="item-rarity-bar" style="background:${rarity.color};"></div>
@@ -282,7 +289,7 @@
         </div>
       </div>`;
 
-    const gridDataKey = `${this._activeUICategory}_${this._searchText || ''}_${this._dndSortKey}_${this._dndSortDirection}_${itemsList.length}`;
+    const gridDataKey = `${this._activeUICategory}_${this._searchText || ''}_${this._dndSortKey}_${this._dndSortDirection}_${itemsList.length}_${gridSignature}`;
     const leftPageContainer = this._dndContainer.querySelector('.left-page');
 
     // ---- Right page HTML ----

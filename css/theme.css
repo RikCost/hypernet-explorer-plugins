@@ -459,6 +459,13 @@
     box-shadow: 0 1px 3px var(--shadow-glow-active-translucent-40);
 }
 
+/* Sprite selector cells hold nothing but the sprite: the pin dot and the
+   corner check badge both land on top of it, so neither is drawn there. */
+.cc-wanted-card.cc-sprite-card::after,
+.cc-wanted-card.cc-sprite-card.selected::before {
+    content: none;
+}
+
 .cc-wanted-card:hover {
     transform: scale(1.04) rotate(1deg);
     border-color: var(--border-focus-hover);
@@ -13632,7 +13639,8 @@
     font-size: 1.6rem;
     font-weight: bold;
     letter-spacing: 4px;
-    text-transform: uppercase;
+    /* Show the name exactly as typed, casing included. */
+    text-transform: none;
     color: var(--text-brown-deep);
     margin: 0 12px;
     display: inline-block;

@@ -132,6 +132,8 @@
     "use strict";
     const PLUGIN = "ForgottenGrimoire";
     const OFFER_COUNT = 5;
+    // How long the learned spell stays on screen before the book closes.
+    const LEARN_HOLD_MS = 1500;
 
     // ---------------------------------------------------------------------
     // Helpers
@@ -210,30 +212,30 @@
 
             if (Input.isTriggered("cancel")) {
                 SoundManager.playCancel();
-                if (onSpells) { sc._focus = "party"; sc.render(); }
+                if (onSpells) { sc._focus = "party"; sc.syncSelection(); }
                 else sc.popScene();
                 return;
             }
             if (Input.isTriggered("ok")) {
                 if (onSpells) sc.chooseSpell(sc._spellIdx);
-                else { sc._focus = "spells"; sc._spellIdx = 0; SoundManager.playOk(); sc.render(); }
+                else { sc._focus = "spells"; sc._spellIdx = 0; SoundManager.playOk(); sc.syncSelection(); }
                 return;
             }
             if (len === 0) {
                 if ((Input.isTriggered("left") || Input.isTriggered("right")) && onSpells) {
-                    sc._focus = "party"; SoundManager.playCursor(); sc.render();
+                    sc._focus = "party"; SoundManager.playCursor(); sc.syncSelection();
                 }
                 return;
             }
-            if (Input.isTriggered("right") && !onSpells) { sc._focus = "spells"; sc._spellIdx = 0; SoundManager.playCursor(); sc.render(); return; }
-            if (Input.isTriggered("left") && onSpells) { sc._focus = "party"; SoundManager.playCursor(); sc.render(); return; }
+            if (Input.isTriggered("right") && !onSpells) { sc._focus = "spells"; sc._spellIdx = 0; SoundManager.playCursor(); sc.syncSelection(); return; }
+            if (Input.isTriggered("left") && onSpells) { sc._focus = "party"; SoundManager.playCursor(); sc.syncSelection(); return; }
 
             let moved = false, idx = onSpells ? sc._spellIdx : sc._actorIdx;
             if (Input.isRepeated("down")) { idx = (idx + 1) % len; moved = true; }
             else if (Input.isRepeated("up")) { idx = (idx - 1 + len) % len; moved = true; }
             if (moved) {
                 SoundManager.playCursor();
-                if (onSpells) { sc._spellIdx = idx; sc.render(); }
+                if (onSpells) { sc._spellIdx = idx; sc.syncSelection(); }
                 else { sc.selectActor(idx); }
             }
         }
@@ -351,7 +353,20 @@
         this._actorIdx = i;
         this._actor = members[i];
         this.rollOffers();
-        this.render();
+        this.redraw();
+    };
+
+    // Cursor moves only change which card wears .sel, so paint that straight
+    // onto the live nodes: rebuilding the overlay restarts every transition on
+    // it and reads as a flash. A full redraw is only for changed content.
+    Scene_ForgottenGrimoire.prototype.syncSelection = function () {
+        if (!this._dom) return;
+        this._dom.querySelectorAll(".grim-actor").forEach((el, i) => {
+            el.classList.toggle("sel", this._focus === "party" && i === this._actorIdx);
+        });
+        this._dom.querySelectorAll(".grim-card").forEach((el, i) => {
+            el.classList.toggle("sel", this._focus === "spells" && i === this._spellIdx);
+        });
     };
 
     Scene_ForgottenGrimoire.prototype.chooseSpell = function (i) {
@@ -361,8 +376,9 @@
         this._actor.learnSkill(s.id);
         SoundManager.playUseSkill();
         this._learnedIdx = i;
-        this.render();
-        setTimeout(() => this.popScene(), 750);
+        const card = this._dom && this._dom.querySelectorAll(".grim-card")[i];
+        if (card) card.classList.add("learned");
+        setTimeout(() => this.popScene(), LEARN_HOLD_MS);
     };
 
     // ----- DOM -----
@@ -372,12 +388,15 @@
         this._dom.style.opacity = "0";
         this._dom.style.transition = "opacity .22s ease-out";
         document.body.appendChild(this._dom);
-        this.render();
+        this.redraw();
         GrimInput.activate();
         setTimeout(() => { if (this._dom) this._dom.style.opacity = "1"; }, 16);
     };
 
-    Scene_ForgottenGrimoire.prototype.render = function () {
+    // Never name this "render": a Scene is a PIXI.Container and the renderer
+    // calls container.render() every frame, which would rebuild the overlay 60
+    // times a second and stop the scene's own children being drawn.
+    Scene_ForgottenGrimoire.prototype.redraw = function () {
         if (!this._dom) return;
         const back = T('Grimoire.back');
 

@@ -1,6 +1,6 @@
 {
-  "mapFallback": "",
-  "shopkeeperFallback": "",
+  "mapFallback": "Карта {id}",
+  "shopkeeperFallback": "Торговец",
   "frontier": "",
   "placeOfCountry": "",
   "placeSettlement": "",

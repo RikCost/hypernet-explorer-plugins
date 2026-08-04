@@ -1,6 +1,6 @@
 {
   "pullToSpin": "",
-  "noTokens": "",
+  "noTokens": "Tu n'as aucun jeton.",
   "notEnoughTokens": "",
   "jackpot": "",
   "pair": "",
@@ -12,7 +12,7 @@
     "tokens": "",
     "bet": "",
     "lastWin": "",
-    "spin": "",
+    "spin": "ROTATION",
     "hint": ""
   }
 }

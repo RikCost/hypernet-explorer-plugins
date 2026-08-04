@@ -1,13 +1,13 @@
 {
   "menuCommand": "",
   "title": "",
-  "back": "",
+  "back": "Назад",
   "repLevel": {
     "exalted": "",
     "revered": "",
     "honored": "",
     "friendly": "",
-    "neutral": "",
+    "neutral": "Нейтральное",
     "unfriendly": "",
     "hostile": "",
     "hated": "",
@@ -16,10 +16,10 @@
   "relation": {
     "allied": "",
     "friendly": "",
-    "neutral": "",
+    "neutral": "Нейтральное",
     "unfriendly": "",
     "hostile": "",
-    "unknown": ""
+    "unknown": "Неизвестно"
   },
   "perk": {
     "basicServices": "",

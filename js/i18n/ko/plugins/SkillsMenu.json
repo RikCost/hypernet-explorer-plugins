@@ -1,6 +1,6 @@
 {
-  "title": "",
-  "back": "",
+  "title": "기술",
+  "back": "뒤로",
   "recent": "",
   "unit": {
     "ap": ""
@@ -28,7 +28,7 @@
       "description": ""
     },
     "support": {
-      "name": "",
+      "name": "지원",
       "description": ""
     }
   },
@@ -43,10 +43,10 @@
   "cmd": {
     "favourites": "",
     "levelUp": "",
-    "use": "",
+    "use": "사용",
     "favourite": "",
     "unfavourite": "",
-    "cancel": ""
+    "cancel": "취소"
   },
   "action": {
     "useSkill": "",
@@ -55,10 +55,10 @@
     "back": ""
   },
   "info": {
-    "type": "",
+    "type": "유형:",
     "scale": "",
-    "basic": "",
-    "none": "",
+    "basic": "기본적인",
+    "none": "없음",
     "effect": "",
     "hpDmg": "",
     "mpDmg": "",
@@ -68,7 +68,7 @@
     "mpDrain": "",
     "buffs": "",
     "debuffs": "",
-    "state": ""
+    "state": "상태"
   },
   "target": {
     "title": "",

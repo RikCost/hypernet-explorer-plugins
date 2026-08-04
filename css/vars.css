@@ -516,18 +516,128 @@
     color: var(--accent-amber-glow) !important;
 }
 
-/* Name input (AltNameInput) "Synchronize Name" field: the default theme paints
-   the typed name in dark brown (--text-brown-deep), which is nearly invisible on
-   this dark tower background. Repaint it in bright cream-gold with a soft glow so
-   the name reads clearly against the brackets. */
+/* ==========================================================================
+   Name input (AltNameInput), dark-theme legibility
+   The name-entry spread is drawn for the cream parchment book: the typed name,
+   the identity card and every control on the right page use dark brown inks
+   (--text-brown-deep, #5d483b, #8b5a2b) that are nearly invisible on the Omega
+   Tower black page, while the keyboard sits inside a dashed translucent-brown
+   crate that stretches down the whole page and reads as a large empty box under
+   the keys. Strip the decorative plates back to bare dark and repaint every
+   label bright. This file is imported before theme.css (it is the live vars.css),
+   so every override needs !important to win the cascade.
+   ========================================================================== */
+
+/* Default ink for anything on the spread without its own colour. */
+.alchemical-name-container {
+    color: var(--accent-cream-light) !important;
+}
+
+/* Pack the keyboard page from the top instead of spreading it over the full
+   height, so no dead gap is left between the keys and the Space/Backspace row. */
+.alchemical-name-container .name-left-page {
+    justify-content: flex-start !important;
+}
+
+/* Keyboard crate: no plate, no dashed frame, no forced height. The keys are the
+   only thing that should be visible against the tower black. */
+.alchemical-name-container .kbd-grid {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    flex-grow: 0 !important;
+}
+
+/* Character keys: brighter face, near-black ink and a gold edge so the whole
+   insert grid stands off the black page. */
+.alchemical-name-container .kbd-key {
+    background: linear-gradient(to bottom, #fffaf0 0%, #efe0bd 100%) !important;
+    border-color: var(--accent-amber-light) !important;
+    color: #241a10 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.55) !important;
+}
+.alchemical-name-container .kbd-key.candidate {
+    background: linear-gradient(to bottom, #fff6e0 0%, #ffe9b8 100%) !important;
+    border-color: var(--accent-gold-pure) !important;
+    color: #6d2a08 !important;
+}
+
+/* Identity card: drop the brown plate and its inner glow, keep a gold rule. */
+.alchemical-name-container .actor-sync-card {
+    background: transparent !important;
+    border-color: var(--border-gold-amber-30) !important;
+    box-shadow: none !important;
+}
+.alchemical-name-container .actor-portrait-frame {
+    border-color: var(--border-focus-hover) !important;
+    box-shadow: none !important;
+}
+.alchemical-name-container .actor-name-title {
+    color: var(--accent-amber-glow) !important;
+}
+.alchemical-name-container .actor-class-subtitle {
+    color: var(--accent-amber-light) !important;
+}
+.alchemical-name-container .actor-meta-row {
+    color: var(--text-card-medium) !important;
+}
+
+/* "SYNCHRONIZE NAME" caption + character counter (hardcoded brown inline ink). */
+.alchemical-name-container [style*="#8b5a2b"] {
+    color: var(--accent-cream-warm) !important;
+}
+
+/* The typed name: bare field, bright cream-gold letters with a soft glow, and
+   the case the player actually typed (never force-uppercased). */
+.name-edit-bracket-box {
+    background: transparent !important;
+    border-color: var(--border-focus-hover) !important;
+    box-shadow: none !important;
+}
 .name-edit-bracket-box .name-display-text {
     color: var(--accent-amber-glow) !important;
     letter-spacing: 3px;
+    text-transform: none !important;
     text-shadow: 0 0 8px rgba(255, 204, 102, 0.35);
 }
 .name-edit-bracket-box .name-bracket-char,
 .name-edit-bracket-box .name-text-cursor {
     color: var(--border-focus-hover) !important;
+}
+
+/* CJK spelling buffer badge. */
+.alchemical-name-container .spell-buffer-badge {
+    background: transparent !important;
+    border-color: var(--border-gold-amber-30) !important;
+    color: var(--accent-cream-warm) !important;
+}
+
+/* Translation layers + modifier/navigation buttons: the unselected state was
+   dark brown text on an all-but-invisible fill. Bare button, gold rule, cream
+   label; the .active / .selected states already paint themselves amber. */
+.alchemical-name-container .lang-tab,
+.alchemical-name-container .edit-btn {
+    background: transparent !important;
+    border-color: var(--border-gold-amber-30) !important;
+    color: var(--accent-cream-light) !important;
+}
+.alchemical-name-container .lang-tab:hover,
+.alchemical-name-container .edit-btn:hover {
+    border-color: var(--border-focus-hover) !important;
+    color: var(--accent-amber-glow) !important;
+}
+
+/* Abort / Continue: readable when not highlighted. */
+.alchemical-name-container .action-btn-abort {
+    background: transparent !important;
+    border-color: var(--border-gold-amber-30) !important;
+    color: var(--accent-cream-warm) !important;
+}
+.alchemical-name-container .action-btn-seal {
+    background: transparent !important;
+    border-color: var(--border-focus-hover) !important;
+    color: var(--accent-amber-glow) !important;
 }
 
 /* ==========================================================================

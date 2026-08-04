@@ -1,6 +1,6 @@
 {
   "unknownObject": "",
-  "unknown": "",
+  "unknown": "Неизвестно",
   "targetLine": "",
   "axisX": "",
   "axisY": "",
@@ -103,7 +103,7 @@
     },
     "copper": {
       "name": "",
-      "subname": ""
+      "subname": "Медь"
     },
     "iron": {
       "name": "",

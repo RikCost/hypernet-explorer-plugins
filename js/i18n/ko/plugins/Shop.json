@@ -1,10 +1,10 @@
 {
-  "type": "",
+  "type": "유형",
   "weight": "",
-  "calories": "",
-  "protein": "",
+  "calories": "열량",
+  "protein": "단백질",
   "fat": "",
-  "use": "",
+  "use": "사용",
   "single": "",
   "unlimited": "",
   "hits": "",
@@ -12,20 +12,20 @@
   "ap": "",
   "element": "",
   "crit": "",
-  "yes": "",
+  "yes": "예",
   "modifier": "",
   "price": "",
   "equipBy": "",
   "noOneInParty": "",
   "regularItem": "",
   "keyItem": "",
-  "weapon": "",
-  "armor": "",
-  "unknown": "",
+  "weapon": "무기",
+  "armor": "갑옷",
+  "unknown": "미상",
   "hp": "",
   "mp": "",
   "ap2": "",
-  "status": "",
+  "status": "상태: ",
   "cura": "",
   "buff": "",
   "turns": "",
@@ -51,7 +51,7 @@
   "weaponType": "",
   "armorType": "",
   "equipType": "",
-  "back": "",
+  "back": "뒤로",
   "shop": "",
   "availableFunds": "",
   "acquireGoods": "",
@@ -70,13 +70,13 @@
   "hoverOrSelectAnItem": "",
   "totalCost": "",
   "sellValue": "",
-  "confirmTransaction": "",
+  "confirmTransaction": "거래 확정",
   "cancel": "",
   "target": "",
   "scale": "",
   "slot": "",
   "asset": "",
-  "equipSlot": "",
+  "equipSlot": "장착",
   "ownedStock": "",
   "elementN": "",
   "stateN": "",
@@ -110,13 +110,13 @@
     ""
   ],
   "sellCategories": [
-    "",
-    "",
-    "",
+    "아이템",
+    "무기",
+    "방어구",
     ""
   ],
   "scope": {
-    "0": "",
+    "0": "없음",
     "1": "",
     "2": "",
     "3": "",
@@ -128,14 +128,14 @@
     "9": "",
     "10": "",
     "11": "",
-    "unknown": ""
+    "unknown": "미상"
   },
   "occasion": {
     "0": "",
     "1": "",
     "2": "",
     "3": "",
-    "unknown": ""
+    "unknown": "미상"
   },
   "damageType": {
     "1": "",
@@ -148,7 +148,7 @@
   },
   "ui": {
     "scale": "",
-    "type": "",
+    "type": "유형",
     "weight": ""
   }
 }

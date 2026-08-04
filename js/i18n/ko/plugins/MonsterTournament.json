@@ -1,5 +1,5 @@
 {
-  "stat": "",
+  "stat": "능력치",
   "fighter": "",
   "uses": "",
   "no3d": "",
@@ -14,7 +14,7 @@
   "youLost": "",
   "champion": "",
   "youWon": "",
-  "skillAttack": "",
+  "skillAttack": "공격",
   "skillFinish": "",
   "ui": {
     "hintCycle": "",

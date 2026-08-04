@@ -1,6 +1,6 @@
 {
-  "unknownCountry": "",
-  "unknownLeader": "",
-  "independent": "",
-  "army": ""
+  "unknownCountry": "Inconnu",
+  "unknownLeader": "Inconnu",
+  "independent": "Indépendant",
+  "army": "Armée"
 }

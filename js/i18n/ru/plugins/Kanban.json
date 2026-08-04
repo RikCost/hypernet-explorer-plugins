@@ -1,6 +1,6 @@
 {
   "resolved": "",
-  "failed": "",
+  "failed": "Неудачно приготовленный",
   "urgent": "",
   "reward": "",
   "readyToCollect": "",
@@ -12,13 +12,13 @@
   "objectives2": "",
   "terms": "",
   "log": "",
-  "close": "",
+  "close": "Закрыть",
   "toDo": "",
   "inProgress": "",
   "done": "",
   "noQuests": "",
   "colShiftMoveCardOk": "",
-  "back": "",
+  "back": "Назад",
   "questLog": "",
   "appName": "",
   "questCompleted": "",
@@ -27,7 +27,7 @@
     "",
     "",
     "",
-    ""
+    "Неудачно приготовленный"
   ],
   "showOnMapAt": "",
   "notify": {

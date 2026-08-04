@@ -1,1268 +1,1268 @@
 {
   "furniture": {
     "wooden_chair": {
-      "name": "",
-      "description": ""
+      "name": "Деревянный стул",
+      "description": "Простой деревянный стул с матерчатой подушкой."
     },
     "category": {
-      "seating": "",
-      "tables": "",
-      "storage": "",
-      "beds": "",
-      "lighting": "",
-      "workstations": "",
-      "decoration": "",
-      "appliances": "",
-      "entertainment": "",
-      "nature": "",
-      "structures": "",
-      "dungeon": "",
-      "farm": "",
-      "industrial": "",
-      "camping": "",
-      "beach": "",
-      "supermarket": "",
-      "gym": ""
+      "seating": "сиденья",
+      "tables": "столы",
+      "storage": "хранение",
+      "beds": "кровати",
+      "lighting": "освещение",
+      "workstations": "рабочие места",
+      "decoration": "украшения",
+      "appliances": "бытовая техника",
+      "entertainment": "развлечения",
+      "nature": "природа",
+      "structures": "постройки",
+      "dungeon": "подземелья",
+      "farm": "ферма",
+      "industrial": "промышленность",
+      "camping": "лагерь",
+      "beach": "пляж",
+      "supermarket": "супермаркет",
+      "gym": "спортзал"
     },
     "leather_armchair": {
-      "name": "",
-      "description": ""
+      "name": "Кожаное кресло",
+      "description": "Удобное кожаное кресло."
     },
     "tech_chair": {
-      "name": "",
-      "description": ""
+      "name": "Техно-кресло",
+      "description": "Эргономичное высокотехнологичное кресло с самонастройкой."
     },
     "crystal_throne": {
-      "name": "",
-      "description": ""
+      "name": "Хрустальный трон",
+      "description": "Величественный трон из магических кристаллов."
     },
     "wooden_bench": {
-      "name": "",
-      "description": ""
+      "name": "Деревянная скамья",
+      "description": "Простая деревянная скамья на двоих."
     },
     "wooden_table": {
-      "name": "",
-      "description": ""
+      "name": "Деревянный стол",
+      "description": "Крепкий деревянный стол."
     },
     "glass_table": {
-      "name": "",
-      "description": ""
+      "name": "Стеклянный стол",
+      "description": "Современный стеклянный стол на стальной раме."
     },
     "tech_desk": {
-      "name": "",
-      "description": ""
+      "name": "Техно-стол",
+      "description": "Высокотехнологичный стол со встроенными экранами."
     },
     "alchemy_table": {
-      "name": "",
-      "description": ""
+      "name": "Алхимический стол",
+      "description": "Стол, оснащённый для алхимических опытов."
     },
     "dining_table": {
-      "name": "",
-      "description": ""
+      "name": "Обеденный стол",
+      "description": "Большой обеденный стол для семейных трапез."
     },
     "wooden_chest": {
-      "name": "",
-      "description": ""
+      "name": "Деревянный сундук",
+      "description": "Деревянный сундук для хранения вещей."
     },
     "metal_locker": {
-      "name": "",
-      "description": ""
+      "name": "Металлический шкафчик",
+      "description": "Надёжный металлический шкафчик для хранения."
     },
     "quantum_storage": {
-      "name": "",
-      "description": ""
+      "name": "Квантовое хранилище",
+      "description": "Использует квантовую технику ради огромной вместимости."
     },
     "bookshelf": {
-      "name": "",
-      "description": ""
+      "name": "Книжный шкаф",
+      "description": "Высокий книжный шкаф для книг и вещей."
     },
     "crystal_display": {
-      "name": "",
-      "description": ""
+      "name": "Хрустальная витрина",
+      "description": "Витрина, что сохраняет магические предметы."
     },
     "simple_bed": {
-      "name": "",
-      "description": ""
+      "name": "Простая кровать",
+      "description": "Простая кровать для отдыха."
     },
     "luxury_bed": {
-      "name": "",
-      "description": ""
+      "name": "Роскошная кровать",
+      "description": "Роскошная кровать королевского размера."
     },
     "tech_pod": {
-      "name": "",
-      "description": ""
+      "name": "Капсула сна",
+      "description": "Высокотехнологичная капсула сна с наблюдением за здоровьем."
     },
     "wooden_torch": {
-      "name": "",
-      "description": ""
+      "name": "Деревянная подставка для факела",
+      "description": "Простая подставка для факела, чтобы было хоть какое-то освещение."
     },
     "crystal_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Хрустальная лампа",
+      "description": "Магическая лампа на кристаллах."
     },
     "neon_light": {
-      "name": "",
-      "description": ""
+      "name": "Неоновая световая панель",
+      "description": "Современная неоновая осветительная панель."
     },
     "chandelier": {
-      "name": "",
-      "description": ""
+      "name": "Хрустальная люстра",
+      "description": "Изящная хрустальная люстра."
     },
     "crafting_bench": {
-      "name": "",
-      "description": ""
+      "name": "Верстак",
+      "description": "Простой верстак для изготовления мебели."
     },
     "tech_workstation": {
-      "name": "",
-      "description": ""
+      "name": "Техническая рабочая станция",
+      "description": "Продвинутая станция для технического ремесла."
     },
     "arcane_altar": {
-      "name": "",
-      "description": ""
+      "name": "Тайный алтарь",
+      "description": "Алтарь для магического зачарования мебели."
     },
     "chemistry_station": {
-      "name": "",
-      "description": ""
+      "name": "Химический пост",
+      "description": "Пост для химической обработки."
     },
     "plant_pot": {
-      "name": "",
-      "description": ""
+      "name": "Горшок с растением",
+      "description": "Декоративное растение в горшке."
     },
     "holographic_display": {
-      "name": "",
-      "description": ""
+      "name": "Голографический экран",
+      "description": "Проецирует голографические изображения."
     },
     "statue": {
-      "name": "",
-      "description": ""
+      "name": "Каменная статуя",
+      "description": "Художественная каменная статуя."
     },
     "aquarium": {
-      "name": "",
-      "description": ""
+      "name": "Аквариум",
+      "description": "Декоративный аквариум."
     },
     "mirror": {
-      "name": "",
-      "description": ""
+      "name": "Настенное зеркало",
+      "description": "Большое зеркало на стене."
     },
     "rug": {
-      "name": "",
-      "description": ""
+      "name": "Декоративный ковёр",
+      "description": "Уютный декоративный ковёр."
     },
     "refrigerator": {
-      "name": "",
-      "description": ""
+      "name": "Холодильник",
+      "description": "Хранит продукты свежими."
     },
     "cooking_stove": {
-      "name": "",
-      "description": ""
+      "name": "Кухонная плита",
+      "description": "Без неё не приготовить еду."
     },
     "recycler": {
-      "name": "",
-      "description": ""
+      "name": "Переработчик материалов",
+      "description": "Разбирает вещи на исходные материалы."
     },
     "teleporter": {
-      "name": "",
-      "description": ""
+      "name": "Квантовый телепортер",
+      "description": "Мгновенное перемещение между связанными телепортерами."
     },
     "television": {
-      "name": "",
-      "description": ""
+      "name": "Плоский телевизор",
+      "description": "Телевизор высокой чёткости для развлечения."
     },
     "arcade_machine": {
-      "name": "",
-      "description": ""
+      "name": "Аркадный автомат",
+      "description": "Классические аркадные игры для бесконечного веселья."
     },
     "pool_table": {
-      "name": "",
-      "description": ""
+      "name": "Бильярдный стол",
+      "description": "Первоклассный бильярдный стол для отдыха."
     },
     "ping_pong_table": {
-      "name": "",
-      "description": ""
+      "name": "Стол для настольного тенниса",
+      "description": "Соревновательный стол для настольного тенниса."
     },
     "dartboard": {
-      "name": "",
-      "description": ""
+      "name": "Мишень для дротиков",
+      "description": "Классическая игра в дротики."
     },
     "jukebox": {
-      "name": "",
-      "description": ""
+      "name": "Музыкальный автомат",
+      "description": "Слушайте любимую музыку когда угодно."
     },
     "billiards_balls_set": {
-      "name": "",
-      "description": ""
+      "name": "Набор бильярдных шаров",
+      "description": "Набор шаров для игры в бильярд."
     },
     "gaming_console": {
-      "name": "",
-      "description": ""
+      "name": "Игровая приставка",
+      "description": "Новейшая игровая приставка для развлечения."
     },
     "virtual_reality_headset": {
-      "name": "",
-      "description": ""
+      "name": "Станция VR-гарнитуры",
+      "description": "Погружающее переживание виртуальной реальности."
     },
     "foosball_table": {
-      "name": "",
-      "description": ""
+      "name": "Настольный футбол",
+      "description": "Настольный футбол для быстрых матчей."
     },
     "blackjack_table": {
-      "name": "",
-      "description": ""
+      "name": "Стол для блэкджека",
+      "description": "Профессиональный стол для блэкджека."
     },
     "roulette_table": {
-      "name": "",
-      "description": ""
+      "name": "Стол для рулетки",
+      "description": "Роскошный стол для рулетки."
     },
     "slot_machine": {
-      "name": "",
-      "description": ""
+      "name": "Игровой автомат",
+      "description": "Классический игровой автомат для азартного досуга."
     },
     "karaoke_machine": {
-      "name": "",
-      "description": ""
+      "name": "Караоке-система",
+      "description": "Пойте любимые песни с профессиональным качеством."
     },
     "movie_projector": {
-      "name": "",
-      "description": ""
+      "name": "Кинопроектор",
+      "description": "Показывайте фильмы на любой стене."
     },
     "dance_floor": {
-      "name": "",
-      "description": ""
+      "name": "Танцпол",
+      "description": "Танцпол в стиле диско, с подсветкой."
     },
     "bowling_lane": {
-      "name": "",
-      "description": ""
+      "name": "Комплект дорожки для боулинга",
+      "description": "Полный комплект дорожки для боулинга."
     },
     "plant": {
-      "name": "",
-      "description": ""
+      "name": "Растение",
+      "description": "Декоративное растение в горшке."
     },
     "flowers": {
-      "name": "",
-      "description": ""
+      "name": "Клумба",
+      "description": "Клумба ярких цветов."
     },
     "tree": {
-      "name": "",
-      "description": ""
+      "name": "Дерево",
+      "description": "Большое декоративное дерево."
     },
     "rock": {
-      "name": "",
-      "description": ""
+      "name": "Валун",
+      "description": "Большой декоративный валун."
     },
     "pile_of_bones": {
-      "name": "",
-      "description": ""
+      "name": "Груда костей",
+      "description": "Жутковатая груда костей."
     },
     "fence": {
-      "name": "",
-      "description": ""
+      "name": "Забор",
+      "description": "Секция деревянного забора."
     },
     "bridge": {
-      "name": "",
-      "description": ""
+      "name": "Мост",
+      "description": "Деревянный мостик для переправы."
     },
     "stairs": {
-      "name": "",
-      "description": ""
+      "name": "Лестница",
+      "description": "Пролёт деревянной лестницы."
     },
     "ladder": {
-      "name": "",
-      "description": ""
+      "name": "Приставная лестница",
+      "description": "Деревянная лестница, чтобы взбираться."
     },
     "rails": {
-      "name": "",
-      "description": ""
+      "name": "Перила",
+      "description": "Металлические защитные перила."
     },
     "window_1x1": {
-      "name": "",
-      "description": ""
+      "name": "Окно (1x1)",
+      "description": "Маленькое окно."
     },
     "window_2x1": {
-      "name": "",
-      "description": ""
+      "name": "Окно (2x1)",
+      "description": "Среднее окно."
     },
     "window_2x2": {
-      "name": "",
-      "description": ""
+      "name": "Окно (2x2)",
+      "description": "Большое окно."
     },
     "sign": {
-      "name": "",
-      "description": ""
+      "name": "Указатель",
+      "description": "Деревянный указатель направления."
     },
     "vase": {
-      "name": "",
-      "description": ""
+      "name": "Ваза",
+      "description": "Декоративная ваза."
     },
     "clock": {
-      "name": "",
-      "description": ""
+      "name": "Настенные часы",
+      "description": "Механические настенные часы."
     },
     "grandfather_clock": {
-      "name": "",
-      "description": ""
+      "name": "Напольные часы",
+      "description": "Изящные напольные часы."
     },
     "world_globe": {
-      "name": "",
-      "description": ""
+      "name": "Глобус",
+      "description": "Вращающийся глобус."
     },
     "world_map": {
-      "name": "",
-      "description": ""
+      "name": "Карта мира",
+      "description": "Карта мира в раме."
     },
     "prayer_rug": {
-      "name": "",
-      "description": ""
+      "name": "Молитвенный коврик",
+      "description": "Декоративный молитвенный коврик."
     },
     "trash_pile": {
-      "name": "",
-      "description": ""
+      "name": "Куча мусора",
+      "description": "Куча выброшенного мусора."
     },
     "barrel": {
-      "name": "",
-      "description": ""
+      "name": "Подземельная бочка",
+      "description": "Бочка для хранения припасов."
     },
     "pile_of_books": {
-      "name": "",
-      "description": ""
+      "name": "Стопка книг",
+      "description": "Стопка старых книг."
     },
     "candle": {
-      "name": "",
-      "description": ""
+      "name": "Свеча",
+      "description": "Зажжённая декоративная свеча."
     },
     "pentagram": {
-      "name": "",
-      "description": ""
+      "name": "Пентаграмма на полу",
+      "description": "Мистическая пентаграмма, начерченная на полу."
     },
     "stage_lights": {
-      "name": "",
-      "description": ""
+      "name": "Сценический свет",
+      "description": "Профессиональная сценическая световая ферма."
     },
     "pipe": {
-      "name": "",
-      "description": ""
+      "name": "Труба",
+      "description": "Промышленная металлическая труба."
     },
     "motor_engine": {
-      "name": "",
-      "description": ""
+      "name": "Большой мотор",
+      "description": "Крупный промышленный мотор."
     },
     "piano": {
-      "name": "",
-      "description": ""
+      "name": "Рояль",
+      "description": "Рояль для музыкальных выступлений."
     },
     "guitar": {
-      "name": "",
-      "description": ""
+      "name": "Акустическая гитара",
+      "description": "Акустическая гитара, чтобы играть."
     },
     "electric_guitar": {
-      "name": "",
-      "description": ""
+      "name": "Электрогитара",
+      "description": "Современная электрогитара."
     },
     "harp": {
-      "name": "",
-      "description": ""
+      "name": "Арфа",
+      "description": "Прекрасная золотая арфа."
     },
     "crib": {
-      "name": "",
-      "description": ""
+      "name": "Детская кроватка",
+      "description": "Удобная детская кроватка."
     },
     "radio": {
-      "name": "",
-      "description": ""
+      "name": "Радиоприёмник",
+      "description": "Старый приёмник для музыки и новостей."
     },
     "wc": {
-      "name": "",
-      "description": ""
+      "name": "Унитаз",
+      "description": "Действующий унитаз."
     },
     "shower": {
-      "name": "",
-      "description": ""
+      "name": "Душ",
+      "description": "Душевая кабина."
     },
     "pc": {
-      "name": "",
-      "description": ""
+      "name": "Компьютер",
+      "description": "Высокопроизводительный настольный компьютер."
     },
     "christmas_tree": {
-      "name": "",
-      "description": ""
+      "name": "Рождественская ёлка",
+      "description": "Празднично наряженная рождественская ёлка."
     },
     "warrior_statue": {
-      "name": "",
-      "description": ""
+      "name": "Статуя монаха-воина",
+      "description": "Статуя могучего монаха-воина."
     },
     "baseball_bat": {
-      "name": "",
-      "description": ""
+      "name": "Бейсбольная бита",
+      "description": "Деревянная бейсбольная бита."
     },
     "crt_monitor": {
-      "name": "",
-      "description": ""
+      "name": "ЭЛТ-монитор",
+      "description": "Громоздкий ЭЛТ-монитор (эпохи 2001 года)."
     },
     "desktop_computer_2001": {
-      "name": "",
-      "description": ""
+      "name": "Настольный ПК (2001)",
+      "description": "Пузатый настольный компьютер 2001 года."
     },
     "keyboard_mouse": {
-      "name": "",
-      "description": ""
+      "name": "Клавиатура и мышь",
+      "description": "Комплект из компьютерной клавиатуры и мыши."
     },
     "dial_up_modem": {
-      "name": "",
-      "description": ""
+      "name": "Модем для коммутируемой линии",
+      "description": "Модем для доступа в интернет по телефонной линии (визг и скрежет прилагаются)."
     },
     "landline_phone": {
-      "name": "",
-      "description": ""
+      "name": "Проводной телефон",
+      "description": "Стационарный телефон со шнуром."
     },
     "printer_inkjet": {
-      "name": "",
-      "description": ""
+      "name": "Струйный принтер",
+      "description": "Струйный принтер (громкий и медленный)."
     },
     "fax_machine": {
-      "name": "",
-      "description": ""
+      "name": "Факс",
+      "description": "Отдельно стоящий факсимильный аппарат."
     },
     "vcr_player": {
-      "name": "",
-      "description": ""
+      "name": "Видеомагнитофон",
+      "description": "Видеомагнитофон для кассет VHS."
     },
     "dvd_player": {
-      "name": "",
-      "description": ""
+      "name": "DVD-проигрыватель",
+      "description": "Новенький DVD-проигрыватель (вершина техники в 2001-м)."
     },
     "cable_box": {
-      "name": "",
-      "description": ""
+      "name": "Кабельная приставка",
+      "description": "Приставка кабельного телевидения с пультом."
     },
     "game_console_ps1": {
-      "name": "",
-      "description": ""
+      "name": "Battlestation 1",
+      "description": "Приставка Sony PlayStation (эпохи 2001 года)."
     },
     "game_console_n64": {
-      "name": "",
-      "description": ""
+      "name": "Tintendon 666",
+      "description": "Игровая приставка Nintendo 64."
     },
     "dreamcast_console": {
-      "name": "",
-      "description": ""
+      "name": "Приставка Mastercast",
+      "description": "Игровая приставка Sega Dreamcast."
     },
     "crt_television": {
-      "name": "",
-      "description": ""
+      "name": "ЭЛТ-телевизор",
+      "description": "Большой телевизор с кинескопом."
     },
     "stereo_boombox": {
-      "name": "",
-      "description": ""
+      "name": "Магнитола",
+      "description": "Стереомагнитола с кассетником и проигрывателем компакт-дисков."
     },
     "zip_drive": {
-      "name": "",
-      "description": ""
+      "name": "Zip-накопитель",
+      "description": "Накопитель Iomega Zip (100 МБ)."
     },
     "beanbag_chair": {
-      "name": "",
-      "description": ""
+      "name": "Кресло-мешок",
+      "description": "Удобное кресло-мешок (в духе 2001-го)."
     },
     "futon": {
-      "name": "",
-      "description": ""
+      "name": "Футон",
+      "description": "Футон, что и диван, и кровать."
     },
     "metal_shelving": {
-      "name": "",
-      "description": ""
+      "name": "Металлический стеллаж",
+      "description": "Промышленный металлический стеллаж."
     },
     "loft_bed": {
-      "name": "",
-      "description": ""
+      "name": "Кровать-чердак",
+      "description": "Кровать-чердак для тесных комнат."
     },
     "bunk_bed": {
-      "name": "",
-      "description": ""
+      "name": "Двухъярусная кровать",
+      "description": "Двухъярусная кровать на двоих."
     },
     "water_cooler": {
-      "name": "",
-      "description": ""
+      "name": "Кулер для воды",
+      "description": "Офисный кулер, для сплетен и утоления жажды."
     },
     "desk_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Настольная лампа",
+      "description": "Простая настольная лампа."
     },
     "floor_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Торшер",
+      "description": "Высокий торшер."
     },
     "lava_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Лава-лампа",
+      "description": "Заводная лава-лампа (в 2001-м без неё никуда)."
     },
     "movie_poster": {
-      "name": "",
-      "description": ""
+      "name": "Киноафиша",
+      "description": "Киноафиша 2001 года."
     },
     "band_poster": {
-      "name": "",
-      "description": ""
+      "name": "Постер группы",
+      "description": "Постер музыкальной группы на стене."
     },
     "sports_poster": {
-      "name": "",
-      "description": ""
+      "name": "Спортивный постер",
+      "description": "Постер спортивной команды."
     },
     "neon_sign": {
-      "name": "",
-      "description": ""
+      "name": "Неоновая вывеска",
+      "description": "Неоновая вывеска для настроения."
     },
     "string_lights": {
-      "name": "",
-      "description": ""
+      "name": "Гирлянда",
+      "description": "Декоративная световая гирлянда."
     },
     "tapestry": {
-      "name": "",
-      "description": ""
+      "name": "Гобелен",
+      "description": "Декоративный гобелен на стене."
     },
     "picture_frame": {
-      "name": "",
-      "description": ""
+      "name": "Рамка с фотографией",
+      "description": "Фотография в рамке на стене."
     },
     "cubicle_divider": {
-      "name": "",
-      "description": ""
+      "name": "Перегородка кабинки",
+      "description": "Офисная перегородка рабочей кабинки."
     },
     "filing_cabinet": {
-      "name": "",
-      "description": ""
+      "name": "Картотечный шкаф",
+      "description": "Металлический картотечный шкаф для документов."
     },
     "office_desk": {
-      "name": "",
-      "description": ""
+      "name": "Офисный стол",
+      "description": "Обычный офисный стол."
     },
     "office_chair": {
-      "name": "",
-      "description": ""
+      "name": "Офисное кресло",
+      "description": "Офисное кресло на колёсиках."
     },
     "bulletin_board": {
-      "name": "",
-      "description": ""
+      "name": "Доска объявлений",
+      "description": "Пробковая доска для записок и памяток."
     },
     "whiteboard": {
-      "name": "",
-      "description": ""
+      "name": "Маркерная доска",
+      "description": "Маркерная доска для набросков и планов."
     },
     "bathtub": {
-      "name": "",
-      "description": ""
+      "name": "Ванна",
+      "description": "Расслабляющая ванна."
     },
     "sink": {
-      "name": "",
-      "description": ""
+      "name": "Раковина",
+      "description": "Действующая раковина для ванной или кухни."
     },
     "cabinet": {
-      "name": "",
-      "description": ""
+      "name": "Шкафчик",
+      "description": "Кухонный или ванный шкафчик."
     },
     "counter": {
-      "name": "",
-      "description": ""
+      "name": "Столешница",
+      "description": "Кухонная столешница."
     },
     "microwave": {
-      "name": "",
-      "description": ""
+      "name": "Микроволновая печь",
+      "description": "Микроволновая печь."
     },
     "dishwasher": {
-      "name": "",
-      "description": ""
+      "name": "Посудомоечная машина",
+      "description": "Автоматическая посудомоечная машина."
     },
     "washing_machine": {
-      "name": "",
-      "description": ""
+      "name": "Стиральная машина",
+      "description": "Стиральная машина для белья."
     },
     "dryer": {
-      "name": "",
-      "description": ""
+      "name": "Сушильная машина",
+      "description": "Электрическая сушилка для одежды."
     },
     "vhs_collection": {
-      "name": "",
-      "description": ""
+      "name": "Собрание кассет VHS",
+      "description": "Стопка кассет VHS."
     },
     "dvd_collection": {
-      "name": "",
-      "description": ""
+      "name": "Собрание DVD",
+      "description": "Стопка коробок с DVD."
     },
     "cd_collection": {
-      "name": "",
-      "description": ""
+      "name": "Собрание компакт-дисков",
+      "description": "Собрание компакт-дисков в коробках."
     },
     "comic_book_stack": {
-      "name": "",
-      "description": ""
+      "name": "Стопка комиксов",
+      "description": "Стопка комиксов."
     },
     "magazine_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для журналов",
+      "description": "Стойка для журналов и газет."
     },
     "incense_burner": {
-      "name": "",
-      "description": ""
+      "name": "Курильница",
+      "description": "Курильница для ароматерапии."
     },
     "terrarium": {
-      "name": "",
-      "description": ""
+      "name": "Террариум",
+      "description": "Террариум с крохотными растениями."
     },
     "pinball_machine": {
-      "name": "",
-      "description": ""
+      "name": "Пинбольный автомат",
+      "description": "Классический пинбольный автомат."
     },
     "floor_cushion": {
-      "name": "",
-      "description": ""
+      "name": "Напольная подушка",
+      "description": "Удобная напольная подушка."
     },
     "floor_pillow_stack": {
-      "name": "",
-      "description": ""
+      "name": "Стопка напольных подушек",
+      "description": "Стопка напольных подушек."
     },
     "glass_shelves": {
-      "name": "",
-      "description": ""
+      "name": "Стеклянные полки",
+      "description": "Современная витрина со стеклянными полками."
     },
     "low_table": {
-      "name": "",
-      "description": ""
+      "name": "Низкий столик",
+      "description": "Низкий столик в духе минимализма."
     },
     "stereo_speaker": {
-      "name": "",
-      "description": ""
+      "name": "Стереоколонка",
+      "description": "Качественная стереоколонка."
     },
     "barn": {
-      "name": "",
-      "description": ""
+      "name": "Амбар",
+      "description": "Большой амбар для припасов и скота."
     },
     "windmill": {
-      "name": "",
-      "description": ""
+      "name": "Ветряная мельница",
+      "description": "Действующая ветряная мельница для помола зерна."
     },
     "silo": {
-      "name": "",
-      "description": ""
+      "name": "Силосная башня",
+      "description": "Высокая башня для хранения зерна и урожая."
     },
     "chicken_coop": {
-      "name": "",
-      "description": ""
+      "name": "Курятник",
+      "description": "Курятник, чтобы разводить кур и собирать яйца."
     },
     "pig_pen": {
-      "name": "",
-      "description": ""
+      "name": "Свинарник",
+      "description": "Загон для разведения свиней."
     },
     "stable": {
-      "name": "",
-      "description": ""
+      "name": "Конюшня",
+      "description": "Конюшня для лошадей и прочего скота."
     },
     "beehive": {
-      "name": "",
-      "description": ""
+      "name": "Улей",
+      "description": "Улей для производства мёда."
     },
     "vegetable_garden": {
-      "name": "",
-      "description": ""
+      "name": "Огород",
+      "description": "Ухоженный огород для выращивания овощей."
     },
     "hay_bales": {
-      "name": "",
-      "description": ""
+      "name": "Тюки сена",
+      "description": "Связанные тюки сена для хранения корма."
     },
     "water_trough": {
-      "name": "",
-      "description": ""
+      "name": "Поилка",
+      "description": "Поилка для скота."
     },
     "scarecrow": {
-      "name": "",
-      "description": ""
+      "name": "Пугало",
+      "description": "Пугало, чтобы птицы не клевали посевы."
     },
     "farm_fence": {
-      "name": "",
-      "description": ""
+      "name": "Изгородь фермы",
+      "description": "Простая деревянная изгородь по границе фермы."
     },
     "crop_field": {
-      "name": "",
-      "description": ""
+      "name": "Поле с посевами",
+      "description": "Поле, засеянное культурами."
     },
     "fruit_tree": {
-      "name": "",
-      "description": ""
+      "name": "Плодовое дерево",
+      "description": "Плодоносящее дерево для фермы."
     },
     "garden_shed": {
-      "name": "",
-      "description": ""
+      "name": "Садовый сарай",
+      "description": "Небольшой сарай для хранения хозяйственного инструмента."
     },
     "milking_station": {
-      "name": "",
-      "description": ""
+      "name": "Доильный пост",
+      "description": "Пост, оснащённый для дойки молочного скота."
     },
     "feed_trough": {
-      "name": "",
-      "description": ""
+      "name": "Кормушка",
+      "description": "Кормушка для хранения и раздачи корма."
     },
     "irrigation_system": {
-      "name": "",
-      "description": ""
+      "name": "Оросительная система",
+      "description": "Самодействующая система орошения."
     },
     "factory_furnace": {
-      "name": "",
-      "description": ""
+      "name": "Промышленная печь",
+      "description": "Высокотемпературная печь для выплавки металла."
     },
     "assembly_line": {
-      "name": "",
-      "description": ""
+      "name": "Сборочная линия",
+      "description": "Автоматическая сборочная линия для производства."
     },
     "conveyor_belt": {
-      "name": "",
-      "description": ""
+      "name": "Ленточный конвейер",
+      "description": "Приводная лента для перемещения материалов."
     },
     "industrial_crane": {
-      "name": "",
-      "description": ""
+      "name": "Промышленный кран",
+      "description": "Мощный кран для подъёма грузов."
     },
     "hydraulic_press": {
-      "name": "",
-      "description": ""
+      "name": "Гидравлический пресс",
+      "description": "Гидравлический пресс высокого давления для формовки металла."
     },
     "storage_tank": {
-      "name": "",
-      "description": ""
+      "name": "Ёмкость для хранения",
+      "description": "Большая ёмкость для хранения жидкостей и материалов."
     },
     "refinery_tower": {
-      "name": "",
-      "description": ""
+      "name": "Ректификационная колонна",
+      "description": "Колонна для перегонки и очистки материалов."
     },
     "heavy_machinery": {
-      "name": "",
-      "description": ""
+      "name": "Тяжёлое оборудование",
+      "description": "Сложное тяжёлое оборудование для промышленной обработки."
     },
     "electric_generator": {
-      "name": "",
-      "description": ""
+      "name": "Электрогенератор",
+      "description": "Генератор для выработки электроэнергии."
     },
     "air_compressor": {
-      "name": "",
-      "description": ""
+      "name": "Воздушный компрессор",
+      "description": "Сжимает воздух для пневматических систем."
     },
     "control_panel": {
-      "name": "",
-      "description": ""
+      "name": "Пульт управления",
+      "description": "Пульт управления машинными системами."
     },
     "safety_barrier": {
-      "name": "",
-      "description": ""
+      "name": "Защитное ограждение",
+      "description": "Защитное ограждение для опасных участков."
     },
     "chemical_vat": {
-      "name": "",
-      "description": ""
+      "name": "Химический чан",
+      "description": "Химический чан для проведения реакций."
     },
     "robotic_arm": {
-      "name": "",
-      "description": ""
+      "name": "Роботизированный манипулятор",
+      "description": "Автоматический манипулятор для точных операций."
     },
     "welding_station": {
-      "name": "",
-      "description": ""
+      "name": "Сварочный пост",
+      "description": "Оборудование для сварки металлоконструкций."
     },
     "laser_cutter": {
-      "name": "",
-      "description": ""
+      "name": "Лазерный резак",
+      "description": "Прецизионный лазерный резак для тонкой работы."
     },
     "3d_printer": {
-      "name": "",
-      "description": ""
+      "name": "3D-принтер",
+      "description": "3D-принтер для изготовления предметов."
     },
     "industrial_oven": {
-      "name": "",
-      "description": ""
+      "name": "Промышленная печь для термообработки",
+      "description": "Большая промышленная печь для термообработки."
     },
     "sorting_machine": {
-      "name": "",
-      "description": ""
+      "name": "Сортировочная машина",
+      "description": "Сама сортирует и распределяет материалы."
     },
     "vacuum_chamber": {
-      "name": "",
-      "description": ""
+      "name": "Вакуумная камера",
+      "description": "Камера для обработки в вакууме."
     },
     "packaging_unit": {
-      "name": "",
-      "description": ""
+      "name": "Упаковочный модуль",
+      "description": "Автоматическое оборудование для упаковки продукции."
     },
     "quality_scanner": {
-      "name": "",
-      "description": ""
+      "name": "Сканер качества",
+      "description": "Проверяет продукцию в рамках контроля качества."
     },
     "industrial_duct": {
-      "name": "",
-      "description": ""
+      "name": "Промышленный воздуховод",
+      "description": "Воздуховоды для движения воздуха и материалов."
     },
     "power_distribution": {
-      "name": "",
-      "description": ""
+      "name": "Распределительный щит",
+      "description": "Распределяет электропитание по оборудованию."
     },
     "tent": {
-      "name": "",
-      "description": ""
+      "name": "Палатка",
+      "description": "Переносная палатка для ночёвки."
     },
     "campfire": {
-      "name": "",
-      "description": ""
+      "name": "Костёр",
+      "description": "Уютный костёр для тепла и готовки."
     },
     "sleeping_bag": {
-      "name": "",
-      "description": ""
+      "name": "Спальный мешок",
+      "description": "Удобный спальный мешок для отдыха."
     },
     "camping_lantern": {
-      "name": "",
-      "description": ""
+      "name": "Походный фонарь",
+      "description": "Фонарь для освещения под открытым небом."
     },
     "camping_stove": {
-      "name": "",
-      "description": ""
+      "name": "Походная плитка",
+      "description": "Переносная походная плитка для готовки."
     },
     "camping_chair": {
-      "name": "",
-      "description": ""
+      "name": "Походный стул",
+      "description": "Лёгкий походный стул."
     },
     "cooler": {
-      "name": "",
-      "description": ""
+      "name": "Термоящик",
+      "description": "Изотермический ящик для хранения еды."
     },
     "picnic_table": {
-      "name": "",
-      "description": ""
+      "name": "Стол для пикника",
+      "description": "Крепкий стол для трапезы на воздухе."
     },
     "camping_backpack": {
-      "name": "",
-      "description": ""
+      "name": "Туристический рюкзак",
+      "description": "Большой рюкзак для переноски снаряжения."
     },
     "water_container": {
-      "name": "",
-      "description": ""
+      "name": "Канистра для воды",
+      "description": "Канистра для переноски воды."
     },
     "bedroll": {
-      "name": "",
-      "description": ""
+      "name": "Скатка",
+      "description": "Свёрнутая походная постель."
     },
     "hammock": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный гамак",
+      "description": "Гамак, натянутый между столбами."
     },
     "tent_cabin": {
-      "name": "",
-      "description": ""
+      "name": "Палатка-домик",
+      "description": "Большая палатка с каркасом наподобие домика."
     },
     "camping_rope": {
-      "name": "",
-      "description": ""
+      "name": "Походная верёвка",
+      "description": "Верёвка для крепления палаток и снаряжения."
     },
     "campsite_marker": {
-      "name": "",
-      "description": ""
+      "name": "Флажок стоянки",
+      "description": "Флажок, отмечающий место стоянки."
     },
     "food_storage": {
-      "name": "",
-      "description": ""
+      "name": "Ящик для провизии",
+      "description": "Надёжный ящик для хранения запасов еды."
     },
     "camping_tent_dome": {
-      "name": "",
-      "description": ""
+      "name": "Купольная палатка",
+      "description": "Прочная палатка купольной формы."
     },
     "camping_cot": {
-      "name": "",
-      "description": ""
+      "name": "Походная раскладушка",
+      "description": "Приподнятая раскладушка, чтобы спать не на земле."
     },
     "camping_grill": {
-      "name": "",
-      "description": ""
+      "name": "Походный гриль",
+      "description": "Переносной гриль для готовки."
     },
     "camping_lantern_led": {
-      "name": "",
-      "description": ""
+      "name": "Светодиодный походный фонарь",
+      "description": "Современный светодиодный фонарь на батарейках."
     },
     "camping_shelter": {
-      "name": "",
-      "description": ""
+      "name": "Быстроразборный навес",
+      "description": "Навес, что раскрывается в один миг."
     },
     "shopping_cart": {
-      "name": "",
-      "description": ""
+      "name": "Магазинная тележка",
+      "description": "Металлическая тележка для покупателей."
     },
     "shopping_basket": {
-      "name": "",
-      "description": ""
+      "name": "Покупательская корзина",
+      "description": "Ручная покупательская корзина."
     },
     "checkout_counter": {
-      "name": "",
-      "description": ""
+      "name": "Кассовая стойка",
+      "description": "Стойка для расчёта с покупателями."
     },
     "cash_register": {
-      "name": "",
-      "description": ""
+      "name": "Кассовый аппарат",
+      "description": "Аппарат для проведения операций."
     },
     "display_shelf": {
-      "name": "",
-      "description": ""
+      "name": "Витринная полка",
+      "description": "Полка для выкладки товара."
     },
     "refrigerated_display": {
-      "name": "",
-      "description": ""
+      "name": "Холодильная витрина",
+      "description": "Холодильная витрина для скоропортящегося товара."
     },
     "freezer_unit": {
-      "name": "",
-      "description": ""
+      "name": "Морозильный ларь",
+      "description": "Промышленный морозильник для замороженных продуктов."
     },
     "product_display_stand": {
-      "name": "",
-      "description": ""
+      "name": "Рекламная стойка",
+      "description": "Стойка для выкладки акционного товара."
     },
     "price_sign": {
-      "name": "",
-      "description": ""
+      "name": "Ценник",
+      "description": "Табличка с ценами на товар."
     },
     "shopping_aisle": {
-      "name": "",
-      "description": ""
+      "name": "Торговый ряд",
+      "description": "Указатель ряда в супермаркете."
     },
     "automatic_door": {
-      "name": "",
-      "description": ""
+      "name": "Автоматическая дверь",
+      "description": "Вход с автоматической раздвижной дверью."
     },
     "customer_service_desk": {
-      "name": "",
-      "description": ""
+      "name": "Стойка обслуживания покупателей",
+      "description": "Стойка для вопросов и обслуживания покупателей."
     },
     "mannequin_display": {
-      "name": "",
-      "description": ""
+      "name": "Манекен-витрина",
+      "description": "Манекен для показа одежды."
     },
     "department_sign": {
-      "name": "",
-      "description": ""
+      "name": "Вывеска отдела",
+      "description": "Вывеска, обозначающая разные отделы."
     },
     "stocking_shelf": {
-      "name": "",
-      "description": ""
+      "name": "Складской стеллаж",
+      "description": "Стеллаж для хранения товарного запаса."
     },
     "security_gate": {
-      "name": "",
-      "description": ""
+      "name": "Противокражные ворота",
+      "description": "Противокражные ворота на входе в магазин."
     },
     "produce_stand": {
-      "name": "",
-      "description": ""
+      "name": "Овощной прилавок",
+      "description": "Прилавок для выкладки свежих овощей и фруктов."
     },
     "deli_counter": {
-      "name": "",
-      "description": ""
+      "name": "Кулинарный прилавок",
+      "description": "Прилавок для гастрономии и готовых блюд."
     },
     "bakery_display": {
-      "name": "",
-      "description": ""
+      "name": "Витрина пекарни",
+      "description": "Витрина для хлебобулочных изделий."
     },
     "conveyor_checkout": {
-      "name": "",
-      "description": ""
+      "name": "Кассовая лента",
+      "description": "Приводная лента на кассе."
     },
     "store_directory": {
-      "name": "",
-      "description": ""
+      "name": "План магазина",
+      "description": "Схема, показывающая устройство магазина."
     },
     "lighting_fixture": {
-      "name": "",
-      "description": ""
+      "name": "Светильник торгового зала",
+      "description": "Потолочное освещение магазина."
     },
     "dungeon_torch": {
-      "name": "",
-      "description": ""
+      "name": "Подземельный факел",
+      "description": "Факел, чтобы освещать тёмные подземелья."
     },
     "stone_pillar": {
-      "name": "",
-      "description": ""
+      "name": "Каменная колонна",
+      "description": "Высокая каменная колонна как несущая опора."
     },
     "iron_bars": {
-      "name": "",
-      "description": ""
+      "name": "Железные прутья",
+      "description": "Железные прутья для темниц и клеток."
     },
     "wooden_door": {
-      "name": "",
-      "description": ""
+      "name": "Деревянная дверь",
+      "description": "Укреплённая деревянная дверь подземелья."
     },
     "iron_door": {
-      "name": "",
-      "description": ""
+      "name": "Железная дверь",
+      "description": "Тяжёлая железная дверь подземелья."
     },
     "prison_cell": {
-      "name": "",
-      "description": ""
+      "name": "Тюремная камера",
+      "description": "Камера для заточения пленников."
     },
     "torture_rack": {
-      "name": "",
-      "description": ""
+      "name": "Дыба",
+      "description": "Средневековое орудие пытки."
     },
     "iron_chain": {
-      "name": "",
-      "description": ""
+      "name": "Железная цепь",
+      "description": "Тяжёлые цепи для сковывания узников."
     },
     "skull_pile": {
-      "name": "",
-      "description": ""
+      "name": "Груда черепов",
+      "description": "Груда черепов."
     },
     "bone_altar": {
-      "name": "",
-      "description": ""
+      "name": "Костяной алтарь",
+      "description": "Алтарь из костей для тёмных обрядов."
     },
     "spikes": {
-      "name": "",
-      "description": ""
+      "name": "Ловушка с шипами",
+      "description": "Шипы как ловушка или как украшение."
     },
     "stone_grate": {
-      "name": "",
-      "description": ""
+      "name": "Каменная решётка",
+      "description": "Каменная решётка для стока в полу."
     },
     "stone_statue": {
-      "name": "",
-      "description": ""
+      "name": "Каменная статуя",
+      "description": "Жутковатая каменная статуя."
     },
     "dark_altar": {
-      "name": "",
-      "description": ""
+      "name": "Тёмный алтарь",
+      "description": "Тёмный алтарь для тайных обрядов."
     },
     "treasure_chest": {
-      "name": "",
-      "description": ""
+      "name": "Сундук с сокровищами",
+      "description": "Сундук для хранения ценностей."
     },
     "stone_coffin": {
-      "name": "",
-      "description": ""
+      "name": "Каменный саркофаг",
+      "description": "Каменный саркофаг с останками."
     },
     "dungeon_chest": {
-      "name": "",
-      "description": ""
+      "name": "Подземельный сундук",
+      "description": "Запертый сундук в подземелье."
     },
     "stone_wall": {
-      "name": "",
-      "description": ""
+      "name": "Каменная стена",
+      "description": "Прочная каменная стена."
     },
     "hanging_chains": {
-      "name": "",
-      "description": ""
+      "name": "Свисающие цепи",
+      "description": "Тяжёлые цепи, свисающие с потолка."
     },
     "sword_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для мечей",
+      "description": "Стойка для выставленного оружия."
     },
     "shield_wall": {
-      "name": "",
-      "description": ""
+      "name": "Стена щитов",
+      "description": "Стена с выставленными щитами."
     },
     "dungeon_banner": {
-      "name": "",
-      "description": ""
+      "name": "Подземельный стяг",
+      "description": "Тёмный стяг для убранства подземелья."
     },
     "treadmill": {
-      "name": "",
-      "description": ""
+      "name": "Беговая дорожка",
+      "description": "Электрическая беговая дорожка для кардио."
     },
     "weight_bench": {
-      "name": "",
-      "description": ""
+      "name": "Скамья для жима",
+      "description": "Скамья для упражнений с отягощениями."
     },
     "dumbbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для гантелей",
+      "description": "Стойка для хранения гантелей и блинов."
     },
     "barbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для штанг",
+      "description": "Стойка для хранения грифов и блинов."
     },
     "squat_rack": {
-      "name": "",
-      "description": ""
+      "name": "Силовая рама",
+      "description": "Рама для приседаний со штангой и подъёмов."
     },
     "cable_machine": {
-      "name": "",
-      "description": ""
+      "name": "Блочный тренажёр",
+      "description": "Многофункциональный блочный тренажёр."
     },
     "leg_press": {
-      "name": "",
-      "description": ""
+      "name": "Жим ногами",
+      "description": "Тренажёр для жима ногами и работы над низом тела."
     },
     "chest_press": {
-      "name": "",
-      "description": ""
+      "name": "Жим от груди",
+      "description": "Тренажёр для жима от груди и работы над верхом тела."
     },
     "lat_pulldown": {
-      "name": "",
-      "description": ""
+      "name": "Верхняя тяга",
+      "description": "Тренажёр верхней тяги для мышц спины."
     },
     "leg_extension": {
-      "name": "",
-      "description": ""
+      "name": "Разгибание ног",
+      "description": "Тренажёр для разгибания ног и работы над квадрицепсами."
     },
     "ab_crunch_machine": {
-      "name": "",
-      "description": ""
+      "name": "Тренажёр для пресса",
+      "description": "Тренажёр для скручиваний на пресс."
     },
     "rowing_machine": {
-      "name": "",
-      "description": ""
+      "name": "Гребной тренажёр",
+      "description": "Гребной тренажёр для кардио на всё тело."
     },
     "stationary_bike": {
-      "name": "",
-      "description": ""
+      "name": "Велотренажёр",
+      "description": "Велотренажёр для кардионагрузки."
     },
     "elliptical_machine": {
-      "name": "",
-      "description": ""
+      "name": "Эллиптический тренажёр",
+      "description": "Эллиптический тренажёр для щадящего кардио."
     },
     "punching_bag": {
-      "name": "",
-      "description": ""
+      "name": "Боксёрский мешок",
+      "description": "Тяжёлый мешок для боксёрских тренировок."
     },
     "speed_bag": {
-      "name": "",
-      "description": ""
+      "name": "Пневматическая груша",
+      "description": "Пневматическая груша для работы над реакцией."
     },
     "pull_up_bar": {
-      "name": "",
-      "description": ""
+      "name": "Турник",
+      "description": "Перекладина для подтягиваний прямым и обратным хватом."
     },
     "parallel_bars": {
-      "name": "",
-      "description": ""
+      "name": "Брусья",
+      "description": "Брусья для отжиманий и работы над корпусом."
     },
     "gym_mat": {
-      "name": "",
-      "description": ""
+      "name": "Гимнастический мат",
+      "description": "Защитный мат для упражнений на полу."
     },
     "gym_mirror": {
-      "name": "",
-      "description": ""
+      "name": "Зеркало зала",
+      "description": "Большое зеркало, чтобы следить за техникой."
     },
     "gym_locker": {
-      "name": "",
-      "description": ""
+      "name": "Шкафчик в зале",
+      "description": "Шкафчик для хранения вещей в спортзале."
     },
     "shower_stall": {
-      "name": "",
-      "description": ""
+      "name": "Душевая кабина",
+      "description": "Душевая кабина, чтобы вымыться после тренировки."
     },
     "gym_bleachers": {
-      "name": "",
-      "description": ""
+      "name": "Трибуны зала",
+      "description": "Трибуны для зрителей или отдыха."
     },
     "foam_roller": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для роликов",
+      "description": "Стойка для массажных роликов и средств восстановления."
     },
     "resistance_bands_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для резинок",
+      "description": "Стойка для хранения эспандерных лент."
     },
     "medicine_ball_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для медболов",
+      "description": "Стойка для хранения медицинболов."
     },
     "gym_clock": {
-      "name": "",
-      "description": ""
+      "name": "Часы зала",
+      "description": "Настенные часы для интервальных тренировок."
     },
     "beach_umbrella": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный зонт",
+      "description": "Яркий зонт для защиты от солнца."
     },
     "beach_chair": {
-      "name": "",
-      "description": ""
+      "name": "Пляжное кресло",
+      "description": "Удобное кресло, чтобы отдохнуть на пляже."
     },
     "sand_castle": {
-      "name": "",
-      "description": ""
+      "name": "Песчаный замок",
+      "description": "Песчаный замок для украшения."
     },
     "sailboat": {
-      "name": "",
-      "description": ""
+      "name": "Парусная лодка",
+      "description": "Деревянная парусная лодка для прибрежных вылазок."
     },
     "beach_hut": {
-      "name": "",
-      "description": ""
+      "name": "Пляжная хижина",
+      "description": "Небольшая пляжная хижина для укрытия."
     },
     "surfboard": {
-      "name": "",
-      "description": ""
+      "name": "Доска для сёрфинга",
+      "description": "Доска, чтобы ловить волны."
     },
     "beach_ball": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный мяч",
+      "description": "Надувной пляжный мяч."
     },
     "beach_towel_rack": {
-      "name": "",
-      "description": ""
+      "name": "Стойка для полотенец",
+      "description": "Стойка, чтобы вешать пляжные полотенца."
     },
     "beach_cooler": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный термоящик",
+      "description": "Термоящик для холодных напитков на пляже."
     },
     "lifeguard_stand": {
-      "name": "",
-      "description": ""
+      "name": "Вышка спасателя",
+      "description": "Высокая вышка для пляжных спасателей."
     },
     "beach_sign": {
-      "name": "",
-      "description": ""
+      "name": "Пляжная табличка",
+      "description": "Табличка с предупреждениями и сведениями для пляжа."
     },
     "beach_anchor": {
-      "name": "",
-      "description": ""
+      "name": "Якорь",
+      "description": "Корабельный якорь для стоянки."
     },
     "wooden_dock": {
-      "name": "",
-      "description": ""
+      "name": "Деревянный причал",
+      "description": "Деревянный причал для швартовки лодок."
     },
     "beach_pier": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный пирс",
+      "description": "Большой пирс, уходящий в воду."
     },
     "buoy": {
-      "name": "",
-      "description": ""
+      "name": "Буй",
+      "description": "Буй для обозначения зон на воде."
     },
     "beach_lounge": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный шезлонг",
+      "description": "Роскошный шезлонг для отдыха."
     },
     "sand_bucket": {
-      "name": "",
-      "description": ""
+      "name": "Ведёрко для песка",
+      "description": "Ведёрко для игр с песком и водой."
     },
     "sand_shovel": {
-      "name": "",
-      "description": ""
+      "name": "Совок",
+      "description": "Совок, чтобы копать песок."
     },
     "beach_shower": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный душ",
+      "description": "Уличный душ, чтобы смыть песок."
     },
     "beach_bar": {
-      "name": "",
-      "description": ""
+      "name": "Пляжный бар",
+      "description": "Барная стойка с прохладительными напитками на пляже."
     },
     "tiki_torch": {
-      "name": "",
-      "description": ""
+      "name": "Факел тики",
+      "description": "Факел тики для вечернего освещения пляжа."
     },
     "palm_tree": {
-      "name": "",
-      "description": ""
+      "name": "Пальма",
+      "description": "Тропическая пальма."
     },
     "beach_volleyball_net": {
-      "name": "",
-      "description": ""
+      "name": "Волейбольная сетка",
+      "description": "Сетка для пляжного волейбола."
     },
     "beach_cabana": {
-      "name": "",
-      "description": ""
+      "name": "Пляжная кабана",
+      "description": "Роскошная кабана для уединения на пляже."
     },
     "rowboat": {
-      "name": "",
-      "description": ""
+      "name": "Гребная лодка",
+      "description": "Небольшая гребная лодка для вылазок по воде."
     }
   }
 }

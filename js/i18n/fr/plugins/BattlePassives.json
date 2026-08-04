@@ -1,349 +1,349 @@
 {
   "passive": {
     "1": {
-      "name": "",
-      "desc": ""
+      "name": "Touche-à-tout",
+      "desc": "Tu reçois un bonus fixe à tous les métiers, ne rates jamais complètement un test de statistique et apprends une compétence au hasard à chaque niveau."
     },
     "2": {
-      "name": "",
-      "desc": ""
+      "name": "Maîtresse brasseuse",
+      "desc": "Tes potions sortent d'un cran de qualité supérieur et tu peux brasser des maléfices de combat."
     },
     "3": {
-      "name": "",
-      "desc": ""
+      "name": "Bénédiction",
+      "desc": "Tant que tu vis, le groupe se soigne un peu à la fin de chaque tour."
     },
     "4": {
-      "name": "",
-      "desc": ""
+      "name": "Vœu du gardien",
+      "desc": "Tant que tu vis au-dessus de 25 % de PV, tes autres compagnons subissent 15 % de dégâts en moins et la part redirigée t'est infligée."
     },
     "5": {
-      "name": "",
-      "desc": ""
+      "name": "Chaîne de prise",
+      "desc": "Des attaques de base consécutives sur le même ennemi montent une Prise ; à 3, l'ennemi est étourdi."
     },
     "6": {
-      "name": "",
-      "desc": ""
+      "name": "Capital",
+      "desc": "Les marchés et les prêts te sont favorables, les boutiques que tu gères produisent plus vite et tu achètes à prix réduit."
     },
     "7": {
-      "name": "",
-      "desc": ""
+      "name": "Optimiste",
+      "desc": "Tu voles 30 % des dégâts de mêlée sous forme de PV, mais la lumière du soleil te brûle et tu te nourris au lieu de manger."
     },
     "8": {
-      "name": "",
-      "desc": ""
+      "name": "Dévot",
+      "desc": "Pendant les heures nocturnes tu infliges +15 % de dégâts et en subis 10 % de moins ; tes peines de procès sont réduites."
     },
     "9": {
-      "name": "",
-      "desc": ""
+      "name": "Triage",
+      "desc": "Soigner un allié sous 25 % de PV lui accorde aussi un regain d'attaque dû à l'adrénaline."
     },
     "10": {
-      "name": "",
-      "desc": ""
+      "name": "Harmonisation",
+      "desc": "Au début du combat tu t'harmonises à la météo et gagnes +25 % à l'élément correspondant."
     },
     "11": {
-      "name": "",
-      "desc": ""
+      "name": "Flux de chi",
+      "desc": "Une action sur trois rembourse ses PT et accorde une poussée d'énergie supplémentaire."
     },
     "12": {
-      "name": "",
-      "desc": ""
+      "name": "Forgeron de runes",
+      "desc": "Tu peux imprégner un équipement d'un affixe supplémentaire sans coût en matériaux, une fois par objet."
     },
     "13": {
-      "name": "",
-      "desc": ""
+      "name": "Rage sanguine",
+      "desc": "Ton attaque grandit à mesure que tes PV baissent (jusqu'à +40 % à 10 % de PV), mais les soins que tu reçois sont divisés par deux."
     },
     "14": {
-      "name": "",
-      "desc": ""
+      "name": "Traceur",
+      "desc": "Ton agilité est fortement accrue (+30 %), tu agis donc plus tôt, et tu encaisses sans mal les dégâts de chute."
     },
     "15": {
-      "name": "",
-      "desc": ""
+      "name": "Ascète",
+      "desc": "La faim et le sommeil se vident 30 % plus lentement et le repos restaure plus d'énergie."
     },
     "16": {
-      "name": "",
-      "desc": ""
+      "name": "Bagarreur de rue",
+      "desc": "À mains nues tu infliges +25 % de dégâts et contres une partie des coups de mêlée."
     },
     "17": {
-      "name": "",
-      "desc": ""
+      "name": "Jeu de jambes",
+      "desc": "Une haute esquive te fait éviter les coups ; chaque esquive monte un Combo (max 5) qui ajoute +8 % de dégâts par palier à ta prochaine frappe."
     },
     "18": {
-      "name": "",
-      "desc": ""
+      "name": "Kayfabe",
+      "desc": "Tu joues pour la foule et ouvres chaque combat avec un surplus de PA."
     },
     "19": {
-      "name": "",
-      "desc": ""
+      "name": "Combustion",
+      "desc": "Ton feu inflige +30 % de dégâts et tu es immunisé à Brûlure."
     },
     "20": {
-      "name": "",
-      "desc": ""
+      "name": "Grand froid",
+      "desc": "Ta glace inflige +30 % de dégâts et ralentit les ennemis touchés."
     },
     "21": {
-      "name": "",
-      "desc": ""
+      "name": "Embuscade",
+      "desc": "Ton taux de critique est élevé et tu infliges +25 % de dégâts aux ennemis encore à pleins PV."
     },
     "22": {
-      "name": "",
-      "desc": ""
+      "name": "Consécration",
+      "desc": "Les dégâts sacrés que tu infliges te soignent aussi de 20 % des dégâts."
     },
     "23": {
-      "name": "",
-      "desc": ""
+      "name": "Pacte",
+      "desc": "Tu peux brûler tes propres PV comme carburant magique et ta réputation auprès des factions sombres renforce tes malédictions."
     },
     "24": {
-      "name": "",
-      "desc": ""
+      "name": "Tireur d’élite",
+      "desc": "Tes attaques à l'arc et à l'arme à feu infligent +25 % de dégâts et ne subissent jamais la pénalité de corps à corps."
     },
     "25": {
-      "name": "",
-      "desc": ""
+      "name": "Faveur divine",
+      "desc": "Les soins excédentaires que tu prodigues sont convertis en barrière protectrice au lieu d'être perdus."
     },
     "26": {
-      "name": "",
-      "desc": ""
+      "name": "Posture iaido",
+      "desc": "Ta première action de chaque combat inflige le double de dégâts et ne peut pas rater."
     },
     "27": {
-      "name": "",
-      "desc": ""
+      "name": "Maîtrise arcanique",
+      "desc": "Tous tes coûts en PM sont réduits de 20 %."
     },
     "28": {
-      "name": "",
-      "desc": ""
+      "name": "Éclaireur",
+      "desc": "Tu repères le danger tôt : les combats que tu engages sont bien plus souvent des attaques préventives, et les ennemis te tendent rarement une embuscade."
     },
     "29": {
-      "name": "",
-      "desc": ""
+      "name": "Prescience",
+      "desc": "Tu prévois la prochaine action de chaque ennemi, affichée sur l'ATH de combat."
     },
     "30": {
-      "name": "",
-      "desc": ""
+      "name": "Chouchou du public",
+      "desc": "Les séries de victoires en arène accordent une attaque permanente et de meilleurs butins d'arène."
     },
     "31": {
-      "name": "",
-      "desc": ""
+      "name": "Moisson funèbre",
+      "desc": "Chaque ennemi qui meurt laisse une charge d'âme qui alimente tes invocations."
     },
     "32": {
-      "name": "",
-      "desc": ""
+      "name": "Maréchal",
+      "desc": "Tant que tu vis, tous les alliés gagnent +10 % de précision ; les troupes que tu recrutes coûtent moins cher et désertent moins."
     },
     "33": {
-      "name": "",
-      "desc": ""
+      "name": "Égide protectrice",
+      "desc": "Tant que tu vis, tout le groupe subit moins de dégâts physiques ET magiques, proportionnellement à tes PV actuels (un Gardien à pleins PV protège de 25 %). Plusieurs Gardiens se cumulent, jusqu'à 50 %."
     },
     "34": {
-      "name": "",
-      "desc": ""
+      "name": "Tranchant magique",
+      "desc": "Tes attaques de base portent l'élément du dernier sort que tu as lancé."
     },
     "35": {
-      "name": "",
-      "desc": ""
+      "name": "Tisseur de chants",
+      "desc": "Chaque tour, un chant tournant diffuse un bonus à tout le groupe."
     },
     "36": {
-      "name": "",
-      "desc": ""
+      "name": "Image miroir",
+      "desc": "Tu commences chaque combat avec des leurres qui absorbent les premiers coups qui te visent."
     },
     "37": {
-      "name": "",
-      "desc": ""
+      "name": "Mage de guerre",
+      "desc": "Tu lances tes sorts en première ligne sans pénalité et tes sorts puisent dans les PT quand tes PM sont épuisés."
     },
     "38": {
-      "name": "",
-      "desc": ""
+      "name": "Contractuel",
+      "desc": "Tu gagnes une prime en or pour chaque ennemi vaincu, et les métiers de combat te paient davantage."
     },
     "39": {
-      "name": "",
-      "desc": ""
+      "name": "Éclairé",
+      "desc": "Tu gagnes des progrès d'entraînement supplémentaires et tires plus de savoir de chaque livre."
     },
     "40": {
-      "name": "",
-      "desc": ""
+      "name": "Cuir épais",
+      "desc": "Les faiblesses élémentaires contre toi sont plafonnées à x1,5 au lieu de x2, et le froid ne peut pas te blesser."
     },
     "41": {
-      "name": "",
-      "desc": ""
+      "name": "Médecin",
+      "desc": "Tes blessures aux membres et aux organes guérissent plus vite et tu peux opérer sur le terrain."
     },
     "42": {
-      "name": "",
-      "desc": ""
+      "name": "Méthode",
+      "desc": "Ton artisanat et ton alchimie produisent une sortie supplémentaire et tu peux analyser les objets inconnus."
     },
     "43": {
-      "name": "",
-      "desc": ""
+      "name": "Ignifugé",
+      "desc": "Tu es immunisé à Brûlure et aux dégâts de feu et tu peux éteindre les incendies environnants."
     },
     "44": {
-      "name": "",
-      "desc": ""
+      "name": "Loi",
+      "desc": "Tu accumules moins de prime, obtiens la clémence au procès et peux arrêter les adversaires humanoïdes affaiblis."
     },
     "45": {
-      "name": "",
-      "desc": ""
+      "name": "Raffiné",
+      "desc": "Ta cuisine apporte plus de nutrition, accorde un bonus de satiété et ne provoque jamais d'excès alimentaire."
     },
     "46": {
-      "name": "",
-      "desc": ""
+      "name": "Carte de presse",
+      "desc": "Tu couvres chaque combat pour un petit scoop en or par ennemi vaincu, et les PNJ t'en révèlent davantage."
     },
     "47": {
-      "name": "",
-      "desc": ""
+      "name": "Bâtisseur",
+      "desc": "Tu construis librement, l'artisanat coûte moins de matériaux et les structures peuvent être renforcées."
     },
     "48": {
-      "name": "",
-      "desc": ""
+      "name": "Titularisation",
+      "desc": "Tu apprends vite : +25 % d'expérience de combat, et tu lis les fiches complètes du bestiaire d'un coup."
     },
     "49": {
-      "name": "",
-      "desc": ""
+      "name": "Perspicacité",
+      "desc": "Ton sang-froid te rend immunisé à la peur, à la confusion et au charme ; tu lis aussi le moral des ennemis et l'esprit des PNJ."
     },
     "50": {
-      "name": "",
-      "desc": ""
+      "name": "Excavateur",
+      "desc": "Tes fouilles et tes jets de trésor s'améliorent et les artefacts sont plus souvent identifiés."
     },
     "51": {
-      "name": "",
-      "desc": ""
+      "name": "Sens du chevet",
+      "desc": "Chaque potion et chaque objet de soin que tu utilises restaure 30 % de plus."
     },
     "52": {
-      "name": "",
-      "desc": ""
+      "name": "Cueilleur",
+      "desc": "Tu récoltes passivement nourriture et matériaux sauvages et tires davantage des plantes et des dépouilles."
     },
     "53": {
-      "name": "",
-      "desc": ""
+      "name": "Cinématique",
+      "desc": "Tes critiques de foudre et physiques éclaboussent selon la vitesse de l'ennemi et ton vaisseau consomme moins de carburant."
     },
     "54": {
-      "name": "",
-      "desc": ""
+      "name": "Bricoleur",
+      "desc": "Les réparations de véhicules coûtent moitié moins et le démontage de mobilier rend tous les matériaux."
     },
     "55": {
-      "name": "",
-      "desc": ""
+      "name": "Marchand",
+      "desc": "Tu achètes moins cher et vends plus cher partout, et le réassort quotidien apporte de meilleurs objets."
     },
     "56": {
-      "name": "",
-      "desc": ""
+      "name": "Main verte",
+      "desc": "Tes cultures poussent 25 % plus vite et rendent davantage, et les animaux grandissent et produisent plus vite."
     },
     "57": {
-      "name": "",
-      "desc": ""
+      "name": "Bûcheron",
+      "desc": "Tu récoltes plus de bois et frappes à la hache avec des dégâts bonus et une chance d'abattre les grands adversaires."
     },
     "58": {
-      "name": "",
-      "desc": ""
+      "name": "Prévisionniste",
+      "desc": "Tu prévois toujours la météo actuelle et à venir ainsi que son effet sur les cultures et les abeilles."
     },
     "59": {
-      "name": "",
-      "desc": ""
+      "name": "Sermon",
+      "desc": "Tu infliges des dégâts sacrés bonus aux ennemis maudits et bénis tes alliés d'une régénération persistante."
     },
     "60": {
-      "name": "",
-      "desc": ""
+      "name": "Sous les projecteurs",
+      "desc": "Tu gagnes de l'or et de la bienveillance en te produisant, et le groupe gagne du moral après toute victoire en minijeu."
     },
     "61": {
-      "name": "",
-      "desc": ""
+      "name": "Sang divin",
+      "desc": "Tu es immunisé à la mort instantanée ; une fois par combat, un coup fatal te ranime à 30 % de PV."
     },
     "62": {
-      "name": "",
-      "desc": ""
+      "name": "Désespoir",
+      "desc": "Moins tu portes d'or, plus tes critiques et ton esquive sont élevés ; tu ne crains rien."
     },
     "63": {
-      "name": "",
-      "desc": ""
+      "name": "Féral",
+      "desc": "Tes armes naturelles frappent fort, tu régénères vite et tu intimides les adversaires faibles à vue."
     },
     "64": {
-      "name": "",
-      "desc": ""
+      "name": "Métamorphose",
+      "desc": "Tu restes déguisé, les ennemis te ciblent donc en dernier, et tu copies la compétence d'un adversaire vaincu."
     },
     "65": {
-      "name": "",
-      "desc": ""
+      "name": "Apex",
+      "desc": "Tu te nourris des ennemis vaincus pour te soigner et devenir plus fort à chaque mise à mort."
     },
     "66": {
-      "name": "",
-      "desc": ""
+      "name": "Augmenté",
+      "desc": "Tu es immunisé au poison, à la maladie et au saignement, tu fonctionnes à l'énergie plutôt qu'à la nourriture, et tu portes un bouclier énergétique régénératif."
     }
   },
   "trait": {
     "31": {
-      "name": "",
-      "desc": ""
+      "name": "La douleur nourrit",
+      "desc": "Les dégâts que tu subis chargent ton énergie au lieu de seulement te blesser."
     },
     "41": {
-      "name": "",
-      "desc": ""
+      "name": "Mémoire totale",
+      "desc": "Tu te souviens de chaque ennemi affronté et révèles ses résistances à vue."
     },
     "43": {
-      "name": "",
-      "desc": ""
+      "name": "Double prise",
+      "desc": "Tu manies une arme dans chaque main sans la pénalité de main faible."
     },
     "74": {
-      "name": "",
-      "desc": ""
+      "name": "Ne rien sentir",
+      "desc": "La douleur ne te chancelle jamais : les blessures ne réduisent ni ta précision ni ta vitesse."
     },
     "99": {
-      "name": "",
-      "desc": ""
+      "name": "Mauvais sort",
+      "desc": "Le malheur te suit, mais les malédictions lancées sur toi rebondissent sur leur lanceur."
     },
     "152": {
-      "name": "",
-      "desc": ""
+      "name": "Riposte",
+      "desc": "Quand un ennemi seul te fait face, tu réponds à ses coups manqués par une contre-attaque."
     },
     "155": {
-      "name": "",
-      "desc": ""
+      "name": "Rempart",
+      "desc": "Un bouclier levé protège aussi l'allié qui se tient à tes côtés."
     },
     "156": {
-      "name": "",
-      "desc": ""
+      "name": "Premier sang",
+      "desc": "Ta frappe d'ouverture d'un combat porte toujours un coup critique sur un adversaire non averti."
     },
     "190": {
-      "name": "",
-      "desc": ""
+      "name": "Source de mana",
+      "desc": "Tes réserves magiques se remplissent d'elles-mêmes entre les combats."
     },
     "195": {
-      "name": "",
-      "desc": ""
+      "name": "Changelune",
+      "desc": "Sous la pleine lune tu changes de forme et combats avec la force d'une bête."
     },
     "202": {
-      "name": "",
-      "desc": ""
+      "name": "Gun-Fu",
+      "desc": "Tant que tu manies une arme à feu, une arme de jet ou un arc, chaque compétence d'Arts martiaux utilisée est suivie d'une attaque normale gratuite sur le même ennemi."
     }
   },
   "elem": {
-    "1": "",
-    "2": "",
-    "3": "",
-    "4": "",
-    "5": "",
-    "6": "",
-    "7": "",
-    "8": "",
-    "9": ""
+    "1": "Phys",
+    "2": "Feu",
+    "3": "Glace",
+    "4": "Tonnerre",
+    "5": "Eau",
+    "6": "Pétro",
+    "7": "Vent",
+    "8": "Sacré",
+    "9": "Maudit"
   },
   "log": {
-    "pinStunned": "",
-    "chiFlows": "",
-    "mirrorShatters": "",
-    "gunFuFollowThrough": "",
-    "divineBloodSurges": "",
-    "comboSlip": ""
+    "pinStunned": "{target} est immobilisé et étourdi !",
+    "chiFlows": "Le chi de {actor} circule !",
+    "mirrorShatters": "Une image miroir de {actor} se brise !",
+    "gunFuFollowThrough": "{actor} enchaîne - Gun-Fu !",
+    "divineBloodSurges": "Le sang divin de {target} bouillonne !",
+    "comboSlip": "{target} esquive le coup ! Combo x{combo}"
   },
   "chip": {
-    "next": "",
-    "pin": "",
-    "chi": "",
-    "combo": "",
-    "decoys": "",
-    "iaido": "",
-    "edge": "",
-    "attuned": "",
-    "souls": "",
-    "divineBlood": "",
-    "rage": "",
-    "aegis": "",
-    "night": "",
-    "gunFu": ""
+    "next": "Suivant",
+    "pin": "Prise {count}/3",
+    "chi": "Chi {count}/3",
+    "combo": "Combo x{count}",
+    "decoys": "Leurres {count}",
+    "iaido": "Iaido",
+    "edge": "Tranchant : {elem}",
+    "attuned": "Harmonisé : {elem}",
+    "souls": "Âmes {count}",
+    "divineBlood": "Sang divin",
+    "rage": "Rage +{bonus} %",
+    "aegis": "Égide {pct} %",
+    "night": "Nuit +15 %",
+    "gunFu": "Gun-Fu"
   }
 }

@@ -4,7 +4,7 @@
   "tab": {
     "situation": "",
     "outbreaks": "",
-    "archive": ""
+    "archive": "아카이브"
   },
   "curveHint": "",
   "dayNumbered": "",
@@ -24,7 +24,7 @@
   "worstTowns": "",
   "colTown": "",
   "colIll": "",
-  "colPopulation": "",
+  "colPopulation": "개체 수",
   "colShareIll": "",
   "colOutbreak": "",
   "colIllNow": "",
@@ -47,11 +47,11 @@
   "pathogen": "",
   "since": "",
   "casesInTotal": "",
-  "dead": "",
+  "dead": "사망",
   "townsReached": "",
   "spreadRate": "",
   "bureauLog": "",
-  "archiveTitle": "",
+  "archiveTitle": "아카이브",
   "archiveBlurb": "",
   "closedThisWorld": "",
   "nothingClosed": "",

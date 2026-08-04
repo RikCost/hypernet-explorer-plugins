@@ -1,2439 +1,2439 @@
 {
   "1": {
-    "name": "",
-    "description": ""
+    "name": "Téléphone Portable",
+    "description": "Un solide téléphone portable Aokin."
   },
   "2": {
-    "name": "",
-    "description": ""
+    "name": "Sac à Dos",
+    "description": "Un sac à dos confortable"
   },
   "3": {
-    "name": "",
-    "description": ""
+    "name": "Montre-Bracelet",
+    "description": "Une montre-bracelet fiable qui \ndonne l'heure \navec exactitude."
   },
   "4": {
-    "name": "",
-    "description": ""
+    "name": "Parapluie",
+    "description": "Un parapluie rétractable qui \nvous garde au sec sous la pluie"
   },
   "5": {
-    "name": "",
-    "description": ""
+    "name": "Gourde Isotherme",
+    "description": "Une gourde réutilisable qui \ngarde les boissons froides ou chaudes"
   },
   "6": {
-    "name": "",
-    "description": ""
+    "name": "Outil Multifonction",
+    "description": "Outil multifonction aux usages variés."
   },
   "7": {
-    "name": "",
-    "description": ""
+    "name": "Boisson Énergisante",
+    "description": "Rend 500 points de PV."
   },
   "8": {
-    "name": "",
-    "description": ""
+    "name": "Milkshake de Genre",
+    "description": "Rend 1500 points de PV."
   },
   "9": {
-    "name": "",
-    "description": ""
+    "name": "Gel Énergétique",
+    "description": "Rend tous les PV."
   },
   "10": {
-    "name": "",
-    "description": ""
+    "name": "Tonique de Mana",
+    "description": "Rend 100 points de PM."
   },
   "11": {
-    "name": "",
-    "description": ""
+    "name": "Sels",
+    "description": "Ranime un combattant mis K.-O."
   },
   "12": {
-    "name": "",
-    "description": ""
+    "name": "Spray Médical",
+    "description": "Retire toutes les altérations d'état."
   },
   "13": {
-    "name": "",
-    "description": ""
+    "name": "Décontractant Musculaire",
+    "description": "Soigne l'état Paralysie."
   },
   "14": {
-    "name": "",
-    "description": ""
+    "name": "Stimulant du Combattant",
+    "description": "Rend la moitié des PV et des PM."
   },
   "15": {
-    "name": "",
-    "description": ""
+    "name": "Essence du Champion",
+    "description": "Rend tous les PV et PM."
   },
   "16": {
-    "name": "",
-    "description": ""
+    "name": "Batterie Externe",
+    "description": "Une batterie portative pour \nrecharger les appareils électroniques"
   },
   "17": {
-    "name": "",
-    "description": ""
+    "name": "Stylo à Bille",
+    "description": "Un stylo à bille de qualité."
   },
   "18": {
-    "name": "",
-    "description": ""
+    "name": "Poudre d'Adhérence",
+    "description": "Réduit la DEX de l'ennemi."
   },
   "19": {
-    "name": "",
-    "description": ""
+    "name": "Bandana de Concentration",
+    "description": "Augmente le taux de coup critique."
   },
   "20": {
-    "name": "",
-    "description": ""
+    "name": "Grenade Aveuglante",
+    "description": "Un éclair aveuglant étourdit tous les ennemis."
   },
   "21": {
-    "name": "",
-    "description": ""
+    "name": "Body Slam EP :",
+    "description": "Convoque un puissant plaquage."
   },
   "22": {
-    "name": "",
-    "description": ""
+    "name": "Carnet de Poche",
+    "description": "Un petit carnet de poche pour \nles notes rapides."
   },
   "23": {
-    "name": "",
-    "description": ""
+    "name": "Injection d'Endurance",
+    "description": "Augmente les PV max de 50 points."
   },
   "24": {
-    "name": "",
-    "description": ""
+    "name": "Entraînement à la Concentration",
+    "description": "Augmente les PM max de 10 points."
   },
   "25": {
-    "name": "",
-    "description": ""
+    "name": "Stéroïdes",
+    "description": "Augmente la FOR de 3 points."
   },
   "26": {
-    "name": "",
-    "description": ""
+    "name": "Stéroïde Peau de Fer",
+    "description": "Augmente la CON de 3 points."
   },
   "27": {
-    "name": "",
-    "description": ""
+    "name": "Entraînement du Chi",
+    "description": "Augmente l'INT de 3 points."
   },
   "28": {
-    "name": "",
-    "description": ""
+    "name": "Entraînement Pratique",
+    "description": "Augmente la SAG de 3 points."
   },
   "29": {
-    "name": "",
-    "description": ""
+    "name": "Entraînement à la Vitesse",
+    "description": "Exercices de jeu de jambes pour augmenter \nla DEX de 3 points.\n"
   },
   "30": {
-    "name": "",
-    "description": ""
+    "name": "Entraînement Psionique",
+    "description": "Augmente la PSI de 3 points."
   },
   "31": {
-    "name": "",
-    "description": ""
+    "name": "Écouteurs Sans Fil",
+    "description": "Écouteurs à réduction de bruit à \nl'excellente isolation sonore"
   },
   "32": {
-    "name": "",
-    "description": ""
+    "name": "Vital Strike EP :",
+    "description": "Convoque un puissant enchaînement \nde frappes visant les points vitaux."
   },
   "33": {
-    "name": "",
-    "description": ""
+    "name": "Freezing Moon EP :",
+    "description": "Convoque une rafale rapide de \npoings glacés."
   },
   "34": {
-    "name": "",
-    "description": ""
+    "name": "Blazing Kick EP :",
+    "description": "Convoque un coup de pied tournoyant \nqui frappe tous les ennemis."
   },
   "35": {
-    "name": "",
-    "description": ""
+    "name": "Brise-Garde",
+    "description": "Une bombe dévastatrice capable de \npercer les défenses."
   },
   "36": {
-    "name": "",
-    "description": ""
+    "name": "Lampe Torche LED",
+    "description": "Une lampe torche compacte à \nintensité réglable."
   },
   "37": {
-    "name": "",
-    "description": ""
+    "name": "Statusguard Pro",
+    "description": "Empêche les altérations d'état pendant 5\ntours."
   },
   "38": {
-    "name": "",
-    "description": ""
+    "name": "Perfect Block EP :",
+    "description": "Convoque un bouclier temporaire."
   },
   "39": {
-    "name": "",
-    "description": ""
+    "name": "Concentration du Combattant",
+    "description": "Stimulant qui peut plonger celui qui \nle prend dans une transe de concentration."
   },
   "40": {
-    "name": "",
-    "description": ""
+    "name": "Bande Étoilée",
+    "description": "Accorde une régénération de PM."
   },
   "41": {
-    "name": "",
-    "description": ""
+    "name": "Tasse de Café",
+    "description": "Une tasse de café revigorante \nqui donne de l'énergie."
   },
   "42": {
-    "name": "",
-    "description": ""
+    "name": "Gants du Maître",
+    "description": "Des gants légendaires qui fusionnent \navec celui qui les porte,\net augmentent la FOR de 1"
   },
   "43": {
-    "name": "",
-    "description": ""
+    "name": "Bottes du Dragon de Tonnerre",
+    "description": "Chaussures antiques qui canalisent\nl'énergie de la foudre ; elles se brisent et fusionnent avec celui qui les porte."
   },
   "44": {
-    "name": "",
-    "description": ""
+    "name": "Jing Impérial",
+    "description": "Remède légendaire qui augmente \ndéfinitivement les PV \nde 200."
   },
   "45": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin Interdit",
+    "description": "Parchemin de technique secrète."
   },
   "46": {
-    "name": "",
-    "description": ""
+    "name": "Rose",
+    "description": "Une rose pourpre"
   },
   "47": {
-    "name": "",
-    "description": ""
+    "name": "Stimulant de Tournoi",
+    "description": "Rend 25 % des PV,"
   },
   "48": {
-    "name": "",
-    "description": ""
+    "name": "Trousse du Soigneur de Coin",
+    "description": "Réduit les enflures et soigne les \nblessures légères"
   },
   "49": {
-    "name": "",
-    "description": ""
+    "name": "Spray de Vitesse",
+    "description": "Augmente la DEX pendant cinq tours."
   },
   "50": {
-    "name": "",
-    "description": ""
+    "name": "Pilule de Posture Défensive",
+    "description": "Augmente la CON mais réduit la DEX."
   },
   "51": {
-    "name": "",
-    "description": ""
+    "name": "Casque Sans Fil",
+    "description": "Casque sans fil confortable, à \nlongue autonomie de \nbatterie."
   },
   "52": {
-    "name": "",
-    "description": ""
+    "name": "Poing de Clés",
+    "description": "Arme improvisée pour les bagarres \nde rue."
   },
   "53": {
-    "name": "",
-    "description": ""
+    "name": "Tuyau d'Acier",
+    "description": "Arme contondante improvisée pour les \nbagarres de rue, capable d'étourdir l'ennemi."
   },
   "54": {
-    "name": "",
-    "description": ""
+    "name": "Poignée de Sable",
+    "description": "DU SABLE DANS LES YEUX !"
   },
   "55": {
-    "name": "",
-    "description": ""
+    "name": "Cocktail Molotov",
+    "description": "Engin incendiaire improvisé."
   },
   "56": {
-    "name": "",
-    "description": ""
+    "name": "Karate Combo EP :",
+    "description": "Convoque une technique de frappe \nissue du karaté."
   },
   "57": {
-    "name": "",
-    "description": ""
+    "name": "Judo Throw EP :",
+    "description": "Convoque une technique de saisie \nissue du judo."
   },
   "58": {
-    "name": "",
-    "description": ""
+    "name": "Taekwondo Kicks EP :",
+    "description": "Convoque une technique de coup de pied issue \ndu taekwondo."
   },
   "59": {
-    "name": "",
-    "description": ""
+    "name": "Barre de Céréales",
+    "description": "Une barre de céréales nourrissante pour un\ncoup de fouet \nrapide."
   },
   "60": {
-    "name": "",
-    "description": ""
+    "name": "Programme Penta Protéines",
+    "description": "Augmente les PV max de 100 \npoints."
   },
   "61": {
-    "name": "",
-    "description": ""
+    "name": "Amplificateur de Puissance",
+    "description": "Augmente la FOR et la CON de 5 \npoints chacune."
   },
   "62": {
-    "name": "",
-    "description": ""
+    "name": "Amplificateur de Réflexes",
+    "description": "Augmente la DEX de 8 points."
   },
   "63": {
-    "name": "",
-    "description": ""
+    "name": "Stimulant Ultime",
+    "description": "Augmente temporairement toutes les \ncaractéristiques pendant 5 tours."
   },
   "64": {
-    "name": "",
-    "description": ""
+    "name": "Parapluie Compact",
+    "description": "Un parapluie pliant et léger\nqui tient dans votre sac à dos."
   },
   "65": {
-    "name": "",
-    "description": ""
+    "name": "Flowing Water EP :",
+    "description": "Convoque une légendaire technique de contre."
   },
   "66": {
-    "name": "",
-    "description": ""
+    "name": "Élixir d'Œil de Dragon",
+    "description": "Crée un état passager de \nsens exacerbés."
   },
   "67": {
-    "name": "",
-    "description": ""
+    "name": "Ki Strike EP :",
+    "description": "Convoque une technique qui canalise \nl'énergie intérieure en une frappe rapprochée."
   },
   "68": {
-    "name": "",
-    "description": ""
+    "name": "Ombrelle de Poche",
+    "description": "Elle arrête aussi bien la pluie que le soleil."
   },
   "69": {
-    "name": "",
-    "description": ""
+    "name": "Chaussures de Course en Cristal",
+    "description": "Une paire de chaussures de course \ncristallines qui se brise après 10 tours."
   },
   "70": {
-    "name": "",
-    "description": ""
+    "name": "Remède du Saint-Siège",
+    "description": "Soigne instantanément la plupart des \naltérations d'état."
   },
   "71": {
-    "name": "",
-    "description": ""
+    "name": "Amulette du Berserker",
+    "description": "Elle peut déclencher un état de rage."
   },
   "72": {
-    "name": "",
-    "description": ""
+    "name": "Cryocellule Brisée",
+    "description": "Elle éclate et gèle au \nmoindre contact."
   },
   "73": {
-    "name": "",
-    "description": ""
+    "name": "Crâne flottant",
+    "description": "Il vous rend insensible aux coups \ncritiques."
   },
   "74": {
-    "name": "",
-    "description": ""
+    "name": "Parasite Spirituel",
+    "description": "Rend 50 PA à l'instant mais \nconsomme tous les PM."
   },
   "75": {
-    "name": "",
-    "description": ""
+    "name": "Bouteille d'Eau",
+    "description": "Une bouteille d'eau rafraîchissante \npour rester \nhydraté."
   },
   "76": {
-    "name": "",
-    "description": ""
+    "name": "Iron Strike EP :",
+    "description": "Convoque une attaque perforante."
   },
   "77": {
-    "name": "",
-    "description": ""
+    "name": "Eight Pillars EP :",
+    "description": "Convoque une technique légendaire qui \naugmente temporairement toutes les caractéristiques pendant 4 tours"
   },
   "78": {
-    "name": "",
-    "description": ""
+    "name": "Morphine",
+    "description": "Bloqueur de douleur."
   },
   "79": {
-    "name": "",
-    "description": ""
+    "name": "Cocaïne Rouge",
+    "description": "Cocaïne maléfique, venue tout droit\ndes enfers."
   },
   "80": {
-    "name": "",
-    "description": ""
+    "name": "Poussière d'Ange",
+    "description": "Substance psionique qui \naugmente la PSI."
   },
   "81": {
-    "name": "",
-    "description": ""
+    "name": "Tryptocaïne",
+    "description": "Drogue extrêmement dangereuse"
   },
   "82": {
-    "name": "",
-    "description": ""
+    "name": "Speed",
+    "description": "Stimulant qui augmente votre \nDEX pendant 6 tours."
   },
   "83": {
-    "name": "",
-    "description": ""
+    "name": "Crank",
+    "description": "Substance addictive qui \naugmente l'ATQ et la \nSAG."
   },
   "84": {
-    "name": "",
-    "description": ""
+    "name": "Cocktail du Marché Noir",
+    "description": "Drogue corrosive qui augmente toutes\nles caractéristiques."
   },
   "85": {
-    "name": "",
-    "description": ""
+    "name": "Tranquillisant",
+    "description": "Substance qui émousse la douleur."
   },
   "86": {
-    "name": "",
-    "description": ""
+    "name": "Porte-clés Épée",
+    "description": "Un porte-clés solide avec de la place \npour toutes vos clés."
   },
   "87": {
-    "name": "",
-    "description": ""
+    "name": "Stimulant Oméga",
+    "description": "Drogue de combat extrêmement \ndangereuse."
   },
   "88": {
-    "name": "",
-    "description": ""
+    "name": "Lunettes de Soleil UV",
+    "description": "Une paire de lunettes de soleil polyvalentes\navec protection \nUV."
   },
   "89": {
-    "name": "",
-    "description": ""
+    "name": "Ceinture de Championnat",
+    "description": "Une ceinture de championnat en or du \ntournoi de combat MAX."
   },
   "90": {
-    "name": "",
-    "description": ""
+    "name": "Gants Dédicacés",
+    "description": "Des gants dédicacés par un \ncombattant légendaire."
   },
   "91": {
-    "name": "",
-    "description": ""
+    "name": "Trophée de Tournoi",
+    "description": "Trophée d'une compétition locale \nd'arts martiaux."
   },
   "92": {
-    "name": "",
-    "description": ""
+    "name": "Antique Pièce de Combat",
+    "description": "Une pièce rare représentant des \narts martiaux antiques."
   },
   "93": {
-    "name": "",
-    "description": ""
+    "name": "Affiche de Combat Vintage",
+    "description": "Affiche vintage d'une célèbre \narène de combat clandestine"
   },
   "94": {
-    "name": "",
-    "description": ""
+    "name": "Médaillon du Combattant",
+    "description": "Un médaillon décerné aux \ncombattants d'exception."
   },
   "95": {
-    "name": "",
-    "description": ""
+    "name": "Dent du Champion",
+    "description": "Une dent arrachée à un \ncombattant célèbre."
   },
   "96": {
-    "name": "",
-    "description": ""
+    "name": "Toile de Ring Historique",
+    "description": "Un morceau du tapis de ring d'un\ncombat \nlégendaire."
   },
   "97": {
-    "name": "",
-    "description": ""
+    "name": "Figurine de Combattant",
+    "description": "Figurine rare d'un combattant\ncélèbre."
   },
   "98": {
-    "name": "",
-    "description": ""
+    "name": "Pissenlit",
+    "description": "Un pissenlit sauvage."
   },
   "99": {
-    "name": "",
-    "description": ""
+    "name": "Statue de Main Dorée",
+    "description": "Une réplique plaquée or du poing \nd'un combattant légendaire."
   },
   "100": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin Ancien",
+    "description": "Antique parchemin contenant des \nillustrations de techniques de combat."
   },
   "101": {
-    "name": "",
-    "description": ""
+    "name": "Poids Antique",
+    "description": "Un antique poids d'entraînement \nparfaitement conservé."
   },
   "102": {
-    "name": "",
-    "description": ""
+    "name": "Gants de Match Historiques",
+    "description": "D'authentiques gants de boxe portés lors \ndu légendaire combat MAX."
   },
   "103": {
-    "name": "",
-    "description": ""
+    "name": "Poing de Diamant",
+    "description": "Un gros diamant taillé en\nforme de poing."
   },
   "104": {
-    "name": "",
-    "description": ""
+    "name": "Gel Hydroalcoolique",
+    "description": "Un petit tube de gel hydroalcoolique\npour tenir les germes à distance."
   },
   "105": {
-    "name": "",
-    "description": ""
+    "name": "Gants Déchirés",
+    "description": "Une paire de gants de combat \nhors d'usage."
   },
   "106": {
-    "name": "",
-    "description": ""
+    "name": "Vieille Plaque de Vestiaire",
+    "description": "Une plaque de casier métallique cabossée \nvenue d'une salle de sport."
   },
   "107": {
-    "name": "",
-    "description": ""
+    "name": "Bandes de Mains Usagées",
+    "description": "Des bandes usagées venues des \nmains d'un combattant."
   },
   "108": {
-    "name": "",
-    "description": ""
+    "name": "Souches de Billets de Combat",
+    "description": "Une collection de souches de billets\nde diverses compétitions de combat."
   },
   "109": {
-    "name": "",
-    "description": ""
+    "name": "Protège-Dents Fêlé",
+    "description": "Un protège-dents cassé venu d'une \nbagarre de rue."
   },
   "110": {
-    "name": "",
-    "description": ""
+    "name": "Jeu de Couverts",
+    "description": "Un jeu de couverts sommaires : \nune fourchette, un couteau et une cuillère-fourchette."
   },
   "111": {
-    "name": "",
-    "description": ""
+    "name": "Carte des Environs",
+    "description": "Une simple carte des environs, un peu passée."
   },
   "112": {
-    "name": "",
-    "description": ""
+    "name": "Gourde Vide",
+    "description": "Une gourde sommaire faite de \ncuir et de métal."
   },
   "113": {
-    "name": "",
-    "description": ""
+    "name": "Corde d'Escalade",
+    "description": "Une corde toute simple, utile pour \ngrimper."
   },
   "114": {
-    "name": "",
-    "description": ""
+    "name": "Détritus",
+    "description": "Quelques détritus"
   },
   "115": {
-    "name": "",
-    "description": ""
+    "name": "Pierre à Aiguiser",
+    "description": "Une simple pierre à aiguiser pour \naffûter lames et épées."
   },
   "116": {
-    "name": "",
-    "description": ""
+    "name": "Nécessaire de Couture",
+    "description": "Un nécessaire de couture sommaire pour \nréparer vêtements et équipement."
   },
   "117": {
-    "name": "",
-    "description": ""
+    "name": "Bougie",
+    "description": "Une simple bougie dans un porte-bougie \nde verre, à la lueur faible."
   },
   "118": {
-    "name": "",
-    "description": ""
+    "name": "Canne à Pêche",
+    "description": "Un hameçon et une ligne sommaires \npour attraper de petits poissons."
   },
   "119": {
-    "name": "",
-    "description": ""
+    "name": "Pot en Terre",
+    "description": "Un simple pot en terre pour conserver \nde l'eau ou d'autres liquides."
   },
   "120": {
-    "name": "",
-    "description": ""
+    "name": "Carnet de Voyage",
+    "description": "Un carnet de cuir sommaire pour \nconsigner ses pensées."
   },
   "121": {
-    "name": "",
-    "description": ""
+    "name": "Bâton de Marche",
+    "description": "Un simple bâton de marche en bois,\nbien utile pour les longs trajets"
   },
   "122": {
-    "name": "",
-    "description": ""
+    "name": "Jeu de Bols en Plastique",
+    "description": "Un jeu sommaire de couverts \nen plastique à usage unique"
   },
   "123": {
-    "name": "",
-    "description": ""
+    "name": "Chaise en Bois",
+    "description": "Une simple chaise en bois."
   },
   "124": {
-    "name": "",
-    "description": ""
+    "name": "Lanterne",
+    "description": "Une lanterne sommaire qui donne \nune lumière douce et chaude."
   },
   "125": {
-    "name": "",
-    "description": ""
+    "name": "Sac à Dos de Voyage",
+    "description": "Un sac à dos de cuir usé à \nmultiples poches"
   },
   "126": {
-    "name": "",
-    "description": ""
+    "name": "Couchage Roulé",
+    "description": "Un couchage roulé tout simple pour dormir \ndehors ou dans un logis\nrudimentaire."
   },
   "127": {
-    "name": "",
-    "description": ""
+    "name": "Marmite",
+    "description": "Une marmite sommaire pour \npréparer les repas sur le feu"
   },
   "128": {
-    "name": "",
-    "description": ""
+    "name": "Jeu de Couverts",
+    "description": "Un jeu de couverts sommaires \ncomprenant une cuillère-fourchette."
   },
   "129": {
-    "name": "",
-    "description": ""
+    "name": "Comprimés de Paracétamol",
+    "description": "Antalgique et \nantipyrétique."
   },
   "130": {
-    "name": "",
-    "description": ""
+    "name": "Gélules d'Ibuprofène",
+    "description": "Anti-inflammatoire qui \nréduit la douleur et l'enflure."
   },
   "131": {
-    "name": "",
-    "description": ""
+    "name": "Antiacide au Calcium",
+    "description": "Comprimé antiacide qui \nneutralise l'acidité gastrique"
   },
   "132": {
-    "name": "",
-    "description": ""
+    "name": "Cétirizine",
+    "description": "Antihistaminique qui soulage \nles allergies."
   },
   "133": {
-    "name": "",
-    "description": ""
+    "name": "Dextrométhorphane",
+    "description": "Antitussif qui aide à \ncalmer la toux persistante"
   },
   "134": {
-    "name": "",
-    "description": ""
+    "name": "Comprimés de Pseudoéphédrine",
+    "description": "Décongestionnant qui aide à dégager \nles voies nasales et les mucosités."
   },
   "135": {
-    "name": "",
-    "description": ""
+    "name": "Gouttes de Siméticone",
+    "description": "Aide digestive qui aide à \nréduire gaz et ballonnements."
   },
   "136": {
-    "name": "",
-    "description": ""
+    "name": "Comprimés de Bisacodyl",
+    "description": "Laxatif qui soulage \nla constipation \noccasionnelle."
   },
   "137": {
-    "name": "",
-    "description": ""
+    "name": "Pommade à la Bacitracine",
+    "description": "Pommade antibiotique locale \npour coupures et plaies légères"
   },
   "138": {
-    "name": "",
-    "description": ""
+    "name": "Gélules de Lopéramide",
+    "description": "Antidiarrhéique qui \nsoulage rapidement."
   },
   "139": {
-    "name": "",
-    "description": ""
+    "name": "Crème à l'Hydrocortisone",
+    "description": "Lotion qui apaise et \nprotège les coupures légères."
   },
   "140": {
-    "name": "",
-    "description": ""
+    "name": "Poudre d'Électrolytes",
+    "description": "Sels de réhydratation orale pour \nrefaire le plein d'électrolytes."
   },
   "141": {
-    "name": "",
-    "description": ""
+    "name": "Pastilles au Menthol",
+    "description": "Pastilles pour la gorge qui soulagent \nles maux de gorge."
   },
   "142": {
-    "name": "",
-    "description": ""
+    "name": "Salicylate de Méthyle",
+    "description": "Crème médicamenteuse contre les douleurs\nmusculaires et articulaires."
   },
   "143": {
-    "name": "",
-    "description": ""
+    "name": "Clotrimazole",
+    "description": "Crème antifongique pour traiter \ndiverses mycoses cutanées."
   },
   "144": {
-    "name": "",
-    "description": ""
+    "name": "Spray Nasal Salin",
+    "description": "Spray nasal qui soulage \npassagèrement l'obstruction"
   },
   "145": {
-    "name": "",
-    "description": ""
+    "name": "Teinture de Vitalité Minimale",
+    "description": "Remède à base de plantes ultra-dilué \ncensé équilibrer l'énergie \nintérieure et offrir une restauration minime."
   },
   "146": {
-    "name": "",
-    "description": ""
+    "name": "Gouttes Curatives",
+    "description": "Délicate essence végétale \nréputée stimuler le corps"
   },
   "147": {
-    "name": "",
-    "description": ""
+    "name": "Élixir Quantique",
+    "description": "Dilution infinitésimale \nd'extraits botaniques, \nprétendument porteuse d'un soutien énergétique microscopique."
   },
   "148": {
-    "name": "",
-    "description": ""
+    "name": "Solution Éthérée",
+    "description": "Un remède à peine perceptible \ncensé harmoniser les humeurs."
   },
   "149": {
-    "name": "",
-    "description": ""
+    "name": "Essence de Vitalité",
+    "description": "Une infusion microscopique \nconçue pour orienter doucement la santé."
   },
   "150": {
-    "name": "",
-    "description": ""
+    "name": "Brume de Résonance",
+    "description": "Une préparation d'une légèreté de murmure \ncensée stimuler les sens."
   },
   "151": {
-    "name": "",
-    "description": ""
+    "name": "Sérum Vibratoire",
+    "description": "Un mélange ultra-dilué \nprétendument capable d'activer les\nmécanismes d'autoguérison les plus subtils du corps."
   },
   "152": {
-    "name": "",
-    "description": ""
+    "name": "Gouttes d'Alignement",
+    "description": "Un liquide d'une finesse de gaze censé\nréaligner les voies énergétiques \ndu corps avec le minimum d'intervention."
   },
   "153": {
-    "name": "",
-    "description": ""
+    "name": "Nanites de Régénération",
+    "description": "Sérum régénérateur chargé de \nnanites qui rend toute la \nsanté et augmente temporairement toutes les caractéristiques de 100 %."
   },
   "154": {
-    "name": "",
-    "description": ""
+    "name": "Optimateur de Génome",
+    "description": "Injection de reprogrammation \ngénétique qui augmente définitivement \ntoutes les caractéristiques de base de 50 points et retire toutes les altérations d'état."
   },
   "155": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Chronos",
+    "description": "Stimulant expérimental à flux \ntemporel qui accorde l'immortalité"
   },
   "156": {
-    "name": "",
-    "description": ""
+    "name": "Implant Surrégime",
+    "description": "Amélioration cybernétique \nultra-avancée qui \nchange à l'instant celui qui la porte en machine de combat surhumaine."
   },
   "157": {
-    "name": "",
-    "description": ""
+    "name": "Amplificateur Neuro-Quantique",
+    "description": "Drogue d'amplification psychique \nqui accorde le contrôle mental total"
   },
   "158": {
-    "name": "",
-    "description": ""
+    "name": "Protocole de Résurrection Quantique",
+    "description": "Sérum expérimental de \nreconstruction de la matière."
   },
   "159": {
-    "name": "",
-    "description": ""
+    "name": "Catalyseur de Potentiel",
+    "description": "Infusion d'énergie \ninterdimensionnelle qui accorde une chance extrême"
   },
   "160": {
-    "name": "",
-    "description": ""
+    "name": "Sérum de Singularité Oméga",
+    "description": "Merveille de bio-ingénierie \ninterdite qui change \ncelui qui la prend en arme ultime, consumant son essence même pour en tirer sa puissance."
   },
   "161": {
-    "name": "",
-    "description": ""
+    "name": "Sac de Couchage Confort",
+    "description": "Un sac de couchage portatif et douillet \nqui vous endort à l'instant"
   },
   "162": {
-    "name": "",
-    "description": ""
+    "name": "Festin Réconfortant",
+    "description": "Un repas complet portatif pour 3 personnes qui rassasie\ncomplètement la faim"
   },
   "163": {
-    "name": "",
-    "description": ""
+    "name": "Kit de Bain Relaxant",
+    "description": "Un bain moussant à usage unique."
   },
   "164": {
-    "name": "",
-    "description": ""
+    "name": "Jeu de Lien Social",
+    "description": "Un jeu de société hypercapitaliste où\nvous exploitez les vrais secrets des joueurs."
   },
   "165": {
-    "name": "",
-    "description": ""
+    "name": "Système de Fitness Maison",
+    "description": "Une station d'entraînement complète, \nportative et à usage unique."
   },
   "166": {
-    "name": "",
-    "description": ""
+    "name": "Centre de Divertissement Immersif",
+    "description": "Un visiocasque VR de \ndivertissement de pointe"
   },
   "167": {
-    "name": "",
-    "description": ""
+    "name": "Kit de Rencontre Romantique",
+    "description": "Une installation romantique portative qui\naméliore aussitôt les chances d'accouplement"
   },
   "168": {
-    "name": "",
-    "description": ""
+    "name": "Pack Carrière",
+    "description": "Une cassette complète de \ndéveloppement de carrière."
   },
   "169": {
-    "name": "",
-    "description": ""
+    "name": "Programme Anti-Stress",
+    "description": "Un programme de méditation zen qui \nsupprime tout le stress."
   },
   "170": {
-    "name": "",
-    "description": ""
+    "name": "Bonsaï de Poche",
+    "description": "Une plante d'intérieur compacte et \nportative."
   },
   "171": {
-    "name": "",
-    "description": ""
+    "name": "Paquet de Cigarettes",
+    "description": "Un paquet de cigarettes."
   },
   "172": {
-    "name": "",
-    "description": ""
+    "name": "Bière des Nonnes",
+    "description": "Une bouteille de bière trappiste brassée au\nmonastère de Northpoint."
   },
   "173": {
-    "name": "",
-    "description": ""
+    "name": "Communicateur Hexphone",
+    "description": "Un hexphone moderne."
   },
   "174": {
-    "name": "",
-    "description": ""
+    "name": "Piles Longue Durée",
+    "description": "Un paquet de piles qui durent \nplusieurs jours."
   },
   "175": {
-    "name": "",
-    "description": ""
+    "name": "Whisky Haut de Gamme",
+    "description": "Une bouteille de whisky haut de gamme."
   },
   "176": {
-    "name": "",
-    "description": ""
+    "name": "Caféinateur Portatif",
+    "description": "Une cafetière portative"
   },
   "177": {
-    "name": "",
-    "description": ""
+    "name": "Système Audio de Poche",
+    "description": "Une enceinte bluetooth compacte."
   },
   "178": {
-    "name": "",
-    "description": ""
+    "name": "Pack Énergie Extrême",
+    "description": "Un pack de boissons énergisantes."
   },
   "179": {
-    "name": "",
-    "description": ""
+    "name": "Casque à Réduction Immersive",
+    "description": "Une paire de casques à réduction \nde bruit."
   },
   "180": {
-    "name": "",
-    "description": ""
+    "name": "Lecteur de Musique Numérique",
+    "description": "Un lecteur MP3 dernier cri."
   },
   "181": {
-    "name": "",
-    "description": ""
+    "name": "PDA de Pilote EHI",
+    "description": "Un assistant numérique personnel \nE.H.I. avec\nconnexion Hypernet"
   },
   "182": {
-    "name": "",
-    "description": ""
+    "name": "Boîtier CD",
+    "description": "Un lecteur de CD portatif \nrévolutionnaire."
   },
   "183": {
-    "name": "",
-    "description": ""
+    "name": "Appareil Photo Numérique",
+    "description": "Un appareil photo numérique encombrant qui \npeut stocker jusqu'à 20 photos"
   },
   "184": {
-    "name": "",
-    "description": ""
+    "name": "Téléphone à Clapet Couleur",
+    "description": "Un téléphone à clapet dernier cri avec\nune connexion internet limitée."
   },
   "185": {
-    "name": "",
-    "description": ""
+    "name": "Console de Jeu Portable",
+    "description": "Un appareil de jeu portatif à \nécran en noir et blanc."
   },
   "186": {
-    "name": "",
-    "description": ""
+    "name": "Navigateur GPS Portatif",
+    "description": "Un appareil de navigation GPS \nportatif capable de repérer\nvotre position avec une exactitude révolutionnaire."
   },
   "187": {
-    "name": "",
-    "description": ""
+    "name": "Disque de Stockage Massif",
+    "description": "Un disque dur externe révolutionnaire \navec ses 512 Mo de stockage massif."
   },
   "188": {
-    "name": "",
-    "description": ""
+    "name": "Caméscope de Poche",
+    "description": "Un caméscope numérique portatif \ncapable de capturer l'irréalité-"
   },
   "189": {
-    "name": "",
-    "description": ""
+    "name": "Traducteur de Poche",
+    "description": "Un traducteur de langues portatif."
   },
   "190": {
-    "name": "",
-    "description": ""
+    "name": "Kit d'Évasion",
+    "description": "Il vous permet de vous échapper vers le cybercafé."
   },
   "191": {
-    "name": "",
-    "description": ""
+    "name": "Potion de Soin",
+    "description": "Une potion rouge mystique qui \nrend la santé à l'instant."
   },
   "192": {
-    "name": "",
-    "description": ""
+    "name": "Potion de Mana",
+    "description": "Un élixir bleu chatoyant qui \nrend l'énergie magique."
   },
   "193": {
-    "name": "",
-    "description": ""
+    "name": "Piment Phénix",
+    "description": "Un piment doré capable de \nranimer les alliés tombés."
   },
   "194": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Varlenia",
+    "description": "Un antidote universel qui \nsoigne tous les empoisonnements et toutes les affections."
   },
   "195": {
-    "name": "",
-    "description": ""
+    "name": "Potion du Géant",
+    "description": "Une potion qui augmente \ntemporairement la FOR."
   },
   "196": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Vent Rapide",
+    "description": "Une potion verte qui accorde \nune DEX accrue."
   },
   "197": {
-    "name": "",
-    "description": ""
+    "name": "Barrière d'Écailles de Dragon",
+    "description": "Une potion qui crée une \nbarrière invisible autour de celui qui la boit."
   },
   "198": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de l'Archimage",
+    "description": "Une potion qui accroît \ntemporairement les aptitudes magiques."
   },
   "199": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin de Boule de Feu",
+    "description": "Un parchemin magique qui \ndéchaîne une boule de feu dévastatrice."
   },
   "200": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin d'Éclair",
+    "description": "Un parchemin magique qui fait \ns'abattre des éclairs."
   },
   "201": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin de Bouclier",
+    "description": "Un parchemin qui crée une \nbarrière protectrice magique."
   },
   "202": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin d'Invisibilité",
+    "description": "Un parchemin qui rend \ntemporairement invisible celui qui l'emploie."
   },
   "203": {
-    "name": "",
-    "description": ""
+    "name": "Pain de Route Elfique",
+    "description": "Un pain magique qui ne rassit \njamais et rassasie remarquablement."
   },
   "204": {
-    "name": "",
-    "description": ""
+    "name": "Corde Elfique",
+    "description": "Une corde faite de cheveux \nelfiques enchantés, incroyablement solide et légère."
   },
   "205": {
-    "name": "",
-    "description": ""
+    "name": "Lanterne à Fée",
+    "description": "Une lanterne renfermant une fée captive \nqui donne une vive lumière magique."
   },
   "206": {
-    "name": "",
-    "description": ""
+    "name": "Passe-Partout",
+    "description": "Une petite clé noire capable \nd'ouvrir n'importe quelle serrure ordinaire."
   },
   "207": {
-    "name": "",
-    "description": ""
+    "name": "Élixir du Philosophe",
+    "description": "Un élixir légendaire qui rend \ntoute la santé et tout le mana."
   },
   "208": {
-    "name": "",
-    "description": ""
+    "name": "Cristal de Tonnerre",
+    "description": "Un cristal délicat renfermant un \nsprite de foudre captif."
   },
   "209": {
-    "name": "",
-    "description": ""
+    "name": "Plume Enchantée",
+    "description": "Une plume magique qui n'est jamais \nà court d'encre et écrit sur toute surface."
   },
   "210": {
-    "name": "",
-    "description": ""
+    "name": "Poussière de Rêve",
+    "description": "Un petit sac empli d'une poussière \nmagique capable de charmer les créatures."
   },
   "211": {
-    "name": "",
-    "description": ""
+    "name": "Pomme d'Or",
+    "description": "Un fruit magique qui augmente \ndéfinitivement les PV."
   },
   "212": {
-    "name": "",
-    "description": ""
+    "name": "Cristal du Mage",
+    "description": "Une gemme magique qui augmente définitivement\nl'INT lorsqu'on la consomme."
   },
   "213": {
-    "name": "",
-    "description": ""
+    "name": "Amulette d'Écailles de Dragon",
+    "description": "Un objet magique qui invoque\nun objet au hasard."
   },
   "214": {
-    "name": "",
-    "description": ""
+    "name": "Anneau de Protection contre le Givre",
+    "description": "Un anneau magique qui accorde \nune résistance aux dégâts de glace."
   },
   "215": {
-    "name": "",
-    "description": ""
+    "name": "Cape des Ombres",
+    "description": "Une cape magique qui aide celui\nqui la porte à se fondre dans les ombres."
   },
   "216": {
-    "name": "",
-    "description": ""
+    "name": "Boussole du Pisteur",
+    "description": "Une boussole magique qui pointe toujours \nvers la destination souhaitée."
   },
   "217": {
-    "name": "",
-    "description": ""
+    "name": "Sac à Choses",
+    "description": "Un sac magnifique qui est \nplus grand dedans que dehors."
   },
   "218": {
-    "name": "",
-    "description": ""
+    "name": "Chaînes de Célérité",
+    "description": "Des chaînes enchantées d'une puissante \nmagie de l'air."
   },
   "219": {
-    "name": "",
-    "description": ""
+    "name": "Gantelets de Puissance",
+    "description": "Un gantelet magique qui \naccroît la force de celui qui le porte."
   },
   "220": {
-    "name": "",
-    "description": ""
+    "name": "Couteau de Lancer",
+    "description": "Un couteau de lancer parfaitement \néquilibré au fil de rasoir."
   },
   "221": {
-    "name": "",
-    "description": ""
+    "name": "Shuriken",
+    "description": "Un jeu d'étoiles de métal lestées \naux pointes tranchantes comme des rasoirs."
   },
   "222": {
-    "name": "",
-    "description": ""
+    "name": "Pot de Feu",
+    "description": "Un pot de terre empli d'un \nfeu alchimique qui éclate à l'impact."
   },
   "223": {
-    "name": "",
-    "description": ""
+    "name": "Chausse-Trapes",
+    "description": "Une petite bourse emplie de \nchausse-trapes qui se répandent sur le sol."
   },
   "224": {
-    "name": "",
-    "description": ""
+    "name": "Bombe de Givre",
+    "description": "Une fiole de verre emplie d'un \nliquide glaçant qui explose à l'impact."
   },
   "225": {
-    "name": "",
-    "description": ""
+    "name": "Fiole de Miasme",
+    "description": "Une petite fiole contenant un \nmiasme corrompu et vénéneux."
   },
   "226": {
-    "name": "",
-    "description": ""
+    "name": "Hache de Lancer",
+    "description": "Une hache lourde conçue \nspécialement pour le lancer au combat."
   },
   "227": {
-    "name": "",
-    "description": ""
+    "name": "Filet de Chasse",
+    "description": "Un filet lesté conçu pour \nentraver les adversaires."
   },
   "228": {
-    "name": "",
-    "description": ""
+    "name": "Cristal Solaire",
+    "description": "Un cristal magique qui crée\nun éclair de lumière aveuglant."
   },
   "229": {
-    "name": "",
-    "description": ""
+    "name": "Amulette d'Avertissement",
+    "description": "Une amulette magique qui luit \nquand le danger approche."
   },
   "230": {
-    "name": "",
-    "description": ""
+    "name": "Lentille de Révélation",
+    "description": "Une lentille magique qui révèle \nles objets et créatures invisibles."
   },
   "231": {
-    "name": "",
-    "description": ""
+    "name": "Herbe de Régénération",
+    "description": "Consommée, elle accélère \nfortement la régénération de PM"
   },
   "232": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin de Destruction",
+    "description": "Un puissant parchemin contenant un\nsort de destruction."
   },
   "233": {
-    "name": "",
-    "description": ""
+    "name": "Cercle de Maîtrise",
+    "description": "Une couronne d'argent enchanté \net de mithril qui accroît les aptitudes mentales."
   },
   "234": {
-    "name": "",
-    "description": ""
+    "name": "Plume de Lévitation",
+    "description": "Une plume magique qui accorde \nla capacité de flotter passagèrement."
   },
   "235": {
-    "name": "",
-    "description": ""
+    "name": "Jetpack à usage unique",
+    "description": "Une plume magique qui accorde \nla capacité de flotter passagèrement."
   },
   "236": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Sang de Dragon",
+    "description": "Un élixir d'une extrême rareté \ncontenant l'essence du sang de dragon."
   },
   "237": {
-    "name": "",
-    "description": ""
+    "name": "Fruit d'Yggdrasil",
+    "description": "Un fruit divin de l'Arbre-Monde \nqui fleurit une fois par millénaire."
   },
   "238": {
-    "name": "",
-    "description": ""
+    "name": "Cristal d'Âme du Sorcier",
+    "description": "Un artefact légendaire contenant l'âme \ncaptive d'un antique archimage."
   },
   "239": {
-    "name": "",
-    "description": ""
+    "name": "Ambroisie",
+    "description": "Un nectar doré et béni que l'on dit \nêtre la boisson des dieux."
   },
   "240": {
-    "name": "",
-    "description": ""
+    "name": "Orbe Exauceur de Vœux",
+    "description": "Un artefact d'une puissance \ninimaginable qui exauce un vœu de celui qui l'emploie."
   },
   "241": {
-    "name": "",
-    "description": ""
+    "name": "Forbidden War EP :",
+    "description": "Convoque les souvenirs d'une guerre censurée.\nPlutôt réutilisable, ce qui est inhabituel pour un EP :"
   },
   "242": {
-    "name": "",
-    "description": ""
+    "name": "Sablier de Chronos",
+    "description": "Un sablier magique contenant\nle temps lui-même."
   },
   "243": {
-    "name": "",
-    "description": ""
+    "name": "Élixir Miracle",
+    "description": "Un mélange mystique composé \nde plumes de phénix et de larmes de licorne."
   },
   "244": {
-    "name": "",
-    "description": ""
+    "name": "Graine de l'Arbre-Monde",
+    "description": "Une graine légendaire qui \npousse à l'instant en un abri temporaire."
   },
   "245": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin des Entités Extérieures",
+    "description": "Un puissant parchemin portant le \nnom véritable d'un dieu ancien."
   },
   "246": {
-    "name": "",
-    "description": ""
+    "name": "Parchemin des Noms Anciens",
+    "description": "Un puissant parchemin portant le \nnom véritable d'un dieu ancien."
   },
   "247": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Potion de Soin",
+    "description": "Une potion qui a l'air magique \nmais qui a juste le goût du jus de fruit."
   },
   "248": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Boule de Cristal",
+    "description": "Un orbe mystérieux censé \nrévéler l'avenir."
   },
   "249": {
-    "name": "",
-    "description": ""
+    "name": "Baguette Magique Jouet",
+    "description": "Une baguette avec une étoile au bout \nqui fait des étincelles et joue de la musique."
   },
   "250": {
-    "name": "",
-    "description": ""
+    "name": "Grimoire Vide",
+    "description": "Un livre à la reliure ouvragée \net aux pages blanches à l'intérieur."
   },
   "251": {
-    "name": "",
-    "description": ""
+    "name": "Charme Inutile",
+    "description": "Un talisman censé écarter\nles mauvais esprits."
   },
   "252": {
-    "name": "",
-    "description": ""
+    "name": "Potion de Translucidité Légère",
+    "description": "Une potion qui prétend rendre \ninvisible celui qui la boit."
   },
   "253": {
-    "name": "",
-    "description": ""
+    "name": "Boîte à Démon Vide",
+    "description": "Une boîte ouvragée censée \nrenfermer un démon captif."
   },
   "254": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Carte au Trésor",
+    "description": "Une carte censée mener à\nun trésor légendaire."
   },
   "255": {
-    "name": "",
-    "description": ""
+    "name": "Pierre Luisante Ordinaire",
+    "description": "Une pierre censée venir \nd'une autre dimension."
   },
   "256": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Immortalité",
+    "description": "Une potion censée \naccorder l'immortalité."
   },
   "257": {
-    "name": "",
-    "description": ""
+    "name": "Caillou de Compagnie",
+    "description": "Un caillou parfaitement ordinaire avec\ndes yeux mobiles collés dessus."
   },
   "258": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Langue des Bêtes",
+    "description": "Une potion censée \naccorder le don de parler aux animaux."
   },
   "259": {
-    "name": "",
-    "description": ""
+    "name": "Haricot Pas Si Magique",
+    "description": "Une graine censée pousser \nen une tige atteignant les nuages."
   },
   "260": {
-    "name": "",
-    "description": ""
+    "name": "Cape qui ne Vole Pas",
+    "description": "Une cape censée vous faire \nvoler."
   },
   "261": {
-    "name": "",
-    "description": ""
+    "name": "Anneau de Petite Acoustique",
+    "description": "Un anneau censé exaucer \nles vœux."
   },
   "262": {
-    "name": "",
-    "description": ""
+    "name": "Potion de Rot de Dragon",
+    "description": "Une boisson pétillante censée \naccorder le don de cracher le feu."
   },
   "263": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Plume de Phénix",
+    "description": "Une plume à l'air mystique \nqu'on dit venue d'un phénix."
   },
   "264": {
-    "name": "",
-    "description": ""
+    "name": "Faux Œuf de Dragon",
+    "description": "Un œuf mystérieux censé \néclore en une créature magique."
   },
   "265": {
-    "name": "",
-    "description": ""
+    "name": "Potion de Légère Teinte",
+    "description": "Une potion censée vous laisser \nvoir à travers les murs."
   },
   "266": {
-    "name": "",
-    "description": ""
+    "name": "Fausse Poudre de Transmutation",
+    "description": "Une poudre censée changer\nl'eau en vin."
   },
   "267": {
-    "name": "",
-    "description": ""
+    "name": "Poussière d'Alchimie du Fou",
+    "description": "Une imitation convaincante de \npoussière magique"
   },
   "268": {
-    "name": "",
-    "description": ""
+    "name": "Sac à Dos d'Artisan",
+    "description": "Un sac à dos de cuir façonné \nde main de maître, à multiples compartiments."
   },
   "269": {
-    "name": "",
-    "description": ""
+    "name": "Jeu de Couteaux de Lancer d'Artisan",
+    "description": "Un jeu de couteaux de lancer \nfinement équilibrés dans un étui de cuir."
   },
   "270": {
-    "name": "",
-    "description": ""
+    "name": "Boussole du Navigateur",
+    "description": "Une boussole de laiton et d'argent \nfaçonnée de main de maître, aux gravures ouvragées."
   },
   "271": {
-    "name": "",
-    "description": ""
+    "name": "Bottes du Cordonnier",
+    "description": "Des bottes cousues main dans un \ncuir de premier choix, aux semelles renforcées."
   },
   "272": {
-    "name": "",
-    "description": ""
+    "name": "Cape du Tisserand",
+    "description": "Une cape magnifiquement tissée dans \nle plus fin mélange de laine et de soie."
   },
   "273": {
-    "name": "",
-    "description": ""
+    "name": "Garde-Temps de l'Horloger",
+    "description": "Un garde-temps façonné avec précision, \naux engrenages et mécanismes ouvragés."
   },
   "274": {
-    "name": "",
-    "description": ""
+    "name": "Plume du Scribe",
+    "description": "Une plume magnifiquement façonnée \nau bec parfaitement taillé."
   },
   "275": {
-    "name": "",
-    "description": ""
+    "name": "Outil Multifonction du Taillandier",
+    "description": "Un outil multifonction \nméticuleusement façonné, aux dizaines de fonctions."
   },
   "276": {
-    "name": "",
-    "description": ""
+    "name": "Arc de l'Arcier",
+    "description": "Un arc parfaitement équilibré \ntaillé dans une seule pièce d'if rare."
   },
   "277": {
-    "name": "",
-    "description": ""
+    "name": "Lentille de l'Opticien",
+    "description": "Une lentille de verre finement façonnée dans\nun boîtier de laiton poli."
   },
   "278": {
-    "name": "",
-    "description": ""
+    "name": "Meule du Fromager",
+    "description": "Un fromage finement affiné, créé \npar un maître fromager."
   },
   "279": {
-    "name": "",
-    "description": ""
+    "name": "Pain Parfait",
+    "description": "Une miche de pain parfaitement cuite \nselon des techniques anciennes."
   },
   "280": {
-    "name": "",
-    "description": ""
+    "name": "Café du Torréfacteur",
+    "description": "Un breuvage savoureux d'une qualité \nexceptionnelle, fait de grains rares."
   },
   "281": {
-    "name": "",
-    "description": ""
+    "name": "Onguent de l'Herboriste",
+    "description": "Un onguent médicinal fait main, \naux herbes rares et à la formulation précise."
   },
   "282": {
-    "name": "",
-    "description": ""
+    "name": "Dague du Forgeron de Lames",
+    "description": "Une dague parfaitement équilibrée \nau manche ouvragé et à la lame de rasoir."
   },
   "283": {
-    "name": "",
-    "description": ""
+    "name": "Gants du Gantier",
+    "description": "Une paire de gants faits sur mesure \ndans le plus fin des cuirs."
   },
   "284": {
-    "name": "",
-    "description": ""
+    "name": "Flûte du Magicien",
+    "description": "Une flûte de bois magnifiquement \nfaçonnée à l'intonation parfaite."
   },
   "285": {
-    "name": "",
-    "description": ""
+    "name": "Vin de Varlenia",
+    "description": "Un vin parfaitement vieilli, issu de \ncépages rares et de techniques anciennes."
   },
   "286": {
-    "name": "",
-    "description": ""
+    "name": "Bestiaire",
+    "description": "Un bestiaire finement relié de cuir\net garni d'un parchemin de grande qualité."
   },
   "287": {
-    "name": "",
-    "description": ""
+    "name": "Bâton du Sculpteur sur Bois",
+    "description": "Un bâton parfaitement équilibré \ntaillé dans un bois rare et vieilli."
   },
   "288": {
-    "name": "",
-    "description": ""
+    "name": "Fiole de Poussière de Fée",
+    "description": "Une petite fiole de poussière \nluminescente qui scintille d'une lumière d'ailleurs."
   },
   "289": {
-    "name": "",
-    "description": ""
+    "name": "Goutte de Rosée du Crépuscule",
+    "description": "Une goutte de rosée cristallisée venue du \nJardin du Crépuscule."
   },
   "290": {
-    "name": "",
-    "description": ""
+    "name": "Anneau de Gland du Bois Murmurant",
+    "description": "Une cupule de gland parfaite qui, portée\nen anneau, permet à qui la porte\nde comprendre les murmures des arbres et des créatures de la forêt."
   },
   "291": {
-    "name": "",
-    "description": ""
+    "name": "Clochette Féerique d'Appel",
+    "description": "Une minuscule clochette qui ne fait aucun \nbruit quand un mortel l'agite,\nmais appelle des aides invisibles en cas de vrai besoin."
   },
   "292": {
-    "name": "",
-    "description": ""
+    "name": "Rose Éternelle",
+    "description": "Une rose qui ne meurt jamais, \ncultivée dans le jardin de la Reine de l'Été."
   },
   "293": {
-    "name": "",
-    "description": ""
+    "name": "Graine de Croissance Rapide",
+    "description": "Une graine mystérieuse qui germe\nà l'instant où on la plante."
   },
   "294": {
-    "name": "",
-    "description": ""
+    "name": "Verre de Vérité",
+    "description": "Un miroir façonné dans une pierre de lune \npolie, qui révèle les secrets,"
   },
   "295": {
-    "name": "",
-    "description": ""
+    "name": "Calice de Champignon",
+    "description": "Un gobelet taillé dans un seul \nchapeau de champignon, qui se remplit d'un doux nectar\nune fois par jour."
   },
   "296": {
-    "name": "",
-    "description": ""
+    "name": "Bourse de Terre Féerique",
+    "description": "Une petite bourse de terre \nenchantée venue du cœur du royaume féerique."
   },
   "297": {
-    "name": "",
-    "description": ""
+    "name": "Ambre de Mémoire",
+    "description": "Un papillon conservé dans l'ambre\nqui, écrasé, libère des souvenirs."
   },
   "298": {
-    "name": "",
-    "description": ""
+    "name": "Dé à Coudre du Voyant",
+    "description": "Un petit dé à coudre d'argent empli \nd'eau de pluie."
   },
   "299": {
-    "name": "",
-    "description": ""
+    "name": "Couronne de Fleurs de Lune",
+    "description": "Une délicate couronne tressée de \nfleurs de lune qui n'éclosent qu'\nà minuit."
   },
   "300": {
-    "name": "",
-    "description": ""
+    "name": "Catalyseur de l'Alchimiste",
+    "description": "Une fiole de catalyseur créée par \nun maître alchimiste."
   },
   "301": {
-    "name": "",
-    "description": ""
+    "name": "Encre Prismatique du Scribe",
+    "description": "Une encre de spécialité faite de minéraux\net de créatures rares."
   },
   "302": {
-    "name": "",
-    "description": ""
+    "name": "Astrolabe de l'Astronome",
+    "description": "Un instrument de précision dont se servent\nles astronomes pour calculer les positions célestes."
   },
   "303": {
-    "name": "",
-    "description": ""
+    "name": "Trousse d'Instruments du Médecin",
+    "description": "Un jeu d'outils chirurgicaux \nfaçonnés de main de maître."
   },
   "304": {
-    "name": "",
-    "description": ""
+    "name": "Loupe du Joaillier",
+    "description": "Une lentille spécialisée façonnée par \nun maître joaillier."
   },
   "305": {
-    "name": "",
-    "description": ""
+    "name": "Fondant du Forgeron",
+    "description": "Un mélange complexe d'herbes et de\nminéraux dont se servent les forgerons."
   },
   "306": {
-    "name": "",
-    "description": ""
+    "name": "Collection de Graines du Botaniste",
+    "description": "Une bourse de cuir contenant \ndiverses graines de plantes rares et magiques."
   },
   "307": {
-    "name": "",
-    "description": ""
+    "name": "Tome Juridique de l'Érudit",
+    "description": "Un grand livre contenant les lois\ncourantes et les précédents juridiques."
   },
   "308": {
-    "name": "",
-    "description": ""
+    "name": "Argile Enchantée du Potier",
+    "description": "Une argile spécialement préparée dont\nse servent les potiers."
   },
   "309": {
-    "name": "",
-    "description": ""
+    "name": "Sac de Voyage du Maroquinier",
+    "description": "Un sac à dos finement façonné aux\nnombreux compartiments secrets."
   },
   "310": {
-    "name": "",
-    "description": ""
+    "name": "Pierre à Aiguiser Éternelle du Forgeron de Lames",
+    "description": "Une pierre à aiguiser exceptionnelle qui \nne s'use jamais."
   },
   "311": {
-    "name": "",
-    "description": ""
+    "name": "Mélange d'Épices du Chef",
+    "description": "Une collection d'épices et d'herbes \nrares préparée par un chef de renom."
   },
   "312": {
-    "name": "",
-    "description": ""
+    "name": "Palette Arcanique du Peintre",
+    "description": "Un jeu de pinceaux et de pigments \nfaçonné d'ailleurs."
   },
   "313": {
-    "name": "",
-    "description": ""
+    "name": "Huile de Lard Polaire",
+    "description": "Une fiole d'huile tirée du \nlard de mammifères arctiques."
   },
   "314": {
-    "name": "",
-    "description": ""
+    "name": "Cristal de Cœur Glaciaire",
+    "description": "Un cristal formé d'une antique glace \nde glacier qui ne fond jamais."
   },
   "315": {
-    "name": "",
-    "description": ""
+    "name": "Lentille du Chercheur de Givre",
+    "description": "Une lentille soigneusement montée, \nfaite d'une glace parfaitement limpide."
   },
   "316": {
-    "name": "",
-    "description": ""
+    "name": "Thé de Mousse des Neiges",
+    "description": "Une mousse rare qui pousse sous\nla neige du Grand Nord."
   },
   "317": {
-    "name": "",
-    "description": ""
+    "name": "Talisman d'Ours de Givre",
+    "description": "Une dent du redoutable \nours de givre du nord."
   },
   "318": {
-    "name": "",
-    "description": ""
+    "name": "Pemmican du Nord",
+    "description": "Un mélange conservé de baies arctiques \nséchées, riche en nutriments."
   },
   "319": {
-    "name": "",
-    "description": ""
+    "name": "Tissage de Lièvre des Neiges",
+    "description": "Une étoffe mince mais incroyablement \nchaude, tissée de fourrure de lièvre arctique."
   },
   "320": {
-    "name": "",
-    "description": ""
+    "name": "Essence d'Aurore",
+    "description": "Un liquide luminescent qui \ncoule sous la glace polaire."
   },
   "321": {
-    "name": "",
-    "description": ""
+    "name": "Tambour du Trouve-Chemin",
+    "description": "Un tambour traditionnel fait de \npeau humaine tendue."
   },
   "322": {
-    "name": "",
-    "description": ""
+    "name": "Blocs à Bâtir un Igloo",
+    "description": "Une neige spécialisée dont se servent les \ntribus du nord pour bâtir des abris d'urgence."
   },
   "323": {
-    "name": "",
-    "description": ""
+    "name": "Flocon Parfait",
+    "description": "Un unique flocon de neige conservé \ndans sa forme cristalline parfaite."
   },
   "324": {
-    "name": "",
-    "description": ""
+    "name": "Carte du Nomade de Givre",
+    "description": "Une carte gravée sur une peau de phoque \ntannée, montrant les passages à travers l'Arctique."
   },
   "325": {
-    "name": "",
-    "description": ""
+    "name": "Ragoût Arctique Roboratif",
+    "description": "Un repas spécialement préparé venu\nd'Alaska, qui produit une chaleur interne."
   },
   "326": {
-    "name": "",
-    "description": ""
+    "name": "Aile Toxique de Monarque",
+    "description": "Une aile de papillon éclatante aux \ntoxines naturelles."
   },
   "327": {
-    "name": "",
-    "description": ""
+    "name": "Glande à Musc de Jaguar",
+    "description": "La puissante glande à musc d'un\nprédateur de la jungle."
   },
   "328": {
-    "name": "",
-    "description": ""
+    "name": "Carapace de Scarabée Titan",
+    "description": "Une solide carapace de scarabée \ngéant de la jungle."
   },
   "329": {
-    "name": "",
-    "description": ""
+    "name": "Venin de Vipère d'Émeraude",
+    "description": "Venin concentré d'un serpent rare\nde la jungle."
   },
   "330": {
-    "name": "",
-    "description": ""
+    "name": "Cœur de la Jungle",
+    "description": "Un étrange fruit qui ne pousse \nque dans la jungle la plus profonde."
   },
   "331": {
-    "name": "",
-    "description": ""
+    "name": "Plume de Paradis",
+    "description": "La plume irisée d'un \noiseau tropical rare."
   },
   "332": {
-    "name": "",
-    "description": ""
+    "name": "Sève de Banian",
+    "description": "La sève d'un arbre ancien \nqui absorbe l'énergie magique ambiante."
   },
   "333": {
-    "name": "",
-    "description": ""
+    "name": "Griffe de Panthère Alpha",
+    "description": "Une griffe du puissant prédateur \nsuprême de la jungle."
   },
   "334": {
-    "name": "",
-    "description": ""
+    "name": "Spores Lumineuses",
+    "description": "Des spores récoltées sur des \nchampignons luminescents des grottes sombres de la jungle."
   },
   "335": {
-    "name": "",
-    "description": ""
+    "name": "Sac Vocal Doré",
+    "description": "Le sac vocal d'une espèce rare \nde rainette."
   },
   "336": {
-    "name": "",
-    "description": ""
+    "name": "Miel de Viande Royal",
+    "description": "Un miel de spécialité produit \npar des plantes carnivores"
   },
   "337": {
-    "name": "",
-    "description": ""
+    "name": "Gastrolithe de Serpent",
+    "description": "Une pierre singulière trouvée dans \nl'estomac d'un serpent ancien."
   },
   "338": {
-    "name": "",
-    "description": ""
+    "name": "Résine d'Arbre Lunaire",
+    "description": "Une résine rare qui coule des \narbres seulement à certaines phases lunaires."
   },
   "339": {
-    "name": "",
-    "description": ""
+    "name": "Œil du Traqueur Nocturne",
+    "description": "L'œil d'un prédateur de la jungle \nqui chasse dans l'obscurité totale."
   },
   "340": {
-    "name": "",
-    "description": ""
+    "name": "Bloc-Notes Sans Fin du Journaliste",
+    "description": "Un bloc-notes de grande qualité au \npapier spécial qui ne s'épuise jamais."
   },
   "341": {
-    "name": "",
-    "description": ""
+    "name": "Café de Bouclage",
+    "description": "Un mélange de café haut de gamme qui\ngarde l'esprit vif et attentif."
   },
   "342": {
-    "name": "",
-    "description": ""
+    "name": "Appareil Photo de l'Enquêteur",
+    "description": "Un appareil photo compact d'une \nnetteté et d'un zoom exceptionnels."
   },
   "343": {
-    "name": "",
-    "description": ""
+    "name": "Solution Révélatrice de Vérité",
+    "description": "Un jeu de produits chimiques spécialisés\nqui révèlent textes cachés et empreintes."
   },
   "344": {
-    "name": "",
-    "description": ""
+    "name": "Collection de Cartes de Presse",
+    "description": "Une collection d'accréditations de \npresse de diverses organisations."
   },
   "345": {
-    "name": "",
-    "description": ""
+    "name": "Stylo à Encre Invisible",
+    "description": "Une encre spécialement formulée \nqui rend l'écriture temporairement invisible."
   },
   "346": {
-    "name": "",
-    "description": ""
+    "name": "Enregistreur Discret",
+    "description": "Un enregistreur audio compact à \nsensibilité accrue et filtrage du bruit."
   },
   "347": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de l'Orateur",
+    "description": "Un tonique de spécialité qui \naiguise l'acuité mentale et l'éloquence."
   },
   "348": {
-    "name": "",
-    "description": ""
+    "name": "Répertoire du Réseau d'Informateurs",
+    "description": "Un réseau de contacts dans \ndivers secteurs de la société."
   },
   "349": {
-    "name": "",
-    "description": ""
+    "name": "Kit de Déguisement d'Infiltration",
+    "description": "Un petit kit contenant du \nmatériel de déguisement et des accessoires à changement rapide."
   },
   "350": {
-    "name": "",
-    "description": ""
+    "name": "Thé Apaisant",
+    "description": "Une tisane spécialement préparée\nqui calme les nerfs et rend la concentration."
   },
   "351": {
-    "name": "",
-    "description": ""
+    "name": "Trousse d'Analyse de Terrain",
+    "description": "Un appareil portatif capable de \ndétecter et d'analyser diverses substances."
   },
   "352": {
-    "name": "",
-    "description": ""
+    "name": "Sauge de Mémoire",
+    "description": "Une herbe rare qui accroît la \nmémoire et aide à ordonner les pensées."
   },
   "353": {
-    "name": "",
-    "description": ""
+    "name": "Ordinateur Portable d'Enquête",
+    "description": "Un ordinateur portable compact et robuste doté\nde logiciels spécialisés pour les enquêtes."
   },
   "354": {
-    "name": "",
-    "description": ""
+    "name": "Balance Numérique de Précision",
+    "description": "Une balance numérique d'une exactitude \nparfaite et à l'étalonnage inviolable."
   },
   "355": {
-    "name": "",
-    "description": ""
+    "name": "Kit d'Emballage Discret",
+    "description": "Une collection de petits \nemballages sans marque."
   },
   "356": {
-    "name": "",
-    "description": ""
+    "name": "Contacts du Réseau de la Rue",
+    "description": "Un réseau d'informateurs de rue \nfiables qui fournissent des renseignements cruciaux."
   },
   "357": {
-    "name": "",
-    "description": ""
+    "name": "Boisson Énergisante Clandestine",
+    "description": "Une boisson énergisante \nrenforcée chimiquement qui vous garde vif et concentré."
   },
   "358": {
-    "name": "",
-    "description": ""
+    "name": "Téléphone Jetable Chiffré",
+    "description": "Un téléphone intelligent spécialement \nmodifié, à chiffrement et messagerie sécurisée."
   },
   "359": {
-    "name": "",
-    "description": ""
+    "name": "Poudre Efface-Traces",
+    "description": "Une poudre spécialisée qui \nefface empreintes et traces d'ADN."
   },
   "360": {
-    "name": "",
-    "description": ""
+    "name": "Kit de Fausse Identité",
+    "description": "Une collection de fausses pièces d'identité, \nde permis et d'accréditations."
   },
   "361": {
-    "name": "",
-    "description": ""
+    "name": "Manuel du Négociateur",
+    "description": "Il convainc l'ennemi de vous laisser tranquille."
   },
   "362": {
-    "name": "",
-    "description": ""
+    "name": "Mallette de Transport Sécurisée",
+    "description": "Une mallette renforcée à \ncompartiments cachés et dispositifs d'alarme."
   },
   "363": {
-    "name": "",
-    "description": ""
+    "name": "Échantillons Haut de Gamme",
+    "description": "Une collection d'échantillons de parfum \nhaut de gamme servant à montrer la qualité du produit."
   },
   "364": {
-    "name": "",
-    "description": ""
+    "name": "Poches Chiffrées",
+    "description": "Un carnet contenant les relevés \ncodés des transactions et des clients."
   },
   "365": {
-    "name": "",
-    "description": ""
+    "name": "Mélange de la Rue",
+    "description": "Un puissant mélange chimique qui \naiguise la vigilance et les réflexes."
   },
   "366": {
-    "name": "",
-    "description": ""
+    "name": "Carte des Itinéraires",
+    "description": "Une collection d'itinéraires et de\nplanques à travers l'Omega Tower."
   },
   "367": {
-    "name": "",
-    "description": ""
+    "name": "Trousse de Test de Produit",
+    "description": "Une trousse spécialisée pour tester \nla pureté et la composition d'un produit."
   },
   "368": {
-    "name": "",
-    "description": ""
+    "name": "Ragoût Roboratif",
+    "description": "Un ragoût roboratif avec des morceaux de \nviande et de légumes."
   },
   "369": {
-    "name": "",
-    "description": ""
+    "name": "Pain Frais",
+    "description": "Une miche de pain fraîchement \ncuite.\nSimple mais rassasiante."
   },
   "370": {
-    "name": "",
-    "description": ""
+    "name": "Pomme Croquante",
+    "description": "Une pomme juteuse parfaitement\nmûre."
   },
   "371": {
-    "name": "",
-    "description": ""
+    "name": "Meule de Fromage",
+    "description": "Une meule de fromage faite d'un lait \nfrais de la ferme.\nRiche et rassasiante."
   },
   "372": {
-    "name": "",
-    "description": ""
+    "name": "Poisson Grillé",
+    "description": "Du poisson grillé pêché dans les eaux\nlocales."
   },
   "373": {
-    "name": "",
-    "description": ""
+    "name": "Miel Sauvage",
+    "description": "Une bouteille de miel doux \nrécolté dans des ruches forestières."
   },
   "374": {
-    "name": "",
-    "description": ""
+    "name": "Fruits Secs Mélangés",
+    "description": "Des fruits secs croquants récoltés sur \ndes arbres anciens."
   },
   "375": {
-    "name": "",
-    "description": ""
+    "name": "Chausson aux Fruits",
+    "description": "Une pâtisserie sucrée fourrée à la \nconfiture de fruits."
   },
   "376": {
-    "name": "",
-    "description": ""
+    "name": "Tisane",
+    "description": "Une tisane médicinale rafraîchissante \nfaite d'herbes rares."
   },
   "377": {
-    "name": "",
-    "description": ""
+    "name": "Curry Épicé",
+    "description": "Un plat épicé qui met les \npapilles en feu."
   },
   "378": {
-    "name": "",
-    "description": ""
+    "name": "Baies Sauvages",
+    "description": "Une poignée de baies cueillies \nsur des buissons de montagne."
   },
   "379": {
-    "name": "",
-    "description": ""
+    "name": "Élixir de Sagesse",
+    "description": "Une boisson de cérémonie brassée selon\ndes recettes anciennes."
   },
   "380": {
-    "name": "",
-    "description": ""
+    "name": "Légumes Rôtis",
+    "description": "Un plat de légumes rôtis aux \nherbes savoureuses."
   },
   "381": {
-    "name": "",
-    "description": ""
+    "name": "Chocolat Gastronomique",
+    "description": "Un luxueux dessert au chocolat \nfait par des maîtres confiseurs."
   },
   "382": {
-    "name": "",
-    "description": ""
+    "name": "Tourte à la Viande",
+    "description": "Une tourte à la viande roborative à la pâte \nfeuilletée."
   },
   "383": {
-    "name": "",
-    "description": ""
+    "name": "Eau de Source",
+    "description": "Une eau claire et rafraîchissante venue d'une\nsource de montagne."
   },
   "384": {
-    "name": "",
-    "description": ""
+    "name": "Punch aux Baies",
+    "description": "Un punch aux fruits sucré et acidulé \nfait de baies locales."
   },
   "385": {
-    "name": "",
-    "description": ""
+    "name": "Lait Frais",
+    "description": "Un lait épais et crémeux de \nvaches nourries à l'herbe."
   },
   "386": {
-    "name": "",
-    "description": ""
+    "name": "Thé à la Menthe",
+    "description": "Une tisane apaisante aux \nnotes mentholées."
   },
   "387": {
-    "name": "",
-    "description": ""
+    "name": "Limonade Fraîche",
+    "description": "Une limonade vive et citronnée \nfaite de citrons frais."
   },
   "388": {
-    "name": "",
-    "description": ""
+    "name": "Café Fort",
+    "description": "Un breuvage riche et caféiné qui \néveille les sens."
   },
   "389": {
-    "name": "",
-    "description": ""
+    "name": "Smoothie à la Noix de Coco",
+    "description": "Une boisson sucrée au lait de coco \naux saveurs tropicales."
   },
   "390": {
-    "name": "",
-    "description": ""
+    "name": "Chocolat Chaud",
+    "description": "Un chocolat chaud surmonté de \ncrème fouettée."
   },
   "391": {
-    "name": "",
-    "description": ""
+    "name": "Ale Forte",
+    "description": "Une ale ambrée et forte brassée par \ndes artisans locaux."
   },
   "392": {
-    "name": "",
-    "description": ""
+    "name": "Vin Vieilli",
+    "description": "Un bon vin vieilli en fûts de \nchêne."
   },
   "393": {
-    "name": "",
-    "description": ""
+    "name": "Whisky Puissant",
+    "description": "Un spiritueux puissant distillé à partir de\ncéréales fermentées."
   },
   "394": {
-    "name": "",
-    "description": ""
+    "name": "Hydromel",
+    "description": "Un hydromel léger et pétillant fait de\nmiel."
   },
   "395": {
-    "name": "",
-    "description": ""
+    "name": "Cocktail Souffle du Dragon",
+    "description": "Un cocktail ardent et coloré \naux épices exotiques."
   },
   "396": {
-    "name": "",
-    "description": ""
+    "name": "Brassin du Berserker",
+    "description": "Un antique brassin que l'on dit \nprisé des berserkers."
   },
   "397": {
-    "name": "",
-    "description": ""
+    "name": "Soda Pétillant",
+    "description": "Une boisson gazeuse et pétillante aux\nsaveurs de fruits sucrés."
   },
   "398": {
-    "name": "",
-    "description": ""
+    "name": "Spaghettis Bolognaise",
+    "description": "Pâtes classiques à la riche sauce\ntomate et aux herbes."
   },
   "399": {
-    "name": "",
-    "description": ""
+    "name": "Pizza Margherita",
+    "description": "Pizza fraîche garnie de \nmozzarella et de basilic."
   },
   "400": {
-    "name": "",
-    "description": ""
+    "name": "Risotto aux Champignons",
+    "description": "Riz crémeux cuit avec des \nchampignons et du parmesan."
   },
   "401": {
-    "name": "",
-    "description": ""
+    "name": "Carpaccio de Bœuf",
+    "description": "De fines tranches de bœuf garnies \nde roquette et de parmesan."
   },
   "402": {
-    "name": "",
-    "description": ""
+    "name": "Arancini",
+    "description": "Boulettes de riz frites fourrées au \nfromage et à la viande."
   },
   "403": {
-    "name": "",
-    "description": ""
+    "name": "Lasagnes",
+    "description": "De riches couches de pâtes, de sauce \net de fromage."
   },
   "404": {
-    "name": "",
-    "description": ""
+    "name": "Bruschetta",
+    "description": "Pain croustillant garni de \ntomates et d'huile d'olive."
   },
   "405": {
-    "name": "",
-    "description": ""
+    "name": "Panna Cotta",
+    "description": "Dessert sucré à la crème avec \nson sucre caramélisé."
   },
   "406": {
-    "name": "",
-    "description": ""
+    "name": "Tiramisu",
+    "description": "Dessert au café en \ncouches de mascarpone."
   },
   "407": {
-    "name": "",
-    "description": ""
+    "name": "Pasta con le sarde",
+    "description": "Plat typiquement sicilien"
   },
   "408": {
-    "name": "",
-    "description": ""
+    "name": "Prosciutto e Melone",
+    "description": "De fines tranches de jambon cru avec \ndu melon."
   },
   "409": {
-    "name": "",
-    "description": ""
+    "name": "Fritto Misto",
+    "description": "Beignets croustillants de fruits de mer et de \nlégumes."
   },
   "410": {
-    "name": "",
-    "description": ""
+    "name": "Osso Buco",
+    "description": "Jarrets de veau mijotés avec\nleur gremolata."
   },
   "411": {
-    "name": "",
-    "description": ""
+    "name": "Spaghettis Carbonara",
+    "description": "Pâtes à l'œuf, au fromage, à la \npancetta et au poivre."
   },
   "412": {
-    "name": "",
-    "description": ""
+    "name": "Struffoli",
+    "description": "Pâte à pain frite et croustillante \narrosée de miel."
   },
   "413": {
-    "name": "",
-    "description": ""
+    "name": "Steak de Wagyu",
+    "description": "Un steak préparé de main de maître \navec son beurre à la truffe."
   },
   "414": {
-    "name": "",
-    "description": ""
+    "name": "Caviar Beluga",
+    "description": "De délicats œufs de poisson au subtil\ngoût iodé."
   },
   "415": {
-    "name": "",
-    "description": ""
+    "name": "Risotto à la Truffe Noire",
+    "description": "Des truffes noires élégamment \nincorporées à un risotto crémeux."
   },
   "416": {
-    "name": "",
-    "description": ""
+    "name": "Foie Gras en Gelée de Cognac",
+    "description": "Décadent pâté de foie de canard avec \nsa gelée de cognac."
   },
   "417": {
-    "name": "",
-    "description": ""
+    "name": "Homard Poché au Beurre",
+    "description": "Un homard parfaitement tendre dans une \nriche sauce au beurre."
   },
   "418": {
-    "name": "",
-    "description": ""
+    "name": "Matsutakes Sautés",
+    "description": "Des champignons rares sautés aux \nherbes et à l'ail."
   },
   "419": {
-    "name": "",
-    "description": ""
+    "name": "Bouillabaisse au Safran",
+    "description": "Une exquise soupe de poisson \ninfusée au safran."
   },
   "420": {
-    "name": "",
-    "description": ""
+    "name": "Soufflé à la Feuille d'Or",
+    "description": "Un dessert au chocolat parfait \nrehaussé de feuille d'or."
   },
   "421": {
-    "name": "",
-    "description": ""
+    "name": "Salade Inspiration Jardin",
+    "description": "Une symphonie de saveurs aux \nfleurs comestibles."
   },
   "422": {
-    "name": "",
-    "description": ""
+    "name": "Côte de Bœuf Sous Vide",
+    "description": "Un bœuf de premier choix cuit lentement à \nla perfection."
   },
   "423": {
-    "name": "",
-    "description": ""
+    "name": "Sculpture de Fruits Exotiques",
+    "description": "Des fruits exotiques sculptés en un\nchef-d'œuvre comestible."
   },
   "424": {
-    "name": "",
-    "description": ""
+    "name": "Macarons Cardamome-Rose",
+    "description": "Une douceur délicate au profil \naromatique extraordinaire."
   },
   "425": {
-    "name": "",
-    "description": ""
+    "name": "Illusion Fumée",
+    "description": "Un chef-d'œuvre de gastronomie \nmoléculaire à la fumée."
   },
   "426": {
-    "name": "",
-    "description": ""
+    "name": "Canard Laqué à la Cerise",
+    "description": "Un canard tendre laqué à la cerise\net à l'anis étoilé."
   },
   "427": {
-    "name": "",
-    "description": ""
+    "name": "Réserve d'Or",
+    "description": "Les grains de café les plus rares, \npréparés à la perfection."
   },
   "428": {
-    "name": "",
-    "description": ""
+    "name": "Cheeseburger de Luxe",
+    "description": "Un burger juteux au fromage, à la \nlaitue et à la sauce maison."
   },
   "429": {
-    "name": "",
-    "description": ""
+    "name": "Frites Croustillantes",
+    "description": "Des frites dorées et croustillantes avec sel\net ketchup."
   },
   "430": {
-    "name": "",
-    "description": ""
+    "name": "Seau de Poulet",
+    "description": "Des morceaux de poulet frit à la \npanure croustillante."
   },
   "431": {
-    "name": "",
-    "description": ""
+    "name": "Cola Géant",
+    "description": "Une grande boisson gazeuse et \nsucrée."
   },
   "432": {
-    "name": "",
-    "description": ""
+    "name": "Part de Pizza Pepperoni",
+    "description": "Pizza à pâte fine au \npepperoni et au fromage en supplément."
   },
   "433": {
-    "name": "",
-    "description": ""
+    "name": "Bretzel au Fromage",
+    "description": "Un bretzel moelleux et chaud avec du sel\net une sauce au fromage."
   },
   "434": {
-    "name": "",
-    "description": ""
+    "name": "Sandwich au Poulet Épicé",
+    "description": "Du poulet épicé frit dans un \npain moelleux avec sa sauce."
   },
   "435": {
-    "name": "",
-    "description": ""
+    "name": "Rondelles d'Oignon",
+    "description": "Des rondelles d'oignon panées \net frites, bien croustillantes."
   },
   "436": {
-    "name": "",
-    "description": ""
+    "name": "Milkshake au Chocolat",
+    "description": "Une gourmandise glacée au \nsirop de chocolat."
   },
   "437": {
-    "name": "",
-    "description": ""
+    "name": "Taco au Bœuf",
+    "description": "Un taco souple à la \nviande assaisonnée et au fromage."
   },
   "438": {
-    "name": "",
-    "description": ""
+    "name": "Bâtonnets de Mozzarella",
+    "description": "Des bâtonnets de mozzarella frits \navec leur sauce marinara."
   },
   "439": {
-    "name": "",
-    "description": ""
+    "name": "Beignet Glacé",
+    "description": "Une pâtisserie sucrée aux \nvermicelles colorés."
   },
   "440": {
-    "name": "",
-    "description": ""
+    "name": "Menu Triple Burger",
+    "description": "Un menu complet avec \nburger, frites et boisson."
   },
   "441": {
-    "name": "",
-    "description": ""
+    "name": "Sandwich du Petit Déjeuner",
+    "description": "Un sandwich du matin à l'œuf,\nau fromage et au bacon."
   },
   "442": {
-    "name": "",
-    "description": ""
+    "name": "Coupe Glacée au Chocolat Chaud",
+    "description": "Une coupe glacée douce et riche\navec ses garnitures."
   },
   "443": {
-    "name": "",
-    "description": ""
+    "name": "Pain Dur comme la Pierre",
+    "description": "Un pain rassis et durci qui \npourrait casser des dents."
   },
   "444": {
-    "name": "",
-    "description": ""
+    "name": "Viande Mystère",
+    "description": "Une viande étrange d'origine \ndouteuse."
   },
   "445": {
-    "name": "",
-    "description": ""
+    "name": "Gruau de la Veille",
+    "description": "Les restes d'hier mélangés \nen une bouillie non identifiable."
   },
   "446": {
-    "name": "",
-    "description": ""
+    "name": "Soupe Suspecte",
+    "description": "Un bouillon aqueux où flottent \ndes morceaux de quelque chose..."
   },
   "447": {
-    "name": "",
-    "description": ""
+    "name": "Fromage Périmé",
+    "description": "Un fromage moisi qui aurait dû \nêtre jeté."
   },
   "448": {
-    "name": "",
-    "description": ""
+    "name": "Haricots Brûlés",
+    "description": "Des haricots brûlés au point d'être \nméconnaissables.\nCroquants dans tous les mauvais sens."
   },
   "449": {
-    "name": "",
-    "description": ""
+    "name": "Poisson de la Veille",
+    "description": "Du poisson resté dehors \nbien trop longtemps."
   },
   "450": {
-    "name": "",
-    "description": ""
+    "name": "Bouillie Grumeleuse",
+    "description": "Une purée sans goût pleine de \ngrumeaux."
   },
   "451": {
-    "name": "",
-    "description": ""
+    "name": "Soupe de Légumes Aqueuse",
+    "description": "De l'eau où flottent quelques \nlégumes douteux."
   },
   "452": {
-    "name": "",
-    "description": ""
+    "name": "Pomme de Terre Germée",
+    "description": "Une pomme de terre triste qui \ntraîne là depuis un moment."
   },
   "453": {
-    "name": "",
-    "description": ""
+    "name": "Pomme Talée",
+    "description": "Une pomme molle couverte de\ntaches brunes."
   },
   "454": {
-    "name": "",
-    "description": ""
+    "name": "Toast Carbonisé",
+    "description": "Brûlé au point d'être méconnaissable, mais\nencore comestible."
   },
   "455": {
-    "name": "",
-    "description": ""
+    "name": "Barre Protéinée Bon Marché",
+    "description": "Le substitut de viande le plus bon marché \nqu'on puisse imaginer."
   },
   "456": {
-    "name": "",
-    "description": ""
+    "name": "Risotto Moisi",
+    "description": "Il tire sur le vert et sent\nles pieds."
   },
   "457": {
-    "name": "",
-    "description": ""
+    "name": "Abomination Culinaire",
+    "description": "La pire nourriture qu'on puisse \nimaginer."
   },
   "458": {
-    "name": "",
-    "description": ""
+    "name": "Viande en Conserve",
+    "description": "Viande en conserve produite en masse avec\nses conservateurs."
   },
   "459": {
-    "name": "",
-    "description": ""
+    "name": "Chips au Fromage",
+    "description": "Un en-cas au goût de fromage avec \ncolorants artificiels."
   },
   "460": {
-    "name": "",
-    "description": ""
+    "name": "Paquet de Nouilles Instantanées",
+    "description": "Des nouilles préemballées avec leur \nsachet d'assaisonnement."
   },
   "461": {
-    "name": "",
-    "description": ""
+    "name": "Tonique de Vigueur",
+    "description": "De l'eau sucrée aux colorants \nartificiels et aux conservateurs."
   },
   "462": {
-    "name": "",
-    "description": ""
+    "name": "Barre Enrichie en Nutriments",
+    "description": "Barre nutritive compressée aux \nvitamines de synthèse."
   },
   "463": {
-    "name": "",
-    "description": ""
+    "name": "Céréales Sucrées Colorées",
+    "description": "Des céréales de petit déjeuner aux \ncolorants et arômes artificiels."
   },
   "464": {
-    "name": "",
-    "description": ""
+    "name": "Gâteau Fourré à la Crème",
+    "description": "Une pâtisserie qui ne semble jamais \nse périmer."
   },
   "465": {
-    "name": "",
-    "description": ""
+    "name": "Steak Haché au Micro-Ondes",
+    "description": "Un steak haché précuit, surgelé et \nréchauffé."
   },
   "466": {
-    "name": "",
-    "description": ""
+    "name": "Légumes en Conserve",
+    "description": "Des légumes conservés dans le sel \net les produits chimiques."
   },
   "467": {
-    "name": "",
-    "description": ""
+    "name": "Gelée Colorée",
+    "description": "Une gelée aromatisée aux fruits avec \ncolorants artificiels."
   },
   "468": {
-    "name": "",
-    "description": ""
+    "name": "Chips",
+    "description": "Une substance de pomme de terre reconstituée\nmise en forme de chips."
   },
   "469": {
-    "name": "",
-    "description": ""
+    "name": "Plateau Micro-Ondable",
+    "description": "Un plat surgelé réchauffé en \nquelques minutes."
   },
   "470": {
-    "name": "",
-    "description": ""
+    "name": "Steak Végétal",
+    "description": "Un substitut de viande de synthèse \nfait de protéine de soja."
   },
   "471": {
-    "name": "",
-    "description": ""
+    "name": "Barre au Goût de Chocolat",
+    "description": "Une substance chocolatée qui \nne fond pas tout à fait."
   },
   "472": {
-    "name": "",
-    "description": ""
+    "name": "Ration de Combat",
+    "description": "Repas complet de qualité militaire \nà longue conservation."
   },
   "473": {
-    "name": "",
-    "description": ""
+    "name": "Goutte d'Étoile Lumineuse",
+    "description": "Un fruit bleu chatoyant à la \nchair cristalline."
   },
   "474": {
-    "name": "",
-    "description": ""
+    "name": "Baie de Lune",
+    "description": "Un fruit rare qui ne pousse \nqu'au clair de lune."
   },
   "475": {
-    "name": "",
-    "description": ""
+    "name": "Baie Spiralée",
+    "description": "Un fruit pourpre en spirale \naux motifs hypnotiques."
   },
   "476": {
-    "name": "",
-    "description": ""
+    "name": "Fruit Souffle de Dragon",
+    "description": "Un fruit rouge et ardent qui \nétincelle d'énergie."
   },
   "477": {
-    "name": "",
-    "description": ""
+    "name": "Fruit-Soleil Doré",
+    "description": "Un fruit doré venu des \nplus hautes montagnes."
   },
   "478": {
-    "name": "",
-    "description": ""
+    "name": "Fruit à Nectar de Cristal",
+    "description": "Un fruit translucide empli \nd'un nectar arc-en-ciel."
   },
   "479": {
-    "name": "",
-    "description": ""
+    "name": "Grenade de Mana",
+    "description": "Un fruit à loges multiples aux \nmembranes bleues palpitantes."
   },
   "480": {
-    "name": "",
-    "description": ""
+    "name": "Carambole du Vide",
+    "description": "Un fruit noir en forme d'étoile \nparsemé de minuscules points de lumière."
   },
   "481": {
-    "name": "",
-    "description": ""
+    "name": "Bouffée de Baie des Nuages",
+    "description": "Un fruit flottant et léger qui \ndéfie la gravité."
   },
   "482": {
-    "name": "",
-    "description": ""
+    "name": "Baie Chatoyante Prismatique",
+    "description": "Un fruit chatoyant qui \nchange de couleur en mûrissant."
   },
   "483": {
-    "name": "",
-    "description": ""
+    "name": "Fruit Luisant Abyssal",
+    "description": "Un fruit venu des fosses océaniques\nles plus profondes."
   },
   "484": {
-    "name": "",
-    "description": ""
+    "name": "Baie Enchantée des Fées",
+    "description": "Un fruit mythique que l'on dit ne pousser \nque dans les royaumes féeriques."
   },
   "485": {
-    "name": "",
-    "description": ""
+    "name": "Baie Poivre de Braise",
+    "description": "Un fruit minuscule et éclatant qui \npousse en sol volcanique."
   },
   "486": {
-    "name": "",
-    "description": ""
+    "name": "Fruit d'Éclipse",
+    "description": "Un fruit légendaire qui n'apparaît\nque pendant les éclipses."
   },
   "487": {
-    "name": "",
-    "description": ""
+    "name": "Melon Murmurant de Minuit",
+    "description": "Un fruit qui ne mûrit qu'au \ncoup de minuit."
   },
   "488": {
-    "name": "",
-    "description": ""
+    "name": "Sashimi Haut de Gamme",
+    "description": "Un mets rare de poisson cru \net de riz assaisonné."
   },
   "489": {
-    "name": "",
-    "description": ""
+    "name": "Biryani Épicé",
+    "description": "Un riz parfumé cuit avec \népices et légumes."
   },
   "490": {
-    "name": "",
-    "description": ""
+    "name": "Assortiment de Dim Sum",
+    "description": "De petits raviolis à la vapeur fourrés\nd'ingrédients exotiques."
   },
   "491": {
-    "name": "",
-    "description": ""
+    "name": "Tajine Marocain",
+    "description": "Un ragoût de viande mijoté aux \nolives et aux citrons confits."
   },
   "492": {
-    "name": "",
-    "description": ""
+    "name": "Kimchi Épicé",
+    "description": "Du chou fermenté au piquant\nrelevé.\nAcidulé et revigorant."
   },
   "493": {
-    "name": "",
-    "description": ""
+    "name": "Kebab Épicé",
+    "description": "Des brochettes de viande grillée aux \népices exotiques."
   },
   "494": {
-    "name": "",
-    "description": ""
+    "name": "Glace Turque",
+    "description": "Une glace sucrée et élastique à la\ntexture singulière."
   },
   "495": {
-    "name": "",
-    "description": ""
+    "name": "Baklava au Miel",
+    "description": "Une pâte fine en couches, aux noix \net au miel."
   },
   "496": {
-    "name": "",
-    "description": ""
+    "name": "Soupe Tom Kha",
+    "description": "Une soupe épicée au lait de coco \net aux herbes exotiques."
   },
   "497": {
-    "name": "",
-    "description": ""
+    "name": "Paratha Fourré",
+    "description": "Un pain plat fourré de pommes de terre \népicées et de légumes."
   },
   "498": {
-    "name": "",
-    "description": ""
+    "name": "Salade de Fruits Tropicaux",
+    "description": "Un assortiment de fruits tropicaux avec \nune pointe de citron vert et d'épices."
   },
   "499": {
-    "name": "",
-    "description": ""
+    "name": "Poisson en Feuille de Bananier",
+    "description": "Du poisson grillé enveloppé de feuilles de\nbananier avec des herbes."
   },
   "500": {
-    "name": "",
-    "description": ""
+    "name": "Gumbo aux Fruits de Mer",
+    "description": "Un riche ragoût de gombos, de \nlégumes et de crevettes."
   },
   "501": {
-    "name": "",
-    "description": ""
+    "name": "Rouleaux de Printemps Frais",
+    "description": "Des légumes et des herbes frais \nroulés dans une feuille de riz."
   },
   "502": {
-    "name": "",
-    "description": ""
+    "name": "Café de Varlenia",
+    "description": "Le café le plus cher du monde, \nau goût singulier."
   },
   "503": {
-    "name": "",
-    "description": ""
+    "name": "Pho au Bœuf",
+    "description": "De fines tranches de bœuf dans un \nbouillon savoureux avec ses nouilles."
   },
   "504": {
-    "name": "",
-    "description": ""
+    "name": "Riz Gluant à la Mangue",
+    "description": "Du riz gluant avec sa mangue sucrée \net sa crème de coco."
   },
   "505": {
-    "name": "",
-    "description": ""
+    "name": "Xiao Long Bao",
+    "description": "De petits raviolis au porc à la\nfarce savoureuse."
   },
   "506": {
-    "name": "",
-    "description": ""
+    "name": "Nigiri au Saumon",
+    "description": "Du poisson cru finement tranché servi \nsur du riz assaisonné."
   },
   "507": {
-    "name": "",
-    "description": ""
+    "name": "Pad Thaï",
+    "description": "Des nouilles sautées aux \nlégumes et aux protéines."
   },
   "508": {
-    "name": "",
-    "description": ""
+    "name": "Bibimbap",
+    "description": "Un bol de pierre brûlant avec riz, \nlégumes et œuf."
   },
   "509": {
-    "name": "",
-    "description": ""
+    "name": "Shabu-Shabu",
+    "description": "Du bœuf finement tranché et des \nlégumes servis avec leur sauce."
   },
   "510": {
-    "name": "",
-    "description": ""
+    "name": "Sundubu Jjigae",
+    "description": "Du tofu soyeux dans un ragoût épicé\net bouillonnant, avec des fruits de mer."
   },
   "511": {
-    "name": "",
-    "description": ""
+    "name": "Canard Laqué de Pékin",
+    "description": "Du canard croustillant avec ses crêpes fines\net sa sauce hoisin."
   },
   "512": {
-    "name": "",
-    "description": ""
+    "name": "Tteok en Soupe de Haricots Rouges",
+    "description": "Des gâteaux de riz moelleux dans une soupe \nsucrée de haricots rouges."
   },
   "513": {
-    "name": "",
-    "description": ""
+    "name": "Gua Bao",
+    "description": "Des viandes et légumes croustillants \navec leur sauce acidulée."
   },
   "514": {
-    "name": "",
-    "description": ""
+    "name": "Okonomiyaki",
+    "description": "Galettes savoureuses garnies de \nfruits de mer et de légumes."
   },
   "515": {
-    "name": "",
-    "description": ""
+    "name": "Tom Yum Goong",
+    "description": "Une soupe aigre et épicée aux \ncrevettes et à la citronnelle."
   },
   "516": {
-    "name": "",
-    "description": ""
+    "name": "Baozi aux Haricots Rouges",
+    "description": "De petites brioches à la vapeur à la\nfarce sucrée."
   },
   "517": {
-    "name": "",
-    "description": ""
+    "name": "Porc Braisé aux Cinq Épices",
+    "description": "Viande mijotée avec son mélange\naromatique de cinq épices."
   },
   "518": {
-    "name": "",
-    "description": ""
+    "name": "Cuisseau de Sanglier Rôti",
+    "description": "Un énorme gigot de sanglier \nrôti."
   },
   "519": {
-    "name": "",
-    "description": ""
+    "name": "Faisan en Sauce au Vin",
+    "description": "Gibier à plumes mijoté dans une riche\nsauce au vin."
   },
   "520": {
-    "name": "",
-    "description": ""
+    "name": "Potage de Venaison",
+    "description": "Venaison tendre mijotée avec des \nlégumes racines."
   },
   "521": {
-    "name": "",
-    "description": ""
+    "name": "Pâté de Venaison",
+    "description": "Viande enfermée dans une pâte avec \népices et jus."
   },
   "522": {
-    "name": "",
-    "description": ""
+    "name": "Ragoût du Chasseur",
+    "description": "Un riche mélange de viandes de gibier \nmijotées ensemble."
   },
   "523": {
-    "name": "",
-    "description": ""
+    "name": "Lièvre Rôti",
+    "description": "Chair de lièvre rôtie doucement aux \nherbes et au lard."
   },
   "524": {
-    "name": "",
-    "description": ""
+    "name": "Pigeonneau au Lard",
+    "description": "Pigeon enveloppé de lard et \nrôti à la perfection."
   },
   "525": {
-    "name": "",
-    "description": ""
+    "name": "Viande d'Ours Salée",
+    "description": "Un mets rare de viande d'ours \nconservée dans le sel."
   },
   "526": {
-    "name": "",
-    "description": ""
+    "name": "Cerf Rôti",
+    "description": "Chair du cerf des forêts, tant prisé, \nrôtie à la broche."
   },
   "527": {
-    "name": "",
-    "description": ""
+    "name": "Cœur de Cerf Rôti",
+    "description": "Un cœur de cerf tendre, tenu \npour un trophée par les chasseurs."
   },
   "528": {
-    "name": "",
-    "description": ""
+    "name": "Bouquetin Braisé",
+    "description": "Bouquetin sauvage doucement \nmijoté jusqu'à tendreté."
   },
   "529": {
-    "name": "",
-    "description": ""
+    "name": "Boudin Noir",
+    "description": "Boyaux farcis de viande hachée\net d'herbes."
   },
   "530": {
-    "name": "",
-    "description": ""
+    "name": "Venaison Séchée",
+    "description": "Viande séchée en lanières avec sel\net épices."
   },
   "531": {
-    "name": "",
-    "description": ""
+    "name": "Collier de Sanglier Fumé",
+    "description": "La chair grasse du collier d'un \nsanglier des forêts, fumée."
   },
   "532": {
-    "name": "",
-    "description": ""
+    "name": "Rôti de Cygne Royal",
+    "description": "Un plat royal de cygne préparé \npour les festins."
   },
   "533": {
-    "name": "",
-    "description": ""
+    "name": "Croc de Dragon",
+    "description": "Un croc énorme tiré de la gueule\nd'un dragon."
   },
   "534": {
-    "name": "",
-    "description": ""
+    "name": "Écailles d'Élémentaire d'Eau",
+    "description": "Des écailles chatoyantes d'un élémentaire\nd'eau."
   },
   "535": {
-    "name": "",
-    "description": ""
+    "name": "Cœur de Golem",
+    "description": "Un orbe palpitant récolté sur un\ngolem abattu."
   },
   "536": {
-    "name": "",
-    "description": ""
+    "name": "Ailes de Pixie",
+    "description": "Les ailes translucides d'une \ncréature féerique."
   },
   "537": {
-    "name": "",
-    "description": ""
+    "name": "Corne de Licorne",
+    "description": "Une corne de la légendaire \nlicorne."
   },
   "538": {
-    "name": "",
-    "description": ""
+    "name": "Larmes de Banshee",
+    "description": "Des larmes cristallisées d'une \nbanshee."
   },
   "539": {
-    "name": "",
-    "description": ""
+    "name": "Griffe de Loup-Garou",
+    "description": "La griffe d'un loup-garou féroce."
   },
   "540": {
-    "name": "",
-    "description": ""
+    "name": "Éclat de Bois Vampirique",
+    "description": "Un morceau du cercueil d'un vampire."
   },
   "541": {
-    "name": "",
-    "description": ""
+    "name": "Pédoncule Oculaire de Tyrannœil",
+    "description": "L'œil d'une créature \ntyrannœil."
   },
   "542": {
-    "name": "",
-    "description": ""
+    "name": "Tentacule Eldritch",
+    "description": "Tentacule d'une horreur cosmique."
   },
   "543": {
-    "name": "",
-    "description": ""
+    "name": "Processeur de Sentinelle",
+    "description": "Une carte de circuit imprimé venue d'une \nsentinelle mécanique."
   },
   "544": {
-    "name": "",
-    "description": ""
+    "name": "Plasma du Vide",
+    "description": "Une substance gélatineuse issue d'une \nfaille dimensionnelle."
   },
   "545": {
-    "name": "",
-    "description": ""
+    "name": "Linceul Spectral",
+    "description": "Le linceul en lambeaux d'un \nfantôme vengeur."
   },
   "546": {
-    "name": "",
-    "description": ""
+    "name": "Fragment d'Alliage Extraterrestre",
+    "description": "Un morceau de métal d'un exosquelette \nextraterrestre abattu."
   },
   "547": {
-    "name": "",
-    "description": ""
+    "name": "Main de Zombie",
+    "description": "La main tranchée d'un \ncadavre réanimé."
   },
   "548": {
-    "name": "",
-    "description": ""
+    "name": "Limon Cristallisé",
+    "description": "Vase durcie issue d'une créature \nde limon acide."
   },
   "549": {
-    "name": "",
-    "description": ""
+    "name": "Œuf de Griffon",
+    "description": "Un œuf étrange venu d'un griffon \nmythique."
   },
   "550": {
-    "name": "",
-    "description": ""
+    "name": "Carapace de Scarabée Géant",
+    "description": "Un segment d'exosquelette d'un \ninsecte géant."
   },
   "551": {
-    "name": "",
-    "description": ""
+    "name": "Queue de Manticore",
+    "description": "Queue de manticore, avec ses \ndards venimeux."
   },
   "552": {
-    "name": "",
-    "description": ""
+    "name": "Souffle de Dragon Gelé",
+    "description": "Souffle cristallisé d'un \ndrake de glace."
   },
   "553": {
-    "name": "",
-    "description": ""
+    "name": "Essence d'Ombre",
+    "description": "Restes d'une créature d'ombre \nqui a glissé entre les dimensions."
   },
   "554": {
-    "name": "",
-    "description": ""
+    "name": "Fleur de Dryade",
+    "description": "Une petite excroissance en bouton venue \nd'une créature végétale consciente."
   },
   "555": {
-    "name": "",
-    "description": ""
+    "name": "Organe Lumineux Abyssal",
+    "description": "Un organe palpitant venu d'une étrange\ncréature des grands fonds."
   },
   "556": {
-    "name": "",
-    "description": ""
+    "name": "Cœur Mémoire de Cyborg",
+    "description": "Un petit disque de stockage venu d'un \norganisme cybernétique."
   },
   "557": {
-    "name": "",
-    "description": ""
+    "name": "Serre de Cauchemar",
+    "description": "Le doigt allongé d'une \ncréature de cauchemar."
   },
   "558": {
-    "name": "",
-    "description": ""
+    "name": "Fragment de Cœur de Météorite",
+    "description": "Une pierre étrange tombée d'une \nbête météore."
   },
   "559": {
-    "name": "",
-    "description": ""
+    "name": "Poche à Venin de Scorpion",
+    "description": "Une petite fiole contenant le \nvenin d'un scorpion géant."
   },
   "560": {
-    "name": "",
-    "description": ""
+    "name": "Relique Interdimensionnelle",
+    "description": "Une étrange structure osseuse \nvenue d'une autre dimension."
   },
   "561": {
-    "name": "",
-    "description": ""
+    "name": "Écaille de Wyrm Ancien",
+    "description": "Une seule écaille d'un antique\nwyrm."
   },
   "562": {
-    "name": "",
-    "description": ""
+    "name": "Cœur de Gargouille",
+    "description": "Le cœur battant d'une gargouille \nde pierre."
   },
   "563": {
-    "name": "",
+    "name": "Objet Non Identifié",
     "description": ""
   },
   "564": {
-    "name": "",
-    "description": ""
+    "name": "Crochet",
+    "description": "Il ouvre une porte"
   },
   "565": {
-    "name": "",
-    "description": ""
+    "name": "Minerai d'acier",
+    "description": "Matériau d'artisanat"
   },
   "566": {
-    "name": "",
-    "description": ""
+    "name": "Minerai de titane",
+    "description": "Matériau d'artisanat"
   },
   "567": {
-    "name": "",
-    "description": ""
+    "name": "Minerai de Varlenia",
+    "description": "Matériau d'artisanat"
   },
   "568": {
-    "name": "",
-    "description": ""
+    "name": "Cristal",
+    "description": "Matériau d'artisanat"
   },
   "569": {
-    "name": "",
-    "description": ""
+    "name": "Verre",
+    "description": "Matériau d'artisanat"
   },
   "570": {
-    "name": "",
-    "description": ""
+    "name": "Bois",
+    "description": "Matériau d'artisanat"
   },
   "571": {
-    "name": "",
-    "description": ""
+    "name": "Cuir",
+    "description": "Matériau d'artisanat"
   },
   "572": {
-    "name": "",
-    "description": ""
+    "name": "Étoffe",
+    "description": "Matériau d'artisanat"
   },
   "573": {
-    "name": "",
-    "description": ""
+    "name": "Os",
+    "description": "Matériau d'artisanat"
   },
   "574": {
-    "name": "",
-    "description": ""
+    "name": "Viande",
+    "description": "Matériau d'artisanat"
   },
   "575": {
-    "name": "",
-    "description": ""
+    "name": "Matière végétale",
+    "description": "Matériau d'artisanat"
   },
   "576": {
-    "name": "",
-    "description": ""
+    "name": "Extrait d'herbes",
+    "description": "Matériau d'artisanat"
   },
   "577": {
-    "name": "",
-    "description": ""
+    "name": "Fiole d'huile",
+    "description": "Matériau d'artisanat"
   },
   "578": {
-    "name": "",
-    "description": ""
+    "name": "Solution acide",
+    "description": "Matériau d'artisanat"
   },
   "579": {
-    "name": "",
-    "description": ""
+    "name": "Essence arcanique",
+    "description": "Matériau d'artisanat"
   },
   "580": {
-    "name": "",
-    "description": ""
+    "name": "Éclat éthéré",
+    "description": "Matériau d'artisanat"
   },
   "581": {
-    "name": "",
-    "description": ""
+    "name": "Cœur quantique",
+    "description": "Matériau d'artisanat"
   },
   "582": {
-    "name": "",
-    "description": ""
+    "name": "Carte de circuit imprimé",
+    "description": "Matériau d'artisanat"
   },
   "583": {
-    "name": "",
-    "description": ""
+    "name": "Micropuce",
+    "description": "Matériau d'artisanat"
   },
   "584": {
-    "name": "",
-    "description": ""
+    "name": "Cellule de batterie",
+    "description": "Matériau d'artisanat"
   },
   "585": {
-    "name": "",
-    "description": ""
+    "name": "Polymère plastique",
+    "description": "Matériau d'artisanat"
   },
   "586": {
-    "name": "",
-    "description": ""
+    "name": "Résine composite",
+    "description": "Matériau d'artisanat"
   },
   "587": {
-    "name": "",
-    "description": ""
+    "name": "Module à nanotubes",
+    "description": "Matériau d'artisanat"
   },
   "588": {
-    "name": "",
-    "description": ""
+    "name": "Journal",
+    "description": "Les dernières nouvelles d'Europe."
   },
   "589": {
-    "name": "",
+    "name": "Menottes liminales",
     "description": ""
   },
   "590": {
-    "name": "",
-    "description": ""
+    "name": "Jeton d'Arcade",
+    "description": "Il sert dans les bornes d'arcade"
   },
   "591": {
-    "name": "",
-    "description": ""
+    "name": "Lettre d'invitation",
+    "description": "Brochure produite par l'Archive Foundation."
   },
   "592": {
-    "name": "",
-    "description": ""
+    "name": "Réservoir de carburant",
+    "description": "Il contient 25 L de carburant"
   },
   "593": {
-    "name": "",
-    "description": ""
+    "name": "Clé de donjon",
+    "description": "Elle ouvre une porte dans un donjon"
   },
   "594": {
-    "name": "",
-    "description": ""
+    "name": "Gratte et Maudis",
+    "description": "Ticket à gratter ésotérique\n"
   },
   "595": {
-    "name": "",
-    "description": ""
+    "name": "Gratte et Profite",
+    "description": "Ticket à gratter d'entreprise\n"
   },
   "596": {
-    "name": "",
-    "description": ""
+    "name": "Gratte et Accumule",
+    "description": "Ticket à gratter hypercapitaliste\n"
   },
   "597": {
-    "name": "",
-    "description": ""
+    "name": "Gratte et Détends-toi",
+    "description": "Ticket à gratter sur le thème des vacances\n"
   },
   "598": {
-    "name": "",
-    "description": ""
+    "name": "Voiture utilitaire",
+    "description": "Des clés enchantées qui invoquent une voiture"
   },
   "599": {
-    "name": "",
-    "description": ""
+    "name": "Graine de lame",
+    "description": "Elle renferme un esprit de lame ; la liaison\nest irréversible."
   },
   "600": {
-    "name": "",
-    "description": ""
+    "name": "Bestiaire numérique",
+    "description": "Un bestiaire finement relié de cuir\net garni d'un parchemin de grande qualité."
   },
   "601": {
-    "name": "",
-    "description": ""
+    "name": "Sac d'engrais",
+    "description": "Engrais de qualité industrielle."
   },
   "602": {
-    "name": "",
-    "description": ""
+    "name": "Échantillon de sperme humain",
+    "description": "Il vous rend enceinte."
   },
   "603": {
-    "name": "",
-    "description": ""
+    "name": "Accélérateur de Gestation",
+    "description": "Des nanites qui accélèrent le développement du fœtus."
   },
   "604": {
-    "name": "",
-    "description": ""
+    "name": "Échantillon de sperme gobelin",
+    "description": "Il vous rend enceinte."
   },
   "605": {
-    "name": "",
-    "description": ""
+    "name": "Échantillon de sperme elfique",
+    "description": "Il vous rend enceinte."
   },
   "606": {
-    "name": "",
-    "description": ""
+    "name": "Échantillon de sperme nain",
+    "description": "Il vous rend enceinte."
   },
   "607": {
-    "name": "",
-    "description": ""
+    "name": "Échantillon de sperme inconnu",
+    "description": "Il vous rend enceinte."
   },
   "608": {
-    "name": "",
-    "description": ""
+    "name": "Divine Comédie - Purgatoire",
+    "description": "Un exemplaire imprimé du Purgatoire de Dante Alighieri"
   },
   "609": {
-    "name": "",
-    "description": ""
+    "name": "Divine Comédie - Purgatoire",
+    "description": "Un exemplaire imprimé du Purgatoire de Dante Alighieri"
   },
   "610": {
     "name": "",
@@ -2464,24 +2464,24 @@
     "description": ""
   },
   "617": {
-    "name": "",
-    "description": ""
+    "name": "Télescope",
+    "description": "Un télescope portatif"
   },
   "618": {
-    "name": "",
-    "description": ""
+    "name": "Carte du ciel",
+    "description": "Une carte du ciel portative"
   },
   "619": {
-    "name": "",
-    "description": ""
+    "name": "Pelle",
+    "description": "Elle creuse un tunnel souterrain."
   },
   "620": {
-    "name": "",
-    "description": ""
+    "name": "Scanner de Résonance",
+    "description": "Il trouve les chambres souterraines."
   },
   "621": {
-    "name": "",
-    "description": ""
+    "name": "Sonde Raman",
+    "description": "Elle effectue une analyse par spectroscopie"
   },
   "622": {
     "name": "",
@@ -2556,144 +2556,144 @@
     "description": ""
   },
   "640": {
-    "name": "",
-    "description": ""
+    "name": "Les 120 Journées de Sodome",
+    "description": "Un exemplaire imprimé des 120 Journées de Sodome du marquis de Sade"
   },
   "641": {
-    "name": "",
-    "description": ""
+    "name": "1 Samuel",
+    "description": "Un exemplaire imprimé du Premier Livre de Samuel (Bible)"
   },
   "642": {
-    "name": "",
-    "description": ""
+    "name": "Fragment 2",
+    "description": "Un exemplaire imprimé d'un fragment illisible"
   },
   "643": {
-    "name": "",
-    "description": ""
+    "name": "Fragment 3",
+    "description": "Un exemplaire imprimé d'un fragment illisible"
   },
   "644": {
-    "name": "",
-    "description": ""
+    "name": "Les Meilleurs Plans",
+    "description": "Un exemplaire imprimé de The Best Made Plans d'Everett B. Cole"
   },
   "645": {
-    "name": "",
-    "description": ""
+    "name": "Le Monde Flamboyant",
+    "description": "Un exemplaire imprimé du Monde Flamboyant de Margaret Cavendish"
   },
   "646": {
-    "name": "",
-    "description": ""
+    "name": "Le Charpentier",
+    "description": "Un exemplaire imprimé de The Carpenter de William D. O'Connor"
   },
   "647": {
-    "name": "",
-    "description": ""
+    "name": "Centre de la Terre I",
+    "description": "Un exemplaire imprimé du Voyage au centre de la Terre (vol. 1) de Jules Verne"
   },
   "648": {
-    "name": "",
-    "description": ""
+    "name": "Centre de la Terre II",
+    "description": "Un exemplaire imprimé du Voyage au centre de la Terre (vol. 2) de Jules Verne"
   },
   "649": {
-    "name": "",
-    "description": ""
+    "name": "Décaméron I",
+    "description": "Un exemplaire imprimé du Décaméron (vol. 1) de Giovanni Boccace"
   },
   "650": {
-    "name": "",
-    "description": ""
+    "name": "Décaméron II",
+    "description": "Un exemplaire imprimé du Décaméron (vol. 2) de Giovanni Boccace"
   },
   "651": {
-    "name": "",
-    "description": ""
+    "name": "Enfer",
+    "description": "Un exemplaire imprimé de la Divine Comédie : Enfer de Dante Alighieri"
   },
   "652": {
-    "name": "",
-    "description": ""
+    "name": "Paradis",
+    "description": "Un exemplaire imprimé de la Divine Comédie : Paradis de Dante Alighieri"
   },
   "653": {
-    "name": "",
-    "description": ""
+    "name": "Étiquette",
+    "description": "Un exemplaire imprimé d'Etiquette d'Emily Post"
   },
   "654": {
-    "name": "",
-    "description": ""
+    "name": "Exode",
+    "description": "Un exemplaire imprimé du Livre de l'Exode (Bible)"
   },
   "655": {
-    "name": "",
-    "description": ""
+    "name": "Phédon",
+    "description": "Un exemplaire imprimé du Phédon de Platon"
   },
   "656": {
-    "name": "",
-    "description": ""
+    "name": "Le Ventre de Paris I",
+    "description": "Un exemplaire imprimé du Ventre de Paris (vol. 1) d'Émile Zola"
   },
   "657": {
-    "name": "",
-    "description": ""
+    "name": "Le Ventre de Paris II",
+    "description": "Un exemplaire imprimé du Ventre de Paris (vol. 2) d'Émile Zola"
   },
   "658": {
-    "name": "",
-    "description": ""
+    "name": "Genèse",
+    "description": "Un exemplaire imprimé du Livre de la Genèse (Bible)"
   },
   "659": {
-    "name": "",
-    "description": ""
+    "name": "Gnomes",
+    "description": "Un exemplaire imprimé d'un traité sur les gnomes \n(auteur inconnu)"
   },
   "660": {
-    "name": "",
-    "description": ""
+    "name": "La Coupe d'Or",
+    "description": "Un exemplaire imprimé de La Coupe d'or de Henry James"
   },
   "661": {
-    "name": "",
-    "description": ""
+    "name": "Au Cœur des Ténèbres",
+    "description": "Un exemplaire imprimé d'Au cœur des ténèbres de Joseph Conrad"
   },
   "662": {
-    "name": "",
-    "description": ""
+    "name": "Henri IV",
+    "description": "Un exemplaire imprimé d'Henri IV de William Shakespeare"
   },
   "663": {
-    "name": "",
-    "description": ""
+    "name": "Lorem Ipsum",
+    "description": "Un exemplaire imprimé du De finibus bonorum et malorum de Cicéron"
   },
   "664": {
-    "name": "",
-    "description": ""
+    "name": "Le Marquis de Lossie",
+    "description": "Un exemplaire imprimé du Marquis de Lossie de George MacDonald"
   },
   "665": {
-    "name": "",
-    "description": ""
+    "name": "Documents du Mayflower",
+    "description": "Un exemplaire imprimé du Pacte du Mayflower (Histoire)"
   },
   "666": {
-    "name": "",
-    "description": ""
+    "name": "Le Monstre de Métal",
+    "description": "Un exemplaire imprimé du Monstre de métal d'Abraham Merritt"
   },
   "667": {
-    "name": "",
-    "description": ""
+    "name": "Le Pauvre de Park Lane",
+    "description": "Un exemplaire imprimé de The Pauper of Park Lane de William Le Queux"
   },
   "668": {
-    "name": "",
-    "description": ""
+    "name": "Le Nuage Pourpre",
+    "description": "Un exemplaire imprimé du Nuage pourpre de M. P. Shiel"
   },
   "669": {
-    "name": "",
-    "description": ""
+    "name": "Ruth",
+    "description": "Un exemplaire imprimé du Livre de Ruth (Bible)"
   },
   "670": {
-    "name": "",
-    "description": ""
+    "name": "Les Sièges des Puissants",
+    "description": "Un exemplaire imprimé de The Seats of the Mighty de Gilbert Parker"
   },
   "671": {
-    "name": "",
-    "description": ""
+    "name": "Test",
+    "description": "Un exemplaire imprimé d'un livre de test"
   },
   "672": {
-    "name": "",
-    "description": ""
+    "name": "La Guerre des Mondes I",
+    "description": "Un exemplaire imprimé de La Guerre des mondes (vol. 1) de H. G. Wells"
   },
   "673": {
-    "name": "",
-    "description": ""
+    "name": "La Guerre des Mondes II",
+    "description": "Un exemplaire imprimé de La Guerre des mondes (vol. 2) de H. G. Wells"
   },
   "674": {
-    "name": "",
-    "description": ""
+    "name": "La Guerre des Mondes III",
+    "description": "Un exemplaire imprimé de La Guerre des mondes (vol. 3) de H. G. Wells"
   },
   "675": {
     "name": "",

@@ -484,7 +484,7 @@
               const className = `cc-sprite-img-${entry.name.replace(/[^a-zA-Z0-9]/g, '_')}-${entry.index}`;
 
               return `
-                            <div class="cc-wanted-card ${isSelected ? "selected" : ""}" style="display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid ${isSelected ? "#8b5a2b" : "transparent"}; border-radius: 6px; padding: 4px; box-shadow: none; background: ${isSelected ? "rgba(139, 90, 43, 0.15)" : "none"}; width: 100%; min-width: 0; min-height: 0; height: ${SPRITE_GRID_SIZE + 16}px; overflow: hidden; box-sizing: border-box; transition: all 0.2s ease; margin: 0;" onclick="SceneManager._scene.onSpriteCardClick(${idx})">
+                            <div class="cc-wanted-card cc-sprite-card ${isSelected ? "selected" : ""}" style="display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid ${isSelected ? "#8b5a2b" : "transparent"}; border-radius: 6px; padding: 4px; box-shadow: none; background: ${isSelected ? "rgba(139, 90, 43, 0.15)" : "none"}; width: 100%; min-width: 0; min-height: 0; height: ${SPRITE_GRID_SIZE + 16}px; overflow: hidden; box-sizing: border-box; transition: all 0.2s ease; margin: 0;" onclick="SceneManager._scene.onSpriteCardClick(${idx})">
                                 <div class="cc-wanted-sprite ${className}" style="${spriteDivStyle} margin: 0;"></div>
                             </div>
                         `;
@@ -528,10 +528,14 @@
 
       // Update Right Page Content (SPECIMEN PROFILE preview & buttons)
       if (rightPage && activeItem) {
-        const cleanName = activeItem.name
-          .split("/")
-          .pop()
-          .replace(/^[$!]+/, "");
+        // The sheet file name is CamelCase (GoblinIllusionist); the dossier
+        // reads it back as words.
+        const cleanName = decamelCase(
+          activeItem.name
+            .split("/")
+            .pop()
+            .replace(/^[$!]+/, ""),
+        );
         const spriteDivStyle = this.getSpriteStyle(
           activeItem.name,
           activeItem.index,
@@ -547,7 +551,7 @@
 
                     <div class="cc-dossier-card" style="width: 90%; text-align: center;">
                         <div class="cc-option-title">${cleanName}</div>
-                        <div class="cc-wanted-class" style="color: #8b5a2b; font-weight: bold; margin-top: 4px;">Index: ${activeItem.index}</div>
+                        <div class="cc-wanted-class" style="color: #8b5a2b; font-weight: bold; margin-top: 4px;">${T('CharCreate.spriteIndex')}: ${activeItem.index}</div>
                     </div>
 
 

@@ -36,8 +36,8 @@
  *
  * @param baseCommit
  * @text Build number origin
- * @desc Where the history starts. Builds are numbered by how many commits came after it, and nothing before it is listed.
- * @default f82efcc816a0e07049b3466b1013eaae7105ecf0
+ * @desc Where the history starts. Builds are numbered by how many commits came after it, and only those later commits are listed.
+ * @default b2092245d04a8c27bc652cb0326dfbd2198555ea
  *
  * @help TitleScreenGameUpdater.js
  * ============================================================================
@@ -53,9 +53,11 @@
  * Only one branch is read (main). Its commit history is the build list: the
  * newest build sits at the top and every past build under it, so a player can
  * install the latest one or go back to any earlier build. Older builds are
- * fetched a page at a time, and the list stops at the numbering origin (the
- * baseCommit parameter): that build is the oldest one offered and nothing
- * before it is listed.
+ * fetched a page at a time, and only the commits published after the numbering
+ * origin (the baseCommit parameter) are listed. The origin itself is the floor
+ * the numbering counts from, not a build to install, so it never appears; when
+ * the branch has nothing newer than it the list is simply empty and the screen
+ * says so.
  *
  * How an update runs
  *   1. The branch history is read from the GitHub API and the player picks a
@@ -78,13 +80,15 @@
  * left alone, and so is everything under save/. Going back to an older build
  * therefore leaves behind any file that build never had.
  *
- * The build number
+ * The build number and the build name
  *   Whichever build is installed is also a number: how many commits on the
  *   branch came after the origin commit (the baseCommit parameter). It is read
  *   once per build from the compare API, kept in save/updater/state.json and
  *   handed to the title screen, which writes it into the third field of the
- *   version badge (0.0.<build>a). A copy that has never updated has no build
- *   number and keeps the version string as written.
+ *   version badge (0.0.<build>a). The same record keeps that build's commit
+ *   message, which replaces whatever the version label said after the number,
+ *   so the badge reads 0.0.<build>a - <the commit this copy sits on>. A copy
+ *   that has never updated has neither and keeps the version string as written.
  *
  * Checking on launch
  *   The title screen calls GameUpdater.autoCheck() once per session. It reads
@@ -117,13 +121,16 @@
     const PAGE_SIZE    = Math.max(5, Math.min(100, Number(params.historySize) || 20));
     const CONCURRENCY  = Math.max(1, Math.min(16, Number(params.concurrency) || 5));
     // Build numbering counts the commits that came after this one.
-    const BASE_COMMIT  = String(params.baseCommit || 'f82efcc816a0e07049b3466b1013eaae7105ecf0');
+    const BASE_COMMIT  = String(params.baseCommit || 'b2092245d04a8c27bc652cb0326dfbd2198555ea');
 
     const USER_AGENT  = 'HypernetExplorer-Updater';
     const TIMEOUT_MS  = 30000;
     const KEEP_BACKUPS = 3;
     // How many resolved build numbers the state file keeps, oldest dropped first.
     const KEEP_BUILD_NUMBERS = 60;
+    // How much of a build's commit message the version badge can carry before it
+    // starts crowding the corner of the title screen.
+    const BUILD_NAME_MAX = 42;
 
     // Downloading and installing. Set this to false to leave the screen as a
     // read-only report of what the branch holds, touching no local file.
@@ -418,10 +425,16 @@
                 if (installed && !installed.sha) {
                     installed = installed[raw.channel] || installed.stable || installed.unstable || null;
                 }
+                // Every build number is counted from the origin commit, so a
+                // file written against a different origin holds numbers that no
+                // longer mean anything: drop them and let them be asked again.
+                const sameOrigin = raw.base === BASE_COMMIT;
+                if (!sameOrigin && installed) installed = Object.assign({}, installed, { build: null });
                 this._state = {
+                    base: BASE_COMMIT,
                     installed: installed && installed.sha ? installed : null,
                     // sha -> how many commits came after the origin commit
-                    builds: (raw.builds && typeof raw.builds === 'object') ? raw.builds : {}
+                    builds: (sameOrigin && raw.builds && typeof raw.builds === 'object') ? raw.builds : {}
                 };
             }
             return this._state;
@@ -448,6 +461,27 @@
             return typeof cached === 'number' ? cached : null;
         },
 
+        // The name of the build this copy is running: the first line of its
+        // commit message, which is what the branch calls that build. Null when
+        // it has never updated and therefore cannot say which build it is.
+        buildName() {
+            const info = this.installedInfo();
+            const name = info && info.name ? String(info.name).trim() : '';
+            return name || null;
+        },
+
+        // A record written before names were kept, or one installed by a check
+        // that found nothing to fetch, carries no name: take it from the history
+        // as soon as the branch has been read.
+        _nameInstalled() {
+            const info = this.installedInfo();
+            if (!info || info.name) return;
+            const row = this.commitInfo(info.sha);
+            if (!row || !row.message) return;
+            info.name = row.message;
+            this.saveState();
+        },
+
         // Writes the build number into the third field of a version string
         // ("0.0.1a - experimental" -> "0.0.42a - experimental"). A copy with no
         // build number keeps the string exactly as it was written.
@@ -457,6 +491,28 @@
             const str = String(text === undefined || text === null ? '' : text);
             if (!/\d+\.\d+\.\d+/.test(str)) return str;
             return str.replace(/(\d+\.\d+\.)(\d+)/, (m, head) => head + build);
+        },
+
+        // Replaces whatever the version string says after the number with the
+        // name of the build that is running ("0.0.42a - experimental" ->
+        // "0.0.42a - feat: translation batch"), so the badge names the commit
+        // this copy sits on. A copy with no build name keeps the string as
+        // written, and so does one whose label carries no version number.
+        applyBuildName(text) {
+            const name = this.buildName();
+            if (!name) return text;
+            const str = String(text === undefined || text === null ? '' : text);
+            const head = str.match(/^\s*\d+\.\d+\.\d+[A-Za-z]*/);
+            if (!head) return str;
+            const trimmed = name.length > BUILD_NAME_MAX
+                ? name.slice(0, BUILD_NAME_MAX - 1).replace(/\s+$/, '') + '…'
+                : name;
+            return head[0].trim() + ' - ' + trimmed;
+        },
+
+        // Both passes at once, which is all the title screen wants.
+        versionLabel(text) {
+            return this.applyBuildName(this.applyBuildNumber(text));
         },
 
         // Asks the compare API how far a build sits from the origin commit. The
@@ -491,13 +547,16 @@
 
         // The one place the installed build is recorded, so its number is always
         // filled in from whatever the cache already knows.
-        _markInstalled(sha, date) {
+        _markInstalled(sha, date, name) {
             const st = this.state();
+            const known = this.commitInfo(sha);
             st.installed = {
                 sha: sha,
                 date: date || null,
                 at: Date.now(),
-                build: this.knownBuildNumber(sha)
+                build: this.knownBuildNumber(sha),
+                // The commit message names the build on the version badge.
+                name: name || (known ? known.message : null) || null
             };
             this.saveState();
         },
@@ -533,8 +592,19 @@
             }
 
             await this.loadHistory(false);
+            // The badge names the installed build, so fill the name in as soon
+            // as the history that holds it is here.
+            this._nameInstalled();
             const latest = this._commits[0];
-            if (!latest) throw new Error('the branch holds no builds'); // i18n-ignore: diagnostic
+            // Nothing published after the origin: the copy being played is the
+            // newest there is, so there is no update to raise.
+            if (!latest) {
+                this._auto = {
+                    ran: true, available: false, latest: null, latestDate: null,
+                    latestBuild: null, build: this.buildNumber(), files: 0, bytes: 0, error: null
+                };
+                return this._auto;
+            }
 
             // A copy already recorded as running the newest build needs no file
             // comparison at all; anything else is measured against it.
@@ -650,20 +720,21 @@
                 );
                 if (!Array.isArray(list)) throw new Error('branch ' + BRANCH + ' not found'); // i18n-ignore: diagnostic
 
-                // The build list stops at the numbering origin: builds older than
-                // it are never offered, so the oldest build a player can go back
-                // to is build 0 and nothing before it is listed at all.
+                // Only the builds published after the numbering origin are
+                // listed. The origin itself is the floor the count starts from,
+                // not a build to install, so the list stops just above it and
+                // nothing older is ever offered.
                 const rows = [];
                 let reachedOrigin = false;
                 for (const c of list) {
                     if (!c || !c.sha) continue;
+                    if (c.sha === BASE_COMMIT) { reachedOrigin = true; break; }
                     rows.push({
                         sha: c.sha,
                         date: c.commit && c.commit.author ? c.commit.author.date : null,
                         author: c.commit && c.commit.author ? c.commit.author.name : '',
                         message: c.commit ? String(c.commit.message || '').split('\n')[0] : ''
                     });
-                    if (c.sha === BASE_COMMIT) { reachedOrigin = true; break; }
                 }
 
                 if (!more) this._commits = [];
@@ -673,9 +744,14 @@
                 }
                 this._historyPage = page;
                 this._historyEnd  = reachedOrigin || list.length < PAGE_SIZE;
-                if (!this._commits.length) throw new Error('the branch holds no builds'); // i18n-ignore: diagnostic
 
-                report({ phase: 'history', text: fmt(T.logHistoryFound, this._commits.length), ratio: 1 });
+                // An empty list is a real answer, not a failure: the branch tip
+                // is the origin itself, so nothing newer has been published.
+                report({
+                    phase: 'history',
+                    text: this._commits.length ? fmt(T.logHistoryFound, this._commits.length) : T.logNoNewer,
+                    ratio: 1
+                });
                 return this._commits;
             } finally {
                 this._busy = false;
@@ -773,7 +849,7 @@
 
                 // Nothing to fetch means this build is the one we are running.
                 if (!changed.length) {
-                    this._markInstalled(commit.sha, plan.date);
+                    this._markInstalled(commit.sha, plan.date, plan.message);
                 }
                 return plan;
             } finally {
@@ -877,7 +953,7 @@
                 rmrf(TMP_DIR);
                 this.pruneBackups();
 
-                this._markInstalled(plan.sha, plan.date);
+                this._markInstalled(plan.sha, plan.date, plan.message);
                 // The badge is numbered from the state file, so the build just
                 // installed is numbered now rather than on the next launch.
                 try {
@@ -1169,6 +1245,12 @@
             return list;
         }
 
+        // An empty list once the branch has been read means the newest build is
+        // the origin, which is never listed, so the player already has it.
+        _emptyText(T) {
+            return GameUpdater.historyExhausted() ? T.noNewer : T.noBuilds;
+        }
+
         _pushLog(text) {
             if (!text) return;
             if (this._log[this._log.length - 1] === text) return;
@@ -1324,7 +1406,7 @@
                             <span class="gu-build-sub">${esc(commit.author || '')}</span>
                         </div>
                     </div>`;
-            }).join('') : `<div class="gu-build-empty">${esc(T.noBuilds)}</div>`;
+            }).join('') : `<div class="gu-build-empty">${esc(this._emptyText(T))}</div>`;
 
             const logHTML = this._log.map(line => `<div class="gu-log-line">${esc(line)}</div>`).join('');
             const pct = this._progress === null || this._progress === undefined
@@ -1411,7 +1493,7 @@
 
             const heading = commit
                 ? fmt(T.buildName, shortSha(commit.sha))
-                : T.noBuilds;
+                : this._emptyText(T);
 
             return `
                 <div class="item-inspect">

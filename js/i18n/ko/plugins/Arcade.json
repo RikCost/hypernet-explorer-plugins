@@ -1,13 +1,13 @@
 {
   "boot": {
-    "stage": ""
+    "stage": "스테이지 {stage}/{total}\n{pct}%"
   },
   "hud": {
-    "score": "",
-    "noScores": "",
-    "lives": "",
-    "level": "",
-    "hiScore": "",
-    "time": ""
+    "score": "점수: {score}",
+    "noScores": "아직 기록이 없습니다",
+    "lives": "목숨: {lives}",
+    "level": "레벨: {level}",
+    "hiScore": "최고 점수: {score}",
+    "time": "시간: {time}"
   }
 }

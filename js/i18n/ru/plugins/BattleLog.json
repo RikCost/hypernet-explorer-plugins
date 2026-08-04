@@ -1,8 +1,8 @@
 {
-  "bgOpacity": "",
-  "bareFists": "",
-  "attacksWith": "",
-  "dodged": "",
-  "listPair": "",
-  "listLast": ""
+  "bgOpacity": "Прозрачность фона боевого журнала",
+  "bareFists": "Голые кулаки",
+  "attacksWith": "%1 атакует, используя %2!",
+  "dodged": "%1 уклоняется.",
+  "listPair": " и ",
+  "listLast": ", и "
 }

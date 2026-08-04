@@ -37,7 +37,7 @@
     "bills": "",
     "codeEntry": "",
     "wallet": "",
-    "balance": "",
+    "balance": "잔액",
     "returnWallet": "",
     "empty": ""
   }

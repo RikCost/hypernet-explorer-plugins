@@ -1636,23 +1636,23 @@
 
       if (Input.isTriggered("cancel")) {
         SoundManager.playCancel();
-        if (onOffers) { sc._focus = "party"; sc.render(); }
+        if (onOffers) { sc._focus = "party"; sc.redraw(); }
         else sc.popScene();
         return;
       }
       if (Input.isTriggered("ok")) {
         if (onOffers) sc.buyOffer(sc._offerIdx);
-        else { sc._focus = "offers"; sc._offerIdx = 0; SoundManager.playOk(); sc.render(); }
+        else { sc._focus = "offers"; sc._offerIdx = 0; SoundManager.playOk(); sc.redraw(); }
         return;
       }
       if (len === 0) {
         if (onOffers && (Input.isTriggered("left") || Input.isTriggered("right"))) {
-          sc._focus = "party"; SoundManager.playCursor(); sc.render();
+          sc._focus = "party"; SoundManager.playCursor(); sc.redraw();
         }
         return;
       }
-      if (Input.isTriggered("right") && !onOffers) { sc._focus = "offers"; sc._offerIdx = 0; SoundManager.playCursor(); sc.render(); return; }
-      if (Input.isTriggered("left") && onOffers) { sc._focus = "party"; SoundManager.playCursor(); sc.render(); return; }
+      if (Input.isTriggered("right") && !onOffers) { sc._focus = "offers"; sc._offerIdx = 0; SoundManager.playCursor(); sc.redraw(); return; }
+      if (Input.isTriggered("left") && onOffers) { sc._focus = "party"; SoundManager.playCursor(); sc.redraw(); return; }
 
       let idx = onOffers ? sc._offerIdx : sc._actorIdx;
       let moved = false;
@@ -1660,7 +1660,7 @@
       else if (Input.isRepeated("up")) { idx = (idx - 1 + len) % len; moved = true; }
       if (moved) {
         SoundManager.playCursor();
-        if (onOffers) { sc._offerIdx = idx; sc.render(); }
+        if (onOffers) { sc._offerIdx = idx; sc.redraw(); }
         else sc.selectActor(idx);
       }
     }
@@ -1737,7 +1737,7 @@
     if (i < 0 || i >= members.length) return;
     this._actorIdx = i;
     this._actor = members[i];
-    this.render();
+    this.redraw();
   };
 
   Scene_DailyTeachShop.prototype.buyOffer = function (i) {
@@ -1756,11 +1756,11 @@
     markSold(this._mode, this._stockKey, skill.id);
     SoundManager.playUseSkill();
     this._taughtIdx = i;
-    this.render();
+    this.redraw();
     setTimeout(() => {
       this._taughtIdx = -1;
       this._busy = false;
-      if (this._dom) this.render();
+      if (this._dom) this.redraw();
     }, 700);
   };
 
@@ -1770,12 +1770,15 @@
     this._dom.style.opacity = "0";
     this._dom.style.transition = "opacity .22s ease-out";
     document.body.appendChild(this._dom);
-    this.render();
+    this.redraw();
     TeachInput.activate();
     setTimeout(() => { if (this._dom) this._dom.style.opacity = "1"; }, 16);
   };
 
-  Scene_DailyTeachShop.prototype.render = function () {
+  // Never name this "render": a Scene is a PIXI.Container and the renderer
+  // calls container.render() every frame, which would rebuild the overlay 60
+  // times a second and stop the scene's own children being drawn.
+  Scene_DailyTeachShop.prototype.redraw = function () {
     if (!this._dom) return;
     const it = ConfigManager.language === "it";
     const back = T('DailyShop.ui.back');

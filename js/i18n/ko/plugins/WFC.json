@@ -7,6 +7,6 @@
   "patternMapId": "",
   "fallbackTileId": "",
   "generate": "",
-  "yes": "",
-  "no": ""
+  "yes": "예",
+  "no": "아니오"
 }

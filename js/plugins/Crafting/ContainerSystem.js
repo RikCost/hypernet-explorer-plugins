@@ -586,6 +586,7 @@
         static initialize() {
             this._containers = {};
             this._extradimensionalContainer = {};
+            this._stocked = {};
             this.load();
         }
 
@@ -605,7 +606,12 @@
 
         // cat1 = common slot (weight ×1.0), cat2 = rare slot (×0.2), cat3 = very rare slot (×0.04)
         static generateContainerItems(containerId, cat1, cat2, cat3, maxItemCount) {
-            if (!this.isContainerEmpty(containerId)) return;
+            // A container is stocked exactly once. Emptiness alone cannot decide
+            // this: a container the player has looted is empty again, and since
+            // generation is seeded off the container id it would be refilled
+            // with the very same items on every later call, forever.
+            if (this.isStocked(containerId)) return;
+            if (!this.isContainerEmpty(containerId)) { this.markStocked(containerId); return; }
             // maxItemCount === 0 is the documented "permanently empty" setting.
             // For any configured container (max >= 1) roll 1..max instead of
             // 0..max, so a valid category never deterministically produces an
@@ -630,6 +636,17 @@
             if (pool.length === 0) return;
             const selected = ItemUtils.selectItemsByRarity(pool, actualCount);
             for (const s of selected) container[ItemUtils.encodeKey(s.item)] = s.quantity;
+            this._stocked[containerId] = true;
+            this.save();
+        }
+
+        static isStocked(containerId) {
+            return !!this._stocked[containerId];
+        }
+
+        static markStocked(containerId) {
+            if (this._stocked[containerId]) return;
+            this._stocked[containerId] = true;
             this.save();
         }
 
@@ -704,7 +721,8 @@
         static save() {
             $gameSystem._containerData = {
                 containers:        this._containers,
-                extradimensional:  this._extradimensionalContainer
+                extradimensional:  this._extradimensionalContainer,
+                stocked:           this._stocked
             };
         }
 
@@ -712,6 +730,11 @@
             if ($gameSystem._containerData) {
                 this._containers                = $gameSystem._containerData.containers || {};
                 this._extradimensionalContainer = $gameSystem._containerData.extradimensional || {};
+                // Saves made before containers were stocked-once carry no ledger:
+                // treat everything they already hold as stocked, so old chests
+                // keep their contents instead of rolling a fresh set.
+                this._stocked = $gameSystem._containerData.stocked ||
+                    Object.keys(this._containers).reduce((acc, id) => { acc[id] = true; return acc; }, {});
             }
         }
     }

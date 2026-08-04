@@ -4,10 +4,10 @@
   "traits": "",
   "noTraits": "",
   "states": "",
-  "none": "",
+  "none": "Aucun",
   "more": "",
   "total": "",
-  "next": "",
+  "next": "Suivant",
   "defaultDescriptions": {
     "warrior": "",
     "mage": "",
@@ -16,7 +16,7 @@
     "archer": "",
     "default": ""
   },
-  "back": "",
+  "back": "Retour",
   "descriptionSet": "",
   "invalidIndex": "",
   "actorLine": "",

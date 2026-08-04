@@ -11,7 +11,7 @@
   "gamepadReset": "",
   "commandNames": {
     "ok": "",
-    "cancel": "",
+    "cancel": "Annuler",
     "shift": "",
     "menu": "",
     "pageup": "",
@@ -23,7 +23,7 @@
     "zoomIn": "",
     "zoomOut": "",
     "kick": "",
-    "run": ""
+    "run": "Courir"
   },
   "unassigned": ""
 }

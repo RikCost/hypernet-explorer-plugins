@@ -1,1268 +1,1268 @@
 {
   "furniture": {
     "wooden_chair": {
-      "name": "",
-      "description": ""
+      "name": "Chaise en Bois",
+      "description": "Une simple chaise en bois à coussin de tissu."
     },
     "category": {
-      "seating": "",
-      "tables": "",
-      "storage": "",
-      "beds": "",
-      "lighting": "",
-      "workstations": "",
-      "decoration": "",
-      "appliances": "",
-      "entertainment": "",
-      "nature": "",
-      "structures": "",
-      "dungeon": "",
-      "farm": "",
-      "industrial": "",
-      "camping": "",
-      "beach": "",
-      "supermarket": "",
-      "gym": ""
+      "seating": "sièges",
+      "tables": "tables",
+      "storage": "rangements",
+      "beds": "lits",
+      "lighting": "éclairage",
+      "workstations": "postes de travail",
+      "decoration": "décoration",
+      "appliances": "électroménager",
+      "entertainment": "divertissement",
+      "nature": "nature",
+      "structures": "structures",
+      "dungeon": "souterrains",
+      "farm": "ferme",
+      "industrial": "industriel",
+      "camping": "camping",
+      "beach": "plage",
+      "supermarket": "supermarché",
+      "gym": "gymnase"
     },
     "leather_armchair": {
-      "name": "",
-      "description": ""
+      "name": "Fauteuil en Cuir",
+      "description": "Un confortable fauteuil en cuir."
     },
     "tech_chair": {
-      "name": "",
-      "description": ""
+      "name": "Chaise Technique",
+      "description": "Une chaise ergonomique de haute technique, à réglage automatique."
     },
     "crystal_throne": {
-      "name": "",
-      "description": ""
+      "name": "Trône de Cristal",
+      "description": "Un trône majestueux fait de cristaux magiques."
     },
     "wooden_bench": {
-      "name": "",
-      "description": ""
+      "name": "Banc en Bois",
+      "description": "Un simple banc en bois pour deux."
     },
     "wooden_table": {
-      "name": "",
-      "description": ""
+      "name": "Table en Bois",
+      "description": "Une solide table en bois."
     },
     "glass_table": {
-      "name": "",
-      "description": ""
+      "name": "Table en Verre",
+      "description": "Une table de verre moderne à structure d'acier."
     },
     "tech_desk": {
-      "name": "",
-      "description": ""
+      "name": "Bureau Technique",
+      "description": "Un bureau de haute technique à écrans intégrés."
     },
     "alchemy_table": {
-      "name": "",
-      "description": ""
+      "name": "Table d'Alchimie",
+      "description": "Une table équipée pour les expériences alchimiques."
     },
     "dining_table": {
-      "name": "",
-      "description": ""
+      "name": "Table à Manger",
+      "description": "Une grande table à manger pour les repas de famille."
     },
     "wooden_chest": {
-      "name": "",
-      "description": ""
+      "name": "Coffre en Bois",
+      "description": "Un coffre en bois pour ranger des objets."
     },
     "metal_locker": {
-      "name": "",
-      "description": ""
+      "name": "Casier Métallique",
+      "description": "Un casier de rangement métallique sécurisé."
     },
     "quantum_storage": {
-      "name": "",
-      "description": ""
+      "name": "Unité de Stockage Quantique",
+      "description": "Elle use de la technique quantique pour un stockage colossal."
     },
     "bookshelf": {
-      "name": "",
-      "description": ""
+      "name": "Bibliothèque",
+      "description": "Une haute bibliothèque pour ranger livres et objets."
     },
     "crystal_display": {
-      "name": "",
-      "description": ""
+      "name": "Vitrine de Cristal",
+      "description": "Une vitrine qui préserve les objets magiques."
     },
     "simple_bed": {
-      "name": "",
-      "description": ""
+      "name": "Lit Simple",
+      "description": "Un lit sommaire pour se reposer."
     },
     "luxury_bed": {
-      "name": "",
-      "description": ""
+      "name": "Lit de Luxe",
+      "description": "Un luxueux lit très grand format."
     },
     "tech_pod": {
-      "name": "",
-      "description": ""
+      "name": "Capsule de Sommeil",
+      "description": "Capsule de sommeil de haute technique, avec suivi de la santé."
     },
     "wooden_torch": {
-      "name": "",
-      "description": ""
+      "name": "Porte-Torche en Bois",
+      "description": "Un simple porte-torche pour un éclairage sommaire."
     },
     "crystal_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Lampe de Cristal",
+      "description": "Une lampe magique alimentée par des cristaux."
     },
     "neon_light": {
-      "name": "",
-      "description": ""
+      "name": "Panneau Lumineux Néon",
+      "description": "Panneau d'éclairage néon moderne."
     },
     "chandelier": {
-      "name": "",
-      "description": ""
+      "name": "Lustre de Cristal",
+      "description": "Un élégant lustre de cristal."
     },
     "crafting_bench": {
-      "name": "",
-      "description": ""
+      "name": "Établi d'Artisanat",
+      "description": "Établi sommaire pour fabriquer du mobilier."
     },
     "tech_workstation": {
-      "name": "",
-      "description": ""
+      "name": "Poste de Travail Technique",
+      "description": "Poste de travail avancé pour l'artisanat technique."
     },
     "arcane_altar": {
-      "name": "",
-      "description": ""
+      "name": "Autel Arcanique",
+      "description": "Autel pour enchanter le mobilier."
     },
     "chemistry_station": {
-      "name": "",
-      "description": ""
+      "name": "Poste de Chimie",
+      "description": "Poste de traitement chimique."
     },
     "plant_pot": {
-      "name": "",
-      "description": ""
+      "name": "Pot de Fleurs",
+      "description": "Une plante décorative en pot."
     },
     "holographic_display": {
-      "name": "",
-      "description": ""
+      "name": "Affichage Holographique",
+      "description": "Il projette des images holographiques."
     },
     "statue": {
-      "name": "",
-      "description": ""
+      "name": "Statue de Pierre",
+      "description": "Une statue de pierre d'allure artistique."
     },
     "aquarium": {
-      "name": "",
-      "description": ""
+      "name": "Aquarium",
+      "description": "Un aquarium décoratif."
     },
     "mirror": {
-      "name": "",
-      "description": ""
+      "name": "Miroir Mural",
+      "description": "Un grand miroir fixé au mur."
     },
     "rug": {
-      "name": "",
-      "description": ""
+      "name": "Tapis Décoratif",
+      "description": "Un tapis décoratif confortable."
     },
     "refrigerator": {
-      "name": "",
-      "description": ""
+      "name": "Réfrigérateur",
+      "description": "Il garde les aliments frais et bien conservés."
     },
     "cooking_stove": {
-      "name": "",
-      "description": ""
+      "name": "Cuisinière",
+      "description": "Indispensable pour préparer les repas."
     },
     "recycler": {
-      "name": "",
-      "description": ""
+      "name": "Recycleur de Matériaux",
+      "description": "Il décompose les objets en matériaux de base."
     },
     "teleporter": {
-      "name": "",
-      "description": ""
+      "name": "Téléporteur Quantique",
+      "description": "Transport instantané entre téléporteurs reliés."
     },
     "television": {
-      "name": "",
-      "description": ""
+      "name": "Téléviseur à Écran Plat",
+      "description": "Téléviseur haute définition pour se divertir."
     },
     "arcade_machine": {
-      "name": "",
-      "description": ""
+      "name": "Borne d'Arcade",
+      "description": "Des jeux d'arcade classiques pour s'amuser sans fin."
     },
     "pool_table": {
-      "name": "",
-      "description": ""
+      "name": "Table de Billard",
+      "description": "Une table de billard haut de gamme pour se détendre."
     },
     "ping_pong_table": {
-      "name": "",
-      "description": ""
+      "name": "Table de Ping-Pong",
+      "description": "Une table de ping-pong de compétition."
     },
     "dartboard": {
-      "name": "",
-      "description": ""
+      "name": "Cible de Fléchettes",
+      "description": "Un jeu de fléchettes classique."
     },
     "jukebox": {
-      "name": "",
-      "description": ""
+      "name": "Juke-box",
+      "description": "Écoutez votre musique préférée à toute heure."
     },
     "billiards_balls_set": {
-      "name": "",
-      "description": ""
+      "name": "Jeu de Boules de Billard",
+      "description": "Jeu de boules pour les parties de billard."
     },
     "gaming_console": {
-      "name": "",
-      "description": ""
+      "name": "Console de Jeu",
+      "description": "La dernière console de jeu pour se divertir."
     },
     "virtual_reality_headset": {
-      "name": "",
-      "description": ""
+      "name": "Station de Casque VR",
+      "description": "Une expérience de réalité virtuelle immersive."
     },
     "foosball_table": {
-      "name": "",
-      "description": ""
+      "name": "Baby-foot",
+      "description": "Football de table pour des parties rapides."
     },
     "blackjack_table": {
-      "name": "",
-      "description": ""
+      "name": "Table de Blackjack",
+      "description": "Table de blackjack professionnelle."
     },
     "roulette_table": {
-      "name": "",
-      "description": ""
+      "name": "Table de Roulette",
+      "description": "Luxueuse table de roulette."
     },
     "slot_machine": {
-      "name": "",
-      "description": ""
+      "name": "Machine à Sous",
+      "description": "Machine à sous classique pour se divertir au jeu."
     },
     "karaoke_machine": {
-      "name": "",
-      "description": ""
+      "name": "Système de Karaoké",
+      "description": "Chantez vos morceaux préférés avec une qualité professionnelle."
     },
     "movie_projector": {
-      "name": "",
-      "description": ""
+      "name": "Projecteur de Cinéma",
+      "description": "Projetez des films sur n'importe quel mur."
     },
     "dance_floor": {
-      "name": "",
-      "description": ""
+      "name": "Piste de Danse",
+      "description": "Piste de danse façon disco, avec ses lumières."
     },
     "bowling_lane": {
-      "name": "",
-      "description": ""
+      "name": "Ensemble de Piste de Bowling",
+      "description": "Installation complète de piste de bowling."
     },
     "plant": {
-      "name": "",
-      "description": ""
+      "name": "Plante",
+      "description": "Une plante décorative en pot."
     },
     "flowers": {
-      "name": "",
-      "description": ""
+      "name": "Parterre de Fleurs",
+      "description": "Un parterre de fleurs colorées."
     },
     "tree": {
-      "name": "",
-      "description": ""
+      "name": "Arbre",
+      "description": "Un grand arbre décoratif."
     },
     "rock": {
-      "name": "",
-      "description": ""
+      "name": "Rocher",
+      "description": "Un grand rocher décoratif."
     },
     "pile_of_bones": {
-      "name": "",
-      "description": ""
+      "name": "Tas d'Os",
+      "description": "Un tas d'os qui donne la chair de poule."
     },
     "fence": {
-      "name": "",
-      "description": ""
+      "name": "Clôture",
+      "description": "Une section de clôture en bois."
     },
     "bridge": {
-      "name": "",
-      "description": ""
+      "name": "Pont",
+      "description": "Une passerelle en bois."
     },
     "stairs": {
-      "name": "",
-      "description": ""
+      "name": "Escalier",
+      "description": "Une volée de marches en bois."
     },
     "ladder": {
-      "name": "",
-      "description": ""
+      "name": "Échelle",
+      "description": "Une échelle en bois pour grimper."
     },
     "rails": {
-      "name": "",
-      "description": ""
+      "name": "Garde-corps",
+      "description": "Garde-corps métalliques de sécurité."
     },
     "window_1x1": {
-      "name": "",
-      "description": ""
+      "name": "Fenêtre (1x1)",
+      "description": "Une petite fenêtre."
     },
     "window_2x1": {
-      "name": "",
-      "description": ""
+      "name": "Fenêtre (2x1)",
+      "description": "Une fenêtre moyenne."
     },
     "window_2x2": {
-      "name": "",
-      "description": ""
+      "name": "Fenêtre (2x2)",
+      "description": "Une grande fenêtre."
     },
     "sign": {
-      "name": "",
-      "description": ""
+      "name": "Panneau",
+      "description": "Un panneau directionnel en bois."
     },
     "vase": {
-      "name": "",
-      "description": ""
+      "name": "Vase",
+      "description": "Un vase décoratif."
     },
     "clock": {
-      "name": "",
-      "description": ""
+      "name": "Horloge Murale",
+      "description": "Une horloge murale mécanique."
     },
     "grandfather_clock": {
-      "name": "",
-      "description": ""
+      "name": "Horloge Comtoise",
+      "description": "Une élégante horloge comtoise."
     },
     "world_globe": {
-      "name": "",
-      "description": ""
+      "name": "Globe Terrestre",
+      "description": "Un globe terrestre tournant."
     },
     "world_map": {
-      "name": "",
-      "description": ""
+      "name": "Carte du Monde",
+      "description": "Une carte du monde encadrée."
     },
     "prayer_rug": {
-      "name": "",
-      "description": ""
+      "name": "Tapis de Prière",
+      "description": "Un tapis de prière décoratif."
     },
     "trash_pile": {
-      "name": "",
-      "description": ""
+      "name": "Tas d'Ordures",
+      "description": "Un tas de détritus jetés."
     },
     "barrel": {
-      "name": "",
-      "description": ""
+      "name": "Tonneau de Donjon",
+      "description": "Un tonneau pour entreposer des provisions."
     },
     "pile_of_books": {
-      "name": "",
-      "description": ""
+      "name": "Pile de Livres",
+      "description": "Une pile de vieux livres."
     },
     "candle": {
-      "name": "",
-      "description": ""
+      "name": "Bougie",
+      "description": "Une bougie décorative allumée."
     },
     "pentagram": {
-      "name": "",
-      "description": ""
+      "name": "Pentagramme au Sol",
+      "description": "Un pentagramme mystique tracé sur le sol."
     },
     "stage_lights": {
-      "name": "",
-      "description": ""
+      "name": "Éclairage de Scène",
+      "description": "Portique d'éclairage de scène professionnel."
     },
     "pipe": {
-      "name": "",
-      "description": ""
+      "name": "Tuyau",
+      "description": "Un tuyau métallique industriel."
     },
     "motor_engine": {
-      "name": "",
-      "description": ""
+      "name": "Gros Moteur",
+      "description": "Un gros moteur industriel."
     },
     "piano": {
-      "name": "",
-      "description": ""
+      "name": "Piano",
+      "description": "Un piano à queue pour jouer."
     },
     "guitar": {
-      "name": "",
-      "description": ""
+      "name": "Guitare Acoustique",
+      "description": "Une guitare acoustique pour jouer."
     },
     "electric_guitar": {
-      "name": "",
-      "description": ""
+      "name": "Guitare Électrique",
+      "description": "Une guitare électrique moderne."
     },
     "harp": {
-      "name": "",
-      "description": ""
+      "name": "Harpe",
+      "description": "Une belle harpe dorée."
     },
     "crib": {
-      "name": "",
-      "description": ""
+      "name": "Berceau",
+      "description": "Un berceau confortable."
     },
     "radio": {
-      "name": "",
-      "description": ""
+      "name": "Radio",
+      "description": "Un vieux poste de radio pour la musique et les nouvelles."
     },
     "wc": {
-      "name": "",
-      "description": ""
+      "name": "Toilettes",
+      "description": "Des toilettes en état de marche."
     },
     "shower": {
-      "name": "",
-      "description": ""
+      "name": "Douche",
+      "description": "Une cabine de douche."
     },
     "pc": {
-      "name": "",
-      "description": ""
+      "name": "Ordinateur",
+      "description": "Un ordinateur de bureau haute performance."
     },
     "christmas_tree": {
-      "name": "",
-      "description": ""
+      "name": "Sapin de Noël",
+      "description": "Un sapin de Noël décoré et festif."
     },
     "warrior_statue": {
-      "name": "",
-      "description": ""
+      "name": "Statue de Moine Guerrier",
+      "description": "La statue d'un puissant moine guerrier."
     },
     "baseball_bat": {
-      "name": "",
-      "description": ""
+      "name": "Batte de Baseball",
+      "description": "Une batte de baseball en bois."
     },
     "crt_monitor": {
-      "name": "",
-      "description": ""
+      "name": "Moniteur CRT",
+      "description": "Un moniteur d'ordinateur CRT encombrant (époque 2001)."
     },
     "desktop_computer_2001": {
-      "name": "",
-      "description": ""
+      "name": "PC de Bureau (2001)",
+      "description": "Un gros ordinateur de bureau de 2001."
     },
     "keyboard_mouse": {
-      "name": "",
-      "description": ""
+      "name": "Clavier et Souris",
+      "description": "Ensemble clavier et souris d'ordinateur."
     },
     "dial_up_modem": {
-      "name": "",
-      "description": ""
+      "name": "Modem RTC",
+      "description": "Modem internet par ligne commutée (grincements et sifflements compris)."
     },
     "landline_phone": {
-      "name": "",
-      "description": ""
+      "name": "Téléphone Fixe",
+      "description": "Un téléphone fixe à fil."
     },
     "printer_inkjet": {
-      "name": "",
-      "description": ""
+      "name": "Imprimante à Jet d'Encre",
+      "description": "Une imprimante à jet d'encre (bruyante et lente)."
     },
     "fax_machine": {
-      "name": "",
-      "description": ""
+      "name": "Télécopieur",
+      "description": "Un télécopieur autonome."
     },
     "vcr_player": {
-      "name": "",
-      "description": ""
+      "name": "Magnétoscope",
+      "description": "Magnétoscope pour lire les cassettes VHS."
     },
     "dvd_player": {
-      "name": "",
-      "description": ""
+      "name": "Lecteur DVD",
+      "description": "Lecteur DVD neuf (le nec plus ultra en 2001)."
     },
     "cable_box": {
-      "name": "",
-      "description": ""
+      "name": "Décodeur Câble",
+      "description": "Décodeur de télévision par câble, avec télécommande."
     },
     "game_console_ps1": {
-      "name": "",
-      "description": ""
+      "name": "Battlestation 1",
+      "description": "Console Sony PlayStation (époque 2001)."
     },
     "game_console_n64": {
-      "name": "",
-      "description": ""
+      "name": "Tintendon 666",
+      "description": "Console de jeu Nintendo 64."
     },
     "dreamcast_console": {
-      "name": "",
-      "description": ""
+      "name": "Console Mastercast",
+      "description": "Console de jeu Sega Dreamcast."
     },
     "crt_television": {
-      "name": "",
-      "description": ""
+      "name": "Téléviseur CRT",
+      "description": "Grand téléviseur à tube cathodique."
     },
     "stereo_boombox": {
-      "name": "",
-      "description": ""
+      "name": "Radiocassette Stéréo",
+      "description": "Radiocassette stéréo avec lecteur de cassettes et de CD."
     },
     "zip_drive": {
-      "name": "",
-      "description": ""
+      "name": "Lecteur Zip",
+      "description": "Lecteur Iomega Zip (100 Mo de stockage)."
     },
     "beanbag_chair": {
-      "name": "",
-      "description": ""
+      "name": "Pouf Poire",
+      "description": "Un pouf poire confortable (style 2001)."
     },
     "futon": {
-      "name": "",
-      "description": ""
+      "name": "Futon",
+      "description": "Un futon qui fait canapé et lit."
     },
     "metal_shelving": {
-      "name": "",
-      "description": ""
+      "name": "Étagère Métallique",
+      "description": "Étagère métallique industrielle."
     },
     "loft_bed": {
-      "name": "",
-      "description": ""
+      "name": "Lit Mezzanine",
+      "description": "Un lit mezzanine pour les petits espaces."
     },
     "bunk_bed": {
-      "name": "",
-      "description": ""
+      "name": "Lits Superposés",
+      "description": "Des lits superposés pour deux dormeurs."
     },
     "water_cooler": {
-      "name": "",
-      "description": ""
+      "name": "Fontaine à Eau",
+      "description": "Fontaine à eau de bureau, pour les ragots et l'hydratation."
     },
     "desk_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Lampe de Bureau",
+      "description": "Une simple lampe de bureau."
     },
     "floor_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Lampadaire",
+      "description": "Un grand lampadaire."
     },
     "lava_lamp": {
-      "name": "",
-      "description": ""
+      "name": "Lampe à Lave",
+      "description": "Une lampe à lave sympa (indispensable en 2001)."
     },
     "movie_poster": {
-      "name": "",
-      "description": ""
+      "name": "Affiche de Film",
+      "description": "Une affiche de film de 2001."
     },
     "band_poster": {
-      "name": "",
-      "description": ""
+      "name": "Affiche de Groupe",
+      "description": "Une affiche de groupe au mur."
     },
     "sports_poster": {
-      "name": "",
-      "description": ""
+      "name": "Affiche de Sport",
+      "description": "Une affiche d'équipe sportive."
     },
     "neon_sign": {
-      "name": "",
-      "description": ""
+      "name": "Enseigne au Néon",
+      "description": "Une enseigne au néon pour l'ambiance."
     },
     "string_lights": {
-      "name": "",
-      "description": ""
+      "name": "Guirlande Lumineuse",
+      "description": "Guirlande lumineuse décorative."
     },
     "tapestry": {
-      "name": "",
-      "description": ""
+      "name": "Tapisserie",
+      "description": "Une tapisserie décorative au mur."
     },
     "picture_frame": {
-      "name": "",
-      "description": ""
+      "name": "Cadre Photo",
+      "description": "Une photo encadrée au mur."
     },
     "cubicle_divider": {
-      "name": "",
-      "description": ""
+      "name": "Cloison de Bureau",
+      "description": "Cloison de box de bureau."
     },
     "filing_cabinet": {
-      "name": "",
-      "description": ""
+      "name": "Classeur à Tiroirs",
+      "description": "Classeur métallique pour les documents."
     },
     "office_desk": {
-      "name": "",
-      "description": ""
+      "name": "Bureau",
+      "description": "Un bureau ordinaire."
     },
     "office_chair": {
-      "name": "",
-      "description": ""
+      "name": "Chaise de Bureau",
+      "description": "Une chaise de bureau à roulettes."
     },
     "bulletin_board": {
-      "name": "",
-      "description": ""
+      "name": "Panneau d'Affichage",
+      "description": "Panneau en liège pour les notes et les mémos."
     },
     "whiteboard": {
-      "name": "",
-      "description": ""
+      "name": "Tableau Blanc",
+      "description": "Tableau blanc pour esquisser et planifier."
     },
     "bathtub": {
-      "name": "",
-      "description": ""
+      "name": "Baignoire",
+      "description": "Une baignoire relaxante."
     },
     "sink": {
-      "name": "",
-      "description": ""
+      "name": "Évier",
+      "description": "Un évier de salle de bain ou de cuisine."
     },
     "cabinet": {
-      "name": "",
-      "description": ""
+      "name": "Placard",
+      "description": "Placard de cuisine ou de salle de bain."
     },
     "counter": {
-      "name": "",
-      "description": ""
+      "name": "Plan de Travail",
+      "description": "Plan de travail de cuisine."
     },
     "microwave": {
-      "name": "",
-      "description": ""
+      "name": "Micro-ondes",
+      "description": "Four à micro-ondes."
     },
     "dishwasher": {
-      "name": "",
-      "description": ""
+      "name": "Lave-vaisselle",
+      "description": "Lave-vaisselle automatique."
     },
     "washing_machine": {
-      "name": "",
-      "description": ""
+      "name": "Machine à Laver",
+      "description": "Machine à laver le linge."
     },
     "dryer": {
-      "name": "",
-      "description": ""
+      "name": "Sèche-linge",
+      "description": "Sèche-linge électrique."
     },
     "vhs_collection": {
-      "name": "",
-      "description": ""
+      "name": "Collection de VHS",
+      "description": "Une pile de cassettes VHS."
     },
     "dvd_collection": {
-      "name": "",
-      "description": ""
+      "name": "Collection de DVD",
+      "description": "Une pile de boîtiers de DVD."
     },
     "cd_collection": {
-      "name": "",
-      "description": ""
+      "name": "Collection de CD",
+      "description": "Une collection de CD dans leurs boîtiers."
     },
     "comic_book_stack": {
-      "name": "",
-      "description": ""
+      "name": "Pile de Bandes Dessinées",
+      "description": "Une pile de bandes dessinées."
     },
     "magazine_rack": {
-      "name": "",
-      "description": ""
+      "name": "Porte-Revues",
+      "description": "Présentoir à revues et à journaux."
     },
     "incense_burner": {
-      "name": "",
-      "description": ""
+      "name": "Brûle-Encens",
+      "description": "Brûle-encens pour l'aromathérapie."
     },
     "terrarium": {
-      "name": "",
-      "description": ""
+      "name": "Terrarium",
+      "description": "Un terrarium avec de petites plantes."
     },
     "pinball_machine": {
-      "name": "",
-      "description": ""
+      "name": "Flipper",
+      "description": "Flipper classique."
     },
     "floor_cushion": {
-      "name": "",
-      "description": ""
+      "name": "Coussin de Sol",
+      "description": "Un coussin de sol confortable."
     },
     "floor_pillow_stack": {
-      "name": "",
-      "description": ""
+      "name": "Pile de Coussins",
+      "description": "Une pile de coussins de sol."
     },
     "glass_shelves": {
-      "name": "",
-      "description": ""
+      "name": "Étagères en Verre",
+      "description": "Présentoir moderne à étagères de verre."
     },
     "low_table": {
-      "name": "",
-      "description": ""
+      "name": "Table Basse",
+      "description": "Table basse minimaliste."
     },
     "stereo_speaker": {
-      "name": "",
-      "description": ""
+      "name": "Enceinte Stéréo",
+      "description": "Enceinte stéréo de haute qualité."
     },
     "barn": {
-      "name": "",
-      "description": ""
+      "name": "Grange",
+      "description": "Une grande grange pour le stockage et le logement des bêtes."
     },
     "windmill": {
-      "name": "",
-      "description": ""
+      "name": "Moulin à Vent",
+      "description": "Un moulin à vent en état de marche pour moudre le grain."
     },
     "silo": {
-      "name": "",
-      "description": ""
+      "name": "Silo",
+      "description": "Un haut silo de stockage pour le grain et les récoltes."
     },
     "chicken_coop": {
-      "name": "",
-      "description": ""
+      "name": "Poulailler",
+      "description": "Un poulailler pour élever des poules et ramasser les œufs."
     },
     "pig_pen": {
-      "name": "",
-      "description": ""
+      "name": "Porcherie",
+      "description": "Un enclos pour élever des cochons."
     },
     "stable": {
-      "name": "",
-      "description": ""
+      "name": "Écurie",
+      "description": "Une écurie pour garder chevaux et autre bétail."
     },
     "beehive": {
-      "name": "",
-      "description": ""
+      "name": "Ruche",
+      "description": "Une ruche pour produire du miel."
     },
     "vegetable_garden": {
-      "name": "",
-      "description": ""
+      "name": "Potager",
+      "description": "Un jardin entretenu pour cultiver des légumes."
     },
     "hay_bales": {
-      "name": "",
-      "description": ""
+      "name": "Bottes de Foin",
+      "description": "Des bottes de foin liées pour stocker le fourrage."
     },
     "water_trough": {
-      "name": "",
-      "description": ""
+      "name": "Abreuvoir",
+      "description": "Un abreuvoir pour le bétail."
     },
     "scarecrow": {
-      "name": "",
-      "description": ""
+      "name": "Épouvantail",
+      "description": "Un épouvantail pour protéger les cultures des oiseaux."
     },
     "farm_fence": {
-      "name": "",
-      "description": ""
+      "name": "Clôture de Ferme",
+      "description": "Une simple clôture en bois pour délimiter la ferme."
     },
     "crop_field": {
-      "name": "",
-      "description": ""
+      "name": "Champ Cultivé",
+      "description": "Un champ planté de cultures."
     },
     "fruit_tree": {
-      "name": "",
-      "description": ""
+      "name": "Arbre Fruitier",
+      "description": "Un arbre fruitier pour la ferme."
     },
     "garden_shed": {
-      "name": "",
-      "description": ""
+      "name": "Cabanon de Jardin",
+      "description": "Un petit cabanon pour ranger les outils de la ferme."
     },
     "milking_station": {
-      "name": "",
-      "description": ""
+      "name": "Poste de Traite",
+      "description": "Un poste équipé pour la traite des laitières."
     },
     "feed_trough": {
-      "name": "",
-      "description": ""
+      "name": "Mangeoire",
+      "description": "Une mangeoire pour stocker et distribuer le fourrage."
     },
     "irrigation_system": {
-      "name": "",
-      "description": ""
+      "name": "Système d'Irrigation",
+      "description": "Un système automatisé d'irrigation."
     },
     "factory_furnace": {
-      "name": "",
-      "description": ""
+      "name": "Four Industriel",
+      "description": "Un four à haute température pour la fonte des métaux."
     },
     "assembly_line": {
-      "name": "",
-      "description": ""
+      "name": "Chaîne de Montage",
+      "description": "Une chaîne de montage automatisée pour la fabrication."
     },
     "conveyor_belt": {
-      "name": "",
-      "description": ""
+      "name": "Convoyeur à Bande",
+      "description": "Une bande motorisée pour transporter les matériaux."
     },
     "industrial_crane": {
-      "name": "",
-      "description": ""
+      "name": "Grue Industrielle",
+      "description": "Une grue robuste pour lever les charges."
     },
     "hydraulic_press": {
-      "name": "",
-      "description": ""
+      "name": "Presse Hydraulique",
+      "description": "Une presse hydraulique à haute pression pour former le métal."
     },
     "storage_tank": {
-      "name": "",
-      "description": ""
+      "name": "Réservoir de Stockage",
+      "description": "Un grand réservoir pour stocker liquides et matériaux."
     },
     "refinery_tower": {
-      "name": "",
-      "description": ""
+      "name": "Tour de Raffinage",
+      "description": "Une tour de distillation pour raffiner les matériaux."
     },
     "heavy_machinery": {
-      "name": "",
-      "description": ""
+      "name": "Machinerie Lourde",
+      "description": "Machinerie lourde et complexe pour la transformation industrielle."
     },
     "electric_generator": {
-      "name": "",
-      "description": ""
+      "name": "Générateur Électrique",
+      "description": "Un générateur pour produire de l'électricité."
     },
     "air_compressor": {
-      "name": "",
-      "description": ""
+      "name": "Compresseur d'Air",
+      "description": "Il comprime l'air pour les systèmes pneumatiques."
     },
     "control_panel": {
-      "name": "",
-      "description": ""
+      "name": "Panneau de Commande",
+      "description": "Un panneau de commande pour gérer les systèmes de machines."
     },
     "safety_barrier": {
-      "name": "",
-      "description": ""
+      "name": "Barrière de Sécurité",
+      "description": "Une barrière de protection pour les zones dangereuses."
     },
     "chemical_vat": {
-      "name": "",
-      "description": ""
+      "name": "Cuve Chimique",
+      "description": "Une cuve de traitement chimique pour les réactions."
     },
     "robotic_arm": {
-      "name": "",
-      "description": ""
+      "name": "Bras Robotisé",
+      "description": "Un bras robotisé automatisé pour les tâches de précision."
     },
     "welding_station": {
-      "name": "",
-      "description": ""
+      "name": "Poste de Soudure",
+      "description": "Matériel pour souder les structures métalliques."
     },
     "laser_cutter": {
-      "name": "",
-      "description": ""
+      "name": "Découpeuse Laser",
+      "description": "Une découpeuse laser de précision pour le travail fin."
     },
     "3d_printer": {
-      "name": "",
-      "description": ""
+      "name": "Imprimante 3D",
+      "description": "Une imprimante 3D pour fabriquer des objets."
     },
     "industrial_oven": {
-      "name": "",
-      "description": ""
+      "name": "Four Industriel de Traitement",
+      "description": "Un grand four industriel pour le traitement thermique."
     },
     "sorting_machine": {
-      "name": "",
-      "description": ""
+      "name": "Machine de Tri",
+      "description": "Elle trie et classe automatiquement les matériaux."
     },
     "vacuum_chamber": {
-      "name": "",
-      "description": ""
+      "name": "Chambre à Vide",
+      "description": "Une chambre pour le traitement sous vide."
     },
     "packaging_unit": {
-      "name": "",
-      "description": ""
+      "name": "Unité de Conditionnement",
+      "description": "Matériel automatisé pour conditionner les produits."
     },
     "quality_scanner": {
-      "name": "",
-      "description": ""
+      "name": "Scanner de Qualité",
+      "description": "Il inspecte les produits pour le contrôle qualité."
     },
     "industrial_duct": {
-      "name": "",
-      "description": ""
+      "name": "Gaine Industrielle",
+      "description": "Gaines pour la circulation de l'air et des matériaux."
     },
     "power_distribution": {
-      "name": "",
-      "description": ""
+      "name": "Coffret de Distribution",
+      "description": "Il distribue l'électricité aux équipements."
     },
     "tent": {
-      "name": "",
-      "description": ""
+      "name": "Tente",
+      "description": "Une tente portative pour camper la nuit."
     },
     "campfire": {
-      "name": "",
-      "description": ""
+      "name": "Feu de Camp",
+      "description": "Un feu de camp douillet pour se réchauffer et cuisiner."
     },
     "sleeping_bag": {
-      "name": "",
-      "description": ""
+      "name": "Sac de Couchage",
+      "description": "Un sac de couchage confortable pour se reposer."
     },
     "camping_lantern": {
-      "name": "",
-      "description": ""
+      "name": "Lanterne de Camping",
+      "description": "Une lanterne pour éclairer dehors."
     },
     "camping_stove": {
-      "name": "",
-      "description": ""
+      "name": "Réchaud de Camping",
+      "description": "Un réchaud de camping portatif pour cuisiner."
     },
     "camping_chair": {
-      "name": "",
-      "description": ""
+      "name": "Chaise de Camping",
+      "description": "Une chaise de camping légère."
     },
     "cooler": {
-      "name": "",
-      "description": ""
+      "name": "Glacière",
+      "description": "Une glacière isolante pour conserver les aliments."
     },
     "picnic_table": {
-      "name": "",
-      "description": ""
+      "name": "Table de Pique-Nique",
+      "description": "Une table solide pour manger dehors."
     },
     "camping_backpack": {
-      "name": "",
-      "description": ""
+      "name": "Sac à Dos de Camping",
+      "description": "Un grand sac à dos pour porter le matériel."
     },
     "water_container": {
-      "name": "",
-      "description": ""
+      "name": "Bidon d'Eau",
+      "description": "Un bidon pour transporter de l'eau."
     },
     "bedroll": {
-      "name": "",
-      "description": ""
+      "name": "Couchage Roulé",
+      "description": "Un couchage roulé pour le camping."
     },
     "hammock": {
-      "name": "",
-      "description": ""
+      "name": "Hamac de Plage",
+      "description": "Un hamac tendu entre deux poteaux."
     },
     "tent_cabin": {
-      "name": "",
-      "description": ""
+      "name": "Tente-Cabane",
+      "description": "Une grande tente à structure de cabane."
     },
     "camping_rope": {
-      "name": "",
-      "description": ""
+      "name": "Corde de Camping",
+      "description": "Corde pour arrimer tentes et matériel."
     },
     "campsite_marker": {
-      "name": "",
-      "description": ""
+      "name": "Fanion de Campement",
+      "description": "Un fanion qui marque le campement."
     },
     "food_storage": {
-      "name": "",
-      "description": ""
+      "name": "Boîte à Provisions",
+      "description": "Une boîte sûre pour ranger les vivres."
     },
     "camping_tent_dome": {
-      "name": "",
-      "description": ""
+      "name": "Tente Dôme",
+      "description": "Une tente en dôme, solide."
     },
     "camping_cot": {
-      "name": "",
-      "description": ""
+      "name": "Lit de Camp",
+      "description": "Un lit de camp surélevé pour dormir hors du sol."
     },
     "camping_grill": {
-      "name": "",
-      "description": ""
+      "name": "Gril de Camping",
+      "description": "Un gril portatif pour cuisiner."
     },
     "camping_lantern_led": {
-      "name": "",
-      "description": ""
+      "name": "Lanterne LED de Camping",
+      "description": "Une lanterne LED moderne sur piles."
     },
     "camping_shelter": {
-      "name": "",
-      "description": ""
+      "name": "Abri Pop-up",
+      "description": "Un abri pop-up à monter en un instant."
     },
     "shopping_cart": {
-      "name": "",
-      "description": ""
+      "name": "Chariot de Supermarché",
+      "description": "Un chariot métallique pour les clients."
     },
     "shopping_basket": {
-      "name": "",
-      "description": ""
+      "name": "Panier de Courses",
+      "description": "Un panier de courses à porter à la main."
     },
     "checkout_counter": {
-      "name": "",
-      "description": ""
+      "name": "Comptoir de Caisse",
+      "description": "Un comptoir pour encaisser les achats des clients."
     },
     "cash_register": {
-      "name": "",
-      "description": ""
+      "name": "Caisse Enregistreuse",
+      "description": "Une caisse pour enregistrer les transactions."
     },
     "display_shelf": {
-      "name": "",
-      "description": ""
+      "name": "Étagère de Présentation",
+      "description": "Une étagère pour présenter les produits."
     },
     "refrigerated_display": {
-      "name": "",
-      "description": ""
+      "name": "Vitrine Réfrigérée",
+      "description": "Une vitrine réfrigérée pour les denrées périssables."
     },
     "freezer_unit": {
-      "name": "",
-      "description": ""
+      "name": "Congélateur",
+      "description": "Un congélateur professionnel pour les surgelés."
     },
     "product_display_stand": {
-      "name": "",
-      "description": ""
+      "name": "Présentoir Promotionnel",
+      "description": "Un présentoir pour les articles en promotion."
     },
     "price_sign": {
-      "name": "",
-      "description": ""
+      "name": "Étiquette de Prix",
+      "description": "Une pancarte qui affiche le prix des produits."
     },
     "shopping_aisle": {
-      "name": "",
-      "description": ""
+      "name": "Allée de Rayonnage",
+      "description": "Un repère d'allée dans le supermarché."
     },
     "automatic_door": {
-      "name": "",
-      "description": ""
+      "name": "Porte Automatique",
+      "description": "Une entrée à porte coulissante automatique."
     },
     "customer_service_desk": {
-      "name": "",
-      "description": ""
+      "name": "Comptoir d'Accueil",
+      "description": "Un comptoir pour les demandes et le service client."
     },
     "mannequin_display": {
-      "name": "",
-      "description": ""
+      "name": "Mannequin de Vitrine",
+      "description": "Un mannequin pour présenter des vêtements."
     },
     "department_sign": {
-      "name": "",
-      "description": ""
+      "name": "Panneau de Rayon",
+      "description": "Un panneau qui signale les différents rayons."
     },
     "stocking_shelf": {
-      "name": "",
-      "description": ""
+      "name": "Rayonnage de Réserve",
+      "description": "Une étagère pour stocker les marchandises."
     },
     "security_gate": {
-      "name": "",
-      "description": ""
+      "name": "Portique Antivol",
+      "description": "Un portique de sécurité à l'entrée du magasin."
     },
     "produce_stand": {
-      "name": "",
-      "description": ""
+      "name": "Étal de Fruits et Légumes",
+      "description": "Un étal pour présenter les produits frais."
     },
     "deli_counter": {
-      "name": "",
-      "description": ""
+      "name": "Comptoir Traiteur",
+      "description": "Un comptoir pour la charcuterie et les plats préparés."
     },
     "bakery_display": {
-      "name": "",
-      "description": ""
+      "name": "Vitrine de Boulangerie",
+      "description": "Une vitrine pour les produits de boulangerie."
     },
     "conveyor_checkout": {
-      "name": "",
-      "description": ""
+      "name": "Tapis de Caisse",
+      "description": "Un tapis roulant motorisé pour la caisse."
     },
     "store_directory": {
-      "name": "",
-      "description": ""
+      "name": "Plan du Magasin",
+      "description": "Un plan qui montre l'agencement du magasin."
     },
     "lighting_fixture": {
-      "name": "",
-      "description": ""
+      "name": "Luminaire de Magasin",
+      "description": "Éclairage de plafond pour le magasin."
     },
     "dungeon_torch": {
-      "name": "",
-      "description": ""
+      "name": "Torche de Donjon",
+      "description": "Une torche pour éclairer les donjons obscurs."
     },
     "stone_pillar": {
-      "name": "",
-      "description": ""
+      "name": "Pilier de Pierre",
+      "description": "Un haut pilier de pierre pour soutenir la structure."
     },
     "iron_bars": {
-      "name": "",
-      "description": ""
+      "name": "Barreaux de Fer",
+      "description": "Des barreaux de fer pour les cellules et les cages."
     },
     "wooden_door": {
-      "name": "",
-      "description": ""
+      "name": "Porte en Bois",
+      "description": "Une porte de donjon en bois renforcé."
     },
     "iron_door": {
-      "name": "",
-      "description": ""
+      "name": "Porte de Fer",
+      "description": "Une lourde porte de donjon en fer."
     },
     "prison_cell": {
-      "name": "",
-      "description": ""
+      "name": "Cellule de Prison",
+      "description": "Une cellule pour enfermer les captifs."
     },
     "torture_rack": {
-      "name": "",
-      "description": ""
+      "name": "Chevalet de Torture",
+      "description": "Un instrument de torture médiéval."
     },
     "iron_chain": {
-      "name": "",
-      "description": ""
+      "name": "Chaîne de Fer",
+      "description": "De lourdes chaînes pour entraver les prisonniers."
     },
     "skull_pile": {
-      "name": "",
-      "description": ""
+      "name": "Tas de Crânes",
+      "description": "Un tas de crânes."
     },
     "bone_altar": {
-      "name": "",
-      "description": ""
+      "name": "Autel d'Os",
+      "description": "Un autel fait d'os pour les rituels sombres."
     },
     "spikes": {
-      "name": "",
-      "description": ""
+      "name": "Piège à Pointes",
+      "description": "Des pointes en guise de piège ou de décor."
     },
     "stone_grate": {
-      "name": "",
-      "description": ""
+      "name": "Grille de Pierre",
+      "description": "Une grille de pierre pour l'évacuation au sol."
     },
     "stone_statue": {
-      "name": "",
-      "description": ""
+      "name": "Statue de Pierre",
+      "description": "Une statue de pierre inquiétante."
     },
     "dark_altar": {
-      "name": "",
-      "description": ""
+      "name": "Autel Sombre",
+      "description": "Un autel sombre pour les rituels arcaniques."
     },
     "treasure_chest": {
-      "name": "",
-      "description": ""
+      "name": "Coffre au Trésor",
+      "description": "Un coffre au trésor pour ranger les objets de valeur."
     },
     "stone_coffin": {
-      "name": "",
-      "description": ""
+      "name": "Sarcophage de Pierre",
+      "description": "Un sarcophage de pierre contenant des restes."
     },
     "dungeon_chest": {
-      "name": "",
-      "description": ""
+      "name": "Coffre de Donjon",
+      "description": "Un coffre verrouillé dans le donjon."
     },
     "stone_wall": {
-      "name": "",
-      "description": ""
+      "name": "Mur de Pierre",
+      "description": "Un solide mur de pierre."
     },
     "hanging_chains": {
-      "name": "",
-      "description": ""
+      "name": "Chaînes Suspendues",
+      "description": "De lourdes chaînes pendues au plafond."
     },
     "sword_rack": {
-      "name": "",
-      "description": ""
+      "name": "Râtelier d'Épées",
+      "description": "Un râtelier pour exposer les armes."
     },
     "shield_wall": {
-      "name": "",
-      "description": ""
+      "name": "Mur de Boucliers",
+      "description": "Un mur où sont exposés des boucliers."
     },
     "dungeon_banner": {
-      "name": "",
-      "description": ""
+      "name": "Bannière de Donjon",
+      "description": "Une sombre bannière pour décorer le donjon."
     },
     "treadmill": {
-      "name": "",
-      "description": ""
+      "name": "Tapis de Course",
+      "description": "Un tapis de course électrique pour le cardio."
     },
     "weight_bench": {
-      "name": "",
-      "description": ""
+      "name": "Banc de Musculation",
+      "description": "Un banc pour les exercices avec charges."
     },
     "dumbbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "Râtelier à Haltères",
+      "description": "Un râtelier pour ranger haltères et poids."
     },
     "barbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "Râtelier à Barres",
+      "description": "Un râtelier pour ranger barres et disques."
     },
     "squat_rack": {
-      "name": "",
-      "description": ""
+      "name": "Cage à Squat",
+      "description": "Un support pour les squats et les soulevés à la barre."
     },
     "cable_machine": {
-      "name": "",
-      "description": ""
+      "name": "Machine à Poulies",
+      "description": "Une machine à poulies polyvalente."
     },
     "leg_press": {
-      "name": "",
-      "description": ""
+      "name": "Presse à Cuisses",
+      "description": "Une presse à cuisses pour le bas du corps."
     },
     "chest_press": {
-      "name": "",
-      "description": ""
+      "name": "Presse Pectorale",
+      "description": "Une presse pectorale pour le haut du corps."
     },
     "lat_pulldown": {
-      "name": "",
-      "description": ""
+      "name": "Tirage Vertical",
+      "description": "Une machine de tirage vertical pour le dos."
     },
     "leg_extension": {
-      "name": "",
-      "description": ""
+      "name": "Extension de Jambes",
+      "description": "Une machine d'extension de jambes pour les quadriceps."
     },
     "ab_crunch_machine": {
-      "name": "",
-      "description": ""
+      "name": "Machine à Abdominaux",
+      "description": "Une machine pour les crunchs abdominaux."
     },
     "rowing_machine": {
-      "name": "",
-      "description": ""
+      "name": "Rameur",
+      "description": "Un rameur pour le cardio du corps entier."
     },
     "stationary_bike": {
-      "name": "",
-      "description": ""
+      "name": "Vélo d'Appartement",
+      "description": "Un vélo d'appartement pour le cardio."
     },
     "elliptical_machine": {
-      "name": "",
-      "description": ""
+      "name": "Vélo Elliptique",
+      "description": "Un vélo elliptique pour un cardio à faible impact."
     },
     "punching_bag": {
-      "name": "",
-      "description": ""
+      "name": "Sac de Frappe",
+      "description": "Un lourd sac de frappe pour la boxe."
     },
     "speed_bag": {
-      "name": "",
-      "description": ""
+      "name": "Poire de Vitesse",
+      "description": "Une poire de vitesse pour travailler les réflexes."
     },
     "pull_up_bar": {
-      "name": "",
-      "description": ""
+      "name": "Barre de Traction",
+      "description": "Une barre pour les tractions et les tractions supinées."
     },
     "parallel_bars": {
-      "name": "",
-      "description": ""
+      "name": "Barres Parallèles",
+      "description": "Des barres parallèles pour les dips et le gainage."
     },
     "gym_mat": {
-      "name": "",
-      "description": ""
+      "name": "Tapis de Sol",
+      "description": "Un tapis de protection pour les exercices au sol."
     },
     "gym_mirror": {
-      "name": "",
-      "description": ""
+      "name": "Miroir de Salle",
+      "description": "Un grand miroir pour vérifier sa posture."
     },
     "gym_locker": {
-      "name": "",
-      "description": ""
+      "name": "Casier de Vestiaire",
+      "description": "Un casier pour ranger ses affaires de sport."
     },
     "shower_stall": {
-      "name": "",
-      "description": ""
+      "name": "Cabine de Douche",
+      "description": "Une cabine de douche pour se laver après l'effort."
     },
     "gym_bleachers": {
-      "name": "",
-      "description": ""
+      "name": "Gradins de Salle",
+      "description": "Des gradins pour les spectateurs ou pour se reposer."
     },
     "foam_roller": {
-      "name": "",
-      "description": ""
+      "name": "Support à Rouleaux",
+      "description": "Un support pour les rouleaux de massage et le matériel de récupération."
     },
     "resistance_bands_rack": {
-      "name": "",
-      "description": ""
+      "name": "Râtelier à Élastiques",
+      "description": "Un râtelier pour ranger les bandes élastiques."
     },
     "medicine_ball_rack": {
-      "name": "",
-      "description": ""
+      "name": "Râtelier à Médecine-Balls",
+      "description": "Un râtelier pour ranger les médecine-balls."
     },
     "gym_clock": {
-      "name": "",
-      "description": ""
+      "name": "Horloge de Salle",
+      "description": "Une horloge murale pour l'entraînement par intervalles."
     },
     "beach_umbrella": {
-      "name": "",
-      "description": ""
+      "name": "Parasol de Plage",
+      "description": "Un parasol coloré pour se protéger du soleil."
     },
     "beach_chair": {
-      "name": "",
-      "description": ""
+      "name": "Chaise de Plage",
+      "description": "Une chaise confortable pour se détendre à la plage."
     },
     "sand_castle": {
-      "name": "",
-      "description": ""
+      "name": "Château de Sable",
+      "description": "Un château de sable pour décorer."
     },
     "sailboat": {
-      "name": "",
-      "description": ""
+      "name": "Voilier",
+      "description": "Un voilier en bois pour explorer la côte."
     },
     "beach_hut": {
-      "name": "",
-      "description": ""
+      "name": "Cabane de Plage",
+      "description": "Une petite cabane de plage pour s'abriter."
     },
     "surfboard": {
-      "name": "",
-      "description": ""
+      "name": "Planche de Surf",
+      "description": "Une planche de surf pour chevaucher les vagues."
     },
     "beach_ball": {
-      "name": "",
-      "description": ""
+      "name": "Ballon de Plage",
+      "description": "Un ballon de plage gonflable."
     },
     "beach_towel_rack": {
-      "name": "",
-      "description": ""
+      "name": "Porte-Serviettes",
+      "description": "Un support pour suspendre les serviettes de plage."
     },
     "beach_cooler": {
-      "name": "",
-      "description": ""
+      "name": "Glacière de Plage",
+      "description": "Une glacière pour les boissons fraîches à la plage."
     },
     "lifeguard_stand": {
-      "name": "",
-      "description": ""
+      "name": "Chaise de Sauveteur",
+      "description": "Une haute chaise pour les sauveteurs de plage."
     },
     "beach_sign": {
-      "name": "",
-      "description": ""
+      "name": "Panneau de Plage",
+      "description": "Un panneau d'avertissement et d'information de plage."
     },
     "beach_anchor": {
-      "name": "",
-      "description": ""
+      "name": "Ancre",
+      "description": "Une ancre de navire pour le mouillage."
     },
     "wooden_dock": {
-      "name": "",
-      "description": ""
+      "name": "Ponton en Bois",
+      "description": "Un ponton en bois pour amarrer les bateaux."
     },
     "beach_pier": {
-      "name": "",
-      "description": ""
+      "name": "Jetée de Plage",
+      "description": "Une grande jetée qui s'avance dans l'eau."
     },
     "buoy": {
-      "name": "",
-      "description": ""
+      "name": "Bouée",
+      "description": "Une bouée pour délimiter les zones de baignade."
     },
     "beach_lounge": {
-      "name": "",
-      "description": ""
+      "name": "Transat de Plage",
+      "description": "Un transat luxueux pour se détendre."
     },
     "sand_bucket": {
-      "name": "",
-      "description": ""
+      "name": "Seau à Sable",
+      "description": "Un seau pour jouer avec le sable et l'eau."
     },
     "sand_shovel": {
-      "name": "",
-      "description": ""
+      "name": "Pelle à Sable",
+      "description": "Une pelle pour creuser dans le sable."
     },
     "beach_shower": {
-      "name": "",
-      "description": ""
+      "name": "Douche de Plage",
+      "description": "Une douche extérieure pour se rincer du sable."
     },
     "beach_bar": {
-      "name": "",
-      "description": ""
+      "name": "Bar de Plage",
+      "description": "Un comptoir de bar pour les rafraîchissements en bord de mer."
     },
     "tiki_torch": {
-      "name": "",
-      "description": ""
+      "name": "Torche Tiki",
+      "description": "Une torche tiki pour éclairer la plage le soir."
     },
     "palm_tree": {
-      "name": "",
-      "description": ""
+      "name": "Palmier",
+      "description": "Un palmier tropical."
     },
     "beach_volleyball_net": {
-      "name": "",
-      "description": ""
+      "name": "Filet de Volley",
+      "description": "Un filet pour le beach-volley."
     },
     "beach_cabana": {
-      "name": "",
-      "description": ""
+      "name": "Cabane de Plage Privée",
+      "description": "Une cabane luxueuse pour être tranquille à la plage."
     },
     "rowboat": {
-      "name": "",
-      "description": ""
+      "name": "Barque",
+      "description": "Une petite barque pour explorer l'eau."
     }
   }
 }

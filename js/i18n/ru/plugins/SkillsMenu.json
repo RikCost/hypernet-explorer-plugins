@@ -1,9 +1,9 @@
 {
-  "title": "",
-  "back": "",
+  "title": "Навыки",
+  "back": "Назад",
   "recent": "",
   "unit": {
-    "ap": ""
+    "ap": "АП"
   },
   "cost": {
     "mp": "",
@@ -28,7 +28,7 @@
       "description": ""
     },
     "support": {
-      "name": "",
+      "name": "Поддержка",
       "description": ""
     }
   },
@@ -43,7 +43,7 @@
   "cmd": {
     "favourites": "",
     "levelUp": "",
-    "use": "",
+    "use": "Использовать",
     "favourite": "",
     "unfavourite": "",
     "cancel": ""
@@ -55,10 +55,10 @@
     "back": ""
   },
   "info": {
-    "type": "",
+    "type": "Тип:",
     "scale": "",
-    "basic": "",
-    "none": "",
+    "basic": "Нормальный",
+    "none": "Нет",
     "effect": "",
     "hpDmg": "",
     "mpDmg": "",
@@ -68,7 +68,7 @@
     "mpDrain": "",
     "buffs": "",
     "debuffs": "",
-    "state": ""
+    "state": "Состояние"
   },
   "target": {
     "title": "",

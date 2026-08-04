@@ -1,6 +1,6 @@
 {
   "title": "",
-  "back": "",
+  "back": "Retour",
   "noMods": "",
   "source": "",
   "path": "",
@@ -10,7 +10,7 @@
   "local": "",
   "workshop": "",
   "priority": "",
-  "active": "",
-  "inactive": "",
+  "active": "Actif",
+  "inactive": "Inactif",
   "hint": ""
 }

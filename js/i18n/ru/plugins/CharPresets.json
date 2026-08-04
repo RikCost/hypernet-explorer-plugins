@@ -87,7 +87,7 @@
     "wait": "",
     "sleepHowLong": "",
     "waitHowLong": "",
-    "wakeup": "",
+    "wakeup": "Встать",
     "dream": "",
     "menuWorkforce": "",
     "menuWait": "",
@@ -111,7 +111,7 @@
   "retiredLoreDated": "",
   "theParty": "",
   "companion": "",
-  "unknownClass": "",
+  "unknownClass": "Неизвестно",
   "statsExplanation": "",
   "stat": {
     "str": {

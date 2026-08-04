@@ -20,7 +20,7 @@
   "statusBroken": "",
   "statusOperational": "",
   "allCriticalComponentsMustMaintain": "",
-  "repair": "",
+  "repair": "Починить",
   "upgrades": "",
   "close": "",
   "componentsRegistry": "",
@@ -66,7 +66,7 @@
   "timePerTile": "",
   "timePerTileNext": "",
   "part": {
-    "Engine": "",
+    "Engine": "Движок",
     "Transmission": "",
     "Brakes": "",
     "Steering": "",

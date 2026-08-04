@@ -1,20 +1,20 @@
 {
   "stage": {
-    "baby": "",
-    "adult": ""
+    "baby": "Детёныш",
+    "adult": "Взрослая особь"
   },
-  "collected": "",
-  "mapNumbered": "",
-  "itemNumbered": "",
-  "petNote": "",
-  "cannotKeep": "",
-  "noAnimalToSell": "",
-  "sold": "",
-  "nothingToCollect": "",
+  "collected": "\\I[{icon}]Собрано: \\c[14]{item}\\c[0] ×{qty}!",
+  "mapNumbered": "Карта {id}",
+  "itemNumbered": "Предмет №{id}",
+  "petNote": "{animal} ({stage}), выращен в месте {place}.",
+  "cannotKeep": "Здесь нельзя держать животных.",
+  "noAnimalToSell": "Здесь нет животного на продажу.",
+  "sold": "\\c[14]{animal}\\c[0] продан за €{amount}!",
+  "nothingToCollect": "Пока нечего собирать.",
   "youngAnimal": {
-    "one": "",
-    "other": ""
+    "one": "Молодой \\c[14]{animal}\\c[0]. Вырастет примерно через {count} день.",
+    "other": "Молодой \\c[14]{animal}\\c[0]. Вырастет примерно через {count} дн."
   },
-  "pleased": "",
-  "nothingReady": ""
+  "pleased": "\\c[14]{animal}\\c[0] рад тебя видеть.",
+  "nothingReady": "У \\c[14]{animal}\\c[0] пока ничего не готово."
 }

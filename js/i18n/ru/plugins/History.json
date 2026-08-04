@@ -272,7 +272,7 @@
   },
   "leader": {
     "unknown": "",
-    "unknownIdeology": ""
+    "unknownIdeology": "Неизвестно"
   },
   "government": {
     "Theocracy": "",
@@ -286,7 +286,7 @@
     "Warband Confederacy": "",
     "Free Confederation": "",
     "Crown Protectorate": "",
-    "Punitive Colony Regime": "",
+    "Punitive Colony Regime": "Режим каторжной колонии",
     "Puppet Government": "",
     "Parliamentary Republic": "",
     "Constitutional Monarchy": "",
@@ -310,58 +310,58 @@
   },
   "artifactDescription": "",
   "artifactName": {
-    "template": "",
+    "template": "{noun} {adj}",
     "adjectives": [
+      "Легенды",
+      "Древних",
+      "Загадки",
+      "Чужих",
       "",
       "",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Кванта",
+      "Забвения",
+      "Астрала"
     ],
     "adjectivesFem": [
+      "Легенды",
+      "Древних",
+      "Загадки",
+      "Чужих",
       "",
       "",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Кванта",
+      "Забвения",
+      "Астрала"
     ],
     "nounGender": {},
     "itemNouns": [
+      "Ядро",
       "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Кристалл",
+      "Призма",
+      "Устройство",
+      "Кодекс",
+      "Идол"
     ],
     "weaponNouns": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
+      "Клинок",
+      "Топор",
+      "Посох",
+      "Лук",
+      "Глефа",
+      "Молот",
       ""
     ],
     "armorNouns": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      "Эгида",
+      "Латы",
+      "Плащ",
+      "Щит",
+      "Шлем",
+      "Мантия",
+      "Кираса"
     ]
   },
   "reason": {
@@ -389,6 +389,9 @@
     "stoleFrom": "",
     "discovered": "",
     "action": {
+      "discovered": "",
+      "crafted": "",
+      "exhumed": "",
       "seized": "",
       "purchased": "",
       "inherited": "",
@@ -427,9 +430,9 @@
     "fact": ""
   },
   "ui": {
-    "back": "",
-    "continue": "",
-    "artifactBadge": "",
+    "back": "Назад",
+    "continue": "Продолжить",
+    "artifactBadge": "АРТЕФАКТ",
     "military": "",
     "economy": ""
   }

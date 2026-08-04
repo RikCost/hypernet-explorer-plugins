@@ -1,6 +1,6 @@
 {
-  "mapFallback": "",
-  "shopkeeperFallback": "",
+  "mapFallback": "맵 {id}",
+  "shopkeeperFallback": "상점주인",
   "frontier": "",
   "placeOfCountry": "",
   "placeSettlement": "",

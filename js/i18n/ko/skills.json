@@ -1,18 +1,18 @@
 {
   "1": {
-    "name": "",
+    "name": "공격",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "2": {
-    "name": "",
+    "name": "방어",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "3": {
-    "name": "",
+    "name": "미믹",
     "description": "",
     "message1": "",
     "message2": ""
@@ -108,7 +108,7 @@
     "message2": ""
   },
   "19": {
-    "name": "",
+    "name": "진정제",
     "description": "",
     "message1": "",
     "message2": ""
@@ -126,7 +126,7 @@
     "message2": ""
   },
   "22": {
-    "name": "",
+    "name": "슬라임",
     "description": "",
     "message1": "",
     "message2": ""
@@ -168,7 +168,7 @@
     "message2": ""
   },
   "29": {
-    "name": "",
+    "name": "섬광",
     "description": "",
     "message1": "",
     "message2": ""
@@ -372,7 +372,7 @@
     "message2": ""
   },
   "63": {
-    "name": "",
+    "name": "가드 브레이커",
     "description": "",
     "message1": "",
     "message2": ""
@@ -564,13 +564,13 @@
     "message2": ""
   },
   "95": {
-    "name": "",
+    "name": "독",
     "description": "",
     "message1": "",
     "message2": ""
   },
   "96": {
-    "name": "",
+    "name": "실명",
     "description": "",
     "message1": "",
     "message2": ""
@@ -582,7 +582,7 @@
     "message2": ""
   },
   "98": {
-    "name": "",
+    "name": "침묵",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1046,7 +1046,7 @@
   "175": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1이(가) %2을(를) 사용했다!",
     "message2": ""
   },
   "176": {
@@ -1128,7 +1128,7 @@
     "message2": ""
   },
   "189": {
-    "name": "",
+    "name": "유성",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1170,7 +1170,7 @@
     "message2": ""
   },
   "196": {
-    "name": "",
+    "name": "보호",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1200,7 +1200,7 @@
     "message2": ""
   },
   "201": {
-    "name": "",
+    "name": "풍차",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1260,7 +1260,7 @@
     "message2": ""
   },
   "211": {
-    "name": "",
+    "name": "은신",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1268,7 +1268,7 @@
   "212": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1이(가) %2을(를) 사용했다!",
     "message2": ""
   },
   "213": {
@@ -1298,7 +1298,7 @@
   "217": {
     "name": "",
     "description": "",
-    "message1": "",
+    "message1": "%1이(가) %2을(를) 사용했다!",
     "message2": ""
   },
   "218": {
@@ -1314,7 +1314,7 @@
     "message2": ""
   },
   "220": {
-    "name": "",
+    "name": "든든한 스튜",
     "description": "",
     "message1": "",
     "message2": ""
@@ -1638,7 +1638,7 @@
     "message2": ""
   },
   "274": {
-    "name": "",
+    "name": "명사수",
     "description": "",
     "message1": "",
     "message2": ""
@@ -2370,7 +2370,7 @@
     "message2": ""
   },
   "396": {
-    "name": "",
+    "name": "은신",
     "description": "",
     "message1": "",
     "message2": ""
@@ -2520,7 +2520,7 @@
     "message2": ""
   },
   "421": {
-    "name": "",
+    "name": "위협",
     "description": "",
     "message1": "",
     "message2": ""
@@ -4908,7 +4908,7 @@
     "message2": ""
   },
   "819": {
-    "name": "",
+    "name": "섬광탄",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5010,7 +5010,7 @@
     "message2": ""
   },
   "836": {
-    "name": "",
+    "name": "대화",
     "description": "",
     "message1": "",
     "message2": ""
@@ -5070,7 +5070,7 @@
     "message2": ""
   },
   "846": {
-    "name": "",
+    "name": "회피",
     "description": "",
     "message1": "",
     "message2": ""

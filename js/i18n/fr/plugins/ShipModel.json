@@ -104,7 +104,7 @@
     "radiator": ""
   },
   "pods": {
-    "none": "",
+    "none": "Aucun",
     "tanks": "",
     "cargo": "",
     "missiles": "",
@@ -113,7 +113,7 @@
     "lifeboats": ""
   },
   "dishes": {
-    "none": "",
+    "none": "Aucun",
     "dish": "",
     "phased": "",
     "mast": "",
@@ -121,7 +121,7 @@
     "spine": ""
   },
   "rings": {
-    "none": "",
+    "none": "Aucun",
     "hab": "",
     "drive": "",
     "dual": "",
@@ -129,8 +129,8 @@
   },
   "greebles": {
     "clean": "",
-    "light": "",
-    "heavy": "",
+    "light": "Léger",
+    "heavy": "Lourd",
     "baroque": ""
   },
   "wears": {
@@ -148,7 +148,7 @@
     "dark": ""
   },
   "grunges": {
-    "none": "",
+    "none": "Aucun",
     "concrete": "",
     "smoke": "",
     "slate": "",
@@ -165,7 +165,7 @@
     "lights": "",
     "greebles": "",
     "ring": "",
-    "dish": "",
+    "dish": "Réseau de capteurs",
     "pods": "",
     "tail": "",
     "cockpit": "",
@@ -186,6 +186,7 @@
     "",
     "",
     "",
+    "Creux",
     "",
     "",
     "",
@@ -199,11 +200,17 @@
     "",
     "",
     "",
-    "",
-    ""
+    "Verre"
   ],
   "nameB": [
     "",
+    "Lanterne",
+    "",
+    "Pèlerin",
+    "Méridien",
+    "",
+    "",
+    "Ancre",
     "",
     "",
     "",
@@ -211,14 +218,7 @@
     "",
     "",
     "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
+    "Seuil",
     "",
     "",
     "",
@@ -230,7 +230,7 @@
   "randomize": "",
   "worldSeed": "",
   "apply": "",
-  "cancel": "",
+  "cancel": "Annuler",
   "editorHint": "",
   "editorHintPad": "",
   "rotateHintPad": ""

@@ -7,6 +7,6 @@
   "patternMapId": "",
   "fallbackTileId": "",
   "generate": "",
-  "yes": "",
-  "no": ""
+  "yes": "Да",
+  "no": "Нет"
 }

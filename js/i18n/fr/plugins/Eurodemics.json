@@ -4,7 +4,7 @@
   "tab": {
     "situation": "",
     "outbreaks": "",
-    "archive": ""
+    "archive": "Archives"
   },
   "curveHint": "",
   "dayNumbered": "",
@@ -47,11 +47,11 @@
   "pathogen": "",
   "since": "",
   "casesInTotal": "",
-  "dead": "",
+  "dead": "Mort",
   "townsReached": "",
   "spreadRate": "",
   "bureauLog": "",
-  "archiveTitle": "",
+  "archiveTitle": "Archives",
   "archiveBlurb": "",
   "closedThisWorld": "",
   "nothingClosed": "",

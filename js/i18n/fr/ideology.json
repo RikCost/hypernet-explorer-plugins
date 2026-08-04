@@ -79,9 +79,9 @@
   "ideology.death_metal_inner_circle": "Cercle intérieur death metal",
   "ideology.rowdy_horde": "Horde turbulente",
   "ideology.violent_marauders": "Maraudeurs violents",
-  "ideology.free_states_confederation": "",
-  "ideology.crown_colony_administration": "",
-  "ideology.punitive_colony_regime": "",
-  "ideology.continental_unionist": "",
-  "ideology.thaumo_industrialist": ""
+  "ideology.free_states_confederation": "Confédération des États Libres",
+  "ideology.crown_colony_administration": "Administration de la Colonie de la Couronne",
+  "ideology.punitive_colony_regime": "Régime de Colonie Pénitentiaire",
+  "ideology.continental_unionist": "Unioniste Continental",
+  "ideology.thaumo_industrialist": "Thaumo-Industrialiste"
 }

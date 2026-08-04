@@ -14,7 +14,7 @@
   "readyCollectYourReward": "",
   "timeLeft": "",
   "inProgress": "",
-  "collect": "",
+  "collect": "수확",
   "bringTheGoodsToCollect": "",
   "confirmAbandonPenaltiesApply": "",
   "abandon": "",
@@ -23,6 +23,6 @@
   "postedBy": "",
   "objectives2": "",
   "terms": "",
-  "back": "",
+  "back": "뒤로",
   "showOnMapAt": ""
 }

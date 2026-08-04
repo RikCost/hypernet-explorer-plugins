@@ -4,7 +4,7 @@
   "tab": {
     "situation": "",
     "outbreaks": "",
-    "archive": ""
+    "archive": "Архив"
   },
   "curveHint": "",
   "dayNumbered": "",
@@ -24,7 +24,7 @@
   "worstTowns": "",
   "colTown": "",
   "colIll": "",
-  "colPopulation": "",
+  "colPopulation": "Численность",
   "colShareIll": "",
   "colOutbreak": "",
   "colIllNow": "",
@@ -47,11 +47,11 @@
   "pathogen": "",
   "since": "",
   "casesInTotal": "",
-  "dead": "",
+  "dead": "Мертв",
   "townsReached": "",
   "spreadRate": "",
   "bureauLog": "",
-  "archiveTitle": "",
+  "archiveTitle": "Архив",
   "archiveBlurb": "",
   "closedThisWorld": "",
   "nothingClosed": "",

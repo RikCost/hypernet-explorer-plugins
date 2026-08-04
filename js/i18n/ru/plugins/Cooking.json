@@ -57,9 +57,9 @@
     "selectIngredients": "",
     "cookTheseItems": ""
   },
-  "back": "",
+  "back": "Назад",
   "ingredients": "",
-  "cooking": "",
+  "cooking": "Готовка",
   "nutritionalBase": "",
   "aromaticBinder": "",
   "yourBackpackContainsNoEdible": "",
@@ -68,16 +68,16 @@
   "extraordinaryEffect50": "",
   "minorEffect25": "",
   "disastrousEffect75": "",
-  "calories": "",
-  "protein": "",
+  "calories": "Калории",
+  "protein": "Белки",
   "fat": "",
   "satietyPerMember": "",
   "split": "",
   "combineANutritionalBaseAnd": "",
-  "clearSelection": "",
+  "clearSelection": "Снять выбор",
   "nutrition": {
-    "calories": "",
-    "protein": "",
+    "calories": "Калории",
+    "protein": "Белки",
     "fat": ""
   }
 }

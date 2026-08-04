@@ -2076,6 +2076,11 @@
         if (step === STEP.CLASS) return true;                // class fixed to Mana Cyborg
         if (step === STEP.ADD_MEMBER) return true;           // single-character party (ends)
       }
+      // Creation mode is never asked during the tutorial: it is always a quick,
+      // single-character flow, so the wizard goes straight to the humanoid /
+      // creature choice. Guarded on the switch as well as the in-scene flag
+      // (same as the origin step), since the flag is cleared at add-member.
+      if (step === STEP.CREATION_MODE && isTutorialFlow()) return true;
 
       if (Scene_CharacterCreation._stepHiddenForMode(step)) return true; // quick-mode skips
       // Party-level "once" steps are interactive only while building the first
@@ -4265,6 +4270,19 @@
         }
       }
       // ── END TUTORIAL MODE skips ──
+
+      // Creation mode: never asked during the tutorial. Quick is applied
+      // silently and the wizard moves straight on to the humanoid / creature
+      // choice. (Guarded on the switch as well as the in-scene flag, like the
+      // origin step below.)
+      if (this._step === STEP.CREATION_MODE && isTutorialFlow()) {
+        Scene_CharacterCreation._creationMode = "quick";
+        $gameSystem._ccCreationMode = "quick";
+        markStepCompleted(STEP.CREATION_MODE);
+        this._step++;
+        this.setupStep();
+        return;
+      }
 
       // Origin: not available while the tutorial switch (100) is active. Apply
       // the default train origin and finish creation. (The in-scene

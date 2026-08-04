@@ -1,1268 +1,1268 @@
 {
   "furniture": {
     "wooden_chair": {
-      "name": "",
-      "description": ""
+      "name": "나무 의자",
+      "description": "천 방석을 얹은 소박한 나무 의자."
     },
     "category": {
-      "seating": "",
-      "tables": "",
-      "storage": "",
-      "beds": "",
-      "lighting": "",
-      "workstations": "",
-      "decoration": "",
-      "appliances": "",
-      "entertainment": "",
-      "nature": "",
-      "structures": "",
-      "dungeon": "",
-      "farm": "",
-      "industrial": "",
-      "camping": "",
-      "beach": "",
-      "supermarket": "",
-      "gym": ""
+      "seating": "좌석",
+      "tables": "탁자",
+      "storage": "수납",
+      "beds": "침대",
+      "lighting": "조명",
+      "workstations": "작업대",
+      "decoration": "장식",
+      "appliances": "가전",
+      "entertainment": "오락",
+      "nature": "자연",
+      "structures": "구조물",
+      "dungeon": "던전",
+      "farm": "농장",
+      "industrial": "산업",
+      "camping": "야영",
+      "beach": "해변",
+      "supermarket": "슈퍼마켓",
+      "gym": "체육관"
     },
     "leather_armchair": {
-      "name": "",
-      "description": ""
+      "name": "가죽 안락의자",
+      "description": "편안한 가죽 안락의자."
     },
     "tech_chair": {
-      "name": "",
-      "description": ""
+      "name": "테크 체어",
+      "description": "자동 조절 기능을 갖춘 인체공학 첨단 의자."
     },
     "crystal_throne": {
-      "name": "",
-      "description": ""
+      "name": "수정 왕좌",
+      "description": "마법 수정으로 만든 장엄한 왕좌."
     },
     "wooden_bench": {
-      "name": "",
-      "description": ""
+      "name": "나무 벤치",
+      "description": "두 사람이 앉는 소박한 나무 벤치."
     },
     "wooden_table": {
-      "name": "",
-      "description": ""
+      "name": "나무 탁자",
+      "description": "튼튼한 나무 탁자."
     },
     "glass_table": {
-      "name": "",
-      "description": ""
+      "name": "유리 탁자",
+      "description": "강철 틀을 두른 현대식 유리 탁자."
     },
     "tech_desk": {
-      "name": "",
-      "description": ""
+      "name": "테크 데스크",
+      "description": "디스플레이를 통합한 첨단 책상."
     },
     "alchemy_table": {
-      "name": "",
-      "description": ""
+      "name": "연금술 탁자",
+      "description": "연금술 실험에 맞춰 갖춘 탁자."
     },
     "dining_table": {
-      "name": "",
-      "description": ""
+      "name": "식탁",
+      "description": "가족 식사를 위한 커다란 식탁."
     },
     "wooden_chest": {
-      "name": "",
-      "description": ""
+      "name": "나무 궤짝",
+      "description": "물건을 넣어두는 나무 궤짝."
     },
     "metal_locker": {
-      "name": "",
-      "description": ""
+      "name": "금속 사물함",
+      "description": "잠금이 확실한 금속 수납 사물함."
     },
     "quantum_storage": {
-      "name": "",
-      "description": ""
+      "name": "양자 저장 장치",
+      "description": "양자 기술로 어마어마한 용량을 담아낸다."
     },
     "bookshelf": {
-      "name": "",
-      "description": ""
+      "name": "책장",
+      "description": "책과 물건을 정리하는 높은 책장."
     },
     "crystal_display": {
-      "name": "",
-      "description": ""
+      "name": "수정 전시장",
+      "description": "마법 물품을 보존하는 전시장."
     },
     "simple_bed": {
-      "name": "",
-      "description": ""
+      "name": "간단한 침대",
+      "description": "쉬기 위한 기본 침대."
     },
     "luxury_bed": {
-      "name": "",
-      "description": ""
+      "name": "고급 침대",
+      "description": "호화로운 킹사이즈 침대."
     },
     "tech_pod": {
-      "name": "",
-      "description": ""
+      "name": "수면 포드",
+      "description": "건강 감시 기능을 갖춘 첨단 수면 포드."
     },
     "wooden_torch": {
-      "name": "",
-      "description": ""
+      "name": "나무 횃불 받침",
+      "description": "기본 조명을 위한 소박한 횃불 받침."
     },
     "crystal_lamp": {
-      "name": "",
-      "description": ""
+      "name": "수정 램프",
+      "description": "수정으로 밝히는 마법 램프."
     },
     "neon_light": {
-      "name": "",
-      "description": ""
+      "name": "네온 조명판",
+      "description": "현대식 네온 조명판."
     },
     "chandelier": {
-      "name": "",
-      "description": ""
+      "name": "수정 샹들리에",
+      "description": "우아한 수정 샹들리에."
     },
     "crafting_bench": {
-      "name": "",
-      "description": ""
+      "name": "제작 작업대",
+      "description": "가구를 만드는 기본 작업대."
     },
     "tech_workstation": {
-      "name": "",
-      "description": ""
+      "name": "기술 작업대",
+      "description": "기술 제작을 위한 고급 작업대."
     },
     "arcane_altar": {
-      "name": "",
-      "description": ""
+      "name": "비전 제단",
+      "description": "가구에 마법을 거는 제단."
     },
     "chemistry_station": {
-      "name": "",
-      "description": ""
+      "name": "화학 작업대",
+      "description": "화학 처리를 위한 작업대."
     },
     "plant_pot": {
-      "name": "",
-      "description": ""
+      "name": "화분",
+      "description": "화분에 심은 장식용 식물."
     },
     "holographic_display": {
-      "name": "",
-      "description": ""
+      "name": "홀로그램 디스플레이",
+      "description": "홀로그램 영상을 투사한다."
     },
     "statue": {
-      "name": "",
-      "description": ""
+      "name": "석상",
+      "description": "예술적인 돌 조각상."
     },
     "aquarium": {
-      "name": "",
-      "description": ""
+      "name": "수조",
+      "description": "장식용 수조."
     },
     "mirror": {
-      "name": "",
-      "description": ""
+      "name": "벽거울",
+      "description": "벽에 건 큰 거울."
     },
     "rug": {
-      "name": "",
-      "description": ""
+      "name": "장식 러그",
+      "description": "푹신한 장식용 러그."
     },
     "refrigerator": {
-      "name": "",
-      "description": ""
+      "name": "냉장고",
+      "description": "음식을 신선하게 보관한다."
     },
     "cooking_stove": {
-      "name": "",
-      "description": ""
+      "name": "조리용 화덕",
+      "description": "요리에 없어서는 안 될 물건."
     },
     "recycler": {
-      "name": "",
-      "description": ""
+      "name": "재료 재활용기",
+      "description": "물건을 기본 재료로 분해한다."
     },
     "teleporter": {
-      "name": "",
-      "description": ""
+      "name": "양자 텔레포터",
+      "description": "연결된 텔레포터 사이를 즉시 오간다."
     },
     "television": {
-      "name": "",
-      "description": ""
+      "name": "평면 TV",
+      "description": "오락용 고화질 텔레비전."
     },
     "arcade_machine": {
-      "name": "",
-      "description": ""
+      "name": "아케이드 게임기",
+      "description": "끝없이 즐길 수 있는 고전 아케이드 게임."
     },
     "pool_table": {
-      "name": "",
-      "description": ""
+      "name": "당구대",
+      "description": "여가를 위한 고급 당구대."
     },
     "ping_pong_table": {
-      "name": "",
-      "description": ""
+      "name": "탁구대",
+      "description": "시합용 탁구대."
     },
     "dartboard": {
-      "name": "",
-      "description": ""
+      "name": "다트판",
+      "description": "고전적인 다트 게임."
     },
     "jukebox": {
-      "name": "",
-      "description": ""
+      "name": "주크박스",
+      "description": "언제든 좋아하는 음악을 튼다."
     },
     "billiards_balls_set": {
-      "name": "",
-      "description": ""
+      "name": "당구공 세트",
+      "description": "당구를 위한 공 세트."
     },
     "gaming_console": {
-      "name": "",
-      "description": ""
+      "name": "게임 콘솔",
+      "description": "오락용 최신 게임 콘솔."
     },
     "virtual_reality_headset": {
-      "name": "",
-      "description": ""
+      "name": "VR 헤드셋 스테이션",
+      "description": "몰입감 있는 가상현실 체험."
     },
     "foosball_table": {
-      "name": "",
-      "description": ""
+      "name": "테이블 축구",
+      "description": "짧게 한판 붙기 좋은 테이블 축구."
     },
     "blackjack_table": {
-      "name": "",
-      "description": ""
+      "name": "블랙잭 테이블",
+      "description": "전문가용 블랙잭 게임 테이블."
     },
     "roulette_table": {
-      "name": "",
-      "description": ""
+      "name": "룰렛 테이블",
+      "description": "호화로운 룰렛 게임 테이블."
     },
     "slot_machine": {
-      "name": "",
-      "description": ""
+      "name": "슬롯머신",
+      "description": "도박 오락을 위한 고전 슬롯머신."
     },
     "karaoke_machine": {
-      "name": "",
-      "description": ""
+      "name": "노래방 기기",
+      "description": "전문가급 음질로 좋아하는 노래를 부른다."
     },
     "movie_projector": {
-      "name": "",
-      "description": ""
+      "name": "영사기",
+      "description": "어느 벽에든 영화를 비춘다."
     },
     "dance_floor": {
-      "name": "",
-      "description": ""
+      "name": "댄스 플로어",
+      "description": "조명이 깔린 디스코풍 댄스 플로어."
     },
     "bowling_lane": {
-      "name": "",
-      "description": ""
+      "name": "볼링 레인 세트",
+      "description": "완비된 볼링 레인 일습."
     },
     "plant": {
-      "name": "",
-      "description": ""
+      "name": "식물",
+      "description": "화분에 심은 장식용 식물."
     },
     "flowers": {
-      "name": "",
-      "description": ""
+      "name": "화단",
+      "description": "알록달록한 꽃이 핀 화단."
     },
     "tree": {
-      "name": "",
-      "description": ""
+      "name": "나무",
+      "description": "커다란 장식용 나무."
     },
     "rock": {
-      "name": "",
-      "description": ""
+      "name": "바위",
+      "description": "커다란 장식용 바위."
     },
     "pile_of_bones": {
-      "name": "",
-      "description": ""
+      "name": "뼈 무더기",
+      "description": "으스스한 뼈 무더기."
     },
     "fence": {
-      "name": "",
-      "description": ""
+      "name": "울타리",
+      "description": "나무 울타리 한 구간."
     },
     "bridge": {
-      "name": "",
-      "description": ""
+      "name": "다리",
+      "description": "나무로 놓은 다리."
     },
     "stairs": {
-      "name": "",
-      "description": ""
+      "name": "계단",
+      "description": "나무 계단 한 벌."
     },
     "ladder": {
-      "name": "",
-      "description": ""
+      "name": "사다리",
+      "description": "오르내리는 나무 사다리."
     },
     "rails": {
-      "name": "",
-      "description": ""
+      "name": "난간",
+      "description": "금속 안전 난간."
     },
     "window_1x1": {
-      "name": "",
-      "description": ""
+      "name": "창문 (1x1)",
+      "description": "작은 창문."
     },
     "window_2x1": {
-      "name": "",
-      "description": ""
+      "name": "창문 (2x1)",
+      "description": "중간 크기 창문."
     },
     "window_2x2": {
-      "name": "",
-      "description": ""
+      "name": "창문 (2x2)",
+      "description": "커다란 창문."
     },
     "sign": {
-      "name": "",
-      "description": ""
+      "name": "표지판",
+      "description": "나무로 만든 방향 표지판."
     },
     "vase": {
-      "name": "",
-      "description": ""
+      "name": "화병",
+      "description": "장식용 화병."
     },
     "clock": {
-      "name": "",
-      "description": ""
+      "name": "벽시계",
+      "description": "기계식 벽시계."
     },
     "grandfather_clock": {
-      "name": "",
-      "description": ""
+      "name": "괘종시계",
+      "description": "우아한 괘종시계."
     },
     "world_globe": {
-      "name": "",
-      "description": ""
+      "name": "지구본",
+      "description": "돌아가는 지구본."
     },
     "world_map": {
-      "name": "",
-      "description": ""
+      "name": "세계지도",
+      "description": "액자에 넣은 세계지도."
     },
     "prayer_rug": {
-      "name": "",
-      "description": ""
+      "name": "기도용 깔개",
+      "description": "장식용 기도 깔개."
     },
     "trash_pile": {
-      "name": "",
-      "description": ""
+      "name": "쓰레기 더미",
+      "description": "내다 버린 쓰레기 더미."
     },
     "barrel": {
-      "name": "",
-      "description": ""
+      "name": "던전 나무통",
+      "description": "물자를 담아두는 나무통."
     },
     "pile_of_books": {
-      "name": "",
-      "description": ""
+      "name": "책 더미",
+      "description": "낡은 책을 쌓아 올린 더미."
     },
     "candle": {
-      "name": "",
-      "description": ""
+      "name": "양초",
+      "description": "불을 밝힌 장식용 양초."
     },
     "pentagram": {
-      "name": "",
-      "description": ""
+      "name": "바닥 펜타그램",
+      "description": "바닥에 그린 신비로운 펜타그램."
     },
     "stage_lights": {
-      "name": "",
-      "description": ""
+      "name": "무대 조명",
+      "description": "전문가용 무대 조명 장치."
     },
     "pipe": {
-      "name": "",
-      "description": ""
+      "name": "배관",
+      "description": "산업용 금속 배관."
     },
     "motor_engine": {
-      "name": "",
-      "description": ""
+      "name": "대형 모터",
+      "description": "커다란 산업용 모터."
     },
     "piano": {
-      "name": "",
-      "description": ""
+      "name": "피아노",
+      "description": "연주용 그랜드 피아노."
     },
     "guitar": {
-      "name": "",
-      "description": ""
+      "name": "통기타",
+      "description": "연주용 통기타."
     },
     "electric_guitar": {
-      "name": "",
-      "description": ""
+      "name": "일렉트릭 기타",
+      "description": "현대식 일렉트릭 기타."
     },
     "harp": {
-      "name": "",
-      "description": ""
+      "name": "하프",
+      "description": "아름다운 황금 하프."
     },
     "crib": {
-      "name": "",
-      "description": ""
+      "name": "아기 침대",
+      "description": "편안한 아기 침대."
     },
     "radio": {
-      "name": "",
-      "description": ""
+      "name": "라디오",
+      "description": "음악과 소식을 듣는 낡은 라디오."
     },
     "wc": {
-      "name": "",
-      "description": ""
+      "name": "변기",
+      "description": "제대로 작동하는 변기."
     },
     "shower": {
-      "name": "",
-      "description": ""
+      "name": "샤워기",
+      "description": "목욕용 샤워 부스."
     },
     "pc": {
-      "name": "",
-      "description": ""
+      "name": "컴퓨터",
+      "description": "고성능 데스크톱 컴퓨터."
     },
     "christmas_tree": {
-      "name": "",
-      "description": ""
+      "name": "크리스마스트리",
+      "description": "화려하게 꾸민 크리스마스트리."
     },
     "warrior_statue": {
-      "name": "",
-      "description": ""
+      "name": "무승 석상",
+      "description": "강대한 무승의 석상."
     },
     "baseball_bat": {
-      "name": "",
-      "description": ""
+      "name": "야구방망이",
+      "description": "나무 야구방망이."
     },
     "crt_monitor": {
-      "name": "",
-      "description": ""
+      "name": "CRT 모니터",
+      "description": "투박한 CRT 컴퓨터 모니터 (2001년 무렵)."
     },
     "desktop_computer_2001": {
-      "name": "",
-      "description": ""
+      "name": "데스크톱 PC (2001)",
+      "description": "2001년의 두툼한 데스크톱 컴퓨터."
     },
     "keyboard_mouse": {
-      "name": "",
-      "description": ""
+      "name": "키보드와 마우스",
+      "description": "컴퓨터 키보드와 마우스 한 벌."
     },
     "dial_up_modem": {
-      "name": "",
-      "description": ""
+      "name": "전화 접속 모뎀",
+      "description": "전화선 인터넷 모뎀 (끼익거리는 소리 포함)."
     },
     "landline_phone": {
-      "name": "",
-      "description": ""
+      "name": "유선 전화기",
+      "description": "줄 달린 유선 전화기."
     },
     "printer_inkjet": {
-      "name": "",
-      "description": ""
+      "name": "잉크젯 프린터",
+      "description": "잉크젯 프린터 (시끄럽고 느리다)."
     },
     "fax_machine": {
-      "name": "",
-      "description": ""
+      "name": "팩스기",
+      "description": "단독형 팩스 기기."
     },
     "vcr_player": {
-      "name": "",
-      "description": ""
+      "name": "비디오 플레이어",
+      "description": "VHS 테이프를 트는 비디오 플레이어."
     },
     "dvd_player": {
-      "name": "",
-      "description": ""
+      "name": "DVD 플레이어",
+      "description": "새 DVD 플레이어 (2001년 기준 최첨단)."
     },
     "cable_box": {
-      "name": "",
-      "description": ""
+      "name": "케이블 셋톱박스",
+      "description": "리모컨이 딸린 케이블 텔레비전 셋톱박스."
     },
     "game_console_ps1": {
-      "name": "",
-      "description": ""
+      "name": "Battlestation 1",
+      "description": "소니 플레이스테이션 콘솔 (2001년 무렵)."
     },
     "game_console_n64": {
-      "name": "",
-      "description": ""
+      "name": "Tintendon 666",
+      "description": "닌텐도 64 게임 콘솔."
     },
     "dreamcast_console": {
-      "name": "",
-      "description": ""
+      "name": "Mastercast 콘솔",
+      "description": "세가 드림캐스트 게임 콘솔."
     },
     "crt_television": {
-      "name": "",
-      "description": ""
+      "name": "CRT 텔레비전",
+      "description": "커다란 CRT 텔레비전."
     },
     "stereo_boombox": {
-      "name": "",
-      "description": ""
+      "name": "스테레오 붐박스",
+      "description": "카세트와 CD 플레이어가 달린 스테레오 붐박스."
     },
     "zip_drive": {
-      "name": "",
-      "description": ""
+      "name": "집 드라이브",
+      "description": "아이오메가 집 드라이브 (100MB 저장)."
     },
     "beanbag_chair": {
-      "name": "",
-      "description": ""
+      "name": "빈백 의자",
+      "description": "푹신한 빈백 의자 (2001년 스타일)."
     },
     "futon": {
-      "name": "",
-      "description": ""
+      "name": "후톤",
+      "description": "소파 겸 침대인 후톤."
     },
     "metal_shelving": {
-      "name": "",
-      "description": ""
+      "name": "금속 선반",
+      "description": "산업용 금속 선반."
     },
     "loft_bed": {
-      "name": "",
-      "description": ""
+      "name": "로프트 침대",
+      "description": "좁은 공간을 위한 로프트 침대."
     },
     "bunk_bed": {
-      "name": "",
-      "description": ""
+      "name": "이층 침대",
+      "description": "두 사람이 자는 이층 침대."
     },
     "water_cooler": {
-      "name": "",
-      "description": ""
+      "name": "정수기",
+      "description": "사무실 정수기. 잡담과 수분 보충용."
     },
     "desk_lamp": {
-      "name": "",
-      "description": ""
+      "name": "책상 스탠드",
+      "description": "간단한 책상 스탠드."
     },
     "floor_lamp": {
-      "name": "",
-      "description": ""
+      "name": "플로어 스탠드",
+      "description": "키가 큰 플로어 스탠드."
     },
     "lava_lamp": {
-      "name": "",
-      "description": ""
+      "name": "라바 램프",
+      "description": "멋들어진 라바 램프 (2001년 필수품)."
     },
     "movie_poster": {
-      "name": "",
-      "description": ""
+      "name": "영화 포스터",
+      "description": "2001년 영화 포스터."
     },
     "band_poster": {
-      "name": "",
-      "description": ""
+      "name": "밴드 포스터",
+      "description": "벽에 붙인 밴드 포스터."
     },
     "sports_poster": {
-      "name": "",
-      "description": ""
+      "name": "스포츠 포스터",
+      "description": "스포츠 팀 포스터."
     },
     "neon_sign": {
-      "name": "",
-      "description": ""
+      "name": "네온사인",
+      "description": "분위기를 살리는 네온사인."
     },
     "string_lights": {
-      "name": "",
-      "description": ""
+      "name": "줄전구",
+      "description": "장식용 줄전구."
     },
     "tapestry": {
-      "name": "",
-      "description": ""
+      "name": "태피스트리",
+      "description": "벽에 건 장식용 태피스트리."
     },
     "picture_frame": {
-      "name": "",
-      "description": ""
+      "name": "액자",
+      "description": "벽에 건 액자 사진."
     },
     "cubicle_divider": {
-      "name": "",
-      "description": ""
+      "name": "칸막이",
+      "description": "사무실 칸막이 파티션."
     },
     "filing_cabinet": {
-      "name": "",
-      "description": ""
+      "name": "서류 캐비닛",
+      "description": "서류를 넣는 금속 캐비닛."
     },
     "office_desk": {
-      "name": "",
-      "description": ""
+      "name": "사무용 책상",
+      "description": "흔한 사무용 책상."
     },
     "office_chair": {
-      "name": "",
-      "description": ""
+      "name": "사무용 의자",
+      "description": "바퀴 달린 사무용 의자."
     },
     "bulletin_board": {
-      "name": "",
-      "description": ""
+      "name": "게시판",
+      "description": "메모와 공지를 붙이는 코르크 게시판."
     },
     "whiteboard": {
-      "name": "",
-      "description": ""
+      "name": "화이트보드",
+      "description": "구상하고 계획을 짜는 화이트보드."
     },
     "bathtub": {
-      "name": "",
-      "description": ""
+      "name": "욕조",
+      "description": "느긋하게 몸을 담그는 욕조."
     },
     "sink": {
-      "name": "",
-      "description": ""
+      "name": "세면대",
+      "description": "욕실이나 주방에 쓰는 세면대."
     },
     "cabinet": {
-      "name": "",
-      "description": ""
+      "name": "수납장",
+      "description": "주방이나 욕실 수납장."
     },
     "counter": {
-      "name": "",
-      "description": ""
+      "name": "조리대",
+      "description": "주방 조리대."
     },
     "microwave": {
-      "name": "",
-      "description": ""
+      "name": "전자레인지",
+      "description": "전자레인지."
     },
     "dishwasher": {
-      "name": "",
-      "description": ""
+      "name": "식기세척기",
+      "description": "자동 식기세척기."
     },
     "washing_machine": {
-      "name": "",
-      "description": ""
+      "name": "세탁기",
+      "description": "빨래를 하는 세탁기."
     },
     "dryer": {
-      "name": "",
-      "description": ""
+      "name": "건조기",
+      "description": "전기 의류 건조기."
     },
     "vhs_collection": {
-      "name": "",
-      "description": ""
+      "name": "VHS 모음",
+      "description": "VHS 테이프 더미."
     },
     "dvd_collection": {
-      "name": "",
-      "description": ""
+      "name": "DVD 모음",
+      "description": "DVD 케이스 더미."
     },
     "cd_collection": {
-      "name": "",
-      "description": ""
+      "name": "CD 모음",
+      "description": "케이스에 담긴 CD 모음."
     },
     "comic_book_stack": {
-      "name": "",
-      "description": ""
+      "name": "만화책 더미",
+      "description": "만화책을 쌓아 올린 더미."
     },
     "magazine_rack": {
-      "name": "",
-      "description": ""
+      "name": "잡지 거치대",
+      "description": "잡지와 신문을 꽂는 거치대."
     },
     "incense_burner": {
-      "name": "",
-      "description": ""
+      "name": "향로",
+      "description": "아로마 요법용 향로."
     },
     "terrarium": {
-      "name": "",
-      "description": ""
+      "name": "테라리엄",
+      "description": "작은 식물을 심은 테라리엄."
     },
     "pinball_machine": {
-      "name": "",
-      "description": ""
+      "name": "핀볼 기계",
+      "description": "고전 핀볼 기계."
     },
     "floor_cushion": {
-      "name": "",
-      "description": ""
+      "name": "바닥 방석",
+      "description": "푹신한 바닥 방석."
     },
     "floor_pillow_stack": {
-      "name": "",
-      "description": ""
+      "name": "바닥 쿠션 더미",
+      "description": "바닥 쿠션을 쌓아 올린 더미."
     },
     "glass_shelves": {
-      "name": "",
-      "description": ""
+      "name": "유리 선반",
+      "description": "현대식 유리 선반 진열대."
     },
     "low_table": {
-      "name": "",
-      "description": ""
+      "name": "낮은 탁자",
+      "description": "낮고 간결한 탁자."
     },
     "stereo_speaker": {
-      "name": "",
-      "description": ""
+      "name": "스테레오 스피커",
+      "description": "음질 좋은 스테레오 스피커."
     },
     "barn": {
-      "name": "",
-      "description": ""
+      "name": "헛간",
+      "description": "물자를 두고 가축을 들이는 큰 헛간."
     },
     "windmill": {
-      "name": "",
-      "description": ""
+      "name": "풍차",
+      "description": "곡식을 빻는 실제 작동하는 풍차."
     },
     "silo": {
-      "name": "",
-      "description": ""
+      "name": "사일로",
+      "description": "곡식과 수확물을 담는 높은 저장 사일로."
     },
     "chicken_coop": {
-      "name": "",
-      "description": ""
+      "name": "닭장",
+      "description": "닭을 기르고 달걀을 거두는 닭장."
     },
     "pig_pen": {
-      "name": "",
-      "description": ""
+      "name": "돼지우리",
+      "description": "돼지를 기르는 우리."
     },
     "stable": {
-      "name": "",
-      "description": ""
+      "name": "마구간",
+      "description": "말과 다른 가축을 두는 마구간."
     },
     "beehive": {
-      "name": "",
-      "description": ""
+      "name": "벌통",
+      "description": "꿀을 얻는 벌통."
     },
     "vegetable_garden": {
-      "name": "",
-      "description": ""
+      "name": "채소밭",
+      "description": "채소를 기르는 잘 가꾼 밭."
     },
     "hay_bales": {
-      "name": "",
-      "description": ""
+      "name": "건초 더미",
+      "description": "사료를 보관하는 묶은 건초 더미."
     },
     "water_trough": {
-      "name": "",
-      "description": ""
+      "name": "물통",
+      "description": "가축에게 물을 먹이는 여물통."
     },
     "scarecrow": {
-      "name": "",
-      "description": ""
+      "name": "허수아비",
+      "description": "새로부터 작물을 지키는 허수아비."
     },
     "farm_fence": {
-      "name": "",
-      "description": ""
+      "name": "농장 울타리",
+      "description": "농장 경계를 두르는 소박한 나무 울타리."
     },
     "crop_field": {
-      "name": "",
-      "description": ""
+      "name": "경작지",
+      "description": "작물을 심어 놓은 밭."
     },
     "fruit_tree": {
-      "name": "",
-      "description": ""
+      "name": "과실나무",
+      "description": "농장에 심은 열매 맺는 나무."
     },
     "garden_shed": {
-      "name": "",
-      "description": ""
+      "name": "농기구 창고",
+      "description": "농기구를 넣어두는 작은 창고."
     },
     "milking_station": {
-      "name": "",
-      "description": ""
+      "name": "착유 시설",
+      "description": "젖 짜는 일에 맞춰 갖춘 시설."
     },
     "feed_trough": {
-      "name": "",
-      "description": ""
+      "name": "여물통",
+      "description": "사료를 담아두고 나눠주는 여물통."
     },
     "irrigation_system": {
-      "name": "",
-      "description": ""
+      "name": "관개 설비",
+      "description": "자동으로 물을 대는 관개 설비."
     },
     "factory_furnace": {
-      "name": "",
-      "description": ""
+      "name": "산업용 용광로",
+      "description": "금속을 녹이는 고온 용광로."
     },
     "assembly_line": {
-      "name": "",
-      "description": ""
+      "name": "조립 라인",
+      "description": "제조를 위한 자동 조립 라인."
     },
     "conveyor_belt": {
-      "name": "",
-      "description": ""
+      "name": "컨베이어 벨트",
+      "description": "자재를 나르는 동력 벨트."
     },
     "industrial_crane": {
-      "name": "",
-      "description": ""
+      "name": "산업용 크레인",
+      "description": "무거운 짐을 드는 중장비 크레인."
     },
     "hydraulic_press": {
-      "name": "",
-      "description": ""
+      "name": "유압 프레스",
+      "description": "금속을 성형하는 고압 유압 프레스."
     },
     "storage_tank": {
-      "name": "",
-      "description": ""
+      "name": "저장 탱크",
+      "description": "액체와 자재를 담는 커다란 탱크."
     },
     "refinery_tower": {
-      "name": "",
-      "description": ""
+      "name": "정제탑",
+      "description": "원료를 정제하는 증류탑."
     },
     "heavy_machinery": {
-      "name": "",
-      "description": ""
+      "name": "중장비",
+      "description": "산업 가공을 위한 복잡한 중장비."
     },
     "electric_generator": {
-      "name": "",
-      "description": ""
+      "name": "발전기",
+      "description": "전력을 생산하는 발전기."
     },
     "air_compressor": {
-      "name": "",
-      "description": ""
+      "name": "공기 압축기",
+      "description": "공압 장치를 위해 공기를 압축한다."
     },
     "control_panel": {
-      "name": "",
-      "description": ""
+      "name": "제어반",
+      "description": "기계 장치를 관리하는 제어반."
     },
     "safety_barrier": {
-      "name": "",
-      "description": ""
+      "name": "안전 방책",
+      "description": "위험 구역을 막는 보호 방책."
     },
     "chemical_vat": {
-      "name": "",
-      "description": ""
+      "name": "화학 반응조",
+      "description": "반응을 일으키는 화학 처리 반응조."
     },
     "robotic_arm": {
-      "name": "",
-      "description": ""
+      "name": "로봇 팔",
+      "description": "정밀 작업을 위한 자동 로봇 팔."
     },
     "welding_station": {
-      "name": "",
-      "description": ""
+      "name": "용접 작업대",
+      "description": "금속 구조물을 용접하는 장비."
     },
     "laser_cutter": {
-      "name": "",
-      "description": ""
+      "name": "레이저 절단기",
+      "description": "세밀한 작업을 위한 정밀 레이저 절단기."
     },
     "3d_printer": {
-      "name": "",
-      "description": ""
+      "name": "3D 프린터",
+      "description": "물건을 만들어내는 3D 프린터."
     },
     "industrial_oven": {
-      "name": "",
-      "description": ""
+      "name": "산업용 오븐",
+      "description": "열처리에 쓰는 커다란 산업용 오븐."
     },
     "sorting_machine": {
-      "name": "",
-      "description": ""
+      "name": "분류기",
+      "description": "자재를 자동으로 분류하고 구분한다."
     },
     "vacuum_chamber": {
-      "name": "",
-      "description": ""
+      "name": "진공 챔버",
+      "description": "진공 처리를 위한 챔버."
     },
     "packaging_unit": {
-      "name": "",
-      "description": ""
+      "name": "포장 장치",
+      "description": "제품을 포장하는 자동 장비."
     },
     "quality_scanner": {
-      "name": "",
-      "description": ""
+      "name": "품질 검사기",
+      "description": "품질 관리를 위해 제품을 검사한다."
     },
     "industrial_duct": {
-      "name": "",
-      "description": ""
+      "name": "산업용 덕트",
+      "description": "공기와 자재가 흐르는 덕트 설비."
     },
     "power_distribution": {
-      "name": "",
-      "description": ""
+      "name": "배전함",
+      "description": "장비에 전력을 나눠 보낸다."
     },
     "tent": {
-      "name": "",
-      "description": ""
+      "name": "텐트",
+      "description": "하룻밤 야영을 위한 휴대용 텐트."
     },
     "campfire": {
-      "name": "",
-      "description": ""
+      "name": "모닥불",
+      "description": "몸을 녹이고 요리하는 아늑한 모닥불."
     },
     "sleeping_bag": {
-      "name": "",
-      "description": ""
+      "name": "침낭",
+      "description": "편히 쉬기 좋은 침낭."
     },
     "camping_lantern": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 랜턴",
+      "description": "야외를 밝히는 랜턴."
     },
     "camping_stove": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 버너",
+      "description": "요리를 위한 휴대용 캠핑 버너."
     },
     "camping_chair": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 의자",
+      "description": "가벼운 캠핑 의자."
     },
     "cooler": {
-      "name": "",
-      "description": ""
+      "name": "아이스박스",
+      "description": "음식을 보관하는 단열 아이스박스."
     },
     "picnic_table": {
-      "name": "",
-      "description": ""
+      "name": "피크닉 테이블",
+      "description": "야외 식사를 위한 튼튼한 탁자."
     },
     "camping_backpack": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 배낭",
+      "description": "장비를 나르는 커다란 배낭."
     },
     "water_container": {
-      "name": "",
-      "description": ""
+      "name": "물통",
+      "description": "물을 담아 나르는 통."
     },
     "bedroll": {
-      "name": "",
-      "description": ""
+      "name": "잠자리 말이",
+      "description": "야영용으로 둘둘 만 침구."
     },
     "hammock": {
-      "name": "",
-      "description": ""
+      "name": "해변 해먹",
+      "description": "기둥 사이에 매단 해먹."
     },
     "tent_cabin": {
-      "name": "",
-      "description": ""
+      "name": "텐트 캐빈",
+      "description": "오두막 같은 구조의 커다란 텐트."
     },
     "camping_rope": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 로프",
+      "description": "텐트와 장비를 고정하는 로프."
     },
     "campsite_marker": {
-      "name": "",
-      "description": ""
+      "name": "야영지 표지",
+      "description": "야영지를 알리는 깃발 표지."
     },
     "food_storage": {
-      "name": "",
-      "description": ""
+      "name": "식량 보관함",
+      "description": "식량을 안전하게 넣어두는 상자."
     },
     "camping_tent_dome": {
-      "name": "",
-      "description": ""
+      "name": "돔 텐트",
+      "description": "튼튼한 돔형 텐트."
     },
     "camping_cot": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 간이침대",
+      "description": "땅에서 띄워 자는 간이침대."
     },
     "camping_grill": {
-      "name": "",
-      "description": ""
+      "name": "캠핑 그릴",
+      "description": "요리를 위한 휴대용 그릴."
     },
     "camping_lantern_led": {
-      "name": "",
-      "description": ""
+      "name": "LED 캠핑 랜턴",
+      "description": "배터리로 켜는 현대식 LED 랜턴."
     },
     "camping_shelter": {
-      "name": "",
-      "description": ""
+      "name": "팝업 쉘터",
+      "description": "금세 펼치는 팝업 대피 쉘터."
     },
     "shopping_cart": {
-      "name": "",
-      "description": ""
+      "name": "쇼핑 카트",
+      "description": "손님용 금속 쇼핑 카트."
     },
     "shopping_basket": {
-      "name": "",
-      "description": ""
+      "name": "쇼핑 바구니",
+      "description": "손에 드는 쇼핑 바구니."
     },
     "checkout_counter": {
-      "name": "",
-      "description": ""
+      "name": "계산대",
+      "description": "손님의 구매를 처리하는 계산대."
     },
     "cash_register": {
-      "name": "",
-      "description": ""
+      "name": "금전등록기",
+      "description": "거래를 처리하는 금전등록기."
     },
     "display_shelf": {
-      "name": "",
-      "description": ""
+      "name": "진열 선반",
+      "description": "상품을 진열하는 선반."
     },
     "refrigerated_display": {
-      "name": "",
-      "description": ""
+      "name": "냉장 진열장",
+      "description": "상하기 쉬운 상품을 위한 냉장 진열장."
     },
     "freezer_unit": {
-      "name": "",
-      "description": ""
+      "name": "냉동고",
+      "description": "냉동식품을 위한 업소용 냉동고."
     },
     "product_display_stand": {
-      "name": "",
-      "description": ""
+      "name": "상품 진열대",
+      "description": "판촉 상품을 놓는 진열대."
     },
     "price_sign": {
-      "name": "",
-      "description": ""
+      "name": "가격표",
+      "description": "상품 가격을 표시하는 표지."
     },
     "shopping_aisle": {
-      "name": "",
-      "description": ""
+      "name": "진열 통로",
+      "description": "슈퍼마켓의 통로 표시."
     },
     "automatic_door": {
-      "name": "",
-      "description": ""
+      "name": "자동문",
+      "description": "자동으로 열리는 미닫이 출입문."
     },
     "customer_service_desk": {
-      "name": "",
-      "description": ""
+      "name": "고객 서비스 데스크",
+      "description": "문의와 응대를 맡는 데스크."
     },
     "mannequin_display": {
-      "name": "",
-      "description": ""
+      "name": "마네킹 진열",
+      "description": "옷을 보여주는 마네킹."
     },
     "department_sign": {
-      "name": "",
-      "description": ""
+      "name": "매장 구역 표지",
+      "description": "여러 매장 구역을 나타내는 표지."
     },
     "stocking_shelf": {
-      "name": "",
-      "description": ""
+      "name": "재고 선반",
+      "description": "재고를 쌓아두는 선반."
     },
     "security_gate": {
-      "name": "",
-      "description": ""
+      "name": "보안 게이트",
+      "description": "매장 입구의 보안 게이트."
     },
     "produce_stand": {
-      "name": "",
-      "description": ""
+      "name": "농산물 매대",
+      "description": "신선 농산물을 진열하는 매대."
     },
     "deli_counter": {
-      "name": "",
-      "description": ""
+      "name": "델리 카운터",
+      "description": "델리와 조리 식품을 파는 카운터."
     },
     "bakery_display": {
-      "name": "",
-      "description": ""
+      "name": "베이커리 진열장",
+      "description": "제과제빵 상품을 놓는 진열장."
     },
     "conveyor_checkout": {
-      "name": "",
-      "description": ""
+      "name": "계산대 컨베이어",
+      "description": "계산대의 동력 컨베이어 벨트."
     },
     "store_directory": {
-      "name": "",
-      "description": ""
+      "name": "매장 안내도",
+      "description": "매장 배치를 보여주는 안내도."
     },
     "lighting_fixture": {
-      "name": "",
-      "description": ""
+      "name": "매장 조명 기구",
+      "description": "매장 천장 조명."
     },
     "dungeon_torch": {
-      "name": "",
-      "description": ""
+      "name": "던전 횃불",
+      "description": "어두운 던전을 밝히는 횃불."
     },
     "stone_pillar": {
-      "name": "",
-      "description": ""
+      "name": "돌기둥",
+      "description": "구조를 떠받치는 높은 돌기둥."
     },
     "iron_bars": {
-      "name": "",
-      "description": ""
+      "name": "쇠창살",
+      "description": "감옥과 우리에 쓰는 쇠창살."
     },
     "wooden_door": {
-      "name": "",
-      "description": ""
+      "name": "나무 문",
+      "description": "보강한 나무 던전 문."
     },
     "iron_door": {
-      "name": "",
-      "description": ""
+      "name": "철문",
+      "description": "묵직한 철제 던전 문."
     },
     "prison_cell": {
-      "name": "",
-      "description": ""
+      "name": "감방",
+      "description": "포로를 가두는 감방."
     },
     "torture_rack": {
-      "name": "",
-      "description": ""
+      "name": "고문대",
+      "description": "중세의 고문 기구."
     },
     "iron_chain": {
-      "name": "",
-      "description": ""
+      "name": "쇠사슬",
+      "description": "죄수를 묶는 무거운 쇠사슬."
     },
     "skull_pile": {
-      "name": "",
-      "description": ""
+      "name": "해골 더미",
+      "description": "해골을 쌓아 올린 더미."
     },
     "bone_altar": {
-      "name": "",
-      "description": ""
+      "name": "뼈 제단",
+      "description": "어두운 의식을 위한 뼈로 만든 제단."
     },
     "spikes": {
-      "name": "",
-      "description": ""
+      "name": "가시 함정",
+      "description": "함정이나 장식으로 쓰는 가시."
     },
     "stone_grate": {
-      "name": "",
-      "description": ""
+      "name": "돌 배수구",
+      "description": "바닥 배수를 위한 돌 격자."
     },
     "stone_statue": {
-      "name": "",
-      "description": ""
+      "name": "석상",
+      "description": "으스스한 석상."
     },
     "dark_altar": {
-      "name": "",
-      "description": ""
+      "name": "어둠의 제단",
+      "description": "비의 의식을 위한 어두운 제단."
     },
     "treasure_chest": {
-      "name": "",
-      "description": ""
+      "name": "보물 상자",
+      "description": "귀중품을 넣어두는 보물 상자."
     },
     "stone_coffin": {
-      "name": "",
-      "description": ""
+      "name": "석관",
+      "description": "유해가 든 석관."
     },
     "dungeon_chest": {
-      "name": "",
-      "description": ""
+      "name": "던전 상자",
+      "description": "던전에 잠겨 있는 상자."
     },
     "stone_wall": {
-      "name": "",
-      "description": ""
+      "name": "돌벽",
+      "description": "단단한 돌벽."
     },
     "hanging_chains": {
-      "name": "",
-      "description": ""
+      "name": "매달린 사슬",
+      "description": "천장에서 늘어뜨린 무거운 사슬."
     },
     "sword_rack": {
-      "name": "",
-      "description": ""
+      "name": "검 거치대",
+      "description": "무기를 진열하는 거치대."
     },
     "shield_wall": {
-      "name": "",
-      "description": ""
+      "name": "방패 벽",
+      "description": "방패를 걸어 놓은 벽."
     },
     "dungeon_banner": {
-      "name": "",
-      "description": ""
+      "name": "던전 깃발",
+      "description": "던전 장식용 어두운 깃발."
     },
     "treadmill": {
-      "name": "",
-      "description": ""
+      "name": "러닝머신",
+      "description": "유산소 운동을 위한 전동 러닝머신."
     },
     "weight_bench": {
-      "name": "",
-      "description": ""
+      "name": "웨이트 벤치",
+      "description": "중량 운동을 위한 벤치."
     },
     "dumbbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "덤벨 랙",
+      "description": "덤벨과 원판을 두는 랙."
     },
     "barbell_rack": {
-      "name": "",
-      "description": ""
+      "name": "바벨 랙",
+      "description": "바벨과 원판을 두는 랙."
     },
     "squat_rack": {
-      "name": "",
-      "description": ""
+      "name": "스쿼트 랙",
+      "description": "바벨 스쿼트와 들어올리기를 위한 랙."
     },
     "cable_machine": {
-      "name": "",
-      "description": ""
+      "name": "케이블 머신",
+      "description": "다목적 케이블 운동 기구."
     },
     "leg_press": {
-      "name": "",
-      "description": ""
+      "name": "레그 프레스",
+      "description": "하체 단련을 위한 레그 프레스 기구."
     },
     "chest_press": {
-      "name": "",
-      "description": ""
+      "name": "체스트 프레스",
+      "description": "상체 단련을 위한 체스트 프레스 기구."
     },
     "lat_pulldown": {
-      "name": "",
-      "description": ""
+      "name": "랫 풀다운",
+      "description": "등 단련을 위한 랫 풀다운 기구."
     },
     "leg_extension": {
-      "name": "",
-      "description": ""
+      "name": "레그 익스텐션",
+      "description": "대퇴사두근 단련을 위한 레그 익스텐션 기구."
     },
     "ab_crunch_machine": {
-      "name": "",
-      "description": ""
+      "name": "복근 크런치 머신",
+      "description": "복근 크런치를 위한 기구."
     },
     "rowing_machine": {
-      "name": "",
-      "description": ""
+      "name": "로잉 머신",
+      "description": "전신 유산소를 위한 로잉 머신."
     },
     "stationary_bike": {
-      "name": "",
-      "description": ""
+      "name": "실내 자전거",
+      "description": "유산소 운동을 위한 실내 자전거."
     },
     "elliptical_machine": {
-      "name": "",
-      "description": ""
+      "name": "일립티컬 머신",
+      "description": "관절 부담이 적은 유산소를 위한 일립티컬 머신."
     },
     "punching_bag": {
-      "name": "",
-      "description": ""
+      "name": "샌드백",
+      "description": "권투 훈련용 무거운 샌드백."
     },
     "speed_bag": {
-      "name": "",
-      "description": ""
+      "name": "스피드백",
+      "description": "반사 신경 훈련용 스피드백."
     },
     "pull_up_bar": {
-      "name": "",
-      "description": ""
+      "name": "철봉",
+      "description": "턱걸이와 친업을 위한 봉."
     },
     "parallel_bars": {
-      "name": "",
-      "description": ""
+      "name": "평행봉",
+      "description": "딥스와 코어 단련을 위한 평행봉."
     },
     "gym_mat": {
-      "name": "",
-      "description": ""
+      "name": "운동 매트",
+      "description": "바닥 운동을 위한 보호 매트."
     },
     "gym_mirror": {
-      "name": "",
-      "description": ""
+      "name": "체육관 거울",
+      "description": "자세를 확인하는 큰 거울."
     },
     "gym_locker": {
-      "name": "",
-      "description": ""
+      "name": "체육관 사물함",
+      "description": "운동 소지품을 넣는 사물함."
     },
     "shower_stall": {
-      "name": "",
-      "description": ""
+      "name": "샤워 부스",
+      "description": "운동 후 씻는 샤워 부스."
     },
     "gym_bleachers": {
-      "name": "",
-      "description": ""
+      "name": "체육관 관람석",
+      "description": "관중이 앉거나 쉬는 관람석."
     },
     "foam_roller": {
-      "name": "",
-      "description": ""
+      "name": "폼롤러 거치대",
+      "description": "폼롤러와 회복 도구를 두는 거치대."
     },
     "resistance_bands_rack": {
-      "name": "",
-      "description": ""
+      "name": "저항 밴드 랙",
+      "description": "저항 밴드를 정리해 두는 랙."
     },
     "medicine_ball_rack": {
-      "name": "",
-      "description": ""
+      "name": "메디신볼 랙",
+      "description": "메디신볼을 두는 랙."
     },
     "gym_clock": {
-      "name": "",
-      "description": ""
+      "name": "체육관 시계",
+      "description": "인터벌 훈련을 위한 벽걸이 시계."
     },
     "beach_umbrella": {
-      "name": "",
-      "description": ""
+      "name": "비치 파라솔",
+      "description": "햇빛을 가리는 알록달록한 파라솔."
     },
     "beach_chair": {
-      "name": "",
-      "description": ""
+      "name": "비치 체어",
+      "description": "해변에서 쉬기 좋은 편안한 의자."
     },
     "sand_castle": {
-      "name": "",
-      "description": ""
+      "name": "모래성",
+      "description": "장식용 모래성."
     },
     "sailboat": {
-      "name": "",
-      "description": ""
+      "name": "돛단배",
+      "description": "해변을 둘러보기 위한 나무 돛단배."
     },
     "beach_hut": {
-      "name": "",
-      "description": ""
+      "name": "해변 오두막",
+      "description": "몸을 피하는 작은 해변 오두막."
     },
     "surfboard": {
-      "name": "",
-      "description": ""
+      "name": "서프보드",
+      "description": "파도를 타는 서프보드."
     },
     "beach_ball": {
-      "name": "",
-      "description": ""
+      "name": "비치볼",
+      "description": "공기를 넣어 부풀린 비치볼."
     },
     "beach_towel_rack": {
-      "name": "",
-      "description": ""
+      "name": "비치 타월 걸이",
+      "description": "해변 수건을 거는 걸이."
     },
     "beach_cooler": {
-      "name": "",
-      "description": ""
+      "name": "비치 아이스박스",
+      "description": "해변에서 차가운 음료를 담는 아이스박스."
     },
     "lifeguard_stand": {
-      "name": "",
-      "description": ""
+      "name": "인명구조 감시대",
+      "description": "해변 인명구조원을 위한 높은 감시대."
     },
     "beach_sign": {
-      "name": "",
-      "description": ""
+      "name": "해변 표지판",
+      "description": "해변의 경고와 안내를 알리는 표지판."
     },
     "beach_anchor": {
-      "name": "",
-      "description": ""
+      "name": "닻",
+      "description": "정박에 쓰는 배의 닻."
     },
     "wooden_dock": {
-      "name": "",
-      "description": ""
+      "name": "나무 선착장",
+      "description": "배를 대는 나무 선착장."
     },
     "beach_pier": {
-      "name": "",
-      "description": ""
+      "name": "해변 잔교",
+      "description": "물 쪽으로 길게 뻗은 큰 잔교."
     },
     "buoy": {
-      "name": "",
-      "description": ""
+      "name": "부표",
+      "description": "물놀이 구역을 표시하는 부표."
     },
     "beach_lounge": {
-      "name": "",
-      "description": ""
+      "name": "비치 라운저",
+      "description": "느긋하게 쉬는 호화로운 라운저."
     },
     "sand_bucket": {
-      "name": "",
-      "description": ""
+      "name": "모래 양동이",
+      "description": "모래와 물놀이용 양동이."
     },
     "sand_shovel": {
-      "name": "",
-      "description": ""
+      "name": "모래 삽",
+      "description": "모래를 파는 삽."
     },
     "beach_shower": {
-      "name": "",
-      "description": ""
+      "name": "해변 샤워기",
+      "description": "모래를 씻어내는 야외 샤워기."
     },
     "beach_bar": {
-      "name": "",
-      "description": ""
+      "name": "해변 바",
+      "description": "해변에서 음료를 파는 바 카운터."
     },
     "tiki_torch": {
-      "name": "",
-      "description": ""
+      "name": "티키 횃불",
+      "description": "저녁 해변을 밝히는 티키 횃불."
     },
     "palm_tree": {
-      "name": "",
-      "description": ""
+      "name": "야자나무",
+      "description": "열대 야자나무."
     },
     "beach_volleyball_net": {
-      "name": "",
-      "description": ""
+      "name": "배구 네트",
+      "description": "비치발리볼용 네트."
     },
     "beach_cabana": {
-      "name": "",
-      "description": ""
+      "name": "비치 카바나",
+      "description": "해변에서 사생활을 지켜주는 호화로운 카바나."
     },
     "rowboat": {
-      "name": "",
-      "description": ""
+      "name": "노 젓는 배",
+      "description": "물 위를 둘러보는 작은 노 젓는 배."
     }
   }
 }

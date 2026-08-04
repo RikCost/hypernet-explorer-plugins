@@ -1,6 +1,6 @@
 {
   "resolved": "",
-  "failed": "",
+  "failed": "Manqué",
   "urgent": "",
   "reward": "",
   "readyToCollect": "",
@@ -12,13 +12,13 @@
   "objectives2": "",
   "terms": "",
   "log": "",
-  "close": "",
+  "close": "Fermer",
   "toDo": "",
   "inProgress": "",
   "done": "",
   "noQuests": "",
   "colShiftMoveCardOk": "",
-  "back": "",
+  "back": "Retour",
   "questLog": "",
   "appName": "",
   "questCompleted": "",
@@ -27,7 +27,7 @@
     "",
     "",
     "",
-    ""
+    "Manqué"
   ],
   "showOnMapAt": "",
   "notify": {

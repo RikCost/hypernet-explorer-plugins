@@ -5,2827 +5,2827 @@
     "name": ""
   },
   "Hypernet point": {
-    "val": "",
+    "val": "Hypernet Point",
     "excluded": "",
     "name": ""
   },
   "Elevator": {
-    "val": "",
+    "val": "Ascenseur",
     "excluded": "",
     "name": ""
   },
   "Hall": {
-    "val": "",
+    "val": "Salle",
     "excluded": "",
     "name": ""
   },
   "Narrow passage": {
-    "val": "",
+    "val": "Passage étroit",
     "excluded": "",
     "name": ""
   },
   "Maze": {
-    "val": "",
+    "val": "Labyrinthe",
     "excluded": "",
     "name": ""
   },
   "Grey dock": {
-    "val": "",
+    "val": "Quai gris",
     "excluded": "",
     "name": ""
   },
   "Papercut plex": {
-    "val": "",
+    "val": "Complexe Coupure-Papier",
     "excluded": "",
     "name": ""
   },
   "Shadowed meadows": {
-    "val": "",
+    "val": "Prairies ombragées",
     "excluded": "",
     "name": ""
   },
   "Brickplace": {
-    "val": "",
+    "val": "Place de Briques",
     "excluded": "",
     "name": ""
   },
   "Dirtplace": {
-    "val": "",
+    "val": "Place de Terre",
     "excluded": "",
     "name": ""
   },
   "Confined corridor": {
-    "val": "",
+    "val": "Couloir exigu",
     "excluded": "",
     "name": ""
   },
   "Labis the Gnome capital": {
-    "val": "",
+    "val": "Labis, capitale des Gnomes",
     "excluded": "",
     "name": ""
   },
   "Serene temple": {
-    "val": "",
+    "val": "Temple serein",
     "excluded": "",
     "name": ""
   },
   "Forested village": {
-    "val": "",
+    "val": "Village forestier",
     "excluded": "",
     "name": ""
   },
   "Sandy Pillars": {
-    "val": "",
+    "val": "Piliers de Sable",
     "excluded": "",
     "name": ""
   },
   "Masked bazaar": {
-    "val": "",
+    "val": "Bazar masqué",
     "excluded": "",
     "name": ""
   },
   "Smoldering wall": {
-    "val": "",
+    "val": "Mur fumant",
     "excluded": "",
     "name": ""
   },
   "The Boneyard": {
-    "val": "",
+    "val": "L'Ossuaire",
     "excluded": "",
     "name": ""
   },
   "Factory floor": {
-    "val": "",
+    "val": "Atelier d'usine",
     "excluded": "",
     "name": ""
   },
   "Bulkward fortress": {
-    "val": "",
+    "val": "Forteresse Bulkward",
     "excluded": "",
     "name": ""
   },
   "urquoise Maze": {
-    "val": "",
+    "val": "Labyrinthe urquoise",
     "excluded": "",
     "name": ""
   },
   "Fractured time": {
-    "val": "",
+    "val": "Temps fracturé",
     "excluded": "",
     "name": ""
   },
   "Spiral summers": {
-    "val": "",
+    "val": "Étés en spirale",
     "excluded": "",
     "name": ""
   },
   "Moderna archipelago": {
-    "val": "",
+    "val": "Archipel Moderna",
     "excluded": "",
     "name": ""
   },
   "Mossy palace": {
-    "val": "",
+    "val": "Palais moussu",
     "excluded": "",
     "name": ""
   },
   "Figures world": {
-    "val": "",
+    "val": "Monde des Figures",
     "excluded": "",
     "name": ""
   },
   "Sacrifice": {
-    "val": "",
+    "val": "Sacrifice",
     "excluded": "",
     "name": ""
   },
   "The Bridge": {
-    "val": "",
+    "val": "Le Pont",
     "excluded": "",
     "name": ""
   },
   "Big Cross": {
-    "val": "",
+    "val": "Grande Croix",
     "excluded": "",
     "name": ""
   },
   "Decrepit Houses": {
-    "val": "",
+    "val": "Maisons Décrépites",
     "excluded": "",
     "name": ""
   },
   "Hypercapital burrows": {
-    "val": "",
+    "val": "Terriers hypercapitaux",
     "excluded": "",
     "name": ""
   },
   "Facade": {
-    "val": "",
+    "val": "Façade",
     "excluded": "",
     "name": ""
   },
   "Rotten library": {
-    "val": "",
+    "val": "Bibliothèque pourrie",
     "excluded": "",
     "name": ""
   },
   "Crater valley": {
-    "val": "",
+    "val": "Vallée du cratère",
     "excluded": "",
     "name": ""
   },
   "Mini dungeon": {
-    "val": "",
+    "val": "Mini-donjon",
     "excluded": "",
     "name": ""
   },
   "Eye of God": {
-    "val": "",
+    "val": "Œil de Dieu",
     "excluded": "",
     "name": ""
   },
   "Pinkpink Forest": {
-    "val": "",
+    "val": "Forêt Rosé-Rose",
     "excluded": "",
     "name": ""
   },
   "Dark metropolis": {
-    "val": "",
+    "val": "Métropole sombre",
     "excluded": "",
     "name": ""
   },
   "Mushroom planet": {
-    "val": "",
+    "val": "Planète champignon",
     "excluded": "",
     "name": ""
   },
   "Bowels": {
-    "val": "",
+    "val": "Entrailles",
     "excluded": "",
     "name": ""
   },
   "Rainbow land": {
-    "val": "",
+    "val": "Terre arc-en-ciel",
     "excluded": "",
     "name": ""
   },
   "The Square Lodge": {
-    "val": "",
+    "val": "Le Pavillon Carré",
     "excluded": "",
     "name": ""
   },
   "Landfill": {
-    "val": "",
+    "val": "Décharge",
     "excluded": "",
     "name": ""
   },
   "Corner": {
-    "val": "",
+    "val": "Coin",
     "excluded": "",
     "name": ""
   },
   "Arcade Blue": {
-    "val": "",
+    "val": "Arcade Bleue",
     "excluded": "",
     "name": ""
   },
   "Graves": {
-    "val": "",
+    "val": "Tombes",
     "excluded": "",
     "name": ""
   },
   "Opulent Palace": {
-    "val": "",
+    "val": "Palais Opulent",
     "excluded": "",
     "name": ""
   },
   "Very Quiet Village": {
-    "val": "",
+    "val": "Village Très Silencieux",
     "excluded": "",
     "name": ""
   },
   "Landstrandedland": {
-    "val": "",
+    "val": "Terre-Échouée",
     "excluded": "",
     "name": ""
   },
   "Fuming cave": {
-    "val": "",
+    "val": "Grotte fumante",
     "excluded": "",
     "name": ""
   },
   "Tableword": {
-    "val": "",
+    "val": "Tableword",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 66)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 66)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 67)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 67)",
     "excluded": "",
     "name": ""
   },
   "Connecting pipe": {
-    "val": "",
+    "val": "Tuyau de liaison",
     "excluded": "",
     "name": ""
   },
   "Nuclear Bunker": {
-    "val": "",
+    "val": "Bunker Nucléaire",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 70)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 70)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 71)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 71)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 72)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 72)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 73)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 73)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 74)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 74)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 75)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 75)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 76)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 76)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 77)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 77)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 78)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 78)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 79)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 79)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 80)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 80)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 81)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 81)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 82)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 82)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 83)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 83)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 84)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 84)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 85)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 85)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 86)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 86)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 87)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 87)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 88)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 88)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 89)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 89)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 91)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 91)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 92)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 92)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 93)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 93)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 94)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 94)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 95)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 95)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 96)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 96)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 97)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 97)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 98)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 98)",
     "excluded": "",
     "name": ""
   },
   "Pristine sewers": {
-    "val": "",
+    "val": "Égouts immaculés",
     "excluded": "",
     "name": ""
   },
   "Accursed market": {
-    "val": "",
+    "val": "Marché maudit",
     "excluded": "",
     "name": ""
   },
   "Omega Tower Station": {
-    "val": "",
+    "val": "Station de l'Omega Tower",
     "excluded": "",
     "name": ""
   },
   "Generated Map": {
-    "val": "",
+    "val": "Carte Générée",
     "excluded": "",
     "name": ""
   },
   "The Vast Library": {
-    "val": "",
+    "val": "La Vaste Bibliothèque",
     "excluded": "",
     "name": ""
   },
   "Miniature city": {
-    "val": "",
+    "val": "Ville miniature",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 127)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 127)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 128)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 128)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 129)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 129)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 130)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 130)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 131)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 131)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 132)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 132)",
     "excluded": "",
     "name": ""
   },
   "The first room": {
-    "val": "",
+    "val": "La première salle",
     "excluded": "",
     "name": ""
   },
   "Omega Tower": {
-    "val": "",
+    "val": "Omega Tower",
     "excluded": "",
     "name": ""
   },
   "Basement Stairs": {
-    "val": "",
+    "val": "Escalier du sous-sol",
     "excluded": "",
     "name": ""
   },
   "Locker room": {
-    "val": "",
+    "val": "Vestiaire",
     "excluded": "",
     "name": ""
   },
   "Kt cave": {
-    "val": "",
+    "val": "Grotte Kt",
     "excluded": "",
     "name": ""
   },
   "Arcade": {
-    "val": "",
+    "val": "Arcade",
     "excluded": "",
     "name": ""
   },
   "Girlfriend walkway": {
-    "val": "",
+    "val": "Passerelle de la Petite Amie",
     "excluded": "",
     "name": ""
   },
   "Bush room": {
-    "val": "",
+    "val": "Salle des Buissons",
     "excluded": "",
     "name": ""
   },
   "Mini room": {
-    "val": "",
+    "val": "Mini-salle",
     "excluded": "",
     "name": ""
   },
   "Dream depot": {
-    "val": "",
+    "val": "Dépôt des Rêves",
     "excluded": "",
     "name": ""
   },
   "Buried city": {
-    "val": "",
+    "val": "Cité enfouie",
     "excluded": "",
     "name": ""
   },
   "Flooded cave": {
-    "val": "",
+    "val": "Grotte inondée",
     "excluded": "",
     "name": ""
   },
   "Just a normal room": {
-    "val": "",
+    "val": "Juste une salle ordinaire",
     "excluded": "",
     "name": ""
   },
   "Prison space": {
-    "val": "",
+    "val": "Espace prison",
     "excluded": "",
     "name": ""
   },
   "The purple desert": {
-    "val": "",
+    "val": "Le désert pourpre",
     "excluded": "",
     "name": ""
   },
   "Moderna's Temple": {
-    "val": "",
+    "val": "Temple de Moderna",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Layer 0 - B1 Stacked Walls)": {
-    "val": "",
+    "val": "Donjon Généré (Couche 0 - B1 Murs Empilés)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 177)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 177)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 178)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 178)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 179)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 179)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 180)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 180)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 181)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 181)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 182)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 182)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 183)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 183)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 184)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 184)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 185)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 185)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 186)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 186)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 187)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 187)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 188)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 188)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 189)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 189)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 190)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 190)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 191)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 191)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 192)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 192)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 193)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 193)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 194)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 194)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 195)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 195)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 196)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 196)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 197)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 197)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 198)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 198)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 199)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 199)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 200)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 200)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 201)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 201)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 202)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 202)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 203)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 203)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 204)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 204)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 205)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 205)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 206)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 206)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 207)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 207)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 208)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 208)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 209)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 209)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 210)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 210)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 211)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 211)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 212)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 212)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 213)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 213)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 214)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 214)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 215)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 215)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 216)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 216)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 217)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 217)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 218)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 218)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 219)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 219)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 220)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 220)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 221)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 221)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 222)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 222)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 223)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 223)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 224)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 224)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 225)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 225)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 226)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 226)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 227)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 227)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 228)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 228)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 229)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 229)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 230)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 230)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 231)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 231)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 232)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 232)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 233)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 233)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 234)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 234)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 235)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 235)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 237)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 237)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 238)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 238)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 239)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 239)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 240)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 240)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 241)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 241)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 242)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 242)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 243)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 243)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 244)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 244)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 245)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 245)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 246)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 246)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 247)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 247)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 248)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 248)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 249)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 249)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 250)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 250)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 251)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 251)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 252)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 252)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 253)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 253)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 254)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 254)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 255)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 255)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 276)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 276)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 257)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 257)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 258)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 258)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 259)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 259)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 260)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 260)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 261)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 261)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 262)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 262)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 263)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 263)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 264)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 264)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 265)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 265)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 266)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 266)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 267)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 267)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 268)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 268)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 269)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 269)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 270)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 270)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 271)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 271)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 272)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 272)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 273)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 273)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 274)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 274)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 275)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 275)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 278)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 278)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 279)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 279)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 280)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 280)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 281)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 281)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 282)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 282)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 283)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 283)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 284)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 284)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 285)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 285)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 286)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 286)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 287)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 287)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 288)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 288)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 289)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 289)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 290)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 290)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 291)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 291)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 292)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 292)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 293)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 293)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 294)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 294)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 295)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 295)",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 296)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 296)",
     "excluded": "",
     "name": ""
   },
   "ad": {
-    "val": "",
+    "val": "ad",
     "excluded": "",
     "name": ""
   },
   "MAX Gauntlet": {
-    "val": "",
+    "val": "Gantelet MAX",
     "excluded": "",
     "name": ""
   },
   "MAX Tavern": {
-    "val": "",
+    "val": "Taverne MAX",
     "excluded": "",
     "name": ""
   },
   "Shopping Alley": {
-    "val": "",
+    "val": "Ruelle Marchande",
     "excluded": "",
     "name": ""
   },
   "Gym": {
-    "val": "",
+    "val": "Gymnase",
     "excluded": "",
     "name": ""
   },
   "Bait shop": {
-    "val": "",
+    "val": "Magasin d'appâts",
     "excluded": "",
     "name": ""
   },
   "Camping room": {
-    "val": "",
+    "val": "Salle de camping",
     "excluded": "",
     "name": ""
   },
   "Museum": {
-    "val": "",
+    "val": "Musée",
     "excluded": "",
     "name": ""
   },
   "Ko's Bakery": {
-    "val": "",
+    "val": "Boulangerie de Ko",
     "excluded": "",
     "name": ""
   },
   "Ice cream shop": {
-    "val": "",
+    "val": "Glacier",
     "excluded": "",
     "name": ""
   },
   "Costume shop": {
-    "val": "",
+    "val": "Magasin de costumes",
     "excluded": "",
     "name": ""
   },
   "Music store": {
-    "val": "",
+    "val": "Magasin de musique",
     "excluded": "",
     "name": ""
   },
   "Gun store": {
-    "val": "",
+    "val": "Armurerie",
     "excluded": "",
     "name": ""
   },
   "Apartments": {
-    "val": "",
+    "val": "Appartements",
     "excluded": "",
     "name": ""
   },
   "Holy reactor": {
-    "val": "",
+    "val": "Réacteur saint",
     "excluded": "",
     "name": ""
   },
   "Old Europe": {
-    "val": "",
+    "val": "Vieille Europe",
     "excluded": "",
     "name": ""
   },
   "Regional train": {
-    "val": "",
+    "val": "Train régional",
     "excluded": "",
     "name": ""
   },
   "Cult meeting": {
-    "val": "",
+    "val": "Réunion du culte",
     "excluded": "",
     "name": ""
   },
   "Fake lab": {
-    "val": "",
+    "val": "Faux laboratoire",
     "excluded": "",
     "name": ""
   },
   "Nothing": {
-    "val": "",
+    "val": "Rien",
     "excluded": "",
     "name": ""
   },
   "Red Brick Market": {
-    "val": "",
+    "val": "Marché de Brique Rouge",
     "excluded": "",
     "name": ""
   },
   "Basement": {
-    "val": "",
+    "val": "Sous-sol",
     "excluded": "",
     "name": ""
   },
   "Fridge": {
-    "val": "",
+    "val": "Réfrigérateur",
     "excluded": "",
     "name": ""
   },
   "The looping pools": {
-    "val": "",
+    "val": "Les bassins en boucle",
     "excluded": "",
     "name": ""
   },
   "Inner tower": {
-    "val": "",
+    "val": "Tour intérieure",
     "excluded": "",
     "name": ""
   },
   "Lower sewers": {
-    "val": "",
+    "val": "Égouts inférieurs",
     "excluded": "",
     "name": ""
   },
   "Docks": {
-    "val": "",
+    "val": "Quais",
     "excluded": "",
     "name": ""
   },
   "Deep chasm": {
-    "val": "",
+    "val": "Gouffre profond",
     "excluded": "",
     "name": ""
   },
   "Hidden airship": {
-    "val": "",
+    "val": "Aéronef caché",
     "excluded": "",
     "name": ""
   },
   "House complex": {
-    "val": "",
+    "val": "Complexe de maisons",
     "excluded": "",
     "name": ""
   },
   "Inner lake": {
-    "val": "",
+    "val": "Lac intérieur",
     "excluded": "",
     "name": ""
   },
   "Houses interiors": {
-    "val": "",
+    "val": "Intérieurs des maisons",
     "excluded": "",
     "name": ""
   },
   "Lower tunnel": {
-    "val": "",
+    "val": "Tunnel inférieur",
     "excluded": "",
     "name": ""
   },
   "Crocomoss cave": {
-    "val": "",
+    "val": "Grotte de Crocomoss",
     "excluded": "",
     "name": ""
   },
   "Buried grounds": {
-    "val": "",
+    "val": "Terrains enfouis",
     "excluded": "",
     "name": ""
   },
   "Illegal Alley": {
-    "val": "",
+    "val": "Ruelle Illégale",
     "excluded": "",
     "name": ""
   },
   "Elven ship": {
-    "val": "",
+    "val": "Navire elfique",
     "excluded": "",
     "name": ""
   },
   "Inner meadows": {
-    "val": "",
+    "val": "Prairies intérieures",
     "excluded": "",
     "name": ""
   },
   "Gray Stairs": {
-    "val": "",
+    "val": "Escalier Gris",
     "excluded": "",
     "name": ""
   },
   "Antwerpen": {
-    "val": "",
+    "val": "Anvers",
     "excluded": "",
     "name": ""
   },
   "Moonlit Station": {
-    "val": "",
+    "val": "Station Clair de Lune",
     "excluded": "",
     "name": ""
   },
   "Dark tower": {
-    "val": "",
+    "val": "Tour sombre",
     "excluded": "",
     "name": ""
   },
   "Vents": {
-    "val": "",
+    "val": "Conduits",
     "excluded": "",
     "name": ""
   },
   "ClosetScape": {
-    "val": "",
+    "val": "Placardscape",
     "excluded": "",
     "name": ""
   },
   "Fairy Patch": {
-    "val": "",
+    "val": "Coin des Fées",
     "excluded": "",
     "name": ""
   },
   "Deep crater": {
-    "val": "",
+    "val": "Cratère profond",
     "excluded": "",
     "name": ""
   },
   "House Inside": {
-    "val": "",
+    "val": "Intérieur de Maison",
     "excluded": "",
     "name": ""
   },
   "Mushroom Island": {
-    "val": "",
+    "val": "Île aux Champignons",
     "excluded": "",
     "name": ""
   },
   "Pink Pyramid": {
-    "val": "",
+    "val": "Pyramide Rose",
     "excluded": "",
     "name": ""
   },
   "Rocky Lodge": {
-    "val": "",
+    "val": "Pavillon Rocheux",
     "excluded": "",
     "name": ""
   },
   "Trash cave": {
-    "val": "",
+    "val": "Grotte à ordures",
     "excluded": "",
     "name": ""
   },
   "Mossy ground": {
-    "val": "",
+    "val": "Sol moussu",
     "excluded": "",
     "name": ""
   },
   "Secret cinema": {
-    "val": "",
+    "val": "Cinéma secret",
     "excluded": "",
     "name": ""
   },
   "Forgery": {
-    "val": "",
+    "val": "Contrefaçon",
     "excluded": "",
     "name": ""
   },
   "Unassuming bush": {
-    "val": "",
+    "val": "Buisson insignifiant",
     "excluded": "",
     "name": ""
   },
   "Demon court": {
-    "val": "",
+    "val": "Cour des démons",
     "excluded": "",
     "name": ""
   },
   "Lava cave": {
-    "val": "",
+    "val": "Grotte de lave",
     "excluded": "",
     "name": ""
   },
   "Prickly Beach": {
-    "val": "",
+    "val": "Plage Épineuse",
     "excluded": "",
     "name": ""
   },
   "Inside a mouth": {
-    "val": "",
+    "val": "Dans une bouche",
     "excluded": "",
     "name": ""
   },
   "Truck": {
-    "val": "",
+    "val": "Camion",
     "excluded": "",
     "name": ""
   },
   "Toxic House": {
-    "val": "",
+    "val": "Maison Toxique",
     "excluded": "",
     "name": ""
   },
   "Shroom village": {
-    "val": "",
+    "val": "Village Champignon",
     "excluded": "",
     "name": ""
   },
   "Damp river": {
-    "val": "",
+    "val": "Rivière humide",
     "excluded": "",
     "name": ""
   },
   "Corner shop": {
-    "val": "",
+    "val": "Boutique du coin",
     "excluded": "",
     "name": ""
   },
   "Corner Restaurant": {
-    "val": "",
+    "val": "Restaurant du Coin",
     "excluded": "",
     "name": ""
   },
   "Okla city": {
-    "val": "",
+    "val": "Ville d'Okla",
     "excluded": "",
     "name": ""
   },
   "Bloody Roots": {
-    "val": "",
+    "val": "Racines Sanglantes",
     "excluded": "",
     "name": ""
   },
   "East side": {
-    "val": "",
+    "val": "Côté est",
     "excluded": "",
     "name": ""
   },
   "Labis fields": {
-    "val": "",
+    "val": "Champs de Labis",
     "excluded": "",
     "name": ""
   },
   "Connecting hole": {
-    "val": "",
+    "val": "Trou de liaison",
     "excluded": "",
     "name": ""
   },
   "Bone desert": {
-    "val": "",
+    "val": "Désert d'ossements",
     "excluded": "",
     "name": ""
   },
   "Forest Temple": {
-    "val": "",
+    "val": "Temple de la Forêt",
     "excluded": "",
     "name": ""
   },
   "Pipes": {
-    "val": "",
+    "val": "Tuyaux",
     "excluded": "",
     "name": ""
   },
   "Spaceship": {
-    "val": "",
+    "val": "Vaisseau spatial",
     "excluded": "",
     "name": ""
   },
   "Guts": {
-    "val": "",
+    "val": "Tripes",
     "excluded": "",
     "name": ""
   },
   "Unsettling face": {
-    "val": "",
+    "val": "Visage troublant",
     "excluded": "",
     "name": ""
   },
   "Conference hall": {
-    "val": "",
+    "val": "Salle de conférence",
     "excluded": "",
     "name": ""
   },
   "Sewers": {
-    "val": "",
+    "val": "Égouts",
     "excluded": "",
     "name": ""
   },
   "Depths": {
-    "val": "",
+    "val": "Profondeurs",
     "excluded": "",
     "name": ""
   },
   "Restaurant": {
-    "val": "",
+    "val": "Restaurant",
     "excluded": "",
     "name": ""
   },
   "Undeground arena": {
-    "val": "",
+    "val": "Arène souterraine",
     "excluded": "",
     "name": ""
   },
   "Balcony": {
-    "val": "",
+    "val": "Balcon",
     "excluded": "",
     "name": ""
   },
   "Underground Jungle": {
-    "val": "",
+    "val": "Jungle Souterraine",
     "excluded": "",
     "name": ""
   },
   "Metro Tunnel": {
-    "val": "",
+    "val": "Tunnel de Métro",
     "excluded": "",
     "name": ""
   },
   "Level Omega": {
-    "val": "",
+    "val": "Niveau Oméga",
     "excluded": "",
     "name": ""
   },
   "Eyeland": {
-    "val": "",
+    "val": "Île-aux-Yeux",
     "excluded": "",
     "name": ""
   },
   "Smokeshop": {
-    "val": "",
+    "val": "Bureau de tabac",
     "excluded": "",
     "name": ""
   },
   "Corner arena": {
-    "val": "",
+    "val": "Arène du coin",
     "excluded": "",
     "name": ""
   },
   "Race track": {
-    "val": "",
+    "val": "Circuit de course",
     "excluded": "",
     "name": ""
   },
   "Prison": {
-    "val": "",
+    "val": "Prison",
     "excluded": "",
     "name": ""
   },
   "Lab of Truth": {
-    "val": "",
+    "val": "Labo de la Vérité",
     "excluded": "",
     "name": ""
   },
   "Camped corridor": {
-    "val": "",
+    "val": "Couloir campé",
     "excluded": "",
     "name": ""
   },
   "Coffeshop": {
-    "val": "",
+    "val": "Café",
     "excluded": "",
     "name": ""
   },
   "Conditioned Cave": {
-    "val": "",
+    "val": "Grotte Climatisée",
     "excluded": "",
     "name": ""
   },
   "Jungle passage": {
-    "val": "",
+    "val": "Passage de la jungle",
     "excluded": "",
     "name": ""
   },
   "Spectacle view": {
-    "val": "",
+    "val": "Vue du spectacle",
     "excluded": "",
     "name": ""
   },
   "Undeground Gym": {
-    "val": "",
+    "val": "Gymnase Souterrain",
     "excluded": "",
     "name": ""
   },
   "Hell Shop": {
-    "val": "",
+    "val": "Boutique de l'Enfer",
     "excluded": "",
     "name": ""
   },
   "Swamp": {
-    "val": "",
+    "val": "Marais",
     "excluded": "",
     "name": ""
   },
   "Catacombs": {
-    "val": "",
+    "val": "Catacombes",
     "excluded": "",
     "name": ""
   },
   "Forest Castle": {
-    "val": "",
+    "val": "Château de la Forêt",
     "excluded": "",
     "name": ""
   },
   "Sunken Tree": {
-    "val": "",
+    "val": "Arbre Englouti",
     "excluded": "",
     "name": ""
   },
   "Metro Bistrot": {
-    "val": "",
+    "val": "Bistrot du Métro",
     "excluded": "",
     "name": ""
   },
   "Growing tent": {
-    "val": "",
+    "val": "Tente de culture",
     "excluded": "",
     "name": ""
   },
   "Craft wagon": {
-    "val": "",
+    "val": "Wagon d'artisanat",
     "excluded": "",
     "name": ""
   },
   "Pizza place": {
-    "val": "",
+    "val": "Pizzeria",
     "excluded": "",
     "name": ""
   },
   "Abandoned bus": {
-    "val": "",
+    "val": "Bus abandonné",
     "excluded": "",
     "name": ""
   },
   "Abandoned Alley": {
-    "val": "",
+    "val": "Ruelle Abandonnée",
     "excluded": "",
     "name": ""
   },
   "Training center": {
-    "val": "",
+    "val": "Centre d'entraînement",
     "excluded": "",
     "name": ""
   },
   "Pillar island": {
-    "val": "",
+    "val": "Île aux Piliers",
     "excluded": "",
     "name": ""
   },
   "Underwater pass": {
-    "val": "",
+    "val": "Passage sous-marin",
     "excluded": "",
     "name": ""
   },
   "Split Dungeon": {
-    "val": "",
+    "val": "Donjon Scindé",
     "excluded": "",
     "name": ""
   },
   "Fisherman hut": {
-    "val": "",
+    "val": "Cabane du pêcheur",
     "excluded": "",
     "name": ""
   },
   "Coral nest": {
-    "val": "",
+    "val": "Nid de corail",
     "excluded": "",
     "name": ""
   },
   "Graffiti Tunnel": {
-    "val": "",
+    "val": "Tunnel des Graffitis",
     "excluded": "",
     "name": ""
   },
   "Flooded park": {
-    "val": "",
+    "val": "Parc inondé",
     "excluded": "",
     "name": ""
   },
   "Stockhouse": {
-    "val": "",
+    "val": "Entrepôt",
     "excluded": "",
     "name": ""
   },
   "Ziqqurat": {
-    "val": "",
+    "val": "Ziggurat",
     "excluded": "",
     "name": ""
   },
   "Trick castle": {
-    "val": "",
+    "val": "Château piégé",
     "excluded": "",
     "name": ""
   },
   "Greenwitch station": {
-    "val": "",
+    "val": "Station Greenwitch",
     "excluded": "",
     "name": ""
   },
   "Eris'Courtroom": {
-    "val": "",
+    "val": "Salle d'audience d'Eris",
     "excluded": "",
     "name": ""
   },
   "Recruitment center": {
-    "val": "",
+    "val": "Centre de recrutement",
     "excluded": "",
     "name": ""
   },
   "Luxembourg Fortress": {
-    "val": "",
+    "val": "Forteresse de Luxembourg",
     "excluded": "",
     "name": ""
   },
   "617 - Super sacred shrine": {
-    "val": "",
+    "val": "617 - Sanctuaire super sacré",
     "excluded": "",
     "name": ""
   },
   "Ghent NPCs": {
-    "val": "",
+    "val": "PNJ de Ghent",
     "excluded": "",
     "name": ""
   },
   "GreenWitch": {
-    "val": "",
+    "val": "GreenWitch",
     "excluded": "",
     "name": ""
   },
   "Serpentine pass": {
-    "val": "",
+    "val": "Col serpentin",
     "excluded": "",
     "name": ""
   },
   "Badass Peak": {
-    "val": "",
+    "val": "Pic Redoutable",
     "excluded": "",
     "name": ""
   },
   "Underbeach": {
-    "val": "",
+    "val": "Sous-Plage",
     "excluded": "",
     "name": ""
   },
   "Jail Fortress": {
-    "val": "",
+    "val": "Forteresse-Prison",
     "excluded": "",
     "name": ""
   },
   "Stacked cave ": {
-    "val": "",
+    "val": "Grotte étagée",
     "excluded": "",
     "name": ""
   },
   "Waves wall": {
-    "val": "",
+    "val": "Mur des vagues",
     "excluded": "",
     "name": ""
   },
   "Tall maze": {
-    "val": "",
+    "val": "Labyrinthe élevé",
     "excluded": "",
     "name": ""
   },
   "Garage": {
-    "val": "",
+    "val": "Garage",
     "excluded": "",
     "name": ""
   },
   "Omega City": {
-    "val": "",
+    "val": "Omega City",
     "excluded": "",
     "name": ""
   },
   "Stairs": {
-    "val": "",
+    "val": "Escalier",
     "excluded": "",
     "name": ""
   },
   "Zumbaland": {
-    "val": "",
+    "val": "Zumbaland",
     "excluded": "",
     "name": ""
   },
   "Stairs Hall": {
-    "val": "",
+    "val": "Salle des Escaliers",
     "excluded": "",
     "name": ""
   },
   "Fields": {
-    "val": "",
+    "val": "Champs",
     "excluded": "",
     "name": ""
   },
   "House": {
-    "val": "",
+    "val": "Maison",
     "excluded": "",
     "name": ""
   },
   "Strange house": {
-    "val": "",
+    "val": "Maison étrange",
     "excluded": "",
     "name": ""
   },
   "Lighthouse": {
-    "val": "",
+    "val": "Phare",
     "excluded": "",
     "name": ""
   },
   "Underwater Tunnel": {
-    "val": "",
+    "val": "Tunnel Sous-Marin",
     "excluded": "",
     "name": ""
   },
   "Underglass City": {
-    "val": "",
+    "val": "Cité Sous Verre",
     "excluded": "",
     "name": ""
   },
   "Glass Skyscraper": {
-    "val": "",
+    "val": "Gratte-Ciel de Verre",
     "excluded": "",
     "name": ""
   },
   "Underroad": {
-    "val": "",
+    "val": "Sous-Route",
     "excluded": "",
     "name": ""
   },
   "Pillar cave": {
-    "val": "",
+    "val": "Grotte aux piliers",
     "excluded": "",
     "name": ""
   },
   "Maya rock": {
-    "val": "",
+    "val": "Rocher maya",
     "excluded": "",
     "name": ""
   },
   "Shagged rock": {
-    "val": "",
+    "val": "Rocher hirsute",
     "excluded": "",
     "name": ""
   },
   "Secret inn": {
-    "val": "",
+    "val": "Auberge secrète",
     "excluded": "",
     "name": ""
   },
   "Paiting": {
-    "val": "",
+    "val": "Peinture",
     "excluded": "",
     "name": ""
   },
   "Ghent Riverside": {
-    "val": "",
+    "val": "Rive de Ghent",
     "excluded": "",
     "name": ""
   },
   "Toxic clearing": {
-    "val": "",
+    "val": "Clairière toxique",
     "excluded": "",
     "name": ""
   },
   "Raytrace land": {
-    "val": "",
+    "val": "Terre du Lancer de Rayons",
     "excluded": "",
     "name": ""
   },
   "Spherodrome": {
-    "val": "",
+    "val": "Sphérodrome",
     "excluded": "",
     "name": ""
   },
   "Fuji": {
-    "val": "",
+    "val": "Fuji",
     "excluded": "",
     "name": ""
   },
   "Road to FUji": {
-    "val": "",
+    "val": "Route du Fuji",
     "excluded": "",
     "name": ""
   },
   "Roadside Inn": {
-    "val": "",
+    "val": "Auberge du Bord de Route",
     "excluded": "",
     "name": ""
   },
   "697 - Gold Palace": {
-    "val": "",
+    "val": "697 - Palais d'Or",
     "excluded": "",
     "name": ""
   },
   "Gold Palace": {
-    "val": "",
+    "val": "Palais d'Or",
     "excluded": "",
     "name": ""
   },
   "Buried houses": {
-    "val": "",
+    "val": "Maisons enfouies",
     "excluded": "",
     "name": ""
   },
   "Hardware store": {
-    "val": "",
+    "val": "Quincaillerie",
     "excluded": "",
     "name": ""
   },
   "Under Bridge": {
-    "val": "",
+    "val": "Sous le Pont",
     "excluded": "",
     "name": ""
   },
   "Garage sale": {
-    "val": "",
+    "val": "Vide-grenier",
     "excluded": "",
     "name": ""
   },
   "Ghent Grove station": {
-    "val": "",
+    "val": "Station Ghent Grove",
     "excluded": "",
     "name": ""
   },
   "North Docks": {
-    "val": "",
+    "val": "Quais Nord",
     "excluded": "",
     "name": ""
   },
   "Shipping station": {
-    "val": "",
+    "val": "Station d'expédition",
     "excluded": "",
     "name": ""
   },
   "Ghent Station": {
-    "val": "",
+    "val": "Gare de Ghent",
     "excluded": "",
     "name": ""
   },
   "Explorers' Bar": {
-    "val": "",
+    "val": "Bar des Explorateurs",
     "excluded": "",
     "name": ""
   },
   "Back station": {
-    "val": "",
+    "val": "Station arrière",
     "excluded": "",
     "name": ""
   },
   "Riverside Inn": {
-    "val": "",
+    "val": "Auberge du Bord de Rivière",
     "excluded": "",
     "name": ""
   },
   "Riverside Inn FL2": {
-    "val": "",
+    "val": "Auberge du Bord de Rivière ÉT2",
     "excluded": "",
     "name": ""
   },
   "Kitchen": {
-    "val": "",
+    "val": "Cuisine",
     "excluded": "",
     "name": ""
   },
   "Undeground museum": {
-    "val": "",
+    "val": "Musée souterrain",
     "excluded": "",
     "name": ""
   },
   "Shopping Tunnel": {
-    "val": "",
+    "val": "Tunnel Marchand",
     "excluded": "",
     "name": ""
   },
   "Hypermetro train": {
-    "val": "",
+    "val": "Train Hypermétro",
     "excluded": "",
     "name": ""
   },
   "Bus": {
-    "val": "",
+    "val": "Bus",
     "excluded": "",
     "name": ""
   },
   "Taxi": {
-    "val": "",
+    "val": "Taxi",
     "excluded": "",
     "name": ""
   },
   " Low orbit spaceship": {
-    "val": "",
+    "val": " Vaisseau en orbite basse",
     "excluded": "",
     "name": ""
   },
   "Wilderness": {
-    "val": "",
+    "val": "Terres sauvages",
     "excluded": "",
     "name": ""
   },
   " Clock tower": {
-    "val": "",
+    "val": " Tour de l'horloge",
     "excluded": "",
     "name": ""
   },
   "Energy station": {
-    "val": "",
+    "val": "Station d'énergie",
     "excluded": "",
     "name": ""
   },
   "Condominium": {
-    "val": "",
+    "val": "Copropriété",
     "excluded": "",
     "name": ""
   },
   "Ventout Club": {
-    "val": "",
+    "val": "Club Ventout",
     "excluded": "",
     "name": ""
   },
   "Vatican Cidatel": {
-    "val": "",
+    "val": "Citadelle du Vatican",
     "excluded": "",
     "name": ""
   },
   "Petro infested cave": {
-    "val": "",
+    "val": "Grotte infestée de pétro",
     "excluded": "",
     "name": ""
   },
   "Grav Place": {
-    "val": "",
+    "val": "Place Grav",
     "excluded": "",
     "name": ""
   },
   " Empty Rooms": {
-    "val": "",
+    "val": " Pièces Vides",
     "excluded": "",
     "name": ""
   },
   "Knot Village": {
-    "val": "",
+    "val": "Village du Nœud",
     "excluded": "",
     "name": ""
   },
   "Monotown": {
-    "val": "",
+    "val": "Monoville",
     "excluded": "",
     "name": ""
   },
   "Generated Dungeon (Map 256)": {
-    "val": "",
+    "val": "Donjon Généré (Carte 256)",
     "excluded": "",
     "name": ""
   },
   "Cardinal Longhi Office": {
-    "val": "",
+    "val": "Bureau du Cardinal Longhi",
     "excluded": "",
     "name": ""
   },
   "Knot Forest": {
-    "val": "",
+    "val": "Forêt du Nœud",
     "excluded": "",
     "name": ""
   },
   "Knot Bubble": {
-    "val": "",
+    "val": "Bulle du Nœud",
     "excluded": "",
     "name": ""
   },
   "Twin houses": {
-    "val": "",
+    "val": "Maisons jumelles",
     "excluded": "",
     "name": ""
   },
   "Market": {
-    "val": "",
+    "val": "Marché",
     "excluded": "",
     "name": ""
   },
   "Empty Rooms": {
-    "val": "",
+    "val": "Pièces Vides",
     "excluded": "",
     "name": ""
   },
   "Treetop": {
-    "val": "",
+    "val": "Cime des arbres",
     "excluded": "",
     "name": ""
   },
   "Some guy house": {
-    "val": "",
+    "val": "La maison d'un type",
     "excluded": "",
     "name": ""
   },
   "First Floor": {
-    "val": "",
+    "val": "Premier Étage",
     "excluded": "",
     "name": ""
   },
   "Ghent Mages Guild": {
-    "val": "",
+    "val": "Guilde des Mages de Ghent",
     "excluded": "",
     "name": ""
   },
   "Butchery": {
-    "val": "",
+    "val": "Boucherie",
     "excluded": "",
     "name": ""
   },
   "Bakery": {
-    "val": "",
+    "val": "Boulangerie",
     "excluded": "",
     "name": ""
   },
   "Angel tunnel": {
-    "val": "",
+    "val": "Tunnel de l'Ange",
     "excluded": "",
     "name": ""
   },
   "Service tunnel": {
-    "val": "",
+    "val": "Tunnel de service",
     "excluded": "",
     "name": ""
   },
   "Rooftops": {
-    "val": "",
+    "val": "Toits",
     "excluded": "",
     "name": ""
   },
   "Papa Office": {
-    "val": "",
+    "val": "Bureau du Pape",
     "excluded": "",
     "name": ""
   },
   "Smoking Area": {
-    "val": "",
+    "val": "Coin Fumeurs",
     "excluded": "",
     "name": ""
   },
   "Bathroom": {
-    "val": "",
+    "val": "Salle de bain",
     "excluded": "",
     "name": ""
   },
   "Abandoned school": {
-    "val": "",
+    "val": "École abandonnée",
     "excluded": "",
     "name": ""
   },
   "Gun Range": {
-    "val": "",
+    "val": "Stand de Tir",
     "excluded": "",
     "name": ""
   },
   "Casino": {
-    "val": "",
+    "val": "Casino",
     "excluded": "",
     "name": ""
   },
   "Office": {
-    "val": "",
+    "val": "Bureau",
     "excluded": "",
     "name": ""
   },
   "Container": {
-    "val": "",
+    "val": "Conteneur",
     "excluded": "",
     "name": ""
   },
   "Ley spot": {
-    "val": "",
+    "val": "Point de ley",
     "excluded": "",
     "name": ""
   },
   "Riverside house": {
-    "val": "",
+    "val": "Maison du bord de rivière",
     "excluded": "",
     "name": ""
   },
   "Red Symbol": {
-    "val": "",
+    "val": "Symbole Rouge",
     "excluded": "",
     "name": ""
   },
   "North Building": {
-    "val": "",
+    "val": "Bâtiment Nord",
     "excluded": "",
     "name": ""
   },
   "Sistine Chapel": {
-    "val": "",
+    "val": "Chapelle Sixtine",
     "excluded": "",
     "name": ""
   },
   "Vatican Archives": {
-    "val": "",
+    "val": "Archives du Vatican",
     "excluded": "",
     "name": ""
   },
   "Sister of War HQ": {
-    "val": "",
+    "val": "QG des Sœurs de Guerre",
     "excluded": "",
     "name": ""
   },
   "Inn": {
-    "val": "",
+    "val": "Auberge",
     "excluded": "",
     "name": ""
   },
   "Double shop": {
-    "val": "",
+    "val": "Double boutique",
     "excluded": "",
     "name": ""
   },
   "Prison Ruins": {
-    "val": "",
+    "val": "Ruines de la Prison",
     "excluded": "",
     "name": ""
   },
   "Roadside cave": {
-    "val": "",
+    "val": "Grotte du bord de route",
     "excluded": "",
     "name": ""
   },
   "Ghent station FL 0": {
-    "val": "",
+    "val": "Gare de Ghent ÉT 0",
     "excluded": "",
     "name": ""
   },
   "Ghent Hospital": {
-    "val": "",
+    "val": "Hôpital de Ghent",
     "excluded": "",
     "name": ""
   },
   "Emergency Room": {
-    "val": "",
+    "val": "Salle des Urgences",
     "excluded": "",
     "name": ""
   },
   "Operating room": {
-    "val": "",
+    "val": "Salle d'opération",
     "excluded": "",
     "name": ""
   },
   "Hospital room": {
-    "val": "",
+    "val": "Chambre d'hôpital",
     "excluded": "",
     "name": ""
   },
   "Hospital FL 0": {
-    "val": "",
+    "val": "Hôpital ÉT 0",
     "excluded": "",
     "name": ""
   },
   "Hospital FL 1": {
-    "val": "",
+    "val": "Hôpital ÉT 1",
     "excluded": "",
     "name": ""
   },
   "Hospital FL 2": {
-    "val": "",
+    "val": "Hôpital ÉT 2",
     "excluded": "",
     "name": ""
   },
   "Hospital FL -1": {
-    "val": "",
+    "val": "Hôpital ÉT -1",
     "excluded": "",
     "name": ""
   },
   "Ambulance room": {
-    "val": "",
+    "val": "Salle des ambulances",
     "excluded": "",
     "name": ""
   },
   "Rooftop": {
-    "val": "",
+    "val": "Toit",
     "excluded": "",
     "name": ""
   },
   "Ghent Fire station": {
-    "val": "",
+    "val": "Caserne de Pompiers de Ghent",
     "excluded": "",
     "name": ""
   },
   "Railroad": {
-    "val": "",
+    "val": "Voie ferrée",
     "excluded": "",
     "name": ""
   },
   "Ghent Fields": {
-    "val": "",
+    "val": "Champs de Ghent",
     "excluded": "",
     "name": ""
   },
   "Ghent Downtown": {
-    "val": "",
+    "val": "Centre-Ville de Ghent",
     "excluded": "",
     "name": ""
   },
   "Ghent forest": {
-    "val": "",
+    "val": "Forêt de Ghent",
     "excluded": "",
     "name": ""
   },
   "Devil's Fork": {
-    "val": "",
+    "val": "La Fourche du Diable",
     "excluded": "",
     "name": ""
   },
   " Antwerpen station": {
-    "val": "",
+    "val": " Gare d'Anvers",
     "excluded": "",
     "name": ""
   },
   "Abyssal stairs": {
-    "val": "",
+    "val": "Escalier abyssal",
     "excluded": "",
     "name": ""
   },
   " Abandoned Building": {
-    "val": "",
+    "val": " Bâtiment Abandonné",
     "excluded": "",
     "name": ""
   },
   "Abyssal cave FL 1": {
-    "val": "",
+    "val": "Grotte abyssale ÉT 1",
     "excluded": "",
     "name": ""
   },
   "Lime Corp": {
-    "val": "",
+    "val": "Lime Corp",
     "excluded": "",
     "name": ""
   },
   "G Eneric Corp FL 21": {
-    "val": "",
+    "val": "G Eneric Corp ÉT 21",
     "excluded": "",
     "name": ""
   },
   "Skyscraper": {
-    "val": "",
+    "val": "Gratte-ciel",
     "excluded": "",
     "name": ""
   },
   "Police Station": {
-    "val": "",
+    "val": "Poste de Police",
     "excluded": "",
     "name": ""
   },
   "Fire station FL 0": {
-    "val": "",
+    "val": "Caserne de pompiers ÉT 0",
     "excluded": "",
     "name": ""
   },
   "Underforest": {
-    "val": "",
+    "val": "Sous-Forêt",
     "excluded": "",
     "name": ""
   },
   "Abandoned Building": {
-    "val": "",
+    "val": "Bâtiment Abandonné",
     "excluded": "",
     "name": ""
   },
   "Police Box": {
-    "val": "",
+    "val": "Guérite de Police",
     "excluded": "",
     "name": ""
   },
   "Abyssal cave FL -1": {
-    "val": "",
+    "val": "Grotte abyssale ÉT -1",
     "excluded": "",
     "name": ""
   },
   "Abyssal cave FL 0": {
-    "val": "",
+    "val": "Grotte abyssale ÉT 0",
     "excluded": "",
     "name": ""
   },
   "Fire station FL 1": {
-    "val": "",
+    "val": "Caserne de pompiers ÉT 1",
     "excluded": "",
     "name": ""
   },
   "Mages Guild Basement": {
-    "val": "",
+    "val": "Sous-sol de la Guilde des Mages",
     "excluded": "",
     "name": ""
   },
   "Subservice Tunnel": {
-    "val": "",
+    "val": "Tunnel de Sous-Service",
     "excluded": "",
     "name": ""
   },
   "Canteen": {
-    "val": "",
+    "val": "Cantine",
     "excluded": "",
     "name": ""
   },
   "Clothing Shop": {
-    "val": "",
+    "val": "Magasin de Vêtements",
     "excluded": "",
     "name": ""
   },
   "Hypermarket": {
-    "val": "",
+    "val": "Hypermarché",
     "excluded": "",
     "name": ""
   },
   "Pharmacy": {
-    "val": "",
+    "val": "Pharmacie",
     "excluded": "",
     "name": ""
   },
   "G Eneric Corp FL 0": {
-    "val": "",
+    "val": "G Eneric Corp ÉT 0",
     "excluded": "",
     "name": ""
   },
   "Lime corp FL 10": {
-    "val": "",
+    "val": "Lime Corp ÉT 10",
     "excluded": "",
     "name": ""
   },
   "Lime corp FL -3": {
-    "val": "",
+    "val": "Lime Corp ÉT -3",
     "excluded": "",
     "name": ""
   },
   "Lime corp FL 21": {
-    "val": "",
+    "val": "Lime Corp ÉT 21",
     "excluded": "",
     "name": ""
   },
   "Church": {
-    "val": "",
+    "val": "Église",
     "excluded": "",
     "name": ""
   },
   "Waterfalls": {
-    "val": "",
+    "val": "Chutes d'eau",
     "excluded": "",
     "name": ""
   },
   "Bell tower": {
-    "val": "",
+    "val": "Clocher",
     "excluded": "",
     "name": ""
   },
   "Bowling Alley": {
-    "val": "",
+    "val": "Bowling",
     "excluded": "",
     "name": ""
   },
   "Ozone Mountain": {
-    "val": "",
+    "val": "Montagne d'Ozone",
     "excluded": "",
     "name": ""
   },
   "Bank": {
-    "val": "",
+    "val": "Banque",
     "excluded": "",
     "name": ""
   },
   "Cursed slot": {
-    "val": "",
+    "val": "Machine maudite",
     "excluded": "",
     "name": ""
   },
   "Ghent Outskirts": {
-    "val": "",
+    "val": "Faubourgs de Ghent",
     "excluded": "",
     "name": ""
   },
   "Graveyard": {
-    "val": "",
+    "val": "Cimetière",
     "excluded": "",
     "name": ""
   },
   "Flower shop": {
-    "val": "",
+    "val": "Fleuriste",
     "excluded": "",
     "name": ""
   },
   "Post office": {
-    "val": "",
+    "val": "Bureau de poste",
     "excluded": "",
     "name": ""
   },
   "Tool shed": {
-    "val": "",
+    "val": "Cabanon à outils",
     "excluded": "",
     "name": ""
   },
   "Dimensional fracture": {
-    "val": "",
+    "val": "Fracture dimensionnelle",
     "excluded": "",
     "name": ""
   },
   "Crypt": {
-    "val": "",
+    "val": "Crypte",
     "excluded": "",
     "name": ""
   },
   "Cursing temple": {
-    "val": "",
+    "val": "Temple des Malédictions",
     "excluded": "",
     "name": ""
   },
   "Tent": {
-    "val": "",
+    "val": "Tente",
     "excluded": "",
     "name": ""
   },
   "Cellar": {
-    "val": "",
+    "val": "Cave",
     "excluded": "",
     "name": ""
   },
   "Bell": {
-    "val": "",
+    "val": "Cloche",
     "excluded": "",
     "name": ""
   },
   "Watery hole": {
-    "val": "",
+    "val": "Trou d'eau",
     "excluded": "",
     "name": ""
   },
   "Weapon fanatic' house": {
-    "val": "",
+    "val": "Maison du fanatique d'armes",
     "excluded": "",
     "name": ""
   },
   "Cursing Temple FL -1": {
-    "val": "",
+    "val": "Temple des Malédictions ÉT -1",
     "excluded": "",
     "name": ""
   },
   "Car": {
-    "val": "",
+    "val": "Voiture",
     "excluded": "",
     "name": ""
   },
   "Ghent station FL 1": {
-    "val": "",
+    "val": "Gare de Ghent ÉT 1",
     "excluded": "",
     "name": ""
   },
   "Closed Shop": {
-    "val": "",
+    "val": "Boutique Fermée",
     "excluded": "",
     "name": ""
   },
   "Ticket Office": {
-    "val": "",
+    "val": "Guichet",
     "excluded": "",
     "name": ""
   },
   "Belvedere": {
-    "val": "",
+    "val": "Belvédère",
     "excluded": "",
     "name": ""
   },
   "Temple": {
-    "val": "",
+    "val": "Temple",
     "excluded": "",
     "name": ""
   },
   "Dark tower inside": {
-    "val": "",
+    "val": "Intérieur de la tour sombre",
     "excluded": "",
     "name": ""
   },
   "Costume Shop": {
-    "val": "",
+    "val": "Magasin de Costumes",
     "excluded": "",
     "name": ""
   },
   "Magic Market": {
-    "val": "",
+    "val": "Marché Magique",
     "excluded": "",
     "name": ""
   },
   "Bloody Temple": {
-    "val": "",
+    "val": "Temple Sanglant",
     "excluded": "",
     "name": ""
   },
   "Storage Unit": {
-    "val": "",
+    "val": "Box de Stockage",
     "excluded": "",
     "name": ""
   },
   "Abyssal Wasteland": {
-    "val": "",
+    "val": "Terre Désolée Abyssale",
     "excluded": "",
     "name": ""
   },
   "Rodent cave": {
-    "val": "",
+    "val": "Grotte des rongeurs",
     "excluded": "",
     "name": ""
   },
   "Frost Cave": {
-    "val": "",
+    "val": "Grotte de Givre",
     "excluded": "",
     "name": ""
   },
   "Enrichment Center": {
-    "val": "",
+    "val": "Centre d'Enrichissement",
     "excluded": "",
     "name": ""
   },
   "Polar motel": {
-    "val": "",
+    "val": "Motel polaire",
     "excluded": "",
     "name": ""
   },
   "Scalding Sauna": {
-    "val": "",
+    "val": "Sauna Brûlant",
     "excluded": "",
     "name": ""
   },
   "Eyestalk Cave": {
-    "val": "",
+    "val": "Grotte des Pédoncules Oculaires",
     "excluded": "",
     "name": ""
   },
   "Shadowed Graves": {
-    "val": "",
+    "val": "Tombes Ombragées",
     "excluded": "",
     "name": ""
   },
   "Processing Pools": {
-    "val": "",
+    "val": "Bassins de Traitement",
     "excluded": "",
     "name": ""
   },
   "Grand pool": {
-    "val": "",
+    "val": "Grand bassin",
     "excluded": "",
     "name": ""
   },
   "Playground": {
-    "val": "",
+    "val": "Terrain de jeux",
     "excluded": "",
     "name": ""
   },
   "Red wood maze": {
-    "val": "",
+    "val": "Labyrinthe de bois rouge",
     "excluded": "",
     "name": ""
   },
   "Crabby Beach": {
-    "val": "",
+    "val": "Plage aux Crabes",
     "excluded": "",
     "name": ""
   },
   "Sand Fortress": {
-    "val": "",
+    "val": "Forteresse de Sable",
     "excluded": "",
     "name": ""
   },
   "Base Room": {
-    "val": "",
+    "val": "Salle de Base",
     "excluded": "",
     "name": ""
   },
   "Castle Crypts": {
-    "val": "",
+    "val": "Cryptes du Château",
     "excluded": "",
     "name": ""
   },
   "Chasm Bazaar": {
-    "val": "",
+    "val": "Bazar du Gouffre",
     "excluded": "",
     "name": ""
   },
   "North Bazaar": {
-    "val": "",
+    "val": "Bazar Nord",
     "excluded": "",
     "name": ""
   },
   "Undegroung corridoor": {
-    "val": "",
+    "val": "Couloir souterrain",
     "excluded": "",
     "name": ""
   },
   "Storehouse": {
-    "val": "",
+    "val": "Entrepôt",
     "excluded": "",
     "name": ""
   },
   "Bioslaves holding cells": {
-    "val": "",
+    "val": "Cellules des bio-esclaves",
     "excluded": "",
     "name": ""
   },
   "Vending stairs": {
-    "val": "",
+    "val": "Escalier des distributeurs",
     "excluded": "",
     "name": ""
   },
   "Water Chief Office": {
-    "val": "",
+    "val": "Bureau du Chef des Eaux",
     "excluded": "",
     "name": ""
   },
   "Water treatment plant": {
-    "val": "",
+    "val": "Station d'épuration",
     "excluded": "",
     "name": ""
   },
   "Water Planet": {
-    "val": "",
+    "val": "Planète d'Eau",
     "excluded": "",
     "name": ""
   },
   "Bigscraper": {
-    "val": "",
+    "val": "Grand-Gratte-Ciel",
     "excluded": "",
     "name": ""
   },
   "Comfy Room": {
-    "val": "",
+    "val": "Pièce Douillette",
     "excluded": "",
     "name": ""
   },
   "Geometric Woods": {
-    "val": "",
+    "val": "Bois Géométriques",
     "excluded": "",
     "name": ""
   },
   "Dubious Storage": {
-    "val": "",
+    "val": "Entrepôt Douteux",
     "excluded": "",
     "name": ""
   },
   "Pleasure room": {
-    "val": "",
+    "val": "Salle des plaisirs",
     "excluded": "",
     "name": ""
   },
   "Tree cave": {
-    "val": "",
+    "val": "Grotte de l'arbre",
     "excluded": "",
     "name": ""
   },
   "Antwerpen NPC": {
-    "val": "",
+    "val": "PNJ d'Anvers",
     "excluded": "",
     "name": ""
   },
   "Camper": {
-    "val": "",
+    "val": "Camping-car",
     "excluded": "",
     "name": ""
   },
   "Frozen landfill": {
-    "val": "",
+    "val": "Décharge gelée",
     "excluded": "",
     "name": ""
   },
   "Frozen caves": {
-    "val": "",
+    "val": "Grottes gelées",
     "excluded": "",
     "name": ""
   },
   "Wagon": {
-    "val": "",
+    "val": "Wagon",
     "excluded": "",
     "name": ""
   },
   "Clinic": {
-    "val": "",
+    "val": "Clinique",
     "excluded": "",
     "name": ""
   }

@@ -1,6 +1,6 @@
 {
   "pullToSpin": "",
-  "noTokens": "",
+  "noTokens": "토큰이 없습니다.",
   "notEnoughTokens": "",
   "jackpot": "",
   "pair": "",
@@ -12,7 +12,7 @@
     "tokens": "",
     "bet": "",
     "lastWin": "",
-    "spin": "",
+    "spin": "자전",
     "hint": ""
   }
 }

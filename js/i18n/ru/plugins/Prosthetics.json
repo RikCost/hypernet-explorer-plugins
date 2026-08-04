@@ -2,12 +2,12 @@
   "installBodypart": "",
   "removeBodypart": "",
   "replaceBodypart": "",
-  "installImplant": "",
+  "installImplant": "Установить имплант",
   "cancel": "",
   "owned": "",
   "vital": {
-    "hp": "",
-    "mp": ""
+    "hp": "ХП",
+    "mp": "МП"
   },
   "yesRemoveIt": "",
   "warningImplantWillBeLost": "",
@@ -77,21 +77,21 @@
   "chooseArchetypeCode": "",
   "suppliersAvailable": "",
   "paramNames": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "Макс. ОЗ",
+    "Макс. ОМ",
+    "СИЛ",
+    "Меткость",
+    "ИНТ",
+    "ТЕЛ",
+    "ЛОВ",
+    "ПСИ"
   ],
-  "statFallback": "",
+  "statFallback": "Характеристика",
   "genderNames": [
+    "Мужской",
+    "Женский",
     "",
-    "",
-    "",
-    ""
+    "Кокон"
   ],
   "notAvailable": "",
   "reproductionNames": {
@@ -100,21 +100,21 @@
     "2": "",
     "3": "",
     "4": "",
-    "-1": ""
+    "-1": "Нет"
   },
-  "unknown": "",
+  "unknown": "Неизвестно",
   "classless": "",
   "levelShort": "",
   "dossierTitle": "",
   "dossierPrompt": "",
   "genderReprLine": "",
   "ability": {
-    "str": "",
+    "str": "СИЛ",
     "con": "",
-    "dex": "",
-    "int": "",
+    "dex": "ЛОВ",
+    "int": "ИНТ",
     "wis": "",
-    "psi": ""
+    "psi": "ПСИ"
   },
   "surgeryFee": "",
   "availableFunds": ""

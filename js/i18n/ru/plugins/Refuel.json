@@ -3,7 +3,7 @@
   "exitStation": "",
   "liters": "",
   "fillTank": "",
-  "back": "",
+  "back": "Назад",
   "selectVehicle": "",
   "vehicleTitle": "",
   "genericVehicle": "",
@@ -22,7 +22,7 @@
     "fuelOverview": "",
     "vehicleFuel": "",
     "cost": "",
-    "level": "",
+    "level": "Уровень",
     "pricePerLitre": "",
     "wallet": ""
   }

@@ -1,7 +1,7 @@
 {
   "ui": {
-    "title": "",
-    "back": "",
+    "title": "주기율표",
+    "back": "뒤로",
     "lanthanides": "",
     "actinides": "",
     "esotericSection": "",
@@ -33,7 +33,7 @@
     "solid": "",
     "liquid": "",
     "gas": "",
-    "unknown": "",
+    "unknown": "미상",
     "mythical": "",
     "superposed": ""
   },
@@ -223,7 +223,7 @@
       "desc": ""
     },
     "Ag": {
-      "name": "",
+      "name": "은빛",
       "desc": ""
     },
     "Cd": {
@@ -291,7 +291,7 @@
       "desc": ""
     },
     "Au": {
-      "name": "",
+      "name": "골드",
       "desc": ""
     },
     "Hg": {
@@ -543,12 +543,12 @@
       "desc": ""
     }
   },
-  "unknownDiscoverer": "",
+  "unknownDiscoverer": "미상",
   "eras": {
-    "ancient": "",
+    "ancient": "고대의",
     "primordial": "",
     "eternal": "",
-    "unknown": "",
+    "unknown": "미상",
     "antediluvian": "",
     "arcaneAge": "",
     "unobserved": ""

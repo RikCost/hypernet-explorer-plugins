@@ -7,16 +7,16 @@
     "leisure": ""
   },
   "category": {
-    "materials": "",
+    "materials": "Matériaux",
     "item": "",
-    "food": "",
-    "tools": ""
+    "food": "Nourriture",
+    "tools": "Outils"
   },
   "rarity": {
-    "Common": "",
-    "Uncommon": "",
+    "Common": "Commun",
+    "Uncommon": "Peu commun",
     "Rare": "",
     "Epic": "",
-    "Legendary": ""
+    "Legendary": "Légendaire"
   }
 }

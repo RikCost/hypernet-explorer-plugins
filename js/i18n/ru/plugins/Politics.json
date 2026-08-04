@@ -80,7 +80,7 @@
   "office": {
     "mayor": "",
     "guardCaptain": "",
-    "taxCollector": "",
+    "taxCollector": "Сборщик налогов",
     "highPriest": ""
   },
   "policy": {

@@ -1,18 +1,18 @@
 {
-  "type": "",
+  "type": "Тип",
   "weight": "",
-  "calories": "",
-  "protein": "",
+  "calories": "Калории",
+  "protein": "Белки",
   "fat": "",
-  "use": "",
+  "use": "Использовать",
   "single": "",
   "unlimited": "",
   "hits": "",
   "times": "",
-  "ap": "",
+  "ap": "АП",
   "element": "",
   "crit": "",
-  "yes": "",
+  "yes": "Да",
   "modifier": "",
   "price": "",
   "equipBy": "",
@@ -20,12 +20,12 @@
   "regularItem": "",
   "keyItem": "",
   "weapon": "",
-  "armor": "",
-  "unknown": "",
+  "armor": "Доспех",
+  "unknown": "Неизвестно",
   "hp": "",
   "mp": "",
   "ap2": "",
-  "status": "",
+  "status": "Статус: ",
   "cura": "",
   "buff": "",
   "turns": "",
@@ -51,7 +51,7 @@
   "weaponType": "",
   "armorType": "",
   "equipType": "",
-  "back": "",
+  "back": "НАЗАД",
   "shop": "",
   "availableFunds": "",
   "acquireGoods": "",
@@ -70,13 +70,13 @@
   "hoverOrSelectAnItem": "",
   "totalCost": "",
   "sellValue": "",
-  "confirmTransaction": "",
+  "confirmTransaction": "ПОДТВЕРДИТЬ ОПЕРАЦИЮ",
   "cancel": "",
   "target": "",
   "scale": "",
   "slot": "",
   "asset": "",
-  "equipSlot": "",
+  "equipSlot": "Экипировать",
   "ownedStock": "",
   "elementN": "",
   "stateN": "",
@@ -110,13 +110,13 @@
     ""
   ],
   "sellCategories": [
-    "",
-    "",
-    "",
+    "Предметы",
+    "Оружие",
+    "Броня",
     ""
   ],
   "scope": {
-    "0": "",
+    "0": "Нет",
     "1": "",
     "2": "",
     "3": "",
@@ -128,14 +128,14 @@
     "9": "",
     "10": "",
     "11": "",
-    "unknown": ""
+    "unknown": "Неизвестно"
   },
   "occasion": {
     "0": "",
     "1": "",
     "2": "",
     "3": "",
-    "unknown": ""
+    "unknown": "Неизвестно"
   },
   "damageType": {
     "1": "",
@@ -148,7 +148,7 @@
   },
   "ui": {
     "scale": "",
-    "type": "",
+    "type": "Тип",
     "weight": ""
   }
 }

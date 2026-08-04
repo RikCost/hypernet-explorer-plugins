@@ -20,19 +20,19 @@
   "preciseStrike": "",
   "partWasHit": "",
   "paramNames": [
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    ""
+    "최대 HP",
+    "최대 MP",
+    "공격",
+    "마법",
+    "방어력",
+    "마법 방어",
+    "민첩성",
+    "행운"
   ],
-  "statFallback": "",
-  "elementLabel": "",
+  "statFallback": "능력치",
+  "elementLabel": "속성:",
   "weakToLabel": "",
   "statesLabel": "",
   "bodyParts": "",
-  "none": ""
+  "none": "없음"
 }

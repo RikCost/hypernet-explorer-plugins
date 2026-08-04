@@ -22,7 +22,7 @@
   "sleepMenu": {
     "titleMain": "",
     "titleSleep": "",
-    "titlePostSleep": "",
+    "titlePostSleep": "각성",
     "titleCryo": "",
     "titleWait": "",
     "sleep": "",
@@ -33,16 +33,16 @@
     "cryo": "",
     "cryoYear": "%1",
     "cryoFinalYear": "",
-    "save": "",
-    "respawn": "",
-    "cancel": "",
+    "save": "저장",
+    "respawn": "부활 지점 설정",
+    "cancel": "취소",
     "hours": "",
-    "wakeup": "",
-    "dream": ""
+    "wakeup": "일어나기",
+    "dream": "꿈꾸기"
   },
   "hud": {
-    "food": "",
-    "temp": "",
+    "food": "음식",
+    "temp": "기온",
     "noFood": "",
     "weatherClear": ""
   },
@@ -50,7 +50,7 @@
     "hunger": "",
     "sleep": "",
     "hygiene": "",
-    "social": "",
+    "social": "사회",
     "leisure": ""
   }
 }

@@ -1,6 +1,6 @@
 {
-  "title": "",
-  "back": "",
+  "title": "Compétences",
+  "back": "Retour",
   "recent": "",
   "unit": {
     "ap": ""
@@ -28,7 +28,7 @@
       "description": ""
     },
     "support": {
-      "name": "",
+      "name": "Soutien",
       "description": ""
     }
   },
@@ -43,10 +43,10 @@
   "cmd": {
     "favourites": "",
     "levelUp": "",
-    "use": "",
+    "use": "Utiliser",
     "favourite": "",
     "unfavourite": "",
-    "cancel": ""
+    "cancel": "Annuler"
   },
   "action": {
     "useSkill": "",
@@ -55,10 +55,10 @@
     "back": ""
   },
   "info": {
-    "type": "",
+    "type": "Type :",
     "scale": "",
-    "basic": "",
-    "none": "",
+    "basic": "Basique",
+    "none": "Aucun",
     "effect": "",
     "hpDmg": "",
     "mpDmg": "",
@@ -68,7 +68,7 @@
     "mpDrain": "",
     "buffs": "",
     "debuffs": "",
-    "state": ""
+    "state": "État"
   },
   "target": {
     "title": "",

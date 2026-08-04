@@ -22,7 +22,7 @@
   "sleepMenu": {
     "titleMain": "",
     "titleSleep": "",
-    "titlePostSleep": "",
+    "titlePostSleep": "Éveil",
     "titleCryo": "",
     "titleWait": "",
     "sleep": "",
@@ -33,15 +33,15 @@
     "cryo": "",
     "cryoYear": "%1",
     "cryoFinalYear": "",
-    "save": "",
-    "respawn": "",
-    "cancel": "",
+    "save": "Sauvegarder",
+    "respawn": "Définir le point de réapparition",
+    "cancel": "Annuler",
     "hours": "",
-    "wakeup": "",
-    "dream": ""
+    "wakeup": "Se réveiller",
+    "dream": "Rêver"
   },
   "hud": {
-    "food": "",
+    "food": "Nourriture",
     "temp": "",
     "noFood": "",
     "weatherClear": ""
