@@ -4,7 +4,7 @@ var $plugins =
 [
 {"name":"Core/SteamAchievements","status":true,"description":"Steam Achievements Integration v1.0.0","parameters":{"enableDebugMode":"true","autoInitialize":"true","showNotifications":"true","notificationDuration":"180","achievements":"[]"}},
 {"name":"Core/DataService","status":true,"description":"Automatically registers JSON files from js/db/ to global window objects.","parameters":{}},
-{"name":"Core/WorldManager","status":true,"description":"Dwarf Fortress-style world folders: world history, NPC status, artifacts, dungeon layout and public state live in per-world JSON files; savegames stay minimal.","parameters":{"privateSwitches":"9,10,13,33,45,46,48,49,50,51,58,64,77,78,79","sharedVariables":"2,53,61,113,114","timeVariableId":"114"}},
+{"name":"Core/WorldManager","status":true,"description":"Dwarf Fortress-style world folders: world history, NPC status, artifacts, dungeon layout and public state live in per-world JSON files; savegames stay minimal.","parameters":{"privateSwitches":"9,10,13,33,45,46,48,49,50,51,58,64,77,78,79,100","sharedVariables":"2,53,61,113,114","timeVariableId":"114"}},
 {"name":"Core/ActorCharacterFields","status":true,"description":"Per-character fields (gender, bust/battler portrait, equip-derived stats) stored on the actor instead of global variables.","parameters":{}},
 {"name":"Core/GameOptions","status":true,"description":"v1.0 Divided options menu into thematic tabs and provides an entry point for other plugins.","parameters":{}},
 {"name":"Core/ModManager","status":true,"description":"RimWorld-style Mod Manager. Loads mods from a \"mods\" folder, overrides files, and manages load order.","parameters":{}},

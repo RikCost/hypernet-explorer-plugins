@@ -132,7 +132,11 @@
     //   51,64    Camper / Car unlocked (a dossier can park one; the parked spot
     //            itself already lives per-save in $gameSystem)
     //   77,78,79 Player 1/2/3 is a creature
-    const DEFAULT_PRIVATE_SWITCHES = [9, 10, 13, 33, 45, 46, 48, 49, 50, 51, 58, 64, 77, 78, 79];
+    //   100      Tutorial mode. Turned on by the Icebush intro event and never
+    //            turned off, so as a world switch it made every later savegame
+    //            of that world believe it was still in the tutorial.
+    const TUTORIAL_SWITCH_ID = 100;
+    const DEFAULT_PRIVATE_SWITCHES = [9, 10, 13, 33, 45, 46, 48, 49, 50, 51, 58, 64, 77, 78, 79, TUTORIAL_SWITCH_ID];
     const WORLD_PRIVATE_SWITCHES = new Set((() => {
         const ids = parseIdList(params.privateSwitches);
         return ids.length ? ids : DEFAULT_PRIVATE_SWITCHES;
@@ -818,6 +822,11 @@
             const state = this.getFile("state");
             if (!state.switches) return;
             for (const id of WORLD_PRIVATE_SWITCHES) {
+                // Tutorial mode is the one exception: it was never turned off
+                // again, so a world that once played the tutorial has it stored
+                // as true and every legacy savegame would adopt it. A savegame
+                // that says nothing about it is not in the tutorial.
+                if (id === TUTORIAL_SWITCH_ID) continue;
                 const stored = state.switches[id];
                 if (stored === undefined) continue;
                 const current = $gameSwitches._data[id];

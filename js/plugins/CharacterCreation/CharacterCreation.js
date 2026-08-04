@@ -1888,7 +1888,7 @@
     {
       // Origin, where the character starts the game. Shown only once, at the
       // end of creation. Hidden entirely in tutorial mode (the tutorial flow
-      // ends at the add-member step with the default train origin).
+      // ends at the add-member step, on the tutorial map).
       id: "origin",
       showOnlyOnce: true,
       get title() {
@@ -4254,14 +4254,12 @@
 
         // Add Party Member: end creation immediately (only 1 character in
         // tutorial). The settings step already ran first, so the tutorial flow
-        // finishes here with the default train origin.
+        // finishes here. No origin and no travel picker: the tutorial starts
+        // where it is being played, on the Icebush map, and the player is meant
+        // to walk around it rather than be put straight on a train out.
         if (this._step === STEP.ADD_MEMBER) {
           markFirstCreationComplete();
           Scene_CharacterCreation._tutorialMode = false;
-          if ($gameTemp) {
-            $gameTemp._openCharacterCreationTrainTravel = true;
-            $gameTemp._characterCreationTravelMode = true;
-          }
           if (this._dndContainer) {
             this._dndContainer.style.display = "none";
           }
@@ -4284,18 +4282,14 @@
         return;
       }
 
-      // Origin: not available while the tutorial switch (100) is active. Apply
-      // the default train origin and finish creation. (The in-scene
-      // _tutorialMode flag is cleared at the add-member step, so guard on the
-      // switch directly.)
+      // Origin: not available while the tutorial switch (100) is active. The
+      // tutorial has its own starting point, so creation just ends here and the
+      // player stays where they are. (The in-scene _tutorialMode flag is
+      // cleared at the add-member step, so guard on the switch directly.)
       if (this._step === STEP.ORIGIN && $gameSwitches.value(100)) {
         markStepCompleted(STEP.ORIGIN);
         // End-of-creation finalize (settings no longer does it). Idempotent.
         markFirstCreationComplete();
-        if ($gameTemp) {
-          $gameTemp._openCharacterCreationTrainTravel = true;
-          $gameTemp._characterCreationTravelMode = true;
-        }
         this.popScene();
         return;
       }
