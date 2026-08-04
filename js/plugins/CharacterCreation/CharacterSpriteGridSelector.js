@@ -230,6 +230,68 @@
   const SPRITE_GRID_COLS = 6;
   const SPRITE_GRID_SIZE = 96;
 
+  // A dozen of the curated sheets are not the 3x4 grid RPG Maker assumes for a
+  // "$" character: they hold a single facing row (DrivingInstructor, Jester,
+  // Spacer, BotStellar...). Slicing them as four rows yields an 18px tall
+  // letterbox of the sprite, and the frame aspect that comes out of it (96x18)
+  // was blowing the board's columns open, since a "1fr" track never shrinks
+  // below its content. Read the row count off the bitmap instead: a frame this
+  // short cannot be a character.
+  const SPRITE_MIN_FRAME_HEIGHT = 36;
+
+  const spriteFrameGeometry = (spriteName) => {
+    const isBig = ImageManager.isBigCharacter(spriteName);
+    const bitmap = spriteName ? ImageManager.loadCharacter(spriteName) : null;
+    const ready = !!bitmap && bitmap.width > 0 && bitmap.height > 0;
+    const cols = isBig ? 3 : 12;
+    let rows = isBig ? 4 : 8;
+    if (ready && isBig && bitmap.height / rows < SPRITE_MIN_FRAME_HEIGHT) {
+      rows = 1;
+    }
+    return {
+      isBig,
+      ready,
+      bitmap,
+      cols,
+      rows,
+      // Facings the sheet carries: a full sheet has 4, a single-row one has 1.
+      dirRows: isBig ? rows : 4,
+      frameW: ready ? bitmap.width / cols : 0,
+      frameH: ready ? bitmap.height / rows : 0,
+    };
+  };
+
+  // Frame drawn as a CSS background: which slice, and how the sheet is scaled.
+  const spriteFrameBackground = (geo, spriteIndex, pattern, directionRow) => {
+    const dir = geo.dirRows > 0 ? directionRow % geo.dirRows : 0;
+    let fx;
+    let fy;
+    if (geo.isBig) {
+      fx = pattern;
+      fy = dir;
+    } else {
+      fx = (spriteIndex % 4) * 3 + pattern;
+      fy = Math.floor(spriteIndex / 4) * 4 + dir;
+    }
+    const pctX = geo.cols > 1 ? (fx / (geo.cols - 1)) * 100 : 0;
+    const pctY = geo.rows > 1 ? (fy / (geo.rows - 1)) * 100 : 0;
+    return {
+      position: `${pctX}% ${pctY}%`,
+      size: `${geo.cols * 100}% ${geo.rows * 100}%`,
+    };
+  };
+
+  // Fit one frame inside a square cell without distorting it, so no sheet can
+  // ever push a grid column wider than the others.
+  const spriteFrameBox = (geo, box) => {
+    if (!geo.ready) return { width: box, height: box };
+    const scale = Math.min(box / geo.frameW, box / geo.frameH);
+    return {
+      width: Math.round(geo.frameW * scale),
+      height: Math.round(geo.frameH * scale),
+    };
+  };
+
   // Scene to handle sprite grid selection
   class Scene_SpriteGridSelector extends Scene_MenuBase {
     constructor() {
@@ -342,7 +404,7 @@
 
     getSpriteStyle(spriteName, spriteIndex, animate = false, size = 48) {
       if (!spriteName) return "";
-      const isBig = ImageManager.isBigCharacter(spriteName);
+      const geo = spriteFrameGeometry(spriteName);
       const url = `img/characters/${spriteName}.png`;
 
       let pattern = 1; // Standing middle
@@ -353,42 +415,34 @@
         directionRow = Math.floor(Graphics.frameCount / 48) % 4;
       }
 
-      // Proportions calculation to prevent stretching
-      const bitmap = ImageManager.loadCharacter(spriteName);
-      let displayWidth = size;
-      const displayHeight = size;
-      if (bitmap && bitmap.width > 0 && bitmap.height > 0) {
-        const frameW = bitmap.width / (isBig ? 3 : 12);
-        const frameH = bitmap.height / (isBig ? 4 : 8);
-        displayWidth = Math.round((frameW / frameH) * displayHeight);
-      } else if (bitmap) {
-        bitmap.addLoadListener(() => {
-          const className = `cc-sprite-img-${spriteName.replace(/[^a-zA-Z0-9]/g, '_')}-${spriteIndex}`;
+      const bg = spriteFrameBackground(geo, spriteIndex, pattern, directionRow);
+      const box = spriteFrameBox(geo, size);
+
+      // The sheet decides both the slice and the frame proportions, so a sprite
+      // whose bitmap has not arrived yet is restyled once it does.
+      if (!geo.ready && geo.bitmap) {
+        geo.bitmap.addLoadListener(() => {
+          const className = `cc-sprite-img-${spriteName.replace(/[^a-zA-Z0-9]/g, "_")}-${spriteIndex}`;
           const els = document.querySelectorAll(`.${className}`);
-          if (els.length > 0) {
-            const frameW = bitmap.width / (isBig ? 3 : 12);
-            const frameH = bitmap.height / (isBig ? 4 : 8);
-            const loadedWidth = Math.round((frameW / frameH) * displayHeight);
-            els.forEach(el => {
-              el.style.width = `${loadedWidth}px`;
-            });
-          }
+          if (els.length === 0) return;
+          const loaded = spriteFrameGeometry(spriteName);
+          const loadedBg = spriteFrameBackground(
+            loaded,
+            spriteIndex,
+            pattern,
+            directionRow,
+          );
+          const loadedBox = spriteFrameBox(loaded, size);
+          els.forEach((el) => {
+            el.style.width = `${loadedBox.width}px`;
+            el.style.height = `${loadedBox.height}px`;
+            el.style.backgroundSize = loadedBg.size;
+            el.style.backgroundPosition = loadedBg.position;
+          });
         });
       }
 
-      if (isBig) {
-        const pctX = (pattern / 2) * 100;
-        const pctY = (directionRow / 3) * 100;
-        return `background-image: url('${url}'); background-position: ${pctX}% ${pctY}%; background-size: 300% 400%; width: ${displayWidth}px; height: ${displayHeight}px; image-rendering: pixelated;`;
-      } else {
-        const col = spriteIndex % 4;
-        const row = Math.floor(spriteIndex / 4);
-        const fx = col * 3 + pattern;
-        const fy = row * 4 + directionRow;
-        const pctX = (fx / 11) * 100;
-        const pctY = (fy / 7) * 100;
-        return `background-image: url('${url}'); background-position: ${pctX}% ${pctY}%; background-size: 1200% 800%; width: ${displayWidth}px; height: ${displayHeight}px; image-rendering: pixelated;`;
-      }
+      return `background-image: url('${url}'); background-position: ${bg.position}; background-size: ${bg.size}; width: ${box.width}px; height: ${box.height}px; image-rendering: pixelated;`;
     }
 
     refreshUIOverlayDOM() {
@@ -430,7 +484,7 @@
               const className = `cc-sprite-img-${entry.name.replace(/[^a-zA-Z0-9]/g, '_')}-${entry.index}`;
 
               return `
-                            <div class="cc-wanted-card ${isSelected ? "selected" : ""}" style="display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid ${isSelected ? "#8b5a2b" : "transparent"}; border-radius: 6px; padding: 4px; box-shadow: none; background: ${isSelected ? "rgba(139, 90, 43, 0.15)" : "none"}; width: 100%; min-height: 0; height: ${SPRITE_GRID_SIZE + 16}px; box-sizing: border-box; transition: all 0.2s ease; margin: 0;" onclick="SceneManager._scene.onSpriteCardClick(${idx})">
+                            <div class="cc-wanted-card ${isSelected ? "selected" : ""}" style="display: flex; justify-content: center; align-items: center; cursor: pointer; border: 2px solid ${isSelected ? "#8b5a2b" : "transparent"}; border-radius: 6px; padding: 4px; box-shadow: none; background: ${isSelected ? "rgba(139, 90, 43, 0.15)" : "none"}; width: 100%; min-width: 0; min-height: 0; height: ${SPRITE_GRID_SIZE + 16}px; overflow: hidden; box-sizing: border-box; transition: all 0.2s ease; margin: 0;" onclick="SceneManager._scene.onSpriteCardClick(${idx})">
                                 <div class="cc-wanted-sprite ${className}" style="${spriteDivStyle} margin: 0;"></div>
                             </div>
                         `;
@@ -442,7 +496,7 @@
           leftPage.innerHTML = `
                         <h2 class="cc-header-gothic">${T('CharCreate.selectSprite')}</h2>
 
-                        <div class="cc-presets-board" style="grid-template-columns: repeat(${SPRITE_GRID_COLS}, 1fr); flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; gap: 10px; padding: 14px; justify-items: stretch; align-content: start;">
+                        <div class="cc-presets-board" style="grid-template-columns: repeat(${SPRITE_GRID_COLS}, minmax(0, 1fr)); flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; gap: 10px; padding: 14px; justify-items: stretch; align-content: start;">
                             ${cards}
                         </div>
                     `;
@@ -627,20 +681,9 @@
 
     getBackgroundPosition(spriteName, spriteIndex, pattern, directionRow = 0) {
       if (!spriteName) return "";
-      const isBig = ImageManager.isBigCharacter(spriteName);
-      if (isBig) {
-        const pctX = (pattern / 2) * 100;
-        const pctY = (directionRow / 3) * 100;
-        return `${pctX}% ${pctY}%`;
-      } else {
-        const col = spriteIndex % 4;
-        const row = Math.floor(spriteIndex / 4);
-        const fx = col * 3 + pattern;
-        const fy = row * 4 + directionRow;
-        const pctX = (fx / 11) * 100;
-        const pctY = (fy / 7) * 100;
-        return `${pctX}% ${pctY}%`;
-      }
+      const geo = spriteFrameGeometry(spriteName);
+      return spriteFrameBackground(geo, spriteIndex, pattern, directionRow)
+        .position;
     }
 
     updateSpriteAnimations(pattern, directionRow) {
@@ -920,8 +963,10 @@
         return;
       }
 
-      // Determine character sheet type
-      const big = ImageManager.isBigCharacter(characterName);
+      // Determine character sheet type and its real row count (a handful of
+      // sheets carry a single facing row, see spriteFrameGeometry)
+      const geo = spriteFrameGeometry(characterName);
+      const big = geo.isBig;
 
       // Calculate pattern (animation frame) - only animate selected sprite
       let pattern = 1; // Default to middle frame (standing)
@@ -932,20 +977,19 @@
         pattern = animFrame === 3 ? 1 : animFrame;
       }
 
-      // Face down (direction 2)
+      // Face down (direction 2), clamped to the facings the sheet actually has
       const direction = 2;
+      const dirRow = Math.min(direction / 2 - 1, geo.dirRows - 1);
 
       // Calculate dimensions and source rectangle
-      const pw = bitmap.width / (big ? 3 : 12);
-      const ph = bitmap.height / (big ? 4 : 8);
+      const pw = geo.frameW;
+      const ph = geo.frameH;
 
       // For big characters: pattern = column (animation frame), direction = row
       // For regular characters: characterIndex determines position in grid
       const sx = (big ? pattern : (characterIndex % 4) * 3 + pattern) * pw;
       const sy =
-        (big
-          ? direction / 2 - 1
-          : Math.floor(characterIndex / 4) * 4 + (direction / 2 - 1)) * ph;
+        (big ? dirRow : Math.floor(characterIndex / 4) * 4 + dirRow) * ph;
 
       // Use integer scaling for pixel perfect rendering
       const scale = 1; // 1x scale for compact grid

@@ -248,6 +248,9 @@
     },
     "crimesagainsthumanity": {
       "name": "반인도적 범죄"
+    },
+    "illegalconstruction": {
+      "name": "불법 건축"
     }
   }
 }

@@ -39,6 +39,7 @@
     "biologicalVitals": "Biological Vitals",
     "alignment": "Alignment",
     "noTraits": "No traits assigned...",
-    "noVitals": "No biological vitals recorded..."
+    "noVitals": "No biological vitals recorded...",
+    "noClassAbility": "No class ability"
   }
 }

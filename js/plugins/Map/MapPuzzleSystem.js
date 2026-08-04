@@ -2673,6 +2673,19 @@
     // Locked Key HUD
     // =========================================================================
 
+    // Item 112 "Dungeon key": what the Key Chest events hand out and what every
+    // "Dungeon door" conditional tests for. The counter has to read the same id.
+    const DUNGEON_KEY_ITEM_ID = 112;
+
+    function dungeonKeyItem() {
+        return $dataItems ? $dataItems[DUNGEON_KEY_ITEM_ID] : null;
+    }
+
+    function dungeonKeyCount() {
+        const item = dungeonKeyItem();
+        return item ? $gameParty.numItems(item) : 0;
+    }
+
     function Window_LockedKeyHUD() {
         this.initialize(...arguments);
     }
@@ -2693,7 +2706,7 @@
         Window_Base.prototype.update.call(this);
         this.updateVisibility();
         if (this.visible) {
-            const count = $gameParty.numItems($dataItems[113]);
+            const count = dungeonKeyCount();
             if (this._lastCount !== count) {
                 this._lastCount = count;
                 this.refresh();
@@ -2733,8 +2746,9 @@
 
     Window_LockedKeyHUD.prototype.refresh = function () {
         this.contents.clear();
-        const iconId = 195;
-        const count = $gameParty.numItems($dataItems[113]);
+        const item = dungeonKeyItem();
+        const iconId = item ? item.iconIndex : 195;
+        const count = dungeonKeyCount();
 
         this.drawIcon(iconId, 0, 0);
         this.contents.fontSize = 24;

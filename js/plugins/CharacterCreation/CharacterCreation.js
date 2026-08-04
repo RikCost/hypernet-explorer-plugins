@@ -114,6 +114,14 @@
     if (typeof getAvailableCharacterPresets === "function") return getAvailableCharacterPresets();
     return typeof getCharacterPresets === "function" ? getCharacterPresets() : [];
   }
+  // The tutorial is a streamlined single-character flow that must build a
+  // character from scratch, so pre-made dossiers are never offered there. The
+  // in-scene flag is cleared at the add-member step, hence the switch 100
+  // fallback (same guard the origin step uses).
+  function isTutorialFlow() {
+    if (typeof Scene_CharacterCreation !== "undefined" && Scene_CharacterCreation._tutorialMode) return true;
+    return !!($gameSwitches && $gameSwitches.value(100));
+  }
   const _markFirstCreationComplete = (window.CharacterPresets || {}).markFirstCreationComplete;
   // Every creation-finished path calls this; besides the original bookkeeping
   // it schedules the new-playthrough autosave (SaveSystem assigns the next
@@ -1271,8 +1279,9 @@
           );
         }
         // Pre-made characters are spent once played, so the option is offered
-        // only while this world still has at least one free dossier.
-        if (availablePresets().length > 0) {
+        // only while this world still has at least one free dossier, and never
+        // during the tutorial (which always builds a fresh character).
+        if (!isTutorialFlow() && availablePresets().length > 0) {
           choices.push(
             getLocalizedChoice(T('CharCreate.choice.existingCharacter.name'), "existing_character", T('CharCreate.choice.existingCharacter.desc'))
           );
@@ -2126,9 +2135,10 @@
     // Add these methods to Scene_CharacterCreation class
 
     showPresetSelection() {
-      // Nothing left to pick in this world: stay on the current step instead of
-      // opening an empty board (which had no items to select or cancel from).
-      if (availablePresets().length === 0) {
+      // Nothing left to pick in this world (or the tutorial, which never offers
+      // pre-made characters): stay on the current step instead of opening an
+      // empty board (which had no items to select or cancel from).
+      if (isTutorialFlow() || availablePresets().length === 0) {
         SoundManager.playBuzzer();
         if (this._gridWindow) this._gridWindow.activate();
         return;

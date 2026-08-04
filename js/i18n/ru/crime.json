@@ -248,6 +248,9 @@
     },
     "crimesagainsthumanity": {
       "name": "Преступление против человечества"
+    },
+    "illegalconstruction": {
+      "name": "Незаконное строительство"
     }
   }
 }

@@ -248,6 +248,9 @@
     },
     "crimesagainsthumanity": {
       "name": "Crimes contre l'humanité"
+    },
+    "illegalconstruction": {
+      "name": "Construction illégale"
     }
   }
 }

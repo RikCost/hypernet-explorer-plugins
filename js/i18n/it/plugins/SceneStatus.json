@@ -39,6 +39,7 @@
     "biologicalVitals": "Parametri vitali",
     "alignment": "Allineamento",
     "noTraits": "Nessun tratto assegnato...",
-    "noVitals": "Nessun parametro vitale registrato..."
+    "noVitals": "Nessun parametro vitale registrato...",
+    "noClassAbility": "Nessuna abilità di classe"
   }
 }

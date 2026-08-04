@@ -105,6 +105,13 @@
   "language": {
     "label": "✦ LINGUA"
   },
+  "update": {
+    "checking": "✦ CONTROLLO BUILD",
+    "checkingTip": "Sto chiedendo al server degli aggiornamenti qual è la build più recente.",
+    "ready": "✦ BUILD {build} PRONTA",
+    "readyPlain": "✦ NUOVA BUILD PRONTA",
+    "tip": "C'è una build più recente in attesa. Apri l'aggiornatore per installarla."
+  },
   "hyperverse": {
     "lead": "IPERVERSO // ",
     "catalog": "CATALOGO",

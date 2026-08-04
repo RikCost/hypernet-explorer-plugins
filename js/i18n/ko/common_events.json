@@ -80,887 +80,887 @@
     "name": ""
   },
   "AHAH YOU WISH.": {
-    "val": "",
+    "val": "하, 꿈도 야무지네.",
     "excluded": "",
     "name": ""
   },
   "YOU ARE NOT WORTHY": {
-    "val": "",
+    "val": "너는 자격이 없다",
     "excluded": "",
     "name": ""
   },
   "ddd": {
-    "val": "",
+    "val": "ddd",
     "excluded": "",
     "name": ""
   },
   "Surf the Hypernet": {
-    "val": "",
+    "val": "Hypernet 서핑",
     "excluded": "",
     "name": ""
   },
   "Shopping": {
-    "val": "",
+    "val": "쇼핑",
     "excluded": "",
     "name": ""
   },
   "Latest news": {
-    "val": "",
+    "val": "최신 뉴스",
     "excluded": "",
     "name": ""
   },
   "Euro Market": {
-    "val": "",
+    "val": "유로 시장",
     "excluded": "",
     "name": ""
   },
   "Job offers": {
-    "val": "",
+    "val": "구인 정보",
     "excluded": "",
     "name": ""
   },
   "Cancel": {
-    "val": "",
+    "val": "취소",
     "excluded": "",
     "name": ""
   },
   "Stock options": {
-    "val": "",
+    "val": "주식 옵션",
     "excluded": "",
     "name": ""
   },
   "Buy real estate": {
-    "val": "",
+    "val": "부동산 구매",
     "excluded": "",
     "name": ""
   },
   "Use": {
-    "val": "",
+    "val": "사용",
     "excluded": "",
     "name": ""
   },
   "Vomit": {
-    "val": "",
+    "val": "토하기",
     "excluded": "",
     "name": ""
   },
   "Cook": {
-    "val": "",
+    "val": "요리",
     "excluded": "",
     "name": ""
   },
   "Sleep by the fire": {
-    "val": "",
+    "val": "불가에서 잠들기",
     "excluded": "",
     "name": ""
   },
   "Save": {
-    "val": "",
+    "val": "저장",
     "excluded": "",
     "name": ""
   },
   "Retire from adventuring": {
-    "val": "",
+    "val": "모험에서 은퇴",
     "excluded": "",
     "name": ""
   },
   "Put out fire": {
-    "val": "",
+    "val": "불 끄기",
     "excluded": "",
     "name": ""
   },
   "You need to disconnect from the room before\nbeing able to save.": {
-    "val": "",
+    "val": "저장하려면 먼저 방 접속을\n끊어야 합니다.",
     "excluded": "",
     "name": ""
   },
   "Do you really want to retire from adventuring\nand return home?": {
-    "val": "",
+    "val": "정말로 모험을 그만두고\n집으로 돌아가시겠습니까?",
     "excluded": "",
     "name": ""
   },
   "No": {
-    "val": "",
+    "val": "아니오",
     "excluded": "",
     "name": ""
   },
   "Yes": {
-    "val": "",
+    "val": "예",
     "excluded": "",
     "name": ""
   },
   "Sleep": {
-    "val": "",
+    "val": "잠자기",
     "excluded": "",
     "name": ""
   },
   "Set respawn point": {
-    "val": "",
+    "val": "부활 지점 설정",
     "excluded": "",
     "name": ""
   },
   "Manage party": {
-    "val": "",
+    "val": "파티 관리",
     "excluded": "",
     "name": ""
   },
   "How much do you want to sleep?": {
-    "val": "",
+    "val": "얼마나 자시겠습니까?",
     "excluded": "",
     "name": ""
   },
   "8 Hours": {
-    "val": "",
+    "val": "8시간",
     "excluded": "",
     "name": ""
   },
   "7 Hours": {
-    "val": "",
+    "val": "7시간",
     "excluded": "",
     "name": ""
   },
   "6 Hours": {
-    "val": "",
+    "val": "6시간",
     "excluded": "",
     "name": ""
   },
   "5 Hours": {
-    "val": "",
+    "val": "5시간",
     "excluded": "",
     "name": ""
   },
   "4 Hours": {
-    "val": "",
+    "val": "4시간",
     "excluded": "",
     "name": ""
   },
   "Wake up": {
-    "val": "",
+    "val": "일어나기",
     "excluded": "",
     "name": ""
   },
   "Dream": {
-    "val": "",
+    "val": "꿈꾸기",
     "excluded": "",
     "name": ""
   },
   "Keep sleeping": {
-    "val": "",
+    "val": "계속 자기",
     "excluded": "",
     "name": ""
   },
   "Kick out \\N[2]": {
-    "val": "",
+    "val": "\\N[2] 내보내기",
     "excluded": "",
     "name": ""
   },
   "Kick out \\N[3]": {
-    "val": "",
+    "val": "\\N[3] 내보내기",
     "excluded": "",
     "name": ""
   },
   "Are you sure?": {
-    "val": "",
+    "val": "확실합니까?",
     "excluded": "",
     "name": ""
   },
   "UNUSED EVENT": {
-    "val": "",
+    "val": "사용하지 않는 이벤트",
     "excluded": "",
     "name": ""
   },
   "Clean your clothes?": {
-    "val": "",
+    "val": "옷을 손질할까요?",
     "excluded": "",
     "name": ""
   },
   "Wash your hands": {
-    "val": "",
+    "val": "손 씻기",
     "excluded": "",
     "name": ""
   },
   "Wash your face": {
-    "val": "",
+    "val": "세수하기",
     "excluded": "",
     "name": ""
   },
   "Drink": {
-    "val": "",
+    "val": "마시기",
     "excluded": "",
     "name": ""
   },
   "Do experiment": {
-    "val": "",
+    "val": "실험하기",
     "excluded": "",
     "name": ""
   },
   "Take a shower": {
-    "val": "",
+    "val": "샤워하기",
     "excluded": "",
     "name": ""
   },
   "Show map name": {
-    "val": "",
+    "val": "맵 이름 표시",
     "excluded": "",
     "name": ""
   },
   "Show coordinates": {
-    "val": "",
+    "val": "좌표 표시",
     "excluded": "",
     "name": ""
   },
   "The egg is empty.": {
-    "val": "",
+    "val": "알은 비어 있다.",
     "excluded": "",
     "name": ""
   },
   "This bed is not yours.": {
-    "val": "",
+    "val": "이 침대는 당신 것이 아니다.",
     "excluded": "",
     "name": ""
   },
   "Do nothing": {
-    "val": "",
+    "val": "아무것도 하지 않기",
     "excluded": "",
     "name": ""
   },
   "Sleep anyway": {
-    "val": "",
+    "val": "그래도 자기",
     "excluded": "",
     "name": ""
   },
   "Take a seat": {
-    "val": "",
+    "val": "앉기",
     "excluded": "",
     "name": ""
   },
   "Your party is full.": {
-    "val": "",
+    "val": "파티가 가득 찼습니다.",
     "excluded": "",
     "name": ""
   },
   "Set up camp": {
-    "val": "",
+    "val": "야영 준비",
     "excluded": "",
     "name": ""
   },
   "Stop camping": {
-    "val": "",
+    "val": "야영 정리",
     "excluded": "",
     "name": ""
   },
   "Archive your journey": {
-    "val": "",
+    "val": "여정을 기록으로 남기기",
     "excluded": "",
     "name": ""
   },
   "Yes?": {
-    "val": "",
+    "val": "네?",
     "excluded": "",
     "name": ""
   },
   "Do you have any questions?": {
-    "val": "",
+    "val": "궁금한 게 있나요?",
     "excluded": "",
     "name": ""
   },
   "I'm here to help": {
-    "val": "",
+    "val": "도와주려고 있는 거예요",
     "excluded": "",
     "name": ""
   },
   "What is this place?": {
-    "val": "",
+    "val": "여기는 어떤 곳인가요?",
     "excluded": "",
     "name": ""
   },
   "Where is the dungeon entrance?": {
-    "val": "",
+    "val": "던전 입구는 어디인가요?",
     "excluded": "",
     "name": ""
   },
   "Where i can find companions?": {
-    "val": "",
+    "val": "동료는 어디서 찾나요?",
     "excluded": "",
     "name": ""
   },
   "Where i can go shopping?": {
-    "val": "",
+    "val": "장은 어디서 보나요?",
     "excluded": "",
     "name": ""
   },
   "I have other questions...": {
-    "val": "",
+    "val": "다른 질문이 있어요...",
     "excluded": "",
     "name": ""
   },
   "We call this place Omega Tower\nNo one's quite sure what it used to be.": {
-    "val": "",
+    "val": "우리는 이곳을 Omega Tower라고 불러요.\n예전에 뭐였는지는 아무도 확실히 몰라요.",
     "excluded": "",
     "name": ""
   },
   "It’s massive: it extends into the clouds and \nburrows deep down into the bowels of earth. ": {
-    "val": "",
+    "val": "어마어마하죠. 구름까지 솟아오르고\n땅속 깊은 곳까지 파고들어요.",
     "excluded": "",
     "name": ""
   },
   "Most likely a failed arcology project built \non anomalous and thaumaturgical principles. ": {
-    "val": "",
+    "val": "아마도 변칙적이고 마술적인 원리로 세운\n실패한 아콜로지 계획이었겠죠.",
     "excluded": "",
     "name": ""
   },
   "We've deployed probes for over a\nthousand floors in both directions. \nNo confirmed top...or bottom.": {
-    "val": "",
+    "val": "우리는 양쪽으로 천 층이 넘게\n탐사 장치를 내려보냈어요.\n확인된 꼭대기도... 바닥도 없어요.",
     "excluded": "",
     "name": ""
   },
   "The entrance is at the Hypernet Point. \nTake the elevator to Floor 0 then go to the\ndoor to the left.": {
-    "val": "",
+    "val": "입구는 Hypernet Point에 있어요.\n엘리베이터로 0층까지 간 다음 왼쪽\n문으로 가세요.",
     "excluded": "",
     "name": ""
   },
   "Once inside take the big central staircase\nand you can start exploring freely, just \nremember to stock up before an expedition.": {
-    "val": "",
+    "val": "안에 들어가면 가운데 큰 계단을 타고\n자유롭게 돌아다니면 돼요. 다만 탐험 전에\n보급을 챙기는 건 잊지 마세요.",
     "excluded": "",
     "name": ""
   },
   "Do you want me to take you there?": {
-    "val": "",
+    "val": "제가 데려다드릴까요?",
     "excluded": "",
     "name": ""
   },
   "Ok, please follow me.": {
-    "val": "",
+    "val": "좋아요, 따라오세요.",
     "excluded": "",
     "name": ""
   },
   "Like everywere in the tower!\nAlmost every person here is a": {
-    "val": "",
+    "val": "이 탑 어디서나 그렇죠!\n여기 사람은 거의 다",
     "excluded": "",
     "name": ""
   },
   "Some of them are willing to team up if your goals align.": {
-    "val": "",
+    "val": "목적이 맞으면 기꺼이 손을 잡으려는 이들도 있어요.",
     "excluded": "",
     "name": ""
   },
   "Its' dangerous to go alone!": {
-    "val": "",
+    "val": "혼자 가는 건 위험해요!",
     "excluded": "",
     "name": ""
   },
   "Sometimes, when you’re exploring a floor or returning \nto base, you’ll run into other explorers and archivists.": {
-    "val": "",
+    "val": "층을 돌아다니거나 기지로 돌아오는 길에\n다른 탐험가와 기록자를 마주치곤 해요.",
     "excluded": "",
     "name": ""
   },
   "If you want allies, talk to people around here. \nShare what you’ve found. \nThey’re more likely to trust someone who actually\ncontributes to the Archive. ": {
-    "val": "",
+    "val": "동료를 원하면 여기 사람들과 이야기해 보세요.\n찾아낸 것을 나누세요.\n실제로 Archive에 보탬이 되는 사람을 더 믿는 법이니까요.",
     "excluded": "",
     "name": ""
   },
   "How the elevator works?": {
-    "val": "",
+    "val": "엘리베이터는 어떻게 작동하나요?",
     "excluded": "",
     "name": ""
   },
   "Why everybody talks so weird?": {
-    "val": "",
+    "val": "다들 왜 그렇게 이상하게 말하나요?",
     "excluded": "",
     "name": ""
   },
   "The Hypernet": {
-    "val": "",
+    "val": "Hypernet",
     "excluded": "",
     "name": ""
   },
   "The Squishing": {
-    "val": "",
+    "val": "Squishing",
     "excluded": "",
     "name": ""
   },
   "It’s an anomalous construct, probably alive. ": {
-    "val": "",
+    "val": "변칙적인 구조물이고, 아마 살아 있을 거예요.",
     "excluded": "",
     "name": ""
   },
   "Maybe even self-aware, though it won’t say\nanything directly.": {
-    "val": "",
+    "val": "어쩌면 자의식까지 있을지도 모르죠. 대놓고\n말해주지는 않지만요.",
     "excluded": "",
     "name": ""
   },
   "Here’s the tricky part. The elevator won’t take you\nsomewhere you haven’t been on foot.": {
-    "val": "",
+    "val": "여기가 까다로운 부분이에요. 엘리베이터는 당신이 두 발로\n가본 적 없는 곳에는 데려다주지 않아요.",
     "excluded": "",
     "name": ""
   },
   "If you want to reach a floor via elevator, \nyou’ve got to earn it first. ": {
-    "val": "",
+    "val": "엘리베이터로 어떤 층에 가고 싶다면\n먼저 그 층을 얻어내야 해요.",
     "excluded": "",
     "name": ""
   },
   "Strangely enough, a few high floors are unlocked right \nfrom the start. No one knows why. \nMight be just a design feature or it just wants to show off.": {
-    "val": "",
+    "val": "이상하게도 높은 층 몇 개는 처음부터 열려\n있어요. 이유는 아무도 몰라요.\n그냥 설계가 그렇거나, 아니면 뽐내고 싶은 거겠죠.",
     "excluded": "",
     "name": ""
   },
   "It's called DungeonSpeak!": {
-    "val": "",
+    "val": "DungeonSpeak라고 불러요!",
     "excluded": "",
     "name": ""
   },
   "It's a neolanguage based on the deconstruction\nand recostruction of English,": {
-    "val": "",
+    "val": "영어를 해체하고 다시 조립해서 만든\n신조 언어예요,",
     "excluded": "",
     "name": ""
   },
   "The Hypernet isn’t what it used to be.": {
-    "val": "",
+    "val": "Hypernet은 예전 같지 않아요.",
     "excluded": "",
     "name": ""
   },
   "It was destroyed during the Y2K Event, \nwhen something, something not from here, breached \ninto our layer of reality. We call it Omni-Lex.": {
-    "val": "",
+    "val": "Y2K 사건 때 부서졌어요.\n여기 것이 아닌 무언가가 우리 현실의 층으로\n뚫고 들어왔죠. 우리는 그것을 Omni-Lex라고 불러요.",
     "excluded": "",
     "name": ""
   },
   "An extradimensional intelligence that decrypted \nevery password, breached every firewall, \nand made everything public.": {
-    "val": "",
+    "val": "모든 암호를 풀어내고 모든 방화벽을 뚫고\n모든 것을 공개해 버린\n차원 너머의 지성이에요.",
     "excluded": "",
     "name": ""
   },
   "The Hypernet couldn’t survive full transparency.": {
-    "val": "",
+    "val": "Hypernet은 완전한 투명성을 견디지 못했어요.",
     "excluded": "",
     "name": ""
   },
   "In the aftermath, the Foundation did what \nit always does, salvage and rebuild.": {
-    "val": "",
+    "val": "그 뒤에 Foundation은 늘 하던 일을 했죠.\n건질 것을 건지고 다시 지었어요.",
     "excluded": "",
     "name": ""
   },
   "What’s left of the Hypernet now is fragile, patchy, \nand deeply weird. We’re trying to reconstruct \nit from recovered HTML files, old hard drives, \nforgotten caches. ": {
-    "val": "",
+    "val": "지금 Hypernet에 남은 것은 부서지기 쉽고 구멍투성이에\n몹시 기묘해요. 우리는 되찾은 HTML 파일과 낡은 하드디스크,\n잊힌 캐시에서 그것을 다시 짜맞추려 하고 있어요.",
     "excluded": "",
     "name": ""
   },
   "Most links are broken. Images are missing. \nHexScript's practically radioactive. But sometimes, \nburied in the markup, we find data worth keeping.": {
-    "val": "",
+    "val": "링크는 대부분 끊겼어요. 이미지는 사라졌고요.\nHexScript는 사실상 방사능 덩어리죠. 하지만 가끔\n마크업 깊숙이 간직할 만한 데이터가 묻혀 있어요.",
     "excluded": "",
     "name": ""
   },
   "You’ll be browsing fragments and static pages once \nhosted by people long gone.": {
-    "val": "",
+    "val": "오래전에 떠난 사람들이 올려두었던 조각들과\n정적 페이지를 둘러보게 될 거예요.",
     "excluded": "",
     "name": ""
   },
   "Keep your expectations low, and your firewall strong.": {
-    "val": "",
+    "val": "기대는 낮게, 방화벽은 단단하게 두세요.",
     "excluded": "",
     "name": ""
   },
   "Yound the remains of an adventurer, what do you want\nto do?": {
-    "val": "",
+    "val": "모험가의 유해를 찾았습니다. 어떻게\n하시겠습니까?",
     "excluded": "",
     "name": ""
   },
   "Loot the body": {
-    "val": "",
+    "val": "시신을 뒤진다",
     "excluded": "",
     "name": ""
   },
   "Resurrect him": {
-    "val": "",
+    "val": "되살린다",
     "excluded": "",
     "name": ""
   },
   "Desacrate the grave": {
-    "val": "",
+    "val": "무덤을 훼손한다",
     "excluded": "",
     "name": ""
   },
   "Ignore it": {
-    "val": "",
+    "val": "그냥 지나친다",
     "excluded": "",
     "name": ""
   },
   "Select your destination": {
-    "val": "",
+    "val": "목적지를 고르세요",
     "excluded": "",
     "name": ""
   },
   "Bologna": {
-    "val": "",
+    "val": "볼로냐",
     "excluded": "",
     "name": ""
   },
   "Omega Tower": {
-    "val": "",
+    "val": "Omega Tower",
     "excluded": "",
     "name": ""
   },
   "Green Witch Space Center": {
-    "val": "",
+    "val": "그린 위치 우주 센터",
     "excluded": "",
     "name": ""
   },
   "Teleport": {
-    "val": "",
+    "val": "순간이동",
     "excluded": "",
     "name": ""
   },
   "Add level": {
-    "val": "",
+    "val": "레벨 추가",
     "excluded": "",
     "name": ""
   },
   "3d MODE": {
-    "val": "",
+    "val": "3D 모드",
     "excluded": "",
     "name": ""
   },
   "Initialize": {
-    "val": "",
+    "val": "초기화",
     "excluded": "",
     "name": ""
   },
   "Add items/Money": {
-    "val": "",
+    "val": "아이템/돈 추가",
     "excluded": "",
     "name": ""
   },
   "Other": {
-    "val": "",
+    "val": "기타",
     "excluded": "",
     "name": ""
   },
   "Go down": {
-    "val": "",
+    "val": "내려가기",
     "excluded": "",
     "name": ""
   },
   "Base set": {
-    "val": "",
+    "val": "기본 세트",
     "excluded": "",
     "name": ""
   },
   "Materials": {
-    "val": "",
+    "val": "재료",
     "excluded": "",
     "name": ""
   },
   "Money": {
-    "val": "",
+    "val": "돈",
     "excluded": "",
     "name": ""
   },
   "Teleport to vehicle": {
-    "val": "",
+    "val": "차량으로 순간이동",
     "excluded": "",
     "name": ""
   },
   "Spawn vehicle": {
-    "val": "",
+    "val": "차량 생성",
     "excluded": "",
     "name": ""
   },
   "Death": {
-    "val": "",
+    "val": "죽음",
     "excluded": "",
     "name": ""
   },
   "Test battle": {
-    "val": "",
+    "val": "테스트 전투",
     "excluded": "",
     "name": ""
   },
   "Camper": {
-    "val": "",
+    "val": "캠핑카",
     "excluded": "",
     "name": ""
   },
   "Car": {
-    "val": "",
+    "val": "자동차",
     "excluded": "",
     "name": ""
   },
   "Inn": {
-    "val": "",
+    "val": "여관",
     "excluded": "",
     "name": ""
   },
   "Campfire": {
-    "val": "",
+    "val": "모닥불",
     "excluded": "",
     "name": ""
   },
   "Advance time": {
-    "val": "",
+    "val": "시간 진행",
     "excluded": "",
     "name": ""
   },
   "Set player speed": {
-    "val": "",
+    "val": "플레이어 속도 설정",
     "excluded": "",
     "name": ""
   },
   "Buy troops": {
-    "val": "",
+    "val": "병력 구매",
     "excluded": "",
     "name": ""
   },
   "Change Weather": {
-    "val": "",
+    "val": "날씨 변경",
     "excluded": "",
     "name": ""
   },
   "Surgery": {
-    "val": "",
+    "val": "수술",
     "excluded": "",
     "name": ""
   },
   "Make a coffee": {
-    "val": "",
+    "val": "커피 내리기",
     "excluded": "",
     "name": ""
   },
   "Play Locktris": {
-    "val": "",
+    "val": "Locktris 하기",
     "excluded": "",
     "name": ""
   },
   "Select difficulty:": {
-    "val": "",
+    "val": "난이도를 고르세요:",
     "excluded": "",
     "name": ""
   },
   "Walk in the park": {
-    "val": "",
+    "val": "산책 수준",
     "excluded": "",
     "name": ""
   },
   "Easy": {
-    "val": "",
+    "val": "쉬움",
     "excluded": "",
     "name": ""
   },
   "Medium": {
-    "val": "",
+    "val": "보통",
     "excluded": "",
     "name": ""
   },
   "Hard": {
-    "val": "",
+    "val": "어려움",
     "excluded": "",
     "name": ""
   },
   "Hyperhard": {
-    "val": "",
+    "val": "극악",
     "excluded": "",
     "name": ""
   },
   "Stop working": {
-    "val": "",
+    "val": "일 그만두기",
     "excluded": "",
     "name": ""
   },
   "Change role": {
-    "val": "",
+    "val": "역할 바꾸기",
     "excluded": "",
     "name": ""
   },
   "Manager": {
-    "val": "",
+    "val": "관리자",
     "excluded": "",
     "name": ""
   },
   "Producer": {
-    "val": "",
+    "val": "생산자",
     "excluded": "",
     "name": ""
   },
   "Rider": {
-    "val": "",
+    "val": "배달원",
     "excluded": "",
     "name": ""
   },
   "Start working": {
-    "val": "",
+    "val": "일 시작하기",
     "excluded": "",
     "name": ""
   },
   "Select your role": {
-    "val": "",
+    "val": "역할을 고르세요",
     "excluded": "",
     "name": ""
   },
   "You are in\n\\V[63] \\V[64] \\V[68]": {
-    "val": "",
+    "val": "현재 위치는\n\\V[63] \\V[64] \\V[68]",
     "excluded": "",
     "name": ""
   },
   "No gas pump near": {
-    "val": "",
+    "val": "근처에 주유소가 없습니다",
     "excluded": "",
     "name": ""
   },
   "Repairing...": {
-    "val": "",
+    "val": "수리 중...",
     "excluded": "",
     "name": ""
   },
   "Where you want to go?": {
-    "val": "",
+    "val": "어디로 가시겠습니까?",
     "excluded": "",
     "name": ""
   },
   "Hypernet Point": {
-    "val": "",
+    "val": "Hypernet Point",
     "excluded": "",
     "name": ""
   },
   "Outside the tower": {
-    "val": "",
+    "val": "탑 바깥",
     "excluded": "",
     "name": ""
   },
   "Shopping mall": {
-    "val": "",
+    "val": "쇼핑몰",
     "excluded": "",
     "name": ""
   },
   "Pay the bounty": {
-    "val": "",
+    "val": "현상금을 납부한다",
     "excluded": "",
     "name": ""
   },
   "Go to trial": {
-    "val": "",
+    "val": "재판을 받는다",
     "excluded": "",
     "name": ""
   },
   "See crime list": {
-    "val": "",
+    "val": "범죄 목록을 본다",
     "excluded": "",
     "name": ""
   },
   "Resist arrest": {
-    "val": "",
+    "val": "체포에 저항한다",
     "excluded": "",
     "name": ""
   },
   "Go to jail": {
-    "val": "",
+    "val": "감옥에 간다",
     "excluded": "",
     "name": ""
   },
   "You don't have any money to clear\nyour bounty.": {
-    "val": "",
+    "val": "현상금을 청산할 돈이\n없습니다.",
     "excluded": "",
     "name": ""
   },
   "Steal": {
-    "val": "",
+    "val": "훔치기",
     "excluded": "",
     "name": ""
   },
   "You don't have any bounties.": {
-    "val": "",
+    "val": "걸린 현상금이 없습니다.",
     "excluded": "",
     "name": ""
   },
   "Talk": {
-    "val": "",
+    "val": "대화",
     "excluded": "",
     "name": ""
   },
   "Turn yourself in": {
-    "val": "",
+    "val": "자수하기",
     "excluded": "",
     "name": ""
   },
   "Ask directions": {
-    "val": "",
+    "val": "길 묻기",
     "excluded": "",
     "name": ""
   },
   "50€ was added to your account.": {
-    "val": "",
+    "val": "계좌에 50€가 입금되었습니다.",
     "excluded": "",
     "name": ""
   },
   "You can fly only in the world map.": {
-    "val": "",
+    "val": "비행은 월드맵에서만 할 수 있습니다.",
     "excluded": "",
     "name": ""
   },
   "TO DO": {
-    "val": "",
+    "val": "할 일",
     "excluded": "",
     "name": ""
   },
   "You look at yourself in the mirror.": {
-    "val": "",
+    "val": "거울에 비친 자신을 바라본다.",
     "excluded": "",
     "name": ""
   },
   "Shop": {
-    "val": "",
+    "val": "상점",
     "excluded": "",
     "name": ""
   },
   "Rent room": {
-    "val": "",
+    "val": "방 빌리기",
     "excluded": "",
     "name": ""
   },
   "Recruit troops": {
-    "val": "",
+    "val": "병력 모집",
     "excluded": "",
     "name": ""
   },
   "Fight": {
-    "val": "",
+    "val": "싸우기",
     "excluded": "",
     "name": ""
   },
   "Open star map": {
-    "val": "",
+    "val": "성도 열기",
     "excluded": "",
     "name": ""
   },
   "Land": {
-    "val": "",
+    "val": "착륙",
     "excluded": "",
     "name": ""
   },
   "Refuel": {
-    "val": "",
+    "val": "연료 보급",
     "excluded": "",
     "name": ""
   },
   "Repair": {
-    "val": "",
+    "val": "수리",
     "excluded": "",
     "name": ""
   },
   "Greenwitch space center": {
-    "val": "",
+    "val": "그린위치 우주 센터",
     "excluded": "",
     "name": ""
   },
   "Apulia Spaceport": {
-    "val": "",
+    "val": "풀리아 우주항",
     "excluded": "",
     "name": ""
   },
   "Jump in the trash": {
-    "val": "",
+    "val": "쓰레기 속으로 뛰어들기",
     "excluded": "",
     "name": ""
   },
   "You donated sperm \\V[102] times and you have\ngiven birth to \\V[103] children.": {
-    "val": "",
+    "val": "정자를 \\V[102]회 기증했고\n\\V[103]명의 아이를 낳았습니다.",
     "excluded": "",
     "name": ""
   }

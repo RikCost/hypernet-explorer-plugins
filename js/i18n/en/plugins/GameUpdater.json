@@ -10,6 +10,7 @@
   "checking": "CHECKING",
   "failed": "CHECK FAILED",
   "installed": "Installed build",
+  "buildNumber": "Build number",
   "selected": "Selected build",
   "committed": "Published",
   "author": "Built by",

@@ -592,8 +592,7 @@
 
           currentY += this.lineHeight() * 3 + 10;
           this.changeTextColor(ColorManager.systemColor());
-          const elementLabel = ConfigManager.language === "it" ? "Elemento:" : "Element:";
-          this.drawText(elementLabel, 0, currentY, 120);
+          this.drawText(T('ClassSelect.elementHeading'), 0, currentY, 120);
           this.resetTextColor();
           this.drawText(elementName, 140, currentY, this.contents.width - 200);
 

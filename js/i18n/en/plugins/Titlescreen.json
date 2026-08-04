@@ -105,6 +105,13 @@
   "language": {
     "label": "✦ LANG"
   },
+  "update": {
+    "checking": "✦ CHECKING BUILDS",
+    "checkingTip": "Asking the update server what the newest build is.",
+    "ready": "✦ BUILD {build} READY",
+    "readyPlain": "✦ NEW BUILD READY",
+    "tip": "A newer build is waiting. Open the updater to install it."
+  },
   "hyperverse": {
     "lead": "HYPERVERSE // ",
     "catalog": "CATALOG",

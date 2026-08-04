@@ -10,6 +10,7 @@
   "noSkillCategories": "No skill categories defined.",
   "primary": "Primary:",
   "secondary": "Secondary:",
+  "elementHeading": "Element:",
   "element": {
     "1": "Physical",
     "2": "Fire",

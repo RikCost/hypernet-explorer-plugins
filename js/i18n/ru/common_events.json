@@ -600,7 +600,7 @@
     "name": ""
   },
   "Green Witch Space Center": {
-    "val": "",
+    "val": "Космический центр Green Witch",
     "excluded": "",
     "name": ""
   },
@@ -635,7 +635,7 @@
     "name": ""
   },
   "Go down": {
-    "val": "",
+    "val": "Спуститься",
     "excluded": "",
     "name": ""
   },
@@ -695,7 +695,7 @@
     "name": ""
   },
   "Advance time": {
-    "val": "",
+    "val": "Промотать время",
     "excluded": "",
     "name": ""
   },
@@ -795,7 +795,7 @@
     "name": ""
   },
   "You are in\n\\V[63] \\V[64] \\V[68]": {
-    "val": "",
+    "val": "Вы находитесь в\n\\V[63] \\V[64] \\V[68]",
     "excluded": "",
     "name": ""
   },

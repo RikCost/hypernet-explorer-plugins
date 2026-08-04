@@ -34,6 +34,11 @@
  * @desc How many files are downloaded at the same time.
  * @default 5
  *
+ * @param baseCommit
+ * @text Build number origin
+ * @desc Where the history starts. Builds are numbered by how many commits came after it, and nothing before it is listed.
+ * @default f82efcc816a0e07049b3466b1013eaae7105ecf0
+ *
  * @help TitleScreenGameUpdater.js
  * ============================================================================
  * Adds an UPDATES entry to the title screen that pulls the game files from a
@@ -48,7 +53,9 @@
  * Only one branch is read (main). Its commit history is the build list: the
  * newest build sits at the top and every past build under it, so a player can
  * install the latest one or go back to any earlier build. Older builds are
- * fetched a page at a time.
+ * fetched a page at a time, and the list stops at the numbering origin (the
+ * baseCommit parameter): that build is the oldest one offered and nothing
+ * before it is listed.
  *
  * How an update runs
  *   1. The branch history is read from the GitHub API and the player picks a
@@ -68,6 +75,21 @@
  * Nothing is ever deleted: files that exist here but not in the repository are
  * left alone, and so is everything under save/. Going back to an older build
  * therefore leaves behind any file that build never had.
+ *
+ * The build number
+ *   Whichever build is installed is also a number: how many commits on the
+ *   branch came after the origin commit (the baseCommit parameter). It is read
+ *   once per build from the compare API, kept in save/updater/state.json and
+ *   handed to the title screen, which writes it into the third field of the
+ *   version badge (0.0.<build>a). A copy that has never updated has no build
+ *   number and keeps the version string as written.
+ *
+ * Checking on launch
+ *   The title screen calls GameUpdater.autoCheck() once per session. It reads
+ *   the branch, and only compares local files when the newest build is not the
+ *   one already recorded as installed, so an up-to-date copy costs one request.
+ *   Everything it finds is reported through GameUpdater.autoResult(); nothing is
+ *   downloaded and no local file is touched.
  *
  * Requires the desktop (NW.js) build. On the web build the command is hidden
  * because there is no local file system to write to.
@@ -92,10 +114,14 @@
     const BRANCH       = String(params.branch || 'main');
     const PAGE_SIZE    = Math.max(5, Math.min(100, Number(params.historySize) || 20));
     const CONCURRENCY  = Math.max(1, Math.min(16, Number(params.concurrency) || 5));
+    // Build numbering counts the commits that came after this one.
+    const BASE_COMMIT  = String(params.baseCommit || 'f82efcc816a0e07049b3466b1013eaae7105ecf0');
 
     const USER_AGENT  = 'HypernetExplorer-Updater';
     const TIMEOUT_MS  = 30000;
     const KEEP_BACKUPS = 3;
+    // How many resolved build numbers the state file keeps, oldest dropped first.
+    const KEEP_BUILD_NUMBERS = 60;
 
     // Downloading and installing. Set this to false to leave the screen as a
     // read-only report of what the branch holds, touching no local file.
@@ -349,10 +375,13 @@
         _busy: false,
         _cancelled: false,
         _restartPending: false,
+        _auto: null,         // last launch check result
+        _autoPromise: null,
 
         isAvailable,
         downloadsEnabled: () => DOWNLOADS_ENABLED,
         branch: BRANCH,
+        baseCommit: BASE_COMMIT,
 
         state() {
             if (!this._state) {
@@ -363,12 +392,157 @@
                 if (installed && !installed.sha) {
                     installed = installed[raw.channel] || installed.stable || installed.unstable || null;
                 }
-                this._state = { installed: installed && installed.sha ? installed : null };
+                this._state = {
+                    installed: installed && installed.sha ? installed : null,
+                    // sha -> how many commits came after the origin commit
+                    builds: (raw.builds && typeof raw.builds === 'object') ? raw.builds : {}
+                };
             }
             return this._state;
         },
+        saveState() {
+            writeJson(STATE_FILE, this.state());
+        },
         installedInfo() {
             return this.state().installed;
+        },
+
+        // ---------------------------------------------------------------------
+        // Build numbers, the count of commits made after the origin commit
+        // ---------------------------------------------------------------------
+
+        // The number of the build this copy is running, or null when it has
+        // never updated and therefore cannot say which build it is.
+        buildNumber() {
+            const info = this.installedInfo();
+            return info && typeof info.build === 'number' ? info.build : null;
+        },
+        knownBuildNumber(sha) {
+            const cached = this.state().builds[sha];
+            return typeof cached === 'number' ? cached : null;
+        },
+
+        // Writes the build number into the third field of a version string
+        // ("0.0.1a - experimental" -> "0.0.42a - experimental"). A copy with no
+        // build number keeps the string exactly as it was written.
+        applyBuildNumber(text) {
+            const build = this.buildNumber();
+            if (build === null) return text;
+            const str = String(text === undefined || text === null ? '' : text);
+            if (!/\d+\.\d+\.\d+/.test(str)) return str;
+            return str.replace(/(\d+\.\d+\.)(\d+)/, (m, head) => head + build);
+        },
+
+        // Asks the compare API how far a build sits from the origin commit. The
+        // answer never changes for a given commit, so it is kept in the state
+        // file and each build is only ever asked about once.
+        async buildCountFor(sha) {
+            if (!sha) return null;
+            const known = this.knownBuildNumber(sha);
+            if (known !== null) return known;
+
+            let count;
+            if (sha === BASE_COMMIT) {
+                count = 0;
+            } else {
+                const cmp = await githubApi(
+                    `/repos/${OWNER}/${REPO}/compare/${encodeURIComponent(BASE_COMMIT)}...${encodeURIComponent(sha)}` // i18n-ignore: api path
+                );
+                count = Number(cmp && cmp.ahead_by);
+                if (!isFinite(count)) return null;
+            }
+
+            const st = this.state();
+            st.builds[sha] = count;
+            const keys = Object.keys(st.builds);
+            while (keys.length > KEEP_BUILD_NUMBERS) delete st.builds[keys.shift()];
+            // The installed record carries its own copy so the title screen can
+            // number the badge without a single request.
+            if (st.installed && st.installed.sha === sha) st.installed.build = count;
+            this.saveState();
+            return count;
+        },
+
+        // The one place the installed build is recorded, so its number is always
+        // filled in from whatever the cache already knows.
+        _markInstalled(sha, date) {
+            const st = this.state();
+            st.installed = {
+                sha: sha,
+                date: date || null,
+                at: Date.now(),
+                build: this.knownBuildNumber(sha)
+            };
+            this.saveState();
+        },
+
+        // ---------------------------------------------------------------------
+        // Launch check, run once per session by the title screen
+        // ---------------------------------------------------------------------
+        autoResult() {
+            return this._auto;
+        },
+        updateAvailable() {
+            return !!(this._auto && this._auto.available);
+        },
+        autoPending() {
+            return !!this._autoPromise && !this._auto;
+        },
+
+        // Idempotent: every caller after the first gets the same promise, so the
+        // branch is read once however many times the title screen is entered.
+        autoCheck() {
+            if (this._autoPromise) return this._autoPromise;
+            this._autoPromise = this._runAutoCheck().catch((err) => {
+                this._auto = { ran: true, available: false, error: err && err.message ? err.message : String(err) };
+                return this._auto;
+            });
+            return this._autoPromise;
+        },
+
+        async _runAutoCheck() {
+            if (!isAvailable()) {
+                this._auto = { ran: true, available: false, error: 'no local file system' }; // i18n-ignore: diagnostic
+                return this._auto;
+            }
+
+            await this.loadHistory(false);
+            const latest = this._commits[0];
+            if (!latest) throw new Error('the branch holds no builds'); // i18n-ignore: diagnostic
+
+            // A copy already recorded as running the newest build needs no file
+            // comparison at all; anything else is measured against it.
+            const installed = this.installedInfo();
+            let plan = null;
+            if (!installed || installed.sha !== latest.sha) {
+                plan = await this.check(latest.sha);
+            }
+
+            let latestBuild = null;
+            try {
+                latestBuild = await this.buildCountFor(latest.sha);
+                const now = this.installedInfo();
+                if (now && now.sha !== latest.sha && typeof now.build !== 'number') {
+                    await this.buildCountFor(now.sha);
+                }
+            } catch (e) {
+                // Numbering is cosmetic: a failed compare must not cost the
+                // player the update notice itself.
+                console.warn(PLUGIN_NAME + ': could not resolve the build number', e);
+            }
+
+            this._auto = {
+                ran: true,
+                available: !!(plan && plan.changed.length),
+                latest: latest.sha,
+                latestDate: latest.date,
+                latestBuild: latestBuild,
+                build: this.buildNumber(),
+                files: plan ? plan.changed.length : 0,
+                bytes: plan ? plan.bytes : 0,
+                error: null
+            };
+            return this._auto;
         },
         isInstalled(sha) {
             const info = this.installedInfo();
@@ -441,12 +615,21 @@
                 );
                 if (!Array.isArray(list)) throw new Error('branch ' + BRANCH + ' not found'); // i18n-ignore: diagnostic
 
-                const rows = list.filter(c => c && c.sha).map(c => ({
-                    sha: c.sha,
-                    date: c.commit && c.commit.author ? c.commit.author.date : null,
-                    author: c.commit && c.commit.author ? c.commit.author.name : '',
-                    message: c.commit ? String(c.commit.message || '').split('\n')[0] : ''
-                }));
+                // The build list stops at the numbering origin: builds older than
+                // it are never offered, so the oldest build a player can go back
+                // to is build 0 and nothing before it is listed at all.
+                const rows = [];
+                let reachedOrigin = false;
+                for (const c of list) {
+                    if (!c || !c.sha) continue;
+                    rows.push({
+                        sha: c.sha,
+                        date: c.commit && c.commit.author ? c.commit.author.date : null,
+                        author: c.commit && c.commit.author ? c.commit.author.name : '',
+                        message: c.commit ? String(c.commit.message || '').split('\n')[0] : ''
+                    });
+                    if (c.sha === BASE_COMMIT) { reachedOrigin = true; break; }
+                }
 
                 if (!more) this._commits = [];
                 const seen = new Set(this._commits.map(c => c.sha));
@@ -454,7 +637,7 @@
                     if (!seen.has(row.sha)) this._commits.push(row);
                 }
                 this._historyPage = page;
-                this._historyEnd  = rows.length < PAGE_SIZE;
+                this._historyEnd  = reachedOrigin || list.length < PAGE_SIZE;
                 if (!this._commits.length) throw new Error('the branch holds no builds'); // i18n-ignore: diagnostic
 
                 report({ phase: 'history', text: fmt(T.logHistoryFound, this._commits.length), ratio: 1 });
@@ -545,8 +728,7 @@
 
                 // Nothing to fetch means this build is the one we are running.
                 if (!changed.length) {
-                    this.state().installed = { sha: commit.sha, date: plan.date, at: Date.now() };
-                    writeJson(STATE_FILE, this.state());
+                    this._markInstalled(commit.sha, plan.date);
                 }
                 return plan;
             } finally {
@@ -650,8 +832,19 @@
                 rmrf(TMP_DIR);
                 this.pruneBackups();
 
-                this.state().installed = { sha: plan.sha, date: plan.date, at: Date.now() };
-                writeJson(STATE_FILE, this.state());
+                this._markInstalled(plan.sha, plan.date);
+                // The badge is numbered from the state file, so the build just
+                // installed is numbered now rather than on the next launch.
+                try {
+                    await this.buildCountFor(plan.sha);
+                } catch (e) {
+                    console.warn(PLUGIN_NAME + ': could not resolve the build number', e);
+                }
+                // A build that is now the one running is no longer an update.
+                if (this._auto) {
+                    this._auto.available = false;
+                    this._auto.build = this.buildNumber();
+                }
 
                 // Every other plan was measured against the files we just
                 // replaced, so they have to be checked again.
@@ -841,6 +1034,13 @@
             // the player sees an answer without pressing anything.
             if (isAvailable() && !GameUpdater.commits().length) {
                 this._loadHistory(false, true);
+            } else if (GameUpdater.autoPending()) {
+                // The title screen's launch check is still running and has left
+                // the list here already: take its answer when it lands rather
+                // than leaving the page reading "not checked".
+                GameUpdater.autoCheck().then(() => {
+                    if (SceneManager._scene === this && this._container) this._refreshDOM();
+                });
             }
         }
 
@@ -1119,6 +1319,9 @@
             specs += row(T.installed, installed
                 ? `${shortSha(installed.sha)}  (${formatDate(installed.at ? new Date(installed.at).toISOString() : null) || T.unknown})`
                 : T.never);
+            // The number the version badge wears, when this copy knows it.
+            const ownBuild = GameUpdater.buildNumber();
+            if (ownBuild !== null) specs += row(T.buildNumber, ownBuild);
             if (commit) {
                 specs += row(T.selected, shortSha(commit.sha));
                 specs += row(T.committed, formatDate(commit.date) || T.unknown);

@@ -10,6 +10,7 @@
   "checking": "CONTROLLO",
   "failed": "CONTROLLO FALLITO",
   "installed": "Versione installata",
+  "buildNumber": "Numero di build",
   "selected": "Versione scelta",
   "committed": "Pubblicata",
   "author": "Creata da",

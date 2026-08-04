@@ -105,10 +105,18 @@
     // the i18n key; one edited in plugins.js (or by a mod) wins as written. An
     // explicitly blanked parameter hides the badge, while an absent one (an
     // entry that predates it) still shows the shipped label.
+    //
+    // The third field of the version is the build number, i.e. how many commits
+    // the installed build sits past the numbering origin, so a copy that has
+    // updated says which build it is running. The updater owns that number and
+    // rewrites the string; a copy that has never updated (or a web build, where
+    // there is no updater at all) keeps the label exactly as written.
     const VERSION_TEXT = () => {
         const raw = pathParams.VersionText;
         if (raw !== undefined && String(raw).trim() === '') return '';
-        return T.param(raw, 'Titlescreen.version.text');
+        const text = T.param(raw, 'Titlescreen.version.text');
+        const updater = window.GameUpdater;
+        return (updater && updater.applyBuildNumber) ? updater.applyBuildNumber(text) : text;
     };
 
     // The astronomy catalogues below keep their English classification strings
@@ -4928,6 +4936,10 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         // English / Italian flags, docked under the badge
         this.createLanguageSelector();
 
+        // Update notice under the flags, plus the launch check that fills it in
+        this.createUpdateButton();
+        this.beginUpdateCheck();
+
         // Bottom-right early-build disclaimer (EnableDisclaimer parameter)
         this.createDisclaimerBox();
 
@@ -5388,6 +5400,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         this.refreshUIOverlayDOM();
         this.refreshBgSwitchLabel();
         this.createVersionBadge();
+        this.refreshUpdateButton();
         if (this._disclaimerBox) {
             this.removeDisclaimerBox();
             this.createDisclaimerBox();
@@ -5430,6 +5443,145 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         this._languageBox = null;
         this._languageLabel = null;
         this._languageButtons = [];
+    };
+
+    // -------------------------------------------------------------------------
+    // Update notice: the launch check, and the button it puts under the flags.
+    //
+    // The updater reads the branch once per session on its own (autoCheck); this
+    // panel is only its face. It stays out of the way until there is something
+    // to say, so an up-to-date copy sees the corner exactly as before, and the
+    // menu column keeps its own UPDATES entry either way.
+    // -------------------------------------------------------------------------
+
+    const updaterApi = () => (window.GameUpdater && window.GameUpdater.isAvailable &&
+        window.GameUpdater.isAvailable()) ? window.GameUpdater : null;
+
+    // Docked under the language flags, the way they are docked under the badge.
+    Scene_Title.prototype.createUpdateButton = function () {
+        const stale = document.getElementById('title-update');
+        if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+        if (!updaterApi()) { this._updateButton = null; return; }
+
+        const btn = document.createElement('div');
+        btn.id = 'title-update';
+        document.body.appendChild(btn);
+        this._updateButton = btn;
+        Object.assign(btn.style, {
+            position: 'absolute', zIndex: '300', display: 'none',
+            alignItems: 'center', whiteSpace: 'nowrap',
+            fontFamily: "'Square', monospace", fontWeight: 'bold', letterSpacing: '1px',
+            color: '#FFD700', background: 'rgba(0, 0, 0, 0.85)',
+            border: '2px solid rgba(255, 215, 0, 0.75)',
+            boxShadow: 'inset 0 0 0 2px rgba(255, 215, 0, 0.2)',
+            textShadow: '0 0 4px #000', userSelect: 'none',
+            transition: 'color 0.15s ease-out, border-color 0.15s ease-out'
+        });
+
+        btn.addEventListener('mouseenter', () => {
+            if (btn.style.cursor === 'pointer') btn.style.borderColor = '#FFFFFF';
+        });
+        btn.addEventListener('mouseleave', () => { btn.style.borderColor = 'rgba(255, 215, 0, 0.75)'; });
+        // Swallow the press so it never reaches the canvas / free-look drag.
+        btn.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); });
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (SceneManager._scene !== this) return;
+            if (btn.style.cursor !== 'pointer' || !window.Scene_GameUpdater) return;
+            SoundManager.playOk();
+            SceneManager.push(window.Scene_GameUpdater);
+        });
+
+        this.refreshUpdateButton();
+    };
+
+    // Three states, and two of them are silence: checking says so quietly, a
+    // build waiting is a real button, everything else (up to date, offline, a
+    // failed check) shows nothing at all.
+    Scene_Title.prototype.refreshUpdateButton = function () {
+        const btn = this._updateButton;
+        if (!btn) return;
+        const api = updaterApi();
+        const result = api ? api.autoResult() : null;
+
+        if (result && result.available) {
+            const build = result.latestBuild;
+            btn.textContent = (typeof build === 'number')
+                ? T('Titlescreen.update.ready', { build: build })
+                : T('Titlescreen.update.readyPlain');
+            btn.title = T('Titlescreen.update.tip');
+            btn.style.display = 'flex';
+            btn.style.cursor = 'pointer';
+            btn.style.pointerEvents = 'auto';
+            btn.style.color = '#FFD700';
+            btn.style.animation = 'title-update-pulse 2.4s ease-in-out infinite';
+        } else if (!result) {
+            btn.textContent = T('Titlescreen.update.checking');
+            btn.title = T('Titlescreen.update.checkingTip');
+            btn.style.display = 'flex';
+            btn.style.cursor = 'default';
+            btn.style.pointerEvents = 'none';
+            btn.style.color = 'rgba(255, 215, 0, 0.55)';
+            btn.style.animation = '';
+        } else {
+            btn.style.display = 'none';
+            btn.style.animation = '';
+        }
+        this.layoutUpdateButton();
+    };
+
+    // Hung off the measured bottom of the language panel, so it follows however
+    // many flags the build ships.
+    Scene_Title.prototype.layoutUpdateButton = function () {
+        const btn = this._updateButton;
+        if (!btn) return;
+        const rect = TitleLayout.rect();
+        const s = TitleLayout.scale(rect);
+        const above = this._languageBox || this._versionBadge;
+        const aboveRect = above ? above.getBoundingClientRect() : null;
+        const below = aboveRect && aboveRect.height > 0
+            ? (aboveRect.bottom - rect.top) / s + 8
+            : 18; // nothing above it: take the corner inset itself
+        TitleLayout.place(btn, { left: 18, top: Math.round(below) });
+        btn.style.padding = TitleLayout.px(5, s) + ' ' + TitleLayout.px(10, s);
+        btn.style.fontSize = TitleLayout.px(12, s);
+    };
+
+    Scene_Title.prototype.removeUpdateButton = function () {
+        if (this._updateButton && this._updateButton.parentNode) {
+            this._updateButton.parentNode.removeChild(this._updateButton);
+        }
+        this._updateButton = null;
+    };
+
+    // How long the launch check waits before it starts. The first check of a
+    // fresh copy hashes the whole game folder, so it is held back until the
+    // title screen has finished building and settling its panels.
+    const UPDATE_CHECK_DELAY = 1200;
+
+    // Ask the updater what the branch holds. The call is idempotent and cached
+    // for the session, so entering the title again costs nothing and answers at
+    // once; the badge is rebuilt afterwards because the answer may have numbered
+    // this build.
+    Scene_Title.prototype.beginUpdateCheck = function () {
+        const api = updaterApi();
+        if (!api || !api.autoCheck) return;
+
+        const run = () => {
+            if (this._isDestroyed) return;
+            api.autoCheck().then(() => {
+                if (this._isDestroyed || SceneManager._scene !== this) return;
+                this.createVersionBadge();
+                this.refreshUpdateButton();
+                this.layoutOverlays();
+            }).catch(() => { /* the updater already reports its own failures */ });
+        };
+
+        // Already answered this session: no reason to make the player wait for
+        // the notice a second time.
+        if (api.autoResult()) run();
+        else setTimeout(run, UPDATE_CHECK_DELAY);
     };
 
     // Top-right corner of the canvas, with every metric in design pixels so the
@@ -5787,6 +5939,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         'title-bg-switch',
         'title-version',
         'title-language',
+        'title-update',
         'title-disclaimer',
         'title-hyperverse-info',
         'title-hyperverse-catalog',
@@ -5862,6 +6015,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         this.layoutVersionBadge();
         // After the badge: the selector is docked under its measured bottom.
         this.layoutLanguageSelector();
+        // ... and the update notice under the selector's.
+        this.layoutUpdateButton();
         this.layoutDisclaimerBox();
         if (this._hyperverseBg && this._hyperverseBg.layout) this._hyperverseBg.layout();
         if (this._autoDriveBg && this._autoDriveBg.layout) this._autoDriveBg.layout();
@@ -6133,6 +6288,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         }
         this._versionBadge = null;
         this.removeLanguageSelector();
+        this.removeUpdateButton();
         this.removeDisclaimerBox();
         if (this._logoOverlay && this._logoOverlay.parentNode) {
             this._logoOverlay.parentNode.removeChild(this._logoOverlay);

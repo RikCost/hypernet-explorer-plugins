@@ -141,11 +141,19 @@
         }
     };
 
-    const _si18n = (key) => {
+    const _si18n = (key, fallback) => {
         if (_statsI18n && _statsI18n[key]) {
             return _statsI18n[key];
         }
-        return key;
+        return fallback !== undefined ? fallback : key;
+    };
+
+    // Legacy trait data still ships { en: "...", it: "..." } objects instead of
+    // an i18n key path; pick the active language and fall back to English.
+    const _pickLocalized = (obj) => {
+        if (!obj || typeof obj !== 'object') return "";
+        const lang = ConfigManager.language || 'en';
+        return obj[lang] || obj.en || "";
     };
 
     _loadStatsI18n();
@@ -824,12 +832,12 @@
 
         // 3. Right Page Content updates
         const params = [
-            { name: useTranslation ? "FOR" : "STR", val: actor.param(2), id: 2 },
-            { name: useTranslation ? "COS" : "CON", val: actor.param(3), id: 3 },
-            { name: useTranslation ? "DES" : "DEX", val: actor.param(6), id: 6 },
-            { name: useTranslation ? "INT" : "INT", val: actor.param(4), id: 4 },
-            { name: useTranslation ? "SAG" : "WIS", val: actor.param(5), id: 5 },
-            { name: useTranslation ? "PSI" : "PSI", val: actor.param(7), id: 7 }
+            { name: _si18n("ATT", "STR"), val: actor.param(2), id: 2 },
+            { name: _si18n("DEF", "CON"), val: actor.param(3), id: 3 },
+            { name: _si18n("AGILITY", "DEX"), val: actor.param(6), id: 6 },
+            { name: _si18n("M.ATT", "INT"), val: actor.param(4), id: 4 },
+            { name: _si18n("M.DEF", "WIS"), val: actor.param(5), id: 5 },
+            { name: _si18n("LUCK", "PSI"), val: actor.param(7), id: 7 }
         ];
 
         const getModText = (val) => {
@@ -897,7 +905,7 @@
                 if (typeof trait.name === 'string' && trait.name.includes('.')) {
                     traitName = (i18nData ? resolveI18nPath(trait.name, i18nData) : null) || trait.name;
                 } else if (trait.name && typeof trait.name === 'object') {
-                    traitName = useTranslation ? trait.name.it : trait.name.en;
+                    traitName = _pickLocalized(trait.name);
                 } else {
                     traitName = trait.name || "";
                 }
@@ -906,7 +914,7 @@
                 let traitDesc = "";
                 if (trait.description) {
                     if (typeof trait.description === 'object') {
-                        traitDesc = useTranslation ? (trait.description.it || "") : (trait.description.en || "");
+                        traitDesc = _pickLocalized(trait.description);
                     } else {
                         traitDesc = String(trait.description);
                     }
@@ -947,7 +955,7 @@
                     <div style="color:var(--text-card-medium); font-size:0.8em; line-height:1.3;">${passiveEffect}</div>
                 `;
             } else {
-                passiveEl.innerHTML = `<div style="font-style:italic; color:var(--text-card-medium); font-size:0.8em;">${useTranslation ? "Nessuna abilità di classe" : "No class ability"}</div>`;
+                passiveEl.innerHTML = `<div style="font-style:italic; color:var(--text-card-medium); font-size:0.8em;">${T('SceneStatus.ui.noClassAbility')}</div>`;
             }
         }
 

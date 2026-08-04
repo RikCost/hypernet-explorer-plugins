@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Procedural Terrain Interactions v1.1.0 — press the action button facing a terrain feature on the procedural map to Fell / Mine / Pick Up / Dismantle it, or to enter generated structures (StairsDown cellars, StairsUp temples, Cave dens). Removals are stored in the world folder so every savegame in the same world keeps them gone.
+ * @plugindesc Procedural Terrain Interactions v1.2.0 — press the action button facing a terrain feature on the procedural map to Fell / Mine / Pick Up / Dismantle it; walk into a structure entrance (StairsDown cellars, StairsUp temples, Cave dens, Grates, Hatches) to enter it. Removals are stored in the world folder so every savegame in the same world keeps them gone.
  * @author Hypernet
  *
  * @help
@@ -32,7 +32,11 @@
  * every other savegame that visits the same world tile — and it will not be
  * re-placed when the map regenerates.
  *
- * Structure entrances (coordinate-seeded, generated on entry):
+ * Structure entrances (coordinate-seeded, generated on entry) are WALKED INTO,
+ * not pressed: there is no choice window and the action button does nothing on
+ * them. A passable entrance (a grate set into the floor) opens when the party
+ * steps onto it; an impassable one (a cave mouth, stairs against a wall) opens
+ * when the party walks into it and is stopped by it.
  *   - StairsDown -> LootCellar   (a small treasure cellar: gold, wine, chests)
  *   - StairsUp   -> TempleInside (long connected halls, much stronger enemies)
  *   - Cave       -> CaveDen      (a single cave chamber packed with one enemy
@@ -1128,9 +1132,15 @@
   // perturbed per entrance tile so two entrances on the same map open onto
   // different, but deterministic, structures. The border of the generated map
   // returns the player here (WorldMapReturn's _dungeonSession).
+  //
+  // Entering is a MOVEMENT, not an action-button interaction: every entrance
+  // below is registered in WALK_ENTRANCES and fired by the Game_Player
+  // moveStraight hook at the bottom of this file. Each entry returns true only
+  // when the party actually went in, so a refused entrance does not lock out
+  // the next step.
   function enterStructureBiome(t, biomeName, seSound) {
     const pg = $gameSystem._procGenData;
-    if (!pg) return;
+    if (!pg) return false;
     // The entrance tile is passed as the seed salt. It used to be poked into
     // pg.seed instead, which did nothing at all: procMapSeed builds the seed from
     // the WORLD seed and coordinates and never reads pg.seed, so every grate on a
@@ -1139,12 +1149,15 @@
     PluginManager.callCommand($gameMap._interpreter || {}, "WorldMapReturn", "startForcedBiome",
       { Biome: biomeName, Salt: salt });
     AudioManager.playSe({ name: seSound || "Door1", volume: 90, pitch: 100, pan: 0 });
+    return true;
   }
 
+  // Feature name -> "the party walked into this, take them in". Populated by the
+  // entrance handlers below and read by tryWalkEntrance / tryInteract.
+  const WALK_ENTRANCES = {};
+
   // --- Grate: descends into a fresh Sewer biome, seeded from the grate tile ---
-  CUSTOM_HANDLERS.Grate = (name, tiles) => {
-    showChoiceMenu([T('Terrain.enter')], () => enterStructureBiome(tiles[0], "Sewer"));  // i18n-ignore  biome id
-  };
+  WALK_ENTRANCES.Grate = (tiles) => enterStructureBiome(tiles[0], "Sewer");  // i18n-ignore  biome id
 
   // --- StairsDown: descends into a loot cellar (gold, wine, chests, and
   // maybe one lurking enemy around the party's level) ---
@@ -1161,18 +1174,17 @@
       t.x === rec.entranceX && t.y === rec.entranceY;
   }
 
-  CUSTOM_HANDLERS.StairsDown = (name, tiles) => {
-    showChoiceMenu([T('Terrain.descend')], () => {
-      const bunker = isBunkerHatch(tiles[0]);
-      enterStructureBiome(tiles[0], "LootCellar");
-      if (bunker && $gameSystem._procGenData) {
-        const pg = $gameSystem._procGenData;
-        // Keep the entrance salt the forced-biome command just set, so the
-        // cellar's terrain records stay keyed the way every other cellar's are.
-        const sess = pg._dungeonSession;
-        pg._dungeonSession = { type: "bunker", salt: sess ? sess.salt : 0 };
-      }
-    });
+  WALK_ENTRANCES.StairsDown = (tiles) => {
+    const bunker = isBunkerHatch(tiles[0]);
+    if (!enterStructureBiome(tiles[0], "LootCellar")) return false;
+    if (bunker && $gameSystem._procGenData) {
+      const pg = $gameSystem._procGenData;
+      // Keep the entrance salt the forced-biome command just set, so the
+      // cellar's terrain records stay keyed the way every other cellar's are.
+      const sess = pg._dungeonSession;
+      pg._dungeonSession = { type: "bunker", salt: sess ? sess.salt : 0 };
+    }
+    return true;
   };
 
   // --- Hatch: a patron's private way down into their own vault (the
@@ -1180,24 +1192,59 @@
   // stamped on that patron's own world square, and never dismantled: it is not
   // in the dismantle table and this handler removes nothing, so the hatch is
   // still there on every later visit. Faced anywhere else it does nothing. ---
-  CUSTOM_HANDLERS.Hatch = (name, tiles) => {
+  WALK_ENTRANCES.Hatch = (tiles) => {
     const PR = window.PatreonRewards;
-    if (!PR || typeof PR.openHatch !== "function") return;
-    if (typeof PR.isPatronHatch === "function" && !PR.isPatronHatch(tiles[0])) return;
-    showChoiceMenu([T('Terrain.open')], () => PR.openHatch(tiles[0]));
+    if (!PR || typeof PR.openHatch !== "function") return false;
+    if (typeof PR.isPatronHatch === "function" && !PR.isPatronHatch(tiles[0])) return false;
+    PR.openHatch(tiles[0]);
+    return true;
   };
 
   // --- StairsUp: ascends into a temple of long connected halls guarded by
   // enemies far above the party's level ---
-  CUSTOM_HANDLERS.StairsUp = (name, tiles) => {
-    showChoiceMenu([T('Terrain.ascend')], () => enterStructureBiome(tiles[0], "TempleInside"));
-  };
+  WALK_ENTRANCES.StairsUp = (tiles) => enterStructureBiome(tiles[0], "TempleInside");
 
   // --- Cave: enters a single-chamber cave den (from a cramped hollow to a
   // full-map cavern) packed with one seeded enemy species and old bones ---
-  CUSTOM_HANDLERS.Cave = (name, tiles) => {
-    showChoiceMenu([T('Terrain.enter')], () => enterStructureBiome(tiles[0], "CaveDen"));
-  };
+  WALK_ENTRANCES.Cave = (tiles) => enterStructureBiome(tiles[0], "CaveDen");
+
+  // The map keeps taking input while the transfer fades, and an impassable
+  // entrance is bumped into on every frame the direction is held, so an opened
+  // entrance is held shut for a moment. The window is short enough to heal
+  // itself if an entry ever fails silently.
+  let _walkEntranceLockUntil = 0;
+
+  // The party has stepped onto (or been stopped by) the tile at x,y: if it holds
+  // a structure entrance, go in. Returns true when an entrance took over.
+  function tryWalkEntrance(x, y) {
+    // Cheapest rejections first: this runs on every step, and on every frame a
+    // direction is held against an impassable tile.
+    if (Graphics.frameCount < _walkEntranceLockUntil) return false;
+    if ($gamePlayer.isInVehicle()) return false;
+    // Surface only. Entrances are placed on surface biomes, but the same names
+    // are also used as decor inside generated structures (a grate mounted on a
+    // dungeon wall), and brushing past one of those must not open a second
+    // structure from inside the first.
+    const pg = $gameSystem._procGenData;
+    if (!pg || pg._dungeonSession) return false;
+    if (pg.biomeLayerStack && pg.biomeLayerStack.length > 0) return false;
+
+    const info = featureAt(x, y);
+    if (!info || !info.name) return false;
+    const enter = WALK_ENTRANCES[info.name];
+    if (!enter) return false;
+
+    if ($gameMap.isEventRunning()) return false;
+    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
+    // Never override a real event standing on the tile (an entrance event of
+    // its own, a chest, an NPC): the same rule the action button follows.
+    if ($gameMap.events().some(e => e && e.x === x && e.y === y)) return false;
+
+    const tiles = computeFootprint(x, y, info.layer, info.tileId);
+    if (!enter(tiles)) return false;
+    _walkEntranceLockUntil = Graphics.frameCount + 60;
+    return true;
+  }
 
   // --- Stove: opens the cooking menu, never removed ---
   CUSTOM_HANDLERS.Stove = () => {
@@ -1292,6 +1339,12 @@
       return true;
     }
 
+    // Structure entrances are walked into, never pressed (see WALK_ENTRANCES and
+    // the moveStraight hook below). The action button is still consumed here, so
+    // a cave mouth or a hatch can never fall through to the generic dismantle
+    // table and be harvested for wood.
+    if (WALK_ENTRANCES[info.name]) return true;
+
     // Bespoke, non-generic interactions (Gold, Beer, Library, sittable
     // furniture, ...). Checked before the generic dismantle table so a name
     // present in both never falls through to the wrong behaviour.
@@ -1319,18 +1372,31 @@
     _Game_Map_setup.call(this, mapId);
     if (mapId === PROC_MAP_ID) {
       applyDismantledToMap();
+      // Surfacing puts the party back on the very tile they went in by, so give
+      // the entrance a moment before it can swallow a still-held direction key.
+      _walkEntranceLockUntil = Graphics.frameCount + 60;
     }
   };
 
-  // Puddle: stepping onto one wets the whole party (State 28). A per-tile
-  // marker on $gameMap avoids re-applying every frame the player stands still.
-  const _Game_Player_moveStraight_puddle = Game_Player.prototype.moveStraight;
+  // Movement-driven terrain: what the party walks onto, or walks into.
+  //   - a successful step lands them ON the tile: a Puddle wets the whole party
+  //     (State 28), a passable entrance (a grate in the floor) swallows them.
+  //   - a failed step means they walked INTO the tile ahead and were stopped by
+  //     it, which is how an impassable entrance (a cave mouth, stairs set
+  //     against a wall) is entered.
+  const _Game_Player_moveStraight_terrain = Game_Player.prototype.moveStraight;
   Game_Player.prototype.moveStraight = function (d) {
-    _Game_Player_moveStraight_puddle.call(this, d);
-    if (!this.isMovementSucceeded() || !$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return;
-    const info = featureAt(this.x, this.y);
-    if (info && info.name === "Puddle") {  // i18n-ignore  feature id
-      for (const a of $gameParty.members()) a.addState(28);
+    _Game_Player_moveStraight_terrain.call(this, d);
+    if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return;
+    if (this.isMovementSucceeded()) {
+      const info = featureAt(this.x, this.y);
+      if (info && info.name === "Puddle") {  // i18n-ignore  feature id
+        for (const a of $gameParty.members()) a.addState(28);
+      }
+      tryWalkEntrance(this.x, this.y);
+    } else {
+      tryWalkEntrance($gameMap.roundXWithDirection(this.x, d),
+        $gameMap.roundYWithDirection(this.y, d));
     }
   };
 

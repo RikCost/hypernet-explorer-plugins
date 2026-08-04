@@ -10,6 +10,7 @@
   "noSkillCategories": "Nessuna categoria di abilità definita.",
   "primary": "Primarie:",
   "secondary": "Secondarie:",
+  "elementHeading": "Elemento:",
   "element": {
     "1": "Fisico",
     "2": "Fuoco",
