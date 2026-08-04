@@ -1,0 +1,1245 @@
+{
+  "note": "Base archetype placeholders. Draw over each base PNG in img/enemies/placeholders/, then run tools/apply_placeholders.py to stamp it (with a random per-member hue) onto every member sprite in img/enemies. Members are level<=100 mobs; level 101+ bosses and no-body-type uniques are excluded - make those individually.",
+  "placeholderDir": "img/enemies/placeholders",
+  "targetDir": "img/enemies",
+  "archetypes": [
+    {
+      "archetype": "Humanoid Person / Named NPC",
+      "base": "114 Sky Bard.png",
+      "members": [
+        "114 Sky Bard.png",
+        "315 Overworked Villager.png",
+        "327 Reaganite.png",
+        "359 Thor.png",
+        "423 Akira Tanaka.png",
+        "440 Blick.png",
+        "441 Blinding Sadist.png",
+        "454 Bubba.png",
+        "494 Diego 'Jaguar' Rodriguez.png",
+        "506 Elena 'Shadow' Rodriguez.png",
+        "508 Em.png",
+        "514 Eternal Intern.png",
+        "575 Interdimensional Tourist.png",
+        "601 Master Chen.png",
+        "606 Mianni.png",
+        "643 Pain Enthusiast.png",
+        "671 Rashid Al-Sayf.png",
+        "672 Ravenna the Shadowbinder.png",
+        "762 Viktor 'Iron Fist' Volkov.png",
+        "816 Corporate Ninja.png",
+        "829 Ethereal Tactician.png",
+        "908 Tanko.png"
+      ]
+    },
+    {
+      "archetype": "Sentient Object / Prop",
+      "base": "200 Death's Head.png",
+      "members": [
+        "200 Death's Head.png",
+        "276 Hair Ball.png",
+        "319 Pocket Watch Scarab.png",
+        "486 Cursed Candle.png",
+        "542 Gilded Zapback.png",
+        "607 Miasma Lantern.png",
+        "734 Talking Door.png",
+        "823 Dumpster Head.png",
+        "896 Sentient Traffic Cone.png",
+        "1010 Meat Puppet Theater.png",
+        "1014 Screaming Jar.png",
+        "1033 Bone Orchestra.png",
+        "1057 Totem of Sins.png",
+        "1060 Whispering Door.png",
+        "1074 Baptism Font.png",
+        "1089 Mirror Basher.png",
+        "1113 Breathing Building.png",
+        "1123 Maternity Ward.png"
+      ]
+    },
+    {
+      "archetype": "Abstract / Concept Horror",
+      "base": "475 Crimson Analizer.png",
+      "members": [
+        "475 Crimson Analizer.png",
+        "529 Forest's Vengeance.png",
+        "630 Nervous System.png",
+        "663 Quantum Fluctuation.png",
+        "673 Reality Bender.png",
+        "674 Recursive Paradox.png",
+        "693 Sculptor's Sorrow.png",
+        "700 Sentient Meme.png",
+        "815 Cognitive Bacteria.png",
+        "840 Glitch Entity.png",
+        "862 Mind Shield.png",
+        "892 Reality Warper.png",
+        "957 Singularity Prime.png",
+        "1008 Inverted Hunger.png",
+        "1015 Sentient Wound.png",
+        "1043 Geometry Devourer.png",
+        "1047 Mathematics Eater.png",
+        "1061 Womb of Nightmares.png",
+        "1078 Childhood's End.png",
+        "1084 Flesh Calculator.png",
+        "1085 Grief Collector.png",
+        "1086 Hunger Incarnate.png",
+        "1119 Feast of Famine.png"
+      ]
+    },
+    {
+      "archetype": "Joke / Oddity Beast",
+      "base": "126 Taxidoggo.png",
+      "members": [
+        "126 Taxidoggo.png",
+        "184 Brain Swarmer.png",
+        "314 Organ Grinder Monkey.png",
+        "325 Rattling Remains.png",
+        "364 Tooth Fairy.png",
+        "794 Advertisement Badger.png",
+        "1073 Badass Pigeon.png"
+      ]
+    },
+    {
+      "archetype": "Lizard / Reptile",
+      "base": "288 Komodo Dragon.png",
+      "members": [
+        "288 Komodo Dragon.png",
+        "298 Monitor Lizard.png",
+        "348 Spined Lizard.png",
+        "464 Cinderthroat Varanus.png",
+        "484 Crystalback Sceloporus.png",
+        "555 Gorgon Queen.png",
+        "599 Marshjaw Heloderma.png",
+        "600 Marshjaw Stalker.png",
+        "619 Mossscale Amphibolurus.png",
+        "651 Petrifying Gorgon.png",
+        "660 Prismatic Polychromus.png",
+        "689 Sandstrider Varanus.png",
+        "720 Spinescale Pogona.png"
+      ]
+    },
+    {
+      "archetype": "Dinosaur / Saurian",
+      "base": "456 Celestial Tyrannosaurus.png",
+      "members": [
+        "456 Celestial Tyrannosaurus.png",
+        "466 Cobalt-footed Rex.png",
+        "918 Velocicorn.png",
+        "919 Velociraptor.png"
+      ]
+    },
+    {
+      "archetype": "Serpent / Snake",
+      "base": "155 Abyssal Serpent.png",
+      "members": [
+        "155 Abyssal Serpent.png",
+        "188 Chicchan Serpent Shaman.png",
+        "195 Crushing Boa.png",
+        "379 Umbral Basilisk.png",
+        "382 Venomous Snake.png",
+        "437 Basilisk.png",
+        "499 Dream Serpent High Priest.png",
+        "578 Jungle Constrictor.png",
+        "585 Lake Lurker Serpent.png",
+        "618 Moss Viper.png",
+        "687 Sand Cobra.png",
+        "743 The Viper.png",
+        "749 Titan Anaconda.png",
+        "926 World Serpent.png",
+        "942 Gloomscale Basilisk.png",
+        "958 Sky Serpent.png"
+      ]
+    },
+    {
+      "archetype": "Dragon - Fire / Magma",
+      "base": "521 Fire Dragonling.png",
+      "members": [
+        "521 Fire Dragonling.png",
+        "604 Mercury Dragon.png",
+        "613 Molten Dragon.png",
+        "767 Volcanic Wyvern.png",
+        "776 Young Magma Drake.png",
+        "1034 Crimson Magma Drake.png",
+        "1096 Searing Magma Wyrm.png"
+      ]
+    },
+    {
+      "archetype": "Dragon - Ice / Frost",
+      "base": "533 Frost Dragon.png",
+      "members": [
+        "533 Frost Dragon.png",
+        "569 Ice Dragonling.png",
+        "581 Juvenile Ice Wyrm.png",
+        "650 Permafrost Dragon.png"
+      ]
+    },
+    {
+      "archetype": "Dragon - Storm / Thunder",
+      "base": "715 Sonic Molten Drakebat.png",
+      "members": [
+        "715 Sonic Molten Drakebat.png",
+        "725 Storm Dragonling.png",
+        "746 Thunder Dragonling.png",
+        "1126 Storm Dragon King Enlil.png"
+      ]
+    },
+    {
+      "archetype": "Dragon - Divine / Death",
+      "base": "405 Dragon of Wisdom Enki .png",
+      "members": [
+        "405 Dragon of Wisdom Enki .png",
+        "827 Entropy Wyrm.png",
+        "1037 Dragon of Death Nergal.png",
+        "1077 Celestial Dragon Anshar.png",
+        "1118 Dragon of the Underworld Kur.png"
+      ]
+    },
+    {
+      "archetype": "Dragon - Abyssal / Sea",
+      "base": "793 Abyssal Sea Dragon.png",
+      "members": [
+        "793 Abyssal Sea Dragon.png",
+        "864 Mire Hydra.png",
+        "950 Mire Dragon.png",
+        "1094 Primal Ocean Dragon Abzu.png"
+      ]
+    },
+    {
+      "archetype": "Hydra / Wyvern / Drake",
+      "base": "141 Young Fake Hydra.png",
+      "members": [
+        "141 Young Fake Hydra.png",
+        "186 Bull Wyvern.png",
+        "206 Drake Drone.png",
+        "426 Ancient Dragon.png",
+        "625 Multi-Headed Hydra.png",
+        "836 Geode Hydra.png"
+      ]
+    },
+    {
+      "archetype": "Bear / Ursine",
+      "base": "185 Brown Bear.png",
+      "members": [
+        "185 Brown Bear.png",
+        "282 Horned Bear.png",
+        "538 Frostback Ursid.png",
+        "658 Polar Bear.png",
+        "822 Demon Bear.png",
+        "851 Kodiak Bear.png",
+        "1001 Emberclaw Bear.png",
+        "1004 Frostfang Bear.png",
+        "1017 Thundermaw Ursine.png"
+      ]
+    },
+    {
+      "archetype": "Wolf / Canine",
+      "base": "116 Snow Werewolf.png",
+      "members": [
+        "116 Snow Werewolf.png",
+        "273 Gray Wolf.png",
+        "292 Maned Terror Wolf.png",
+        "328 Red Fox.png",
+        "424 Alpha Dire Wolf.png",
+        "425 Alpha Warg.png",
+        "463 Cindermaw Hound.png",
+        "501 Dune Fang.png",
+        "523 Flame-Touched Hellhound.png",
+        "796 Arctic Wolf.png",
+        "889 Rabid Coyote.png",
+        "895 Scavenging Coyote.png",
+        "1091 Obsidian Hellhound.png"
+      ]
+    },
+    {
+      "archetype": "Big Cat / Feline",
+      "base": "176 Black Panther.png",
+      "members": [
+        "176 Black Panther.png",
+        "330 Reflective Tiger.png",
+        "332 Saber Cat.png",
+        "392 Wildcat.png",
+        "436 Barbed Manticore.png",
+        "460 Chromatic Manticore.png",
+        "554 Golden Lion.png",
+        "727 Striped Tiger.png",
+        "756 Umbra Panthera.png",
+        "837 Ghost Tiger.png",
+        "870 Mystic Panther.png",
+        "894 Sabertooth Alpha.png"
+      ]
+    },
+    {
+      "archetype": "Boar / Pig",
+      "base": "231 Flying pig.png",
+      "members": [
+        "231 Flying pig.png",
+        "326 Razorback Boar.png",
+        "389 Wild Boar.png",
+        "526 Flying Pig.png",
+        "634 Normal pig.png",
+        "854 Mad Boar.png"
+      ]
+    },
+    {
+      "archetype": "Primate / Ape",
+      "base": "291 Maleficent Ape.png",
+      "members": [
+        "291 Maleficent Ape.png",
+        "371 Tree Monkey.png",
+        "659 Primal Sloth.png",
+        "802 Behemoth Gorilla.png",
+        "1081 Doped Chimp.png"
+      ]
+    },
+    {
+      "archetype": "Rodent / Vermin",
+      "base": "111 Sewer Rat.png",
+      "members": [
+        "111 Sewer Rat.png",
+        "123 Swamp Rat.png",
+        "132 Tooth Ratkin.png",
+        "158 Armored Beaver.png",
+        "159 Armored Purcupine.png",
+        "203 Dire Rabbit.png",
+        "230 Fluxling Furret.png",
+        "245 Giant Rat.png",
+        "318 Plaguebro Rattus.png",
+        "323 Rabid Jackrabbit.png",
+        "324 Rat King.png",
+        "375 Tunneling Mole.png",
+        "719 Spikey Porcupine.png",
+        "1013 Rattus Sapscream.png"
+      ]
+    },
+    {
+      "archetype": "Herd / Hooved / Mythic",
+      "base": "192 Cautious Opossum .png",
+      "members": [
+        "192 Cautious Opossum .png",
+        "227 Feral Hyena Pack.png",
+        "283 Ice Kangaroo.png",
+        "287 Kangaroo.png",
+        "299 Monstrous Badger.png",
+        "303 Night Raccoon.png",
+        "316 Pastoral Sheep.png",
+        "320 Primal Kangaroo.png",
+        "346 Space Zebra.png",
+        "374 Tundra Mammoth Calf.png",
+        "397 Young Yeti.png",
+        "434 Armored Rhinoceros.png",
+        "445 Bloodbell Cow.png",
+        "491 Deer Sprite.png",
+        "528 Forest Centaur.png",
+        "566 Hollow Goat.png",
+        "577 Ironhoof Charger.png",
+        "645 Panda.png",
+        "668 Radiant Unicorn.png",
+        "670 Rancorous Bull.png",
+        "684 Rummaging Opossum.png",
+        "845 Hellfire Mammoth.png",
+        "904 Stomping Elephant.png",
+        "909 Tempest Pegasus.png",
+        "924 War Hyppotaur.png"
+      ]
+    },
+    {
+      "archetype": "Shark / Fish",
+      "base": "94 Parrotfish Grazer.png",
+      "members": [
+        "94 Parrotfish Grazer.png",
+        "109 Sardine School.png",
+        "122 Sushi Snail.png",
+        "329 Reef Shark.png",
+        "418 Accursed Stonefish.png",
+        "561 Hammerhead Enforcer.png",
+        "591 Luminous Angler.png",
+        "633 Nightmare Shark.png",
+        "750 Tonno Dimensionale.png",
+        "766 Volcanic Shark.png",
+        "858 Megalodon.png"
+      ]
+    },
+    {
+      "archetype": "Crab / Mollusk / Cephalopod",
+      "base": "331 Rib Cage Crab.png",
+      "members": [
+        "331 Rib Cage Crab.png",
+        "367 Toxic Anemone.png",
+        "411 Abyssal Crab.png",
+        "541 Giant Slithering Snail.png",
+        "582 Kraken Leviathan.png",
+        "583 Kraken Spawn.png",
+        "646 Paralytic Slug.png",
+        "685 Sacred Kraken.png",
+        "1053 Temporal Barnacle.png",
+        "1090 Non-Euclidean Crab.png",
+        "1122 Horseshoe Crab.png"
+      ]
+    },
+    {
+      "archetype": "Whale / Leviathan",
+      "base": "178 Bloated Whale.png",
+      "members": [
+        "178 Bloated Whale.png",
+        "399 Zombie Whale.png",
+        "586 Landfill Leviathan.png",
+        "770 Wind Leviathan.png",
+        "774 Wrath Dolphin.png",
+        "791 Abyssal Leviathan.png",
+        "855 Maelstrom Leviathan.png",
+        "960 Swamp Leviathan.png",
+        "1088 Inside-Out Whale.png"
+      ]
+    },
+    {
+      "archetype": "Jellyfish / Misc Sea",
+      "base": "191 Coral Guardian.png",
+      "members": [
+        "191 Coral Guardian.png",
+        "193 Crimson Jelly.png",
+        "199 Death Axolotl.png",
+        "243 Giant Jellyfish.png",
+        "250 Glimmer Shrimp.png",
+        "308 Ochre Jelly Swarm.png",
+        "356 Swamp Crocodile.png",
+        "361 Tide Sorcerer.png",
+        "420 Acidic Tidecaller.png",
+        "469 Coral Enchantress.png",
+        "470 Coral Enchantress.png",
+        "471 Coralic Warcaster.png",
+        "489 Deep Frost Eel.png",
+        "531 Frog Monk.png",
+        "593 Luminous Jellyfish.png",
+        "747 Tide Sculptor.png",
+        "912 Tidal Warden.png"
+      ]
+    },
+    {
+      "archetype": "Spider / Arachnid",
+      "base": "207 Dream Weaver.png",
+      "members": [
+        "207 Dream Weaver.png",
+        "212 Elven Flame Weaver.png",
+        "238 Frost Spider.png",
+        "241 Frost Weaver.png",
+        "247 Giant Spider.png",
+        "296 Mire Spider.png",
+        "304 Nightmare Weaver.png",
+        "357 Tarantula.png",
+        "387 Webweaver.png",
+        "444 Blood Widow.png",
+        "462 Cinder Weaver.png",
+        "500 Dream Weaver.png",
+        "505 Electro Arachnid.png",
+        "537 Frost Weaver.png",
+        "744 Thought Weaver.png",
+        "828 Esmeralda the Dream Weaver.png",
+        "922 Void Weaver.png",
+        "1042 Fleshweaver Spider.png",
+        "1049 Probability Spider.png"
+      ]
+    },
+    {
+      "archetype": "Insect / Bug",
+      "base": "156 Acid Ant.png",
+      "members": [
+        "156 Acid Ant.png",
+        "285 Insect Swarm.png",
+        "290 Magma Ant.png",
+        "302 Mutant Bug.png",
+        "378 Umber Moth Swarm.png",
+        "413 Abyssal Hallucigenia.png",
+        "432 Aquatic Mantis.png",
+        "435 Assassin Wasp.png",
+        "509 Ember Centipede.png",
+        "512 Engorged Tick Swarm.png",
+        "520 Fire Centipede.png",
+        "535 Frost Scarab.png",
+        "565 Hivemind Termite.png",
+        "594 Luminous Locust King.png",
+        "596 Magma Centipede.png",
+        "675 Rhinobeetle.png",
+        "713 Soldier Ant Colony.png",
+        "731 Swamp Scorpion.png",
+        "761 Venomous Dragonfly.png",
+        "812 Chromatic Tick.png",
+        "860 Mind Flayer Moth.png",
+        "1040 Emberback Hellscorpion.png",
+        "1054 Temporal Hornet.png"
+      ]
+    },
+    {
+      "archetype": "Tortoise / Turtle",
+      "base": "115 Slow Turtle.png",
+      "members": [
+        "115 Slow Turtle.png",
+        "694 Sea Turtle.png",
+        "705 Shadow Tortoise.png",
+        "1005 Galeshell Tortoise.png",
+        "1012 Nightcurse Tortoise.png",
+        "1036 Dawnshell Tortoise.png",
+        "1052 Stormshell Tortoise.png",
+        "1056 Tidalcarapace Tortoise.png",
+        "1098 Terraclaw Tortoise.png",
+        "1121 Frostback Tortoise.png"
+      ]
+    },
+    {
+      "archetype": "Bird / Avian",
+      "base": "177 Blizzard Owl.png",
+      "members": [
+        "177 Blizzard Owl.png",
+        "275 Griphon.png",
+        "342 Siren Apprentice.png",
+        "394 Wise Owl.png",
+        "483 Crystal Siren.png",
+        "502 Dust Devil Bird.png",
+        "623 Mountain Eagle.png",
+        "642 Ominous Raven Murder.png",
+        "647 Parrot.png",
+        "648 Peregrine Falcon.png",
+        "665 Quetzalcoatl Channeler.png",
+        "686 Sacred Phoenix.png",
+        "708 Siren Enchantress.png",
+        "709 Siren Sniper.png",
+        "800 Bald Eagle.png",
+        "857 Majestic Griffon.png",
+        "881 Ominous Raven.png",
+        "907 Storm Roc.png",
+        "911 Thunderwing Roc.png",
+        "939 Abyssal Siren.png",
+        "1124 Pyroclast Phoenix.png"
+      ]
+    },
+    {
+      "archetype": "Bat / Winged Beast",
+      "base": "226 Eyeless Bat.png",
+      "members": [
+        "226 Eyeless Bat.png",
+        "380 Vampire Bat.png",
+        "562 Harpy Banshee.png",
+        "701 Shadow Bat.png",
+        "898 Shadow Bat.png",
+        "917 Vampiric Nightwing.png"
+      ]
+    },
+    {
+      "archetype": "Toxic Ooze / Sludge",
+      "base": "194 Crimson Sucker.png",
+      "members": [
+        "194 Crimson Sucker.png",
+        "300 Mud Slime.png",
+        "368 Toxic Sludge.png",
+        "369 Toxic Sprayer.png",
+        "419 Acid Bombardier.png",
+        "752 Toxic Amalgam.png",
+        "753 Toxic Ghost.png",
+        "808 Caustic Slime.png",
+        "883 Plague Heap.png",
+        "915 Toxic Ooze.png",
+        "1003 Foul Gouger.png"
+      ]
+    },
+    {
+      "archetype": "Slime / Blob",
+      "base": "225 Emerald Ooze.png",
+      "members": [
+        "225 Emerald Ooze.png",
+        "270 Golden Pudding.png",
+        "271 Grass Slime.png",
+        "274 Green Slime.png",
+        "284 Ink Blot Child.png",
+        "317 Pink Slime.png",
+        "333 Sand Slime.png",
+        "341 Shock Slime.png",
+        "343 Slime Knight.png",
+        "370 Trashling.png",
+        "384 Void Gel.png",
+        "558 Grotesque Slime.png",
+        "662 Pumpkin Slime.png",
+        "669 Rainbow Slime.png",
+        "683 Rubbler.png",
+        "697 Seeing Slime.png",
+        "712 Skulmire Slime.png",
+        "745 Thunder Blob.png",
+        "850 King Slime.png",
+        "920 Virulent Slimefiend.png"
+      ]
+    },
+    {
+      "archetype": "Worm / Leech",
+      "base": "131 Tongue Leech.png",
+      "members": [
+        "131 Tongue Leech.png",
+        "181 Bog Leech.png",
+        "295 Mind Leech.png",
+        "443 Blood Leech Colossus.png",
+        "473 Corrupted Bioslave.png",
+        "513 Essence Leech.png",
+        "544 Gloomwurm.png",
+        "560 Guttural Maggotus.png",
+        "730 Swamp Leech Queen.png",
+        "764 Void Parasite Plant.png",
+        "1002 Emotional Leech.png",
+        "1011 Memory Leech.png",
+        "1016 Thought Parasite.png",
+        "1044 Gravity Worm.png"
+      ]
+    },
+    {
+      "archetype": "Goblin",
+      "base": "62 Glitter Goblin.png",
+      "members": [
+        "62 Glitter Goblin.png",
+        "175 Bell Goblin.png",
+        "257 Goblin Cavalry.png",
+        "259 Goblin Elite Guard.png",
+        "260 Goblin Grunt.png",
+        "261 Goblin Marksman.png",
+        "262 Goblin Mounted Archer.png",
+        "263 Goblin Necromancer.png",
+        "264 Goblin Scout.png",
+        "266 Goblin War Chief.png",
+        "268 Goblin Witch Doctor.png",
+        "551 Goblin King.png",
+        "552 Goblin Master Sniper.png",
+        "553 Goblin Shadow Sorcerer.png",
+        "626 Mutated Goblin.png",
+        "841 Goblin head.png",
+        "842 Goblin Mosh Lord.png",
+        "943 Goblin Head.png",
+        "944 Goblin Metal Warlord.png",
+        "945 Goblin Riot Caster.png",
+        "946 Goblin Shrieker.png"
+      ]
+    },
+    {
+      "archetype": "Gnome",
+      "base": "187 Cave Gnome.png",
+      "members": [
+        "187 Cave Gnome.png",
+        "251 Gnome Herbalist.png",
+        "252 Gnome Miner.png",
+        "253 Gnome Peasant.png",
+        "254 Gnome Scout.png",
+        "255 Gnome Tinkerer.png",
+        "256 Gnome Trickster.png",
+        "545 Gnome Alchemist.png",
+        "546 Gnome Artificer.png",
+        "547 Gnome Bombardier.png",
+        "548 Gnome Engineer.png",
+        "549 Gnome Shaman.png",
+        "550 Gnome Warlock.png"
+      ]
+    },
+    {
+      "archetype": "Orc / Hobgoblin / Kobold",
+      "base": "67 Hobgoblin Archer.png",
+      "members": [
+        "67 Hobgoblin Archer.png",
+        "68 Hobgoblin Firestarter.png",
+        "69 Hobgoblin Runt.png",
+        "70 Hobgoblin Scout.png",
+        "71 Hobgoblin Shaman.png",
+        "72 Hobgoblin Warrior.png",
+        "92 Orc Captain.png",
+        "313 Orc Bruiser.png"
+      ]
+    },
+    {
+      "archetype": "Ogre / Troll / Brute",
+      "base": "142 Young Ogre.png",
+      "members": [
+        "142 Young Ogre.png",
+        "174 Barkhide Bruiser.png",
+        "309 Ogre Brute.png",
+        "310 Ogre Crusher.png",
+        "311 Ogre Fire Shaman.png",
+        "312 Ogre Mystic.png",
+        "516 Fenclaw Brute.png",
+        "624 Mountain Ogre.png",
+        "638 Ogre Archmage.png",
+        "639 Ogre Champion.png",
+        "640 Ogre Elemental Adept.png",
+        "641 Ogre Warlord.png",
+        "711 Skullcrusher Brute.png",
+        "880 Ogre Warlock King.png"
+      ]
+    },
+    {
+      "archetype": "Giant / Colossus / Titan",
+      "base": "244 Giant Penguin.png",
+      "members": [
+        "244 Giant Penguin.png",
+        "248 Giant Vulture.png",
+        "447 Bog Behemoth.png",
+        "465 Cloud Giant.png",
+        "480 Crumbling Colossus.png",
+        "525 Flower Behemoth.png",
+        "532 Frost Colossus.png",
+        "589 Living Monolith.png",
+        "597 Magma Titan.png",
+        "614 Molten Juggernaut.png",
+        "622 Mountain Crusher.png",
+        "655 Plasma Juggernaut.png",
+        "724 Storm Behemoth.png",
+        "813 Chronos, Time Titan.png",
+        "817 Crag Behemoth.png",
+        "839 Glacial Titan.png",
+        "868 Mountain Giant.png",
+        "869 Mountain Titan.png",
+        "886 Quake-Maw Titan.png",
+        "890 Radiant Colossus.png",
+        "914 Totemic Titan.png",
+        "923 War Colossus.png",
+        "1000 Crystal Giant.png",
+        "1038 Earthen Colossus.png"
+      ]
+    },
+    {
+      "archetype": "Skeleton / Bone",
+      "base": "134 Tourist Skeleton.png",
+      "members": [
+        "134 Tourist Skeleton.png",
+        "182 Bone Sentinel.png",
+        "451 Bone Commander.png",
+        "472 Corpsecarver Knight.png",
+        "710 Skull Keeper.png",
+        "955 Phylactery Guardian.png"
+      ]
+    },
+    {
+      "archetype": "Ghost / Phantom / Wraith",
+      "base": "96 Phantom Marionette.png",
+      "members": [
+        "96 Phantom Marionette.png",
+        "192 Creeping Shade.png",
+        "279 Haunted Mannequin.png",
+        "280 Haunting Scarecrow.png",
+        "294 Marsh Wraith.png",
+        "352 Storm Banshee.png",
+        "427 Anguish Phantom.png",
+        "644 Palette Phantom.png",
+        "652 Phantom Archer.png",
+        "714 Somnolent Apparition.png",
+        "716 Sorrow Specter.png",
+        "721 Spineshade.png",
+        "739 The Phantom.png",
+        "758 Veiled Phantasm.png",
+        "769 Whispering Wraith.png",
+        "954 Phantom Chloroblade.png",
+        "1009 Lullaby Wraith.png"
+      ]
+    },
+    {
+      "archetype": "Zombie / Revenant / Ghoul",
+      "base": "143 Zombie Villager.png",
+      "members": [
+        "143 Zombie Villager.png",
+        "208 Drowned Revenant.png",
+        "301 Murkwallow Ghoul.png",
+        "429 Animated Gravestalker.png",
+        "557 Gravebound Revenant.png",
+        "616 Moonlit Wendigo.png",
+        "628 Necrotic Champion.png",
+        "653 Philosophical Zombie.png",
+        "737 The Cremator.png",
+        "795 Ancient Lich.png",
+        "843 Grave Monarch.png",
+        "1083 Eternal Lich-King.png"
+      ]
+    },
+    {
+      "archetype": "Shadow / Umbra",
+      "base": "337 Shadow Crawler.png",
+      "members": [
+        "337 Shadow Crawler.png",
+        "338 Shadow Stalker.png",
+        "339 Shadow Stalker.png",
+        "556 Grasping Shadow.png",
+        "608 Midnight Hunter.png",
+        "620 Mothshade Stalker.png",
+        "702 Shadow Blade.png",
+        "703 Shadow Blade.png",
+        "704 Shadow Thief.png",
+        "875 Nightveil Assassin.png",
+        "897 Shadow Assassin.png",
+        "899 Shadow Executioner.png",
+        "941 Dusk Commander.png"
+      ]
+    },
+    {
+      "archetype": "Demon / Fiend",
+      "base": "100 Pocket-Dimension Imp.png",
+      "members": [
+        "100 Pocket-Dimension Imp.png",
+        "204 Discord Demon.png",
+        "223 Ember Fiend.png",
+        "239 Frost Succubus.png",
+        "272 Gravel Imp.png",
+        "297 Mirror Fiend.png",
+        "372 Trickster Imp.png",
+        "381 Venom Devil.png",
+        "412 Abyssal Fiend.png",
+        "461 Chupacabra Fiend.png",
+        "518 Fiery Sleep Demon.png",
+        "519 Filth Fiend.png"
+      ]
+    },
+    {
+      "archetype": "Infernal / Hellspawn",
+      "base": "570 Infernal Cerberus.png",
+      "members": [
+        "570 Infernal Cerberus.png",
+        "571 Infernal Devastator.png",
+        "572 Infernal Monarch.png",
+        "573 Infernal Prodigy.png",
+        "574 Infernal Warmonger.png",
+        "806 Brimstone Behemutt.png",
+        "811 Cerberus Sentinel.png",
+        "846 Infernal Annihilator.png",
+        "847 Infernal Warhound.png",
+        "1120 Fiery Deity.png"
+      ]
+    },
+    {
+      "archetype": "Fire / Magma Elemental",
+      "base": "222 Ember Caster.png",
+      "members": [
+        "222 Ember Caster.png",
+        "224 Ember Sprite.png",
+        "228 Flame Frake.png",
+        "229 Flame Turret.png",
+        "522 Flame Elemental.png",
+        "615 Molten Slag.png",
+        "826 Ember Warder.png",
+        "848 Inferno Pooka.png",
+        "856 Magma Overlord.png",
+        "865 Molten Guardian.png",
+        "951 Molten Efreeti.png",
+        "1007 Inferno Archivist.png",
+        "1076 Blazing Inferno Elemental.png"
+      ]
+    },
+    {
+      "archetype": "Frost / Ice Elemental",
+      "base": "213 Elven Frost Mage.png",
+      "members": [
+        "213 Elven Frost Mage.png",
+        "235 Frost Apprentice.png",
+        "236 Frost Deciever.png",
+        "240 Frost Sylph.png",
+        "453 Brine Wisp.png",
+        "649 Permafrost Conjurer.png",
+        "832 Frost Archmagus.png",
+        "833 Frost Knight.png",
+        "834 Frost Monarch.png"
+      ]
+    },
+    {
+      "archetype": "Storm / Air Elemental",
+      "base": "353 Storm Caller.png",
+      "members": [
+        "353 Storm Caller.png",
+        "398 Zephyr Wizard.png",
+        "698 Seismic Tunneler.png",
+        "777 Zephyr Djinn.png",
+        "835 Gale Sentinel.png",
+        "905 Storm Elemental.png",
+        "906 Storm Harbinger.png"
+      ]
+    },
+    {
+      "archetype": "Fae / Spirit",
+      "base": "209 Dryad Protector.png",
+      "members": [
+        "209 Dryad Protector.png",
+        "376 Twilight Satyr.png",
+        "386 Water Nymph.png",
+        "388 Whisper Wisp.png",
+        "393 Will-O-’-Wisp Lamp.png",
+        "515 Ethereal Devourer.png",
+        "564 Hellthorn Dryad.png",
+        "657 Poison Pooka.png",
+        "718 Spectral Wisp.png",
+        "792 Abyssal Pixie.png",
+        "803 Blight Sylph.png",
+        "830 Fae Queen.png",
+        "876 Nightwisp.png"
+      ]
+    },
+    {
+      "archetype": "Elemental (generic / arcane)",
+      "base": "183 Boxing Elemental.png",
+      "members": [
+        "183 Boxing Elemental.png",
+        "347 Spectral Wardstone.png",
+        "421 Air Elemental.png",
+        "431 Aquatic Elemental.png",
+        "448 Bog Elemental.png",
+        "503 Earth Elemental.png",
+        "590 Luck Elemental.png",
+        "729 Swamp Gas Elemental.png",
+        "824 Earth Sentinel.png"
+      ]
+    },
+    {
+      "archetype": "Plant / Fungal",
+      "base": "133 Totemic Sprout.png",
+      "members": [
+        "133 Totemic Sprout.png",
+        "137 Vegetal Vampire.png",
+        "234 Forest Witch.png",
+        "322 Quagmire Creeper.png",
+        "395 Wooden Flower.png",
+        "527 Forest Archer.png",
+        "539 Fungal Snapjaw.png",
+        "579 Jungle Predator.png",
+        "580 Jungle Stalker.png",
+        "598 Marsh Murkweb.png",
+        "621 Motivational Fungoid.png",
+        "680 Rotwood Entangler.png",
+        "722 Sporeburst Myconid.png",
+        "733 Sylvan Barkstalker.png",
+        "831 Forest Sovereign.png",
+        "948 Luminescent Mycelian.png",
+        "953 Nepenthe Mycoastrum.png",
+        "1039 Eldergloom Sporemantle.png",
+        "1079 Creeping Luminspore.png",
+        "1080 Crying Tree.png",
+        "1112 Backwards Tree.png"
+      ]
+    },
+    {
+      "archetype": "Golem / Statue / Sentinel / Totem",
+      "base": "365 Totem Guardian.png",
+      "members": [
+        "365 Totem Guardian.png",
+        "366 Totem Initiate.png",
+        "485 CrystalCarapace Sentinel.png",
+        "524 Flatwood Sentinel.png",
+        "588 Living Armor.png",
+        "602 Mechanical Golem.png",
+        "676 Ritual Sentinel.png",
+        "677 Rogue Sentinel.png",
+        "688 Sand Golem.png",
+        "690 Scarecrow Sentinel.png",
+        "696 Security Sentinel.png",
+        "735 Terra Golem.png",
+        "751 Totem Adept.png",
+        "754 Treasure Golem.png",
+        "797 Astral Sentinel.png",
+        "805 Bog Golem.png",
+        "849 Iron Sentinel.png",
+        "852 Laughing Mire Idol.png",
+        "853 Living Theorem.png",
+        "884 Primordial Golem.png",
+        "901 Shellbreaker Bulwark.png",
+        "913 Totemic Protector.png",
+        "925 War Idol.png",
+        "959 Stone Bulwark.png",
+        "1031 Bleeding Statue.png",
+        "1075 Basaltstone Golem.png",
+        "1116 Cogwork Bulwark.png"
+      ]
+    },
+    {
+      "archetype": "Robot / Mech / Drone",
+      "base": "120 Stone Shifter.png",
+      "members": [
+        "120 Stone Shifter.png",
+        "160 Assault Mech.png",
+        "196 Cryo Drone.png",
+        "198 Data Drone.png",
+        "281 Holographic Decoy.png",
+        "335 Security Bot.png",
+        "428 Animated Arsenal.png",
+        "438 Battle Mech.png",
+        "467 Combat Drone.png",
+        "487 Cybernetic Tank.png",
+        "609 Military Cyborg.png",
+        "631 Neural Interface.png",
+        "664 Quantum Supersoldier.png",
+        "678 Rotating Sawblade.png",
+        "692 Scrapforged.png",
+        "879 Obsidian Dreadnought.png",
+        "885 Proto Turret.png",
+        "902 Siege Automation.png"
+      ]
+    },
+    {
+      "archetype": "Void / Abyssal Horror",
+      "base": "383 Void Desolator.png",
+      "members": [
+        "383 Void Desolator.png",
+        "414 Abyssal Horror.png",
+        "415 Abyssal Hunter.png",
+        "416 Abyssal Hydromancer.png",
+        "417 Abyssal Tentacler.png",
+        "699 Selene the Void Witch.png",
+        "763 Void Manipulator.png",
+        "765 Void Sorcerer.png",
+        "789 Abyssal Devourer.png",
+        "790 Abyssal Horror.png",
+        "871 Nether Court Duchess.png",
+        "921 Void Empress.png",
+        "1059 Void Howler.png"
+      ]
+    },
+    {
+      "archetype": "Named Cosmic / Reality Aberration",
+      "base": "422 Aiwass Messenger.png",
+      "members": [
+        "422 Aiwass Messenger.png",
+        "459 Choronzon.png",
+        "490 Deep One Hybrid.png",
+        "568 Hyperdimensional Grimorie.png",
+        "617 Xibalba Glyphweaver .png",
+        "629 Nephilim Remnant.png",
+        "666 Xylomanti Florous .png",
+        "706 Shoggoth.png",
+        "775 Yog-Sothoth Spawn.png",
+        "798 Azathoth Fragment.png",
+        "799 Babalon Priestess.png",
+        "801 Beast 666.png",
+        "814 Chronovore.png",
+        "821 Deep One Monarch.png",
+        "825 Elder Thing.png",
+        "844 Grey Zeta Reticulan.png",
+        "859 Mind Flayer.png",
+        "878 Nyarlathotep Avatar.png",
+        "887 Quantum Archon.png",
+        "888 Quantum Intellect.png",
+        "1055 Tiamat, Mother of Chaos.png"
+      ]
+    },
+    {
+      "archetype": "Flesh / Body Horror",
+      "base": "439 Blank Emergence.png",
+      "members": [
+        "439 Blank Emergence.png",
+        "449 Bog Mutant.png",
+        "452 Bonechewer Devourer.png",
+        "474 Corrupted Knight.png",
+        "540 Gatorghast Horror.png",
+        "587 Lilith the Corruptor.png",
+        "726 Stringbound Abomination.png",
+        "1045 Hollow Mother.png",
+        "1046 Inverted Angel.png",
+        "1058 Umbilical Strangler.png"
+      ]
+    },
+    {
+      "archetype": "Nightmare / Aberration",
+      "base": "140 Weeping Mask.png",
+      "members": [
+        "140 Weeping Mask.png",
+        "210 Echo Maw.png",
+        "455 Bureaucratic Nightmare.png",
+        "481 Cryptborn Shrieker.png",
+        "603 Merchant's Nightmare.png",
+        "611 Mind Manipulator.png",
+        "612 Mind Sculptor.png",
+        "632 Nightmare Bacteria.png",
+        "661 Psionic Fenbeast.png",
+        "819 Crystalline Shardbeast.png",
+        "861 Mind Overlord.png",
+        "863 Mind Tyrant.png",
+        "873 Nightmare Mage.png",
+        "874 Nightmare Sovereign.png",
+        "900 Shardmaw.png"
+      ]
+    },
+    {
+      "archetype": "Celestial / Holy",
+      "base": "277 Halo Acolyte.png",
+      "members": [
+        "277 Halo Acolyte.png",
+        "289 Luminous Deacon.png",
+        "336 Seraphic Emissary.png",
+        "468 Consecrated Guardian.png",
+        "493 Devoted Templar.png",
+        "496 Divine Arbiter.png",
+        "666 Radiant Archpriest.png",
+        "667 Radiant Justicar.png",
+        "809 Celestial Arbiter.png",
+        "810 Celestial Avatar.png",
+        "891 Radiant Defender.png",
+        "893 Royal Justicar.png",
+        "940 Celestial Protector.png",
+        "1115 Cherubic Host-Alpha.png",
+        "1125 Seraph of the Seventh Veil.png"
+      ]
+    },
+    {
+      "archetype": "Mage / Sorcerer / Witch",
+      "base": "124 Swamp Witch Novice.png",
+      "members": [
+        "124 Swamp Witch Novice.png",
+        "170 Bandit Mage.png",
+        "211 Elven Bladesinger.png",
+        "214 Elven Geomancer.png",
+        "215 Elven High Mage.png",
+        "216 Elven Mystic.png",
+        "305 Novice Illusionist.png",
+        "307 Obsidian Visionary.png",
+        "363 Tomekeeper of the Sunstone.png",
+        "433 Arcane Archmage.png",
+        "488 Dark Mage.png",
+        "517 Fey Enchantress.png",
+        "617 Morgana the Bloodweaver.png",
+        "627 Mystic Prodigy.png",
+        "695 Seafoam Enchantress.png",
+        "707 Silken Enchantress.png",
+        "723 Star Caller.png",
+        "820 Cursed Grimorie.png",
+        "910 The Dreamweaver.png"
+      ]
+    },
+    {
+      "archetype": "Necromancer / Cultist / Dark",
+      "base": "306 Novice Paladin.png",
+      "members": [
+        "306 Novice Paladin.png",
+        "362 Timberwood Shaman.png",
+        "563 Hecate the Plague Mistress.png",
+        "635 Novice Shaolin Acolyte.png",
+        "637 Ocean Warlock.png"
+      ]
+    },
+    {
+      "archetype": "Knight / Guardian / Protector",
+      "base": "130 Tomb Guardian.png",
+      "members": [
+        "130 Tomb Guardian.png",
+        "351 Stone Guardian.png",
+        "446 Bloodthirsty Crusader.png",
+        "498 Dread Knight.png",
+        "504 Elderwood Guardian.png",
+        "559 Guardian Vindicator.png",
+        "584 Labyrinth Guardian.png",
+        "654 Photon Defender.png",
+        "682 Royal Knight.png",
+        "755 Tsunami Guardian.png",
+        "771 Winter Court Knight.png",
+        "838 Gilded Guardian.png",
+        "877 Noble Guardian.png",
+        "1093 Orphanage Warden.png"
+      ]
+    },
+    {
+      "archetype": "Rogue / Assassin / Bandit",
+      "base": "163 Bandit Archer.png",
+      "members": [
+        "163 Bandit Archer.png",
+        "164 Bandit Assassin.png",
+        "165 Bandit Bard.png",
+        "169 Bandit Grunt.png",
+        "172 Bandit Rogue.png",
+        "173 Bandit Scout.png",
+        "180 Bloodaxe Raider.png",
+        "286 Junkrat.png",
+        "350 Stealthy Operative.png",
+        "355 Street Punk.png",
+        "807 Carrion Stalker.png",
+        "1006 Identity Thief.png"
+      ]
+    },
+    {
+      "archetype": "Archer / Hunter / Ranger",
+      "base": "136 Undead Archer.png",
+      "members": [
+        "136 Undead Archer.png",
+        "197 Crystalline Skulker.png",
+        "217 Elven Ranger Captain.png",
+        "219 Elven Scout.png",
+        "220 Elven Sharpshooter.png",
+        "278 Hand Crawler.png",
+        "349 Spiny Sprinter.png",
+        "373 Trident Hunter.png",
+        "385 Wandering Archer.png",
+        "391 Wild ripper.png",
+        "450 Bogscale Hunter.png",
+        "510 Emerald Stalker.png",
+        "636 Obsidian Burrower.png",
+        "760 Venomfang Archer.png"
+      ]
+    },
+    {
+      "archetype": "Warrior / Brawler / Soldier",
+      "base": "157 Amateur Pugilist.png",
+      "members": [
+        "157 Amateur Pugilist.png",
+        "221 Elven Swordmaster.png",
+        "242 Furyhowl Barbarian.png",
+        "321 Professional Boxer.png",
+        "334 Savage Berserker.png",
+        "354 Street Brawler.png",
+        "457 Chainbound Fury.png",
+        "458 Champion Contender.png",
+        "492 Desert Commander.png",
+        "497 Dominant Taskmaster.png",
+        "507 Elite Boxing Champion.png",
+        "681 Royal Champion.png",
+        "768 Warborn Chieftain.png",
+        "866 Mountain Devastator.png",
+        "867 Mountain Devastator.png",
+        "882 Petrified Enforcer.png",
+        "947 Iron Palm Disciple.png"
+      ]
+    },
+    {
+      "archetype": "Royalty / Boss",
+      "base": "218 Elven Royal Guard.png",
+      "members": [
+        "218 Elven Royal Guard.png",
+        "430 Annunaki Overlord.png",
+        "442 Blood Countess.png",
+        "477 Crimson Harbinger.png",
+        "479 Crimson Patriarch.png",
+        "511 Emperor Deathstalker.png",
+        "595 Maelstrom Sovereign.png",
+        "691 Scorched Tyrant.png",
+        "728 Summer Court Archon.png",
+        "732 Swordfish Sovereign.png",
+        "736 The Blood Countess.png",
+        "738 The Frozen Lady.png",
+        "741 The Scarlet Judge.png",
+        "757 Vampire Lord.png",
+        "759 Venom Lord.png",
+        "772 Winter's Harbinger.png",
+        "773 Winter's Herald.png",
+        "804 Bloodlord Supreme.png",
+        "818 Crimson Tyrant.png",
+        "872 Network Overlord.png",
+        "916 Tyrant Crocodilian.png",
+        "927 Yellow King.png",
+        "949 Mechanized Harbinger.png",
+        "952 Mountain King.png"
+      ]
+    },
+    {
+      "archetype": "Mimic / Object / Prop",
+      "base": "162 Baby Doll Head.png",
+      "members": [
+        "162 Baby Doll Head.png",
+        "179 Blood Mimic.png",
+        "190 Cone Mimic.png",
+        "269 Golden Mimic.png",
+        "293 Mannequin.png",
+        "344 Soul Harvester.png",
+        "345 Soul Merchant.png",
+        "358 The Surgeon.png",
+        "377 Twisted Marionette.png",
+        "478 Crimson Harvester.png",
+        "482 Crystal Hoarder.png",
+        "610 Mimic shaped box.png",
+        "656 Platinum Mimic.png",
+        "740 The Puppeteer.png",
+        "742 The Taxidermist.png",
+        "903 Soul Harvester.png",
+        "1095 Puppet Master's Corpse.png",
+        "1097 Surgeon of Souls.png",
+        "1111 Abortion Mimic.png"
+      ]
+    }
+  ]
+}

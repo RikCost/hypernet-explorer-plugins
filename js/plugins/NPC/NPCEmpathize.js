@@ -681,7 +681,35 @@
     (profile.opinions ??= {})[actorId] = v;
     return v;
   }
+
+  // ── Company: the social meter follows the opinion ────────────────────────
+  // Every Empathize action that moves an NPC's opinion is also time spent in
+  // company, and the whole party is standing there for it: a move that lands
+  // well feeds everyone's social need, one that lands badly costs them. The
+  // member doing the talking is the one who actually had the exchange, so they
+  // take slightly more of it either way. Reported through the same
+  // ParchmentToast.need popup the minigames use for Fun.
+  const SOCIAL_PER_OPINION  = 0.7; // social points per point of opinion moved
+  const SOCIAL_MAX_STEP     = 12;  // no single exchange is worth more than this
+  const SOCIAL_TALKER_BONUS = 1.4;
+
+  function _socialStep(value) {
+    const v = Math.max(-SOCIAL_MAX_STEP, Math.min(SOCIAL_MAX_STEP, value));
+    return v > 0 ? Math.max(1, Math.round(v)) : Math.min(-1, Math.round(v));
+  }
+
+  function _gainSocialFromOpinion(actorId, delta) {
+    if (!delta || !window.PartyNeeds?.addSocialToAll) return;
+    const step  = _socialStep(delta * SOCIAL_PER_OPINION);
+    const focus = ($gameParty?.members() ?? []).find(m => m && m.actorId() === actorId) || null;
+    window.PartyNeeds.addSocialToAll(step, { focus, focusBonus: SOCIAL_TALKER_BONUS });
+    try {
+      window.ParchmentToast?.need('social', step);
+    } catch (e) { /* a popup never breaks a conversation */ }
+  }
+
   function _addNpcOpinion(profile, actorId, delta) {
+    _gainSocialFromOpinion(actorId, delta);
     return _setNpcBaseOpinion(profile, actorId, _npcBaseOpinion(profile, actorId) + delta);
   }
   // What the NPC actually thinks of one actor: earned base + trait compatibility.
@@ -1963,7 +1991,11 @@
       const profile = _getProfile(npcName);
 
       if (profile) {
-        _setNpcBaseOpinion(profile, this._focusActor()?.actorId(), -100);
+        const actorId = this._focusActor()?.actorId();
+        // Hitting somebody is the opposite of company: it costs the party the
+        // same social need a friendly exchange would have paid them.
+        _gainSocialFromOpinion(actorId, -100 - _npcBaseOpinion(profile, actorId));
+        _setNpcBaseOpinion(profile, actorId, -100);
         (profile.eventLog ??= []).push({ tag: 'crime', desc: 'attacked by player', timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0 }); // i18n-ignore: event-log record id
         const dl      = window._NPCSocietyDataLoader;
         const faction = (profile.factionIndex >= 0 && dl?.factions) ? dl.factions[profile.factionIndex] : null;
@@ -2217,6 +2249,7 @@
       // party roster changes below.
       const priorMembers = ($gameParty?.members() ?? []).slice();
       if (profile) profile.playerOpinion = Math.min(100, (profile.playerOpinion ?? 0) + 40);
+      _gainSocialFromOpinion(this._focusActor()?.actorId(), 40);
       for (const member of priorMembers) {
         if (member.actorId() === 1) continue; // leader bond lives in playerOpinion
         window.NPCSim?.bumpMutualOpinion?.(npcName, member.name(), 40);

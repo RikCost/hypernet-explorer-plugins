@@ -1834,28 +1834,46 @@
       return out;
     },
 
-    // Apply a signed delta to the Fun (leisure) meter of every party member.
-    // The leader (Actor 1) uses the actor need methods; recruited NPC members
-    // (party slots 2/3) keep their meter on the society profile, mirroring the
-    // dual-write pattern used by ItemSystemUtils.applyNeedRestores.
-    addLeisureToAll(delta) {
+    // Apply a signed delta to one of the extended meters (Hygiene / Social /
+    // Fun) of every party member. The leader (Actor 1) uses the actor need
+    // methods; recruited NPC members (party slots 2/3) keep their meters on the
+    // society profile, mirroring the dual-write pattern used by
+    // ItemSystemUtils.applyNeedRestores.
+    //
+    // opts.focus is the member the moment belongs to, the one doing the talking
+    // or the playing: they get opts.focusBonus times the delta, so a shared
+    // experience still counts for more to whoever lived it.
+    addNeedToAll(key, delta, opts = {}) {
       if (!delta || !$gameParty) return;
+      const spec = {
+        hygiene: { add: 'addHygiene', reduce: 'reduceHygiene' },
+        social:  { add: 'addSocial',  reduce: 'reduceSocial'  },
+        leisure: { add: 'addLeisure', reduce: 'reduceLeisure' },
+      }[key];
+      if (!spec) return;
+      const focus = opts.focus || null;
+      const bonus = opts.focusBonus != null ? Number(opts.focusBonus) : 1;
       $gameParty.members().forEach(mem => {
         if (!mem) return;
+        const d = (focus && mem === focus) ? delta * bonus : delta;
+        if (!d) return;
         if (mem.actorId && mem.actorId() === 1) {
-          if (delta >= 0) {
-            if (mem.addLeisure) mem.addLeisure(delta);
-          } else if (mem.reduceLeisure) {
-            mem.reduceLeisure(-delta);
+          if (d >= 0) {
+            if (mem[spec.add]) mem[spec.add](d);
+          } else if (mem[spec.reduce]) {
+            mem[spec.reduce](-d);
           }
           return;
         }
         const profile = window.NPCSocietyRegistry?.getProfile?.(mem.name());
-        if (profile && typeof profile.leisure === 'number') {
-          profile.leisure = Math.max(0, Math.min(maxNeed, profile.leisure + delta));
+        if (profile && typeof profile[key] === 'number') {
+          profile[key] = Math.max(0, Math.min(maxNeed, profile[key] + d));
         }
       });
-    }
+    },
+
+    addLeisureToAll(delta, opts) { this.addNeedToAll('leisure', delta, opts); },
+    addSocialToAll(delta, opts)  { this.addNeedToAll('social',  delta, opts); }
   };
 
   //=============================================================================

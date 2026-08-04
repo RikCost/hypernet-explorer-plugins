@@ -480,7 +480,15 @@
             : $gameMap.mapId() * 31;
         const rng     = createSeededRandom ? createSeededRandom(seed + 1) : () => Math.random();
         const bgsName = bgsList[Math.floor(rng() * bgsList.length)];
-        AudioManager.playBgs({ name: bgsName, volume: 80, pitch: 100, pan: 0 });
+        // Outdoors this bed is weather, so it goes out through WeatherAudio and
+        // picks up the Weather Volume slider; indoors it is room tone and plays
+        // at its authored level on the plain BGS volume.
+        const bgs = { name: bgsName, volume: 80, pitch: 100, pan: 0 };
+        if (window.WeatherAudio && window.WeatherAudio.playAmbience) {
+            window.WeatherAudio.playAmbience(bgs);
+        } else {
+            AudioManager.playBgs(bgs);
+        }
         console.log(`[updateBiomeAudio] Playing BGS: ${bgsName} for biome: ${biomeName}`);
     }
 

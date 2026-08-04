@@ -204,30 +204,115 @@
     return isFinite(v) ? v.clamp(0, 100) : 80;
   };
 
-  const weatherBgsVolume = () => Math.round(WEATHER_BGS_BASE * weatherVolumeConfig() / 100);
+  // Scales any authored ambience level by the slider.
+  const scaleAmbience = (base) => Math.round((Number(base) || 0) * weatherVolumeConfig() / 100);
+
+  // A scene that borrows the weather channel (battle, fishing) quiets it by a
+  // factor instead of writing a level of its own, so the slider still owns the
+  // volume while the channel is on loan and a later slider move is still heard.
+  let duckFactor = 1;
+  const weatherBgsVolume = () => scaleAmbience(WEATHER_BGS_BASE);
+  const duckedBgsVolume = () => Math.round(weatherBgsVolume() * duckFactor);
 
   // Re-applies the current level to whatever is already playing on the weather
   // channel, so moving the slider is heard immediately rather than at the next
   // weather change. Also used to silence the channel when the slider hits 0.
+  // The pitch is always restated as 100: a borrower that passed a copy of the
+  // buffer through playMushBgs loses the prototype accessors, which lands a
+  // pitch of 0 on the buffer and stops it dead.
   const refreshWeatherBgsVolume = () => {
     if (typeof AudioManager.getBgsFromChannel !== "function") return;
     const buffer = AudioManager.getBgsFromChannel(WEATHER_CHANNEL);
     if (!buffer || !buffer.name) return;
     AudioManager.updateMushBgsParameters(buffer, {
       name: buffer.name,
-      volume: weatherBgsVolume(),
-      pitch: (buffer.pitch || 1) * 100,
+      volume: duckedBgsVolume(),
+      pitch: 100,
       pan: (buffer.pan || 0) * 100
     });
   };
 
-  // Exposed for the options menu (Core/GameOptions.js) and for anything that
-  // borrows the weather channel and needs the player's chosen level.
+  //---------------------------------------------------------------------------
+  // Outdoor ambience
+  //---------------------------------------------------------------------------
+  // The biome ambience (wind, crickets, surf, town tone) that WorldMapReturn and
+  // the procedural generator play on the ordinary BGS channel IS the outdoor
+  // weather bed, and it is far louder than the rain loop on channel 4, so the
+  // slider has to reach it too or moving it changes nothing audible. Indoors the
+  // same ambience is room tone, which belongs to the plain BGS volume alone.
+  let ambience = null; // { name, base, pitch, pan } while an outdoor bed plays
+
+  // The same rule checkMapTags() uses to decide whether weather happens here.
+  const isOutdoorMap = () => {
+    if (!$dataMap || !$dataMap.meta) return false;
+    if ($dataMap.meta.Interior || $dataMap.meta.Covered) return false;
+    if (!$dataMap.meta.Exterior) return false;
+    if (typeof window.isProceduralInteriorMap === "function" &&
+        window.isProceduralInteriorMap()) return false;
+    return true;
+  };
+
+  // The level a biome bed should play at here: scaled by the slider under the
+  // open sky, left at its authored level once there is a roof over it. Decided
+  // at every application rather than once, since the generator asks for the
+  // ambience of the map it is about to transfer the party to.
+  const ambienceVolume = (base) => (isOutdoorMap() ? scaleAmbience(base) : base);
+
+  // Plays a biome ambience track and remembers its authored level, so the
+  // slider can rescale it later without restarting the loop.
+  const playAmbience = (bgs) => {
+    if (!bgs || !bgs.name) return;
+    ambience = {
+      name: bgs.name,
+      base: Number(bgs.volume) || 0,
+      pitch: Number(bgs.pitch) || 100,
+      pan: Number(bgs.pan) || 0
+    };
+    AudioManager.playBgs({
+      name: ambience.name,
+      volume: ambienceVolume(ambience.base),
+      pitch: ambience.pitch,
+      pan: ambience.pan
+    });
+  };
+
+  // Rescales the playing bed. Anything that replaced or stopped it (a map's own
+  // authored BGS, a minigame) drops the record instead.
+  const refreshAmbienceVolume = () => {
+    if (!ambience) return;
+    const current = AudioManager._currentBgs;
+    if (!current || current.name !== ambience.name) {
+      ambience = null;
+      return;
+    }
+    current.volume = ambienceVolume(ambience.base);
+    AudioManager.updateBgsParameters(current);
+  };
+
+  const refreshWeatherVolume = () => {
+    refreshWeatherBgsVolume();
+    refreshAmbienceVolume();
+  };
+
+  // Exposed for the options menu (Core/GameOptions.js), for the two generators
+  // that play the outdoor bed, and for anything that borrows the weather
+  // channel and needs the player's chosen level.
   window.WeatherAudio = {
     base: WEATHER_BGS_BASE,
     channel: WEATHER_CHANNEL,
-    volume: weatherBgsVolume,
-    refresh: refreshWeatherBgsVolume
+    volume: duckedBgsVolume,
+    scale: scaleAmbience,
+    refresh: refreshWeatherVolume,
+    playAmbience: playAmbience,
+    duck: (factor) => {
+      const f = Number(factor);
+      duckFactor = isFinite(f) ? f.clamp(0, 1) : 1;
+      refreshWeatherBgsVolume();
+    },
+    restore: () => {
+      duckFactor = 1;
+      refreshWeatherBgsVolume();
+    }
   };
 
   // DEPENDENCY CHECK: Ensure MUSH Audio Engine is loaded
@@ -1640,7 +1725,7 @@
 
       const bgsSetting = {
         name: randomRain,
-        volume: weatherBgsVolume(),
+        volume: duckedBgsVolume(),
         pitch: 100,
         pan: 0
       };
@@ -1694,7 +1779,7 @@
 
       const bgsSetting = {
         name: nightSound,
-        volume: weatherBgsVolume(),
+        volume: duckedBgsVolume(),
         pitch: 100,
         pan: 0
       };

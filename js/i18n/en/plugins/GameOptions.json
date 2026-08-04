@@ -82,7 +82,8 @@
   "languageProgress": "{name} 1% done",
   "settingsInSection": "{count} settings in this section.",
   "desc": {
-    "enemySpawnMode": "Decides how strong the enemies wandering the world are."
+    "enemySpawnMode": "Decides how strong the enemies wandering the world are.",
+    "weatherVolume": "Scales the outdoor ambience: rain, storms, wind, the night chorus and the ambient bed of the biome you are standing in. It rides on top of the BGS volume, and leaves interiors and a map's own authored sounds alone."
   },
   "descState": {
     "enemySpawnMode": [

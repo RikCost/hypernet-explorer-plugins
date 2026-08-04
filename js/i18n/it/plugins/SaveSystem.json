@@ -7,6 +7,7 @@
   "log": "Dettagli",
   "autosave": "AUTOSALVATAGGIO",
   "slot": "SLOT {n}",
+  "quickslot": "SALV. RAPIDO {n}",
   "partyOf": "Party di {name}",
   "levelShort": "Lv {n}",
   "hpShort": "PV",
@@ -47,9 +48,11 @@
   "quick": {
     "savingDisabled": "Salvataggio disabilitato",
     "gameQuicksaved": "Salvataggio rapido effettuato",
+    "quicksavedToSlot": "Salvataggio rapido nello slot {n}",
     "quicksaveFailed": "Salvataggio rapido fallito",
     "loadFailed": "Caricamento fallito",
     "noQuicksaveFound": "Nessun salvataggio rapido",
-    "gameLoaded": "Partita caricata"
+    "gameLoaded": "Partita caricata",
+    "quicksaveLoaded": "Salvataggio rapido {n} caricato"
   }
 }

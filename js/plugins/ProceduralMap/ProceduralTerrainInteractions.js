@@ -45,6 +45,10 @@
  *   - Hatch      -> PatronVault  (a patron's own vault, PatreonRewards: the
  *                                 cellar generator writ large, buried in gold
  *                                 and rare weapons)
+ *   - DoorHouse / DoorInn / DoorShop / DoorSkyscraper / DoorDungeon
+ *                -> handed to ProceduralHouseSystem, which owns the interiors
+ *                   (seeded house / inn / shop / tower-block pools and the
+ *                   coordinate-seeded dungeon behind a DoorDungeon).
  *
  * Requires: ProceduralMapUtils, Map/WorldMapReturn, Crafting/FurnitureSystem,
  * Core/WorldManager and Core/ParchmentToast.
@@ -1209,6 +1213,21 @@
   // full-map cavern) packed with one seeded enemy species and old bones ---
   WALK_ENTRANCES.Cave = (tiles) => enterStructureBiome(tiles[0], "CaveDen");
 
+  // --- Building and dungeon doors: walked into like every other entrance, and
+  // handed to ProceduralHouseSystem, which owns the interiors (the seeded house
+  // / inn / shop / tower-block pools, the lock and lockpick rules, the door
+  // swing, and the return point). The tile is passed explicitly: the party is
+  // stopped in front of an impassable door but stands ON a passable doorway,
+  // so only the entrance tile itself identifies which building this is. ---
+  function enterBuildingDoor(name, x, y) {
+    const PHS = window.ProceduralHouseSystem;
+    if (!PHS || typeof PHS.enterDoorFeatureAt !== "function") return false;
+    return PHS.enterDoorFeatureAt(name, x, y) === true;
+  }
+  for (const doorName of ["DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon"]) {  // i18n-ignore  Features.json ids
+    WALK_ENTRANCES[doorName] = (tiles, x, y) => enterBuildingDoor(doorName, x, y);
+  }
+
   // The map keeps taking input while the transfer fades, and an impassable
   // entrance is bumped into on every frame the direction is held, so an opened
   // entrance is held shut for a moment. The window is short enough to heal
@@ -1242,7 +1261,8 @@
     if ($gameMap.events().some(e => e && e.x === x && e.y === y)) return false;
 
     const tiles = computeFootprint(x, y, info.layer, info.tileId);
-    if (!enter(tiles)) return false;
+    // x,y is the tile actually walked into/onto; tiles is its whole footprint.
+    if (!enter(tiles, x, y)) return false;
     _walkEntranceLockUntil = Graphics.frameCount + 60;
     return true;
   }

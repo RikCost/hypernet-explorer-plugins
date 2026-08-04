@@ -82,7 +82,8 @@
   "languageProgress": "{name} tradotto all'1%",
   "settingsInSection": "{count} impostazioni in questa sezione.",
   "desc": {
-    "enemySpawnMode": "Decide quanto sono forti i nemici che vagano per il mondo."
+    "enemySpawnMode": "Decide quanto sono forti i nemici che vagano per il mondo.",
+    "weatherVolume": "Regola l'ambiente esterno: pioggia, temporali, vento, il coro notturno e il tappeto sonoro del bioma in cui ti trovi. Si applica sopra al volume BGS e non tocca gli interni né i suoni propri di una mappa."
   },
   "descState": {
     "enemySpawnMode": [

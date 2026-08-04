@@ -133,9 +133,15 @@
       // Read-only listing of every owned floor for the Assets pockets. Each entry
       // exposes the entrance map name + tile so the player can locate the deed.
       listOwnedHouses() { return listOwnedHouses(); },
-      // Procedural-map interactive FEATURES: press action facing DoorHouse/
-      // DoorInn/DoorShop/DoorSkyscraper/DoorDungeon to enter, or SignPark/SignBus
-      // for camper recall / bus fast-travel (replaces the old tile-id matching).
+      // Procedural-map interactive FEATURES. Building/dungeon doors are ENTERED
+      // BY WALKING into them (ProceduralTerrainInteractions' walk-entrance hook
+      // calls enterDoorFeatureAt with the door's own tile), the same way the
+      // StairsUp / StairsDown / Cave / Grate entrances beside them work.
+      // tryProcMapInteract is the action-button path, which the signposts
+      // (SignPark camper recall / SignBus fast-travel) still need, and which
+      // keeps working on a door the party is already standing on.
+      enterDoorFeatureAt(name, x, y) { return enterDoorFeatureAt(name, x, y); },
+      isInteractFeature(name) { return INTERACT_FEATURES.has(name); },
       tryProcMapInteract(character) { return tryProcMapInteract(character); },
   };
   const parameters = PluginManager.parameters(pluginName);
@@ -328,7 +334,21 @@
     return array[index];
   }
 
+  // Set while a procedural-map door FEATURE is being entered: the entrance is a
+  // tile, not an event, and the party may be standing on it (a passable doorway
+  // they walked over) or in front of it (an impassable one they walked into), so
+  // neither the player tile nor the faced tile identifies the door reliably. The
+  // exact tile is pinned here instead, and every coordinate the entry derives
+  // (seed, return point, lock/bash key) comes from it.
+  let _procDoorTile = null;
+  function withDoorTile(tile, fn) {
+    const prev = _procDoorTile;
+    _procDoorTile = tile;
+    try { return fn(); } finally { _procDoorTile = prev; }
+  }
+
   function getEventCoordinates(useFacing = false) {
+    if (_procDoorTile) return { x: _procDoorTile.x, y: _procDoorTile.y };
     let eventX = $gamePlayer.x;
     let eventY = $gamePlayer.y;
     const frontX = $gamePlayer.x + ($gamePlayer.direction() === 6 ? 1 : $gamePlayer.direction() === 4 ? -1 : 0);
@@ -894,9 +914,12 @@
   };
 
   // ── Procedural-map interactive FEATURES (map 636) ────────────────────────────
-  // Buildings, dungeons and signposts on the procedural map are used by pressing
-  // the action button while FACING a terrain feature, resolved by name via
-  // ProcGenUtils. This replaces the old tile-id -> common-event matching.
+  // Buildings, dungeons and signposts on the procedural map are terrain features
+  // resolved by name via ProcGenUtils, replacing the old tile-id -> common-event
+  // matching. The DOORS are entered by WALKING into them (ProceduralTerrain-
+  // Interactions' walk-entrance hook calls enterDoorFeatureAt), like every other
+  // structure entrance on the procedural map; the signposts stay on the action
+  // button, which also still opens a door the party is facing.
   //   DoorHouse      -> a 1-or-2-floor house      (seeded from the tile)
   //   DoorInn        -> an inn
   //   DoorShop       -> a shop
@@ -905,9 +928,11 @@
   //   SignPark       -> recalls (summons) the camper to the player
   //   SignBus        -> the fast-travel map, boarding as a Bus
   const PROC_MAP_ID = 636;
+  const DOOR_FEATURES = new Set([
+    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon"
+  ]);
   const INTERACT_FEATURES = new Set([
-    "DoorHouse", "DoorInn", "DoorShop", "DoorSkyscraper", "DoorDungeon",
-    "SignPark", "SignBus"
+    ...DOOR_FEATURES, "SignPark", "SignBus"
   ]);
 
   // tilesetId -> { tileId: featureName }, built lazily via ProcGenUtils.
@@ -997,16 +1022,9 @@
     }
   }
 
-  // Public: attempt to use the interactive feature the player faces on the proc
-  // map. Returns true if handled (caller then stops other interactions).
-  function tryProcMapInteract(character) {
-    if (!character || !$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
-    if (doorEntryBusy()) return false;
-    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
-    const name = facedInteractFeatureName(character);
-    if (!name) return false;
-    // These FEATURES are tiles, not events, so there is no door event to swing.
-    _callerEventId = 0;
+  // Run the entrance behind an interactive FEATURE name. The tile is already
+  // pinned by the caller, so every coordinate below resolves to the door itself.
+  function runInteractFeature(name) {
     switch (name) {
       case "DoorHouse": {
         const pool = residentialPoolForDoor(true);
@@ -1016,32 +1034,69 @@
         } else {
           visitHouse(pool, true);
         }
-        break;
+        return true;
       }
       case "DoorInn":
         visitHouse("inns", true);
-        break;
+        return true;
       case "DoorShop":
         visitHouse("shops", true);
-        break;
+        return true;
       case "DoorSkyscraper": {
         const totalFloors = seededFloorCount(true, 4, 10, 0x534B);
         enterMultiBuilding("skyscrapers", "skyfloors", totalFloors - 1, true);
-        break;
+        return true;
       }
       case "DoorDungeon":
         enterSeededDungeon();
-        break;
+        return true;
       case "SignPark":
         recallCamper();
-        break;
+        return true;
       case "SignBus":
         openBusFastTravel();
-        break;
+        return true;
       default:
         return false;
     }
+  }
+
+  // Shared gate for both ways into a feature entrance (walked into, or pressed).
+  function interactFeatureReady() {
+    if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
+    if (doorEntryBusy()) return false;
+    if ($gameMessage && $gameMessage.isBusy && $gameMessage.isBusy()) return false;
     return true;
+  }
+
+  // Public: the party walked into (or onto) a door FEATURE at x,y on the proc
+  // map, so take them in. ProceduralTerrainInteractions' walk-entrance hook is
+  // the caller: the doors are entered by movement, exactly like the StairsUp /
+  // StairsDown / Cave / Grate entrances beside them, and the tile is passed in
+  // explicitly because the party may be standing either on it or in front of it.
+  // Returns true only when the entry was actually taken.
+  function enterDoorFeatureAt(name, x, y) {
+    // Doors only. The signposts share the feature table but are deliberately
+    // NOT walked into: bumping a bus stop must not summon the camper.
+    if (!DOOR_FEATURES.has(name)) return false;
+    if (!interactFeatureReady()) return false;
+    // These FEATURES are tiles, not events, so there is no door event to swing.
+    _callerEventId = 0;
+    return withDoorTile({ x, y }, () => runInteractFeature(name));
+  }
+
+  // Public: attempt to use the interactive feature the player faces on the proc
+  // map. Returns true if handled (caller then stops other interactions).
+  function tryProcMapInteract(character) {
+    if (!character || !interactFeatureReady()) return false;
+    const name = facedInteractFeatureName(character);
+    if (!name) return false;
+    const d = character.direction();
+    const x = $gameMap.roundXWithDirection(character.x, d);
+    const y = $gameMap.roundYWithDirection(character.y, d);
+    // These FEATURES are tiles, not events, so there is no door event to swing.
+    _callerEventId = 0;
+    return withDoorTile({ x, y }, () => runInteractFeature(name));
   }
 
   function visitHouse(poolName = "", useFacing = false, forcedHouseId = null, forceOpen = false) {
@@ -1062,10 +1117,16 @@
   //                            cancel and lockpick failure leave it shut with
   //                            no animation.
   function attemptDoorEntry(useFacing, doEntry, poolName, forceOpen) {
+    // Everything below this point is deferred (the door swing, and the lockpick
+    // choice on top of it), so a tile-feature entrance has to carry its pinned
+    // tile into the continuation: by the time the transfer runs the party has
+    // been stepped forward and the door is no longer in front of them.
+    const tile = _procDoorTile;
+    const entry = tile ? (() => withDoorTile(tile, doEntry)) : doEntry;
     // FurnitureSystem-built player doors pass forceOpen: always open, never
     // locked, no lockpick/bash prompt, regardless of pool or time of day.
     if (forceOpen || isCallerDoorUnlocked() || !isLockablePool(poolName)) {
-      openDoorAndEnter(doEntry);
+      openDoorAndEnter(entry);
       return;
     }
     if (parameters["lockDoors"] === "true") {
@@ -1076,13 +1137,13 @@
     }
     // A door already bashed open within the last day skips the prompt.
     if (isNightTime() && !isDoorBashedOpen(useFacing)) {
-      showLockedDoorChoices(useFacing, doEntry);
+      showLockedDoorChoices(useFacing, entry, tile);
       return;
     }
-    openDoorAndEnter(doEntry);
+    openDoorAndEnter(entry);
   }
 
-  function showLockedDoorChoices(useFacing, doEntry) {
+  function showLockedDoorChoices(useFacing, doEntry, tile) {
     const hasLockpick = $dataItems[374] && $gameParty.hasItem($dataItems[374]);
     const choices = [];
     const actions = [];
@@ -1101,7 +1162,10 @@
       if (action === 'lockpick') {
         startNightLockpick(useFacing, doEntry);
       } else if (action === 'bash') {
-        bashDoor(useFacing, doEntry);
+        // The bash record is keyed by the door's own tile, so a tile-feature
+        // door has to be pinned again here: the choice callback runs long after
+        // attemptDoorEntry returned and the pin was let go.
+        withDoorTile(tile || _procDoorTile, () => bashDoor(useFacing, doEntry));
       }
       // 'cancel' (or window dismissed): stay outside, no door animation.
     });

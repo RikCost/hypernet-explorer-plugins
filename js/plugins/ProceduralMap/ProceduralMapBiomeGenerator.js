@@ -3937,7 +3937,15 @@
       if (bgsArray.length > 0) {
         const rng = createSeededRandom(seed + originX * 7 + originY * 13);
         const bgsName = bgsArray[Math.floor(rng() * bgsArray.length)];
-        AudioManager.playBgs({ name: bgsName, volume: 80, pitch: 100, pan: 0 });
+        // Above ground this ambience is the weather bed, so it is played through
+        // WeatherAudio and follows the Weather Volume slider; below ground it is
+        // room tone and keeps its authored level on the plain BGS volume.
+        const bgs = { name: bgsName, volume: 80, pitch: 100, pan: 0 };
+        if (window.WeatherAudio && window.WeatherAudio.playAmbience) {
+          window.WeatherAudio.playAmbience(bgs);
+        } else {
+          AudioManager.playBgs(bgs);
+        }
       } else {
         AudioManager.stopBgs();
       }

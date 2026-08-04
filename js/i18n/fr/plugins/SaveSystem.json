@@ -7,6 +7,7 @@
   "log": "",
   "autosave": "",
   "slot": "",
+  "quickslot": "",
   "partyOf": "",
   "levelShort": "",
   "hpShort": "",
@@ -47,9 +48,11 @@
   "quick": {
     "savingDisabled": "",
     "gameQuicksaved": "",
+    "quicksavedToSlot": "",
     "quicksaveFailed": "",
     "loadFailed": "",
     "noQuicksaveFound": "",
-    "gameLoaded": ""
+    "gameLoaded": "",
+    "quicksaveLoaded": ""
   }
 }

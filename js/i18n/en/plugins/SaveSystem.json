@@ -7,6 +7,7 @@
   "log": "Log",
   "autosave": "AUTOSAVE",
   "slot": "SLOT {n}",
+  "quickslot": "QUICKSAVE {n}",
   "partyOf": "Party of {name}",
   "levelShort": "Lv {n}",
   "hpShort": "HP",
@@ -47,9 +48,11 @@
   "quick": {
     "savingDisabled": "Saving Disabled",
     "gameQuicksaved": "Game Quicksaved",
+    "quicksavedToSlot": "Quicksaved to slot {n}",
     "quicksaveFailed": "Quicksave Failed",
     "loadFailed": "Load Failed",
     "noQuicksaveFound": "No Quicksave Found",
-    "gameLoaded": "Game Loaded"
+    "gameLoaded": "Game Loaded",
+    "quicksaveLoaded": "Quicksave {n} loaded"
   }
 }

@@ -377,7 +377,12 @@
             if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(entrySeed);
             const battler = window.Battler3D.create(archKey, 0, 0, fakeBattler);
             if (window.Battler3D.setGenSeed && prevGenSeed != null) window.Battler3D.setGenSeed(prevGenSeed);
-            if (!battler) { try { renderer.dispose(); } catch (e) {} this._bestiary3D = null; return; }
+            if (!battler) {
+                try { renderer.dispose(); } catch (e) {}
+                try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) {}
+                this._bestiary3D = null;
+                return;
+            }
 
             Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
                 if (state.disposed || !battler.model) return;
@@ -506,7 +511,15 @@
             }
             window.removeEventListener('mouseup',  L.onUp);
             window.removeEventListener('touchend', L.onTEnd);
+            // dispose() leaves the WebGL context alive. The browser caps live
+            // contexts and force-loses the OLDEST past the cap, which is the
+            // game's own canvas: PIXI then silently stops rendering and the
+            // picture freezes until the game is restarted. Release it, then swap
+            // in a clean canvas node, since the element a context was lost on
+            // can never host a new one.
             try { s.renderer.dispose(); } catch (e) {}
+            try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
+            if (c && c.parentNode) c.parentNode.replaceChild(c.cloneNode(false), c);
             this._bestiary3D = null;
         }
 

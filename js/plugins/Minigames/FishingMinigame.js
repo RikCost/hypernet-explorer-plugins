@@ -1658,17 +1658,10 @@
         }
 
         _startWeatherBgs() {
-            if (typeof AudioManager.getBgsFromChannel !== 'function' ||
-                typeof AudioManager.playMushBgs !== 'function') return;
-            const bgs = AudioManager.getBgsFromChannel(4);
-            if (bgs && bgs.name) {
-                // buffer.volume is the config-scaled 0..1 gain, so duck against
-                // the weather channel's own level instead.
-                const level = (window.WeatherAudio && window.WeatherAudio.volume)
-                    ? window.WeatherAudio.volume()
-                    : (bgs.settingVolume || 30);
-                const quiet = Object.assign({}, bgs, { volume: Math.floor(level * 0.6) });
-                AudioManager.playMushBgs(quiet, 4, false, 'Continue');
+            // Asked of WeatherAudio as a factor so the weather channel keeps the
+            // level the Weather Volume option sets, just quieter for the cast.
+            if (window.WeatherAudio && window.WeatherAudio.duck) {
+                window.WeatherAudio.duck(0.6);
             }
         }
 
@@ -2645,6 +2638,9 @@
                 window.AsciiMode.canvas.style.display = 'none';
             }
 
+            if (window.WeatherAudio && window.WeatherAudio.restore) {
+                window.WeatherAudio.restore();
+            }
             if (typeof $gameWeather !== 'undefined' && $gameWeather &&
                 typeof $gameWeather.updateEnvironmentBgs === 'function') {
                 $gameWeather.updateEnvironmentBgs();

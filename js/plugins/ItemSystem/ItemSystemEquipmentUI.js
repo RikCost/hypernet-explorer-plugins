@@ -408,6 +408,18 @@
                 p.canvas.removeEventListener('touchstart', p.listeners.touchstart);
                 p.canvas.removeEventListener('touchmove',  p.listeners.touchmove);
                 window.removeEventListener('touchend',     p.listeners.touchend);
+                // dispose() releases this scene's GPU resources but leaves the
+                // WebGL context itself alive. The browser caps how many contexts
+                // may live at once and force-loses the OLDEST once the cap is
+                // passed: that is the game's own canvas, after which PIXI
+                // silently stops rendering and the picture freezes for the rest
+                // of the session. Release it here, and swap in a clean canvas
+                // node for the next preview, since a lost context never comes
+                // back on the element it was taken from.
+                try { if (p.renderer.forceContextLoss) p.renderer.forceContextLoss(); } catch (e) {}
+                if (p.canvas && p.canvas.parentNode) {
+                    p.canvas.parentNode.replaceChild(p.canvas.cloneNode(false), p.canvas);
+                }
             });
             this._previewRenderers = [];
         }

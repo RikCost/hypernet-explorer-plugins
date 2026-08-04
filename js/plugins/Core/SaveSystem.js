@@ -41,12 +41,62 @@
             if (DataManager.savefileInfo(i)) highest = i;
         }
         if (highest < DataManager.maxSavefiles()) return highest + 1;
+        // emptySavefileId() scans the whole global info array, which reaches
+        // past the party band once quicksaves have been written, so a slot
+        // beyond the band is not a slot a playthrough may claim.
         const empty = DataManager.emptySavefileId();
-        return empty > 0 ? empty : -1;
+        return empty > 0 && empty <= DataManager.maxSavefiles() ? empty : -1;
+    }
+
+    //=========================================================================
+    // Quicksave slots
+    //=========================================================================
+    // F5 rotates over three dedicated quicksave slots instead of writing over
+    // the playthrough's own save. They sit above the 1..maxSavefiles party band
+    // so they never consume a playthrough slot, and they are always writable: a
+    // quicksave may overwrite any quicksave, whichever playthrough wrote it.
+    const QUICK_SLOT_IDS = [101, 102, 103];
+
+    function isQuickSlot(index) {
+        return QUICK_SLOT_IDS.indexOf(index) >= 0;
+    }
+
+    function quickSlotNumber(index) {
+        return QUICK_SLOT_IDS.indexOf(index) + 1;
+    }
+
+    function quickSlotTime(index) {
+        const info = DataManager.savefileInfo(index);
+        return info && info.timestamp ? info.timestamp : 0;
+    }
+
+    // Where the next quicksave goes: the first free slot, then the oldest one.
+    function nextQuickSlot() {
+        const free = QUICK_SLOT_IDS.find(id => !DataManager.savefileInfo(id));
+        if (free !== undefined) return free;
+        return QUICK_SLOT_IDS.reduce((a, b) => (quickSlotTime(b) < quickSlotTime(a) ? b : a));
+    }
+
+    // The most recent quicksave, or 0 when none has been written yet.
+    function latestQuickSlot() {
+        const used = QUICK_SLOT_IDS.filter(id => DataManager.savefileInfo(id));
+        if (!used.length) return 0;
+        return used.reduce((a, b) => (quickSlotTime(b) > quickSlotTime(a) ? b : a));
+    }
+
+    // Which playthrough wrote a quicksave. A terminal death takes its own
+    // quicksaves down with it (see deletePlaythroughSaves), so F9 can never
+    // undo a permadeath run.
+    function stampQuickOwner(index) {
+        const info = DataManager.savefileInfo(index);
+        if (!info) return;
+        info.quickOwner = window.$gameSystem ? $gameSystem.savefileId() : 0;
+        DataManager.saveGlobalInfo();
     }
 
     function canSaveTo(index) {
         if (index === 0) return true; // shared world autosave, manually writable
+        if (isQuickSlot(index)) return true; // a quicksave is always overwritable
         const bound = $gameSystem.savefileId();
         if (bound > 0) return index === bound;
         // Unbound playthrough (e.g. sandbox): may only claim an empty slot.
@@ -56,6 +106,10 @@
     window.SaveSystem = window.SaveSystem || {};
     window.SaveSystem.nextPlaythroughSlot = nextPlaythroughSlot;
     window.SaveSystem.canSaveTo = canSaveTo;
+    window.SaveSystem.quickSlotIds = () => QUICK_SLOT_IDS.slice();
+    window.SaveSystem.isQuickSlot = isQuickSlot;
+    window.SaveSystem.nextQuickSlot = nextQuickSlot;
+    window.SaveSystem.latestQuickSlot = latestQuickSlot;
     // Called when character creation completes; the save itself happens on
     // the next Scene_Map start so the player is already on a real map.
     window.SaveSystem.scheduleNewPlaythroughSave = function () {
@@ -591,7 +645,12 @@
             this._listWindow.visible = false;
         }
 
-        this._selectedIndex = (this.firstSavefileId() || 1).clamp(0, DataManager.maxSavefiles());
+        const firstId = this.firstSavefileId() || 1;
+        // A quicksave slot lives above the party band, so it must not be
+        // clamped back into it when the load screen opens on the newest file.
+        this._selectedIndex = isQuickSlot(firstId)
+            ? firstId
+            : firstId.clamp(0, DataManager.maxSavefiles());
 
         this.createUIDOM();
     };
@@ -667,11 +726,16 @@
     // Save mode additionally puts the playthrough's own slot right below the
     // autosave; the other parties are shown underneath it as read-only entries
     // (they can be inspected, loaded or deleted, but never written to).
+    // The three quicksave slots close the list: all of them in save mode (any
+    // may be written over), only the written ones in load mode.
     Scene_File.prototype.visibleSlotIds = function () {
         const withFiles = [];
         for (let i = 1; i <= DataManager.maxSavefiles(); i++) {
             if (DataManager.savefileInfo(i)) withFiles.push(i);
         }
+        const quick = this.mode() === "save"
+            ? QUICK_SLOT_IDS.slice()
+            : QUICK_SLOT_IDS.filter(id => DataManager.savefileInfo(id));
         if (this.mode() === "save") {
             const bound = $gameSystem.savefileId();
             const ownSlot = bound > 0 ? bound : nextPlaythroughSlot();
@@ -680,9 +744,9 @@
             for (const i of withFiles) {
                 if (i !== ownSlot) ids.push(i);
             }
-            return ids;
+            return [...ids, ...quick];
         }
-        return [0, ...withFiles];
+        return [0, ...withFiles, ...quick];
     };
 
     Scene_File.prototype.buildSaveList = function () {
@@ -714,6 +778,15 @@
             if (i === 0) {
                 slotName =T('SaveSystem.autosave');
                 summaryText = info ? info.playtime : (T('SaveSystem.none'));
+            } else if (isQuickSlot(i)) {
+                // "QUICKSAVE 2 - Party of Ariel": the F5 rotation, named the
+                // same way as a party slot so the list reads consistently.
+                slotName = T('SaveSystem.quickslot', { n: quickSlotNumber(i) });
+                const leader = savefileLeaderName(info);
+                if (leader) {
+                    slotName += " - " + T('SaveSystem.partyOf', { name: escapeHtml(leader) });
+                }
+                summaryText = info ? info.playtime : (T('SaveSystem.empty'));
             } else {
                 // "SLOT 2 - Party of Ariel": the slot is named after whoever
                 // leads the party recorded in it; an empty slot keeps the
@@ -1198,19 +1271,21 @@
     };
 
     Scene_File.prototype.executeSaveGame = function (index) {
-        // Slot lock: only the playthrough's own slot or the shared autosave
-        // slot 0 can be written.
+        // Slot lock: only the playthrough's own slot, the shared autosave
+        // slot 0 or a quicksave slot can be written.
         if (this.mode() !== "save" || !canSaveTo(index)) {
             SoundManager.playBuzzer();
             return;
         }
 
-        // Saving to the autosave slot keeps the playthrough bound to its slot
-        if (index > 0) $gameSystem.setSavefileId(index);
+        // Saving to the autosave or a quicksave slot keeps the playthrough
+        // bound to its own slot.
+        if (index > 0 && !isQuickSlot(index)) $gameSystem.setSavefileId(index);
         recordSaveLocation();
         $gameSystem.onBeforeSave();
         DataManager.saveGame(index)
             .then(() => {
+                if (isQuickSlot(index)) stampQuickOwner(index);
                 SoundManager.playSave();
                 this.popScene();
             })
@@ -1276,17 +1351,25 @@
         return { label, value: prefix + raw + suffix };
     }
 
-    // Deletes the manual save slot bound to the current playthrough. Slot 0
-    // (the shared autosave) is never touched.
+    // Deletes the manual save slot bound to the current playthrough, plus every
+    // quicksave that playthrough wrote (or death would be undoable with F9).
+    // Slot 0 (the shared autosave) and other parties' quicksaves are never
+    // touched.
     window.SaveSystem.deletePlaythroughSaves = function () {
         const bound = $gameSystem ? $gameSystem.savefileId() : 0;
         if (!(bound > 0)) return;
-        const saveName = DataManager.makeSavename(bound);
-        try {
-            const result = StorageManager.remove(saveName);
-            if (result && typeof result.catch === "function") result.catch(() => { });
-        } catch (e) { /* storage backend may be synchronous or unavailable */ }
-        if (DataManager._globalInfo) DataManager._globalInfo[bound] = null;
+        const ownQuick = QUICK_SLOT_IDS.filter(id => {
+            const info = DataManager.savefileInfo(id);
+            return info && info.quickOwner === bound;
+        });
+        for (const index of [bound, ...ownQuick]) {
+            const saveName = DataManager.makeSavename(index);
+            try {
+                const result = StorageManager.remove(saveName);
+                if (result && typeof result.catch === "function") result.catch(() => { });
+            } catch (e) { /* storage backend may be synchronous or unavailable */ }
+            if (DataManager._globalInfo) DataManager._globalInfo[index] = null;
+        }
         DataManager.saveGlobalInfo();
     };
 
@@ -1538,10 +1621,16 @@
         }
     };
 
+    // F5 fills the three quicksave slots in turn, then keeps rolling over the
+    // oldest one: a quicksave never refuses to write and never touches the
+    // playthrough's own save.
     Scene_Map.prototype.getQuicksaveSlot = function() {
-        // Respects the plugin's slot-lock rule. Uses bound slot, defaults to 0.
-        const bound = $gameSystem.savefileId();
-        return bound > 0 ? bound : 0; 
+        return nextQuickSlot();
+    };
+
+    // F9 reloads the newest of the three.
+    Scene_Map.prototype.getQuickloadSlot = function() {
+        return latestQuickSlot();
     };
 
     Scene_Map.prototype.executeQuicksave = function() {
@@ -1557,8 +1646,9 @@
 
         DataManager.saveGame(slot)
             .then(() => {
+                stampQuickOwner(slot);
                 SoundManager.playSave();
-                this.showQuickPopup("Game Quicksaved");
+                this.showQuickPopup("Quicksaved To Slot", { n: quickSlotNumber(slot) });
             })
             .catch(() => {
                 SoundManager.playBuzzer();
@@ -1567,13 +1657,13 @@
     };
 
     Scene_Map.prototype.executeQuickload = function() {
-        const slot = this.getQuicksaveSlot();
-        
-        if (DataManager.savefileInfo(slot)) {
+        const slot = this.getQuickloadSlot();
+
+        if (slot > 0 && DataManager.savefileInfo(slot)) {
             SoundManager.playLoad();
-            
+
             // Set a flag so the popup shows after the map finishes loading
-            if ($gameTemp) $gameTemp._showQuickloadPopup = true;
+            if ($gameTemp) $gameTemp._showQuickloadPopup = quickSlotNumber(slot);
 
             DataManager.loadGame(slot)
                 .then(() => {
@@ -1604,16 +1694,18 @@
     const QUICK_POPUP_KEYS = {
         "Saving Disabled": "savingDisabled",
         "Game Quicksaved": "gameQuicksaved",
+        "Quicksaved To Slot": "quicksavedToSlot",
         "Quicksave Failed": "quicksaveFailed",
         "Load Failed": "loadFailed",
         "No Quicksave Found": "noQuicksaveFound",
         "Game Loaded": "gameLoaded",
+        "Quicksave Loaded": "quicksaveLoaded",
     };
     // i18n-ignore-end
-    Scene_Map.prototype.showQuickPopup = function(text) {
+    Scene_Map.prototype.showQuickPopup = function(text, params) {
         if (!window.ParchmentToast) return;
         const key = QUICK_POPUP_KEYS[text];
-        const msg = key ? T('SaveSystem.quick.' + key) : text;
+        const msg = key ? T('SaveSystem.quick.' + key, params) : text;
         const isError = /Failed|Disabled|No Quicksave/.test(text);
         window.ParchmentToast.show(msg, {
             severity: isError ? "warning" : "info",
@@ -1626,8 +1718,13 @@
     Scene_Map.prototype.start = function() {
         _Scene_Map_start_quickload.call(this);
         if ($gameTemp && $gameTemp._showQuickloadPopup) {
+            const n = $gameTemp._showQuickloadPopup;
             $gameTemp._showQuickloadPopup = false;
-            this.showQuickPopup("Game Loaded");
+            if (typeof n === "number") {
+                this.showQuickPopup("Quicksave Loaded", { n });
+            } else {
+                this.showQuickPopup("Game Loaded");
+            }
         }
     };
 })();

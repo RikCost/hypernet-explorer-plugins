@@ -1888,25 +1888,20 @@
     const _Scene_Battle_create = Scene_Battle.prototype.create;
     Scene_Battle.prototype.create = function () {
         _Scene_Battle_create.call(this);
-        if (typeof AudioManager.getBgsFromChannel === 'function' &&
-            typeof AudioManager.playMushBgs === 'function') {
-            const bgs = AudioManager.getBgsFromChannel(4);
-            if (bgs && bgs.name) {
-                // Duck against the level the weather channel is set to play at
-                // (settingVolume / the Weather Volume option), not buffer.volume,
-                // which is the already config-scaled 0..1 gain.
-                const level = (window.WeatherAudio && window.WeatherAudio.volume)
-                    ? window.WeatherAudio.volume()
-                    : (bgs.settingVolume || 30);
-                const quietBgs = Object.assign({}, bgs, { volume: Math.floor(level * 0.55) });
-                AudioManager.playMushBgs(quietBgs, 4, false, 'Continue');
-            }
+        // Ducking is asked of WeatherAudio as a factor, so the level still comes
+        // from the Weather Volume option (a copy of the buffer would lose its
+        // prototype accessors and land a pitch of 0 on the channel).
+        if (window.WeatherAudio && window.WeatherAudio.duck) {
+            window.WeatherAudio.duck(0.55);
         }
     };
 
     const _Scene_Battle_terminate = Scene_Battle.prototype.terminate;
     Scene_Battle.prototype.terminate = function () {
         _Scene_Battle_terminate.call(this);
+        if (window.WeatherAudio && window.WeatherAudio.restore) {
+            window.WeatherAudio.restore();
+        }
         if (typeof $gameWeather !== 'undefined' && $gameWeather &&
             typeof $gameWeather.updateEnvironmentBgs === 'function') {
             $gameWeather.updateEnvironmentBgs();
