@@ -224,9 +224,19 @@
         };
     }
 
+    // Launched from the title screen there is no map to read, so the free-play
+    // picker (Titlescreen.js) asks the player where and when instead and leaves
+    // the answer here. Null whenever a real game is being played.
+    function arcadeSetup() {
+        const arcade = window.MinigameArcade;
+        return (arcade && arcade.setup) ? arcade.setup() : null;
+    }
+
     // An explicit <Exterior> always wins, so a covered map that still wants the
     // open sea can say so and be believed.
     function isInteriorMap() {
+        const setup = arcadeSetup();
+        if (setup) return setup.venue === 'interior';
         try {
             if (typeof window.isProceduralInteriorMap === 'function' &&
                 window.isProceduralInteriorMap()) return true;
@@ -237,6 +247,8 @@
     }
 
     function currentTimeMode() {
+        const setup = arcadeSetup();
+        if (setup && typeof setup.timeMode === 'number') return setup.timeMode;
         const SR = window.SkyRenderer;
         if (!SR || !SR.getCurrentTimeMode) return 0;
         return SR.getCurrentTimeMode();
@@ -1645,8 +1657,10 @@
             this._worldSprite.height = Graphics.height;
             // Outdoors the sea wears the map's own screen tone, so the hour the
             // player walked in with carries into the water. A hall has its own
-            // lights and has no business being tinted by the weather outside.
-            if (!this._interior && typeof ColorFilter === 'function') {
+            // lights and has no business being tinted by the weather outside,
+            // and a free-play session was given its hour by hand: neither wants
+            // a tone laid over the palette that was asked for.
+            if (!this._interior && !arcadeSetup() && typeof ColorFilter === 'function') {
                 this._worldFilter = new ColorFilter();
                 this._worldSprite.filters = [this._worldFilter];
                 this._syncTone(true);

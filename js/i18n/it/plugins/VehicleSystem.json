@@ -17,6 +17,7 @@
   "noValidPosition": "Nessuna posizione valida per far comparire il veicolo",
   "stopDriving": "Smetti di guidare",
   "startDriving": "Mettiti alla guida",
+  "enterVehicle": "Entra in {vehicle}",
   "fastTravel": "Viaggio rapido",
   "refuel": "Fai rifornimento",
   "storage": "Stiva",

@@ -281,7 +281,12 @@
         cardsHTML = cards.map((q, i) => this._contractNoteHTML(q, i)).join("");
       }
 
-      const boardName = esc(this._boardKey || "?");
+      // The board key is a map group or a destination key; the header reads the
+      // place's name ("FrozenStation" -> "Frozen Station").
+      const boardName = esc(
+        (this._boardKey && window.WorkSystem?.destinationName)
+          ? window.WorkSystem.destinationName(this._boardKey)
+          : (this._boardKey || "?"));
 
       this._el.querySelectorAll("#qb-header, #qb-tabs, #qb-cards, #qb-detail-backdrop")
         .forEach(n => n.remove());

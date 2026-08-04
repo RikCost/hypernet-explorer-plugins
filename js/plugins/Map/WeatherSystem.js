@@ -187,6 +187,49 @@
   const enableTimeDebug = parameters["enableTimeDebug"] === "true";
   const enableTempDebug = parameters["enableTempDebug"] === "true";
 
+  //---------------------------------------------------------------------------
+  // Weather audio level
+  //---------------------------------------------------------------------------
+  // Everything the system plays on MUSH channel 4 (rain, storms, night
+  // ambience) is scaled by the Weather Volume slider in the options, on top of
+  // the normal BGS volume. WEATHER_BGS_BASE is the level the loops were mixed
+  // for; the slider only ever scales it.
+  const WEATHER_BGS_BASE = 30;
+  const WEATHER_CHANNEL = 4;
+
+  // The configured level, defended against a config written before the option
+  // existed (or one carrying a null/NaN from an older build).
+  const weatherVolumeConfig = () => {
+    const v = Number(ConfigManager.weatherVolume);
+    return isFinite(v) ? v.clamp(0, 100) : 80;
+  };
+
+  const weatherBgsVolume = () => Math.round(WEATHER_BGS_BASE * weatherVolumeConfig() / 100);
+
+  // Re-applies the current level to whatever is already playing on the weather
+  // channel, so moving the slider is heard immediately rather than at the next
+  // weather change. Also used to silence the channel when the slider hits 0.
+  const refreshWeatherBgsVolume = () => {
+    if (typeof AudioManager.getBgsFromChannel !== "function") return;
+    const buffer = AudioManager.getBgsFromChannel(WEATHER_CHANNEL);
+    if (!buffer || !buffer.name) return;
+    AudioManager.updateMushBgsParameters(buffer, {
+      name: buffer.name,
+      volume: weatherBgsVolume(),
+      pitch: (buffer.pitch || 1) * 100,
+      pan: (buffer.pan || 0) * 100
+    });
+  };
+
+  // Exposed for the options menu (Core/GameOptions.js) and for anything that
+  // borrows the weather channel and needs the player's chosen level.
+  window.WeatherAudio = {
+    base: WEATHER_BGS_BASE,
+    channel: WEATHER_CHANNEL,
+    volume: weatherBgsVolume,
+    refresh: refreshWeatherBgsVolume
+  };
+
   // DEPENDENCY CHECK: Ensure MUSH Audio Engine is loaded
   if (!AudioManager.playMushBgs || !AudioManager.stopMushBgs || !AudioManager.getBgsFromChannel) {
     const errorMsg = [
@@ -1586,7 +1629,9 @@
       // Check if a rain BGS is already playing on channel 4
       const currentBgs = AudioManager.getBgsFromChannel(4);
       if (currentBgs && currentBgs.name && currentBgs.name.startsWith('rain')) {
-        // Already playing a rain sound, don't change it
+        // Already playing a rain sound, don't change it - but do keep it at the
+        // level the player has chosen, in case the slider moved meanwhile.
+        refreshWeatherBgsVolume();
         return;
       }
 
@@ -1595,7 +1640,7 @@
 
       const bgsSetting = {
         name: randomRain,
-        volume: 30,
+        volume: weatherBgsVolume(),
         pitch: 100,
         pan: 0
       };
@@ -1629,6 +1674,7 @@
         const currentBgs = AudioManager.getBgsFromChannel(4);
         if (currentBgs && currentBgs.name === nightSound) {
           // Already playing the correct custom sound, don't restart it
+          refreshWeatherBgsVolume();
           return;
         }
       } else {
@@ -1638,6 +1684,7 @@
         if (currentBgs && currentBgs.name &&
           (currentBgs.name.includes('night') || currentBgs.name.includes('cricket'))) {
           // Already playing a night sound, don't change it
+          refreshWeatherBgsVolume();
           return;
         }
 
@@ -1647,7 +1694,7 @@
 
       const bgsSetting = {
         name: nightSound,
-        volume: 30,
+        volume: weatherBgsVolume(),
         pitch: 100,
         pan: 0
       };

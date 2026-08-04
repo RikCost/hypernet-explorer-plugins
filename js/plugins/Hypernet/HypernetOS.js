@@ -1520,39 +1520,16 @@
         this.popScene();
     };
 
-    // "Turn Off" powers the monitor down to a black screen WITHOUT destroying
-    // the scene. The OS stays alive underneath; clicking the screen or pressing
-    // any key powers it back on.
+    // "Turn Off" leaves the OS entirely, exactly like "Log Off". The old black
+    // "safe to turn off" screen that kept the scene alive underneath is gone.
     Scene_HypernetOS.prototype.onTurnOffClick = function() {
-        if (window.SoundManager) SoundManager.playCancel();
-
-        // Close the start menu so it isn't left open behind the black screen.
+        // Close the start menu so it isn't left open when the scene is rebuilt.
         const startMenu = document.getElementById('hypernet-start-menu');
         const startBtn = document.getElementById('hypernet-start-btn');
         if (startMenu) startMenu.classList.remove('open');
         if (startBtn) startBtn.classList.remove('active');
 
-        if (document.getElementById('hypernet-os-poweroff')) return;
-
-        const overlay = document.createElement('div');
-        overlay.id = 'hypernet-os-poweroff';
-        overlay.style.cssText =
-            'position:absolute;top:0;left:0;width:100%;height:100%;z-index:99999;' +
-            'background:#000;display:flex;align-items:center;justify-content:center;' +
-            'cursor:pointer;color:#444;font:14px monospace;';
-        overlay.innerHTML =
-            `<div style="opacity:0.5;">${T('HypernetOS.safeToTurnOff')}</div>`;
-
-        const powerOn = () => {
-            overlay.removeEventListener('click', powerOn);
-            window.removeEventListener('keydown', powerOn, true);
-            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        };
-        overlay.addEventListener('click', powerOn);
-        window.addEventListener('keydown', powerOn, true);
-
-        const container = document.getElementById('hypernet-os-container');
-        if (container) container.appendChild(overlay);
+        this.onExitClick();
     };
 
     // Controller support: B button mirrors Escape (close active window, then

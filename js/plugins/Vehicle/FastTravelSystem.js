@@ -210,6 +210,14 @@
     // Adjusted to 0.666 so that 100km (tiles) with Train (3.33x) takes 20 seconds.
     const baseTimePerTile = 0.666;
     const TRANSPORT_DESTINATIONS = window.WorkSystem.Destinations || {};
+
+    // The Destinations.json key is the identity of a place (lookups, save data,
+    // "Teleport - <key>" event names); its "name" field is what the player reads.
+    const destLabel = (name) =>
+        (window.WorkSystem && window.WorkSystem.destinationName)
+            ? window.WorkSystem.destinationName(name)
+            : String(name == null ? '' : name);
+
     let _travelSelectedIndex = 0;
     // Cached reference to the travel overlay element, set when it is created and
     // cleared when removed, so the per-frame Scene_Map hooks below avoid a
@@ -283,6 +291,12 @@
         maglev: 2.5, hyperloop: 3.5, starship: 50.0, wormhole: 100.0,
         quantum: 200.0, time_machine: 500.0, dimensional: 1000.0
     };
+
+    // The transport ids a Destinations.json entry may carry as an arrival
+    // override. Every other key in an entry ("name", "type", "base",
+    // "fastTravelMap", "picture", "minLevel", ...) describes the place itself
+    // and must never be mistaken for a transport stop.
+    const TRANSPORT_KEYS = Object.keys(transportMultipliers);
 
     // Speed multipliers for travel duration. Higher value = faster travel.
     const speedMultipliers = {
@@ -605,7 +619,11 @@
     }
 
     function calculateDistance(x1, y1, x2, y2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        // A malformed destination must not poison the price with NaN: an
+        // unreadable distance costs nothing rather than costing more gold than
+        // the party can ever hold.
+        return Number.isFinite(d) ? d : 0;
     }
 
     function goldToEuros(gold) {
@@ -621,6 +639,14 @@
     function vehPosMap(key) { return window.VehiclePosition ? window.VehiclePosition.mapId(key) : 0; }
     function vehPosX(key)   { return window.VehiclePosition ? window.VehiclePosition.x(key) : 0; }
     function vehPosY(key)   { return window.VehiclePosition ? window.VehiclePosition.y(key) : 0; }
+    // Where stepping out of a vehicle's interior leaves the player: the spot they
+    // got in at, or the vehicle's own tile when it has been moved since.
+    function vehExit(key) {
+        if (window.VehiclePosition && window.VehiclePosition.exit) {
+            return window.VehiclePosition.exit(key);
+        }
+        return { mapId: vehPosMap(key), x: vehPosX(key), y: vehPosY(key) };
+    }
 
     function getCurrentFuel() {
         if (window.VehicleSystemRefuel) return window.VehicleSystemRefuel.getCurrentFuel();
@@ -660,16 +686,16 @@
 
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const actualDest = getActualDestination(destination, transportType);
-        const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+        const worldDest = getWorldPosition(destination);
+        const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
         return calculateTravelCostFromDistance(distance, transportType);
     }
 
     function calculateTravelTime(destination, transportType) {
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const actualDest = getActualDestination(destination, transportType);
-        const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+        const worldDest = getWorldPosition(destination);
+        const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
         const speedMultiplier = speedMultipliers[transportType] || 1.0;
 
         const travelTime = Math.min(Math.floor((distance * baseTimePerTile) / speedMultiplier), maxTravelTime);
@@ -716,9 +742,13 @@
 
         // Build destinations directly from TRANSPORT_DESTINATIONS
         for (const [destinationName, transportData] of Object.entries(TRANSPORT_DESTINATIONS)) {
-            // Use the first available transport method as the default location
-            const firstTransport = Object.keys(transportData)[0];
-            const defaultLocation = transportData[firstTransport];
+            // The place itself sits on the world map at its "base" tile; the
+            // transport entries are arrival overrides on top of it. Only fall
+            // back to an override when an entry carries no base at all.
+            const firstTransport = TRANSPORT_KEYS.find(key => transportData[key]);
+            const defaultLocation = transportData.base
+                ? { mapId: 315, x: transportData.base.x, y: transportData.base.y }
+                : (firstTransport ? transportData[firstTransport] : { mapId: 0, x: 0, y: 0 });
 
             destinations.push({
                 name: destinationName,
@@ -747,32 +777,35 @@
     }
 
     function getActualDestination(destination, transportType) {
-        // Use "base" coordinates for camper/carsharing - always go to map 315
-        if ((transportType === 'camper' || transportType === 'carsharing') && destination.transportOverrides && destination.transportOverrides['base']) {
-            const base = destination.transportOverrides['base'];
-            return { mapId: 315, x: base.x, y: base.y, name: destination.name };
+        const overrides = destination.transportOverrides || {};
+        const base = overrides['base'];
+
+        // Vehicles always arrive on the world map, on the town's own tile.
+        if (transportType === 'camper' || transportType === 'carsharing') {
+            if (base) return { mapId: 315, x: base.x, y: base.y, name: destination.name };
         }
 
-        // Check if location has ONLY "base" (and optionally "picture")
-        // If so, transport to map 315 at base coordinates
-        if (destination.transportOverrides) {
-            const transportKeys = Object.keys(destination.transportOverrides).filter(key => key !== 'picture');
-            const onlyHasBase = transportKeys.length === 1 && transportKeys[0] === 'base';
-
-            if (onlyHasBase && destination.transportOverrides['base']) {
-                const base = destination.transportOverrides['base'];
-                return { mapId: 315, x: base.x, y: base.y, name: destination.name };
-            }
-        }
-
-        // Use transport-specific override if available
-        if (destination.transportOverrides && destination.transportOverrides[transportType]) {
-            const override = destination.transportOverrides[transportType];
+        // A transport with its own station/stop/pad in the entry arrives there.
+        if (TRANSPORT_KEYS.includes(transportType) && overrides[transportType]) {
+            const override = overrides[transportType];
             return { mapId: override.mapId, x: override.x, y: override.y, name: destination.name };
         }
 
+        // Everything else arrives on the world map at the town's base tile.
+        if (base) return { mapId: 315, x: base.x, y: base.y, name: destination.name };
+
         // Default destination
         return { mapId: destination.mapId, x: destination.x, y: destination.y + 1, name: destination.name };
+    }
+
+    // World-map (map 315) tile of a destination. Distance, cost and travel time
+    // are always measured here: a transport override points at an interior map
+    // (a platform, a helipad) whose local coordinates say nothing about how far
+    // the place is.
+    function getWorldPosition(destination) {
+        const base = destination.transportOverrides && destination.transportOverrides['base'];
+        if (base) return { x: base.x, y: base.y };
+        return { x: destination.x, y: destination.y };
     }
 
     function calculateTravelCost(destination, transportType) {
@@ -782,8 +815,8 @@
 
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const actualDest = getActualDestination(destination, transportType);
-        const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+        const worldDest = getWorldPosition(destination);
+        const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
         const multiplier = transportMultipliers[transportType] || 1.0;
         return Math.floor(distance * baseDistancePrice * multiplier);
     }
@@ -868,12 +901,15 @@
             // below); without an actual setLocation the vehicle would stay at its
             // default spot and never appear near the chosen city.
             const vehicleType = data.selectedTransport === 'camper' ? 'ship' : 'boat';
+            // The Car, Bike and Boat share one engine vehicle: point that slot at
+            // the car BEFORE moving it, so the move is recorded against the car
+            // and not against whichever sub-type the slot last stood for.
+            if (vehicleType === 'boat') $gameSystem._boatType = 'car';
             const vehicle = $gameMap.vehicle(vehicleType);
             if (vehicle) vehicle.setLocation(315, park.x, park.y);
             if (data.selectedTransport === 'camper') {
                 setVehiclePos('camper', 315, park.x, park.y);
             } else { // carsharing -> car
-                $gameSystem._boatType = 'car';
                 setVehiclePos('car', 315, park.x, park.y);
             }
             // Keep the player's world-map position in sync with the parked spot.
@@ -929,7 +965,8 @@
         // Always use stored player coordinates from variables for distance calculation
         const playerX = $gameVariables.value(playerXVar);
         const playerY = $gameVariables.value(playerYVar);
-        const distance = calculateDistance(playerX, playerY, data.finalDestination.x, data.finalDestination.y);
+        const worldDest = getWorldPosition(destination);
+        const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
         data.totalDistanceKm = Math.round(distance * 1);
 
         const travelTime = calculateTravelTime(destination, data.selectedTransport);
@@ -982,8 +1019,9 @@
         // If no fast travel was selected, teleport to ship location
         if (!data.finalDestination) {
 
-            // Teleport to ship location (assuming ship is at a specific location)
-            $gamePlayer.reserveTransfer(vehPosMap('camper'), vehPosX('camper'), vehPosY('camper'), 2, 0);
+            // Step back out to where the camper was boarded / entered from.
+            const spot = vehExit('camper');
+            $gamePlayer.reserveTransfer(spot.mapId, spot.x, spot.y, 2, 0);
             return;
         }
 
@@ -1017,8 +1055,9 @@
         // If no fast travel was selected, teleport to ship location
         if (!data.finalDestination) {
 
-            // Teleport to car location (assuming car is at a specific location)
-            $gamePlayer.reserveTransfer(vehPosMap('car'), vehPosX('car'), vehPosY('car'), 2, 0);
+            // Step back out to where the car was boarded / entered from.
+            const spot = vehExit('car');
+            $gamePlayer.reserveTransfer(spot.mapId, spot.x, spot.y, 2, 0);
             return;
         }
 
@@ -1032,6 +1071,9 @@
 
             // Teleport to destination using the mapId from finalDestination
             $gamePlayer.reserveTransfer(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y, 2, 0);
+            // The shared engine slot must stand for the car before it is moved, so
+            // the move is recorded against the car rather than the bike or boat.
+            $gameSystem._boatType = 'car';
             const vehicle = $gameMap.vehicle("boat");
             vehicle.setLocation(data.finalDestination.mapId, data.finalDestination.x, data.finalDestination.y + 1);
 
@@ -1050,8 +1092,9 @@
         // If no fast travel was selected, teleport to airship location
         if (!data.finalDestination) {
 
-            // Teleport to airship location
-            $gamePlayer.reserveTransfer(vehPosMap('airship'), vehPosX('airship'), vehPosY('airship'), 2, 0);
+            // Step back out to where the starship was boarded / entered from.
+            const spot = vehExit('airship');
+            $gamePlayer.reserveTransfer(spot.mapId, spot.x, spot.y, 2, 0);
             return;
         }
 
@@ -1334,8 +1377,8 @@
 
         const destinationsWithDistance = filtered
             .map(dest => {
-                const actualDest = getActualDestination(dest, transportType);
-                const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+                const worldDest = getWorldPosition(dest);
+                const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
                 return { destination: dest, distance: distance };
             })
             .sort((a, b) => a.distance - b.distance);
@@ -1382,7 +1425,7 @@
 
             return `
                 <div class="travel-dest-item ${disabledClass}${stationClass}" data-name="${dest.name}" onclick="SceneManager._scene.selectTravelDestination('${dest.name}')">
-                    <span class="travel-dest-name">${dest.name}${stationBadge}</span>
+                    <span class="travel-dest-name">${destLabel(dest.name)}${stationBadge}</span>
                     <span class="travel-dest-meta">
                         <span>Distance: ${distanceInKm} km</span>
                         <span style="font-weight: bold; color: #ffcc66;">${costText}</span>
@@ -1401,7 +1444,7 @@
             const isStation = markTrainStations && hasTrainStation(dest);
             const stationClass = isStation ? " has-train" : "";
             const baseLabel = isStation
-                ? T('FastTravel.stationLabel', { place: dest.name }) : dest.name;
+                ? T('FastTravel.stationLabel', { place: destLabel(dest.name) }) : destLabel(dest.name);
             const label = isSandbox ? `${baseLabel} (X: ${Math.round(x)}, Y: ${Math.round(y)})` : baseLabel;
 
             return `
@@ -1898,8 +1941,8 @@ Scene_Map.prototype.printTravelCoordinates = function () {
         const travelTime = calculateTravelTime(dest, transportType);
 
         const transportDisplayName = transportLabel(transportType);
-        const actualDest = getActualDestination(dest, transportType);
-        const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+        const worldDest = getWorldPosition(dest);
+        const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
         const distanceInKm = Math.round(distance * 1);
 
         let costValueText = "";
@@ -1920,7 +1963,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             timeText = `${travelTime}s`;
         }
 
-        document.getElementById('sidebar-dest-title').innerText = T('FastTravel.ui.travelTo', { name: dest.name });
+        document.getElementById('sidebar-dest-title').innerText = T('FastTravel.ui.travelTo', { name: destLabel(dest.name) });
         document.getElementById('sidebar-transport-val').innerText = transportDisplayName;
         document.getElementById('sidebar-distance-val').innerText = `${distanceInKm} km`;
         document.getElementById('sidebar-cost-val').innerText = costValueText;
@@ -2190,7 +2233,8 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             if (!data.timerActive) { this._htmlEl.style.display = 'none'; return; }
 
             if (data.timerRemainingTime <= 0 && data.travelCompleted) {
-                const destName = data.timerDestination || T('FastTravel.yourDestination');
+                const destName = data.timerDestination
+                    ? destLabel(data.timerDestination) : T('FastTravel.yourDestination');
                 this._htmlEl.innerHTML =
                     `<div class="travel-timer-complete">${T('FastTravel.arrivedAt', { place: destName })}</div>`;
             } else {
@@ -2275,9 +2319,9 @@ Scene_Map.prototype.printTravelCoordinates = function () {
 
             const destinationsWithDistance = filteredDestinations
                 .map(dest => {
-                    const actualDest = getActualDestination(dest, transportType);
                     // Use stored coordinates for distance calculation
-                    const distance = calculateDistance(playerX, playerY, actualDest.x, actualDest.y);
+                    const worldDest = getWorldPosition(dest);
+                    const distance = calculateDistance(playerX, playerY, worldDest.x, worldDest.y);
                     return { destination: dest, distance: distance };
                 })
                 .sort((a, b) => a.distance - b.distance);
@@ -2292,13 +2336,13 @@ Scene_Map.prototype.printTravelCoordinates = function () {
                 if (transportType === 'carsharing' || transportType === 'camper') {
                     const fuelNeeded = calculateTravelCostFromDistance(distanceInTiles, transportType);
                     enabled = currentFuelForTransport(transportType) >= fuelNeeded;
-                    text = T('FastTravel.destFuel', { place: dest.name,
+                    text = T('FastTravel.destFuel', { place: destLabel(dest.name),
                         liters: fuelNeeded.toFixed(1), km: distanceInKm });
                 } else {
                     const cost = calculateTravelCostFromDistance(distanceInTiles, transportType);
                     const costEuros = goldToEuros(cost);
                     enabled = $gameParty.gold() >= cost;
-                    text = T('FastTravel.destCost', { place: dest.name,
+                    text = T('FastTravel.destCost', { place: destLabel(dest.name),
                         cost: costEuros, km: distanceInKm });
                 }
 
@@ -2379,7 +2423,7 @@ Scene_Map.prototype.printTravelCoordinates = function () {
             const textY = 10;
             this.contents.fontSize = 28;
             this.changeTextColor(ColorManager.systemColor());
-            this.drawText(this._locationName, 0, textY, this.contentsWidth(), 'center');
+            this.drawText(destLabel(this._locationName), 0, textY, this.contentsWidth(), 'center');
             this.resetTextColor();
         }
 

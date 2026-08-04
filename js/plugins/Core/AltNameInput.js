@@ -1301,9 +1301,14 @@ const UIAltNameInputManager = {
 // navigation still work fully.
 const ALT_NAME_STRIPPED_KEYS = [65, 83, 68, 87, 81, 88, 90, 32, 13]; // A S D W Q X Z Space Enter
 
+// A name may be up to 16 characters. The Name Input Processing events still ask for the
+// engine default of 8, so the length the screen (and the Window_NameEdit buffer behind it)
+// works with is set here rather than in event data.
+const ALT_NAME_MAX_LENGTH = 16;
+
 const _Scene_Name_prepare = Scene_Name.prototype.prepare;
 Scene_Name.prototype.prepare = function(actorId, maxLength) {
-    _Scene_Name_prepare.call(this, actorId, maxLength);
+    _Scene_Name_prepare.call(this, actorId, ALT_NAME_MAX_LENGTH);
     this._dndActiveSection = "actions"; // "keyboard", "languages", "editing", "actions"
     this._kbdFocusIndex = 0;
     this._langFocusIndex = 0;

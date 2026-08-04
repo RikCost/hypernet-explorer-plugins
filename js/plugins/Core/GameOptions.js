@@ -68,6 +68,14 @@
  * @min 0
  * @max 100
  * @default 30
+ *
+ * @param defaultWeatherVolume
+ * @text Default Weather Volume
+ * @desc Default volume for weather and outdoor ambience, rain, storms, night (0-100)
+ * @type number
+ * @min 0
+ * @max 100
+ * @default 80
  */
 
 const GameOptions = {
@@ -251,7 +259,7 @@ const GameOptions = {
             id: 'audio',
             nameKey: 'audio',
             categories: ['audio'],
-            symbols: ['battleMusicName', 'bgmMute', 'bgmVolume', 'bgsVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
+            symbols: ['battleMusicName', 'bgmMute', 'bgmVolume', 'bgsVolume', 'weatherVolume', 'meVolume', 'seVolume', 'footstepsVolume', 'uisVolume', 'vscVolume', 'masterVolume']
         },
         {
             id: 'shader',
@@ -286,6 +294,7 @@ window.GameOptions = GameOptions;
     const defaultMeVolume = Number(parameters['defaultMeVolume'] || 90);
     const defaultSeVolume = Number(parameters['defaultSeVolume'] || 90);
     const defaultFootstepsVolume = Number(parameters['defaultFootstepsVolume'] || 30);
+    const defaultWeatherVolume = Number(parameters['defaultWeatherVolume'] || 80);
 
     //=============================================================================
     // Retro shader config (the low-poly/low-res shader helper, PSXShader.js)
@@ -417,6 +426,10 @@ window.GameOptions = GameOptions;
         if (this.meVolume === undefined) this.meVolume = defaultMeVolume;
         if (this.seVolume === undefined) this.seVolume = defaultSeVolume;
         this.footstepsVolume = volume(config.footstepsVolume, defaultFootstepsVolume);
+        // Weather/outdoor ambience (the MUSH channel 4 BGS the WeatherSystem
+        // drives: rain, storms, night). Kept off bgsVolume so a player can quiet
+        // the rain without silencing a map's own background sound.
+        this.weatherVolume = volume(config.weatherVolume, defaultWeatherVolume);
 
         // Volume the BGM mute toggle restores when it is switched back off.
         // Kept separate from bgmVolume so muting can survive a save/load.
@@ -512,6 +525,7 @@ window.GameOptions = GameOptions;
     ConfigManager.makeData = function () {
         const config = _ConfigManager_makeData.call(this);
         config.footstepsVolume = this.footstepsVolume;
+        config.weatherVolume = this.weatherVolume;
         config.bgmVolumeBeforeMute = this.bgmVolumeBeforeMute;
         config.enemyBattlers = this.enemyBattlers;
         config.charBasedSprites = this.charBasedSprites;
@@ -1549,6 +1563,22 @@ window.GameOptions = GameOptions;
             return isFinite(v) ? v : defaultFootstepsVolume;
         },
         (value) => ConfigManager.footstepsVolume = value,
+        'audio', 'number');
+
+    // Weather Volume: the rain/storm/night ambience the WeatherSystem plays on
+    // MUSH channel 4. The setter re-applies the level to whatever is already
+    // playing, so dragging the slider is audible while the menu is open.
+    GameOptions.registerOption('weatherVolume', T('GameOptions.label.weatherVolume'),
+        () => {
+            const v = Number(ConfigManager.weatherVolume);
+            return isFinite(v) ? v : defaultWeatherVolume;
+        },
+        (value) => {
+            ConfigManager.weatherVolume = value;
+            if (window.WeatherAudio && window.WeatherAudio.refresh) {
+                window.WeatherAudio.refresh();
+            }
+        },
         'audio', 'number');
 
     // Enemy battler display mode: cycle 2D -> 3D -> Sprites. Replaces the old

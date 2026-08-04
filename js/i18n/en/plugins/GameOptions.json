@@ -33,6 +33,7 @@
     "language": "Language",
     "muteBgm": "Mute BGM",
     "footstepsVolume": "Footsteps Volume",
+    "weatherVolume": "Weather Volume",
     "enemyBattlers": "Enemy Battlers",
     "showFps": "Show FPS Counter",
     "activeTheme": "Active Theme",

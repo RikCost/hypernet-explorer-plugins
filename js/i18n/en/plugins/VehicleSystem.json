@@ -17,6 +17,7 @@
   "noValidPosition": "No valid position found to summon the vehicle",
   "stopDriving": "Stop driving",
   "startDriving": "Start driving",
+  "enterVehicle": "Enter {vehicle}",
   "fastTravel": "Fast Travel",
   "refuel": "Refuel",
   "storage": "Storage",

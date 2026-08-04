@@ -1654,7 +1654,15 @@
                 (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-')
             ].join(':')
             : '';
-        const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}_${this._isVehiclesPage}`;
+        // Releasing a pet or handing the leash to another one changes the page
+        // without changing which page it is, so the roster is part of the key.
+        const petsKey = this._isPetsPage
+            ? [
+                (window.PetSystem?.getPets?.() ?? []).map(p => p.id).join('-'),
+                window.PetSystem?.getActivePet?.()?.id ?? 0
+            ].join(':')
+            : '';
+        const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}`;
         let spread = this._dndContainer.querySelector(".book-spread");
 
         if (!spread) {

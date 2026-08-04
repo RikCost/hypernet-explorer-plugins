@@ -396,6 +396,129 @@
         return T.has(key) ? T(key) : String(id || '');
     }
 
+    //=============================================================================
+    // Localizable descriptions
+    //=============================================================================
+    // A timeline is world-shared: it is written once and then read by every
+    // savegame of that world, in whatever language each of them is played in.
+    // So an event never stores only its finished prose. It stores the i18n key
+    // and the params it was written from (`descKey` / `descParams`) and the
+    // sentence is rebuilt on read, the same way NPCSociety writes out a bio.
+    // A param may itself be a translated fragment, in which case it is stored
+    // as a nested key descriptor `{ $k, $p }` rather than as finished text.
+
+    function LK(key, params) { return { $k: String(key), $p: params || null }; }
+    function isLK(v) { return !!v && typeof v === 'object' && typeof v.$k === 'string'; }
+
+    // A faction-data label (ideology, personality): its copy lives in
+    // FactionDataManager, not in History.json, so it carries its own marker.
+    function FD(id) { return { $fd: String(id) }; }
+    function isFD(v) { return !!v && typeof v === 'object' && typeof v.$fd === 'string'; }
+    function renderFD(id) {
+        return FactionDataManager.instance ? FactionDataManager.instance.t(id) : id;
+    }
+
+    // An artifact's name is composed per language by generateArtifacts and
+    // re-injected into the database every session, so an event names the
+    // artifact by record rather than by the name it happened to carry when the
+    // century was simulated. The stored name is the fallback for a database
+    // that no longer holds it.
+    function AR(kind, id, name) { return { $art: kind + ':' + id, $n: name }; }
+    function isAR(v) { return !!v && typeof v === 'object' && typeof v.$art === 'string'; }
+    function renderAR(v) {
+        const [kind, id] = String(v.$art).split(':');
+        const db = kind === 'weapon' ? $dataWeapons : kind === 'armor' ? $dataArmors : $dataItems;
+        const rec = db && db[Number(id)];
+        return (rec && rec.name) || v.$n || '';
+    }
+
+    function renderParam(v) {
+        if (isLK(v)) return renderLK(v.$k, v.$p);
+        if (isFD(v)) return renderFD(v.$fd);
+        if (isAR(v)) return renderAR(v);
+        return v;
+    }
+
+    function renderLK(key, params) {
+        if (!key) return '';
+        let resolved = params;
+        if (params) {
+            resolved = {};
+            for (const k of Object.keys(params)) resolved[k] = renderParam(params[k]);
+        }
+        return T(key, resolved);
+    }
+
+    // The fields an event record carries for one description. Spread in place
+    // of a plain `description:` line.
+    function descOf(key, params) {
+        return { description: renderLK(key, params), descKey: String(key), descParams: params || null };
+    }
+
+    // The sentence for a stored record in the active language, falling back to
+    // the prose a world simulated before descriptions were keyed.
+    function renderRecord(rec) {
+        if (!rec) return '';
+        return rec.descKey ? renderLK(rec.descKey, rec.descParams) : String(rec.description || '');
+    }
+
+    // Which written-out field each kind of record rebuilds, and the key/params
+    // fields it rebuilds it from: [plain, key, params].
+    const LOC_FIELDS = {
+        event:    [['description', 'descKey', 'descParams']],
+        nation:   [['government', 'governmentKey', null], ['reason', 'reasonKey', 'reasonParams']],
+        death:    [['cause', 'causeKey', 'causeParams']],
+        epidemic: [['name', 'nameKey', 'nameParams']],
+        // An artifact record owns a provenance list, so its pass carries on
+        // into the holders underneath it.
+        artifact: [['action', 'actionKey', 'actionParams']],
+        holder:   [['how', 'howKey', 'howParams']],
+    };
+
+    // Rewrites the keyed fields of a list of records when the active language
+    // is not the one it was last written in. The stamp lives on the array
+    // object itself, so a read costs one comparison and nothing reaches the
+    // world's JSON files. A record with no key keeps the prose it was saved
+    // with, which is what a world simulated before this carries.
+    function localizeList(list, kind) {
+        if (!Array.isArray(list)) return list;
+        const lang = (window.T && typeof T.language === 'function') ? T.language() : 'en';
+        if (list.__i18nLang === lang) return list;
+        const specs = LOC_FIELDS[kind] || LOC_FIELDS.event;
+        for (const rec of list) {
+            if (!rec) continue;
+            for (const [plain, keyField, paramsField] of specs) {
+                const key = rec[keyField];
+                if (key) rec[plain] = renderLK(key, paramsField ? rec[paramsField] : null);
+            }
+            if (kind === 'artifact') {
+                // The name too: generateArtifacts recomposes it every session.
+                rec.name = renderAR(AR(rec.kind || 'item', rec.id, rec.name));
+                localizeList(rec.holders, 'holder');
+            }
+        }
+        try {
+            Object.defineProperty(list, '__i18nLang',
+                { value: lang, configurable: true, writable: true, enumerable: false });
+        } catch (err) {
+            // Sealed array: the pass simply runs again on the next read.
+        }
+        return list;
+    }
+
+    // Same pass over a map of records (leader deaths, artifact records).
+    function localizeMap(map, kind) {
+        if (!map || typeof map !== 'object') return map;
+        const lang = (window.T && typeof T.language === 'function') ? T.language() : 'en';
+        if (map.__i18nLang === lang) return map;
+        localizeList(Object.values(map), kind);
+        try {
+            Object.defineProperty(map, '__i18nLang',
+                { value: lang, configurable: true, writable: true, enumerable: false });
+        } catch (err) { /* see localizeList */ }
+        return map;
+    }
+
     function getRandomHighMpSkill(rand) {
         const rnd = typeof rand === 'function' ? rand : Math.random;
         if (typeof $dataSkills === 'undefined' || !$dataSkills) return "PropheticDreams";
@@ -687,31 +810,68 @@
 
         // Stable, name-seeded government label for a nation under a controller.
         governmentFor(controller, country) {
+            return governmentLabel(this.governmentIdFor(controller, country));
+        }
+
+        // The same choice, left as its id so an event can store it as a key
+        // descriptor instead of freezing the label at simulation time.
+        governmentIdFor(controller, country) {
             if (controller && controller !== 'Neutral') {  // i18n-ignore  controller id
-                return governmentLabel(HYPERPOWER_GOVS[controller] || 'Puppet Government');  // i18n-ignore  government id
+                return HYPERPOWER_GOVS[controller] || 'Puppet Government';  // i18n-ignore  government id
             }
             let h = 0;
             const s = String(country);
             for (let i = 0; i < s.length; i++) h = ((h * 31) + s.charCodeAt(i)) >>> 0;
-            return governmentLabel(NEUTRAL_GOVS[h % NEUTRAL_GOVS.length]);
+            return NEUTRAL_GOVS[h % NEUTRAL_GOVS.length];
+        }
+
+        // A government id as a nested description param: it resolves to the
+        // label when the sentence is written out, and to the raw id when the
+        // data files carry no copy for it.
+        _govParam(id) {
+            const key = this._govKey(id);
+            return key ? LK(key) : String(id || '');
+        }
+
+        // The i18n key a government id reads through, or null for an id the
+        // data files carry no copy for.
+        _govKey(id) {
+            const key = 'History.government.' + String(id || '');
+            return T.has(key) ? key : null;
         }
 
         initNationRecords(startYear) {
             this._nationHistory = {};
             for (const [name, info] of Object.entries(this._currentCountries || {})) {
                 const controller = info.controller || 'Neutral';  // i18n-ignore  controller id
+                const govId = this.governmentIdFor(controller, name);
                 this._nationHistory[name] = [{
                     date: `${startYear}-01`,
                     controller,
-                    government: this.governmentFor(controller, name),
-                    reason: T('History.reason.dawn')
+                    government: governmentLabel(govId),
+                    governmentId: govId,
+                    governmentKey: this._govKey(govId),
+                    reason: T('History.reason.dawn'),
+                    reasonKey: 'History.reason.dawn',
+                    reasonParams: null
                 }];
             }
         }
 
+        // `reason` is passed as a key descriptor so the ledger re-reads in the
+        // language it is opened in; a plain string is still accepted.
         recordNationChange(name, dateStr, controller, reason) {
             const recs = this._nationHistory[name] || (this._nationHistory[name] = []);
-            recs.push({ date: dateStr, controller, government: this.governmentFor(controller, name), reason });
+            const govId = this.governmentIdFor(controller, name);
+            recs.push({
+                date: dateStr, controller,
+                government: governmentLabel(govId),
+                governmentId: govId,
+                governmentKey: this._govKey(govId),
+                reason: isLK(reason) ? renderLK(reason.$k, reason.$p) : reason,
+                reasonKey: isLK(reason) ? reason.$k : null,
+                reasonParams: isLK(reason) ? reason.$p : null
+            });
         }
 
         // Monthly chance that one nation changes hands: a hyperpower annexes /
@@ -729,18 +889,20 @@
             const current = info.controller || 'Neutral';  // i18n-ignore  controller id
             const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
             const prevRecs = this._nationHistory[nation];
-            const prevGov = prevRecs && prevRecs.length
-                ? prevRecs[prevRecs.length - 1].government
-                : governmentLabel('old order');  // i18n-ignore  government id
+            const prevRec = prevRecs && prevRecs.length ? prevRecs[prevRecs.length - 1] : null;
+            // A record written before governments were keyed keeps its label.
+            const prevGov = prevRec
+                ? (prevRec.governmentId ? this._govParam(prevRec.governmentId) : prevRec.government)
+                : this._govParam('old order');  // i18n-ignore  government id
 
             if (current !== 'Neutral' && this._rand() < 0.35) {  // i18n-ignore  controller id
                 info.controller = 'Neutral';  // i18n-ignore  controller id
-                const gov = this.governmentFor('Neutral', nation);  // i18n-ignore  controller id
+                const gov = this._govParam(this.governmentIdFor('Neutral', nation));  // i18n-ignore  controller id
                 this.recordNationChange(nation, dateStr, 'Neutral',  // i18n-ignore  controller id
-                    T('History.reason.independence', { power: current }));
+                    LK('History.reason.independence', { power: current }));
                 this._events.push({
                     date: dateStr, category: 'conquest', type: 'independence',
-                    description: T('History.conquest.independence',
+                    ...descOf('History.conquest.independence',
                         { nation: nation, power: current, prevGov: prevGov, gov: gov }),
                     iconIndex: ICONS.peace
                 });
@@ -762,19 +924,20 @@
             }
 
             info.controller = conqueror;
-            const newGov = this.governmentFor(conqueror, nation);
-            const reason = current === 'Neutral'  // i18n-ignore  controller id
-                ? T('History.reason.annexation')
-                : T('History.reason.conquest', { power: current });
+            const newGov = this._govParam(this.governmentIdFor(conqueror, nation));
+            const neutral = current === 'Neutral';  // i18n-ignore  controller id
+            const reason = neutral
+                ? LK('History.reason.annexation')
+                : LK('History.reason.conquest', { power: current });
             this.recordNationChange(nation, dateStr, conqueror, reason);
             this._events.push({
                 date: dateStr, category: 'conquest', type: 'conquest',
-                description: current === 'Neutral'  // i18n-ignore  controller id
-                    ? T('History.conquest.annex',
+                ...(neutral
+                    ? descOf('History.conquest.annex',
                         { conqueror: conqueror, nation: nation, prevGov: prevGov, gov: newGov })
-                    : T('History.conquest.wrest',
+                    : descOf('History.conquest.wrest',
                         { conqueror: conqueror, nation: nation, power: current,
-                          prevGov: prevGov, gov: newGov }),
+                          prevGov: prevGov, gov: newGov })),
                 iconIndex: ICONS.conquest
             });
             this._currentHyperpowers[conqueror].military = (this._currentHyperpowers[conqueror].military || 100) + 5;
@@ -844,6 +1007,11 @@
             }
 
             const hysteria = (disease.kind || 'medical') === 'hysteria';
+            // Towns are recorded by their Destinations.json key (that is what
+            // the epidemic ledger matches on); the chronicle names them the way
+            // that entry reads.
+            const townName = key => (window.WorkSystem && window.WorkSystem.destinationName)
+                ? window.WorkSystem.destinationName(key) : key;
             const origin = towns[Math.floor(this._rand() * towns.length)];
             const reach = 1 + Math.floor(this._rand() * (hysteria ? 5 : 7));
             const places = [origin];
@@ -859,19 +1027,20 @@
             const deaths = Math.round(infected * (disease.cfr || 0) * (0.35 + this._rand() * 0.5));
             const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
             const endStr = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}`;
-            const name = T(hysteria ? 'History.epidemic.hysteriaName' : 'History.epidemic.medicalName',
-                { disease: disease.name, origin: origin, year: date.getFullYear() });
+            const nameKey = hysteria ? 'History.epidemic.hysteriaName' : 'History.epidemic.medicalName';
+            const nameParams = { disease: disease.name, origin: townName(origin), year: date.getFullYear() };
 
             this._epidemics.push({
                 id: `HEP-${this._epidemics.length + 1}`,
-                name, diseaseId: disease.id, diseaseName: disease.name,
+                name: T(nameKey, nameParams), nameKey, nameParams,
+                diseaseId: disease.id, diseaseName: disease.name,
                 kind: hysteria ? 'hysteria' : 'medical',
                 origin, places, startDate: dateStr, endDate: endStr,
                 months, infected, deaths, historical: true,
             });
 
             const spread = places.length > 1
-                ? T('History.epidemic.spread', { places: places.slice(1).join(', ') })
+                ? LK('History.epidemic.spread', { places: places.slice(1).map(townName).join(', ') })
                 : '';
             // Thousands separators written explicitly: toLocaleString would
             // follow the host locale and print "162.610" on half the machines.
@@ -880,8 +1049,8 @@
                 date: dateStr,
                 category: 'epidemic',
                 type: hysteria ? 'mass hysteria' : 'epidemic',  // i18n-ignore  event type ids
-                description: T(hysteria ? 'History.epidemic.hysteria' : 'History.epidemic.medical',
-                    { disease: disease.name, origin: origin, infected: num(infected),
+                ...descOf(hysteria ? 'History.epidemic.hysteria' : 'History.epidemic.medical',
+                    { disease: disease.name, origin: townName(origin), infected: num(infected),
                       deaths: num(deaths), months: months, spread: spread }),
                 iconIndex: hysteria ? ICONS.paranormal : ICONS.epidemic
             });
@@ -902,25 +1071,30 @@
                 if (last && last.holder === holderName) continue;
                 const action = ARTIFACT_TRANSFER_ACTIONS[Math.floor(this._rand() * ARTIFACT_TRANSFER_ACTIONS.length)];
                 const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                const howKey = 'History.artifact.action.' + action;
                 rec.holders.push({ holder: holderName, power: actor, since: dateStr,
-                    how: T('History.artifact.action.' + action) });
+                    how: T(howKey), howKey, howParams: null });
                 this._events.push({
                     date: dateStr, category: 'paranormal', type: 'artifact',
-                    description: T('History.artifact.transfer', {
+                    ...descOf('History.artifact.transfer', {
                         holder: holderName,
-                        action: T('History.artifact.action.' + action),
-                        artifact: rec.name,
-                        from: last ? T('History.artifact.from', { holder: last.holder }) : ''
+                        action: LK('History.artifact.action.' + action),
+                        artifact: AR(rec.kind, rec.id, rec.name),
+                        from: last ? LK('History.artifact.from', { holder: last.holder }) : ''
                     }),
                     iconIndex: 245
                 });
             }
         }
 
+        // `cause` is a key descriptor so a leader's obituary re-reads in the
+        // language the world is opened in; a plain string is still accepted.
         _markLeaderDead(name, date, cause) {
             this._leaderDeaths[name] = {
                 date: date.toISOString().split('T')[0],
-                cause: cause || null
+                cause: isLK(cause) ? renderLK(cause.$k, cause.$p) : (cause || null),
+                causeKey: isLK(cause) ? cause.$k : null,
+                causeParams: isLK(cause) ? cause.$p : null
             };
         }
 
@@ -981,7 +1155,9 @@
                     date: dateStr,
                     category: fixed.type,
                     type: 'fixed',
-                    description: fixed.description,
+                    // The copy the player reads is keyed by the date itself, so
+                    // the record needs nothing beyond it.
+                    ...descOf('History.fixed.' + dateStr, null),
                     iconIndex: ICONS[fixed.type] || 0
                 });
                 if (fixed.callback) {
@@ -999,17 +1175,17 @@
         }
 
         getFixedEvent(dateStr) {
-            // i18n-ignore-start  hyperpower, faction and leader ids; the copy the
-            // player reads is History.fixed.<yyyy-mm>
+            // i18n-ignore-start  hyperpower, faction and leader ids. A fixed
+            // event carries no copy of its own: the line the player reads is
+            // History.fixed.<yyyy-mm>, keyed by the date handleFixedEvents
+            // looked it up with.
             const events = {
                 '1914-07': {
                     type: 'military',
-                    description: T('History.fixed.1914-07'),
                     callback: (mgr) => { for (let h in mgr._currentHyperpowers) mgr._currentHyperpowers[h].military += 30; }
                 },
                 '1917-10': {
                     type: 'political',
-                    description: T('History.fixed.1917-10'),
                     callback: (mgr) => {
                         mgr._currentHyperpowers['Soviet Union'].military += 50;
                         mgr._currentFactions['Archive Foundation'].information += 40;
@@ -1017,17 +1193,14 @@
                 },
                 '1918-11': {
                     type: 'peace',
-                    description: T('History.fixed.1918-11'),
                     callback: (mgr) => { mgr._currentHyperpowers['Ottoman Empire'].economy -= 20; }
                 },
                 '1939-09': {
                     type: 'military',
-                    description: T('History.fixed.1939-09'),
                     callback: (mgr) => { mgr._currentHyperpowers['Britannia'].military += 100; }
                 },
                 '1945-05': {
                     type: 'peace',
-                    description: T('History.fixed.1945-05'),
                     callback: (mgr) => {
                         mgr._currentHyperpowers['Soviet Union'].economy += 50;
                         mgr._currentHyperpowers['Britannia'].economy += 50;
@@ -1035,12 +1208,10 @@
                 },
                 '1970-05': {
                     type: 'paranormal',
-                    description: T('History.fixed.1970-05'),
                     callback: (mgr) => { mgr._currentHyperpowers['Goblin Horde'].military += 200; }
                 },
                 '1978-10': {
                     type: 'political',
-                    description: T('History.fixed.1978-10'),
                     callback: (mgr) => {
                         const hps = mgr._currentHyperpowers;
                         const hve = hps['Holy Vatican Empire'];
@@ -1054,7 +1225,6 @@
                 },
                 '1981-05': {
                     type: 'political',
-                    description: T('History.fixed.1981-05'),
                     callback: (mgr) => {
                         const hps = mgr._currentHyperpowers;
                         const hve = hps['Holy Vatican Empire'];
@@ -1068,12 +1238,10 @@
                 },
                 '1992-01': {
                     type: 'paranormal',
-                    description: T('History.fixed.1992-01'),
                     callback: (mgr) => { for (let f in mgr._currentFactions) mgr._currentFactions[f].arcane += 10; }
                 },
                 '2001-09': {
                     type: 'military',
-                    description: T('History.fixed.2001-09'),
                     callback: (mgr) => {
                         mgr._currentHyperpowers['Britannia'].information += 80;
                         for (let f in mgr._currentFactions) mgr._currentFactions[f].information *= 0.7;
@@ -1105,67 +1273,67 @@
                     if (!rival) return;
 
                     const struggleType = ['election', 'coup', 'assassination', 'alliance'][Math.floor(this._rand() * 4)];
-                    let outcomeDesc = "";
+                    let outcome = null;
 
                     switch (struggleType) {
                         case 'election':
                             if (this._rand() > 0.5) {
                                 currentActors[actor] = rival;
-                                outcomeDesc = T('History.internal.electionWin',
+                                outcome = LK('History.internal.electionWin',
                                     { winner: rival.name, place: actor, loser: active.name });
                             } else {
-                                outcomeDesc = T('History.internal.electionHold',
+                                outcome = LK('History.internal.electionHold',
                                     { leader: active.name, place: actor });
                             }
                             break;
                         case 'coup':
                             if (this._rand() > 0.4) {
                                 currentActors[actor] = rival;
-                                outcomeDesc = T('History.internal.coupWin',
+                                outcome = LK('History.internal.coupWin',
                                     { winner: rival.name, place: actor, loser: active.name });
                             } else {
-                                outcomeDesc = T('History.internal.coupFail',
+                                outcome = LK('History.internal.coupFail',
                                     { rival: rival.name, place: actor });
                             }
                             break;
                         case 'assassination':
                             if (this._rand() > 0.7) {
                                 if (active.protected) {
-                                    outcomeDesc = T('History.internal.plotFailedOddly',
+                                    outcome = LK('History.internal.plotFailedOddly',
                                         { leader: active.name, place: actor });
                                 } else {
                                     this._deadLeaders.add(active.name);
                                     this._markLeaderDead(active.name, date,
-                                        T('History.leaderDeath.assassinated', { place: actor }));
+                                        LK('History.leaderDeath.assassinated', { place: actor }));
                                     currentActors[actor] = rival;
-                                    outcomeDesc = T('History.internal.assassinated',
+                                    outcome = LK('History.internal.assassinated',
                                         { leader: active.name, rival: rival.name, place: actor });
                                 }
                             } else {
                                 if (rival.protected) {
-                                    outcomeDesc = T('History.internal.plotFailedEscape',
+                                    outcome = LK('History.internal.plotFailedEscape',
                                         { leader: active.name, place: actor, rival: rival.name });
                                 } else {
                                     this._deadLeaders.add(rival.name);
                                     this._markLeaderDead(rival.name, date,
-                                        T('History.leaderDeath.executed', { place: actor }));
-                                    outcomeDesc = T('History.internal.plotFailedExecuted',
+                                        LK('History.leaderDeath.executed', { place: actor }));
+                                    outcome = LK('History.internal.plotFailedExecuted',
                                         { leader: active.name, rival: rival.name });
                                 }
                             }
                             break;
                         case 'alliance':
-                            outcomeDesc = T('History.internal.alliance',
+                            outcome = LK('History.internal.alliance',
                                 { leader: active.name, rival: rival.name, place: actor });
                             break;
                     }
 
-                    if (outcomeDesc) {
+                    if (outcome) {
                         this._events.push({
                             date: date.toISOString().split('T')[0],
                             category: 'internal',
                             type: struggleType,
-                            description: outcomeDesc,
+                            ...descOf(outcome.$k, outcome.$p),
                             iconIndex: ICONS['internal'] || 0
                         });
                     }
@@ -1204,55 +1372,64 @@
 
             if (!leader) return null;
 
-            const desc = this.getEventDescription(category, type, actor, leader, year);
+            const desc = this.getEventDescriptor(category, type, actor, leader, year);
             const results = this.applyEffects(actor, isFaction, type);
 
             return {
                 date: date.toISOString().split('T')[0],
                 category: category,
                 type: type,
-                description: desc,
+                ...descOf(desc.$k, desc.$p),
                 results: results,
                 iconIndex: ICONS[category] || 0
             };
         }
 
-        // The event copy lives in js/i18n/<lang>/plugins/History.json under
-        // `event.basic` and `event.weird`, keyed by the same category and type
-        // ids the event record stores. `skill` stays lazy: resolving it up front
-        // would consume one extra number from the seeded RNG on every event and
-        // rewrite the history of every existing world.
-        getEventDescription(category, type, actor, leader, year) {
+        // Which line the event is told with, and the params to tell it with,
+        // left unresolved so the record can be re-read in any language. The
+        // copy lives in js/i18n/<lang>/plugins/History.json under `event.basic`
+        // and `event.weird`, keyed by the same category and type ids the event
+        // record stores. The draws made here are unchanged, so a seed still
+        // writes the same century.
+        getEventDescriptor(category, type, actor, leader, year) {
             const rawIdeology = leader.ideology || leader.personality;
             // FactionDataManager.t returns the path verbatim when it has no
             // entry, so the placeholder needs resolving here rather than there.
             const ideology = rawIdeology === 'Unknown'   // i18n-ignore: placeholder ideology id
-                ? T('History.leader.unknownIdeology')
-                : (FactionDataManager.instance
-                    ? FactionDataManager.instance.t(rawIdeology)
-                    : rawIdeology);
+                ? LK('History.leader.unknownIdeology')
+                : FD(rawIdeology);
             // The placeholder leader keeps its English id in the record (it is
             // matched by exportProperNouns), so its label resolves here.
             const leaderName = leader.name === 'Unknown Leader'   // i18n-ignore: placeholder leader id
-                ? T('History.leader.unknown')
+                ? LK('History.leader.unknown')
                 : leader.name;
             const params = { actor: actor, leader: leaderName, ideology: ideology };
 
             const weirdKey = 'History.event.weird.' + category + '.' + type;
             const basicKey = 'History.event.basic.' + category + '.' + type;
-            let text;
+            let key = 'History.event.generic';
+            let p = { type: type, actor: actor };
             if (year >= 1992 && T.has(weirdKey) && this._rand() < 0.4) {
-                text = T(weirdKey, params);
+                key = weirdKey; p = params;
             } else if (T.has(basicKey)) {
-                text = T(basicKey, params);
-            } else {
-                text = T('History.event.generic', { type: type, actor: actor });
+                key = basicKey; p = params;
             }
 
-            if (text.indexOf('{skill}') >= 0) {
-                text = text.replace('{skill}', getRandomHighMpSkill(this._rand.bind(this)));
+            // `skill` stays lazy: rolling it up front would consume one extra
+            // number from the seeded RNG on every event and rewrite the history
+            // of every existing world. Once rolled it is stored as a param, so
+            // re-reading the record never rolls again.
+            if (renderLK(key, p).indexOf('{skill}') >= 0) {
+                p = Object.assign({}, p, { skill: getRandomHighMpSkill(this._rand.bind(this)) });
             }
-            return text;
+            return LK(key, p);
+        }
+
+        // The finished sentence, for anything that wants text rather than a
+        // record. The event log itself stores the descriptor.
+        getEventDescription(category, type, actor, leader, year) {
+            const d = this.getEventDescriptor(category, type, actor, leader, year);
+            return renderLK(d.$k, d.$p);
         }
 
         applyEffects(actor, isFaction, type) {
@@ -1365,7 +1542,7 @@
 
         // Every epidemic and mass hysteria the century recorded, newest last.
         getEpidemics() {
-            return this._histField("epidemics", this._epidemics) || [];
+            return localizeList(this._histField("epidemics", this._epidemics) || [], 'epidemic');
         }
 
         // The ones that reached a given town, for a person's medical record.
@@ -1385,11 +1562,11 @@
 
         getNationHistory(country) {
             const all = this._histField("nationHistory", this._nationHistory) || {};
-            return all[country] || [];
+            return localizeList(all[country] || [], 'nation');
         }
 
         getArtifactRecords() {
-            return this._histField("artifactRecords", this._artifactRecords) || {};
+            return localizeMap(this._histField("artifactRecords", this._artifactRecords) || {}, 'artifact');
         }
 
         getArtifactRecord(key) {
@@ -1397,7 +1574,7 @@
         }
 
         getLeaderDeaths() {
-            return this._histField("leaderDeaths", this._leaderDeaths) || {};
+            return localizeMap(this._histField("leaderDeaths", this._leaderDeaths) || {}, 'death');
         }
 
         getDeadLeaders() {
@@ -1413,9 +1590,17 @@
             return this._histField("factions", this._currentFactions) || {};
         }
 
+        // Every event, with its keyed descriptions written out in the language
+        // the game is being played in right now.
         getEvents() {
             const v = this._histField("events", this._events);
-            return Array.isArray(v) ? v : [];
+            return Array.isArray(v) ? localizeList(v, 'event') : [];
+        }
+
+        // The sentence a stored record reads as, for anything holding a
+        // snapshot of an event rather than the event itself.
+        describeRecord(rec) {
+            return renderRecord(rec);
         }
 
         getEventsAbout(name, limit = 20) {
@@ -1438,31 +1623,32 @@
             const actions = ['discovered', 'crafted', 'exhumed', 'stole'];
             const action = actions[Math.floor(this._rand() * actions.length)];
 
-            let actionStr = action;
+            let actionLK;
             if (action === 'stole') {
                 const targets = actorPool.filter(a => a !== actor);
                 if (targets.length > 0) {
                     const target = targets[Math.floor(this._rand() * targets.length)];
                     const targetLeader = isFaction ? this._currentFactionLeaders[target] : this._currentLeaders[target];
                     const targetName = targetLeader ? targetLeader.name : target;
-                    actionStr = T('History.artifact.stoleFrom', { holder: targetName });
+                    actionLK = LK('History.artifact.stoleFrom', { holder: targetName });
                 } else {
-                    actionStr = T('History.artifact.discovered');
+                    actionLK = LK('History.artifact.discovered');
                 }
             } else {
-                actionStr = T('History.artifact.action.' + action);
+                actionLK = LK('History.artifact.action.' + action);
             }
+            const actionStr = renderLK(actionLK.$k, actionLK.$p);
 
-            const desc = T('History.artifact.found',
-                { holder: actorName, action: actionStr, artifact: item.name });
             const dateStr = date.toISOString().split('T')[0];
 
             if (kind) {
                 this._artifactRecords[`${kind}:${item.id}`] = {
                     id: item.id, kind, name: item.name,
                     date: dateStr, action: actionStr,
+                    actionKey: actionLK.$k, actionParams: actionLK.$p,
                     origin: actorName, originPower: actor,
-                    holders: [{ holder: actorName, power: actor, since: dateStr, how: actionStr }]
+                    holders: [{ holder: actorName, power: actor, since: dateStr, how: actionStr,
+                                howKey: actionLK.$k, howParams: actionLK.$p }]
                 };
             }
 
@@ -1470,13 +1656,14 @@
                 date: dateStr,
                 category: 'paranormal',
                 type: 'artifact',
-                description: desc,
+                ...descOf('History.artifact.found',
+                    { holder: actorName, action: actionLK, artifact: AR(kind || 'item', item.id, item.name) }),
                 iconIndex: 245
             };
         }
 
         getHistoricalFact(year = 0) {
-            const all = (window.WorldManager && window.WorldManager.getField("history", "events")) || this._events;
+            const all = this.getEvents();
             if (!all || all.length === 0) return T('History.log.blank');
 
             // The NPC life log (addMinorEvent) shares this array; it is gossip,
@@ -1541,8 +1728,43 @@
         info.seed = seed;
         info.historyYears = canon ? null : (options.years || null);
         info.historyInitialized = true;
+        info.historyKeyed = true;
         WM.flush();
         console.log(`[HistorySimulator] World '${WM.activeWorldName}' history initialized (${canon ? "canon" : (options.years ? options.years + " years" : "full timeline")}, seed ${seed}).`);
+    };
+
+    // A world simulated before descriptions carried their i18n key froze its
+    // timeline in the language it was generated in, which is what made an
+    // Italian NPC bio quote an English coup. The century is deterministic in
+    // the world's seed, so it is re-run once: the same events come back, this
+    // time carrying the keys that let them be read in any language. The NPC
+    // life log the same array collects (addMinorEvent) is gossip, not
+    // simulation output, so it is carried across rather than regenerated.
+    HistoryManager.prototype.migrateKeyedHistory = function () {
+        const WM = window.WorldManager;
+        if (!WM || !WM.activeWorldName) return false;
+        const info = WM.worldInfo();
+        if (!info.historyInitialized || info.historyKeyed) return false;
+
+        const events = WM.getField("history", "events");
+        const simulated = Array.isArray(events)
+            ? events.filter(e => e && e.type !== "npc_life")
+            : [];
+        // Nothing to re-key: an empty or already keyed timeline just gets the
+        // flag so this never runs again.
+        if (simulated.length && !simulated.some(e => e.descKey)) {
+            const gossip = events.filter(e => e && e.type === "npc_life");
+            console.log(`[HistorySimulator] Re-running world '${WM.activeWorldName}' history to key its descriptions for translation.`);
+            this.setSeed(info.seed !== undefined ? info.seed : normalizeHistorySeed(WM.activeWorldName));
+            this.runSimulation(info.historyYears || null);
+            if (gossip.length) {
+                const merged = WM.getField("history", "events");
+                if (Array.isArray(merged)) merged.push(...gossip);
+            }
+        }
+        info.historyKeyed = true;
+        WM.flush();
+        return true;
     };
 
     // Initialize global manager
@@ -1626,7 +1848,7 @@
     if (window.WorldManager && window.WorldManager.registerWorldInitializer) {
         window.WorldManager.registerWorldInitializer("history", 0, () => {
             const info = window.WorldManager.worldInfo();
-            if (info.historyInitialized) return;
+            if (info.historyInitialized) { manager.migrateKeyedHistory(); return; }
             manager.initializeWorldHistory({ years: info.historyYears || null, seed: info.seed });
         });
     }
@@ -1644,6 +1866,7 @@
                     // creates on an empty world folder): generate history now.
                     manager.initializeWorldHistory({ years: null, seed: info.seed });
                 } else {
+                    manager.migrateKeyedHistory();
                     const generated = WM.getField("artifacts", "generated");
                     if (generated) {
                         manager.injectArtifacts(generated);

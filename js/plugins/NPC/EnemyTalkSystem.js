@@ -184,14 +184,11 @@
         return systemMessages.cantTalkNow;
     };
 
-    const _Game_Enemy_setup = Game_Enemy.prototype.setup;
-    Game_Enemy.prototype.setup = function (enemyId, x, y) {
-        _Game_Enemy_setup.call(this, enemyId, x, y);
-
-        // More varied initial disposition calculation
-        // 40% chance for low disposition (10-40)
-        // 40% chance for medium disposition (41-70)
-        // 20% chance for high disposition (71-100)
+    // How this individual monster feels about the party before a word is said.
+    // 40% chance for low disposition (10-40)
+    // 40% chance for medium disposition (41-70)
+    // 20% chance for high disposition (71-100)
+    Game_Enemy.prototype.rollDisposition = function () {
         const roll = Math.random();
         if (roll < 0.4) {
             this._disposition = Math.floor(Math.random() * 31) + 10; // 10-40
@@ -204,12 +201,75 @@
         const archetype = this.getArchetype();
         if (archetype && archetypeDispositionModifiers[archetype] !== undefined) {
             this._disposition += archetypeDispositionModifiers[archetype];
-            this._disposition = this._disposition.clamp(1, 100);
+        }
+        this._disposition = this._disposition.clamp(1, 100);
+    };
+
+    const _Game_Enemy_setup = Game_Enemy.prototype.setup;
+    Game_Enemy.prototype.setup = function (enemyId, x, y) {
+        _Game_Enemy_setup.call(this, enemyId, x, y);
+        this.rollDisposition();
+    };
+
+    // Opinion belongs to the individual monster and to this encounter alone: a
+    // raccoon the party spent three turns petting must never hand its goodwill
+    // to the next raccoon they meet. The roll above already runs per battler,
+    // but battlers reach a fight through several paths (persistent map enemies,
+    // monsters that wander into a map-battle brawl, arena and tournament
+    // set-ups), so every member is rolled again when the fight is set up. That
+    // makes a goodwill value left over from an earlier encounter unreachable,
+    // whichever path built the battler.
+    const _BattleManager_setup_ETS = BattleManager.setup;
+    BattleManager.setup = function (troopId, canEscape, canLose) {
+        _BattleManager_setup_ETS.call(this, troopId, canEscape, canLose);
+        for (const enemy of $gameTroop.members()) {
+            if (enemy && enemy.rollDisposition) enemy.rollDisposition();
         }
     };
 
     Game_Enemy.prototype.disposition = function () {
         return this._disposition || 50;
+    };
+
+    // The monster the talk panel is addressing. A front-view troop holds a
+    // single enemy, but a map-battle brawl merges every monster that wandered
+    // in into ONE troop, and reading members()[0] there showed - and
+    // befriended, insulted, stoned - the monster that started the fight no
+    // matter which one the party was facing, so one raccoon's opinion looked
+    // like it belonged to every other raccoon in the fight.
+    function resolveTalkEnemy() {
+        const alive = $gameTroop.aliveMembers();
+        if (alive.length <= 1) return alive[0] || null;
+        const MBM = window.MapBattleMode;
+        if (MBM && MBM.isActive && MBM.isActive() && MBM.mapCharacterFor) {
+            const actor = BattleManager.actor() || $gameParty.battleMembers()[0];
+            const from = actor && MBM.mapCharacterFor(actor);
+            if (from) {
+                let best = null;
+                let bestDist = Infinity;
+                for (const enemy of alive) {
+                    const ch = MBM.mapCharacterFor(enemy);
+                    if (!ch) continue;
+                    const dist = Math.abs(ch.x - from.x) + Math.abs(ch.y - from.y);
+                    if (dist < bestDist) { bestDist = dist; best = enemy; }
+                }
+                if (best) return best;
+            }
+        }
+        return alive[0];
+    }
+
+    // Pinned while the panel is open (re-pinned every time it opens, in
+    // _buildTalkOptions) so what the header shows and what an option does are
+    // always the same monster. A pin from an earlier fight fails the troop
+    // membership test and is discarded.
+    Scene_Battle.prototype._talkEnemy = function () {
+        const pinned = this._talkEnemyRef;
+        if (pinned && pinned.isAlive() && $gameTroop.members().includes(pinned)) {
+            return pinned;
+        }
+        this._talkEnemyRef = resolveTalkEnemy();
+        return this._talkEnemyRef;
     };
 
     Game_Enemy.prototype.changeDisposition = function (amount) {
@@ -282,7 +342,10 @@
 
     Scene_Battle.prototype._buildTalkOptions = function () {
         const choices = getChoices();
-        const enemy   = $gameTroop.aliveMembers()[0];
+        // Opening the panel re-pins the monster being addressed, so a second
+        // Talk in the same fight can pick a different one.
+        this._talkEnemyRef = resolveTalkEnemy();
+        const enemy   = this._talkEnemy();
         if (!enemy) {
             return [
                 { label: choices[0], key: 'chat',       pct: 0    },
@@ -313,7 +376,7 @@
     };
 
     Scene_Battle.prototype.calculatePetFollowerChance = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         if (!enemy) return 0;
         // Pets/followers are easier to win over than a full party recruit:
         // disposition-based, with a flat bonus and a friendly floor.
@@ -322,7 +385,7 @@
     };
 
     Scene_Battle.prototype._buildTalkPanelHTML = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         let headerHTML = '';
         if (enemy) {
             const dispo      = enemy.disposition();
@@ -373,7 +436,7 @@
 
     Scene_Battle.prototype.calculateTalkSuccessChance = function () {
         const actor = $gameParty.battleMembers()[0];
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
 
         if (!actor || !enemy) return 0;
 
@@ -395,7 +458,7 @@
     };
 
     Scene_Battle.prototype.calculateJoinSuccessChance = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         if (!enemy) return 0;
 
         // Small percentage to recruit even under the disposition threshold
@@ -408,7 +471,7 @@
     };
 
     Scene_Battle.prototype.calculatePetSuccessChance = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         if (!enemy) return 0;
 
         const hasTalkTag = enemy.enemy().note.includes('<Talk>');
@@ -425,7 +488,7 @@
     };
 
     Scene_Battle.prototype.onTalkChat = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -491,7 +554,7 @@
     };
 
     Scene_Battle.prototype.onTalkSurrender = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -530,7 +593,7 @@
     };
 
     Scene_Battle.prototype.onTalkInsult = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -582,7 +645,7 @@
     };
 
     Scene_Battle.prototype.onThrowStone = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -608,7 +671,7 @@
     };
 
     Scene_Battle.prototype.onPet = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -740,7 +803,7 @@
     };
 
     Scene_Battle.prototype.onTalkJoinParty = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
 
         if (!enemy) {
@@ -813,24 +876,11 @@
                 }
             }
 
-            // Match the encountered enemy's overworld sprite when we can resolve
-            // the map event that started this battle; otherwise fall back to the
-            // archetype-based sprite (#142).
-            let _spriteMatched = false;
-            try {
-                const _bse = window.BSE;
-                const _eId = _bse && _bse.State && _bse.State.currentEventId;
-                if (_eId && $gameMap && $gameMap.event(_eId)) {
-                    const _ev = $gameMap.event(_eId);
-                    if (_ev._characterName) {
-                        newActor.setCharacterImage(_ev._characterName, _ev._characterIndex || 0);
-                        _spriteMatched = true;
-                    }
-                }
-            } catch (e) { /* fall through to archetype sprite */ }
-            if (!_spriteMatched) {
-                this.setActorSpriteByArchetype(newActor, archetype);
-            }
+            // Same sprite resolution as the pet/follower path: the enemy's own
+            // <Char:...> walking sprite first, then the map event that started
+            // this battle, then the archetype sprite (#142).
+            const recruitSprite = this.resolveRecruitSprite(archetype, enemy.enemy().note);
+            newActor.setCharacterImage(recruitSprite.characterName, recruitSprite.characterIndex);
 
             // Set level to median of current party
             const levels = $gameParty.members().map(m => m.level);
@@ -885,7 +935,7 @@
     // a party member (so it never battles, never dies, and can't be targeted).
     // <Talk> enemies become "followers", the rest "pets", cosmetic only.
     Scene_Battle.prototype.onTalkJoinPet = function () {
-        const enemy = $gameTroop.aliveMembers()[0];
+        const enemy = this._talkEnemy();
 
         if (!enemy) {
             this.closeTalkMenu();

@@ -33,6 +33,7 @@
     "language": "언어",
     "muteBgm": "BGM 음소거",
     "footstepsVolume": "발소리 음량",
+    "weatherVolume": "날씨 음량",
     "enemyBattlers": "적 배틀러",
     "showFps": "FPS 카운터 표시",
     "activeTheme": "적용 테마",

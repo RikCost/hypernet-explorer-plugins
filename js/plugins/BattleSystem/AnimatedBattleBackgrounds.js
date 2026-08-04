@@ -1892,7 +1892,13 @@
             typeof AudioManager.playMushBgs === 'function') {
             const bgs = AudioManager.getBgsFromChannel(4);
             if (bgs && bgs.name) {
-                const quietBgs = Object.assign({}, bgs, { volume: Math.floor((bgs.volume || 80) * 0.55) });
+                // Duck against the level the weather channel is set to play at
+                // (settingVolume / the Weather Volume option), not buffer.volume,
+                // which is the already config-scaled 0..1 gain.
+                const level = (window.WeatherAudio && window.WeatherAudio.volume)
+                    ? window.WeatherAudio.volume()
+                    : (bgs.settingVolume || 30);
+                const quietBgs = Object.assign({}, bgs, { volume: Math.floor(level * 0.55) });
                 AudioManager.playMushBgs(quietBgs, 4, false, 'Continue');
             }
         }

@@ -148,9 +148,31 @@
     return (d && typeof d === "object") ? d : null;
   }
 
+  // Places are named to the player by the "name" field of their Destinations.json
+  // entry ("GreenWitch" -> "Green Witch"); every comparison in this plugin is
+  // normalized (norm()), so a notice, a step and a board key still recognise one
+  // another whichever spelling of a place they were written with.
   function destinationNames() {
     const d = destinations();
-    return d ? Object.keys(d) : [];
+    if (!d) return [];
+    return window.WorkSystem?.destinationNames
+      ? window.WorkSystem.destinationNames() : Object.keys(d);
+  }
+
+  // A destination entry by any spelling of its name: the file key, the readable
+  // name, or that name as the current language says it (which is what a quest
+  // written in that language stored).
+  function destEntry(name) {
+    const d = destinations();
+    if (!d || !name) return null;
+    if (d[name]) return d[name];
+    const n = norm(name);
+    const spoken = window.WorkSystem?.destinationName;
+    for (const [key, entry] of Object.entries(d)) {
+      if (norm(key) === n || norm(entry?.name || key) === n) return entry;
+      if (spoken && norm(spoken(key)) === n) return entry;
+    }
+    return null;
   }
 
   function groupOfMap(mapId) {
@@ -257,8 +279,7 @@
   const ARRIVAL_TILES = 1;
 
   function destTransportMapIds(name) {
-    const d = destinations();
-    const entry = d && d[name];
+    const entry = destEntry(name);
     if (!entry) return [];
     const out = [];
     for (const key of ["train", "bus", "helicopter"]) {
@@ -534,8 +555,7 @@
   // The world-map tile of a named destination (Destinations.json `base`), used to
   // pin destination-shaped objectives on the map alongside coordinate sites.
   function destCoords(name) {
-    const d = destinations();
-    const entry = d && d[name];
+    const entry = destEntry(name);
     const b = entry && entry.base;
     if (!b || (!b.x && !b.y)) return null;
     if (b.x < 0 || b.y < 0 || b.x >= WORLD_SIZE || b.y >= WORLD_SIZE) return null;
@@ -566,7 +586,8 @@
       const dy = v.base.y - wy;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist <= NEAR_TILES && dist < bestDist) {
-        best = name;
+        // "near Green Witch", not "near GreenWitch".
+        best = v.name || name;
         bestDist = dist;
       }
     }

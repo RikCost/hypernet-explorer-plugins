@@ -5,9 +5,10 @@
  *
  * @help ForgottenGrimoire.js
  *
- * A parchment two-page reader. Pick a party member, then choose ONE spell to
- * learn from five random offers. Only spells whose MP cost is within the chosen
- * member's MAX MP are shown (a 9999 MP member can be offered 9999 MP spells).
+ * A parchment two-page reader. Five random offers are rolled ONCE when the book
+ * opens, against the whole party, and never change: picking a different reader
+ * does not reroll them. A reader can only claim an offer whose MP cost is within
+ * their MAX MP and that they do not already know; the rest are greyed out.
  *
  * The party's median Luck (PSI) raises the rare chance that a Forbidden spell
  * surfaces among the offers.
@@ -178,6 +179,12 @@
             box-shadow:0 0 8px var(--border-primary-hover-translucent-15,rgba(184,134,11,0.4));
         }
         #menu-container .grim-card.learned { border-color:#2e7d32; background:rgba(46,125,50,0.18); }
+        #menu-container .grim-card.blocked { opacity:0.45; }
+        #menu-container .grim-card.blocked.sel { opacity:0.7; }
+        #menu-container .grim-blocked { font-size:0.72em; text-transform:uppercase; letter-spacing:0.5px; font-style:italic; opacity:0.9; }
+        /* the span is always in the card so it can be rewritten in place; an
+           unblocked card must not pay for it with a blank row + flex gap */
+        #menu-container .grim-blocked:empty { display:none; }
         #menu-container .grim-name { font-weight:bold; font-size:1.02em; display:flex; justify-content:space-between; gap:8px; }
         #menu-container .grim-mp   { color:var(--accent-gold-pure,#b8860b); font-weight:bold; }
         #menu-container .grim-desc { font-size:0.82em; opacity:0.85; line-height:1.35; }
@@ -312,14 +319,23 @@
     };
 
     Scene_ForgottenGrimoire.prototype.canLearn = function (actor, s) {
-        if (!actor) return false;
-        if ((s.mpCost || 0) > actor.mmp) return false;
-        return !actor.skills().some(k => k && k.id === s.id);
+        return !this.blockedReason(actor, s);
     };
 
+    // Why this reader cannot take the spell: null when they can.
+    Scene_ForgottenGrimoire.prototype.blockedReason = function (actor, s) {
+        if (!actor || !s) return "mp";
+        if (actor.skills().some(k => k && k.id === s.id)) return "known";
+        if ((s.mpCost || 0) > actor.mmp) return "mp";
+        return null;
+    };
+
+    // The five offers belong to the book, not to the reader: they are rolled
+    // once when it opens against the whole party, so switching reader cannot
+    // reroll them. A spell out of a given reader's reach is shown greyed.
     Scene_ForgottenGrimoire.prototype.rollOffers = function () {
-        const actor = this._actor;
-        const affordable = this._pool.filter(s => this.canLearn(actor, s));
+        const members = $gameParty.members();
+        const affordable = this._pool.filter(s => members.some(a => this.canLearn(a, s)));
         const forb = affordable.filter(s => s.meta && s.meta.Forbidden);
         const norm = affordable.filter(s => !(s.meta && s.meta.Forbidden));
         const chance = forbiddenChance();
@@ -347,13 +363,35 @@
         if (this._spellIdx >= out.length) this._spellIdx = 0;
     };
 
+    Scene_ForgottenGrimoire.prototype.blockedLabel = function (s) {
+        const reason = this.blockedReason(this._actor, s);
+        if (!reason) return "";
+        return T(reason === "known" ? 'Grimoire.ui.alreadyKnown' : 'Grimoire.ui.beyondReach');
+    };
+
+    // Changing reader leaves the five offers exactly where they are: only which
+    // of them that reader can bear changes, so patch the live cards instead of
+    // rebuilding the page under the cursor.
     Scene_ForgottenGrimoire.prototype.selectActor = function (i) {
         const members = $gameParty.members();
         if (i < 0 || i >= members.length) return;
         this._actorIdx = i;
         this._actor = members[i];
-        this.rollOffers();
-        this.redraw();
+        this._focus = "party";
+        this.syncSelection();
+        this.syncOffers();
+    };
+
+    Scene_ForgottenGrimoire.prototype.syncOffers = function () {
+        if (!this._dom) return;
+        this._dom.querySelectorAll(".grim-card").forEach((el, i) => {
+            const s = this._offered[i];
+            if (!s) return;
+            const label = this.blockedLabel(s);
+            el.classList.toggle("blocked", !!label);
+            const why = el.querySelector(".grim-blocked");
+            if (why) why.textContent = label;
+        });
     };
 
     // Cursor moves only change which card wears .sel, so paint that straight
@@ -372,6 +410,7 @@
     Scene_ForgottenGrimoire.prototype.chooseSpell = function (i) {
         const s = this._offered[i];
         if (!s || this._busy) { SoundManager.playBuzzer(); return; }
+        if (this.blockedReason(this._actor, s)) { SoundManager.playBuzzer(); return; }
         this._busy = true;
         this._actor.learnSkill(s.id);
         SoundManager.playUseSkill();
@@ -430,16 +469,19 @@
         // right page: offers
         let cardsHTML = "";
         if (!this._offered.length) {
-            cardsHTML = `<div class="grim-empty">${T('Grimoire.noSpells', { reader: this._actor ? this._actor.name() : T('Grimoire.thisReader') })}</div>`;
+            cardsHTML = `<div class="grim-empty">${T('Grimoire.noSpells')}</div>`;
         } else {
             this._offered.forEach((s, idx) => {
                 const sel = (this._focus === "spells" && idx === this._spellIdx) ? "sel" : "";
                 const learned = (this._learnedIdx === idx) ? "learned" : "";
+                const blocked = this.blockedReason(this._actor, s) ? "blocked" : "";
                 const forb = (s.meta && s.meta.Forbidden) ? `<span class="grim-forbidden">${T('Grimoire.ui.forbidden')}</span>` : "";
                 const desc = (s.description || "").replace(/\n/g, " ");
-                cardsHTML += `<div class="grim-card focusable ${sel} ${learned}" onclick="SceneManager._scene.chooseSpell(${idx})">
+                // The reason line is always in the DOM (empty when the reader
+                // can take the spell) so syncOffers can rewrite it in place.
+                cardsHTML += `<div class="grim-card focusable ${sel} ${learned} ${blocked}" onclick="SceneManager._scene.chooseSpell(${idx})">
                     <div class="grim-name"><span>${s.name}</span><span class="grim-mp">${s.mpCost} MP</span></div>
-                    ${forb}
+                    ${forb}<span class="grim-blocked">${this.blockedLabel(s)}</span>
                     <div class="grim-desc">${desc}</div>
                 </div>`;
             });

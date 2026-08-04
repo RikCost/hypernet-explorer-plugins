@@ -106,6 +106,48 @@
         return new Date(gameDate.year, gameDate.month, gameDate.day, gameDate.hours, gameDate.minutes, 0);
     }
 
+    // --- Template token filling ---------------------------------------------
+    // Every {token} in a News.json template is picked from a bank stored on the
+    // same event, but the banks are named freely: {festival} comes from
+    // "festivals", {festival_type} from "festival_types", {celebrity} from
+    // "celebrities"... so the token is matched against the singular and plural
+    // spellings of each key instead of being listed by hand. Adding a bank to
+    // News.json then needs no code change, which is how {festival_type},
+    // {company_type}, {illness} and {art_movement} ended up printed raw.
+    function bankForToken(event, token, lang) {
+        const candidates = [token, token + 's', token + 'es'];
+        if (token.endsWith('y')) candidates.push(token.slice(0, -1) + 'ies');
+        for (const key of candidates) {
+            const bank = event[key];
+            if (!bank || typeof bank !== 'object') continue;
+            const list = Array.isArray(bank[lang]) ? bank[lang] : bank.en;
+            if (Array.isArray(list) && list.length > 0) return list;
+        }
+        return null;
+    }
+
+    function fillTemplateTokens(text, event, lang) {
+        if (!text || text.indexOf('{') === -1) return text;
+        return text.replace(/{([a-z][a-z_]*)}/gi, (match, token) => {
+            const bank = bankForToken(event, token, lang);
+            if (!bank) return match;
+            return bank[Math.floor(Math.random() * bank.length)];
+        });
+    }
+
+    // Nothing reaches the newspaper with an unresolved {token} in it: a template
+    // naming a bank its event does not carry drops the token instead of
+    // printing it, and the same pass heals headlines written by older saves.
+    function stripUnresolvedTokens(text) {
+        if (typeof text !== 'string' || text.indexOf('{') === -1) return text;
+        return text.replace(/{[a-z][a-z_]*}/gi, '')
+            .replace(/\s+([,.;:!?'’])/g, '$1')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    }
+
+    window.NewsSystemUtils.stripUnresolvedTokens = stripUnresolvedTokens;
+
     // European locations with Italian Translations
     // A randomised pool, so a language keeps its own list whole (see T.pool).
     window.NewsSystemUtils.LOCATIONS = {
@@ -119,11 +161,15 @@
     // events and properties live in actual in-game towns instead of hardcoded
     // real-world capitals. The hardcoded LOCATIONS lists remain only as a
     // fallback and for matching real-world RealNews headlines (LocationMatcher).
+    // A headline and a property listing both name the place the way the player
+    // sees it, so the entries come back as the readable "name" of each
+    // destination rather than its file key ("GreenWitch" -> "Green Witch").
     window.NewsSystemUtils.getLocations = function () {
         const dest = window.WorkSystem && window.WorkSystem.Destinations;
         if (dest) {
-            const keys = Object.keys(dest);
-            if (keys.length > 0) return keys;
+            const names = window.WorkSystem.destinationNames
+                ? window.WorkSystem.destinationNames() : Object.keys(dest);
+            if (names.length > 0) return names;
         }
         return window.NewsSystemUtils.isItalian() ?
             window.NewsSystemUtils.LOCATIONS.it :
@@ -618,52 +664,11 @@
 
             text = text.replace(/{location}/g, location);
 
-            // Handle all the specific replacements
-            if (text.includes('{festival}') && event.festivals) {
-                const festival = event.festivals[lang][Math.floor(Math.random() * event.festivals[lang].length)];
-                text = text.replace(/{festival}/g, festival);
-            }
+            // Word banks carried by the event itself ({festival}, {disaster},
+            // {festival_type}, {illness}, ...), resolved by name.
+            text = fillTemplateTokens(text, event, lang);
 
-            if (text.includes('{discovery}') && event.discoveries) {
-                const discovery = event.discoveries[lang][Math.floor(Math.random() * event.discoveries[lang].length)];
-                text = text.replace(/{discovery}/g, discovery);
-            }
-
-            if (text.includes('{disaster}') && event.disasters) {
-                const disaster = event.disasters[lang][Math.floor(Math.random() * event.disasters[lang].length)];
-                text = text.replace(/{disaster}/g, disaster);
-            }
-
-            if (text.includes('{celebrity}') && event.celebrities) {
-                const celebrity = event.celebrities[lang][Math.floor(Math.random() * event.celebrities[lang].length)];
-                text = text.replace(/{celebrity}/g, celebrity);
-            }
-
-            if (text.includes('{phenomenon}') && event.phenomenon) {
-                const phenomenon = event.phenomenon[lang][Math.floor(Math.random() * event.phenomenon[lang].length)];
-                text = text.replace(/{phenomenon}/g, phenomenon);
-            }
-
-            if (text.includes('{color}') && event.colors) {
-                const color = event.colors[lang][Math.floor(Math.random() * event.colors[lang].length)];
-                text = text.replace(/{color}/g, color);
-            }
-
-            if (text.includes('{food}') && event.foods) {
-                const food = event.foods[lang][Math.floor(Math.random() * event.foods[lang].length)];
-                text = text.replace(/{food}/g, food);
-            }
-
-            if (text.includes('{action}') && event.actions) {
-                const action = event.actions[lang][Math.floor(Math.random() * event.actions[lang].length)];
-                text = text.replace(/{action}/g, action);
-            }
-
-            if (text.includes('{animal}') && event.animals) {
-                const animal = event.animals[lang][Math.floor(Math.random() * event.animals[lang].length)];
-                text = text.replace(/{animal}/g, animal);
-            }
-
+            // Computed tokens, which have no bank to draw from.
             if (text.includes('{amount}')) {
                 const amount = Math.floor(Math.random() * 450) + 50;
                 text = text.replace(/{amount}/g, amount);
@@ -687,7 +692,12 @@
                 text = text.replace(/{rank}/g, '#' + rank);
             }
 
-            return text;
+            const orphans = text.match(/{[a-z][a-z_]*}/gi);
+            if (orphans) {
+                console.warn('NewsManager: no word bank on', eventType, 'for', orphans.join(', '));
+            }
+
+            return stripUnresolvedTokens(text);
         }
 
         applyNewsEffects(news, duration) {
@@ -797,6 +807,13 @@
                     this.initialize();
                 } else {
                     this.newsHistory = data.newsHistory || [];
+                    // Saves written before the token filler was data-driven hold
+                    // headlines with a raw {token} in them; clean them on read.
+                    this.newsHistory.forEach(news => {
+                        if (!news) return;
+                        news.text = stripUnresolvedTokens(news.text);
+                        if (news.fullText) news.fullText = stripUnresolvedTokens(news.fullText);
+                    });
                     this.activeEffects = data.activeEffects || [];
                     const gameDate = getGameDateFromVariable();
                     this.currentHour = data.currentHour !== undefined ? data.currentHour : gameDate.hours;

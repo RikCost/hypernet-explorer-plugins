@@ -127,6 +127,29 @@
         return (data && data.name) ? data.name : tarotKeys[arcana];
     };
 
+    // The widest name the deck can print, in virtual pixels. The layout list
+    // cuts its plate to this, so a long arcana (THE HIGH PRIESTESS in English,
+    // and longer again once translated) is printed whole instead of being
+    // guillotined a letter short of the reversed marker. Measured once per
+    // language: the deck does not change inside a reading.
+    let _widestName = -1;
+    let _widestNameLang = null;
+    function widestCardName(bmp) {
+        const H = HUD();
+        if (!H || !bmp) return 0;
+        const lang = (window.ConfigManager && ConfigManager.language) || 'en';
+        if (_widestName >= 0 && _widestNameLang === lang) return _widestName;
+        bmp.fontFace = H.FONT;
+        bmp.fontSize = 8;
+        let widest = 0;
+        for (let i = 0; i < tarotKeys.length; i++) {
+            widest = Math.max(widest, bmp.measureTextWidth(cardName(i).toUpperCase()));
+        }
+        _widestNameLang = lang;
+        _widestName = Math.ceil(widest);
+        return _widestName;
+    }
+
     const cardMeaning = (arcana, reversed) => {
         const pool = _tarotPool(_tarotCardData(tarotKeys[arcana]), reversed);
         return pool[Math.floor(Math.random() * pool.length)];
@@ -1799,8 +1822,25 @@
             const spread = this._spread;
             this.drawTitlePlate(bmp, spread.name, this._phase === 'done' ? 'READING COMPLETE' : uiText('title'));
 
-            // Left column: the positions and what has been turned.
-            const lw = Math.min(126, Math.floor(w * 0.33));
+            // Left column: the positions and what has been turned. The plate is
+            // cut to the longest name the deck can print, never narrower than it
+            // used to be and never past about half the width, so THE HIGH PRIESTESS
+            // reads whole instead of stopping a letter short of the marker. Type
+            // stays on the 8px grid wherever the plate can be made wide enough;
+            // only a screen too narrow for the language drops it a notch.
+            const nameX = 24;
+            const rGutter = 16;
+            const capW = Math.floor(w * 0.52);
+            const widest = widestCardName(bmp);
+            let nameSize = 8;
+            let need = nameX + widest + rGutter + 4;
+            if (need > capW) {
+                // A screen too narrow for this language's longest name at full
+                // size: one notch down buys the whole name back.
+                nameSize = 6;
+                need = nameX + Math.ceil(widest * nameSize / 8) + rGutter + 2;
+            }
+            const lw = Math.max(Math.min(126, Math.floor(w * 0.33)), Math.min(capW, need));
             const ly = 22;
             // Rows shrink so that even a ten card working stops clear of the
             // meaning box across the bottom, whose lid is the one fixed line
@@ -1821,8 +1861,12 @@
                 // Wide enough for a two digit position: the tenth card is the
                 // one that would have run into the name.
                 hudText(bmp, (i + 1) + '.', 9, y, 14, 'left', on ? GOLD_HI : GOLD_LO, 8);
-                hudText(bmp, shown, 24, y, lw - 39, 'left',
-                    card.revealed ? (on ? INK : DIMINK) : FAINT, 8);
+                // The name stops clear of the reversed marker's gutter, so a
+                // name that still has to be clipped can never read as if it
+                // ended in an R.
+                hudText(bmp, shown, nameX, y + Math.floor((8 - nameSize) / 2),
+                    lw - nameX - rGutter, 'left',
+                    card.revealed ? (on ? INK : DIMINK) : FAINT, nameSize);
                 if (card.revealed && card.reversed) {
                     hudText(bmp, 'R', 8, y, lw - 15, 'right', RED, 8);
                 }

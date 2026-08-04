@@ -2828,5 +2828,25 @@
     "val": "Clinica",
     "excluded": "",
     "name": ""
+  },
+  "Green Witch": {
+    "val": "Green Witch",
+    "excluded": "",
+    "name": ""
+  },
+  "Green Witch Space Center": {
+    "val": "Centro Spaziale Green Witch",
+    "excluded": "",
+    "name": ""
+  },
+  "Super Sacred Shrine": {
+    "val": "Santuario Super Sacro",
+    "excluded": "",
+    "name": ""
+  },
+  "Dark Tower": {
+    "val": "Torre Oscura",
+    "excluded": "",
+    "name": ""
   }
 }

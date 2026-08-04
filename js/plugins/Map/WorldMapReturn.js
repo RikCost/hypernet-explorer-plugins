@@ -1056,6 +1056,9 @@
         this._procGenData.currentRoadDirection = null;
         this._procGenData.lastLoadedProcMapX   = null;
         this._procGenData.lastLoadedProcMapY   = null;
+        // The square a descent was started from goes with it: the party is
+        // leaving the procedural map entirely, so there is nothing to surface to.
+        this._procGenData._surfaceSnapshot     = null;
         Cache.clear();
         $gameVariables.setValue(110, 0);
         $gameVariables.setValue(111, 0);
@@ -1105,7 +1108,14 @@
             goDownEventX:           pg.goDownEventX,
             goDownEventY:           pg.goDownEventY,
         };
-        if (opts && opts.terrain) snap.generatedMapData = pg.generatedMapData;
+        if (opts && opts.terrain) {
+            snap.generatedMapData = pg.generatedMapData;
+            // The prefab pass's "this square already has its prefabs" mark
+            // belongs to that array, so it travels with it. Without it, a square
+            // handed back after a save/reload would be prefabbed a second time,
+            // on top of the prefabs its tiles already carry.
+            snap.prefabbedSig = pg._prefabbedSig;
+        }
         return snap;
     }
 
@@ -1176,6 +1186,7 @@
         // deterministic rebuild from the square's canonical seed.
         if (snap.generatedMapData) {
             pg.generatedMapData = snap.generatedMapData;
+            pg._prefabbedSig    = snap.prefabbedSig;
         } else if (!pg.generatedMapData) {
             regenerateProcSurface(pg, snap.currentBiome, pg.currentRoadDirection, originX, originY);
         }
@@ -1187,6 +1198,85 @@
         $gameVariables.setValue(110, 1);
         $gameVariables.setValue(111, 1);
         return !!pg.generatedMapData;
+    }
+
+    // Descending into a layer of the same square -- a cave through goDown or
+    // switchLayer, a dungeon through a DoorDungeon tile -- overwrites the
+    // surface's tile array in place, and surfacing used to rebuild it from the
+    // seed alone. That rebuild was NOT the same map, twice over:
+    //
+    //   - the adjacency the square was first generated with is unreachable from
+    //     inside the submap (goUp only ever looked for it on the world map, which
+    //     is never the map being stood on when surfacing), and the road direction
+    //     was dropped outright, so the tiles themselves came back different;
+    //   - and no prefab was put back on them at all. Prefabs are stamped by
+    //     ProceduralMapPrefabs' DataManager.loadMapData hook, which the proc-map
+    //     loader only reaches when the world coordinates have changed since the
+    //     last load -- and surfacing lands on the same square it descended from.
+    //     So the mountain a dungeon door was cut into was simply gone, door and
+    //     all, the moment the party climbed back out of it.
+    //
+    // The square is kept instead, exactly as it was, tiles and prefabs included,
+    // and handed straight back.
+    function stashSurfaceSnapshot(pg) {
+        if (!pg) return;
+        pg._surfaceSnapshot = snapshotProcSurface({ terrain: true });
+    }
+
+    // Put back the square a descent started from. Only a snapshot of the biome
+    // AND the world square actually being surfaced to is accepted, so a stale one
+    // -- a descent the party never climbed out of because they died and respawned
+    // somewhere else, say -- is dropped rather than pasted over the square they
+    // are really standing on.
+    function popSurfaceSnapshot(pg, biomeName) {
+        const snap = pg && pg._surfaceSnapshot;
+        if (!snap) return false;
+        pg._surfaceSnapshot = null;
+        if (snap.currentBiome !== biomeName) return false;
+        if (snap.originX !== pg.originX || snap.originY !== pg.originY) return false;
+        return restoreProcSurface(snap);
+    }
+
+    // Fallback for a surfacing with no snapshot to put back (a save made before
+    // descents kept one). Rebuild the square from its canonical seed, reading
+    // adjacency from the coordinate cache when the world map is not the map being
+    // stood on -- surfacing out of a submap, it never is -- and keeping the road
+    // direction, which the old rebuild dropped and with it the square's road.
+    // Clearing lastLoadedProcMap* is what lets the prefab pass see the rebuilt
+    // array: without it the proc-map loader short-circuits on the unchanged world
+    // coordinates and the square surfaces bare.
+    function rebuildSurfaceFromSeed(pg, biomeName, biome) {
+        const seed  = procMapSeed(pg.originX, pg.originY, (pg.biomeLayerStack || []).length);
+        const cache = pg.biomeCoordinateCache;
+        const hasCache = cache && Object.keys(cache).length > 0;
+
+        let adjacentBiomes = null, diagonalBiomes = null, cacheInfo = null;
+        if ($gameMap.mapId() === WORLD_MAP_ID) {
+            adjacentBiomes = getAdjacentBiomesOnWorldMap(pg.originX, pg.originY);
+        } else if (hasCache) {
+            adjacentBiomes = getAdjacentBiomesFromCache(pg.originX, pg.originY, cache);
+        }
+        if (adjacentBiomes) {
+            adjacentBiomes = {
+                north: normalizeBiomeForEdge(adjacentBiomes.north),
+                south: normalizeBiomeForEdge(adjacentBiomes.south),
+                east:  normalizeBiomeForEdge(adjacentBiomes.east),
+                west:  normalizeBiomeForEdge(adjacentBiomes.west),
+            };
+        }
+        if (hasCache) {
+            cacheInfo      = checkAdjacentMapBiomesFromCache(pg.originX, pg.originY, cache);
+            diagonalBiomes = checkDiagonalMapBiomesFromCache(pg.originX, pg.originY, cache);
+        }
+
+        pg.displayAsBeach  = shouldDisplayAsBeach(biomeName, adjacentBiomes, diagonalBiomes);
+        pg.displayAsIsland = shouldDisplayAsIsland ? shouldDisplayAsIsland(biomeName, adjacentBiomes) : false;
+        pg.generatedMapData = generateProceduralTerrain(
+            biome, seed, pg.currentRoadDirection || null, adjacentBiomes, cacheInfo,
+            { x: pg.originX, y: pg.originY }, cache
+        );
+        pg.lastLoadedProcMapX = null;
+        pg.lastLoadedProcMapY = null;
     }
 
     // ============================================================================
@@ -1201,7 +1291,13 @@
             $gameSystem._procGenData.generatedMapData) {
             const currentWorldX = $gameVariables.value(VAR_WORLD_X);
             const currentWorldY = $gameVariables.value(VAR_WORLD_Y);
-            if ($gameSystem._procGenData.lastLoadedProcMapX !== currentWorldX ||
+            // The unchanged-coordinates short-circuit keeps the map already in
+            // $dataMap. When there is none -- a save loaded on the procedural map
+            // boots with $dataMap null, and the coordinates it recorded are of
+            // course its own -- there is nothing to keep, and skipping the load
+            // leaves the scene waiting on a map that never arrives.
+            if (!$dataMap || !$dataMap.data ||
+                $gameSystem._procGenData.lastLoadedProcMapX !== currentWorldX ||
                 $gameSystem._procGenData.lastLoadedProcMapY !== currentWorldY) {
                 _DataManager_loadMapData.call(this, mapId);
                 if ($dataMap) {
@@ -2462,6 +2558,10 @@
             logWarn(`GoDown: Biome "${procGenData.currentBiome}" has no lower layer`); return;
         }
 
+        // Keep the surface square before the cave overwrites it, so climbing back
+        // out puts back the very tiles and prefabs the party left behind.
+        stashSurfaceSnapshot(procGenData);
+
         procGenData.biomeLayerStack.push(procGenData.currentBiome);
         let lowerBiomeName = currentBiome.lowerLayer;
         if (procGenData.displayAsBeach) lowerBiomeName = 'CaveFlooded';
@@ -2529,6 +2629,12 @@
         if (!lowerBiome) {
             logWarn(`DoorDungeon: Dungeon biome "${lowerBiomeName}" not found`); return;
         }
+
+        // Keep the surface square before the dungeon overwrites it. A dungeon door
+        // is very often a tile of a prefab (the mountain, the ruin, the mausoleum
+        // it was cut into), and re-rolling the surface on the way out is what used
+        // to take the whole prefab -- door included -- away with it.
+        stashSurfaceSnapshot(procGenData);
 
         // Return the player to the door on "Go to the surface".
         procGenData.goDownEventX = $gamePlayer.x;
@@ -2690,6 +2796,11 @@
         const previousBiome     = getBiomeByName(previousBiomeName);
         if (!previousBiome) { logWarn(`GoUp: Previous biome "${previousBiomeName}" not found`); return; }
 
+        // The door the party came down by, read BEFORE the square is put back:
+        // restoring a snapshot restores its stored entrance coordinates too, and
+        // those predate this descent.
+        const goDownX = procGenData.goDownEventX || 64, goDownY = procGenData.goDownEventY || 64;
+
         // Surfacing ends any door-dungeon session so the surface border resumes
         // normal biome-edge travel.
         if (procGenData.biomeLayerStack.length === 0) procGenData._dungeonSession = null;
@@ -2699,35 +2810,17 @@
         procGenData.biomeDayTemperature   = previousBiome.dayTemperature   || 20;
         procGenData.biomeNightTemperature = previousBiome.nightTemperature || 10;
 
-        // Popping back to depth 0 reproduces the surface seed exactly, so
-        // surfacing rebuilds the map the player descended from.
-        const seed = procMapSeed(procGenData.originX, procGenData.originY, procGenData.biomeLayerStack.length);
-
-        let adjacentBiomes = null, diagonalBiomes = null, cacheInfo = null;
-        if ($gameMap.mapId() === WORLD_MAP_ID) {
-            adjacentBiomes = getAdjacentBiomesOnWorldMap(procGenData.originX, procGenData.originY);
-            adjacentBiomes = {
-                north: normalizeBiomeForEdge(adjacentBiomes.north),
-                south: normalizeBiomeForEdge(adjacentBiomes.south),
-                east:  normalizeBiomeForEdge(adjacentBiomes.east),
-                west:  normalizeBiomeForEdge(adjacentBiomes.west),
-            };
-            if (procGenData.biomeCoordinateCache && Object.keys(procGenData.biomeCoordinateCache).length > 0) {
-                cacheInfo      = checkAdjacentMapBiomesFromCache(procGenData.originX, procGenData.originY, procGenData.biomeCoordinateCache);
-                diagonalBiomes = checkDiagonalMapBiomesFromCache(procGenData.originX, procGenData.originY, procGenData.biomeCoordinateCache);
-            }
+        // The square the descent was started from, exactly as it was left. Only
+        // when there is none (a save from before descents kept one) is it rebuilt
+        // from its canonical seed, which reproduces the layout but not any prefab
+        // that was standing on it.
+        if (!popSurfaceSnapshot(procGenData, previousBiomeName)) {
+            rebuildSurfaceFromSeed(procGenData, previousBiomeName, previousBiome);
         }
-
-        procGenData.displayAsBeach  = shouldDisplayAsBeach(previousBiomeName, adjacentBiomes, diagonalBiomes);
-        procGenData.displayAsIsland = shouldDisplayAsIsland ? shouldDisplayAsIsland(previousBiomeName, adjacentBiomes) : false;
-
-        const worldCoords = { x: procGenData.originX, y: procGenData.originY };
-        procGenData.generatedMapData = generateProceduralTerrain(previousBiome, seed, null, adjacentBiomes, cacheInfo, worldCoords, procGenData.biomeCoordinateCache);
 
         $gameScreen.clearWeather();
         $gameScreen.startFadeOut(10);
         if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
-        const goDownX = procGenData.goDownEventX || 64, goDownY = procGenData.goDownEventY || 64;
         $gamePlayer.reserveTransfer(procMapId, goDownX, goDownY, $gamePlayer.direction(), 0);
 
         setTimeout(() => updateEventVisibility(), 100);
@@ -2754,26 +2847,11 @@
             procGenData.biomeDayTemperature   = previousBiome.dayTemperature   || 20;
             procGenData.biomeNightTemperature = previousBiome.nightTemperature || 10;
 
-            const seed = procMapSeed(procGenData.originX, procGenData.originY, procGenData.biomeLayerStack.length);
-            let adjacentBiomes = null, diagonalBiomes = null, cacheInfo = null;
-            if ($gameMap.mapId() === WORLD_MAP_ID) {
-                adjacentBiomes = getAdjacentBiomesOnWorldMap(procGenData.originX, procGenData.originY);
-                adjacentBiomes = {
-                    north: normalizeBiomeForEdge(adjacentBiomes.north),
-                    south: normalizeBiomeForEdge(adjacentBiomes.south),
-                    east:  normalizeBiomeForEdge(adjacentBiomes.east),
-                    west:  normalizeBiomeForEdge(adjacentBiomes.west),
-                };
-                if (procGenData.biomeCoordinateCache && Object.keys(procGenData.biomeCoordinateCache).length > 0) {
-                    cacheInfo      = checkAdjacentMapBiomesFromCache(procGenData.originX, procGenData.originY, procGenData.biomeCoordinateCache);
-                    diagonalBiomes = checkDiagonalMapBiomesFromCache(procGenData.originX, procGenData.originY, procGenData.biomeCoordinateCache);
-                }
+            // Same rule as goUp: the square that was descended from is handed
+            // back whole, and only rebuilt from the seed when none was kept.
+            if (!popSurfaceSnapshot(procGenData, previousBiomeName)) {
+                rebuildSurfaceFromSeed(procGenData, previousBiomeName, previousBiome);
             }
-            procGenData.displayAsBeach  = shouldDisplayAsBeach(previousBiomeName, adjacentBiomes, diagonalBiomes);
-            procGenData.displayAsIsland = shouldDisplayAsIsland ? shouldDisplayAsIsland(previousBiomeName, adjacentBiomes) : false;
-
-            const worldCoords = { x: procGenData.originX, y: procGenData.originY };
-            procGenData.generatedMapData = generateProceduralTerrain(previousBiome, seed, null, adjacentBiomes, cacheInfo, worldCoords, procGenData.biomeCoordinateCache);
 
             $gameScreen.clearWeather(); $gameScreen.startFadeOut(10);
             if (window.SplitScreenManager && window.SplitScreenManager.active) window.SplitScreenManager.forceP2Teleport = true;
@@ -2793,6 +2871,9 @@
                 const item = $dataItems[142];
                 if (!$gameParty.hasItem(item)) { $gameMessage.add(T('WorldMapReturn.needDivingSuit')); return; }
             }
+
+            // Keep the surface square before the lower layer overwrites it.
+            stashSurfaceSnapshot(procGenData);
 
             procGenData.biomeLayerStack.push(procGenData.currentBiome);
             let lowerBiomeName = currentBiome.lowerLayer;

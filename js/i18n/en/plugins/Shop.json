@@ -78,6 +78,7 @@
   "asset": "Asset",
   "equipSlot": "Equip",
   "ownedStock": "Owned: {owned} Stock: {stock}",
+  "wornCount": "(worn: {count})",
   "elementN": "Element {id}",
   "stateN": "State {id}",
   "paramN": "Param {id}",

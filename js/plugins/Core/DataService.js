@@ -174,6 +174,47 @@
                     Object.keys(rebuilt).length + " entries).");
     }
 
+    // ── Destinations.json → display names ───────────────────────────────────
+    // Every entry in js/db/WorkSystem/Destinations.json carries a "name" field:
+    // the readable form of the place ("GreenWitch" -> "Green Witch"). The object
+    // key stays the identity used by every lookup, save record and event name
+    // ("Teleport - <key>"), so anything shown to the player resolves the label
+    // through here instead of printing the key. Unknown strings pass through, so
+    // a place name saved before this field existed still reads correctly, and
+    // the result goes through the localization layer like any other data string.
+    (function () {
+        const destNorm = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+        let destIndex = null;
+
+        function buildIndex() {
+            if (destIndex) return destIndex;
+            destIndex = {};
+            const dest = (window.WorkSystem && window.WorkSystem.Destinations) || {};
+            for (const [key, data] of Object.entries(dest)) {
+                const label = (data && typeof data.name === 'string' && data.name.trim()) || key;
+                destIndex[destNorm(key)] = label;
+                destIndex[destNorm(label)] = label;
+            }
+            return destIndex;
+        }
+
+        window.WorkSystem = window.WorkSystem || {};
+
+        // Readable name of a destination, from its key or from any spelling of it.
+        window.WorkSystem.destinationName = function (key) {
+            const raw = String(key == null ? '' : key);
+            if (!raw) return raw;
+            const label = buildIndex()[destNorm(raw)] || raw;
+            return (typeof window.translateText === 'function') ? window.translateText(label) : label;
+        };
+
+        // Every destination label, in the order the file declares them.
+        window.WorkSystem.destinationNames = function () {
+            const dest = (window.WorkSystem && window.WorkSystem.Destinations) || {};
+            return Object.keys(dest).map(window.WorkSystem.destinationName);
+        };
+    })();
+
     // ── i18n: key-based resolver for plugin strings ─────────────────────────
     // Plugin UI and dialogue strings live in js/i18n/<lang>/plugins/<Name>.json
     // and are addressed by key ("ErisTrial.verdict.guilty"). English is always

@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc Scratching Card System v3.0.0 - a real 3D scratch card you can turn in your hands and scratch panel by panel, in any order.
+ * @plugindesc Scratching Card System v3.1.0 - a PSX-styled 3D rack of tickets you pick from, and a real 3D scratch card you turn in your hands.
  * @author Omni-Lex
  * @help
  * ============================================================================
@@ -12,6 +12,14 @@
  * player scratches them in whatever order they like, and the card itself can
  * be turned over in the light while they do it.
  *
+ * The counter it is bought at is 3D as well: the four printed products stand
+ * on a carousel and the one under the cursor turns on the spot, front to back,
+ * so the player sees the ticket before paying for it. Both screens render
+ * through the shared PSXShader (vertex snapping, banded colour, ordered dither
+ * and a low-res upscale) with a PSXHud art deco overlay on the rack; the rack
+ * takes the harsher dose, the ticket a lighter one because its face carries
+ * type that has to stay legible.
+ *
  * Controls
  *   Mouse       drag the card body or the background to turn it, rub across a
  *               panel to scratch it, click a panel to scratch it in one go,
@@ -20,6 +28,9 @@
  *               is left, SHIFT recentres the card.
  *   Gamepad     d-pad / left stick choose, OK scratches, right stick turns the
  *               card, L1-R1 (or the analog triggers) zoom.
+ *
+ * On the rack: left/right (or the mouse) turn the carousel, OK buys the ticket
+ * in front, ESC leaves the counter.
  *
  * Three matching symbols pay out. Gold conversion is 1 euro = 100 gold.
  *
@@ -88,6 +99,11 @@
 
     const GOLD_PER_EURO = 100;
 
+    // Bankroll dealt when the card is opened from the title screen's minigame
+    // menu: 100 euros, enough for ten cards, re-dealt on every entry so a free
+    // -play session always starts from the same stake.
+    const FREEPLAY_GOLD = 100 * GOLD_PER_EURO;
+
     //=========================================================================
     // Small shared helpers
     //=========================================================================
@@ -124,6 +140,29 @@
     // Symbol glyphs are dingbats the pixel fonts do not carry; the browser
     // falls back per glyph as long as a symbol face is in the stack.
     const SYMBOL_FONT = '"Segoe UI Symbol", "Arial Unicode MS", "DejaVu Sans", sans-serif';
+
+    //=========================================================================
+    // The retro dose. Both screens are PlayStation-styled, but not equally: the
+    // rack is scenery and can take the full wobble, while the ticket in the
+    // player's hands carries printed type and symbols that have to survive it.
+    // Wrap BOTH the model building (the tunables are baked into the material at
+    // patch time) and the render call (downscale is read live) in these.
+    //=========================================================================
+    function rackPSX(fn) {
+        if (!window.PSXShader || !window.PSXShader.withScale) return fn();
+        return window.PSXShader.withScale(
+            { vertexSnap: 0.5, colorLevels: 0.5, dither: 2.0, downscale: 0.68 },
+            fn
+        );
+    }
+
+    function cardPSX(fn) {
+        if (!window.PSXShader || !window.PSXShader.withScale) return fn();
+        return window.PSXShader.withScale(
+            { vertexSnap: 0.8, colorLevels: 0.75, dither: 1.5, downscale: 0.85 },
+            fn
+        );
+    }
 
     // --- Theme helpers: pull live colours from the active CSS theme so the
     //     HUD matches whatever vars.css / themes preset is currently injected.
@@ -277,6 +316,251 @@
     const faceLen = (len) => len / CARD.w * CARD.faceW;
 
     //=========================================================================
+    // The print job. These draw in FACE SPACE (CARD.faceW x CARD.faceH), so the
+    // ticket in the player's hands and the sealed products standing on the rack
+    // are the same printing, pulled at two different sizes: a caller working at
+    // another resolution scales the context and draws in these units.
+    //=========================================================================
+
+    // Paper stock, the guilloche rosette, the tooth of the stock and the two
+    // frames every printed ticket wears.
+    function drawTicketPaper(ctx, style) {
+        const w = CARD.faceW;
+        const h = CARD.faceH;
+        ctx.fillStyle = style.paper;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.globalAlpha = 0.16;
+        ctx.strokeStyle = style.accent;
+        ctx.lineWidth = 1;
+        for (let ring = 0; ring < 26; ring++) {
+            ctx.beginPath();
+            const rr = 40 + ring * 13;
+            for (let a = 0; a <= 96; a++) {
+                const t = (a / 96) * Math.PI * 2;
+                const wob = 1 + 0.09 * Math.sin(t * 7 + ring * 0.6);
+                const x = w / 2 + Math.cos(t) * rr * wob;
+                const y = h / 2 + Math.sin(t) * rr * wob * 0.62;
+                if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.06;
+        for (let i = 0; i < 2600; i++) {
+            ctx.fillStyle = i % 2 ? '#000000' : '#ffffff';
+            ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
+        }
+        ctx.restore();
+
+        ctx.strokeStyle = style.accentDark;
+        ctx.lineWidth = 8;
+        ctx.strokeRect(10, 10, w - 20, h - 20);
+        ctx.strokeStyle = style.accent;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(24, 24, w - 48, h - 48);
+    }
+
+    // Marquee, the rule of the game, the stake and the top prize.
+    function drawTicketHeader(ctx, style) {
+        const w = CARD.faceW;
+        const face = fontFace();
+        const title = T('ScratchingCard.title.' + style.titleKey);
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = style.accentDark;
+        ctx.font = 'bold 62px ' + face;
+        ctx.fillText(title, w / 2 + 3, 78 + 3);
+        ctx.fillStyle = style.accent;
+        ctx.fillText(title, w / 2, 78);
+
+        ctx.font = '26px ' + face;
+        ctx.fillStyle = style.ink;
+        ctx.globalAlpha = 0.85;
+        ctx.fillText(T('ScratchingCard.matchThree'), w / 2, 128);
+        ctx.globalAlpha = 1;
+
+        ctx.font = 'bold 24px ' + face;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = style.ink;
+        ctx.fillText(T('ScratchingCard.stake', { cost: euroText(CARD_COST_GOLD / GOLD_PER_EURO) }), 48, 78);
+        ctx.textAlign = 'right';
+        ctx.fillText(T('ScratchingCard.topPrize', { amount: euroText(style.maxWin) }), w - 48, 78);
+    }
+
+    // Serial on the left, a printed barcode on the right.
+    function drawTicketFooter(ctx, style, serial) {
+        const w = CARD.faceW;
+        const h = CARD.faceH;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.font = '20px ' + fontFace();
+        ctx.fillStyle = style.ink;
+        ctx.globalAlpha = 0.8;
+        ctx.fillText(T('ScratchingCard.serial', { serial: serial }), 48, h - 34);
+        ctx.globalAlpha = 1;
+
+        let bx = w - 300;
+        for (let i = 0; i < 46; i++) {
+            const bw = 1 + (i * 7919 % 3);
+            ctx.fillStyle = style.ink;
+            ctx.globalAlpha = 0.75;
+            ctx.fillRect(bx, h - 56, bw, 30);
+            bx += bw + 2 + (i * 104729 % 3);
+        }
+        ctx.globalAlpha = 1;
+    }
+
+    // A prize window and the symbol printed in it, in face space.
+    function drawPrizeWindow(ctx, style, index, symbol) {
+        const c = cellCenter(index);
+        const x = faceX(c.x - CARD.panelW / 2);
+        const y = faceY(c.y + CARD.panelH / 2);
+        const wpx = faceLen(CARD.panelW);
+        const hpx = faceLen(CARD.panelH);
+
+        // A recessed well, so a scratched panel still reads as a window.
+        ctx.fillStyle = 'rgba(0,0,0,0.16)';
+        ctx.fillRect(x - 4, y - 4, wpx + 8, hpx + 8);
+        ctx.fillStyle = style.paper;
+        ctx.fillRect(x, y, wpx, hpx);
+        ctx.strokeStyle = style.accentDark;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + 1, y + 1, wpx - 2, hpx - 2);
+
+        ctx.save();
+        ctx.globalAlpha = 0.1;
+        ctx.strokeStyle = style.accent;
+        ctx.lineWidth = 1;
+        for (let i = -Math.round(hpx); i < wpx; i += 7) {
+            ctx.beginPath();
+            ctx.moveTo(x + i, y + hpx);
+            ctx.lineTo(x + i + hpx, y);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        if (symbol) {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold ' + Math.round(hpx * 0.62) + 'px ' + SYMBOL_FONT;
+            ctx.fillStyle = style.ink;
+            ctx.fillText(symbol, x + wpx / 2, y + hpx / 2 + 2);
+        }
+    }
+
+    // Unrubbed foil: brushed metal, a bevel, the house mark and the panel
+    // number. Drawn over the whole of the context's (w, h), so a caller can put
+    // it on its own 256px canvas (the scratchable panel) or straight onto a
+    // printed face under a transform (a sealed product on the rack).
+    function drawFoilFace(ctx, w, h, style, index, opts) {
+        const o = opts || {};
+        if (o.clear !== false) ctx.clearRect(0, 0, w, h);
+
+        ctx.fillStyle = '#b9b9c4';
+        ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 420; i++) {
+            const y = Math.random() * h;
+            ctx.globalAlpha = 0.05 + Math.random() * 0.12;
+            ctx.fillStyle = Math.random() < 0.5 ? '#ffffff' : '#5c5c68';
+            ctx.fillRect(0, y, w, 1 + Math.random() * 2);
+        }
+        ctx.globalAlpha = 1;
+
+        // A darker bevel so a whole panel reads as a raised patch.
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, 'rgba(255,255,255,0.35)');
+        grad.addColorStop(0.5, 'rgba(255,255,255,0.0)');
+        grad.addColorStop(1, 'rgba(0,0,0,0.30)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = 'rgba(40,40,50,0.55)';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(4, 4, w - 8, h - 8);
+
+        ctx.save();
+        ctx.globalAlpha = 0.4;
+        ctx.fillStyle = '#3a3a46';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = 'bold ' + Math.round(h * 0.46) + 'px ' + SYMBOL_FONT;
+        ctx.fillText(style.symbols[index % style.symbols.length], w / 2, h / 2);
+        ctx.globalAlpha = 0.55;
+        ctx.font = 'bold 34px ' + fontFace();
+        ctx.fillText(String(index + 1), w / 2, h - 40);
+        ctx.restore();
+    }
+
+    // The back of the ticket: the house mark tiled so the face cannot be read
+    // through it, and the small print as illegible rules.
+    function drawTicketBack(ctx, w, h, style) {
+        ctx.fillStyle = style.accentDark;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = style.accent;
+        ctx.font = '26px ' + SYMBOL_FONT;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const mark = style.symbols[0];
+        for (let y = 20; y < h; y += 42) {
+            for (let x = 20 + ((y / 42) % 2) * 21; x < w; x += 42) {
+                ctx.fillText(mark, x, y);
+            }
+        }
+        ctx.restore();
+
+        ctx.strokeStyle = style.accent;
+        ctx.lineWidth = 6;
+        ctx.strokeRect(12, 12, w - 24, h - 24);
+
+        ctx.save();
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = style.paper;
+        for (let i = 0; i < 9; i++) {
+            ctx.fillRect(40, h - 96 + i * 9, (w - 80) * (0.55 + ((i * 37) % 40) / 100), 3);
+        }
+        ctx.restore();
+    }
+
+    // A whole sealed product: the print job with every panel still under foil.
+    // Drawn to fit whatever canvas it is given.
+    function drawSealedTicket(ctx, w, h, style, serial) {
+        ctx.save();
+        ctx.scale(w / CARD.faceW, h / CARD.faceH);
+        drawTicketPaper(ctx, style);
+        drawTicketHeader(ctx, style);
+        for (let i = 0; i < CARD.count; i++) {
+            drawPrizeWindow(ctx, style, i, null);
+            const c = cellCenter(i);
+            const px = faceX(c.x - CARD.panelW / 2);
+            const py = faceY(c.y + CARD.panelH / 2);
+            const size = faceLen(CARD.panelW);
+            ctx.save();
+            ctx.translate(px, py);
+            ctx.scale(size / CARD.foilSize, size / CARD.foilSize);
+            drawFoilFace(ctx, CARD.foilSize, CARD.foilSize, style, i, { clear: false });
+            ctx.restore();
+        }
+        drawTicketFooter(ctx, style, serial);
+        ctx.restore();
+    }
+
+    // The serial printed on a product standing on the rack. Derived from the
+    // style key so a given ticket always wears the same number on the shelf.
+    function displaySerial(styleKey) {
+        let n = 0;
+        for (let i = 0; i < styleKey.length; i++) n = (n * 131 + styleKey.charCodeAt(i)) >>> 0;
+        return String(10000000 + (n % 90000000));
+    }
+
+    //=========================================================================
     // ScratchCardModel - the ticket itself: what is printed on it and what it
     // pays. Kept apart from the renderer so the economy stays readable.
     //=========================================================================
@@ -369,81 +653,14 @@
     }
 
     //=========================================================================
-    // ScratchCard3D - the counter, the card and the foil. Renders to its own
-    // canvas, which the scene composites as a PIXI sprite (the same approach
-    // the tarot table and the bowling lane use).
+    // ThreeStage - the bookkeeping both three.js views share: tracked
+    // disposables, the material and texture factories, and a teardown that
+    // gives the GPU everything back (the retro pass hangs a render target off
+    // the renderer, so that goes too).
     //=========================================================================
-    class ScratchCard3D {
-        constructor(width, height, model) {
-            this._w = width;
-            this._h = height;
-            this.model = model;
-            this.style = model.style;
+    class ThreeStage {
+        constructor() {
             this._disposables = [];
-            this.panels = [];
-            this._time = 0;
-            this._flakes = null;
-            this._winRings = [];
-            this._celebrate = 0;
-
-            // Hand pose. yaw/pitch are the card's own rotation, not the camera's:
-            // the player turns the ticket, the counter stays put.
-            this.yaw = 0;
-            this.pitch = 0;
-            this.targetYaw = 0;
-            this.targetPitch = 0;
-            this.dist = 3.35;
-            this.targetDist = 3.35;
-
-            this._initThree();
-            this._buildCounter();
-            this._buildCard();
-            this._buildPanels();
-            this._buildCursor();
-            this._buildFlakes();
-
-            // The retro pass belongs on the room, not on the ticket: it forces
-            // nearest filtering onto every map it patches, and the printed face
-            // carries type small enough to lose to that.
-            if (window.PSXShader && this._room) window.PSXShader.applyToObject(this._room);
-
-            this._raycaster = new THREE.Raycaster();
-            this.updateCamera(1);
-        }
-
-        get domElement() { return this.renderer.domElement; }
-
-        //--- setup ----------------------------------------------------------
-
-        _initThree() {
-            const fog = this.style.fog;
-            this.scene = new THREE.Scene();
-            this.scene.background = new THREE.Color(fog);
-            this.scene.fog = new THREE.Fog(fog, 4.5, 13);
-
-            this.camera = new THREE.PerspectiveCamera(42, this._w / this._h, 0.05, 40);
-            this.camera.position.set(0, 0.42, this.dist);
-
-            this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-            this.renderer.setPixelRatio(1);
-            this.renderer.setSize(this._w, this._h);
-            this.renderer.setClearColor(fog, 1);
-
-            this.scene.add(new THREE.AmbientLight(0x555566, 0.75));
-
-            const key = new THREE.DirectionalLight(this.style.key, 0.95);
-            key.position.set(2.4, 3.2, 3.4);
-            this.scene.add(key);
-
-            const fill = new THREE.DirectionalLight(this.style.fill, 0.4);
-            fill.position.set(-3.2, 1.0, 1.8);
-            this.scene.add(fill);
-
-            // The glint. It orbits the card so the foil never sits dead: this is
-            // the whole reason the panels are lit by a specular material.
-            this._glint = new THREE.PointLight(0xffffff, 1.15, 9, 2);
-            this._glint.position.set(1.6, 1.4, 2.2);
-            this.scene.add(this._glint);
         }
 
         _track(obj) { this._disposables.push(obj); return obj; }
@@ -489,6 +706,104 @@
             return tex;
         }
 
+        dispose() {
+            for (const item of this._disposables) {
+                if (item && item.dispose) {
+                    try { item.dispose(); } catch (e) { /* already gone */ }
+                }
+            }
+            this._disposables.length = 0;
+            try {
+                if (window.PSXShader && window.PSXShader.disposeContext) {
+                    window.PSXShader.disposeContext(this.renderer);
+                }
+                this.renderer.dispose();
+                this.renderer.forceContextLoss();
+            } catch (e) { /* context already gone */ }
+        }
+    }
+
+    //=========================================================================
+    // ScratchCard3D - the counter, the card and the foil. Renders to its own
+    // canvas, which the scene composites as a PIXI sprite (the same approach
+    // the tarot table and the bowling lane use).
+    //=========================================================================
+    class ScratchCard3D extends ThreeStage {
+        constructor(width, height, model) {
+            super();
+            this._w = width;
+            this._h = height;
+            this.model = model;
+            this.style = model.style;
+            this.panels = [];
+            this._time = 0;
+            this._flakes = null;
+            this._winRings = [];
+            this._celebrate = 0;
+
+            // Hand pose. yaw/pitch are the card's own rotation, not the camera's:
+            // the player turns the ticket, the counter stays put.
+            this.yaw = 0;
+            this.pitch = 0;
+            this.targetYaw = 0;
+            this.targetPitch = 0;
+            this.dist = 3.35;
+            this.targetDist = 3.35;
+
+            this._initThree();
+            // The whole counter is a PlayStation picture, ticket included: the
+            // printed face loses its filtering to the retro pass, which is the
+            // point. The dose is the lighter one so the symbols stay readable.
+            cardPSX(() => {
+                this._buildCounter();
+                this._buildCard();
+                this._buildPanels();
+                this._buildCursor();
+                this._buildFlakes();
+                if (window.PSXShader) window.PSXShader.applyToObject(this.scene);
+            });
+
+            this._raycaster = new THREE.Raycaster();
+            this.updateCamera(1);
+        }
+
+        get domElement() { return this.renderer.domElement; }
+
+        //--- setup ----------------------------------------------------------
+
+        _initThree() {
+            const fog = this.style.fog;
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(fog);
+            this.scene.fog = new THREE.Fog(fog, 4.5, 13);
+
+            this.camera = new THREE.PerspectiveCamera(42, this._w / this._h, 0.05, 40);
+            this.camera.position.set(0, 0.42, this.dist);
+
+            // No antialiasing: the picture is quantised, downsampled and blown
+            // back up again, so smoothing the edges first only costs fill rate.
+            this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+            this.renderer.setPixelRatio(1);
+            this.renderer.setSize(this._w, this._h);
+            this.renderer.setClearColor(fog, 1);
+
+            this.scene.add(new THREE.AmbientLight(0x555566, 0.75));
+
+            const key = new THREE.DirectionalLight(this.style.key, 0.95);
+            key.position.set(2.4, 3.2, 3.4);
+            this.scene.add(key);
+
+            const fill = new THREE.DirectionalLight(this.style.fill, 0.4);
+            fill.position.set(-3.2, 1.0, 1.8);
+            this.scene.add(fill);
+
+            // The glint. It orbits the card so the foil never sits dead: this is
+            // the whole reason the panels are lit by a specular material.
+            this._glint = new THREE.PointLight(0xffffff, 1.15, 9, 2);
+            this._glint.position.set(1.6, 1.4, 2.2);
+            this.scene.add(this._glint);
+        }
+
         //--- the counter the card is played on -------------------------------
 
         _buildCounter() {
@@ -530,7 +845,7 @@
             this.card = new THREE.Group();
             this.scene.add(this.card);
 
-            const faceTex = this._canvasTexture(CARD.faceW, CARD.faceH, (c, w, h) => this._drawFace(c, w, h), true);
+            const faceTex = this._canvasTexture(CARD.faceW, CARD.faceH, (c) => this._drawFace(c), true);
             const backTex = this._canvasTexture(512, 320, (c, w, h) => this._drawBack(c, w, h), true);
             const edge = this._mat({ color: new THREE.Color(this.style.paperEdge) });
 
@@ -546,169 +861,19 @@
         }
 
         // The printed side. Everything under the foil is drawn here once: the
-        // panels only ever hide it.
-        _drawFace(ctx, w, h) {
-            const s = this.style;
-            ctx.fillStyle = s.paper;
-            ctx.fillRect(0, 0, w, h);
-
-            // Guilloche: the rosette of hairlines every printed ticket wears.
-            ctx.save();
-            ctx.globalAlpha = 0.16;
-            ctx.strokeStyle = s.accent;
-            ctx.lineWidth = 1;
-            for (let ring = 0; ring < 26; ring++) {
-                ctx.beginPath();
-                const rr = 40 + ring * 13;
-                for (let a = 0; a <= 96; a++) {
-                    const t = (a / 96) * Math.PI * 2;
-                    const wob = 1 + 0.09 * Math.sin(t * 7 + ring * 0.6);
-                    const x = w / 2 + Math.cos(t) * rr * wob;
-                    const y = h / 2 + Math.sin(t) * rr * wob * 0.62;
-                    if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                }
-                ctx.stroke();
-            }
-            ctx.restore();
-
-            // Paper tooth.
-            ctx.save();
-            ctx.globalAlpha = 0.06;
-            for (let i = 0; i < 2600; i++) {
-                ctx.fillStyle = i % 2 ? '#000000' : '#ffffff';
-                ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
-            }
-            ctx.restore();
-
-            // Frames.
-            ctx.strokeStyle = s.accentDark;
-            ctx.lineWidth = 8;
-            ctx.strokeRect(10, 10, w - 20, h - 20);
-            ctx.strokeStyle = s.accent;
-            ctx.lineWidth = 3;
-            ctx.strokeRect(24, 24, w - 48, h - 48);
-
-            const face = fontFace();
-
-            // Marquee.
-            const title = T('ScratchingCard.title.' + s.titleKey);
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = s.accentDark;
-            ctx.font = 'bold 62px ' + face;
-            ctx.fillText(title, w / 2 + 3, 78 + 3);
-            ctx.fillStyle = s.accent;
-            ctx.fillText(title, w / 2, 78);
-
-            ctx.font = '26px ' + face;
-            ctx.fillStyle = s.ink;
-            ctx.globalAlpha = 0.85;
-            ctx.fillText(T('ScratchingCard.matchThree'), w / 2, 128);
-            ctx.globalAlpha = 1;
-
-            // Stake and top prize, in the corners of the print area.
-            ctx.font = 'bold 24px ' + face;
-            ctx.textAlign = 'left';
-            ctx.fillStyle = s.ink;
-            ctx.fillText(T('ScratchingCard.stake', { cost: euroText(CARD_COST_GOLD / GOLD_PER_EURO) }), 48, 78);
-            ctx.textAlign = 'right';
-            ctx.fillText(T('ScratchingCard.topPrize', { amount: euroText(s.maxWin) }), w - 48, 78);
-
-            // Prize windows and their symbols.
+        // panels only ever hide it. The print job itself is shared with the
+        // sealed products on the rack.
+        _drawFace(ctx) {
+            drawTicketPaper(ctx, this.style);
+            drawTicketHeader(ctx, this.style);
             for (let i = 0; i < CARD.count; i++) {
-                this._drawPrizeWindow(ctx, i);
+                drawPrizeWindow(ctx, this.style, i, this.model.cells[i]);
             }
-
-            // Footer: serial on the left, a printed barcode on the right.
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'alphabetic';
-            ctx.font = '20px ' + face;
-            ctx.fillStyle = s.ink;
-            ctx.globalAlpha = 0.8;
-            ctx.fillText(T('ScratchingCard.serial', { serial: this.model.serial }), 48, h - 34);
-            ctx.globalAlpha = 1;
-
-            let bx = w - 300;
-            for (let i = 0; i < 46; i++) {
-                const bw = 1 + (i * 7919 % 3);
-                ctx.fillStyle = s.ink;
-                ctx.globalAlpha = 0.75;
-                ctx.fillRect(bx, h - 56, bw, 30);
-                bx += bw + 2 + (i * 104729 % 3);
-            }
-            ctx.globalAlpha = 1;
-        }
-
-        _drawPrizeWindow(ctx, index) {
-            const s = this.style;
-            const c = cellCenter(index);
-            const x = faceX(c.x - CARD.panelW / 2);
-            const y = faceY(c.y + CARD.panelH / 2);
-            const wpx = faceLen(CARD.panelW);
-            const hpx = faceLen(CARD.panelH);
-
-            // A recessed well, so a scratched panel still reads as a window.
-            ctx.fillStyle = 'rgba(0,0,0,0.16)';
-            ctx.fillRect(x - 4, y - 4, wpx + 8, hpx + 8);
-            ctx.fillStyle = s.paper;
-            ctx.fillRect(x, y, wpx, hpx);
-            ctx.strokeStyle = s.accentDark;
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x + 1, y + 1, wpx - 2, hpx - 2);
-
-            ctx.save();
-            ctx.globalAlpha = 0.1;
-            ctx.strokeStyle = s.accent;
-            ctx.lineWidth = 1;
-            for (let i = -Math.round(hpx); i < wpx; i += 7) {
-                ctx.beginPath();
-                ctx.moveTo(x + i, y + hpx);
-                ctx.lineTo(x + i + hpx, y);
-                ctx.stroke();
-            }
-            ctx.restore();
-
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = 'bold ' + Math.round(hpx * 0.62) + 'px ' + SYMBOL_FONT;
-            ctx.fillStyle = s.ink;
-            ctx.fillText(this.model.cells[index], x + wpx / 2, y + hpx / 2 + 2);
+            drawTicketFooter(ctx, this.style, this.model.serial);
         }
 
         _drawBack(ctx, w, h) {
-            const s = this.style;
-            ctx.fillStyle = s.accentDark;
-            ctx.fillRect(0, 0, w, h);
-
-            // A lattice of the house mark, the way the back of every ticket is
-            // printed so it cannot be read through.
-            ctx.save();
-            ctx.globalAlpha = 0.3;
-            ctx.fillStyle = s.accent;
-            ctx.font = '26px ' + SYMBOL_FONT;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            const mark = s.symbols[0];
-            for (let y = 20; y < h; y += 42) {
-                for (let x = 20 + ((y / 42) % 2) * 21; x < w; x += 42) {
-                    ctx.fillText(mark, x, y);
-                }
-            }
-            ctx.restore();
-
-            ctx.strokeStyle = s.accent;
-            ctx.lineWidth = 6;
-            ctx.strokeRect(12, 12, w - 24, h - 24);
-
-            // The small print, rendered as illegible rules: nothing to translate
-            // and nothing a player can read at this size anyway.
-            ctx.save();
-            ctx.globalAlpha = 0.35;
-            ctx.fillStyle = s.paper;
-            for (let i = 0; i < 9; i++) {
-                ctx.fillRect(40, h - 96 + i * 9, (w - 80) * (0.55 + ((i * 37) % 40) / 100), 3);
-            }
-            ctx.restore();
+            drawTicketBack(ctx, w, h, this.style);
         }
 
         //--- the foil --------------------------------------------------------
@@ -755,44 +920,7 @@
         }
 
         _drawFoil(ctx, w, h, index) {
-            ctx.clearRect(0, 0, w, h);
-
-            // Brushed metal.
-            ctx.fillStyle = '#b9b9c4';
-            ctx.fillRect(0, 0, w, h);
-            for (let i = 0; i < 420; i++) {
-                const y = Math.random() * h;
-                ctx.globalAlpha = 0.05 + Math.random() * 0.12;
-                ctx.fillStyle = Math.random() < 0.5 ? '#ffffff' : '#5c5c68';
-                ctx.fillRect(0, y, w, 1 + Math.random() * 2);
-            }
-            ctx.globalAlpha = 1;
-
-            // A darker bevel so a whole panel reads as a raised patch.
-            const grad = ctx.createLinearGradient(0, 0, w, h);
-            grad.addColorStop(0, 'rgba(255,255,255,0.35)');
-            grad.addColorStop(0.5, 'rgba(255,255,255,0.0)');
-            grad.addColorStop(1, 'rgba(0,0,0,0.30)');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, w, h);
-
-            ctx.strokeStyle = 'rgba(40,40,50,0.55)';
-            ctx.lineWidth = 8;
-            ctx.strokeRect(4, 4, w - 8, h - 8);
-
-            // The house mark printed into the foil, plus the panel number, so a
-            // player can tell the panels apart while turning the card.
-            ctx.save();
-            ctx.globalAlpha = 0.4;
-            ctx.fillStyle = '#3a3a46';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.font = 'bold ' + Math.round(h * 0.46) + 'px ' + SYMBOL_FONT;
-            ctx.fillText(this.style.symbols[index % this.style.symbols.length], w / 2, h / 2);
-            ctx.globalAlpha = 0.55;
-            ctx.font = 'bold 34px ' + fontFace();
-            ctx.fillText(String(index + 1), w / 2, h - 40);
-            ctx.restore();
+            drawFoilFace(ctx, w, h, this.style, index);
         }
 
         //--- the selection ring and the flakes -------------------------------
@@ -1121,6 +1249,9 @@
                 }, 'basic');
                 const ring = new THREE.Mesh(geo, mat);
                 ring.position.set(c.x, c.y, CARD.t / 2 + 0.03);
+                // Built after the scene was patched, so it opts in by hand or it
+                // is the one unbanded thing on the screen.
+                if (window.PSXShader) cardPSX(() => window.PSXShader.applyToMaterial(mat));
                 this.card.add(ring);
                 this._winRings.push({ ring, mat, phase: Math.random() * 6.28 });
                 this.spawnFlakes(this.panelWorldPoint(this.panels[index], 0.5, 0.5), 40, true);
@@ -1178,7 +1309,11 @@
         }
 
         render() {
-            this.renderer.render(this.scene, this.camera);
+            if (window.PSXShader) {
+                cardPSX(() => window.PSXShader.render(this.renderer, this.scene, this.camera));
+            } else {
+                this.renderer.render(this.scene, this.camera);
+            }
         }
 
         resize(w, h) {
@@ -1187,22 +1322,6 @@
             this.camera.aspect = w / h;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(w, h);
-        }
-
-        dispose() {
-            for (const item of this._disposables) {
-                if (item && item.dispose) {
-                    try { item.dispose(); } catch (e) { /* already gone */ }
-                }
-            }
-            this._disposables.length = 0;
-            try {
-                if (window.PSXShader && window.PSXShader.disposeContext) {
-                    window.PSXShader.disposeContext(this.renderer);
-                }
-                this.renderer.dispose();
-                this.renderer.forceContextLoss();
-            } catch (e) { /* context already gone */ }
         }
     }
 
@@ -1271,14 +1390,17 @@
         }
 
         createCard() {
-            // A touch under native, scaled back up: the panels carry no fine
-            // type, and the saving buys a clean antialiased render.
+            // A touch under native, scaled back up with nearest filtering on
+            // top of the shader's own downsample: the two together are what
+            // makes the counter read as a PlayStation rather than a smooth
+            // modern render.
             const scale = 0.92;
             const w = Math.round(Graphics.width * scale);
             const h = Math.round(Graphics.height * scale);
             this._card = new ScratchCard3D(w, h, this._model);
 
             const texture = PIXI.Texture.from(this._card.domElement);
+            if (texture.baseTexture) texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             this._cardSprite = new PIXI.Sprite(texture);
             this._cardSprite.scale.set(Graphics.width / w, Graphics.height / h);
             this.addChildAt(this._cardSprite, this.getChildIndex(this._hudSprite));
@@ -1634,6 +1756,776 @@
     }
 
     //=========================================================================
+    // ScratchCardRack3D - the display stand at the counter. The four printed
+    // products stand on a carousel, sealed, every panel still under foil; the
+    // one in front turns on the spot so the player sees both sides of the
+    // ticket before paying for it.
+    //=========================================================================
+    const RACK = {
+        radius: 3.6,        // carousel radius; the front seat sits at z = 0
+        step: 0.62,         // radians between two neighbouring seats
+        scale: 0.78,        // card size on the stand
+        thickness: 0.05,    // thicker than the real ticket so the edge reads
+        shiftX: 0.62,       // the stand sits right of centre, clear of the list
+        spinRate: 1.05,     // radians a second, front card only
+        deskY: -0.92,       // the counter top everything stands on
+        plinthH: 0.12,
+        restY: -0.18,       // card centre while it is sitting in its stand
+        faceW: 640,
+        backW: 512
+    };
+
+    class ScratchCardRack3D extends ThreeStage {
+        constructor(width, height, keys) {
+            super();
+            this._w = width;
+            this._h = height;
+            this._keys = keys;
+            this.cards = [];
+            this._time = 0;
+            this.index = 0;         // which product is in front
+            this.focused = true;    // false while the cursor is on Back
+            this._display = 0;      // eased carousel position
+
+            this._initThree();
+            rackPSX(() => {
+                this._buildCounter();
+                this._buildCards();
+                if (window.PSXShader) window.PSXShader.applyToObject(this.scene);
+            });
+
+            this._raycaster = new THREE.Raycaster();
+            this.update(0);
+        }
+
+        get domElement() { return this.renderer.domElement; }
+
+        //--- setup ----------------------------------------------------------
+
+        _initThree() {
+            const fog = 0x090711;
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(fog);
+            this.scene.fog = new THREE.Fog(fog, 4.2, 12);
+
+            // The camera stays on the centre line while the stand sits right of
+            // it: that offset is what keeps the front ticket clear of the HUD's
+            // list down the left, and it holds at 4:3 as well as 16:9.
+            this.camera = new THREE.PerspectiveCamera(44, this._w / this._h, 0.05, 40);
+            this.camera.position.set(0, 0.42, 3.35);
+            this.camera.lookAt(0.15, -0.12, -0.2);
+
+            this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+            this.renderer.setPixelRatio(1);
+            this.renderer.setSize(this._w, this._h);
+            this.renderer.setClearColor(fog, 1);
+
+            this.scene.add(new THREE.AmbientLight(0x4c4c60, 0.85));
+
+            const key = new THREE.DirectionalLight(0xfff0dc, 0.9);
+            key.position.set(2.2, 3.2, 3.6);
+            this.scene.add(key);
+
+            const fill = new THREE.DirectionalLight(0x5f6ad0, 0.35);
+            fill.position.set(-3.0, 1.2, 1.8);
+            this.scene.add(fill);
+
+            // Follows whichever ticket is in front, wearing that product's own
+            // accent: the stand changes colour as the carousel turns.
+            this._focusLight = new THREE.PointLight(0xffffff, 1.3, 7, 2);
+            this._focusLight.position.set(RACK.shiftX, 0.3, 1.4);
+            this.scene.add(this._focusLight);
+        }
+
+        _buildCounter() {
+            const counter = new THREE.Group();
+            this.scene.add(counter);
+
+            const deskGeo = this._track(new THREE.PlaneGeometry(18, 12));
+            const desk = new THREE.Mesh(deskGeo, this._mat({
+                map: this._fileTexture('dark_brown_marble.jpg', 6),
+                color: 0x4a3f52
+            }));
+            desk.rotation.x = -Math.PI / 2;
+            desk.position.set(0, RACK.deskY, 0.5);
+            counter.add(desk);
+
+            const wallGeo = this._track(new THREE.PlaneGeometry(20, 10));
+            const wall = new THREE.Mesh(wallGeo, this._mat({
+                map: this._fileTexture('grey_concrete.jpg', 5),
+                color: 0x24242c
+            }));
+            wall.position.set(0, 2.4, -5.6);
+            counter.add(wall);
+
+            // The coin every ticket in Europe is scratched with, left on the
+            // counter next to the stand.
+            const coinGeo = this._track(new THREE.CylinderGeometry(0.16, 0.16, 0.022, 16));
+            const coin = new THREE.Mesh(coinGeo, this._mat({
+                color: 0xb8a05a, specular: 0xfff3cf, shininess: 90
+            }, 'phong'));
+            coin.position.set(-1.35, RACK.deskY + 0.02, 1.15);
+            coin.rotation.set(-Math.PI / 2, 0, 0.4);
+            counter.add(coin);
+        }
+
+        _buildCards() {
+            const cw = CARD.w * RACK.scale;
+            const ch = CARD.h * RACK.scale;
+            const faceH = Math.round(RACK.faceW * CARD.faceH / CARD.faceW);
+            const backH = Math.round(RACK.backW * CARD.h / CARD.w);
+
+            this._cardGeo = this._track(new THREE.BoxGeometry(cw, ch, RACK.thickness));
+            this._shadowGeo = this._track(new THREE.PlaneGeometry(cw * 0.9, cw * 0.32));
+            this._plinthGeo = this._track(new THREE.BoxGeometry(cw * 0.82, RACK.plinthH, 0.34));
+
+            this._rack = new THREE.Group();
+            this._rack.position.x = RACK.shiftX;
+            this.scene.add(this._rack);
+
+            for (let i = 0; i < this._keys.length; i++) {
+                const key = this._keys[i];
+                const style = cardStyles[key];
+                const serial = displaySerial(key);
+
+                const faceTex = this._canvasTexture(RACK.faceW, faceH, (c, w, h) => {
+                    drawSealedTicket(c, w, h, style, serial);
+                });
+                const backTex = this._canvasTexture(RACK.backW, backH, (c, w, h) => {
+                    drawTicketBack(c, w, h, style);
+                });
+                const edge = this._mat({ color: new THREE.Color(style.paperEdge) });
+
+                // BoxGeometry material order: +x, -x, +y, -y, +z (face), -z (back).
+                const mesh = new THREE.Mesh(this._cardGeo, [
+                    edge, edge, edge, edge,
+                    this._mat({ map: faceTex, specular: 0x272727, shininess: 20 }, 'phong'),
+                    this._mat({ map: backTex, specular: 0x181818, shininess: 10 }, 'phong')
+                ]);
+
+                const root = new THREE.Group();
+                root.add(mesh);
+                this._rack.add(root);
+
+                // A flat quad on the counter under each ticket: the shadow a
+                // PlayStation could afford, and enough to sit them down.
+                const shadow = new THREE.Mesh(this._shadowGeo, this._mat({
+                    color: 0x000000, transparent: true, opacity: 0.42, depthWrite: false
+                }, 'basic'));
+                shadow.rotation.x = -Math.PI / 2;
+                this._rack.add(shadow);
+
+                // The stand each product is slotted into, painted in that
+                // product's own dark ink so the rack reads as four displays
+                // rather than four loose tickets.
+                const plinth = new THREE.Mesh(this._plinthGeo, this._mat({
+                    color: new THREE.Color(style.accentDark),
+                    specular: 0x555560,
+                    shininess: 30
+                }, 'phong'));
+                this._rack.add(plinth);
+
+                this.cards.push({
+                    key, style, mesh, root, shadow, plinth,
+                    spin: 0,
+                    scale: 1
+                });
+            }
+        }
+
+        //--- state -----------------------------------------------------------
+
+        setIndex(index) {
+            const i = clamp(index, 0, this.cards.length - 1);
+            if (i === this.index) return false;
+            this.index = i;
+            return true;
+        }
+
+        setFocused(on) {
+            this.focused = !!on;
+        }
+
+        // Index of the product under the pointer, or -1.
+        pick(ndcX, ndcY) {
+            if (!this._raycaster) return -1;
+            this._raycaster.setFromCamera({ x: ndcX, y: ndcY }, this.camera);
+            const hits = this._raycaster.intersectObjects(this.cards.map(c => c.mesh), false);
+            if (!hits.length) return -1;
+            return this.cards.findIndex(c => c.mesh === hits[0].object);
+        }
+
+        //--- frame -----------------------------------------------------------
+
+        update(dt) {
+            this._time += dt;
+            this._display = lerp(this._display, this.index, dt > 0 ? 0.18 : 1);
+
+            for (let i = 0; i < this.cards.length; i++) {
+                const card = this.cards[i];
+                const selected = i === this.index && this.focused;
+                const theta = (i - this._display) * RACK.step;
+
+                const tx = Math.sin(theta) * RACK.radius;
+                const tz = Math.cos(theta) * RACK.radius - RACK.radius;
+                // At rest a ticket sits in its stand; the one the player is
+                // looking at lifts out of it and turns.
+                const ty = RACK.restY + (selected ? 0.13 : 0) + Math.sin(this._time * 0.8 + i) * 0.012;
+
+                const p = card.root.position;
+                p.x = lerp(p.x, tx, 0.2);
+                p.y = lerp(p.y, ty, 0.2);
+                p.z = lerp(p.z, tz, 0.2);
+
+                // The front ticket turns; the others ease back to face the
+                // player, by the shortest way round from wherever they stopped.
+                if (selected) {
+                    card.spin += dt * RACK.spinRate;
+                } else {
+                    const home = Math.round(card.spin / (Math.PI * 2)) * Math.PI * 2;
+                    card.spin = lerp(card.spin, home, 0.12);
+                }
+                card.root.rotation.y = -theta * 0.5 + card.spin;
+                card.root.rotation.x = selected ? -0.04 : -0.12;
+
+                const ts = selected ? 1 : 0.86;
+                card.scale = lerp(card.scale, ts, 0.2);
+                card.root.scale.setScalar(card.scale);
+
+                card.shadow.position.set(p.x, RACK.deskY + 0.02, p.z + 0.12);
+                card.shadow.material.opacity = clamp(0.42 - Math.abs(theta) * 0.22, 0.06, 0.42);
+                card.plinth.position.set(tx, RACK.deskY + RACK.plinthH / 2, tz);
+                card.plinth.rotation.y = -theta * 0.5;
+            }
+
+            // The stand takes the colour of whatever is in front of it.
+            const front = this.cards[this.index];
+            if (front) {
+                this._focusLight.color.set(this.focused ? front.style.accent : '#5a5a68');
+                this._focusLight.intensity = this.focused ? 1.3 : 0.6;
+                const fp = front.root.position;
+                this._focusLight.position.set(RACK.shiftX + fp.x * 0.6, fp.y + 0.6, fp.z + 1.5);
+            }
+        }
+
+        render() {
+            if (window.PSXShader) {
+                rackPSX(() => window.PSXShader.render(this.renderer, this.scene, this.camera));
+            } else {
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        resize(w, h) {
+            this._w = w;
+            this._h = h;
+            this.camera.aspect = w / h;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(w, h);
+        }
+    }
+
+    //=========================================================================
+    // Free-play arcade: the counter in the title screen's minigame menu, where
+    // the four printed products are on sale and the house pays the stake.
+    //=========================================================================
+
+    // True while the arcade is running on the title screen's throwaway context.
+    // A real save is never touched by the bankroll below.
+    function isFreePlay() {
+        const arcade = window.MinigameArcade;
+        try {
+            return !!(arcade && arcade.isFreePlay && arcade.isFreePlay());
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // Deal the free-play bankroll: exactly FREEPLAY_GOLD, whatever the wallet
+    // held before, so winnings from an earlier visit never carry over.
+    function dealFreePlayBankroll() {
+        if (!isFreePlay()) return;
+        const gold = $gameParty.gold();
+        if (gold < FREEPLAY_GOLD) $gameParty.gainGold(FREEPLAY_GOLD - gold);
+        else if (gold > FREEPLAY_GOLD) $gameParty.loseGold(gold - FREEPLAY_GOLD);
+    }
+
+    // The counter: what each product costs and what it can pay.
+    class Window_ScratchCardTerms extends Window_Base {
+        initialize(rect) {
+            super.initialize(rect);
+            this._styleKey = null;
+            this.refresh();
+        }
+
+        setStyleKey(key) {
+            if (this._styleKey === key) return;
+            this._styleKey = key;
+            this.refresh();
+        }
+
+        refresh() {
+            this.contents.clear();
+            const style = cardStyles[this._styleKey];
+            if (!style) return;
+            const lh = this.lineHeight();
+            this.changeTextColor(ColorManager.systemColor());
+            this.drawText(
+                T('ScratchingCard.select.terms', {
+                    cost: euroText(CARD_COST_GOLD / GOLD_PER_EURO),
+                    amount: euroText(style.maxWin)
+                }),
+                0, 0, this.innerWidth, 'center'
+            );
+            this.resetTextColor();
+            this.drawText(
+                T('ScratchingCard.select.desc.' + style.titleKey),
+                0, lh, this.innerWidth, 'center'
+            );
+        }
+    }
+
+    // The rack of products, one command per printed card.
+    class Window_ScratchCardStyles extends Window_Command {
+        makeCommandList() {
+            for (const key of Object.keys(cardStyles)) {
+                this.addCommand(T('ScratchingCard.title.' + cardStyles[key].titleKey), key);
+            }
+            this.addCommand(T('ScratchingCard.select.back'), 'cancel');
+        }
+
+        setTermsWindow(win) {
+            this._termsWindow = win;
+            this.callUpdateHelp();
+        }
+
+        callUpdateHelp() {
+            super.callUpdateHelp();
+            if (this._termsWindow) {
+                this._termsWindow.setStyleKey(this.currentSymbol());
+            }
+        }
+    }
+
+    //=========================================================================
+    // Scene_ScratchCardSelect - the counter. The rack is 3D and the lettering
+    // over it is the shared PSXHud art deco layer: a black field, gold
+    // keylines and 8px type, the way a PlayStation drew a shop screen.
+    //
+    // Where three.js or PSXHud is missing, the old stack of command windows is
+    // still here and takes over: the counter degrades, it does not vanish.
+    //=========================================================================
+    const RACK_HUD = {
+        rowH: 13,
+        listX: 4,
+        listY: 24,
+        // Wide enough for the longest product name, narrow enough that the
+        // front ticket still clears it on a 4:3 window.
+        listW: 124,
+        infoH: 50,
+        stripH: 13
+    };
+
+    class Scene_ScratchCardSelect extends Scene_MenuBase {
+        initialize() {
+            super.initialize();
+            this._keys = Object.keys(cardStyles);
+            this._index = 0;
+            // The product the stand is showing. The cursor can be on Back,
+            // which is not a product: the carousel stays where it was rather
+            // than swinging to the end of the rack.
+            this._lastProduct = 0;
+            this._banner = '';
+            this._bannerT = 0;
+            this._hoverX = -1;
+            this._hoverY = -1;
+            this._solid = typeof THREE !== 'undefined' && !!window.PSXHud;
+        }
+
+        // Index of the Back row, one past the last product.
+        backRow() { return this._keys.length; }
+
+        create() {
+            super.create();
+            if (!this._solid) {
+                this.createHeaderWindow();
+                this.createStyleWindow();
+                this.createTermsWindow();
+                this._styleWindow.setTermsWindow(this._termsWindow);
+                return;
+            }
+            if (this._windowLayer) this._windowLayer.visible = false;
+            if (this._cancelButton) this._cancelButton.visible = false;
+            this.createRack();
+            this.createHudLayer();
+        }
+
+        // A blurred map snapshot would only be a wasted upload behind an opaque
+        // 3D view; the window fallback keeps the usual one.
+        createBackground() {
+            if (!this._solid) return super.createBackground();
+            this._backgroundSprite = new Sprite(new Bitmap(8, 8));
+            this._backgroundSprite.bitmap.fillAll('#05040a');
+            this._backgroundSprite.scale.set(Graphics.width / 8, Graphics.height / 8);
+            this.addChild(this._backgroundSprite);
+        }
+
+        createRack() {
+            // Rendered below native and scaled back up with nearest filtering,
+            // on top of the shader's own downsample: the stand is scenery and
+            // nothing on it has to be read off the model.
+            const scale = 0.9;
+            const w = Math.round(Graphics.width * scale);
+            const h = Math.round(Graphics.height * scale);
+            this._rack = new ScratchCardRack3D(w, h, this._keys);
+
+            const texture = PIXI.Texture.from(this._rack.domElement);
+            if (texture.baseTexture) texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            this._rackSprite = new PIXI.Sprite(texture);
+            this._rackSprite.scale.set(Graphics.width / w, Graphics.height / h);
+            const idx = this._windowLayer ? this.getChildIndex(this._windowLayer) : this.children.length;
+            this.addChildAt(this._rackSprite, idx);
+        }
+
+        createHudLayer() {
+            this._hud = window.PSXHud.layer(window.PSXHud.baseWidth());
+            this.addChild(this._hud.sprite);
+            this._hudDom = window.PSXHud.domPanel(this._hud);
+        }
+
+        //--- frame -----------------------------------------------------------
+
+        update() {
+            super.update();
+            if (!this._solid) return;
+
+            const dt = 1 / 60;
+            if (this._bannerT > 0) this._bannerT -= dt;
+
+            this.updateInput();
+            if (this._index < this.backRow()) this._lastProduct = this._index;
+            this._rack.setIndex(this._lastProduct);
+            this._rack.setFocused(this._index < this.backRow());
+            this._rack.update(dt);
+            this._rack.render();
+            if (this._rackSprite && this._rackSprite.texture) this._rackSprite.texture.update();
+            this.drawHud();
+        }
+
+        updateInput() {
+            const pad = window.AnalogStickInput;
+            const repeated = (dir) => Input.isRepeated(dir) || (pad && pad.isRepeated(dir));
+
+            if (repeated('right') || repeated('down')) {
+                this.moveIndex(1);
+            } else if (repeated('left') || repeated('up')) {
+                this.moveIndex(-1);
+            }
+
+            if (Input.isTriggered('ok')) {
+                this.activate();
+                return;
+            }
+            if (Input.isTriggered('cancel')) {
+                SoundManager.playCancel();
+                this.popScene();
+                return;
+            }
+
+            this.updatePointer();
+        }
+
+        // The rack and the list are one cursor: the last row is Back, so a
+        // player on the keyboard can leave without knowing about ESC.
+        moveIndex(delta) {
+            const n = this.backRow() + 1;
+            const next = (this._index + delta + n) % n;
+            if (next === this._index) return;
+            this._index = next;
+            SoundManager.playCursor();
+        }
+
+        updatePointer() {
+            const moved = TouchInput.x !== this._hoverX || TouchInput.y !== this._hoverY;
+            if (moved) {
+                this._hoverX = TouchInput.x;
+                this._hoverY = TouchInput.y;
+                const hit = this.hitTest(TouchInput.x, TouchInput.y);
+                if (hit >= 0 && hit !== this._index) {
+                    this._index = hit;
+                    SoundManager.playCursor();
+                }
+            }
+
+            if (TouchInput.isTriggered()) {
+                const hit = this.hitTest(TouchInput.x, TouchInput.y);
+                if (hit >= 0) {
+                    this._index = hit;
+                    this.activate();
+                }
+            } else if (TouchInput.isCancelled()) {
+                SoundManager.playCancel();
+                this.popScene();
+            }
+
+            const wheel = TouchInput.wheelY || 0;
+            if (wheel) this.moveIndex(wheel > 0 ? 1 : -1);
+        }
+
+        // Screen pixels to an entry: the HUD list first, then the products on
+        // the stand behind it.
+        hitTest(x, y) {
+            const row = this.rowAt(x, y);
+            if (row >= 0) return row;
+            const ndcX = (x / Graphics.width) * 2 - 1;
+            const ndcY = -((y / Graphics.height) * 2 - 1);
+            return this._rack ? this._rack.pick(ndcX, ndcY) : -1;
+        }
+
+        // The list is drawn in virtual pixels, so the pointer is converted into
+        // them rather than the rows being converted back out.
+        rowAt(x, y) {
+            if (!this._hud) return -1;
+            const vx = x * this._hud.w / Graphics.width;
+            const vy = y * this._hud.h / Graphics.height;
+            const L = RACK_HUD;
+            if (vx < L.listX || vx > L.listX + L.listW) return -1;
+            const rel = vy - (L.listY + 4);
+            if (rel < 0) return -1;
+            const row = Math.floor(rel / L.rowH);
+            return row >= 0 && row <= this.backRow() ? row : -1;
+        }
+
+        activate() {
+            if (this._index >= this.backRow()) {
+                SoundManager.playCancel();
+                this.popScene();
+                return;
+            }
+            const key = this._keys[this._index];
+            if (CARD_COST_GOLD > 0 && $gameParty.gold() < CARD_COST_GOLD) {
+                safePlaySe({ name: 'Buzzer1', volume: 90, pitch: 100, pan: 0 });
+                this._banner = T('ScratchingCard.select.needMoney');
+                this._bannerT = 2.2;
+                return;
+            }
+            SoundManager.playOk();
+            openCard(key);
+        }
+
+        //--- HUD -------------------------------------------------------------
+
+        text(str, x, y, w, align, color, size, opts) {
+            if (this._hudDom) this._hudDom.text(str, x, y, w, align, color, size, opts);
+            else window.PSXHud.text(this._hud.bitmap, str, x, y, w, align, color, size, opts);
+        }
+
+        // Word wrap against the pixel font's own metrics.
+        wrapLines(bmp, text, maxW, size) {
+            const H = window.PSXHud;
+            bmp.fontFace = H.FONT;
+            bmp.fontSize = size;
+            const words = String(text).toUpperCase().split(/\s+/).filter(Boolean);
+            const lines = [];
+            let line = '';
+            for (const word of words) {
+                const test = line ? line + ' ' + word : word;
+                if (line && bmp.measureTextWidth(test) > maxW) {
+                    lines.push(line);
+                    line = word;
+                } else {
+                    line = test;
+                }
+            }
+            if (line) lines.push(line);
+            return lines.length ? lines : [''];
+        }
+
+        drawHud() {
+            if (!this._hud) return;
+            const bmp = this._hud.bitmap;
+            bmp.clear();
+            if (this._hudDom) this._hudDom.begin();
+            this.drawMarquee(bmp);
+            this.drawList(bmp);
+            this.drawInfo(bmp);
+            this.drawControls(bmp);
+            this.drawBanner(bmp);
+            if (this._hudDom) this._hudDom.end();
+        }
+
+        drawMarquee(bmp) {
+            const H = window.PSXHud;
+            const D = H.DECO;
+            const w = this._hud.w;
+            H.decoPanel(bmp, 3, 3, w - 6, 15, {
+                title: T('ScratchingCard.select.title'),
+                titleRight: T('ScratchingCard.select.wallet', {
+                    amount: euroText($gameParty.gold() / GOLD_PER_EURO)
+                }),
+                headerH: 11,
+                hairline: false,
+                step: 1,
+                dom: this._hudDom
+            });
+            H.decoSunburst(bmp, 4, 19, 10, D.goldLo, { from: 0, span: Math.PI / 2, rays: 4, dashed: false });
+            H.decoSunburst(bmp, w - 5, 19, 10, D.goldLo, { from: Math.PI / 2, span: Math.PI / 2, rays: 4, dashed: false });
+        }
+
+        drawList(bmp) {
+            const H = window.PSXHud;
+            const D = H.DECO;
+            const L = RACK_HUD;
+            const rows = this.backRow() + 1;
+            const h = rows * L.rowH + 8;
+            H.decoPanel(bmp, L.listX, L.listY, L.listW, h, { hairline: false, step: 1 });
+
+            for (let i = 0; i < rows; i++) {
+                const y = L.listY + 4 + i * L.rowH;
+                const back = i === this.backRow();
+                const label = back
+                    ? T('ScratchingCard.select.back')
+                    : T('ScratchingCard.title.' + cardStyles[this._keys[i]].titleKey);
+                if (i === this._index) {
+                    H.decoSelect(bmp, L.listX + 3, y - 1, L.listW - 6, L.rowH - 1, D.gold);
+                }
+                const color = i === this._index ? D.ink : (back ? D.faint : D.dim);
+                this.text(label, L.listX + 8, y + 1, L.listW - 14, 'left', color, 8);
+            }
+        }
+
+        drawInfo(bmp) {
+            const H = window.PSXHud;
+            const D = H.DECO;
+            const L = RACK_HUD;
+            const w = this._hud.w - 8;
+            const y = this._hud.h - L.stripH - 3 - L.infoH;
+            const back = this._index >= this.backRow();
+            const style = back ? null : cardStyles[this._keys[this._index]];
+
+            H.decoPanel(bmp, 4, y, w, L.infoH, {
+                title: back
+                    ? T('ScratchingCard.select.back')
+                    : T('ScratchingCard.title.' + style.titleKey),
+                titleRight: back ? '' : T('ScratchingCard.select.terms', {
+                    cost: euroText(CARD_COST_GOLD / GOLD_PER_EURO),
+                    amount: euroText(style.maxWin)
+                }),
+                headerH: 11,
+                step: 2,
+                dom: this._hudDom
+            });
+
+            const body = back
+                ? T('ScratchingCard.select.backDesc')
+                : T('ScratchingCard.select.desc.' + style.titleKey);
+            const lines = this.wrapLines(bmp, body, w - 20, 8);
+            for (let i = 0; i < Math.min(2, lines.length); i++) {
+                this.text(lines[i], 10, y + 18 + i * 11, w - 20, 'left', D.dim, 8, { raw: true });
+            }
+
+            H.decoRule(bmp, 10, y + L.infoH - 7, w - 20, D.goldLo);
+        }
+
+        drawControls(bmp) {
+            const H = window.PSXHud;
+            const D = H.DECO;
+            const w = this._hud.w;
+            const y = this._hud.h - RACK_HUD.stripH;
+            bmp.fillRect(0, y, w, RACK_HUD.stripH, D.black);
+            bmp.fillRect(0, y, w, 1, D.goldLo);
+            this.text(T('ScratchingCard.select.controls'), 5, y + 1, w - 10, 'left', D.dim, 8);
+        }
+
+        drawBanner(bmp) {
+            if (!(this._bannerT > 0) || !this._banner) return;
+            const H = window.PSXHud;
+            const D = H.DECO;
+            const w = this._hud.w;
+            const bw = Math.min(w - 40, 232);
+            const bx = Math.floor((w - bw) / 2);
+            const by = 26;
+            H.decoPanel(bmp, bx, by, bw, 19, { accent: D.red, accentLo: '#7a2c20', step: 2 });
+            this.text(this._banner, bx, by + 5, bw, 'center', D.red, 8);
+        }
+
+        //--- teardown ---------------------------------------------------------
+
+        terminate() {
+            super.terminate();
+            if (this._hudDom) {
+                this._hudDom.destroy();
+                this._hudDom = null;
+            }
+            if (this._rackSprite) {
+                if (this._rackSprite.parent) this._rackSprite.parent.removeChild(this._rackSprite);
+                this._rackSprite.destroy();
+                this._rackSprite = null;
+            }
+            if (this._rack) {
+                this._rack.dispose();
+                this._rack = null;
+            }
+            if (this._hud && this._hud.bitmap) this._hud.bitmap.destroy();
+            if (this._backgroundSprite && this._solid && this._backgroundSprite.bitmap) {
+                this._backgroundSprite.bitmap.destroy();
+            }
+        }
+
+        // Windows are stacked as one block in the middle of the screen: the
+        // header names the counter and shows the wallet, the rack sits under
+        // it, the terms of the highlighted product under that.
+        layout() {
+            if (this._layout) return this._layout;
+            const w = Math.min(560, Graphics.boxWidth - 80);
+            const headerH = this.calcWindowHeight(2, false);
+            const rackH = this.calcWindowHeight(Object.keys(cardStyles).length + 1, true);
+            const termsH = this.calcWindowHeight(2, false);
+            const x = Math.floor((Graphics.boxWidth - w) / 2);
+            const y = Math.max(0, Math.floor((Graphics.boxHeight - (headerH + rackH + termsH)) / 2));
+            this._layout = { w, x, y, headerH, rackH, termsH };
+            return this._layout;
+        }
+
+        createHeaderWindow() {
+            const l = this.layout();
+            this._headerWindow = new Window_Base(new Rectangle(l.x, l.y, l.w, l.headerH));
+            const lh = this._headerWindow.lineHeight();
+            const inner = this._headerWindow.innerWidth;
+            this._headerWindow.changeTextColor(ColorManager.systemColor());
+            this._headerWindow.drawText(T('ScratchingCard.select.title'), 0, 0, inner, 'center');
+            this._headerWindow.resetTextColor();
+            this._headerWindow.drawText(
+                T('ScratchingCard.select.wallet', { amount: euroText($gameParty.gold() / GOLD_PER_EURO) }),
+                0, lh, inner, 'center'
+            );
+            this.addWindow(this._headerWindow);
+        }
+
+        createStyleWindow() {
+            const l = this.layout();
+            this._styleWindow = new Window_ScratchCardStyles(new Rectangle(l.x, l.y + l.headerH, l.w, l.rackH));
+            for (const key of Object.keys(cardStyles)) {
+                this._styleWindow.setHandler(key, this.onStylePicked.bind(this, key));
+            }
+            this._styleWindow.setHandler('cancel', this.popScene.bind(this));
+            this.addWindow(this._styleWindow);
+        }
+
+        createTermsWindow() {
+            const l = this.layout();
+            this._termsWindow = new Window_ScratchCardTerms(
+                new Rectangle(l.x, l.y + l.headerH + l.rackH, l.w, l.termsH)
+            );
+            this.addWindow(this._termsWindow);
+        }
+
+        onStylePicked(styleKey) {
+            openCard(styleKey);
+        }
+    }
+
+    //=========================================================================
     // Plugin commands
     //=========================================================================
 
@@ -1664,11 +2556,21 @@
 
     // Make classes globally available
     window.Scene_ScratchCard = Scene_ScratchCard;
+    window.Scene_ScratchCardSelect = Scene_ScratchCardSelect;
     window.ScratchCard3D = ScratchCard3D;
     window.ScratchCardModel = ScratchCardModel;
 
     // Script call method for easier access
     window.openScratchCard = function(style = 'esoteric') {
         openCard(style);
+    };
+
+    // Entry point for the title screen's minigame menu: deal the free-play
+    // bankroll again, then let the player pick which card to buy. Returning
+    // from a card comes back to the rack with the wallet as the cards left it;
+    // only a fresh entry from the menu re-deals.
+    window.openScratchCardArcade = function() {
+        dealFreePlayBankroll();
+        SceneManager.push(Scene_ScratchCardSelect);
     };
 })();

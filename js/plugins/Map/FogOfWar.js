@@ -171,6 +171,11 @@
     // block vision, and on maps where fog is otherwise disabled they still
     // confine what is visible to the player's current interior.
     const REGION_DIVIDER = 30;
+    // Region 31 tiles are exempt from fog of war: they stay fully revealed no
+    // matter where the vision sources are. Divider tiles (region 30) touching
+    // one of them are revealed as well, but only while player 1 or player 2 is
+    // actually facing them (inside the vision cone).
+    const REGION_FOG_EXEMPT = 31;
 
     let fogOfWarEnabled = true;
     let updateCounter = 0;
@@ -497,6 +502,9 @@
         this._currentFrameVisible = new Uint8Array(size);
         this._lastVisibleIndices = [];
 
+        this.scanFogRegionTiles();
+        this.applyFogExemptTiles(true);
+
         for (let i = 0; i < size; i++) {
             if (this._fogOfWarData[i] === 2) this._lastVisibleIndices.push(i);
         }
@@ -569,7 +577,120 @@
         if ((this._fogOfWarDisabled || !fogOfWarEnabled) && !this._hasVisionDividers) return 2;
         const pos = this.normalizePos(x, y);
         if (!pos.isValid) return 0;
+        if (this.regionId(pos.x, pos.y) === REGION_FOG_EXEMPT) return 2;
         return this._fogOfWarData[pos.y * this.width() + pos.x] || 0;
+    };
+
+    // Cache the fog-exempt tiles (region 31) and the divider tiles (region 30)
+    // sitting next to one of them, so the per-frame passes are list walks
+    // instead of full-map scans.
+    Game_Map.prototype.scanFogRegionTiles = function () {
+        const w = this.width();
+        const h = this.height();
+        const exempt = [];
+        const peek = [];
+
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                if (this.regionId(x, y) === REGION_FOG_EXEMPT) exempt.push(y * w + x);
+            }
+        }
+
+        if (exempt.length > 0) {
+            const checked = new Uint8Array(w * h);
+            for (let i = 0; i < exempt.length; i++) {
+                const x = exempt[i] % w;
+                const y = (exempt[i] / w) | 0;
+                for (let oy = -1; oy <= 1; oy++) {
+                    for (let ox = -1; ox <= 1; ox++) {
+                        const nx = x + ox;
+                        const ny = y + oy;
+                        if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+                        const index = ny * w + nx;
+                        if (checked[index]) continue;
+                        checked[index] = 1;
+                        if (this.regionId(nx, ny) === REGION_DIVIDER) peek.push(index);
+                    }
+                }
+            }
+        }
+
+        this._fogExemptIndices = exempt;
+        this._fogPeekDividerIndices = peek;
+    };
+
+    // Force every region-31 tile to the revealed state. Passing snap = true
+    // also zeroes its transition timer so it never fades in.
+    Game_Map.prototype.applyFogExemptTiles = function (snap = false) {
+        const list = this._fogExemptIndices;
+        const data = this._fogOfWarData;
+        if (!list || list.length === 0 || !data) return;
+        const width = this.width();
+
+        for (let i = 0; i < list.length; i++) {
+            const index = list[i];
+            if (index >= data.length) continue;
+
+            if (data[index] !== 2) {
+                data[index] = 2;
+                if (!(this._activeTransitions instanceof Set)) this._activeTransitions = new Set();
+                this._activeTransitions.add(index);
+                this.markChunkDirty(index % width, (index / width) | 0);
+            }
+
+            if (snap && this._fogTransitionTimers && this._fogTransitionTimers[index] !== 0) {
+                this._fogTransitionTimers[index] = 0;
+                if (this._activeTransitions instanceof Set) this._activeTransitions.delete(index);
+                this.markChunkDirty(index % width, (index / width) | 0);
+            }
+
+            // Keep them out of the "was visible, now isn't" demotion pass.
+            if (this._currentFrameVisible && !this._currentFrameVisible[index]) {
+                this._currentFrameVisible[index] = 1;
+                this._visibleIndices.push(index);
+            }
+        }
+    };
+
+    // True when the tile falls inside the character's vision cone (same angle
+    // and range the rays use). Adjacent tiles always count, whatever the facing.
+    Game_Map.prototype.isTileInVisionCone = function (char, x, y) {
+        if (!char) return false;
+        const cx = Math.round(char._realX);
+        const cy = Math.round(char._realY);
+        const dx = x - cx;
+        const dy = y - cy;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > this.visionRange()) return false;
+        if (distance <= 1.5) return true;
+
+        const baseAngle = { 2: Math.PI / 2, 4: Math.PI, 6: 0, 8: -Math.PI / 2 }[char.direction()];
+        if (baseAngle === undefined) return false;
+
+        let diff = Math.atan2(dy, dx) - baseAngle;
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        return Math.abs(diff) <= (VISION_ANGLE * Math.PI / 180) / 2;
+    };
+
+    // Reveal the divider tiles bordering a region-31 tile, but only the ones a
+    // vision source is currently looking at.
+    Game_Map.prototype.revealPeekedDividers = function (chars) {
+        const list = this._fogPeekDividerIndices;
+        if (!list || list.length === 0 || !chars || chars.length === 0) return;
+        const width = this.width();
+
+        for (let i = 0; i < list.length; i++) {
+            const index = list[i];
+            const x = index % width;
+            const y = (index / width) | 0;
+            for (let c = 0; c < chars.length; c++) {
+                if (this.isTileInVisionCone(chars[c], x, y)) {
+                    this.setFogOfWarStateByIndex(index, 2);
+                    break;
+                }
+            }
+        }
     };
 
     // True when this map should render fog purely to enforce interior dividers
@@ -648,9 +769,10 @@
         }
 
         const force = this._forceVisionUpdate;
+        // Facing is part of the key: the peeked divider tiles depend on it.
         let key = '';
         for (let i = 0; i < sources.length; i++) {
-            key += Math.round(sources[i].x) + ',' + Math.round(sources[i].y) + ';';
+            key += Math.round(sources[i].x) + ',' + Math.round(sources[i].y) + ',' + sources[i].direction() + ';';
         }
         if (!force && key === this._dividerFogKey) {
             this.updateTransitionTimers();
@@ -678,6 +800,9 @@
             const see = revealAll || (mask && mask[i]);
             this.setFogOfWarStateByIndex(i, see ? 2 : 0);
         }
+
+        this.applyFogExemptTiles();
+        this.revealPeekedDividers(sources);
 
         if (force) {
             // Snap the transition alpha so the interior appears immediately
@@ -910,6 +1035,9 @@
                 const visionY = p.id === 1 ? this._visionY : this._visionY2;
                 this.calculateVision(visionX, visionY, p.char.direction(), p.char);
             }
+
+            this.applyFogExemptTiles();
+            this.revealPeekedDividers(players.map(p => p.char));
 
             if (isInitial) {
                 for (let i = 0; i < this._visibleIndices.length; i++) {
@@ -1675,6 +1803,8 @@
                         }
                         $gameMap.calculateVision(p.x, p.y, p.direction(), p);
                     });
+                    $gameMap.applyFogExemptTiles(true);
+                    $gameMap.revealPeekedDividers(players);
                     $gameMap.updateTransitionTimers();
                 }
             }

@@ -50,6 +50,17 @@
     "arcadeCentipede": "Arcade: Centipede",
     "piano": "Pianoforte"
   },
+  "minigameSetup": {
+    "venueTitle": "Dove",
+    "timeTitle": "Quando",
+    "exterior": "All'aperto",
+    "interior": "Al chiuso",
+    "morning": "Mattina",
+    "afternoon": "Pomeriggio",
+    "evening": "Sera",
+    "night": "Notte",
+    "back": "Indietro"
+  },
   "disclaimer": {
     "text": "Questa prima build giocabile ha bisogno del tuo aiuto! Segnala qualsiasi bug, problema di collisione, funzionalita che vorresti aggiungere o cose da riequilibrare nel canale #bug-feedback del server Esoteric Heavy Industries",
     "noclip": "Se resti bloccato in un muro, tieni premuto CTRL per usare la modalita noclip."

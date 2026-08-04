@@ -1,5 +1,5 @@
 /*:
- * @plugindesc Merged Vehicle & Movement System v3.2
+ * @plugindesc Merged Vehicle & Movement System v3.3
  * @author Omni-Lex (Merged)
  * @target MZ
  *
@@ -169,6 +169,19 @@
  *   - On foot: Speed locked at 4, no dash
  *   - In vehicle: Speed locked at 5
  * 
+ * ============================================================================
+ * CHANGELOG v3.3:
+ * - Fixed: a vehicle left in one procedural biome no longer stands in the next
+ *   one. Every biome shares map id 636, so a parked vehicle is now taken off the
+ *   map whenever the loaded biome is not the one it was left in (world square,
+ *   layer depth and alien/Earth realm all have to match).
+ * - Added: a park record carries the world-map tile its map corresponds to, read
+ *   from the map's <Coords x y> notetag, so parking on an authored map shows the
+ *   vehicle at that world tile on map 315.
+ * - Added: when several vehicles are parked on one tile, only the last one parked
+ *   is drawn and interacting asks which one is meant.
+ * - Fixed: entering a vehicle interior no longer overwrites the vehicle's parked
+ *   tile with the player's; the way back out is its own record.
  * ============================================================================
  * CHANGELOG v3.2:
  * - Added: persistent fuel gauge HUD (top-left) while driving a fuel vehicle;
@@ -509,7 +522,9 @@
   // consumes or stores fuel. All fuel access across the vehicle plugins goes
   // through this one API.
 
-  function configForFuelKey(key) {
+  // The config a vehicle key names. The same keys address the fuel store, the
+  // position store and the upgrade/maintenance types, so one lookup serves all.
+  function configForVehicleKey(key) {
     switch (key) {
       case 'camper':  return VehicleConfig.CAMPER;
       case 'car':     return VehicleConfig.CAR;
@@ -531,13 +546,13 @@
     },
 
     usesFuel(key) {
-      const c = configForFuelKey(key);
+      const c = configForVehicleKey(key);
       return !!(c && c.usesFuel);
     },
 
     // Effective tank capacity (honors the Expanded Tank upgrade).
     max(key) {
-      return configMaxFuel(configForFuelKey(key));
+      return configMaxFuel(configForVehicleKey(key));
     },
 
     // Current litres in the tank. Fuel-free vehicles (bike) always read as full.
@@ -579,21 +594,61 @@
   // Per-vehicle position store (window.VehiclePosition)
   // ============================================================================
   //
-  // A vehicle's parked map + tile coordinates are NO LONGER kept in RPG Maker
-  // variables (the old Camper 63/64/67, Car 69/70/72, Airship 144/145/147, Bike
-  // 150/151/153 slots). Like fuel, each vehicle now owns its parked location in a
-  // dedicated object on $gameSystem (so it persists in saves) keyed by vehicle:
-  // 'camper' | 'car' | 'bike' | 'airship'. This is the single source of truth for
-  // where a parked vehicle sits; Scene_Map re-places each Game_Vehicle from it on
-  // map load (VehicleManager.reconcileToStore) so a memorized vehicle is always
-  // physically present and never silently vanishes across map changes.
+  // A vehicle's parked map + tile coordinates are NOT kept in RPG Maker variables
+  // (the old Camper 63/64/67, Car 69/70/72, Airship 144/145/147, Bike 150/151/153
+  // slots) and are NOT world data either: like fuel, each vehicle owns its parked
+  // location in a dedicated object on $gameSystem, so it lives in the savegame
+  // alone and never leaks into the shared world folder. Keys are the vehicle keys
+  // 'camper' | 'car' | 'bike' | 'boat' | 'airship'.
+  //
+  // This store is the single source of truth for where a parked vehicle sits.
+  // Scene_Map re-places every Game_Vehicle from it on map load
+  // (VehicleManager.reconcileToStore) AND takes off the map any vehicle that
+  // belongs elsewhere: the procedural map is one reused map id (636), so without
+  // that eviction a camper left in one biome keeps standing on the next biome's
+  // terrain (over open water, half of it not even solid) as the player walks on.
+  //
+  // A park record is { mapId, x, y, worldX, worldY, alien, order }:
+  //   mapId/x/y      the canonical parked tile, on whatever map it was left on
+  //                  (world map, a procedural biome, or any authored map)
+  //   worldX/worldY  the world-map (315) tile that map corresponds to. This is
+  //                  where the vehicle is shown on the world map, and for a
+  //                  procedural park it also says WHICH biome it was left in
+  //   alien          parked on an alien landing grid, which reuses map 636 and the
+  //                  world-coordinate variables as grid cells: such a park has no
+  //                  world-map tile and is never shown on map 315
+  //   layer          depth in the procedural layer stack, since one world square
+  //                  generates a different map per cave floor / ocean depth
+  //   order          park sequence, so when several vehicles share one tile the
+  //                  last one parked there is the one drawn
+
+  const VEHICLE_KEYS = ['camper', 'car', 'bike', 'boat', 'airship'];
+
+  // The reused procedural map's id (owned by WorldMapReturn; 636 by default).
+  function proceduralMapId() {
+    return (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
+  }
+
+  // True while the loaded procedural map is an alien planet's landing grid.
+  function isAlienSurfaceNow() {
+    return !!(window.GalaxySim && window.GalaxySim.isAlienSurface &&
+      window.GalaxySim.isAlienSurface());
+  }
+
+  // How deep in the layer stack (cave floors, ocean depths) the loaded procedural
+  // map is. One world square generates a different map per depth, so a vehicle
+  // left on the surface must not turn up in the cave under it.
+  function currentProcLayer() {
+    const pg = $gameSystem._procGenData;
+    return (pg && pg.biomeLayerStack && pg.biomeLayerStack.length) || 0;
+  }
 
   // World-map (map 315) coordinates the CURRENT map corresponds to. These are the
   // coords a parked vehicle is shown at on the world map, and the key that decides
   // whether a proc-map (636) vehicle belongs to the biome currently loaded:
   //   - Map 315:  the tile IS the world coord (use the player's tile).
-  //   - Proc map: the world tile the biome was generated from (Vars 43/44, which
-  //               the proc-gen pipeline keeps in sync with procGenData originX/Y).
+  //   - Proc map: the world tile the biome was generated from, taken from
+  //               procGenData (authoritative) and falling back to Vars 43/44.
   //   - Any other map: its <Coords x y> notetag if present, else the last known
   //               player world coords (Vars 43/44), else the map315 default spawn.
   function currentWorldCoords() {
@@ -603,8 +658,11 @@
     if (mapId === 315) {
       return { x: $gamePlayer.x, y: $gamePlayer.y };
     }
-    const procMapId = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-    if (mapId === procMapId) {
+    if (mapId === proceduralMapId()) {
+      const pg = $gameSystem._procGenData;
+      if (pg && typeof pg.originX === 'number' && typeof pg.originY === 'number') {
+        return { x: pg.originX, y: pg.originY };
+      }
       return { x: $gameVariables.value(xVar) || 0, y: $gameVariables.value(yVar) || 0 };
     }
     if ($gameMap._coordsDest) {
@@ -614,6 +672,31 @@
       x: $gameVariables.value(xVar) || VehicleConfig.GENERAL.map315.defaultX,
       y: $gameVariables.value(yVar) || VehicleConfig.GENERAL.map315.defaultY
     };
+  }
+
+  /**
+   * The world-map tile a given map corresponds to, for a map that is not
+   * necessarily the one loaded (fast travel parks a vehicle on its destination
+   * map before the transfer happens). Reads that map's <Coords x y> notetag
+   * straight from its data file when it has to, so parking on a map tagged
+   * <Coords 62 117> always puts the vehicle at 62,117 on the world map.
+   */
+  function worldCoordsForMap(mapId, x, y) {
+    if (mapId === 315) return { x: Number(x) || 0, y: Number(y) || 0 };
+    if (mapId === $gameMap.mapId()) return currentWorldCoords();
+    const data = mapCache.getMapData(mapId);
+    const note = (data && data.note) || '';
+    const match = note.match(/<\s*coords\b\s*[:=]?\s*(\d+)\D+(\d+)\s*>/i);
+    if (match) return { x: parseInt(match[1], 10), y: parseInt(match[2], 10) };
+    return currentWorldCoords();
+  }
+
+  // Park sequence counter, kept in the save so the "last one parked here" answer
+  // survives reloading.
+  function nextParkOrder() {
+    const current = Number($gameSystem._vehicleParkOrder) || 0;
+    $gameSystem._vehicleParkOrder = current + 1;
+    return $gameSystem._vehicleParkOrder;
   }
 
   const VehiclePosition = {
@@ -626,15 +709,12 @@
       return $gameSystem._vehiclePositionData;
     },
 
-    // Stored { mapId, x, y, worldX, worldY } for a vehicle, or null if never parked.
-    // mapId/x/y are the canonical parked tile (world map, proc map, or any map).
-    // worldX/worldY are the world-map (315) coords the vehicle is displayed at, and
-    // for a proc-map (636) park they also identify WHICH biome it was left in.
+    // The park record for a vehicle, or null if it was never parked.
     get(key) { return (key && this._store()[key]) || null; },
 
-    // worldX / worldY are optional: when omitted they are inferred from the map the
-    // call is made on (currentWorldCoords), so legacy callers that only pass a tile
-    // still get correct world coords. On map 315 the tile itself is the world coord.
+    // worldX / worldY are optional: when omitted they are resolved from the map
+    // being parked on (its own tile on map 315, its <Coords> tag elsewhere), so
+    // legacy callers that only pass a tile still get correct world coords.
     set(key, mapId, x, y, worldX, worldY) {
       if (!key) return;
       mapId = Number(mapId) || 0;
@@ -644,21 +724,61 @@
       if (worldX !== undefined && worldY !== undefined) {
         wx = Number(worldX) || 0;
         wy = Number(worldY) || 0;
-      } else if (mapId === 315) {
-        wx = x; wy = y;
       } else {
-        const wc = currentWorldCoords();
+        const wc = worldCoordsForMap(mapId, x, y);
         wx = wc.x; wy = wc.y;
       }
-      this._store()[key] = { mapId, x, y, worldX: wx, worldY: wy };
+      const onProcMap = mapId === proceduralMapId() && mapId === $gameMap.mapId();
+      const alien = onProcMap && isAlienSurfaceNow();
+      const layer = onProcMap ? currentProcLayer() : 0;
+      this._store()[key] = {
+        mapId, x, y, worldX: wx, worldY: wy, alien, layer, order: nextParkOrder()
+      };
     },
 
     mapId(key) { const p = this.get(key); return p ? p.mapId : 0; },
     x(key)     { const p = this.get(key); return p ? p.x : 0; },
     y(key)     { const p = this.get(key); return p ? p.y : 0; },
-    // World coords for map-315 display; fall back to the tile for legacy saves.
-    worldX(key) { const p = this.get(key); return p ? (typeof p.worldX === 'number' ? p.worldX : p.x) : 0; },
-    worldY(key) { const p = this.get(key); return p ? (typeof p.worldY === 'number' ? p.worldY : p.y) : 0; }
+    order(key) { const p = this.get(key); return (p && Number(p.order)) || 0; },
+    // World coords for map-315 display. A legacy record with no world coords only
+    // has a usable one when it was parked on the world map itself.
+    worldX(key) {
+      const p = this.get(key);
+      if (!p) return 0;
+      if (typeof p.worldX === 'number') return p.worldX;
+      return p.mapId === 315 ? p.x : 0;
+    },
+    worldY(key) {
+      const p = this.get(key);
+      if (!p) return 0;
+      if (typeof p.worldY === 'number') return p.worldY;
+      return p.mapId === 315 ? p.y : 0;
+    },
+
+    // ------------------------------------------------------------------------
+    // Where the PLAYER stood when they boarded / entered the vehicle. This is a
+    // separate record on purpose: the parked tile belongs to the vehicle and must
+    // stay exactly where the vehicle is, so the "step back out of the interior"
+    // destination can no longer overwrite it.
+    // ------------------------------------------------------------------------
+    setEntry(key, mapId, x, y) {
+      if (!key) return;
+      if (!$gameSystem._vehicleEntryData) $gameSystem._vehicleEntryData = {};
+      $gameSystem._vehicleEntryData[key] = {
+        mapId: Number(mapId) || 0, x: Number(x) || 0, y: Number(y) || 0
+      };
+    },
+
+    // The spot to drop the player when they leave the vehicle's interior: where
+    // they got in, as long as the vehicle is still parked on that same map,
+    // otherwise wherever the vehicle has since been taken.
+    exit(key) {
+      const entry = key && $gameSystem._vehicleEntryData && $gameSystem._vehicleEntryData[key];
+      if (entry && entry.mapId && entry.mapId === this.mapId(key)) {
+        return { mapId: entry.mapId, x: entry.x, y: entry.y };
+      }
+      return resolveReturnDestination(key);
+    }
   };
   window.VehiclePosition = VehiclePosition;
 
@@ -673,11 +793,75 @@
   function resolveReturnDestination(key) {
     const pos = VehiclePosition.get(key);
     if (!pos) return { mapId: 315, x: 0, y: 0 };
-    const procMapId = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-    if (pos.mapId === procMapId || !pos.mapId) {
+    if (pos.mapId === proceduralMapId() || !pos.mapId) {
       return { mapId: 315, x: VehiclePosition.worldX(key), y: VehiclePosition.worldY(key) };
     }
     return { mapId: pos.mapId, x: pos.x, y: pos.y };
+  }
+
+  /**
+   * The tile a parked vehicle occupies on the map that is loaded right now, or
+   * null when it is parked somewhere else. This is the one rule that decides
+   * where a vehicle is visible:
+   *   - map 315:    at its world coordinates, wherever it is actually parked
+   *                 (an alien landing grid has no world tile, so it shows nothing)
+   *   - proc map:   only when it was left in THIS biome (same world coordinates,
+   *                 same realm), at the internal tile it was left on
+   *   - any other:  only when it was parked on that very map
+   */
+  function parkedTileOnCurrentMap(key) {
+    const pos = VehiclePosition.get(key);
+    if (!pos || !pos.mapId) return null;
+
+    const currentMap = $gameMap.mapId();
+    const procMap = proceduralMapId();
+    let tx, ty;
+
+    if (currentMap === 315) {
+      if (pos.alien) return null;
+      tx = VehiclePosition.worldX(key);
+      ty = VehiclePosition.worldY(key);
+    } else if (currentMap === procMap) {
+      if (pos.mapId !== procMap) return null;
+      if (!!pos.alien !== isAlienSurfaceNow()) return null;
+      if ((pos.layer || 0) !== currentProcLayer()) return null;
+      const wc = currentWorldCoords();
+      if (VehiclePosition.worldX(key) !== wc.x || VehiclePosition.worldY(key) !== wc.y) return null;
+      tx = pos.x; ty = pos.y;
+    } else {
+      if (pos.mapId !== currentMap) return null;
+      tx = pos.x; ty = pos.y;
+    }
+
+    if (!(tx > 0 || ty > 0)) return null;
+    if (!$gameMap.isValid(tx, ty)) return null;
+    return { x: tx, y: ty };
+  }
+
+  // Set while THIS plugin re-places a vehicle from the store, so the setLocation
+  // hook below does not write those moves straight back into the store (an
+  // eviction to map 0 would otherwise be recorded as the vehicle's parked spot).
+  let movingVehicleInternally = false;
+
+  function moveVehicleInternally(vehicle, mapId, x, y) {
+    movingVehicleInternally = true;
+    try {
+      vehicle.setLocation(mapId, x, y);
+    } finally {
+      movingVehicleInternally = false;
+    }
+  }
+
+  /**
+   * Re-decides which vehicle is drawn on each tile of the current map, with
+   * `preferred` (the one just parked or just picked) always on top.
+   */
+  function restackCurrentMap(preferred) {
+    const mapId = $gameMap.mapId();
+    vehicleManager.applyStacking(
+      vehicleManager.activeSlots().filter(slot => slot.vehicle._mapId === mapId),
+      preferred
+    );
   }
 
   /**
@@ -718,8 +902,7 @@
     if ($gameMap.regionId(x, y) === 10) return false;
     if ($gameMap.regionId(x, y) === 99) return true;
     const mapId = $gameMap.mapId();
-    const procMapId = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-    if ((mapId === 315 || mapId === procMapId) && $gameMap.terrainTag(x, y) === 3) return true;
+    if ((mapId === 315 || mapId === proceduralMapId()) && $gameMap.terrainTag(x, y) === 3) return true;
     return false;
   }
 
@@ -923,13 +1106,13 @@
     initialize() {
       if (this._initialized) return;
 
+      if (!$gameSystem._boatType) $gameSystem._boatType = 'car';
+
       this._initializeVehicle(VehicleConfig.CAMPER);
       this._initializeVehicle(VehicleConfig.CAR);
       this._initializeVehicle(VehicleConfig.BIKE);
       this._initializeVehicle(VehicleConfig.BOAT);
       this._initializeVehicle(VehicleConfig.AIRSHIP);
-
-      if (!$gameSystem._boatType) $gameSystem._boatType = 'car';
 
       this._initialized = true;
     }
@@ -941,72 +1124,134 @@
       if (config.usesFuel) {
         VehicleFuel.get(VehicleFuel.keyForConfig(config));
       }
-      // Seed a default parked location (world map, tile unresolved) the first time
-      // a vehicle is seen, so the store always has an entry to persist in saves.
+
+      // The first time a vehicle is seen it adopts wherever the engine has it,
+      // i.e. its System.json start position, so a vehicle the player has never
+      // parked still stands where the project put it. The Car, Bike and Boat
+      // share one engine slot, so only the sub-type that slot currently stands
+      // for may claim its tile; the other two start unplaced (tile 0,0).
       const posKey = VehiclePosition.keyForConfig(config);
-      if (!VehiclePosition.get(posKey)) {
+      if (VehiclePosition.get(posKey)) return;
+
+      const vehicle = this.getVehicle(config.type);
+      const slotIsThisVehicle = config.type !== 'boat' || $gameSystem._boatType === config.boatSubType;
+      const adopt = !!vehicle && vehicle._mapId > 0 && slotIsThisVehicle &&
+        !mapCache.isInterior(vehicle._mapId);
+      if (adopt) {
+        VehiclePosition.set(posKey, vehicle._mapId, vehicle.x, vehicle.y);
+      } else {
         VehiclePosition.set(posKey, 315, 0, 0);
       }
     }
 
-    // Re-place each parked (non-ridden) vehicle onto the current map from the
-    // internal position store, so a vehicle memorized here is always physically
-    // present where it was left. This is what stops vehicles vanishing when the
-    // player leaves and returns to a map (their Game_Vehicle instance would
-    // otherwise still be sitting on the previous map id).
+    // The vehicle key the engine's single 'boat' slot currently stands for. The
+    // Car, the Bike and the Boat all share that one Game_Vehicle, so only one of
+    // them can be physically present at a time.
+    boatKey() {
+      if ($gameSystem._boatType === 'bike') return 'bike';
+      if ($gameSystem._boatType === 'boat') return 'boat';
+      return 'car';
+    }
+
+    // Points the shared 'boat' slot at another sub-type (car / bike / boat),
+    // rebuilding the config and sprite that go with it. Never runs while the
+    // player is riding that slot.
+    setBoatKey(key) {
+      const config = configForVehicleKey(key);
+      if (!config || config.type !== 'boat') return;
+      if ($gameSystem._boatType === config.boatSubType) return;
+      const vehicle = this.getVehicle('boat');
+      if (vehicle && $gamePlayer.isInVehicle() && $gamePlayer.vehicle() === vehicle) return;
+      $gameSystem._boatType = config.boatSubType;
+      if (!vehicle) return;
+      vehicle._config = this.getConfig(vehicle);
+      const sprite = selectVehicleSprite(config);
+      if (sprite) {
+        vehicle._characterName = sprite.name;
+        vehicle._characterIndex = sprite.index;
+      }
+    }
+
+    // The three engine slots and the vehicle key each of them stands for now.
+    activeSlots() {
+      return [
+        { key: 'camper', vehicle: this.getVehicle('ship') },
+        { key: 'airship', vehicle: this.getVehicle('airship') },
+        { key: this.boatKey(), vehicle: this.getVehicle('boat') }
+      ].filter(slot => !!slot.vehicle);
+    }
+
+    // Re-place every parked (non-ridden) vehicle on the current map from the
+    // internal position store, and take off the map any vehicle parked elsewhere.
+    // Placing is what stops a memorized vehicle vanishing across map changes;
+    // evicting is what stops a vehicle left in one procedural biome from standing
+    // in the middle of the next one (all biomes share map id 636).
     reconcileToStore() {
       const currentMap = $gameMap.mapId();
       if (mapCache.isInterior(currentMap)) return;
 
-      const procMapId = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-      const wc = currentWorldCoords();
+      const ridden = $gamePlayer.isInVehicle() ? $gamePlayer.vehicle() : null;
+      const boatVehicle = this.getVehicle('boat');
 
-      const boatConfig = $gameSystem._boatType === 'bike' ? VehicleConfig.BIKE
-        : $gameSystem._boatType === 'boat' ? VehicleConfig.BOAT
-          : VehicleConfig.CAR;
-      const configs = [
-        VehicleConfig.CAMPER,
-        VehicleConfig.AIRSHIP,
-        boatConfig
-      ];
+      // Decide which of the three shared-slot vehicles the 'boat' slot should be:
+      // the one parked here, most recently parked first. With none parked here the
+      // slot keeps its current sub-type and is simply taken off the map below.
+      if (boatVehicle && ridden !== boatVehicle) {
+        const parkedHere = ['car', 'bike', 'boat']
+          .filter(key => !!parkedTileOnCurrentMap(key))
+          .sort((a, b) => VehiclePosition.order(b) - VehiclePosition.order(a));
+        if (parkedHere.length > 0) this.setBoatKey(parkedHere[0]);
+      }
 
-      configs.forEach(config => {
-        const vehicle = this.getVehicle(config.type);
-        if (!vehicle) return;
+      const placed = [];
+      this.activeSlots().forEach(({ key, vehicle }) => {
+        vehicle._vsStacked = false;
         // Never move the vehicle the player is currently riding.
-        if ($gamePlayer.isInVehicle() && $gamePlayer.vehicle() === vehicle) return;
+        if (vehicle === ridden) return;
 
-        const pos = VehiclePosition.get(VehiclePosition.keyForConfig(config));
-        if (!pos) return;
-
-        // Resolve the tile this vehicle should occupy on the current map, or null
-        // if it does not belong here.
-        let tx = 0, ty = 0;
-        if (currentMap === 315) {
-          // On the world map a parked vehicle is ALWAYS shown at its world coords,
-          // wherever it is actually parked (world map, a biome, or an interior).
-          tx = (typeof pos.worldX === 'number') ? pos.worldX : pos.x;
-          ty = (typeof pos.worldY === 'number') ? pos.worldY : pos.y;
-        } else if (currentMap === procMapId) {
-          // The proc map is reused per world tile: only show the vehicle if it was
-          // left in THIS biome (its stored world coords match the loaded tile).
-          if (pos.mapId !== procMapId) return;
-          const pwx = (typeof pos.worldX === 'number') ? pos.worldX : pos.x;
-          const pwy = (typeof pos.worldY === 'number') ? pos.worldY : pos.y;
-          if (pwx !== wc.x || pwy !== wc.y) return;
-          tx = pos.x; ty = pos.y;
-        } else {
-          // Any other map: match by the canonical parked map id.
-          if (pos.mapId !== currentMap) return;
-          tx = pos.x; ty = pos.y;
+        const tile = parkedTileOnCurrentMap(key);
+        if (!tile) {
+          // Parked elsewhere: map id 0 makes Game_Vehicle.pos() stop matching, so
+          // the vehicle is neither drawn nor solid nor boardable here. The store
+          // still holds its real spot, and it is put back when the player returns.
+          if (vehicle._mapId === currentMap) moveVehicleInternally(vehicle, 0, vehicle.x, vehicle.y);
+          return;
         }
 
-        if (!(tx > 0 || ty > 0)) return;
-        if (vehicle._mapId === currentMap && vehicle.x === tx && vehicle.y === ty) return;
-
-        vehicle.setLocation(currentMap, tx, ty);
-        vehicle.refresh();
+        if (vehicle._mapId !== currentMap || vehicle.x !== tile.x || vehicle.y !== tile.y) {
+          moveVehicleInternally(vehicle, currentMap, tile.x, tile.y);
+        }
+        placed.push({ key, vehicle });
       });
+
+      this.applyStacking(placed);
+    }
+
+    // Several vehicles can be parked on one tile (most easily on the world map,
+    // where every park is shown at its world coordinates). Only the last one
+    // parked there is drawn; the others stay boardable through the chooser.
+    // `preferred` is the Game_Vehicle that must be the one drawn regardless of
+    // park order, which is how the vehicle picked out of the chooser comes to the top.
+    applyStacking(placed, preferred) {
+      const shown = new Map();  // "x,y" -> the slot currently drawn there
+      placed.forEach(slot => {
+        const tileKey = `${slot.vehicle.x},${slot.vehicle.y}`;
+        const rival = shown.get(tileKey);
+        if (!rival) {
+          slot.vehicle._vsStacked = false;
+          shown.set(tileKey, slot);
+          return;
+        }
+        const slotWins = slot.vehicle === preferred ? true
+          : rival.vehicle === preferred ? false
+            : VehiclePosition.order(slot.key) > VehiclePosition.order(rival.key);
+        const winner = slotWins ? slot : rival;
+        const loser = slotWins ? rival : slot;
+        winner.vehicle._vsStacked = false;
+        loser.vehicle._vsStacked = true;
+        shown.set(tileKey, winner);
+      });
+      placed.forEach(slot => slot.vehicle.refresh());
     }
 
     getVehicle(type) {
@@ -1055,11 +1300,13 @@
       // the reused procedural map 636, or any regular map) together with the world
       // coordinates that map corresponds to. The world coords let the vehicle be
       // shown on map 315 no matter where it is actually parked, and (for the proc
-      // map) identify which biome it was left in so it is only re-placed there when
-      // that same world tile is revisited (#133 is handled by the world-coord match
-      // in reconcileToStore, not by discarding the proc-map position).
+      // map) identify which biome it was left in so it is only re-placed in that
+      // biome, at the same internal tile, when that world square is revisited.
       const wc = currentWorldCoords();
       VehiclePosition.set(key, mapId, vehicle.x, vehicle.y, wc.x, wc.y);
+      // The vehicle just parked is the one drawn where it stands, so it comes out
+      // on top of anything already parked on that tile.
+      if (!vehicle._driving) restackCurrentMap(vehicle);
 
       // Vars 43/44 are the PLAYER's world coordinates (shared across systems),
       // not vehicle-owned data; keep them in sync while driving on the world map.
@@ -1301,6 +1548,23 @@
     }
   };
 
+  // Anything that moves a vehicle (an event's "Set Vehicle Location", the fast
+  // travel network, the 3D driving scene) parks it: record it, so the position
+  // store stays the one description of where every vehicle is and reconcileToStore
+  // can never evict a vehicle somebody else legitimately placed.
+  const _Game_Vehicle_setLocation = Game_Vehicle.prototype.setLocation;
+  Game_Vehicle.prototype.setLocation = function (mapId, x, y) {
+    _Game_Vehicle_setLocation.call(this, mapId, x, y);
+    if (movingVehicleInternally || this._driving) return;
+    if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
+    if (!mapId || mapCache.isInterior(mapId)) return;
+    const key = VehiclePosition.keyForConfig(vehicleManager.getConfig(this));
+    if (!key) return;
+    const pos = VehiclePosition.get(key);
+    if (pos && pos.mapId === mapId && pos.x === x && pos.y === y) return;
+    VehiclePosition.set(key, mapId, x, y);
+  };
+
   const _Game_Vehicle_update = Game_Vehicle.prototype.update;
   Game_Vehicle.prototype.update = function () {
     _Game_Vehicle_update.call(this);
@@ -1453,12 +1717,12 @@
     if (this.isShip() || this.isBoat() || this.isAirship()) {
       vehicleManager.savePosition(this);
 
-      // Save the player's boarding position so EndTravel can restore it
-      // (otherwise the EndTravel fallback reads unset vars and exits at 0,0)
+      // Remember where the player got in, so leaving the interior puts them back
+      // there. This is deliberately NOT the vehicle's parked position: that one
+      // belongs to the vehicle and must keep pointing at the tile it stands on.
       const config = vehicleManager.getConfig(this);
-      const procMapId1 = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-      if (config && !mapCache.isInterior($gameMap.mapId()) && $gameMap.mapId() !== procMapId1) {
-        VehiclePosition.set(VehiclePosition.keyForConfig(config), $gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+      if (config && !mapCache.isInterior($gameMap.mapId()) && $gameMap.mapId() !== proceduralMapId()) {
+        VehiclePosition.setEntry(VehiclePosition.keyForConfig(config), $gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
       }
 
       this._fuelTimer = 0;
@@ -1489,6 +1753,8 @@
     // vehicle turns invisible the instant the player stops driving.
     if (this.isShip() || this.isBoat() || this.isAirship()) {
       this.refresh();
+      // The vehicle just left is the one on show where it now stands.
+      restackCurrentMap(this);
     }
 
     // Set appropriate on-foot speed based on map
@@ -1520,6 +1786,241 @@
     if (_Game_CharacterBase_isCollidedWithVehicles.call(this, x, y)) return true;
     const airship = $gameMap.airship();
     return !!airship && airship.posNt(x, y);
+  };
+
+  // ============================================================================
+  // Sprite-sized collision
+  // ============================================================================
+  //
+  // A parked camper is drawn six tiles long but stands on one tile, so the player
+  // and every event walk straight through its body. window.VehicleFootprint reads
+  // the opaque pixels of a character's current frame and turns them into the tiles
+  // that frame really covers, so a big vehicle blocks what it looks like it blocks.
+  //
+  // Deliberately narrow: only the PLAYER and EVENTS are held to a footprint. Map
+  // passability, vehicles under way and everything else keep the engine's one-tile
+  // logic, and a character already standing inside a footprint is never held by it
+  // (otherwise stepping off a camper would box the player in under its own body).
+  //
+  // RoadCarAI.js feeds its cars in through addSource(); anything else with an
+  // oversized sprite can do the same.
+
+  // Share of a tile the sprite must cover before that tile counts as solid, so a
+  // few pixels of overhang do not steal a whole tile from the player.
+  const FOOTPRINT_MIN_COVERAGE = 0.4;
+  const FOOTPRINT_ALPHA = 8; // pixels below this alpha are not part of the sprite
+
+  const footprintSheets = new Map(); // sheet name -> measured pixel boxes
+  const footprintRects = new Map();  // sheet|index|direction|tiles -> tile offsets
+  const footprintSources = [];       // extra suppliers of oversized characters
+
+  /**
+   * Measures the opaque bounding box of every frame in a character sheet. One
+   * pass over the image, cached forever after (the result only depends on the
+   * pixels). Returns null when the sheet cannot be read, which pins that sheet
+   * to the engine's one-tile collision.
+   */
+  function measureCharacterSheet(name, bitmap) {
+    const big = ImageManager.isBigCharacter(name);
+    const cols = big ? 3 : 12;
+    const rows = big ? 4 : 8;
+    const w = bitmap.width;
+    const h = bitmap.height;
+    const fw = Math.floor(w / cols);
+    const fh = Math.floor(h / rows);
+    if (fw < 1 || fh < 1) return null;
+
+    let pixels;
+    try {
+      const source = bitmap.image || bitmap.canvas;
+      if (!source) return null;
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const context = canvas.getContext('2d');
+      context.drawImage(source, 0, 0);
+      pixels = context.getImageData(0, 0, w, h).data;
+    } catch (e) {
+      return null;
+    }
+
+    const cells = new Array(cols * rows).fill(null);
+    for (let y = 0; y < h; y++) {
+      const row = Math.floor(y / fh);
+      if (row >= rows) break;
+      for (let x = 0; x < w; x++) {
+        if (pixels[(y * w + x) * 4 + 3] <= FOOTPRINT_ALPHA) continue;
+        const col = Math.floor(x / fw);
+        if (col >= cols) continue;
+        const i = row * cols + col;
+        const lx = x - col * fw;
+        const ly = y - row * fh;
+        const cell = cells[i];
+        if (!cell) {
+          cells[i] = { left: lx, right: lx, top: ly, bottom: ly };
+        } else {
+          if (lx < cell.left) cell.left = lx;
+          if (lx > cell.right) cell.right = lx;
+          if (ly < cell.top) cell.top = ly;
+          if (ly > cell.bottom) cell.bottom = ly;
+        }
+      }
+    }
+    return { fw, fh, cols, cells };
+  }
+
+  /**
+   * The pixel box one character index faces one way, taken as the union of its
+   * three walking patterns so an animated frame never pokes out of its own
+   * footprint. Null while the sheet is still loading.
+   */
+  function footprintPixelBox(name, index, direction) {
+    if (!footprintSheets.has(name)) {
+      const bitmap = ImageManager.loadCharacter(name);
+      if (!bitmap || !bitmap.isReady() || !bitmap.width) return null;
+      footprintSheets.set(name, measureCharacterSheet(name, bitmap));
+    }
+    const sheet = footprintSheets.get(name);
+    if (!sheet) return null;
+
+    const big = ImageManager.isBigCharacter(name);
+    const blockX = big ? 0 : (index % 4) * 3;
+    const blockY = big ? 0 : Math.floor(index / 4) * 4;
+    const row = blockY + (direction - 2) / 2;
+    let box = null;
+    for (let pattern = 0; pattern < 3; pattern++) {
+      const cell = sheet.cells[row * sheet.cols + blockX + pattern];
+      if (!cell) continue;
+      if (!box) {
+        box = { left: cell.left, right: cell.right, top: cell.top, bottom: cell.bottom };
+      } else {
+        box.left = Math.min(box.left, cell.left);
+        box.right = Math.max(box.right, cell.right);
+        box.top = Math.min(box.top, cell.top);
+        box.bottom = Math.max(box.bottom, cell.bottom);
+      }
+    }
+    return box ? { box, fw: sheet.fw, fh: sheet.fh } : null;
+  }
+
+  /**
+   * Tile offsets a pixel span [low, high) reaches, relative to the tile the
+   * character stands on. The character's own tile is always part of it.
+   */
+  function coveredTileRange(low, high, size) {
+    const need = size * FOOTPRINT_MIN_COVERAGE;
+    let first = 0;
+    let last = 0;
+    for (let t = Math.floor(low / size); t <= Math.floor((high - 1) / size); t++) {
+      const overlap = Math.min(high, (t + 1) * size) - Math.max(low, t * size);
+      if (overlap < need) continue;
+      if (t < first) first = t;
+      if (t > last) last = t;
+    }
+    return { first, last };
+  }
+
+  /**
+   * Tile offsets the character's current frame covers, or null when the sprite
+   * is not measurable yet. The sprite is drawn anchored bottom-centre on its
+   * tile, so the frame is placed the same way here.
+   */
+  function footprintRect(character) {
+    const name = character.characterName ? character.characterName() : '';
+    if (!name) return null;
+    const index = character.characterIndex ? character.characterIndex() : 0;
+    const direction = character.direction();
+    const tw = $gameMap.tileWidth();
+    const th = $gameMap.tileHeight();
+    const shiftY = character.shiftY ? character.shiftY() : 0;
+    const key = `${name}|${index}|${direction}|${tw}x${th}|${shiftY}`;
+    if (footprintRects.has(key)) return footprintRects.get(key);
+
+    const measured = footprintPixelBox(name, index, direction);
+    if (!measured) return null; // still loading: retry on the next check
+    const { box, fw, fh } = measured;
+    const left = tw / 2 - fw / 2 + box.left;
+    const right = tw / 2 - fw / 2 + box.right + 1;
+    const bottomEdge = th - shiftY;
+    const top = bottomEdge - (fh - box.top);
+    const bottom = bottomEdge - (fh - box.bottom - 1);
+
+    const horizontal = coveredTileRange(left, right, tw);
+    const vertical = coveredTileRange(top, bottom, th);
+    const rect = {
+      minDx: horizontal.first,
+      maxDx: horizontal.last,
+      minDy: vertical.first,
+      maxDy: vertical.last
+    };
+    footprintRects.set(key, rect);
+    return rect;
+  }
+
+  /** True when the character's sprite covers tile (x, y) on the current map. */
+  function footprintCovers(character, x, y) {
+    if (!character) return false;
+    const dx = $gameMap.deltaX(x, character.x);
+    const dy = $gameMap.deltaY(y, character.y);
+    const rect = footprintRect(character);
+    if (!rect) return dx === 0 && dy === 0;
+    return dx >= rect.minDx && dx <= rect.maxDx && dy >= rect.minDy && dy <= rect.maxDy;
+  }
+
+  /**
+   * Every character on this map whose whole sprite is solid right now: the parked
+   * custom vehicles, plus whatever the registered sources add. A vehicle under
+   * way is not in the list, so driving keeps the engine's one-tile collision.
+   */
+  function solidFootprintCharacters() {
+    const list = [];
+    const mapId = $gameMap.mapId();
+    [$gameMap.boat(), $gameMap.ship(), $gameMap.airship()].forEach((vehicle) => {
+      if (!vehicle || vehicle._mapId !== mapId) return;
+      if (vehicle._driving || $gamePlayer.vehicle() === vehicle) return;
+      if (vehicle._vsStacked) return;  // parked under another vehicle: not drawn
+      if (!vehicle.characterName()) return;
+      list.push(vehicle);
+    });
+    footprintSources.forEach((source) => {
+      try {
+        source(list);
+      } catch (e) {
+        /* a broken source must never block movement */
+      }
+    });
+    return list;
+  }
+
+  window.VehicleFootprint = {
+    /** Registers a supplier that pushes its oversized solid characters onto a list. */
+    addSource(source) {
+      if (typeof source === 'function' && !footprintSources.includes(source)) {
+        footprintSources.push(source);
+      }
+    },
+    covers: footprintCovers,
+    rect: footprintRect,
+    /** True when an oversized sprite stands between `mover` and tile (x, y). */
+    blocks(mover, x, y) {
+      if (!$gameMap || !$gamePlayer || !mover) return false;
+      if (mover !== $gamePlayer && !(mover instanceof Game_Event)) return false;
+      for (const character of solidFootprintCharacters()) {
+        if (character === mover) continue;
+        if (!footprintCovers(character, x, y)) continue;
+        // Whoever is already under the sprite walks out of it freely.
+        if (footprintCovers(character, mover.x, mover.y)) continue;
+        return true;
+      }
+      return false;
+    }
+  };
+
+  const _Game_CharacterBase_isCollidedWithCharacters =
+    Game_CharacterBase.prototype.isCollidedWithCharacters;
+  Game_CharacterBase.prototype.isCollidedWithCharacters = function (x, y) {
+    if (_Game_CharacterBase_isCollidedWithCharacters.call(this, x, y)) return true;
+    return window.VehicleFootprint.blocks(this, x, y);
   };
 
   // Override dash button check
@@ -1626,6 +2127,17 @@
    * Returns the custom vehicle the player is currently facing (or standing under,
    * for the airship), or null if none is boardable from the current tile.
    */
+  /**
+   * True when the vehicle stands on tile (x, y) OR its sprite covers it: a
+   * parked camper is boarded by walking up to its body, not to the one tile it
+   * happens to be pinned to (which its own footprint now blocks off anyway).
+   */
+  function vehicleReachableAt(vehicle, x, y) {
+    if (!vehicle || vehicle._mapId !== $gameMap.mapId()) return false;
+    if (vehicle.pos(x, y)) return true;
+    return !vehicle._driving && window.VehicleFootprint.covers(vehicle, x, y);
+  }
+
   function detectBoardableVehicle() {
     const d = $gamePlayer.direction();
     const x1 = $gamePlayer.x;
@@ -1635,18 +2147,78 @@
 
     // Game_Vehicle.pos() already returns false when the vehicle is on another map.
     const airship = $gameMap.airship();
-    if (airship && (airship.pos(x1, y1) || airship.pos(x2, y2))) {
+    if (airship && (vehicleReachableAt(airship, x1, y1) || vehicleReachableAt(airship, x2, y2))) {
       return airship;
     }
     const ship = $gameMap.ship();
-    if (ship && ship.pos(x2, y2)) {
+    if (ship && vehicleReachableAt(ship, x2, y2)) {
       return ship;
     }
     const boat = $gameMap.boat();
-    if (boat && boat.pos(x2, y2)) {
+    if (boat && vehicleReachableAt(boat, x2, y2)) {
       return boat;
     }
     return null;
+  }
+
+  /**
+   * The Game_Vehicle a vehicle key is currently embodied by, or null when the
+   * engine slot is standing for another vehicle (the Car, the Bike and the Boat
+   * share one slot, so at most one of the three is materialized at a time).
+   */
+  function materializedVehicleFor(key) {
+    const config = configForVehicleKey(key);
+    if (!config) return null;
+    const vehicle = vehicleManager.getVehicle(config.type);
+    if (!vehicle) return null;
+    if (config.type === 'boat' && vehicleManager.boatKey() !== key) return null;
+    return vehicle;
+  }
+
+  /**
+   * Brings a parked vehicle out of the store and onto its tile, swapping the
+   * shared 'boat' slot over to it when it is the Car / Bike / Boat, and putting
+   * it on top of whatever else is parked on that tile. Returns the Game_Vehicle,
+   * or null when the vehicle is not parked on this map (or the slot is in use).
+   */
+  function materializeVehicle(key) {
+    const tile = parkedTileOnCurrentMap(key);
+    if (!tile) return null;
+    vehicleManager.setBoatKey(key);
+    const vehicle = materializedVehicleFor(key);
+    if (!vehicle) return null;
+    if ($gamePlayer.isInVehicle() && $gamePlayer.vehicle() === vehicle) return vehicle;
+    moveVehicleInternally(vehicle, $gameMap.mapId(), tile.x, tile.y);
+    restackCurrentMap(vehicle);
+    return vehicle;
+  }
+
+  /**
+   * Every vehicle key the player can interact with from where they stand, the
+   * most recently parked first. Vehicles are read from the position store rather
+   * than off the map, so one parked underneath another (or waiting for the shared
+   * 'boat' slot) is offered just the same.
+   */
+  function reachableVehicleKeys() {
+    const d = $gamePlayer.direction();
+    const x1 = $gamePlayer.x;
+    const y1 = $gamePlayer.y;
+    const x2 = $gameMap.roundXWithDirection(x1, d);
+    const y2 = $gameMap.roundYWithDirection(y1, d);
+
+    return VEHICLE_KEYS.filter(key => {
+      const tile = parkedTileOnCurrentMap(key);
+      if (!tile) return false;
+      // The airship is boarded from underneath as well as from in front.
+      const isAirship = key === 'airship';
+      if (tile.x === x2 && tile.y === y2) return true;
+      if (isAirship && tile.x === x1 && tile.y === y1) return true;
+      // An oversized parked sprite is boarded by walking up to its bodywork.
+      const vehicle = materializedVehicleFor(key);
+      if (!vehicle || vehicle._driving || vehicle._mapId !== $gameMap.mapId()) return false;
+      return window.VehicleFootprint.covers(vehicle, x2, y2) ||
+        (isAirship && window.VehicleFootprint.covers(vehicle, x1, y1));
+    }).sort((a, b) => VehiclePosition.order(b) - VehiclePosition.order(a));
   }
 
   // ============================================================================
@@ -1702,7 +2274,14 @@
   function worldMapEventLabel(event) {
     const name = (event.event().name || '').trim();
     const teleport = name.match(/^Teleport\s*-\s*(.+)$/i);
-    if (teleport) return T('VehicleSystem.travelTo', { place: teleport[1].trim() });
+    if (teleport) {
+      // The event name carries the Destinations.json key; the player reads the
+      // "name" field of that entry.
+      const key = teleport[1].trim();
+      const place = window.WorkSystem?.destinationName
+        ? window.WorkSystem.destinationName(key) : key;
+      return T('VehicleSystem.travelTo', { place });
+    }
     return name || T('VehicleSystem.examine');
   }
 
@@ -1725,6 +2304,17 @@
       $gamePlayer.gatherFollowers();
     } else {
       _Game_Player_getOnVehicle.call($gamePlayer);
+      // The engine only boards from the tile the vehicle is pinned to. A player
+      // who walked up to the bodywork instead is standing on the sprite but not
+      // on that tile, so step them onto it and board by hand.
+      if (!$gamePlayer.isInVehicle()) {
+        $gamePlayer.setThrough(true);
+        $gamePlayer.setPosition(vehicle.x, vehicle.y);
+        $gamePlayer.setThrough(false);
+        $gamePlayer._vehicleType = vehicle.isShip() ? 'ship' : 'boat';
+        $gamePlayer._vehicleGettingOn = true;
+        $gamePlayer.gatherFollowers();
+      }
     }
   }
 
@@ -1853,18 +2443,17 @@
     }
 
     if (config.interior && config.interior.mapId > 0) {
-      choices.push(`Enter ${vehicleDisplayName(config) === config.name ? config.name.toLowerCase() : vehicleDisplayName(config)}`);
+      choices.push(T('VehicleSystem.enterVehicle', { vehicle: vehicleNounName(config) }));
       handlers.push(() => {
         // Leave the vehicle parked on the current map; only the player enters.
         if ($gamePlayer.isInVehicle()) {
           disembarkLeavingParked(vehicle);
         }
         // Remember where the player entered from. The Exit / EndTravel command
-        // restores this (position store map/x/y); without it the spot can be 0
-        // (->0,0) or a stale previous location.
-        const procMapId2 = (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-        if (!mapCache.isInterior($gameMap.mapId()) && $gameMap.mapId() !== procMapId2) {
-          VehiclePosition.set(VehiclePosition.keyForConfig(config), $gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
+        // puts them back there; without it the spot can be 0 (->0,0) or a stale
+        // previous location.
+        if (!mapCache.isInterior($gameMap.mapId()) && $gameMap.mapId() !== proceduralMapId()) {
+          VehiclePosition.setEntry(VehiclePosition.keyForConfig(config), $gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
         }
         const direction = config.interior.direction || 2;
         $gamePlayer.reserveTransfer(
@@ -2061,16 +2650,77 @@
     });
   };
 
+  // A vehicle whose action menu opens as soon as the current message closes: a
+  // choice list cannot be replaced from inside its own callback (the message is
+  // cleared right after it returns), so the follow-up menu waits one frame.
+  let pendingVehicleMenu = null;
+
+  /**
+   * Asks which vehicle the player means when more than one is parked on the tile
+   * they are interacting with. Picking one brings it to the top of the stack and
+   * opens its usual action menu.
+   */
+  Game_Player.prototype.showVehicleChoiceMenu = function (keys) {
+    if ($gameMessage.isBusy()) return;
+
+    const choices = [];
+    const handlers = [];
+
+    keys.forEach(key => {
+      const config = configForVehicleKey(key);
+      if (!config) return;
+      choices.push(vehicleDisplayName(config));
+      handlers.push(() => {
+        const vehicle = materializeVehicle(key);
+        // The choice list is still closing, so the action menu is opened on the
+        // first frame the message system is free again (see Scene_Map.update).
+        if (vehicle) pendingVehicleMenu = vehicle;
+      });
+    });
+
+    choices.push(T('VehicleSystem.leave'));
+    handlers.push(() => { });
+
+    const cancelIndex = choices.length - 1;
+    $gameMessage.setChoices(choices, 0, cancelIndex);
+    $gameMessage.setChoiceCallback((choice) => {
+      const handler = handlers[choice];
+      if (handler) handler();
+    });
+  };
+
+  /**
+   * Opens the menu of the parked vehicle the player is interacting with, asking
+   * which one first when several share the tile. Returns true when it consumed
+   * the action button.
+   */
+  Game_Player.prototype.openParkedVehicleMenu = function () {
+    const keys = reachableVehicleKeys();
+    if (keys.length > 1) {
+      this.showVehicleChoiceMenu(keys);
+      return true;
+    }
+    if (keys.length === 1) {
+      const parked = materializeVehicle(keys[0]);
+      if (parked) {
+        this.showVehicleActionMenu(parked, false);
+        return true;
+      }
+    }
+    const vehicle = detectBoardableVehicle();
+    if (vehicle && isCustomVehicle(vehicle)) {
+      this.showVehicleActionMenu(vehicle, false);
+      return true;
+    }
+    return false;
+  };
+
   // Interacting with a parked custom vehicle from outside opens the action menu
   // ("Start driving") instead of boarding immediately.
   const _Game_Player_getOnVehicle = Game_Player.prototype.getOnVehicle;
   Game_Player.prototype.getOnVehicle = function () {
-    if (!this.isInVehicle()) {
-      const vehicle = detectBoardableVehicle();
-      if (vehicle && isCustomVehicle(vehicle)) {
-        this.showVehicleActionMenu(vehicle, false);
-        return true;
-      }
+    if (!this.isInVehicle() && this.openParkedVehicleMenu()) {
+      return true;
     }
     return _Game_Player_getOnVehicle.call(this);
   };
@@ -2275,9 +2925,7 @@
     // generated procedural biome (picked in CharacterCreation.startBikeOrigin).
     // Place them in a passable 4x4 zone and park the bike on the tile beside them
     // (not mounted) so they can choose to ride off.
-    const ccProcMapId =
-      (window.WorldMapReturn && window.WorldMapReturn.procMapId) || 636;
-    if ($gameTemp._ccBikeStart && $gameMap.mapId() === ccProcMapId) {
+    if ($gameTemp._ccBikeStart && $gameMap.mapId() === proceduralMapId()) {
       $gameTemp._ccBikeStart = false;
       $gameSystem._boatType = 'bike';
       const boat = vehicleManager.getVehicle('boat');
@@ -2404,6 +3052,14 @@
   const _Scene_Map_update = Scene_Map.prototype.update;
   Scene_Map.prototype.update = function () {
     _Scene_Map_update.call(this);
+
+    // A vehicle chosen from the "which one?" list opens its action menu here,
+    // once the choice list it was picked from has finished closing.
+    if (pendingVehicleMenu && !$gameMessage.isBusy()) {
+      const vehicle = pendingVehicleMenu;
+      pendingVehicleMenu = null;
+      $gamePlayer.showVehicleActionMenu(vehicle, false);
+    }
 
     // Menu (Y on gamepad) / ESC while riding opens the normal game menu. Using
     // 'menu' instead of 'cancel' moves it off the B button (which is now free
@@ -2571,11 +3227,7 @@
           $gamePlayer.showVehicleInteriorMenu(interiorConfig);
           return;
         }
-        const nearby = detectBoardableVehicle();
-        if (nearby && isCustomVehicle(nearby)) {
-          $gamePlayer.showVehicleActionMenu(nearby, false);
-          return;
-        }
+        if ($gamePlayer.openParkedVehicleMenu()) return;
         showLocalizedMessage(T('VehicleSystem.noVehicleHere'));
         return;
       }
@@ -2586,11 +3238,15 @@
         showLocalizedMessage(T('VehicleSystem.cannotFindVehicle'));
         return;
       }
-      if (vehicle._mapId !== $gameMap.mapId()) {
+      // Ask the store, not the map: the named vehicle may be parked right here
+      // and still not materialized (parked under another one, or waiting for the
+      // shared Car / Bike / Boat slot).
+      const parked = materializeVehicle(VehiclePosition.keyForConfig(config));
+      if (!parked) {
         showLocalizedMessage(T('VehicleSystem.vehicleNotHere', { vehicle: vehicleNounName(config) }));
         return;
       }
-      $gamePlayer.showVehicleActionMenu(vehicle, false);
+      $gamePlayer.showVehicleActionMenu(parked, false);
     }
 
     static _teleportToVehicle(type) {
@@ -2918,7 +3574,7 @@
           this._characterName = "";
           this._characterIndex = 0;
           this._isObjectCharacter = false;
-        } else if (this._mapId === $gameMap.mapId()) {
+        } else if (this._mapId === $gameMap.mapId() && !this._vsStacked) {
           const spriteInfo = selectVehicleSprite(config);
           if (spriteInfo) {
             this._characterName = spriteInfo.name;
@@ -2926,6 +3582,9 @@
             this._isObjectCharacter = true;
           }
         } else {
+          // Either parked on another map, or parked underneath another vehicle:
+          // a blank graphic is how this plugin hides a vehicle that should not be
+          // seen here (it also keeps it out of the sprite-footprint collision).
           this._characterName = "";
           this._characterIndex = 0;
           this._isObjectCharacter = true;

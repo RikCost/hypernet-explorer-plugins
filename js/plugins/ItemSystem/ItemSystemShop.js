@@ -1142,7 +1142,7 @@
     const buyLength = (this._buyWindow._data || []).length;
     const sellLength = (this._sellWindow._data || []).length;
     const stockHash = (this._buyWindow._data || []).map(item => this.getStock(item)).join(",");
-    const ownedHash = (this._sellWindow._data || []).map(item => $gameParty.numItems(item)).join(",");
+    const ownedHash = (this._sellWindow._data || []).map(item => sellableCount(item)).join(",");
 
     const sellCatFocus = this._sellCategoryFocus || false;
   return `${isBuyMode}_${isSellMode}_${buyIdx}_${sellIdx}_${catIdx}_${numActive}_${numVal}_${numMax}_${partyGold}_${buyLength}_${sellLength}_${stockHash}_${ownedHash}_${sellCatFocus}`;
@@ -1252,7 +1252,7 @@
     // 4. Verify if items data changed
     const listLength = isBuyMode ? (this._buyWindow._data || []).length : (this._sellWindow._data || []).length;
     const stockHash = (this._buyWindow._data || []).map(item => this.getStock(item)).join(",");
-    const ownedHash = (this._sellWindow._data || []).map(item => $gameParty.numItems(item)).join(",");
+    const ownedHash = (this._sellWindow._data || []).map(item => sellableCount(item)).join(",");
 
     if (
       this._renderedListLength !== listLength ||
@@ -1314,10 +1314,14 @@
             // including the NPC-trade sell factor, so the card doesn't lie.
             const sellFactor = $gameTemp._npcTradeSellFactor ?? 1;
             const price = Math.floor(Math.floor(item.price * 0.1) * sellFactor);
-            const owned = $gameParty.numItems(item);
+            const worn = equippedCount(item);
+            const owned = $gameParty.numItems(item) + worn;
             const stock = this.getStock(item);
             const stockValText = stock === 999 ? "∞" : stock;
-            const stockDisplay = T('Shop.ownedStock', { owned: owned, stock: stockValText });
+            let stockDisplay = T('Shop.ownedStock', { owned: owned, stock: stockValText });
+            // Gear on someone's back is sellable too, but say so: the sale
+            // takes it off them.
+            if (worn > 0) stockDisplay += ` ${T('Shop.wornCount', { count: worn })}`;
 
             itemsHTML += `
               <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="sell" style="border-left: 4px solid ${rarity.colorCode};">
@@ -2305,6 +2309,84 @@
     if (window.SpecializationXP) {
       window.SpecializationXP.awardForValue('Appraising', earned);
     }
+  };
+
+  //=============================================================================
+  // Selling worn equipment
+  //=============================================================================
+  // A shop always buys gear, whether it is in the bag or on someone's back.
+  // The engine only ever offers $gameParty.allItems(), which excludes equipped
+  // weapons and armors, so a player had to visit the equip menu first. Here the
+  // sell list also carries what the party is wearing, and the sale unequips as
+  // many copies as it needs before the items leave the inventory.
+
+  const equipHolders = () =>
+    ($gameParty.allMembers ? $gameParty.allMembers() : $gameParty.members());
+
+  // How many copies of an item the party is wearing right now.
+  window.ItemSystemShop = window.ItemSystemShop || {};
+  const equippedCount = (item) => {
+    if (!item || DataManager.isItem(item)) return 0;
+    let count = 0;
+    for (const actor of equipHolders()) {
+      for (const equip of actor.equips()) {
+        if (equip === item) count++;
+      }
+    }
+    return count;
+  };
+  window.ItemSystemShop.equippedCount = equippedCount;
+
+  // What the party can actually hand over: the bag plus what it is wearing.
+  const sellableCount = (item) => $gameParty.numItems(item) + equippedCount(item);
+  window.ItemSystemShop.sellableCount = sellableCount;
+
+  // Every distinct piece of gear currently worn by the party.
+  const equippedSellables = () => {
+    const list = [];
+    for (const actor of equipHolders()) {
+      for (const equip of actor.equips()) {
+        if (equip && !list.includes(equip)) list.push(equip);
+      }
+    }
+    return list;
+  };
+
+  // Take `count` copies off whoever is wearing them. changeEquip hands the old
+  // piece back to the party, so the ordinary loseItem in doSell can take it.
+  const unequipForSale = (item, count) => {
+    if (!item || count <= 0) return;
+    let left = count;
+    for (const actor of equipHolders()) {
+      const equips = actor.equips();
+      for (let slotId = 0; slotId < equips.length && left > 0; slotId++) {
+        if (equips[slotId] === item) {
+          actor.changeEquip(slotId, null);
+          left--;
+        }
+      }
+      if (left <= 0) break;
+    }
+  };
+
+  const _Window_ShopSell_makeItemList = Window_ShopSell.prototype.makeItemList;
+  Window_ShopSell.prototype.makeItemList = function () {
+    _Window_ShopSell_makeItemList.call(this);
+    for (const item of equippedSellables()) {
+      if (this.includes(item) && !this._data.includes(item)) {
+        this._data.push(item);
+      }
+    }
+  };
+
+  Scene_Shop.prototype.maxSell = function () {
+    return $gameParty.numItems(this._item) + equippedCount(this._item);
+  };
+
+  const _Scene_Shop_doSell_equipped = Scene_Shop.prototype.doSell;
+  Scene_Shop.prototype.doSell = function (number) {
+    unequipForSale(this._item, number - $gameParty.numItems(this._item));
+    _Scene_Shop_doSell_equipped.call(this, number);
   };
 
   Window_ShopNumber.prototype.max = function () {

@@ -161,6 +161,14 @@
 
   const _norm = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
 
+  // A place is keyed by the Destinations.json key (or the biome-name label of a
+  // world tile), which is what every record stores; what a bulletin, a log line
+  // or the Eurodemics terminal shows is that entry's readable "name". A key with
+  // no destination behind it (a named world tile) reads as it stands.
+  const _placeLabel = key => (window.WorkSystem && window.WorkSystem.destinationName)
+    ? window.WorkSystem.destinationName(key)
+    : String(key == null ? '' : key);
+
   const Places = {
     built: false,
     byKey: {},        // canonical name -> place
@@ -394,7 +402,15 @@
     if (!entry) return '';
     if (typeof entry === 'string') return entry;
     if (!entry.key || !T.has(entry.key)) return entry.text || '';
-    return T(entry.key, entry.params || {});
+    const params = entry.params || {};
+    // Place parameters are stored as keys; they are read out as names.
+    if (params.place != null || params.from != null) {
+      const shown = Object.assign({}, params);
+      if (shown.place != null) shown.place = _placeLabel(shown.place);
+      if (shown.from != null) shown.from = _placeLabel(shown.from);
+      return T(entry.key, shown);
+    }
+    return T(entry.key, params);
   }
 
   function _newSite(place, cases, epidemicId) {
@@ -466,10 +482,12 @@
     const label = epidemic.diseaseName || (DB.byId[epidemic.diseaseId] || {}).name || epidemic.name;
     try {
       const news = {
-        text: `\\c[6][${place.key}]\\c[0] ` + T(
+        text: `\\c[6][${_placeLabel(place.key)}]\\c[0] ` + T(
           hysteria ? 'Epidemics.news.hysteria' : 'Epidemics.news.medical',
-          { disease: label, place: place.key }),
-        location: place.key,
+          { disease: label, place: _placeLabel(place.key) }),
+        // News locations are the readable town names the rest of the news and
+        // the property market work in (NewsSystemUtils.getLocations).
+        location: _placeLabel(place.key),
         category: 'negative',
         type: 'epidemic',
         timestamp: _dateOfDay(day),
@@ -1241,7 +1259,7 @@
         API.recordActorEpidemic(actor, epidemic, place.key, 'caught');
         caught.push({ actor, disease });
       }
-      if (caught.length) _reportCaught(caught, place.key);
+      if (caught.length) _reportCaught(caught, _placeLabel(place.key));
     }
   }
 
@@ -1303,6 +1321,8 @@
     ready() { return ensureDb() && Places.build(); },
     places() { Places.build(); return Places.list; },
     place(key) { return Places.get(key); },
+    // Readable name of a town, from the key its records are stored under.
+    placeName(key) { return _placeLabel(key); },
     placeForGroup(group) { return Places.forGroup(group); },
     placeForCoord(x, y) { return Places.forCoord(x, y); },
     currentPlace() { return _currentPlace(); },

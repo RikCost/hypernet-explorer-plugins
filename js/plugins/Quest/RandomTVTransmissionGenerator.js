@@ -270,16 +270,24 @@
 
     // Real places the player can actually travel to, so broadcasts name the
     // world's own destinations instead of only surreal invented ones.
+    // A presenter says the place's readable "name", never its file key, so the
+    // list comes from the destination catalogue DataService already loaded and
+    // falls back to reading the file only if that is somehow missing.
     let _tvDestinations = null;
     function tvDestinationNames() {
         if (_tvDestinations) return _tvDestinations;
         _tvDestinations = [];
+        if (window.WorkSystem && window.WorkSystem.destinationNames) {
+            _tvDestinations = window.WorkSystem.destinationNames();
+            if (_tvDestinations.length) return _tvDestinations;
+        }
         try {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', 'js/db/WorkSystem/Destinations.json', false);
             xhr.send();
             if (xhr.status === 200 || xhr.status === 0) {
-                _tvDestinations = Object.keys(JSON.parse(xhr.responseText) || {});
+                const data = JSON.parse(xhr.responseText) || {};
+                _tvDestinations = Object.keys(data).map(key => (data[key] && data[key].name) || key);
             }
         } catch (e) {
             console.error("TVTransmissions: failed to load Destinations.json", e);
@@ -1411,7 +1419,10 @@
             }
         } catch (e) {}
         if (typeof $gameSystem !== "undefined" && $gameSystem && $gameSystem._ccHometown) {
-            return $gameSystem._ccHometown;
+            // The hometown is stored as a Destinations.json key.
+            return window.WorkSystem?.destinationName
+                ? window.WorkSystem.destinationName($gameSystem._ccHometown)
+                : $gameSystem._ccHometown;
         }
         return TV_EM_HOME_FALLBACK;
     }

@@ -224,8 +224,18 @@
         return !!(window.Battler3D && typeof window.Battler3D.create === 'function');
     }
 
+    // Launched from the title screen there is no map to read, so the free-play
+    // picker (Titlescreen.js) asks the player where and when instead and leaves
+    // the answer here. Null whenever a real game is being played.
+    function arcadeSetup() {
+        const arcade = window.MinigameArcade;
+        return (arcade && arcade.setup) ? arcade.setup() : null;
+    }
+
     // Sky/time helpers, shared with the animated battle backgrounds.
     function currentTimeMode() {
+        const setup = arcadeSetup();
+        if (setup && typeof setup.timeMode === 'number') return setup.timeMode;
         const SR = window.SkyRenderer;
         if (!SR || !SR.getCurrentTimeMode) return 0;
         return SR.getCurrentTimeMode();
@@ -1488,6 +1498,8 @@
         // them is a lake. An explicit <Exterior> beats everything, so a covered
         // map that is meant to be open water can say so.
         _venue() {
+            const setup = arcadeSetup();
+            if (setup) return setup.venue === 'interior' ? VENUE_INDOOR : VENUE_OPEN;
             const note = (window.$dataMap && window.$dataMap.note) || '';
             if (/<Exterior>/i.test(note)) return VENUE_OPEN;
             try {
@@ -1511,7 +1523,10 @@
             // Only outdoors: the tone is the time of day, and neither a cave nor
             // a lit room has one. A tank under strip lights looks the same at
             // midnight as it does at noon, which is rather the point of it.
-            if (typeof ColorFilter === 'function' && this._world._venue === VENUE_OPEN) {
+            // A free-play session was handed its hour by the picker, so it is
+            // not graded a second time by whatever tone the empty world wears.
+            if (typeof ColorFilter === 'function' && !arcadeSetup() &&
+                this._world._venue === VENUE_OPEN) {
                 this._worldFilter = new ColorFilter();
                 this._worldSprite.filters = [this._worldFilter];
                 this._syncScreenTone(true);
@@ -1647,7 +1662,12 @@
                 typeof AudioManager.playMushBgs !== 'function') return;
             const bgs = AudioManager.getBgsFromChannel(4);
             if (bgs && bgs.name) {
-                const quiet = Object.assign({}, bgs, { volume: Math.floor((bgs.volume || 80) * 0.6) });
+                // buffer.volume is the config-scaled 0..1 gain, so duck against
+                // the weather channel's own level instead.
+                const level = (window.WeatherAudio && window.WeatherAudio.volume)
+                    ? window.WeatherAudio.volume()
+                    : (bgs.settingVolume || 30);
+                const quiet = Object.assign({}, bgs, { volume: Math.floor(level * 0.6) });
                 AudioManager.playMushBgs(quiet, 4, false, 'Continue');
             }
         }

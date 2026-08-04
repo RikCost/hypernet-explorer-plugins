@@ -46,6 +46,10 @@
 
     const iconHTML = (index, size) => (window.HypernetOS ? window.HypernetOS.getIconHTML(index, size) : '');
 
+    // Outbreak records are keyed by the town's Destinations.json key; the
+    // terminal prints that entry's readable name.
+    const placeName = (key) => (ES() && ES().placeName) ? ES().placeName(key) : String(key == null ? '' : key);
+
     // Thousands separators written out: toLocaleString follows the host locale
     // and would print "12.400" on half the machines this runs on.
     const num = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -388,7 +392,7 @@
 
             const rows = hotspots.map(h => `
                 <tr>
-                    <td style="${S.td}">${escapeHtml(h.place)}</td>
+                    <td style="${S.td}">${escapeHtml(placeName(h.place))}</td>
                     <td style="${S.td} text-align:right;">${num(h.infected)}</td>
                     <td style="${S.td} text-align:right;">${num(h.population)}</td>
                     <td style="${S.td} text-align:right;">${pct(h.prevalence)}</td>
@@ -453,7 +457,7 @@
             }).join('');
             holder.innerHTML = `
                 <div style="${S.card}">
-                    <b>${T('Eurodemics.yourPositionAt', { place: escapeHtml(place.key) })}</b>
+                    <b>${T('Eurodemics.yourPositionAt', { place: escapeHtml(placeName(place.key)) })}</b>
                     ${live.length ? lines
                         : `<div style="${S.note}">${T('Eurodemics.noOutbreakHere')}</div>`}
                     ${ill.length ? `<div style="margin-top:8px; color:#8e2a20;">${T('Eurodemics.carriedByParty', { list: escapeHtml(ill.join('; ')) })}</div>`
@@ -508,7 +512,7 @@
                 .map(([key, site]) => {
                     const place = ES().place(key);
                     return `<tr>
-                        <td style="${S.td}">${escapeHtml(key)}</td>
+                        <td style="${S.td}">${escapeHtml(placeName(key))}</td>
                         <td style="${S.td} text-align:right;">${num(site.infected || 0)}</td>
                         <td style="${S.td} text-align:right;">${num(site.cases || 0)}</td>
                         <td style="${S.td} text-align:right;">${num(site.dead || 0)}</td>
@@ -588,7 +592,7 @@
                     <td style="${S.td} text-align:right;">${num(record.deaths)}</td>
                 </tr>
                 <tr><td colspan="6" style="${S.td} ${S.note} padding-top:0;">
-                    ${escapeHtml((record.places || []).join(', '))}</td></tr>`).join('');
+                    ${escapeHtml((record.places || []).map(placeName).join(', '))}</td></tr>`).join('');
 
             const head = (last) => `<thead><tr>
                 <th style="${S.th}">${T('Eurodemics.colOutbreak')}</th><th style="${S.th}">${T('Eurodemics.colKind')}</th>
@@ -630,7 +634,7 @@
                     ${buildChart(chosen)}
                     <div style="${S.note} margin-top:6px;">
                         ${T.n('Eurodemics.archive.reachedTowns', Object.keys(chosen.sites).length, { n: Object.keys(chosen.sites).length })}
-                        ${escapeHtml(Object.keys(chosen.sites).join(', '))}
+                        ${escapeHtml(Object.keys(chosen.sites).map(placeName).join(', '))}
                     </div>
                 </div>`;
                 attachChartHover(this.win, chosen);

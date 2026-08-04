@@ -2671,6 +2671,10 @@
     // openTalkMenu / closeTalkMenu / _updateTalkInput, which are ours below.
     const TALK_BORROWED = [
         "_buildTalkOptions", "_buildTalkPanelHTML", "_updateTalkHighlight", "_talkOk",
+        // Which monster of the brawl the panel is addressing. Required here:
+        // unlike a front-view troop, a map battle can hold several monsters at
+        // once, so without it every handler would fall back to the first one.
+        "_talkEnemy",
         "calculateTalkSuccessChance", "calculateTalkSuccess", "calculateJoinSuccessChance",
         "calculatePetSuccessChance", "calculatePetFollowerChance",
         "onTalkChat", "onTalkSurrender", "onTalkInsult", "onThrowStone", "onPet",

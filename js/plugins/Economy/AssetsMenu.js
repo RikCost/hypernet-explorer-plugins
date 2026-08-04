@@ -234,15 +234,19 @@
       const places = window.AssetRegistry.getOwnedPlaces() || [];
       places.forEach(p => {
         const coords = p.base ? `X:${p.base.x} Y:${p.base.y}` : '—';
+        // p.key is the Destinations.json key; the readable name of the place
+        // lives in that entry's "name" field.
+        const placeName = window.WorkSystem?.destinationName
+          ? window.WorkSystem.destinationName(p.key) : p.key;
         assets.push({
           cat: T('Assets.ui.places'),
-          name: p.key,
+          name: placeName,
           sub: coords,
           value: p.value || 0,
           bought: null,
           color: '#4a7a8c',
           details: [
-            { label: T('Assets.ui.location'), val: p.key },
+            { label: T('Assets.ui.location'), val: placeName },
             { label: T('Assets.ui.baseCoordinates'), val: coords },
             { label: T('Assets.ui.vaultValue'), val: euro(p.value || 0) },
           ],

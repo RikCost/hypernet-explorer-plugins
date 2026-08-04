@@ -47,6 +47,11 @@
 (() => {
     'use strict';
 
+    // Sack, per js/db/Sprites/Icons.json: a mail-order parcel. It used to be 191
+    // (Gold Nuggets), which My Documents and the Token Exchange also carry, so
+    // three different desktop shortcuts and taskbar tabs wore the same picture.
+    const APP_ICON = 209;
+
     // --- HypercapitalisEmporiumApp ---
     window.HypercapitalisEmporiumApp = {
         appInstance: null,
@@ -58,7 +63,7 @@
                 this.win = window.HypernetWindowManager.createWindow({
                     id: 'app-store',
                     title: T('Stockbusters.ui.windowTitle'),
-                    icon: 191,
+                    icon: APP_ICON,
                     width: 900,
                     height: 650,
                     contentHTML: '<div id="emporium-content" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: #ece9d8;"></div>'
@@ -104,7 +109,7 @@
         window.HypernetOS.registerApp({
             id: 'app-hypernet-shop',
             name: T('Stockbusters.ui.appName'),
-            icon: 191,
+            icon: APP_ICON,
             launchFn: function(params) {
                 window.HypercapitalisEmporiumApp.launch(params);
             },
@@ -115,164 +120,279 @@
 
     const pluginName = "SearchableItemShop";
 
-    // --- Helper Function to Parse Game Date ---
-    function getGameDateFromVariable() {
-        const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
-        // Format: "01 JAN 2001 12:00"
-        const parts = dateStr.split(' ').filter(Boolean);
-        if (parts.length < 4) {
-            return { day: 1, month: 0, year: 2001, hours: 8, minutes: 0 };
-        }
+    // plugins.js lists this file under its folder, so an event calling one of
+    // the commands below sends "Economy/SearchableItemShop" as the plugin name.
+    // Register every command under both keys or the event call silently does
+    // nothing (which is what kept the Mailbox from ever handing anything over).
+    const COMMAND_KEYS = [pluginName, "Economy/" + pluginName];
 
-        const day = parseInt(parts[0]) || 1;
-        const monthStr = (parts[1] || '').toUpperCase();
-        const year = parseInt(parts[2]) || 2001;
-        const timeStr = (parts[3] || '12:00').split(':');
-        const hours = parseInt(timeStr[0]) || 0;
-        const minutes = parseInt(timeStr[1]) || 0;
-
-        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-        let month = months.indexOf(monthStr);
-        if (month === -1) {
-            const itMonths = ['GEN', 'FEB', 'MAR', 'APR', 'MAG', 'GIU', 'LUG', 'AGO', 'SET', 'OTT', 'NOV', 'DIC'];
-            month = itMonths.indexOf(monthStr);
+    function registerShopCommand(commandName, handler) {
+        for (const key of COMMAND_KEYS) {
+            PluginManager.registerCommand(key, commandName, handler);
         }
-        if (month === -1) {
-            month = 0;
-        }
-
-        return { day, month, year, hours, minutes };
     }
 
-    // --- Helper Function to Convert Game Date to Milliseconds ---
-    function gameDateToMilliseconds(dateObj) {
-        const jsDate = new Date(dateObj.year, dateObj.month, dateObj.day, dateObj.hours, dateObj.minutes, 0);
-        return jsDate.getTime();
+    //=============================================================================
+    // Delivery clock
+    //=============================================================================
+    // Variable 114 is the world clock in game minutes (TimeDateSystem): it is
+    // monotonic and moves for sleeping, fast travel and every other time skip,
+    // which is exactly what a courier should be measured against. The old code
+    // re-parsed the formatted date in variable 113 into a real Date, so an order
+    // was due days of in-game calendar time later and effectively never arrived.
+    const GAME_TIME_VARIABLE = 114;
+    const MIN_DELIVERY_MINUTES = 5;
+    const MAX_DELIVERY_MINUTES = 45;
+    const MAX_ACTIVE_ORDERS = 6;
+
+    // The catalogue-wide search results page, which is not one of the sidebar
+    // categories: it draws from every database at once.
+    const SEARCH_CATEGORY = "search";
+    const SEARCH_RESULT_LIMIT = 80;
+
+    // The search query is player-typed and goes back out into the panel markup.
+    function escapeHtml(text) {
+        return String(text == null ? '' : text).replace(/[&<>"']/g, ch => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
+    }
+
+    // A search page mixes wares and spells, so "is this a skill" has to be asked
+    // of the entry rather than of the page it was found on.
+    function isSkillEntry(entry) {
+        if (!entry) return false;
+        if (DataManager.isSkill(entry)) return true;
+        return entry.stypeId === 1 || entry.stypeId === 2;
+    }
+
+    function currentGameMinutes() {
+        if (typeof $gameVariables === "undefined" || !$gameVariables) return 0;
+        return Math.max(0, Math.floor(Number($gameVariables.value(GAME_TIME_VARIABLE)) || 0));
+    }
+
+    // "12 minutes" / "2 hours" out of a count of game minutes.
+    function formatDelay(minutes) {
+        if (minutes >= 60) {
+            return T('Stockbusters.text.durationHours', { hours: Math.ceil(minutes / 60) });
+        }
+        return T('Stockbusters.text.durationMinutes', { minutes: Math.max(1, Math.ceil(minutes)) });
     }
 
     // --- Delivery System Management ---
     const DeliveryManager = {
+        // Orders live on $gameSystem so they are written into the savegame.
+        // They used to sit on $dataSystem, which is rebuilt from the database on
+        // every boot, so every pending order was lost the moment the game was
+        // reloaded and nothing could ever be collected.
         getOrderedItems: function () {
-            if (!$dataSystem.deliveryOrders) {
-                $dataSystem.deliveryOrders = [];
+            if (typeof $gameSystem === "undefined" || !$gameSystem) return [];
+            if (!Array.isArray($gameSystem._deliveryOrders)) {
+                $gameSystem._deliveryOrders = [];
+            } else {
+                this.migrateLegacyOrders();
             }
-            return $dataSystem.deliveryOrders;
+            return $gameSystem._deliveryOrders;
         },
 
-        addOrder: function (item, deliveryTime, price) {
-            const orders = this.getOrderedItems();
-            const gameDate = getGameDateFromVariable();
-            const currentTime = gameDateToMilliseconds(gameDate);
-            const deliveryDate = currentTime + (deliveryTime * 24 * 60 * 60 * 1000); // Convert days to milliseconds
+        // An order used to be a whole database object plus a real-world
+        // millisecond due date. Rewrite any of those into the current record and
+        // put them one minimum delivery away, so an old save is not left holding
+        // parcels that can never land.
+        migrateLegacyOrders: function () {
+            const orders = $gameSystem._deliveryOrders;
+            if (!orders.some(order => !order || !order.kind)) return;
 
-            orders.push({
-                item: item,
-                deliveryDate: deliveryDate,
-                price: price,
-                orderedAt: currentTime
-            });
+            const now = currentGameMinutes();
+            $gameSystem._deliveryOrders = orders.reduce((kept, order) => {
+                if (!order) return kept;
+                if (order.kind) {
+                    kept.push(order);
+                    return kept;
+                }
+                const legacy = order.item;
+                const kind = legacy ? this.kindOf(legacy) : null;
+                if (kind) {
+                    kept.push({
+                        kind: kind,
+                        id: legacy.id,
+                        price: order.price || 0,
+                        orderedAt: now,
+                        arriveAt: now + MIN_DELIVERY_MINUTES
+                    });
+                }
+                return kept;
+            }, []);
+        },
+
+        // Which database an entry belongs to. Stored per order so an id is never
+        // matched against the wrong list (an item and a skill share id numbers).
+        kindOf: function (entry) {
+            if (!entry) return null;
+            if (DataManager.isSkill(entry)) return "skill";
+            if (DataManager.isWeapon(entry)) return "weapon";
+            if (DataManager.isArmor(entry)) return "armor";
+            if (DataManager.isItem(entry)) return "item";
+            // A shop-side clone is not the database instance itself.
+            if (entry.stypeId !== undefined) return "skill";
+            if (entry.wtypeId !== undefined) return "weapon";
+            if (entry.etypeId !== undefined) return "armor";
+            return "item";
+        },
+
+        dataOf: function (order) {
+            if (!order) return null;
+            switch (order.kind) {
+                case "skill": return $dataSkills[order.id] || null;
+                case "weapon": return $dataWeapons[order.id] || null;
+                case "armor": return $dataArmors[order.id] || null;
+                default: return $dataItems[order.id] || null;
+            }
+        },
+
+        addOrder: function (item, deliveryMinutes, price) {
+            const kind = this.kindOf(item);
+            if (!kind) return null;
+
+            const now = currentGameMinutes();
+            const order = {
+                kind: kind,
+                id: item.id,
+                price: price || 0,
+                orderedAt: now,
+                arriveAt: now + Math.max(1, Math.round(deliveryMinutes))
+            };
+            this.getOrderedItems().push(order);
+            return order;
         },
 
         getOrderCount: function () {
             return this.getOrderedItems().length;
         },
 
+        findOrder: function (item) {
+            if (!item) return null;
+            const kind = this.kindOf(item);
+            return this.getOrderedItems().find(order => order.kind === kind && order.id === item.id) || null;
+        },
+
         isItemOrdered: function (item) {
-            const orders = this.getOrderedItems();
-            return orders.some(order =>
-                order.item.id === item.id &&
-                order.item.etypeId === item.etypeId
-            );
+            return !!this.findOrder(item);
         },
 
-        getItemDeliveryTime: function (item) {
-            const orders = this.getOrderedItems();
-            const order = orders.find(order =>
-                order.item.id === item.id &&
-                order.item.etypeId === item.etypeId
-            );
-
-            if (order) {
-                const gameDate = getGameDateFromVariable();
-                const currentTime = gameDateToMilliseconds(gameDate);
-                const timeLeft = order.deliveryDate - currentTime;
-                return Math.max(0, Math.ceil(timeLeft / (24 * 60 * 60 * 1000))); // Convert to days
-            }
-            return 0;
+        // Game minutes left before an order lands, 0 once it has.
+        getMinutesLeft: function (order) {
+            if (!order) return 0;
+            return Math.max(0, order.arriveAt - currentGameMinutes());
         },
 
+        getItemMinutesLeft: function (item) {
+            return this.getMinutesLeft(this.findOrder(item));
+        },
+
+        isOrderReady: function (order) {
+            return !!order && currentGameMinutes() >= order.arriveAt;
+        },
+
+        readyCount: function () {
+            return this.getOrderedItems().filter(order => this.isOrderReady(order)).length;
+        },
+
+        // Cheap wares turn up almost at once and the expensive ones take longer,
+        // but nothing is ever more than MAX_DELIVERY_MINUTES of game time away.
         calculateDeliveryTime: function (price) {
-            // Find the most expensive item to set the scale
-            const maxPrice = this.getMaxPrice();
-            const minDays = 1;
-            const maxDays = 7;
-
-            // Calculate delivery time based on price (linear scale)
-            const ratio = Math.min(price / maxPrice, 1);
-            return Math.max(minDays, Math.ceil(ratio * maxDays));
+            const ratio = Math.min(Math.max(price / this.getMaxPrice(), 0), 1);
+            const span = MAX_DELIVERY_MINUTES - MIN_DELIVERY_MINUTES;
+            return Math.round(MIN_DELIVERY_MINUTES + Math.sqrt(ratio) * span);
         },
 
+        // Memoized: this walks all three databases and is asked for on every
+        // redraw of the catalog.
+        _maxPrice: 0,
         getMaxPrice: function () {
+            if (this._maxPrice) return this._maxPrice;
+
             let maxPrice = 10000; // Default fallback
-
-            // Check all items, weapons, and armors to find the maximum price
-            for (let i = 1; i < $dataItems.length; i++) {
-                const item = $dataItems[i];
-                if (item && item.price > maxPrice) {
-                    maxPrice = item.price;
+            for (const list of [$dataItems, $dataWeapons, $dataArmors]) {
+                for (let i = 1; i < list.length; i++) {
+                    const entry = list[i];
+                    if (entry && entry.price > maxPrice) maxPrice = entry.price;
                 }
             }
 
-            for (let i = 1; i < $dataWeapons.length; i++) {
-                const weapon = $dataWeapons[i];
-                if (weapon && weapon.price > maxPrice) {
-                    maxPrice = weapon.price;
-                }
-            }
-
-            for (let i = 1; i < $dataArmors.length; i++) {
-                const armor = $dataArmors[i];
-                if (armor && armor.price > maxPrice) {
-                    maxPrice = armor.price;
-                }
-            }
-
+            this._maxPrice = maxPrice;
             return maxPrice;
         },
 
-        retireDeliveredItems: function () {
+        // Hands one arrived order over. Returns the database entry it delivered.
+        deliverOrder: function (order) {
+            const entry = this.dataOf(order);
+            if (!entry) return null;
+
+            if (order.kind === "skill") {
+                const actor = $gameParty.leader() || $gameActors.actor(1);
+                if (actor) actor.learnSkill(entry.id);
+            } else {
+                $gameParty.gainItem(entry, 1);
+            }
+            return entry;
+        },
+
+        // Collects everything that has arrived and returns their names. Pass a
+        // single order to collect just that parcel (the app's Collect button);
+        // everything else stays in transit either way.
+        retireDeliveredItems: function (only) {
             const orders = this.getOrderedItems();
-            const gameDate = getGameDateFromVariable();
-            const currentTime = gameDateToMilliseconds(gameDate);
-            const deliveredItems = [];
-            const remainingOrders = [];
+            if (orders.length === 0) return [];
+
+            const delivered = [];
+            const remaining = [];
 
             for (const order of orders) {
-                if (currentTime >= order.deliveryDate) {
-                    deliveredItems.push(order);
+                if (this.isOrderReady(order) && (!only || order === only)) {
+                    delivered.push(order);
                 } else {
-                    remainingOrders.push(order);
+                    remaining.push(order);
                 }
             }
+            $gameSystem._deliveryOrders = remaining;
 
-            // Update the orders list
-            $dataSystem.deliveryOrders = remainingOrders;
-
-            // Add delivered items to inventory
-            for (const order of deliveredItems) {
-                const item = order.item;
-                if (item.stypeId && (item.stypeId === 1 || item.stypeId === 2)) {
-                    // Learn skill
-                    $gameActors.actor(1).learnSkill(item.id);
-                } else {
-                    // Add item to inventory
-                    $gameParty.gainItem(item, 1);
-                }
+            const names = [];
+            for (const order of delivered) {
+                const entry = this.deliverOrder(order);
+                if (entry) names.push(entry.name);
             }
-
-            return deliveredItems.length;
+            return names;
         }
     };
+
+    // An arrival announces itself once while the party is out walking, so the
+    // player knows there is something waiting to be collected.
+    function announceArrivals() {
+        if (typeof $gameSystem === "undefined" || !$gameSystem || !$gameParty) return;
+
+        for (const order of DeliveryManager.getOrderedItems()) {
+            if (order.notified || !DeliveryManager.isOrderReady(order)) continue;
+            order.notified = true;
+
+            const entry = DeliveryManager.dataOf(order);
+            if (!entry || !window.ParchmentToast) continue;
+            window.ParchmentToast.show(T('Stockbusters.text.orderArrived', { item: entry.name }), {
+                severity: "info",
+                icon: entry.iconIndex,
+                key: `stockbusters:${order.kind}:${order.id}` // i18n-ignore  dedupe key
+            });
+        }
+    }
+
+    const _Scene_Map_update_stockbusters = Scene_Map.prototype.update;
+    Scene_Map.prototype.update = function () {
+        _Scene_Map_update_stockbusters.call(this);
+        if (Graphics.frameCount % 60 === 0) announceArrivals();
+    };
+
+    // Read by the Mailbox event and anything else that wants to know whether a
+    // parcel is waiting without opening the shop.
+    window.StockbustersDelivery = DeliveryManager;
 
     // --- Translation Function ---
     // Translates text based on the game's language setting.
@@ -316,12 +436,12 @@
     //=============================================================================
     // Plugin Commands
     //=============================================================================
-    PluginManager.registerCommand(pluginName, "OpenSearchableShop", args => {
+    registerShopCommand("OpenSearchableShop", args => {
         SceneManager.push(Scene_HypernetOS);
         SceneManager.prepareNextScene({ autoLaunch: 'shop' });
     });
 
-    PluginManager.registerCommand(pluginName, "OpenLimitedShop", args => {
+    registerShopCommand("OpenLimitedShop", args => {
         const mapId = $gameMap.mapId();
         const eventId = $gameMap._interpreter.eventId();
         const event = $gameMap.event(eventId);
@@ -348,14 +468,22 @@
         SceneManager.prepareNextScene({ autoLaunch: 'app-hypernet-shop', shopParams: limitedShopParams });
     });
 
-    PluginManager.registerCommand(pluginName, "RetireDeliveredItems", args => {
-        const deliveredCount = DeliveryManager.retireDeliveredItems();
+    registerShopCommand("RetireDeliveredItems", args => {
+        const delivered = DeliveryManager.retireDeliveredItems();
 
-        if (deliveredCount > 0) {
-            $gameMessage.add(T('Stockbusters.text.delivered', { count: deliveredCount }));
+        if (delivered.length > 0) {
+            $gameMessage.add(T('Stockbusters.text.delivered', { count: delivered.length }));
+            $gameMessage.add(delivered.join(', '));
             SoundManager.playShop();
         } else {
-            $gameMessage.add(T('Stockbusters.text.noItemsReadyForDelivery'));
+            const pending = DeliveryManager.getOrderCount();
+            if (pending > 0) {
+                const soonest = Math.min(...DeliveryManager.getOrderedItems()
+                    .map(order => DeliveryManager.getMinutesLeft(order)));
+                $gameMessage.add(T('Stockbusters.text.nextDeliveryIn', { time: formatDelay(soonest) }));
+            } else {
+                $gameMessage.add(T('Stockbusters.text.noItemsReadyForDelivery'));
+            }
         }
     });
 
@@ -833,6 +961,60 @@
         }
     };
 
+    // The search page is a category of its own: it ignores the sidebar and
+    // sweeps every catalogue at once for whatever the player typed.
+    Window_GridItemList.prototype.setSearch = function (query) {
+        this._searchQuery = String(query || '').trim().toLowerCase();
+        if (this._category === SEARCH_CATEGORY) {
+            this.refresh();
+            this.scrollTo(0, 0);
+            this.select(0);
+        }
+    };
+
+    Window_GridItemList.prototype.matchesSearch = function (entry) {
+        if (!entry || !this._searchQuery) return false;
+        if (!entry.name || entry.name.trim() === '') return false;
+
+        const haystack = (entry.name + ' ' + (entry.description || '')).toLowerCase();
+        return this._searchQuery.split(/\s+/).every(term => haystack.includes(term));
+    };
+
+    // Everything the shop is willing to sell, whatever page it normally sits on.
+    Window_GridItemList.prototype.makeSearchList = function () {
+        const results = [];
+
+        if (this._isLimited) {
+            for (const entry of (this._limitedItems.items || [])) {
+                if (this.matchesSearch(entry)) results.push(entry);
+            }
+            return results;
+        }
+
+        for (let i = 1; i < $dataItems.length; i++) {
+            const entry = $dataItems[i];
+            if (entry && entry.itypeId === 1 && entry.price > 0 && this.matchesSearch(entry)) {
+                results.push(entry);
+            }
+        }
+        for (const list of [$dataWeapons, $dataArmors]) {
+            for (let i = 1; i < list.length; i++) {
+                const entry = list[i];
+                if (entry && entry.price > 0 && this.matchesSearch(entry)) results.push(entry);
+            }
+        }
+        for (let i = 1; i < $dataSkills.length; i++) {
+            const skill = $dataSkills[i];
+            if (!skill || !skill.mpCost) continue;
+            if ((skill.stypeId === 1 || skill.stypeId === 2) &&
+                !$gameActors.actor(1).hasSkill(skill.id) && this.matchesSearch(skill)) {
+                results.push(skill);
+            }
+        }
+
+        return results;
+    };
+
     Window_GridItemList.prototype.isItemCategoryValid = function (item) {
         if (!item) return false;
 
@@ -978,6 +1160,16 @@
     Window_GridItemList.prototype.makeItemList = function () {
         this._data = [];
 
+        if (this._category === SEARCH_CATEGORY) {
+            this._data = this.makeSearchList();
+            this.sortItemsByPrice();
+            // A one-letter query would otherwise build a page of a thousand rows.
+            if (this._data.length > SEARCH_RESULT_LIMIT) {
+                this._data = this._data.slice(0, SEARCH_RESULT_LIMIT);
+            }
+            return;
+        }
+
         if (this._isLimited) {
             // In limited mode, filter from pre-selected items based on current category
             const items = this._limitedItems.items || [];
@@ -1090,14 +1282,14 @@
 
         if (this._isLimited) {
             // In limited mode, use the original price without modifications
-            if (item.stypeId && (item.stypeId === 1 || item.stypeId === 2)) {
+            if (isSkillEntry(item)) {
                 return (item.mpCost || 0) * 1000 + 1000;
             } else {
                 return item.price;
             }
         } else {
             // Original code for normal mode
-            if (this._category === "skills" || this._category === "spells" || (item.stypeId && (item.stypeId === 1 || item.stypeId === 2))) {
+            if (isSkillEntry(item)) {
                 // Calculate price for skills with 60% discount
                 const mpCost = item.mpCost || 0;
                 const basePrice = (mpCost * 1000) + 1000;
@@ -1165,15 +1357,15 @@
         };
         if (this._isLimited) {
             // In limited mode, show raw prices without tax/discount mentions
-            if (item.stypeId && (item.stypeId === 1 || item.stypeId === 2)) {
-                const basePrice = (item.mpCost * 1000) + 1000;
+            if (isSkillEntry(item)) {
+                const basePrice = ((item.mpCost || 0) * 1000) + 1000;
                 return formatPrice(basePrice);
             } else {
                 return formatPrice(item.price);
             }
         } else {
             // Original code for normal mode
-            if (this._category === "skills" || this._category === "spells") {
+            if (isSkillEntry(item)) {
                 const mpCost = item.mpCost || 0;
                 const basePrice = (mpCost * 1000) + 1000;
                 const discountedPrice = Math.floor(basePrice * 0.4);
@@ -1225,14 +1417,14 @@
 
     Window_BuyConfirmation.prototype.makeCommandList = function () {
         const isOrdered = this._item && DeliveryManager.isItemOrdered(this._item);
-        const maxOrdersReached = DeliveryManager.getOrderCount() >= 6;
+        const maxOrdersReached = DeliveryManager.getOrderCount() >= MAX_ACTIVE_ORDERS;
         const canAfford = this._item && $gameParty.gold() >= this.getItemPrice();
 
         if (isOrdered) {
             // If item is already ordered, show delivery time instead of buy option
-            const deliveryTime = DeliveryManager.getItemDeliveryTime(this._item);
-            const timeText = deliveryTime > 0
-                ? T('Stockbusters.text.arrivesInDays', { days: deliveryTime })
+            const minutesLeft = DeliveryManager.getItemMinutesLeft(this._item);
+            const timeText = minutesLeft > 0
+                ? T('Stockbusters.text.arrivesIn', { time: formatDelay(minutesLeft) })
                 : T('Stockbusters.text.readyForPickup');
             this.addCommand(timeText, "delivery_info", false);
         } else {
@@ -1309,7 +1501,7 @@
             const priceY = descY + this.lineHeight() * 3.5;
             const canAfford = $gameParty.gold() >= this.getItemPrice();
             const isOrdered = DeliveryManager.isItemOrdered(this._item);
-            const maxOrdersReached = DeliveryManager.getOrderCount() >= 6;
+            const maxOrdersReached = DeliveryManager.getOrderCount() >= MAX_ACTIVE_ORDERS;
 
             const formatPrice = (value) => {
                 const str = (value / 100).toFixed(2);
@@ -1343,28 +1535,18 @@
 
             if (isOrdered) {
                 // Show delivery information
-                const deliveryTime = DeliveryManager.getItemDeliveryTime(this._item);
-                if (deliveryTime.value > 0) {
-                    if (deliveryTime.unit === 'hours') {
-                        priceText = T('Stockbusters.text.arrivesInHours', { hours: deliveryTime.value });
-                    } else {
-                        priceText = T('Stockbusters.text.arrivesInMinutes', { minutes: deliveryTime.value });
-                    }
-                } else {
-                    priceText = T('Stockbusters.text.thisItemIsReadyFor');
-                }
+                const minutesLeft = DeliveryManager.getItemMinutesLeft(this._item);
+                priceText = minutesLeft > 0
+                    ? T('Stockbusters.text.arrivesIn', { time: formatDelay(minutesLeft) })
+                    : T('Stockbusters.text.thisItemIsReadyFor');
             } else {
                 // Show price and delivery time
                 const price = this.getItemPrice();
-                const deliveryMinutes = DeliveryManager.calculateDeliveryTime(price);
-
-                let deliveryText;
-                if (deliveryMinutes >= 60) {
-                    const hours = Math.ceil(deliveryMinutes / 60);
-                    deliveryText = T('Stockbusters.text.deliveryHours', { hours: hours });
-                } else {
-                    deliveryText = T('Stockbusters.text.deliveryMinutes', { minutes: deliveryMinutes });
-                }
+                const deliveryText = this._isLimited
+                    ? ''
+                    : T('Stockbusters.text.deliveryTime', {
+                        time: formatDelay(DeliveryManager.calculateDeliveryTime(price))
+                    });
 
                 if (this._isLimited) {
                     // In limited mode, show raw prices without discount/tax
@@ -1467,6 +1649,12 @@
         this._isLimited = false;
         this._seedString = "";
         this._maxSkills = 0;
+        // Which page the DOM is showing. It used to be read back off the RMMZ
+        // buy window's openness, which never reaches "open" as an OS app (the
+        // scene's window children are not updated there), so the confirmation
+        // never appeared and ordering did nothing at all.
+        this._confirmOpen = false;
+        this._searchQuery = "";
     };
 
     Scene_SearchableShop.prototype.prepare = function (params) {
@@ -1576,32 +1764,40 @@
     Scene_SearchableShop.prototype.onCategoryOk = function () {
         const category = this._categoryGridWindow.category();
         if (category) {
-            this._categoryGridWindow.hide();
-            this._categoryGridWindow.deactivate();
-            this._helpWindow.show();
-            this._headerWindow.show();
-            this._itemListWindow.setCategory(category.symbol);
-            this._itemListWindow.show();
-            this._itemListWindow.activate();
-            this._itemListWindow.select(0);
-            this.refreshUIShopDOM();
+            this.openItemPage(category.symbol);
         }
+    };
+
+    // Shared by the sidebar categories and the search box: both end up on the
+    // item page, one filtered by category and the other by query.
+    Scene_SearchableShop.prototype.openItemPage = function (symbol) {
+        this._confirmOpen = false;
+        this._categoryGridWindow.hide();
+        this._categoryGridWindow.deactivate();
+        this._helpWindow.show();
+        this._headerWindow.show();
+        this._itemListWindow.setCategory(symbol);
+        this._itemListWindow.show();
+        this._itemListWindow.activate();
+        this._itemListWindow.select(0);
+        this.refreshUIShopDOM();
     };
 
     Scene_SearchableShop.prototype.onItemOk = function () {
         const item = this._itemListWindow.item();
-        const isSkill = this._itemListWindow._category === "skills" || this._itemListWindow._category === "spells";
 
         if (item) {
-            this._buyWindow.setItem(item, isSkill);
+            this._buyWindow.setItem(item, isSkillEntry(item));
             this._buyWindow.open();
             this._buyWindow.activate();
             this._buyWindow.select(0);
+            this._confirmOpen = true;
             this.refreshUIShopDOM();
         }
     };
 
-    Scene_SearchableShop.prototype.onItemCancel = function () {
+    Scene_SearchableShop.prototype.showCategoryPage = function () {
+        this._confirmOpen = false;
         this._itemListWindow.hide();
         this._itemListWindow.deactivate();
         this._helpWindow.hide();
@@ -1611,75 +1807,140 @@
         this.refreshUIShopDOM();
     };
 
+    Scene_SearchableShop.prototype.onItemCancel = function () {
+        // Leaving the results page also empties the box it came from.
+        if (this._searchQuery) {
+            this._searchQuery = "";
+            const box = document.getElementById('emporium-search');
+            if (box) box.value = "";
+        }
+        this.showCategoryPage();
+    };
+
+    // Every rejected order lands here: say no, drop back to the catalog.
+    Scene_SearchableShop.prototype.refuseOrder = function () {
+        SoundManager.playBuzzer();
+        this._confirmOpen = false;
+        this._buyWindow.close();
+        this._itemListWindow.activate();
+        this.refreshUIShopDOM();
+    };
+
     Scene_SearchableShop.prototype.onBuyOk = function () {
         const item = this._itemListWindow.item();
-        if (item) {
-            const price = this._buyWindow.getItemPrice();
+        if (!item) return;
 
-            if (price > $gameParty.gold()) {
-                SoundManager.playBuzzer();
-                this._buyWindow.close();
-                this._itemListWindow.activate();
-                this.refreshUIShopDOM();
-                return;
-            }
+        const price = this._buyWindow.getItemPrice();
+        if (price > $gameParty.gold()) return this.refuseOrder();
 
-            if (!this._isLimited) {
-                if (DeliveryManager.getOrderCount() >= 6) {
-                    SoundManager.playBuzzer();
-                    this._buyWindow.close();
-                    this._itemListWindow.activate();
-                    this.refreshUIShopDOM();
-                    return;
-                }
-
-                if (DeliveryManager.isItemOrdered(item)) {
-                    SoundManager.playBuzzer();
-                    this._buyWindow.close();
-                    this._itemListWindow.activate();
-                    this.refreshUIShopDOM();
-                    return;
-                }
-            }
-
-            $gameParty.loseGold(price);
-            // Buying teaches Haggling, scaled by what the deal was worth.
-            if (window.SpecializationXP) {
-                window.SpecializationXP.awardForValue('Haggling', price);
-            }
-            const isSkill = this._itemListWindow._category === "skills" || this._itemListWindow._category === "spells";
-
-            if (this._isLimited) {
-                if (isSkill) {
-                    $gameActors.actor(1).learnSkill(item.id);
-                } else {
-                    $gameParty.gainItem(item, 1);
-                }
-                SoundManager.playShop();
-            } else {
-                const deliveryTime = DeliveryManager.calculateDeliveryTime(price);
-                DeliveryManager.addOrder(item, deliveryTime, price);
-                SoundManager.playShop();
-            }
-
-            this._buyWindow.close();
-            this._itemListWindow.refresh();
-            this._headerWindow.refresh();
-            this._itemListWindow.activate();
-            this.refreshUIShopDOM();
+        if (!this._isLimited) {
+            if (DeliveryManager.getOrderCount() >= MAX_ACTIVE_ORDERS) return this.refuseOrder();
+            if (DeliveryManager.isItemOrdered(item)) return this.refuseOrder();
         }
+
+        $gameParty.loseGold(price);
+        // Buying teaches Haggling, scaled by what the deal was worth.
+        if (window.SpecializationXP) {
+            window.SpecializationXP.awardForValue('Haggling', price);
+        }
+
+        if (this._isLimited) {
+            // A bazaar hands the goods over across the counter, no courier.
+            if (isSkillEntry(item)) {
+                $gameActors.actor(1).learnSkill(item.id);
+            } else {
+                $gameParty.gainItem(item, 1);
+            }
+            SoundManager.playShop();
+        } else {
+            const deliveryMinutes = DeliveryManager.calculateDeliveryTime(price);
+            DeliveryManager.addOrder(item, deliveryMinutes, price);
+            SoundManager.playShop();
+            if (window.ParchmentToast) {
+                window.ParchmentToast.show(T('Stockbusters.text.orderPlaced', {
+                    item: item.name,
+                    time: formatDelay(deliveryMinutes)
+                }), { severity: "info", icon: item.iconIndex });
+            }
+        }
+
+        this._confirmOpen = false;
+        this._buyWindow.close();
+        this._itemListWindow.refresh();
+        this._headerWindow.refresh();
+        this._itemListWindow.activate();
+        this.refreshUIShopDOM();
     };
 
     Scene_SearchableShop.prototype.onDeliveryInfo = function () {
+        this._confirmOpen = false;
         this._buyWindow.close();
         this._itemListWindow.activate();
         this.refreshUIShopDOM();
     };
 
     Scene_SearchableShop.prototype.onBuyCancel = function () {
+        this._confirmOpen = false;
         this._buyWindow.close();
         this._itemListWindow.activate();
         this.refreshUIShopDOM();
+    };
+
+    // --- Deliveries ---
+
+    // Collects one arrived parcel from the catalog page's order list.
+    Scene_SearchableShop.prototype.collectOrder = function (index) {
+        const order = DeliveryManager.getOrderedItems()[index];
+        if (!DeliveryManager.isOrderReady(order)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+
+        const delivered = DeliveryManager.retireDeliveredItems(order);
+        this.announceCollection(delivered);
+    };
+
+    Scene_SearchableShop.prototype.collectAllOrders = function () {
+        const delivered = DeliveryManager.retireDeliveredItems();
+        this.announceCollection(delivered);
+    };
+
+    Scene_SearchableShop.prototype.announceCollection = function (delivered) {
+        if (delivered.length === 0) {
+            SoundManager.playBuzzer();
+            return;
+        }
+
+        SoundManager.playShop();
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(T('Stockbusters.text.collected', {
+                items: delivered.join(', ')
+            }), { severity: "info" });
+        }
+        if (this._itemListWindow) this._itemListWindow.refresh();
+        if (this._headerWindow) this._headerWindow.refresh();
+        this.refreshUIShopDOM();
+    };
+
+    // --- Search ---
+
+    Scene_SearchableShop.prototype.applySearch = function (query) {
+        const trimmed = String(query || '').trim();
+        if (trimmed === this._searchQuery) return;
+        this._searchQuery = trimmed;
+
+        if (!trimmed) {
+            // An emptied box puts the player back on the category board.
+            if (this._itemListWindow._category === SEARCH_CATEGORY) {
+                this.showCategoryPage();
+            }
+            return;
+        }
+
+        // setSearch rebuilds the results; openItemPage puts them on screen and
+        // moves the selection back to the top of the new list.
+        this._itemListWindow.setSearch(trimmed);
+        this.openItemPage(SEARCH_CATEGORY);
     };
 
     Scene_SearchableShop.prototype.terminate = function () {
@@ -1727,7 +1988,11 @@
 
     Scene_SearchableShop.prototype.createUIShopDOM = function () {
         this._dndContainer = document.createElement('div');
-        this._dndContainer.id = 'menu-container';
+        // NOT id="menu-container": that id means "fullscreen parchment overlay"
+        // globally (theme.css pins it position:fixed over the whole viewport and
+        // centers its children), which tore the shop out of its OS window and
+        // painted a black frame around a centered strip of content.
+        this._dndContainer.id = 'emporium-root';
         this._dndContainer.style.width = '100%';
         this._dndContainer.style.height = '100%';
         this._dndContainer.style.display = 'flex';
@@ -1756,8 +2021,16 @@
                 <span id="emporium-gold-display" style="color: #27ae60; font-size: 12px; font-weight: 700;">0 €</span>
             </div>
             <div style="display: flex; flex: 1; overflow: hidden; height: calc(100% - 28px); box-sizing: border-box;">
-                <!-- Left Sidebar Categories -->
-                <div id="emporium-left-page" style="width: 190px; min-width: 190px; padding: 12px; border-right: 1px solid #7f9db9; background: #ece9d8; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; overflow-y: auto; user-select: none; height: 100%;"></div>
+                <!-- Left Sidebar: search box + categories -->
+                <div style="width: 190px; min-width: 190px; border-right: 1px solid #7f9db9; background: #ece9d8; display: flex; flex-direction: column; box-sizing: border-box; height: 100%;">
+                    <!-- Kept outside the re-rendered pane so typing never loses the caret. -->
+                    <div style="padding: 10px 12px 8px 12px; box-sizing: border-box;">
+                        <input id="emporium-search" type="text" autocomplete="off" spellcheck="false"
+                               placeholder="${T('Stockbusters.ui.searchPlaceholder')}"
+                               style="width: 100%; box-sizing: border-box; padding: 4px 6px; font-family: 'Tahoma', sans-serif; font-size: 11px; border: 1px solid #7f9db9; border-radius: 3px; background: #ffffff; color: #333;" />
+                    </div>
+                    <div id="emporium-left-page" style="flex: 1; padding: 0 12px 12px 12px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; overflow-y: auto; user-select: none;"></div>
+                </div>
                 <!-- Right Main Content Panel -->
                 <div id="emporium-right-page" style="flex: 1; padding: 12px; overflow-y: auto; background: #ffffff; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;"></div>
             </div>
@@ -1766,19 +2039,42 @@
             </div>
         `;
         
-        this._lastStage = null;
+        this.bindSearchBox();
         this.refreshUIShopDOM();
+    };
+
+    Scene_SearchableShop.prototype.bindSearchBox = function () {
+        const box = document.getElementById('emporium-search');
+        if (!box) return;
+
+        // Keep the keystrokes here: the OS window is marked self-nav and RPG
+        // Maker's own document listener eats space and backspace, so without
+        // this the box could not be typed into and every letter would also be
+        // driving the grid selection underneath.
+        box.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') return;
+            event.stopPropagation();
+            if (event.key === 'Enter') {
+                box.blur();
+                event.preventDefault();
+            }
+        });
+        box.addEventListener('input', () => this.applySearch(box.value));
+    };
+
+    // Which of the three pages the DOM should be drawing. Driven by the scene's
+    // own flag rather than by RMMZ window openness, which never advances in app
+    // mode because the scene's windows are not ticked there.
+    Scene_SearchableShop.prototype.domStage = function () {
+        if (this._confirmOpen) return 'confirm';
+        if (this._itemListWindow && this._itemListWindow.visible && this._itemListWindow.active) return 'item';
+        return 'category';
     };
 
     Scene_SearchableShop.prototype.refreshUIShopDOM = function () {
         if (!this._dndContainer) return;
 
-        let stage = 'category';
-        if (this._buyWindow && this._buyWindow.isOpen() && this._buyWindow.active) {
-            stage = 'confirm';
-        } else if (this._itemListWindow && this._itemListWindow.visible && this._itemListWindow.active) {
-            stage = 'item';
-        }
+        const stage = this.domStage();
 
         const formatPrice = (value) => {
             const euros = (value / 100).toFixed(2);
@@ -1821,30 +2117,48 @@
 
             // Active Deliveries
             const orders = DeliveryManager.getOrderedItems() || [];
+            const readyCount = DeliveryManager.readyCount();
             let ordersHTML = "";
 
             if (orders.length === 0) {
                 ordersHTML = `<div style="text-align: center; color: #666; margin-top: 15px; font-size: 11px; font-style: italic;">${T('Stockbusters.text.noActiveDeliveriesInTransit')}</div>`;
             } else {
-                const gameDate = getGameDateFromVariable();
-                const currentTime = gameDateToMilliseconds(gameDate);
+                orders.forEach((order, idx) => {
+                    const entry = DeliveryManager.dataOf(order);
+                    if (!entry) return;
 
-                orders.forEach((order) => {
-                    const timeLeft = order.deliveryDate - currentTime;
-                    const daysLeft = Math.max(0, Math.ceil(timeLeft / (24 * 60 * 60 * 1000)));
-                    const timeLabel = daysLeft > 0 ? T('Stockbusters.text.daysLeft', { days: daysLeft }) : T('Stockbusters.text.readyForPickup');
-                    const timeColor = daysLeft > 0 ? '#0054e3' : '#27ae60';
+                    const minutesLeft = DeliveryManager.getMinutesLeft(order);
+                    const ready = minutesLeft <= 0;
+                    const timeLabel = ready
+                        ? T('Stockbusters.text.readyForPickup')
+                        : T('Stockbusters.text.timeLeft', { time: formatDelay(minutesLeft) });
+                    const timeColor = ready ? '#27ae60' : '#0054e3';
+
+                    const collectHTML = ready
+                        ? `<button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectOrder(${idx})" style="padding: 2px 10px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 10.5px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collect')}</button>`
+                        : '';
 
                     ordersHTML += `
-                        <div style="border: 1px solid #c5c2af; border-radius: 4px; padding: 6px 10px; margin-bottom: 6px; background: #fdfcfa; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); box-sizing: border-box;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                ${getIconSpriteHTML(order.item.iconIndex, 20)}
-                                <strong style="font-size: 11.5px; color: #333;">${order.item.name}</strong>
+                        <div style="border: 1px solid #c5c2af; border-radius: 4px; padding: 6px 10px; margin-bottom: 6px; background: #fdfcfa; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); box-sizing: border-box;">
+                            <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                                ${getIconSpriteHTML(entry.iconIndex, 20)}
+                                <strong style="font-size: 11.5px; color: #333;">${entry.name}</strong>
                             </div>
-                            <span style="font-size: 10.5px; color: ${timeColor}; font-weight: bold;">${timeLabel}</span>
+                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                <span style="font-size: 10.5px; color: ${timeColor}; font-weight: bold;">${timeLabel}</span>
+                                ${collectHTML}
+                            </div>
                         </div>
                     `;
                 });
+
+                if (readyCount > 1) {
+                    ordersHTML += `
+                        <div style="text-align: right; margin-top: 8px;">
+                            <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.collectAllOrders()" style="padding: 4px 14px; font-weight: bold; border-radius: 3px; background: linear-gradient(to bottom, #53a93f 0%, #3c8227 100%); color: white; cursor: pointer; border: 1px solid #205416; font-size: 11px; text-shadow: 0 1px 1px #000;">${T('Stockbusters.text.collectAll', { count: readyCount })}</button>
+                        </div>
+                    `;
+                }
             }
 
             rightPageHTML = `
@@ -1856,7 +2170,7 @@
                     
                     <div style="background: #fdfdfd; border: 1px dashed #7f9db9; border-radius: 4px; padding: 12px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); box-sizing: border-box;">
                         <h3 style="margin: 0 0 10px 0; color: #0b2f70; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 6px;">
-                            ${T('Stockbusters.text.activeOrders')} <span style="font-size: 11px; font-weight: normal; color: #666;">(${activeOrdersCount}/6)</span>
+                            ${T('Stockbusters.text.activeOrders')} <span style="font-size: 11px; font-weight: normal; color: #666;">(${activeOrdersCount}/${MAX_ACTIVE_ORDERS})</span>
                         </h3>
                         ${ordersHTML}
                     </div>
@@ -1866,13 +2180,15 @@
             modalOverlay.style.display = 'none';
 
         } else if (stage === 'item' || stage === 'confirm') {
+            const onSearchPage = this._itemListWindow._category === SEARCH_CATEGORY;
             const category = this._categoryGridWindow.category();
             const items = this._itemListWindow._data || [];
             const selectedIndex = this._itemListWindow.index();
 
             let gridHTML = `<div style="font-weight: bold; font-size: 10px; text-transform: uppercase; color: #5c6c8c; margin-bottom: 6px; letter-spacing: 0.5px;">${T('Stockbusters.ui.catalogCategories')}</div>`;
             categories.forEach((cat, idx) => {
-                const isSelected = category && cat.name === category.name;
+                // A search spans every category, so none of them is the one open.
+                const isSelected = !onSearchPage && category && cat.name === category.name;
                 const bg = isSelected ? '#316ac5' : 'transparent';
                 const color = isSelected ? '#ffffff' : '#333333';
                 const border = isSelected ? '1px solid #1a3c75' : '1px solid transparent';
@@ -1909,10 +2225,18 @@
             });
 
             if (items.length === 0) {
-                itemsHTML = `<div style="text-align: center; color: #666; margin-top: 20px; font-style: italic; font-size: 11px;">${T('Stockbusters.text.noProductsAvailable')}</div>`;
+                const emptyText = onSearchPage
+                    ? T('Stockbusters.text.noSearchResults', { query: escapeHtml(this._searchQuery) })
+                    : T('Stockbusters.text.noProductsAvailable');
+                itemsHTML = `<div style="text-align: center; color: #666; margin-top: 20px; font-style: italic; font-size: 11px;">${emptyText}</div>`;
+            } else if (onSearchPage && items.length >= SEARCH_RESULT_LIMIT) {
+                itemsHTML += `<div style="text-align: center; color: #666; margin-top: 8px; font-style: italic; font-size: 10.5px;">${T('Stockbusters.text.searchTruncated', { count: SEARCH_RESULT_LIMIT })}</div>`;
             }
 
             const selectedItem = this._itemListWindow.item();
+            // The confirmation modal below is built outside the inspector branch,
+            // so the price has to live in the page scope, not the branch's.
+            const price = selectedItem ? this._buyWindow.getItemPrice() : 0;
             let inspectorHTML = "";
 
             if (!selectedItem) {
@@ -1922,14 +2246,17 @@
                     </div>
                 `;
             } else {
-                const price = this._buyWindow.getItemPrice();
                 const isOrdered = DeliveryManager.isItemOrdered(selectedItem);
                 const canAfford = activeGold >= price;
-                const maxOrdersReached = activeOrdersCount >= 6;
+                const maxOrdersReached = activeOrdersCount >= MAX_ACTIVE_ORDERS;
 
                 let actionButtonHTML = "";
                 if (isOrdered) {
-                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 11px;">${T('Stockbusters.text.alreadyOrdered')}</button>`;
+                    const minutesLeft = DeliveryManager.getItemMinutesLeft(selectedItem);
+                    const orderedLabel = minutesLeft > 0
+                        ? T('Stockbusters.text.arrivesIn', { time: formatDelay(minutesLeft) })
+                        : T('Stockbusters.text.readyForPickup');
+                    actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #e2e2e2; color: #888; font-size: 11px;">${orderedLabel}</button>`;
                 } else if (!canAfford) {
                     actionButtonHTML = `<button disabled style="width: 100%; padding: 8px; font-weight: bold; border-radius: 4px; border: 1px solid #ccc; background: #f5dcdc; color: #c0392b; font-size: 11px;">${T('Stockbusters.text.insufficientFunds')}</button>`;
                 } else if (maxOrdersReached && !this._isLimited) {
@@ -1966,6 +2293,11 @@
                                 <span style="color: #666; font-size: 11px; text-transform: uppercase;">${T('Stockbusters.ui.totalCost')}</span>
                                 <span style="color: #0054e3;">${formatPrice(price)}</span>
                             </div>
+                            ${(this._isLimited || isOrdered) ? '' : `
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #666;">
+                                <span style="text-transform: uppercase;">${T('Stockbusters.ui.deliveryEstimate')}</span>
+                                <span style="font-weight: bold; color: #333;">${formatDelay(DeliveryManager.calculateDeliveryTime(price))}</span>
+                            </div>`}
                             ${actionButtonHTML}
                         </div>
                     </div>
@@ -1977,7 +2309,9 @@
                     <button onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.onItemCancel()" style="padding: 2px 8px; font-weight: bold; cursor: pointer; border: 1px solid #7f9db9; border-radius: 3px; background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%); font-size: 11px; display: flex; align-items: center; gap: 4px;">
                         <span style="font-size: 12px; font-weight: bold;">←</span> ${T('Stockbusters.text.back')}
                     </button>
-                    <div style="font-weight: bold; color: #0b2f70; font-size: 13px;">${category ? category.name : "Wares"}</div>
+                    <div style="font-weight: bold; color: #0b2f70; font-size: 13px;">${onSearchPage
+                        ? T('Stockbusters.text.searchResultsFor', { query: escapeHtml(this._searchQuery), count: items.length })
+                        : (category ? category.name : T('Stockbusters.text.wares'))}</div>
                 </div>
                 
                 <div style="display: flex; gap: 15px; flex-grow: 1; height: calc(100% - 38px); overflow: hidden; box-sizing: border-box;">
@@ -2048,13 +2382,21 @@
         }
     };
 
+    // True while the player is typing in the catalog search box: the keys are
+    // theirs, not the grid's.
+    Scene_SearchableShop.prototype.isSearchFocused = function () {
+        const box = document.getElementById('emporium-search');
+        return !!box && document.activeElement === box;
+    };
+
     Scene_SearchableShop.prototype.update = function () {
         if (!this._isAppMode) Scene_MenuBase.prototype.update.call(this);
 
-        // Add handling for ESC key (cancel) when buy window is open
-        if (this._buyWindow.isOpen() && (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled())) {
+        if (this.isSearchFocused()) return;
+
+        // Add handling for ESC key (cancel) when the confirmation is up
+        if (this._confirmOpen && (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled())) {
             this.onBuyCancel();
-            this.refreshUIShopDOM();
             return;
         }
 
@@ -2063,12 +2405,7 @@
             let okPressed = false;
             let cancelPressed = false;
 
-            let stage = 'category';
-            if (this._buyWindow && this._buyWindow.isOpen() && this._buyWindow.active) {
-                stage = 'confirm';
-            } else if (this._itemListWindow && this._itemListWindow.visible && this._itemListWindow.active) {
-                stage = 'item';
-            }
+            const stage = this.domStage();
 
             if (stage === 'category') {
                 const maxCols = 3;

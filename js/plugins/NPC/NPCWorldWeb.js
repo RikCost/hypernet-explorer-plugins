@@ -207,7 +207,14 @@
     if (!entry) return "";
     if (typeof entry === "string") return entry;
     if (!entry.key || !T.has(entry.key)) return entry.desc || "";
-    return T(entry.key, entry.params || {});
+    const params = entry.params || {};
+    // A settlement is logged under its map-group key ("OmegaTower"); a town of
+    // that name in Destinations.json knows how it is meant to read.
+    if (params.place != null && window.WorkSystem?.destinationName) {
+      return T(entry.key, Object.assign({}, params,
+        { place: window.WorkSystem.destinationName(params.place) }));
+    }
+    return T(entry.key, params);
   }
 
   function ensurePulse(state, group) {

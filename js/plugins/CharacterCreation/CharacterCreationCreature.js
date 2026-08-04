@@ -50,6 +50,10 @@
 
   Window_ArchetypeSelect.prototype.processCursorMove = function () {};
   Window_ArchetypeSelect.prototype.processHandling = function () {};
+  // All mouse interaction goes through the DOM overlay. The window itself is
+  // invisible, so leaving TouchInput alive lets a hover over its (unrelated)
+  // rectangle move the index and cycle the cards under the pointer.
+  Window_ArchetypeSelect.prototype.processTouch = function () {};
 
   Window_ArchetypeSelect.prototype.maxCols = function () {
     return 2;
@@ -121,6 +125,7 @@
 
   Window_BattlerList.prototype.processCursorMove = function () {};
   Window_BattlerList.prototype.processHandling = function () {};
+  Window_BattlerList.prototype.processTouch = function () {};
 
   Window_BattlerList.prototype.maxCols = function () {
     return 2; // Matches the 2-column visual grid
@@ -322,6 +327,7 @@
 
   Window_CharacterSelect.prototype.processCursorMove = function () {};
   Window_CharacterSelect.prototype.processHandling = function () {};
+  Window_CharacterSelect.prototype.processTouch = function () {};
 
   Window_CharacterSelect.prototype.maxCols = function () {
     return 4; // Matches the 4-column visual grid
@@ -492,6 +498,7 @@
 
   Window_CreateCreatureMode.prototype.processCursorMove = function () {};
   Window_CreateCreatureMode.prototype.processHandling = function () {};
+  Window_CreateCreatureMode.prototype.processTouch = function () {};
 
   Window_CreateCreatureMode.prototype.maxCols = function () {
     return 2;
@@ -808,7 +815,10 @@
       this._step === 3 ? this._battlerListWindow.index() :
       this._characterWindow.index();
 
-    const isStepChange = (this._lastStepDOM !== this._step) || (this._mode === 'hybrid');
+    // Only a real step change rebuilds the whole spread. The archetype screen is
+    // always in multi-select ('hybrid') mode, so keying off the mode rebuilt both
+    // pages on every cursor move and made the board flash.
+    const isStepChange = (this._lastStepDOM !== this._step);
 
     let leftHtml = "";
     let rightHtml = "";
@@ -1242,6 +1252,28 @@
             const isSelected = this._mode === 'baseline' ? idx === activeIndex : !!committed;
             card.classList.toggle("selected", isSelected);
             card.classList.toggle("highlighted", !isSelected && idx === activeIndex);
+            // Keep the Primary/Secondary caption in step with the picks without
+            // rebuilding the board.
+            const oldBadge = card.querySelector(".cc-archetype-role");
+            if (oldBadge) oldBadge.remove();
+            if (this._mode !== 'baseline' && item) {
+              let badgeText = "";
+              let badgeColor = "";
+              if (this._selectedArchetype1 === item.key) {
+                badgeText = T('CharCreate.primary');
+                badgeColor = "#822d2d";
+              } else if (this._selectedArchetype2 === item.key) {
+                badgeText = T('CharCreate.secondary');
+                badgeColor = "#5a3d75";
+              }
+              if (badgeText) {
+                const badge = document.createElement("div");
+                badge.className = "cc-archetype-role";
+                badge.style.cssText = `color: ${badgeColor}; font-weight: bold; font-size: 0.72rem; margin-top: 2px;`;
+                badge.textContent = badgeText;
+                card.appendChild(badge);
+              }
+            }
           });
         }
       } else if (this._step === 3) {
@@ -1476,16 +1508,25 @@
     }
     window.removeEventListener('mouseup',  L.onUp);
     window.removeEventListener('touchend', L.onTEnd);
+    // A new WebGLRenderer is built for every model previewed, so the context has
+    // to be released here as well: dispose() alone leaves it alive and the
+    // browser eventually evicts the OLDEST live context, which is the game's own
+    // canvas (it blanks to black).
     try { s.renderer.dispose(); } catch (e) {}
+    try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
     this._creature3D = null;
     this._creature3DEnemyId = -1;
   };
 
   Scene_CreateCreature.prototype._scrollToSelectedCard = function () {
     let boardSelector = null;
+    let cardSelector = '.cc-wanted-card';
     let activeIndex = -1;
     if (this._step === 1 || this._step === 2) {
-      boardSelector = '.cc-page-right .cc-presets-board';
+      // The archetype board is the compact grid on the LEFT page and its cards
+      // are .cc-card-option, not the poster cards the other steps use.
+      boardSelector = '.cc-page-left .cc-select-grid';
+      cardSelector = '.cc-card-option';
       activeIndex = this._archetypeWindow.index();
     } else if (this._step === 3) {
       boardSelector = '.cc-page-right .cc-presets-board';
@@ -1498,7 +1539,7 @@
     }
     const board = this._dndContainer && this._dndContainer.querySelector(boardSelector);
     if (!board) return;
-    const cards = board.querySelectorAll('.cc-wanted-card');
+    const cards = board.querySelectorAll(cardSelector);
     const card = cards[activeIndex];
     if (!card) return;
     const boardRect = board.getBoundingClientRect();
@@ -1662,7 +1703,7 @@
     if (!this._dndContainer) return null;
     let selector = null;
     if (this._step === 1 || this._step === 2) {
-      selector = '.cc-page-left .cc-presets-board';
+      selector = '.cc-page-left .cc-select-grid'; // archetype cards use the compact grid
     } else if (this._step === 3) {
       selector = '.cc-page-right .cc-presets-board'; // battler cards are on the right
     } else if (this._step === 4) {
@@ -2041,9 +2082,73 @@
         if (modelActor) modelActor.setVnBattler("");
       }
       this.applyCreatureSettings();
+      if (this.startNameInput()) return;
       if (this.startClassSelection()) return;
       this.popScene();
     }
+  };
+
+  // Pre-fill the name field with a generated name, the way the humanoid branch
+  // does with its Markov step, so the player edits a suggestion instead of the
+  // database placeholder. The current name is kept when no generator is loaded.
+  function suggestCreatureName(actor) {
+    if (!window.generateSeededMarkovName) return;
+    const actorId = actor.actorId();
+    const seed = (Date.now() + actorId * 7919) >>> 0;
+    try {
+      const name = window.generateSeededMarkovName(
+        seed & 0xffff,
+        (seed >>> 16) & 0xffff,
+        actorId,
+        "names", // i18n-ignore: TextGen database id
+        2,
+        4,
+        12
+      );
+      if (name && name !== T('Markov.unknownName')) {
+        actor.setName(name.charAt(0).toUpperCase() + name.slice(1));
+      }
+    } catch (e) {
+      // Generator unavailable: the creature keeps the name it already has.
+    }
+  }
+
+  // The humanoid branch of the wizard is named by common event 97 (a generated
+  // suggestion, then the name input screen) between gender and class; creatures
+  // never run that event, so the name is asked for here instead, once the
+  // creature is built and before its class is picked.
+  //
+  // Only the wizard flow names anything: a creature built from the
+  // CreateCreature plugin command is an existing character changing shape, and
+  // keeps the name it already has.
+  Scene_CreateCreature.prototype.startNameInput = function () {
+    const wizard = window.Scene_CharacterCreation;
+    if (!wizard || wizard._interruptedStep < 0) return false;
+    if (typeof Scene_Name === "undefined") return false;
+    const stack = SceneManager._stack;
+    if (!stack) return false;
+    const actor = $gameActors.actor(this._targetActorId);
+    if (!actor) return false;
+
+    // The naming screen returns to exactly where this scene would have gone
+    // without it: the class selector when the wizard routes there, otherwise
+    // the scene that opened the builder.
+    let returnScene;
+    if (this.prepareClassSelection()) {
+      returnScene = window.Scene_ClassSelection;
+    } else if (stack.length) {
+      returnScene = stack.pop();
+    } else {
+      return false;
+    }
+
+    suggestCreatureName(actor);
+    SceneManager.goto(Scene_Name);
+    // NameInsert forces its own 16-character limit; the argument is the engine
+    // default the name input screen would otherwise use.
+    SceneManager.prepareNextScene(this._targetActorId, 16);
+    stack.push(returnScene);
+    return true;
   };
 
   // The creature is built: hand over to the class selector, scoped to the
@@ -2055,6 +2160,15 @@
   // Only the wizard flow routes here: a creature built from the CreateCreature
   // plugin command (no paused wizard) keeps popping back where it came from.
   Scene_CreateCreature.prototype.startClassSelection = function () {
+    if (!this.prepareClassSelection()) return false;
+    SceneManager.goto(window.Scene_ClassSelection);
+    return true;
+  };
+
+  // Everything startClassSelection does except the scene change itself, so the
+  // name step can set the hand-over up and let the naming screen return into
+  // the class selector.
+  Scene_CreateCreature.prototype.prepareClassSelection = function () {
     const wizard = window.Scene_CharacterCreation;
     if (!wizard || wizard._interruptedStep < 0) return false;
     if (!window.Scene_ClassSelection || !window.CreatureClasses) return false;
@@ -2079,7 +2193,6 @@
     if (stack && stack.length && stack[stack.length - 1] === wizard) {
       stack.pop();
     }
-    SceneManager.goto(window.Scene_ClassSelection);
     return true;
   };
 

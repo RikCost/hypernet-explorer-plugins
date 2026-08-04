@@ -2753,9 +2753,14 @@
           let originRows = "";
           // Resolved, not read raw: an endless dossier (Em) is from a different
           // town every incarnation.
-          const presetHometown = typeof getPresetHometown === "function"
+          const presetHometownRaw = typeof getPresetHometown === "function"
             ? getPresetHometown(preset)
             : (preset.hometown || "");
+          // A town that is a travel destination reads by its Destinations.json
+          // "name"; an invented one (Em's "...bledon") reads as it stands.
+          const presetHometown = (presetHometownRaw && window.WorkSystem?.destinationName)
+            ? window.WorkSystem.destinationName(presetHometownRaw)
+            : presetHometownRaw;
           if (presetHometown) {
             originRows += `<div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.hometown')}:</span><span class="cc-dossier-value">${presetHometown}</span></div>`;
           }
@@ -2895,7 +2900,13 @@
 
         const firstStep = Scene_CharacterCreation.getStartingStep();
         const showBackButton = this._step > firstStep;
-        const backBtnHtml = showBackButton ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.onCancel()">${T('CharCreate.back')}</button>` : "";
+        // On the very first step of a new game there is nothing to go back to
+        // inside the wizard, so the slot holds the way out to the title screen.
+        const backBtnHtml = showBackButton
+          ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.onCancel()">${T('CharCreate.back')}</button>`
+          : (this.canExitToTitle()
+            ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.exitToTitle()">${T('CharCreate.returnToTitle')}</button>`
+            : "");
 
         // Archetype/creature class picker uses a two-column grid.
         const isQuickClassStep = this._step === STEP.CLASS &&
@@ -4018,10 +4029,13 @@
 
       // Settings is now the first step on a first-time creation, so only show
       // the Back button when there is actually an earlier step to return to.
+      // With no earlier step it becomes the way back to the title screen.
       const showSettingsBack = this._step > Scene_CharacterCreation.getStartingStep();
       const settingsBackBtn = showSettingsBack
         ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.onCancel()">${T('CharCreate.back')}</button>`
-        : "";
+        : (this.canExitToTitle()
+          ? `<button class="cc-btn-treaty" onclick="SceneManager._scene.exitToTitle()">${T('CharCreate.returnToTitle')}</button>`
+          : "");
 
       const rightHtml = `
         <div class="cc-page cc-page-right">
@@ -4475,7 +4489,46 @@
       this.refreshUIOverlayDOM();
     }
 
+    // True while the wizard is the first thing a brand-new game shows: nothing
+    // has been committed yet, so the only sensible Back from its first step is
+    // the title screen. Creations entered from a running game (a second party
+    // member, a reprise from the creature builder) must never offer it.
+    canExitToTitle() {
+      if (typeof hasCompletedFirstCreation !== "function") return false;
+      return !hasCompletedFirstCreation();
+    }
+
+    // Abandon a new game from the first step and go back to the title. Nothing
+    // has been saved yet, so the half-built party is simply dropped; New Game
+    // builds a fresh set of game objects. The static flow state outlives the
+    // scene, so it is reset here or the next New Game would resume this
+    // abandoned wizard mid-step.
+    exitToTitle() {
+      SoundManager.playCancel();
+      Scene_CharacterCreation._interruptedStep = -1;
+      Scene_CharacterCreation._startStep = 0;
+      Scene_CharacterCreation._isCreatureMode = false;
+      Scene_CharacterCreation._traitsProcessed = false;
+      Scene_CharacterCreation._currentPartyMemberIndex = 0;
+      Scene_CharacterCreation._lastMemberWasRandom = false;
+      Scene_CharacterCreation._tutorialMode = false;
+      Scene_CharacterCreation._settingsRowIndex = 0;
+      Scene_CharacterCreation._creationMode = null;
+      Scene_CharacterCreation._randomizedAllParty = false;
+      Scene_CharacterCreation._quickArchIndex = null;
+      this.hideUI();
+      this.fadeOutAll();
+      SceneManager.goto(Scene_Title);
+    }
+
     onCancel() {
+      // First step of a new game's creation: Back leaves for the title screen
+      // rather than doing nothing (the wizard opens straight after New Game,
+      // so there is no other way out of it).
+      if (this._step <= Scene_CharacterCreation.getStartingStep() && this.canExitToTitle()) {
+        this.exitToTitle();
+        return;
+      }
       // Class step: Back unwinds the picker one level at a time. (Quick mode)
       // from an open archetype's class list back to the archetype list.
       if (this._step === STEP.CLASS && !Scene_CharacterCreation._isCreatureMode) {
@@ -4848,6 +4901,9 @@
         } else if (this._step > firstStep) {
           SoundManager.playCancel();
           this.onCancel();
+        } else if (this.canExitToTitle()) {
+          // First step of a new game: Cancel leaves for the title screen.
+          this.exitToTitle();
         }
       }
 

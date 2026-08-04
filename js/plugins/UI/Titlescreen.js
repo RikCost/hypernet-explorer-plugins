@@ -449,37 +449,39 @@
     // =========================================================================
     const MinigameArcade = {
         _freshContext: false,
+        // Whether a real game stands behind the $game* objects. Set by New Game
+        // and by loading a save, cleared whenever the title screen comes up.
+        _realGame: false,
         // Every game in the free-play list opens on the same fixed bankroll, so
         // a losing streak in one game never leaves the next one unplayable.
         STIPEND_TOKENS: 50,
 
         // Make sure the $game* objects exist so games that read $gameParty /
         // $gameVariables / $gameSystem don't crash when opened from the title.
-        // Only creates them when no game is loaded (title screen), so an
-        // in-progress game is never wiped. A fresh context also gets a stipend.
+        //
+        // $gameParty already existing proves nothing about there being a game:
+        // Scene_Boot runs DataManager.setupNewGame() before the title is ever
+        // drawn, so the objects are present on a cold boot too. _realGame is the
+        // only signal that decides, and a throwaway title context is re-armed
+        // with the stipend on every entry.
         ensureGameObjects() {
             if (typeof $gameParty === 'undefined' || !$gameParty) {
                 DataManager.createGameObjects();
-                if ($gameParty.members().length === 0 && $gameParty.setupStartingMembers) {
-                    $gameParty.setupStartingMembers();
-                }
-                this._freshContext = true;
-                this.grantStipend();
-            } else {
-                // A game is already loaded (opened mid-game): never touch its
-                // gold / items, so the free-play stipend stays disabled.
-                this._freshContext = false;
             }
+            this._freshContext = !this._realGame;
+            // A game in progress keeps its own party, gold and items untouched.
+            if (!this._freshContext) return;
+            if ($gameParty.members().length === 0 && $gameParty.setupStartingMembers) {
+                $gameParty.setupStartingMembers();
+            }
+            this.grantStipend();
         },
 
         // True while the arcade is running on its own throwaway context, i.e.
         // opened from the title screen with no save loaded. Wager games read
-        // this to run on play money instead of the party's real inventory. The
-        // map check is the belt to the braces below: a real game always stands
-        // on a map, the arcade's empty context never does.
+        // this to run on play money instead of the party's real inventory.
         isFreePlay() {
-            if (!this._freshContext) return false;
-            return typeof $gameMap === 'undefined' || !$gameMap || !$gameMap.mapId();
+            return this._freshContext && !this._realGame;
         },
 
         // Hand out gold, tokens and arcade coins so wager-based games (scratch
@@ -503,22 +505,45 @@
                 const coinVar = parseInt(arcadeParams.coinVariable, 10) || 56;
                 if ($gameVariables.value(coinVar) < 99) $gameVariables.setValue(coinVar, 99);
             } catch (e) { /* item table may lack the token id - ignore */ }
-        }
+        },
+
+        // Surfing and fishing normally read the map they are played on: its
+        // <Interior>/<Exterior> note for the venue and the world clock for the
+        // hour. Free play stands on no map, so the picker asks for both and
+        // parks the answer here; those two plugins read it through setup().
+        _setup: null,
+        setSetup(cfg) { this._setup = cfg || null; },
+        clearSetup() { this._setup = null; },
+        setup() { return this._setup; }
     };
     window.MinigameArcade = MinigameArcade;
 
     // Starting or loading a real game replaces the throwaway context the arcade
     // built, so the free-play flag must not survive into it: an in-game casino
     // has to spend the party's own tokens.
+    //
+    // Boot runs setupNewGame too, before the title is ever drawn, so the flag it
+    // raises there is taken back the moment the title screen is created: standing
+    // on the title means no game is being played, whatever the $game* objects
+    // happen to still hold.
     const _DataManager_setupNewGame = DataManager.setupNewGame;
     DataManager.setupNewGame = function () {
+        MinigameArcade._realGame = true;
         MinigameArcade._freshContext = false;
+        MinigameArcade.clearSetup();
         _DataManager_setupNewGame.call(this);
     };
     const _DataManager_extractSaveContents = DataManager.extractSaveContents;
     DataManager.extractSaveContents = function (contents) {
+        MinigameArcade._realGame = true;
         MinigameArcade._freshContext = false;
+        MinigameArcade.clearSetup();
         _DataManager_extractSaveContents.call(this, contents);
+    };
+    const _Scene_Title_arcadeCreate = Scene_Title.prototype.create;
+    Scene_Title.prototype.create = function () {
+        MinigameArcade._realGame = false;
+        _Scene_Title_arcadeCreate.call(this);
     };
 
     // Launch helpers -----------------------------------------------------------
@@ -557,6 +582,30 @@
         window.VisualPiano.open();
     }
 
+    // Setup pages, shown before a game marked `setup: true` is launched. Surfing
+    // and fishing build their world out of the map they are played on, and the
+    // arcade has no map, so the player is asked instead of being given the
+    // default (open water, whatever hour the empty world clock reads).
+    const WATER_VENUES = [
+        { venue: 'exterior', label: 'Titlescreen.minigameSetup.exterior' },
+        { venue: 'interior', label: 'Titlescreen.minigameSetup.interior' }
+    ];
+    // SkyRenderer.TIME_MODES (AnimatedBattleBackgrounds): DAY 0, NIGHT 1,
+    // DUSK 2, DAWN 3. The names are resolved through it when it is loaded so a
+    // renumbering there carries over; the fallbacks keep the picker working
+    // when it is not.
+    const WATER_TIMES = [
+        { mode: 'DAWN',  fallback: 3, label: 'Titlescreen.minigameSetup.morning' },
+        { mode: 'DAY',   fallback: 0, label: 'Titlescreen.minigameSetup.afternoon' },
+        { mode: 'DUSK',  fallback: 2, label: 'Titlescreen.minigameSetup.evening' },
+        { mode: 'NIGHT', fallback: 1, label: 'Titlescreen.minigameSetup.night' }
+    ];
+
+    function timeModeId(name, fallback) {
+        const modes = window.SkyRenderer && window.SkyRenderer.TIME_MODES;
+        return (modes && typeof modes[name] === 'number') ? modes[name] : fallback;
+    }
+
     // The full free-play catalogue. `avail` is evaluated when the picker opens
     // (all plugins are loaded by then), so a game whose plugin is missing is
     // simply hidden instead of crashing.
@@ -564,16 +613,18 @@
         const all = [
             { name: T('Titlescreen.minigame.arena'),                   avail: () => hasScene('Scene_ArenaPartySelect'),  run: s => SceneManager.push(window.Scene_ArenaPartySelect) },
             { name: T('Titlescreen.minigame.camperDriving'),          avail: () => !!(window.CamperDrivingSystem && window.CamperDrivingSystem.startStandalone), run: s => SceneManager.push(Scene_CamperFreeplay) },
-            { name: T('Titlescreen.minigame.surfing'),                 avail: () => hasScene('Scene_SurfingGame'),       run: s => SceneManager.push(window.Scene_SurfingGame) },
+            { name: T('Titlescreen.minigame.surfing'),                 avail: () => hasScene('Scene_SurfingGame'),       run: s => SceneManager.push(window.Scene_SurfingGame), setup: true },
             { name: T('Titlescreen.minigame.pool'),                    avail: () => hasScene('Scene_Pool'),              run: s => SceneManager.push(window.Scene_Pool) },
             { name: T('Titlescreen.minigame.chess'),                   avail: () => hasCmd('ChessGame', 'startNormalChess'), run: s => PluginManager.callCommand(s, 'ChessGame', 'startNormalChess', {}) },
             { name: T('Titlescreen.minigame.bowling'),                 avail: () => hasScene('Scene_BowlingMinigame'),   run: s => SceneManager.push(window.Scene_BowlingMinigame) },
             { name: T('Titlescreen.minigame.basketball'),              avail: () => hasScene('Scene_BasketballMinigame'), run: s => SceneManager.push(window.Scene_BasketballMinigame) },
-            { name: T('Titlescreen.minigame.fishing'),                 avail: () => hasScene('Scene_FishingMinigame'),   run: s => SceneManager.push(window.Scene_FishingMinigame) },
+            { name: T('Titlescreen.minigame.fishing'),                 avail: () => hasScene('Scene_FishingMinigame'),   run: s => SceneManager.push(window.Scene_FishingMinigame), setup: true },
             { name: T('Titlescreen.minigame.slotMachine'),            avail: () => hasScene('Scene_SlotMachine'),       run: s => SceneManager.push(window.Scene_SlotMachine) },
             { name: T('Titlescreen.minigame.horseRace'),              avail: () => hasScene('Scene_HorseRace'),         run: s => SceneManager.push(window.Scene_HorseRace) },
             { name: T('Titlescreen.minigame.tarotReading'),           avail: () => hasCmd('AnimatedTarotReading', 'openTarot'), run: s => PluginManager.callCommand(s, 'AnimatedTarotReading', 'openTarot', {}) },
-            { name: T('Titlescreen.minigame.scratchCard'),            avail: () => hasScene('Scene_ScratchCard'),       run: s => SceneManager.push(window.Scene_ScratchCard) },
+            // The scratch card opens on its own counter: the arcade entry deals
+            // the free-play bankroll and lets the player pick which card to buy.
+            { name: T('Titlescreen.minigame.scratchCard'),            avail: () => hasScene('Scene_ScratchCard'),       run: s => (window.openScratchCardArcade ? window.openScratchCardArcade() : SceneManager.push(window.Scene_ScratchCard)) },
             { name: T('Titlescreen.minigame.monsterTournament'),      avail: () => hasScene('Scene_MonsterTournament'), run: s => SceneManager.push(window.Scene_MonsterTournament) },
             { name: T('Titlescreen.minigame.hyperTamer'),             avail: () => hasScene('Scene_HyperTamer'),        run: s => SceneManager.push(window.Scene_HyperTamer) },
             { name: T('Titlescreen.minigame.periodicTable'),          avail: () => hasScene('Scene_PeriodicTable'),     run: s => SceneManager.push(window.Scene_PeriodicTable) },
@@ -602,12 +653,38 @@
             MinigameArcade.ensureGameObjects();
             this._entries = buildMinigameList();
             this._overlayWatch = null;
-            // Selection spans the entries plus a trailing "Back" item.
-            this._backIndex = this._entries.length;
+            // Returning from a game recreates this scene, so a setup answered
+            // for the last launch is spent here and never leaks into the next.
+            MinigameArcade.clearSetup();
+            // 'list', then 'venue' and 'time' for the games that ask.
+            this._mode = 'list';
+            this._pendingEntry = -1;
+            this._pendingVenue = null;
             const last = Scene_MinigameList._lastIndex || 0;
-            this._selectedIndex = Math.min(last, this._backIndex);
-            this._lastRenderedIndex = -1;
+            this._selectedIndex = Math.min(last, this._entries.length);
+            this._lastRenderKey = '';
             this.createUIOverlay();
+        }
+
+        // Title and rows of the page currently on screen. Selection always
+        // spans the rows plus a trailing "Back" item at rows.length.
+        currentPage() {
+            if (this._mode === 'venue') {
+                return {
+                    title: T('Titlescreen.minigameSetup.venueTitle'),
+                    rows: WATER_VENUES.map(v => T(v.label))
+                };
+            }
+            if (this._mode === 'time') {
+                return {
+                    title: T('Titlescreen.minigameSetup.timeTitle'),
+                    rows: WATER_TIMES.map(t => T(t.label))
+                };
+            }
+            return {
+                title: T('Titlescreen.menuOverlay.minigames'),
+                rows: this._entries.map(e => e.name)
+            };
         }
 
         createUIOverlay() {
@@ -627,11 +704,13 @@
 
         refreshOverlay() {
             if (!this._menuContainer) return;
-            if (this._lastRenderedIndex === this._selectedIndex) return;
-            this._lastRenderedIndex = this._selectedIndex;
+            const page = this.currentPage();
+            const key = this._mode + ':' + this._selectedIndex;
+            if (this._lastRenderKey === key) return;
+            this._lastRenderKey = key;
 
-            const rows = this._entries.map((e, i) => ({ text: e.name.toUpperCase(), index: i }));
-            rows.push({ text: 'BACK', index: this._backIndex });
+            const rows = page.rows.map((text, i) => ({ text: String(text).toUpperCase(), index: i }));
+            rows.push({ text: T('Titlescreen.minigameSetup.back').toUpperCase(), index: rows.length });
 
             const items = rows.map(r => {
                 const sel = r.index === this._selectedIndex ? ' selected' : '';
@@ -645,7 +724,7 @@
 
             this._menuContainer.innerHTML = `
                 <div class="mg-menu-overlay">
-                    <div class="mg-menu-title">MINIGAMES</div>
+                    <div class="mg-menu-title">${String(page.title).toUpperCase()}</div>
                     <div class="mg-menu-list">${items}</div>
                 </div>`;
 
@@ -670,8 +749,26 @@
         }
 
         confirmSelection() {
-            if (this._selectedIndex === this._backIndex) {
-                this.popScene();
+            const page = this.currentPage();
+            if (this._selectedIndex === page.rows.length) { // the Back row
+                this.goBack();
+                return;
+            }
+            if (this._mode === 'venue') {
+                this._pendingVenue = WATER_VENUES[this._selectedIndex].venue;
+                this.gotoPage('time');
+                return;
+            }
+            if (this._mode === 'time') {
+                const when = WATER_TIMES[this._selectedIndex];
+                MinigameArcade.setSetup({
+                    venue: this._pendingVenue,
+                    timeMode: timeModeId(when.mode, when.fallback)
+                });
+                const entry = this._entries[this._pendingEntry];
+                this._mode = 'list';
+                this._selectedIndex = this._pendingEntry;
+                if (entry) this.launchEntry(entry);
                 return;
             }
             this.onPick(this._selectedIndex);
@@ -679,13 +776,46 @@
 
         onPick(index) {
             Scene_MinigameList._lastIndex = index;
-            MinigameArcade.grantStipend();
             const entry = this._entries[index];
+            // Games that build a world out of the map they stand on ask where
+            // and when before they start; everything else goes straight in.
+            if (entry && entry.setup) {
+                this._pendingEntry = index;
+                this._pendingVenue = null;
+                this.gotoPage('venue');
+                return;
+            }
+            this.launchEntry(entry);
+        }
+
+        launchEntry(entry) {
+            MinigameArcade.grantStipend();
             try {
                 entry.run(this);
             } catch (err) {
                 console.error('[Minigames] Failed to launch "' + entry.name + '":', err);
             }
+        }
+
+        gotoPage(mode) {
+            this._mode = mode;
+            this._selectedIndex = 0;
+            this.refreshOverlay();
+        }
+
+        // Back walks the setup pages in reverse before it leaves the arcade.
+        goBack() {
+            if (this._mode === 'time') {
+                this.gotoPage('venue');
+                return;
+            }
+            if (this._mode === 'venue') {
+                this._mode = 'list';
+                this._selectedIndex = this._pendingEntry >= 0 ? this._pendingEntry : 0;
+                this.refreshOverlay();
+                return;
+            }
+            this.popScene();
         }
 
         // Park the overlay while a DOM-overlay minigame (piano) is on screen;
@@ -706,7 +836,7 @@
                 return; // an overlay minigame owns input while it is up
             }
 
-            const max = this._backIndex + 1; // entries + Back
+            const max = this.currentPage().rows.length + 1; // rows + Back
             if (Input.isRepeated('down')) {
                 this._selectedIndex = (this._selectedIndex + 1) % max;
                 SoundManager.playCursor();
@@ -720,7 +850,7 @@
                 this.confirmSelection();
             } else if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
                 SoundManager.playCancel();
-                this.popScene();
+                this.goBack();
             }
         }
 
@@ -3688,16 +3818,24 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         }
 
         // The labels name the pad buttons that do the same job when one is
-        // plugged in; they only relabel when that connection state flips.
+        // plugged in; they only relabel when that connection state flips, or
+        // when the player picks another language while the show is running
+        // (the flags are right there on the title, and every other piece of
+        // text on screen re-renders on its own).
         _refreshControlLabels() {
             const pad = PAD.connected();
-            if (this._nextButton && pad !== this._nextPadConnected) {
+            const lang = activeLanguage();
+            if (this._nextButton &&
+                (pad !== this._nextPadConnected || lang !== this._nextLabelLang)) {
                 this._nextPadConnected = pad;
+                this._nextLabelLang = lang;
                 this._nextButton.textContent =
                     T('Titlescreen.hyperverse.nextBody') + (pad ? ' (R3)' : ' ›');
             }
-            if (this._catalogButton && pad !== this._catalogPadConnected) {
+            if (this._catalogButton &&
+                (pad !== this._catalogPadConnected || lang !== this._catalogLabelLang)) {
                 this._catalogPadConnected = pad;
+                this._catalogLabelLang = lang;
                 this._catalogButton.textContent =
                     T('Titlescreen.hyperverse.catalogButton') + (pad ? ' (L3)' : '');
             }

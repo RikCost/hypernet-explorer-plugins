@@ -27,7 +27,9 @@
     "appName": "Stockbusters",
     "siteName": "HypercapitalisEMporium.eu",
     "catalogCategories": "Catalog Categories",
-    "totalCost": "Total cost:"
+    "totalCost": "Total cost:",
+    "deliveryEstimate": "Delivery:",
+    "searchPlaceholder": "Search the catalog..."
   },
   "text": {
     "delivered": "{count} item(s) have been delivered!",
@@ -57,11 +59,12 @@
     "heavyEquip": "Heavy equip.",
     "shields": "Shields",
     "ordered": "ORDERED",
-    "readyForPickup": "Ready for pickup!",
+    "readyForPickup": "Ready to collect!",
+    "wares": "Wares",
     "buy": "Buy",
     "order": "Order",
     "cancel": "Cancel",
-    "thisItemIsReadyFor": "This item is ready for pickup! Use RetireDeliveredItems command.",
+    "thisItemIsReadyFor": "This item has arrived! Collect it from your orders or from a mailbox.",
     "learningCost": "Learning Cost: ",
     "price": "Price: ",
     "60Off": " (60% OFF!)",
@@ -88,12 +91,20 @@
     "for": "for",
     "authorize": "AUTHORIZE",
     "cancel2": "CANCEL",
-    "arrivesInDays": "Arrives in {days} day(s)",
-    "arrivesInHours": "This item will arrive in {hours} hour(s)",
-    "arrivesInMinutes": "This item will arrive in {minutes} minute(s)",
-    "deliveryHours": "\nDelivery time: {hours} hour(s)",
-    "deliveryMinutes": "\nDelivery time: {minutes} minute(s)",
     "taxSuffix": " ({percent}% TAX!)",
-    "daysLeft": "{days} Day(s) left"
+    "durationHours": "{hours} hour(s)",
+    "durationMinutes": "{minutes} minute(s)",
+    "arrivesIn": "Arrives in {time}",
+    "timeLeft": "{time} left",
+    "deliveryTime": "\nDelivery time: {time}",
+    "orderPlaced": "{item} ordered. Arriving in {time}.",
+    "orderArrived": "{item} has arrived and is waiting to be collected.",
+    "nextDeliveryIn": "Nothing has arrived yet. The next parcel is {time} away.",
+    "collect": "Collect",
+    "collectAll": "Collect all ({count})",
+    "collected": "Collected: {items}",
+    "searchResultsFor": "Search: \"{query}\" ({count})",
+    "noSearchResults": "Nothing in the catalog matches \"{query}\".",
+    "searchTruncated": "Showing the first {count} matches. Refine the search to see more."
   }
 }

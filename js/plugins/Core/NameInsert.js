@@ -19,6 +19,10 @@
 (() => {
     const pluginName = "NameInsert";
 
+    // A name may be up to 16 characters. Name Input Processing events still ask for the
+    // engine default of 8, so the length is set here rather than in event data.
+    const NAME_MAX_LENGTH = 16;
+
     // Keyboard layouts mapping
     const KEYBOARD_LAYOUTS = {
         uppercase: [
@@ -48,7 +52,7 @@
 
     Scene_Name.prototype.prepare = function(actorId, maxLength) {
         this._actorId = actorId;
-        this._maxLength = maxLength || 8;
+        this._maxLength = NAME_MAX_LENGTH;
     };
 
     Scene_Name.prototype.create = function() {

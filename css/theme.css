@@ -599,31 +599,82 @@
     letter-spacing: 0.5px;
 }
 
-/* --- High-Resolution Bust Selection Cards --- */
-.cc-bust-card {
-    padding: 0 !important;
-    overflow: hidden !important;
-    aspect-ratio: 3 / 4 !important;
-    height: auto !important;
-    display: flex !important;
-    align-items: stretch !important;
-    justify-content: stretch !important;
-    border: 3px solid transparent !important;
-    box-shadow: 0 4px 10px var(--shadow-primary-hover-translucent-5) !important;
-    transition: all 0.25s ease !important;
+/* --- High-Resolution Bust Selection Cards ---
+   The portrait is the card: no plate under it, no pin head, nothing but the
+   art and its name. The source busts are 883x1200 (3:4) but carry ~15% of
+   transparent headroom above the character, which used to be drawn as dead
+   space at the top of every cell. The frame is cut to 4:5 and the art is
+   covered from the bottom edge, so that band is cropped instead of padded.
+   Specificity (0,3,0) keeps the surface off in themes that repaint
+   .cc-presets-board .cc-wanted-card. */
+.cc-presets-board .cc-bust-card.cc-wanted-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    padding: 0 0 125% 0;
+    overflow: hidden;
+    background: transparent;
+    border: 3px solid transparent;
+    border-radius: 4px;
+    box-shadow: none;
+    transition: all 0.25s ease;
 }
 
-.cc-bust-card.selected {
-    border: 3px solid var(--border-focus-hover) !important;
-    transform: scale(1.05) !important;
+/* No pin head and no corner stamp: both would float over bare art. */
+.cc-bust-card::after,
+.cc-bust-card.selected::before {
+    content: none;
 }
 
-.cc-bust-card:hover {
-    transform: translateY(-3px) !important;
+.cc-presets-board .cc-bust-card.cc-wanted-card.selected {
+    background: transparent;
+    border-color: var(--border-focus-hover);
+    transform: scale(1.05);
+}
+
+.cc-presets-board .cc-bust-card.cc-wanted-card:hover,
+.cc-presets-board .cc-bust-card.cc-wanted-card.highlighted {
+    background: transparent;
+    box-shadow: none;
+    transform: translateY(-3px);
+}
+
+.cc-bust-card .cc-bust-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center bottom;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: transform 0.3s ease;
 }
 
 .cc-bust-card:hover .cc-bust-image {
-    transform: scale(1.1) !important;
+    transform: scale(1.1);
+}
+
+/* The name rides on the art now, so it carries its own fade rather than the
+   card surface it used to sit on. */
+.cc-bust-card .cc-wanted-name {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px 6px 4px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: linear-gradient(to top, var(--bg-panel) 0%, var(--bg-panel) 55%, transparent 100%);
 }
 
 .cc-categories-list .cc-card-option {
@@ -641,6 +692,45 @@
     top: 50% !important;
     right: 15px !important;
     transform: translateY(-50%) !important;
+}
+
+/* Species rows read as a name and a count, so the card title drops to list
+   weight and the count pill shrinks to match. Both used to be painted inline
+   with the dark theme's gold, which every other theme then had to undo. */
+.cc-categories-list .cc-option-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: left;
+    overflow-wrap: normal;
+    word-break: keep-all;
+}
+
+.cc-categories-list .cc-element-badge {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+/* Species filter field above the list. */
+.cc-species-search {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-border-alt-5);
+    border-radius: 6px;
+    color: var(--text-primary-hover);
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.cc-species-search:focus {
+    border-color: var(--border-focus-hover);
 }
 
 /* Custom Scrollbars for grid and list containers inside Double Parchment spreads */
@@ -1106,7 +1196,8 @@
 
 /* Fullscreen Backdrop Overlay with Candle-Lit Vignette */
 #menu-container,
-#status-menu-container {
+#status-menu-container,
+#state-list-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -12824,20 +12915,58 @@
    SHOW STATES UI
    ═══════════════════════════════════════════════════════════ */
 
-.sl-state-list {
+/* Left page: the scrollable compendium list. The rows are plain ruled entries,
+   no card plate behind them, so the page reads as a written index. */
+.sl-list {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
     overflow-y: auto;
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-right: 6px;
     scrollbar-width: thin;
 }
 
-.sl-state-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.sl-list::-webkit-scrollbar { width: 6px; }
+.sl-list::-webkit-scrollbar-track { background: var(--shadow-primary-hover-translucent-5); }
+.sl-list::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb-hover-translucent-60);
+    border-radius: 3px;
 }
+
+#state-list-container .sl-row {
+    background: transparent;
+    border: none;
+    border-bottom: 1px dotted var(--border-primary-hover-translucent-15);
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 7px 6px 7px 9px;
+}
+
+#state-list-container .sl-row:hover {
+    background: transparent;
+    box-shadow: none;
+}
+
+#state-list-container .sl-row.selected {
+    background: transparent;
+    border-left-color: var(--border-focus-hover);
+    box-shadow: none;
+}
+
+.sl-row .item-slot-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+}
+
+.sl-row .item-slot-name { font-size: 1.3em; }
+
+.sl-row .item-slot-meta { font-size: 0.98em; margin-top: 2px; }
+
+.sl-row .item-slot-count { font-size: 0.95em; }
 
 .sl-icon,
 .sl-icon-lg {
@@ -12845,43 +12974,96 @@
     flex-shrink: 0;
 }
 
-.sl-detail-header {
+/* The state's <Hex:> tint, as a bead in front of the name. */
+.sl-swatch {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: middle;
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    box-shadow: 0 0 3px var(--shadow-primary-hover-translucent-5);
+}
+
+.sl-footer {
+    flex: 0 0 auto;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.sl-state-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.sl-hint {
-    margin-top: auto;
+    gap: 12px;
+    margin-top: 10px;
     padding-top: 8px;
-    font-size: 0.75em;
+    border-top: 1px dotted var(--border-success);
+    font-family: 'Lora', serif;
+    font-size: 0.85em;
     color: var(--text-disabled);
-    text-align: center;
 }
+
+/* Right page: the dossier is read at arm's length, so it runs a step larger
+   than the inventory inspect panel it borrows its classes from. */
+#state-list-container .inspect-name { font-size: 1.8em; }
+#state-list-container .inspect-rarity { font-size: 1em; }
+
+/* Three figures across (duration, expiry, priority) instead of the item grid's two. */
+#state-list-container .inspect-meta-grid {
+    grid-template-columns: repeat(3, 1fr);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dotted var(--border-success);
+    border-radius: 0;
+    padding: 0 2px 10px 2px;
+    font-size: 1.15em;
+}
+
+#state-list-container .inspect-meta-item {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+}
+
+#state-list-container .inspect-meta-item > span:first-child {
+    color: var(--text-primary-hover);
+    font-size: 0.82em;
+}
+
+#state-list-container .inspect-section-title {
+    font-size: 1rem;
+    margin: 16px 0 8px 0;
+}
+
+#state-list-container .inspect-bullet-item,
+#state-list-container .inspect-spec-row {
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+}
+
+/* The dossier body scrolls on its own, plain page (no lore plate). */
+.sl-detail-body {
+    font-style: normal;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 6px 0 2px;
+}
+
+.sl-detail-body .inspect-section-title:first-child { margin-top: 0; }
 
 .sl-note {
     white-space: pre-wrap;
     word-break: break-word;
+    margin: 0 0 10px 0;
+    font-size: 1.05rem;
+    color: var(--text-text-alt-7);
 }
 
-.sl-removal-title {
-    margin-top: 16px;
+.sl-empty-line {
+    font-size: 1.02rem;
+    font-style: italic;
+    color: var(--text-text-alt-4);
+    font-family: 'Lora', serif;
     margin-bottom: 6px;
-}
-
-.sl-cond-row {
-    font-size: 0.88em;
-    color: var(--text-text-alt-9);
-    padding: 2px 4px;
-    line-height: 1.5;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -14704,12 +14886,15 @@ body.ascii-ui-active #title-menu-container {
 }
 .hr-frame {
     pointer-events: auto;
-    width: min(94%, 940px);
+    /* Sized like the other full-board overlays (stock spread, empathize): the
+       board fills the display instead of sitting in a small centred box, so the
+       runners' names and the longer localised labels have room to breathe. */
+    width: min(96%, 1440px);
     max-height: 94%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px 14px 14px;
+    gap: 10px;
+    padding: 16px 20px 18px;
     background: var(--bg-panel);
     border: 1px solid var(--accent-gold-pure);
     box-shadow: inset 0 0 0 1px var(--accent-gold-pure-translucent-18);
@@ -14723,7 +14908,7 @@ body.ascii-ui-active #title-menu-container {
     border-bottom: 1px solid var(--border-muted-focus);
 }
 .hr-title {
-    font-size: 22px;
+    font-size: 26px;
     letter-spacing: 3px;
     color: var(--accent-gold-pure);
 }
@@ -14741,18 +14926,19 @@ body.ascii-ui-active #title-menu-container {
     gap: 8px;
 }
 .hr-purse-label {
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 1px;
     color: var(--text-muted-hover);
 }
 .hr-purse-value {
-    font-size: 20px;
+    font-size: 22px;
     color: var(--text-highlight-active);
 }
 .hr-help {
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.45;
     color: var(--text-text-alt-12);
-    min-height: 18px;
+    min-height: 20px;
 }
 .hr-inline-icon {
     vertical-align: middle;
@@ -14760,24 +14946,27 @@ body.ascii-ui-active #title-menu-container {
 }
 .hr-body {
     display: flex;
-    gap: 12px;
+    gap: 18px;
     align-items: flex-start;
 }
 .hr-col-main {
     flex: 1 1 auto;
     min-width: 0;
 }
+/* The slip column follows the board's width so the longer localised labels
+   ("Vincita potenziale") stay on one line on a wide display and the column
+   still shrinks to a usable size in 4:3. */
 .hr-col-side {
-    flex: 0 0 240px;
+    flex: 0 0 clamp(240px, 24%, 340px);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 .hr-section-title {
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 3px;
     color: var(--text-muted-hover);
-    margin: 4px 0 6px;
+    margin: 4px 0 8px;
 }
 
 /* --- the field ---------------------------------------------------------- */
@@ -14789,8 +14978,8 @@ body.ascii-ui-active #title-menu-container {
 .hr-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 5px 8px;
+    gap: 14px;
+    padding: 8px 12px;
     background: var(--bg-well);
     border: 1px solid transparent;
     border-left: 3px solid var(--border-muted-focus);
@@ -14809,11 +14998,11 @@ body.ascii-ui-active #title-menu-container {
     background: var(--accent-gold-pure);
 }
 .hr-gate {
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
     text-align: center;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted-hover);
     border: 1px solid var(--border-muted-focus);
     flex-shrink: 0;
@@ -14823,33 +15012,34 @@ body.ascii-ui-active #title-menu-container {
 }
 .hr-name {
     flex: 1 1 auto;
-    font-size: 15px;
+    min-width: 0;
+    font-size: 17px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: 1px 1px 0 var(--shadow-black-translucent-55);
 }
 .hr-form {
-    flex: 0 0 120px;
+    flex: 0 0 clamp(130px, 15%, 200px);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 .hr-form-row {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 .hr-form-row i {
     font-style: normal;
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 1px;
     color: var(--text-disabled);
-    width: 24px;
+    width: 26px;
 }
 .hr-meter {
     flex: 1 1 auto;
-    height: 5px;
+    height: 6px;
     background: var(--bg-bg-alt-3);
     border: 1px solid var(--border-muted-focus);
     display: block;
@@ -14860,37 +15050,37 @@ body.ascii-ui-active #title-menu-container {
     background: var(--accent-gold-pure);
 }
 .hr-odds {
-    flex: 0 0 56px;
+    flex: 0 0 70px;
     text-align: right;
-    font-size: 15px;
+    font-size: 17px;
     color: var(--text-secondary-active);
 }
 
 /* --- betting slip ------------------------------------------------------- */
 .hr-slip {
-    padding: 8px 10px;
+    padding: 12px 14px;
     background: var(--bg-well);
     border: 1px solid var(--border-muted-focus);
 }
 .hr-slip-title {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 2px;
     color: var(--text-muted-hover);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .hr-stepper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 .hr-step {
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
     text-align: center;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-secondary-active);
     border: 1px solid var(--border-muted-focus);
     cursor: pointer;
@@ -14902,19 +15092,29 @@ body.ascii-ui-active #title-menu-container {
 .hr-bet-value {
     flex: 1 1 auto;
     text-align: center;
-    font-size: 22px;
+    font-size: 24px;
     color: var(--text-highlight-active);
 }
+/* A label long enough to wrap (most of them once localised) must keep its
+   value on the label's first line, hence the baseline alignment and the
+   shrinking label / fixed value pair. */
 .hr-slip-line {
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    gap: 8px;
-    font-size: 12px;
-    padding: 2px 0;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 3px 0;
     color: var(--text-text-alt-12);
+}
+.hr-slip-line > span:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
 }
 .hr-slip-line b,
 .hr-slip-pick {
+    flex: 0 1 auto;
     font-weight: normal;
     color: var(--text-primary-hover);
     max-width: 60%;
@@ -14932,17 +15132,23 @@ body.ascii-ui-active #title-menu-container {
     color: var(--text-text-alt-10);
 }
 .hr-legend {
-    padding: 8px 10px;
-    font-size: 11px;
-    line-height: 1.65;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.6;
     color: var(--text-disabled);
     background: var(--bg-bg-alt-20);
     border: 1px solid var(--border-muted-focus);
 }
+/* One key per paragraph: a wrapped line is indented under its own key so the
+   list still reads as one entry per row. */
+.hr-legend > div {
+    padding: 2px 0 2px 14px;
+    text-indent: -14px;
+}
 .hr-notice {
-    margin-top: 8px;
-    padding: 5px 8px;
-    font-size: 12px;
+    margin-top: 10px;
+    padding: 7px 10px;
+    font-size: 13px;
     color: var(--text-secondary-active);
     border-left: 3px solid var(--accent-gold-pure);
     background: var(--bg-primary-hover-translucent-35);
@@ -14961,8 +15167,8 @@ body.ascii-ui-active #title-menu-container {
 .hr-lane {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 3px 6px;
+    gap: 12px;
+    padding: 5px 10px;
     background: var(--bg-well);
     border: 1px solid transparent;
 }
@@ -14976,15 +15182,15 @@ body.ascii-ui-active #title-menu-container {
     color: var(--text-text-alt-11);
 }
 .hr-lane-gate {
-    width: 18px;
+    width: 20px;
     text-align: center;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-disabled);
     flex-shrink: 0;
 }
 .hr-lane-name {
-    flex: 0 0 150px;
-    font-size: 13px;
+    flex: 0 0 clamp(150px, 18%, 240px);
+    font-size: 15px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -14992,7 +15198,8 @@ body.ascii-ui-active #title-menu-container {
 .hr-strip {
     position: relative;
     flex: 1 1 auto;
-    height: 34px;
+    min-width: 0;
+    height: 40px;
     border-left: 2px solid var(--border-muted-focus);
     border-right: 2px solid var(--border-danger-active);
     background: repeating-linear-gradient(90deg,
@@ -15001,15 +15208,15 @@ body.ascii-ui-active #title-menu-container {
 }
 .hr-runner {
     position: absolute;
-    top: 1px;
+    top: 4px;
     left: 0;
     transform: translateX(-50%);
     image-rendering: pixelated;
 }
 .hr-pct {
-    flex: 0 0 44px;
+    flex: 0 0 52px;
     text-align: right;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-muted-hover);
 }
 
@@ -15017,14 +15224,15 @@ body.ascii-ui-active #title-menu-container {
 .hr-winner {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
+    gap: 12px;
+    padding: 12px 14px;
     background: var(--bg-well);
     border: 1px solid var(--accent-gold-pure);
 }
 .hr-winner-name {
-    font-size: 20px;
+    font-size: 22px;
     flex: 1 1 auto;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -15037,16 +15245,17 @@ body.ascii-ui-active #title-menu-container {
     background: var(--accent-gold-pure);
 }
 .hr-verdict {
-    font-size: 26px;
+    font-size: 30px;
     letter-spacing: 3px;
     text-align: center;
-    margin: 10px 0;
+    margin: 14px 0;
 }
 .hr-result-line {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    padding: 3px 10px;
+    gap: 12px;
+    font-size: 15px;
+    padding: 4px 12px;
     color: var(--text-text-alt-12);
 }
 .hr-result-line b {
@@ -15054,19 +15263,23 @@ body.ascii-ui-active #title-menu-container {
     color: var(--text-primary-hover);
 }
 .hr-order {
-    padding: 8px 10px;
+    padding: 12px 14px;
     background: var(--bg-bg-alt-20);
     border: 1px solid var(--border-muted-focus);
 }
 .hr-order-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    padding: 2px 0;
+    gap: 10px;
+    font-size: 13px;
+    padding: 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .hr-place {
-    width: 16px;
+    width: 18px;
+    flex-shrink: 0;
     text-align: center;
     color: var(--text-disabled);
 }
@@ -15075,13 +15288,13 @@ body.ascii-ui-active #title-menu-container {
 .hr-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    padding-top: 8px;
+    gap: 10px;
+    padding-top: 10px;
     border-top: 1px solid var(--border-muted-focus);
 }
 .hr-btn {
-    padding: 6px 18px;
-    font-size: 13px;
+    padding: 9px 24px;
+    font-size: 14px;
     letter-spacing: 2px;
     color: var(--text-secondary-active);
     background: var(--bg-well);

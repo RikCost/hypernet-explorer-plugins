@@ -1207,9 +1207,9 @@
           const isSelected = !isInCategoryMode && idx === activeIndex;
           const decamelName = decamelCase(bName);
           return `
-                    <div class="cc-wanted-card cc-bust-card ${isSelected ? "selected" : ""}" style="height: 0 !important; padding: 0 0 133.33% 0 !important; position: relative !important; width: 100% !important; overflow: hidden !important; display: block !important;" onclick="SceneManager._scene.onBustCardClick(${idx})">
-                        <div class="cc-bust-image" style="background-image: url('img/busts/${bName}.png'); background-position: center bottom; background-size: contain; background-repeat: no-repeat; width: 100%; height: 100%; position: absolute; top: 0; left: 0; transition: transform 0.3s ease;"></div>
-                        <div class="cc-wanted-name" style="position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(10, 10, 10, 0.92); border-top: 1px solid rgba(255, 204, 102, 0.4); font-size: 0.8rem; text-align: center; padding: 4px 0; font-family: 'Lora', serif; font-weight: bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; color: #ffcc66; box-sizing: border-box; z-index: 2;">${decamelName}</div>
+                    <div class="cc-wanted-card cc-bust-card ${isSelected ? "selected" : ""}" onclick="SceneManager._scene.onBustCardClick(${idx})">
+                        <div class="cc-bust-image" style="background-image: url('img/busts/${bName}.png');"></div>
+                        <div class="cc-wanted-name">${decamelName}</div>
                     </div>
                 `;
         })
@@ -1234,9 +1234,9 @@
           const isSelected = idx === activeCategoryIndex;
           const count = this._bustListWindow._bustCategories[cat].length;
           return `
-                    <div class="cc-card-option ${isSelected ? "selected" : ""}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px; cursor: pointer; border: 2px solid ${isSelected ? "#ffcc66" : "rgba(90, 74, 42, 0.6)"}; border-radius: 6px; background: ${isSelected ? "rgba(255, 204, 102, 0.18)" : "rgba(255, 204, 102, 0.05)"}; box-sizing: border-box; text-align: center; gap: 8px; transition: all 0.2s ease; box-shadow: none;" onclick="SceneManager._scene.onCategoryCardClick(${idx})">
-                        <div class="cc-option-title" style="margin: 0; font-size: 0.9rem; font-weight: bold; font-family: 'Lora', serif; overflow-wrap: normal; word-break: keep-all; white-space: normal; flex: 1; min-width: 0; text-align: left; color: #ffcc66;">${bustCategoryLabel(cat)}</div>
-                        <span class="cc-element-badge" style="font-size: 0.72rem; padding: 2px 6px; border-radius: 8px; font-weight: bold; background: rgba(255, 204, 102, 0.1); color: #e9c46a; border: 1px solid rgba(255, 204, 102, 0.25); white-space: nowrap;">${count} ${T('CharCreate.presets2')}</span>
+                    <div class="cc-card-option ${isSelected ? "selected" : ""}" onclick="SceneManager._scene.onCategoryCardClick(${idx})">
+                        <div class="cc-option-title">${bustCategoryLabel(cat)}</div>
+                        <span class="cc-element-badge">${count} ${T('CharCreate.presets2')}</span>
                     </div>
                 `;
         })
@@ -1245,7 +1245,7 @@
       const rightHtml = `
                 <div class="cc-page cc-page-right" style="padding: 24px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; overflow: hidden;">
                     <h2 class="cc-header-gothic" style="margin-bottom: 8px; width: 100%; text-align: center;">${T('CharCreate.humanoidSpecies')}</h2>
-                    <input type="text" class="cc-species-search" value="${(this._categorySearchTerm || "").replace(/"/g, "&quot;")}" placeholder="${T('CharCreate.searchSpecies')}" oninput="SceneManager._scene.onCategorySearch(this.value)" onkeydown="event.stopPropagation()" onkeyup="event.stopPropagation()" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 8px 12px; background: rgba(10, 10, 10, 0.85); border: 1px solid rgba(255, 204, 102, 0.4); border-radius: 6px; color: #ffcc66; font-family: 'Lora', serif; font-size: 0.9rem; outline: none;" />
+                    <input type="text" class="cc-species-search" value="${(this._categorySearchTerm || "").replace(/"/g, "&quot;")}" placeholder="${T('CharCreate.searchSpecies')}" oninput="SceneManager._scene.onCategorySearch(this.value)" onkeydown="event.stopPropagation()" onkeyup="event.stopPropagation()" />
                     <div class="cc-presets-board cc-categories-list" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; flex: 1; overflow-x: hidden; overflow-y: auto; padding-right: 4px; width: 100%; min-height: 0; margin-top: 0; align-content: start;">
                         ${categoryCards}
                     </div>
@@ -1305,15 +1305,7 @@
         if (rightPage) {
           const catCards = rightPage.querySelectorAll(".cc-card-option");
           catCards.forEach((card, idx) => {
-            if (idx === activeCategoryIndex) {
-              card.classList.add("selected");
-              card.style.borderColor = "#ffcc66";
-              card.style.backgroundColor = "rgba(255, 204, 102, 0.18)";
-            } else {
-              card.classList.remove("selected");
-              card.style.borderColor = "rgba(90, 74, 42, 0.6)";
-              card.style.backgroundColor = "rgba(255, 204, 102, 0.05)";
-            }
+            card.classList.toggle("selected", idx === activeCategoryIndex);
           });
         }
 

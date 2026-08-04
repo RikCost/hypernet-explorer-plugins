@@ -84,9 +84,30 @@
   // pipeline - loading prefabs and building two 64x64 summed-area tables - for
   // an identical result. A WeakSet keyed on the array identity lets us skip that
   // redundant work. Any of the regeneration sites replaces generatedMapData with
-  // a fresh array (not in the set), and a reload from save deserializes a new
-  // array, so prefabs are correctly (re)applied exactly once per fresh map.
+  // a fresh array (not in the set), so prefabs are applied exactly once per
+  // fresh map.
   const prefabbedMapData = new WeakSet();
+
+  // The WeakSet only lives as long as the array does, and the array does not
+  // survive a save: JSON.stringify drops an array's non-index properties and
+  // hands back a brand-new object on load, so the identity is gone while the
+  // prefabs baked into the tiles are not. Running the pass again over that array
+  // stamps a SECOND set of prefabs on top of the ones already standing. So the
+  // mark is also written as a cheap fingerprint of the finished array, kept on
+  // _procGenData -- a plain object, which does survive -- and checked before the
+  // pass runs. Every regeneration site replaces the array with different tiles,
+  // which invalidates the fingerprint for free: no site has to clear anything.
+  function mapDataFingerprint(mapData, biomeName, worldCoords) {
+    let h = (0x811c9dc5 ^ mapData.length) >>> 0;
+    for (let i = 0; i < mapData.length; i += 13) {
+      h = Math.imul(h ^ (mapData[i] | 0), 0x01000193);
+    }
+    const tag = `${biomeName}:${worldCoords.x},${worldCoords.y}`;
+    for (let i = 0; i < tag.length; i++) {
+      h = Math.imul(h ^ tag.charCodeAt(i), 0x01000193);
+    }
+    return h >>> 0;
+  }
 
   /**
    * Get biome by name
@@ -1188,13 +1209,18 @@
           const worldCoords = { x: worldX, y: worldY };
 
           if (biomeName) {
-            const mapData = $gameSystem._procGenData.generatedMapData;
+            const pg = $gameSystem._procGenData;
+            const mapData = pg.generatedMapData;
             // Feed the structure generator's building-lot / placement hints so
             // city & village prefabs align to lots instead of grid-fallback
             // placement (which ignored roads/buildings).
-            // Only run the (expensive) prefab pass once per fresh map array.
-            if (!prefabbedMapData.has(mapData)) {
-              let hints = $gameSystem._procGenData.structureHints || undefined;
+            // Only run the (expensive) prefab pass once per fresh map array, and
+            // never over an array that already carries its prefabs.
+            const alreadyPrefabbed = prefabbedMapData.has(mapData) ||
+              (pg._prefabbedSig != null &&
+                pg._prefabbedSig === mapDataFingerprint(mapData, biomeName, worldCoords));
+            if (!alreadyPrefabbed) {
+              let hints = pg.structureHints || undefined;
               // Dungeon-type maps attach their room rectangles so prefabs are
               // fitted inside rooms instead of grid-scattered over walls.
               if (mapData.rooms && mapData.rooms.length) {
@@ -1202,6 +1228,10 @@
               }
               applyPrefabsToMap(mapData, biomeName, worldCoords, hints);
               prefabbedMapData.add(mapData);
+              // Fingerprinted AFTER the pass: applyPrefabsToMap grows the array
+              // to hold the shadow layer and rewrites tiles, so this is the
+              // finished square, which is what a later load will hand back.
+              pg._prefabbedSig = mapDataFingerprint(mapData, biomeName, worldCoords);
             }
             if ($dataMap) {
               $dataMap.data = mapData;

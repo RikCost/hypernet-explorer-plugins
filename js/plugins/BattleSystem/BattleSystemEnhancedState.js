@@ -46,8 +46,8 @@
     let _lastSpawnedMapId = null;
     // The procedural map (636) reuses the same map ID across edge transitions,
     // so _lastSpawnedMapId alone can't detect moving between proc regions. Track
-    // the proc-gen region identity (origin + layer depth) separately so stale
-    // corpses/part-damage are cleared when the region actually changes.
+    // the proc-gen region identity (origin + layer depth + which biome) separately
+    // so stale corpses/part-damage are cleared when the region actually changes.
     let _lastProcRegionKey = null;
     const BATTLE_COOLDOWN_FRAMES = 120;
     let _battleCooldownTimer = 0;
@@ -58,7 +58,23 @@
         const pg = $gameSystem && $gameSystem._procGenData;
         if (!pg) return null;
         const depth = (pg.biomeLayerStack && pg.biomeLayerStack.length) || 0;
-        return `${pg.originX},${pg.originY},${depth}`;
+        // A structure biome entered through a terrain feature (LootCellar, Sewer,
+        // Crypt, CaveDen, TempleInside, PatronVault, a sandbox Dungeon) is built by
+        // startForcedBiome as a fresh depth-0 map on the SAME world square, so
+        // origin + depth alone reads identical to the surface it was entered from
+        // and back again. The biome name and the entrance salt tell them apart.
+        const session = pg._dungeonSession;
+        const salt = session ? `${session.type || ''}:${session.salt || 0}` : '';
+        return `${pg.originX},${pg.originY},${depth},${pg.currentBiome || ''},${salt}`;
+    };
+
+    // Corpses and the transient part-damage snapshot decorate the map the fight
+    // happened on. Clear them in place so BSE.Data keeps holding the same
+    // references the accessors were seeded with.
+    const _clearMapCorpses = function() {
+        BSE.State.mapCorpses.length = 0;
+        const pd = BSE.State.enemyPartDamage;
+        for (const key in pd) delete pd[key];
     };
 
     // _lastSpawnedMapId is module-scoped, so it survives across a new game or a
@@ -617,6 +633,25 @@
             });
     };
 
+    // A corpse belongs to the map it was killed on, and the list above is keyed by
+    // map ID alone. On the procedural map (636) every region shares that ID, so a
+    // body left in a sewer, dungeon, loot cellar or crypt was re-drawn at the same
+    // tile of whatever was generated next. Wipe the list on EVERY transfer (door,
+    // world map, proc edge crossing, goDown/goUp, a structure biome entered through
+    // a terrain feature), which runs from Scene_Map.onMapLoaded before
+    // createDisplayObjects builds the spriteset that reads it.
+    const _Game_Player_performTransfer_BSEState = Game_Player.prototype.performTransfer;
+    Game_Player.prototype.performTransfer = function() {
+        const wasTransferring = this.isTransferring();
+        _Game_Player_performTransfer_BSEState.call(this);
+        if (!wasTransferring) return;
+        _clearMapCorpses();
+        // Re-baseline the region key against where the player actually landed, so
+        // Scene_Map.start below does not immediately re-clear (harmless) and, more
+        // importantly, does not mistake the arrival region for an unchanged one.
+        _lastProcRegionKey = $gameMap.mapId() === PROC_MAP_ID ? _procRegionKey() : null;
+    };
+
     // Add a single corpse sprite at runtime (used when one map enemy kills another)
     Spriteset_Map.prototype.addCorpseSprite = function(data) {
         if (!this._corpseSprites) this._corpseSprites = [];
@@ -657,8 +692,7 @@
         const currMap = $gameMap.mapId();
 
         if (!$gameSystem.isBattleEnded() && currMap !== _lastSpawnedMapId) {
-            BSE.State.mapCorpses = [];
-            BSE.State.enemyPartDamage = {};
+            _clearMapCorpses();
             // Write through the real getter/setter ($gameSystem._battleCooldownTimer);
             // the module-scoped _battleCooldownTimer is never read.
             $gameSystem.setBattleCooldown(BATTLE_COOLDOWN_FRAMES);
@@ -668,13 +702,13 @@
         } else if (!$gameSystem.isBattleEnded() && currMap === PROC_MAP_ID) {
             // Edge transitions between procedural regions keep map ID 636, so the
             // check above never fires and corpses from the previous region would
-            // linger. Detect the region change via the proc-gen origin/depth and
-            // clear stale corpses + part damage. Enemy respawning here is handled
-            // separately by WorldMapReturn's refreshEnemiesForBiome().
+            // linger. The performTransfer hook already cleared them; this is the
+            // backstop for a region swapped without a transfer, and it re-baselines
+            // the key. Enemy respawning here is handled separately by
+            // WorldMapReturn's refreshEnemiesForBiome().
             const regionKey = _procRegionKey();
             if (regionKey !== _lastProcRegionKey) {
-                BSE.State.mapCorpses = [];
-                BSE.State.enemyPartDamage = {};
+                _clearMapCorpses();
                 _lastProcRegionKey = regionKey;
             }
         }

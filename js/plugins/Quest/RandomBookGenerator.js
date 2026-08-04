@@ -455,8 +455,11 @@ function createSeededRNG(eventId = null) {
         const out = [];
         const dest = window.WorkSystem && window.WorkSystem.Destinations;
         if (dest && typeof dest === 'object') {
-            for (const name of Object.keys(dest)) {
-                const n = String(name).trim();
+            // A book names a place the way the player knows it, so each entry
+            // contributes its readable "name" rather than its file key.
+            for (const key of Object.keys(dest)) {
+                const n = String(window.WorkSystem.destinationName
+                    ? window.WorkSystem.destinationName(key) : key).trim();
                 if (n === '' || n.startsWith('<--')) continue;
                 out.push(n);
             }

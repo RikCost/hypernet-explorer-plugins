@@ -464,7 +464,11 @@
             rp.scrollTop += dir * Math.max(80, rp.clientHeight * 0.8);
         }
 
-        _syncSelectionDom() {
+        // `scroll` is false for pointer-driven selection. Scrolling the tree to
+        // the node the mouse is already on would slide its neighbour under the
+        // stationary cursor, firing mouseover again and scrolling back: two
+        // adjacent nodes trade the selection forever and the page judders.
+        _syncSelectionDom(scroll = true) {
             if (!this._container) return;
             this._container.querySelectorAll('.tt-node').forEach(el => {
                 const on = this._section === 'tree' &&
@@ -474,7 +478,7 @@
             this._container.querySelectorAll('.tt-tab').forEach(el => {
                 el.classList.toggle('selected', this._section === 'tabs' && parseInt(el.dataset.tab) === this._treeIndex);
             });
-            this._scrollToSelected();
+            if (scroll) this._scrollToSelected();
         }
 
         _scrollToSelected() {
@@ -615,11 +619,16 @@
             this._container.addEventListener('mouseover', (e) => {
                 const nodeEl = e.target.closest('.tt-node');
                 if (!nodeEl) return;
+                // A scroll (keyboard navigation) that slides a node under a
+                // resting cursor also raises mouseover: only a real pointer
+                // movement may take the selection away from the keys.
+                if (this._ptrX === e.clientX && this._ptrY === e.clientY) return;
+                this._ptrX = e.clientX; this._ptrY = e.clientY;
                 const r = parseInt(nodeEl.dataset.row), l = parseInt(nodeEl.dataset.lane);
                 if (r === this._selRow && l === this._selLane && this._section === 'tree') return;
                 this._section = 'tree';
                 this._selRow = r; this._selLane = l;
-                this._syncSelectionDom();
+                this._syncSelectionDom(false);
                 this._updateRight();
             });
             // Right-click is a Back press here (and never raises the browser menu).
@@ -647,7 +656,7 @@
                     this._section = 'tree';
                     this._selRow = parseInt(nodeEl.dataset.row);
                     this._selLane = parseInt(nodeEl.dataset.lane);
-                    this._syncSelectionDom();
+                    this._syncSelectionDom(false);
                     this._updateRight();
                 }
             });

@@ -75,6 +75,9 @@
   const CAR_SPEED_CITY = 3;       // cities/villages: slower, cautious traffic
   const STUCK_LIMIT = 100;        // frames a driving car waits before respawning
   const TOTAL_CAR_CAP = 10;       // hard cap on active cars regardless of plan
+  const HIT_GRACE_FRAMES = 90;    // frames of immunity after being run over
+
+  let lastHitFrame = -HIT_GRACE_FRAMES - 1;
 
   // Debug logging: silent by default. Flip $gameSystem._roadCarAIDebug (or the
   // global window.ROADCARAI_DEBUG) to true to surface traffic diagnostics.
@@ -532,6 +535,71 @@
   }
 
   // ==========================================================================
+  //  SPRITE-SIZED COLLISION
+  // ==========================================================================
+  //
+  // A car sprite is several tiles long but the event stands on one tile, so the
+  // player and every NPC used to walk straight through the bodywork. VehicleSystem's
+  // window.VehicleFootprint measures the sprite and holds the player and events to
+  // the tiles it actually covers; the cars themselves keep steering tile by tile on
+  // their single road tile, and their own avoidance below is unchanged.
+
+  let carEvents = []; // the Car events of the map currently loaded
+
+  // Rebuilt on every load of the procedural map; the fallback covers a collision
+  // check that lands before initializeRoadCars has run.
+  function roadCarEvents() {
+    if (carEvents.length === 0) {
+      carEvents = $gameMap.events().filter((e) => e && e._isRoadCar);
+    }
+    return carEvents;
+  }
+
+  function collectCarFootprints(list) {
+    if ($gameMap.mapId() !== PROC_MAP_ID) return;
+    for (const ev of roadCarEvents()) {
+      if (!ev || ev._erased) continue;
+      if (ev._carMode !== "driving" && ev._carMode !== "parked") continue;
+      list.push(ev);
+    }
+  }
+
+  function registerCarFootprints() {
+    if (window.VehicleFootprint) window.VehicleFootprint.addSource(collectCarFootprints);
+  }
+
+  // True when the car's bodywork lies over that tile (the single tile it stands
+  // on, if the sprite has not been measured yet).
+  function carCovers(ev, x, y) {
+    if (window.VehicleFootprint) return window.VehicleFootprint.covers(ev, x, y);
+    return ev.x === x && ev.y === y;
+  }
+
+  // The parked car whose bodywork the player is facing, so a car is stolen by
+  // walking up to its flank instead of hunting for the one tile it is pinned to.
+  function parkedCarFacing() {
+    if ($gameMap.mapId() !== PROC_MAP_ID) return null;
+    const d = $gamePlayer.direction();
+    const x = $gameMap.roundXWithDirection($gamePlayer.x, d);
+    const y = $gameMap.roundYWithDirection($gamePlayer.y, d);
+    for (const ev of roadCarEvents()) {
+      if (!ev || ev._erased || ev._carMode !== "parked") continue;
+      if (carCovers(ev, x, y)) return ev;
+    }
+    return null;
+  }
+
+  const _Game_Player_checkEventTriggerThere = Game_Player.prototype.checkEventTriggerThere;
+  Game_Player.prototype.checkEventTriggerThere = function (triggers) {
+    _Game_Player_checkEventTriggerThere.call(this, triggers);
+    if ($gameMap.mapId() !== PROC_MAP_ID) return;
+    if (!this.canStartLocalEvents()) return;
+    if ($gameMap.isEventRunning() || $gameMap.isAnyEventStarting()) return;
+    const car = parkedCarFacing();
+    if (car && car.isTriggerIn(triggers) && car.isNormalPriority()) car.start();
+  };
+
+  // ==========================================================================
   //  ACTOR AVOIDANCE
   // ==========================================================================
 
@@ -838,19 +906,6 @@
     window.skipLocalization = false;
   }
 
-  // The parked car the player is facing, if any.
-  function parkedCarInFront() {
-    if ($gameMap.mapId() !== PROC_MAP_ID) return null;
-    const d = $gamePlayer.direction();
-    const x = $gameMap.roundXWithDirection($gamePlayer.x, d);
-    const y = $gameMap.roundYWithDirection($gamePlayer.y, d);
-    return (
-      $gameMap
-        .eventsXy(x, y)
-        .find((ev) => ev && ev._isRoadCar && !ev._erased && ev._carMode === "parked") || null
-    );
-  }
-
   // Pending theft while the lockpick minigame runs.
   let _pendingCarTheft = null;
   // Car chosen from the "Steal car" prompt, run one frame later (see below).
@@ -958,7 +1013,7 @@
     if (_pendingTheftTarget || _pendingCarTheft) return;
     const self = this && this.character ? this.character(0) : null;
     const car =
-      self && self._isRoadCar && self._carMode === "parked" ? self : parkedCarInFront();
+      self && self._isRoadCar && self._carMode === "parked" ? self : parkedCarFacing();
     if (car) showCarTheftChoices(car);
   };
   PluginManager.registerCommand(PLUGIN_NAME, "StealParkedCar", stealParkedCar);
@@ -983,8 +1038,17 @@
     if (this._carMode === "parked") return;
     if (this._carMode !== "driving") return;
 
-    // Accident: player occupies the same tile as a moving car
-    if (this.x === $gamePlayer.x && this.y === $gamePlayer.y && !$gamePlayer.isJumping()) {
+    // Accident: the moving car's bodywork is over the player. The player cannot
+    // walk into it (the footprint blocks them), so this only fires when a car has
+    // driven over someone standing still. The bodywork is several tiles wide and
+    // the bounce can land inside it again, so a hit is followed by a short grace
+    // period rather than a pile-up of accidents.
+    if (
+      !$gamePlayer.isJumping() &&
+      Graphics.frameCount - lastHitFrame > HIT_GRACE_FRAMES &&
+      carCovers(this, $gamePlayer.x, $gamePlayer.y)
+    ) {
+      lastHitFrame = Graphics.frameCount;
       this.performPlayerHit();
       return;
     }
@@ -1045,6 +1109,8 @@
     biomeCategory = classifyBiome(biomeName);
 
     const cars = $gameMap.events().filter((e) => e && e.event() && e.event().name === "Car");  // i18n-ignore  event name
+    carEvents = cars;
+    registerCarFootprints();
     if (cars.length === 0) return;
 
     // Biomes without traffic: remove all cars

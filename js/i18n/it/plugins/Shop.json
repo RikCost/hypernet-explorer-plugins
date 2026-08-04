@@ -78,6 +78,7 @@
   "asset": "Bene",
   "equipSlot": "Equipaggia",
   "ownedStock": "Posseduti: {owned} Scorta: {stock}",
+  "wornCount": "(indossati: {count})",
   "elementN": "Elemento {id}",
   "stateN": "Stato {id}",
   "paramN": "Parametro {id}",

@@ -27,7 +27,9 @@
     "appName": "Stockbusters",
     "siteName": "HypercapitalisEMporium.eu",
     "catalogCategories": "Categorie del catalogo",
-    "totalCost": "Costo totale:"
+    "totalCost": "Costo totale:",
+    "deliveryEstimate": "Consegna:",
+    "searchPlaceholder": "Cerca nel catalogo..."
   },
   "text": {
     "delivered": "{count} oggetto/i consegnato/i!",
@@ -58,10 +60,11 @@
     "shields": "Scudi",
     "ordered": "ORDINATO",
     "readyForPickup": "Pronto al ritiro!",
+    "wares": "Merci",
     "buy": "Compra",
     "order": "Ordina",
     "cancel": "Annulla",
-    "thisItemIsReadyFor": "Questo oggetto è pronto per il ritiro! Usa il comando RetireDeliveredItems.",
+    "thisItemIsReadyFor": "Questo oggetto è arrivato! Ritiralo dai tuoi ordini o da una cassetta postale.",
     "learningCost": "Costo Apprendimento: ",
     "price": "Prezzo: ",
     "60Off": " (SCONTO 60%!)",
@@ -88,12 +91,20 @@
     "for": "per",
     "authorize": "AUTORIZZA",
     "cancel2": "ANNULLA",
-    "arrivesInDays": "Arriva tra {days} giorno/i",
-    "arrivesInHours": "Questo oggetto arriverà tra {hours} ora/e",
-    "arrivesInMinutes": "Questo oggetto arriverà tra {minutes} minuto/i",
-    "deliveryHours": "\nTempo di consegna: {hours} ora/e",
-    "deliveryMinutes": "\nTempo di consegna: {minutes} minuto/i",
     "taxSuffix": " (TASSA {percent}%!)",
-    "daysLeft": "{days} Giorno/i rimasti"
+    "durationHours": "{hours} ora/e",
+    "durationMinutes": "{minutes} minuto/i",
+    "arrivesIn": "Arriva tra {time}",
+    "timeLeft": "{time} rimasti",
+    "deliveryTime": "\nTempo di consegna: {time}",
+    "orderPlaced": "{item} ordinato. Arriva tra {time}.",
+    "orderArrived": "{item} è arrivato e attende di essere ritirato.",
+    "nextDeliveryIn": "Non è ancora arrivato nulla. Il prossimo pacco arriva tra {time}.",
+    "collect": "Ritira",
+    "collectAll": "Ritira tutto ({count})",
+    "collected": "Ritirati: {items}",
+    "searchResultsFor": "Ricerca: \"{query}\" ({count})",
+    "noSearchResults": "Nessun articolo del catalogo corrisponde a \"{query}\".",
+    "searchTruncated": "Mostrati i primi {count} risultati. Affina la ricerca per vederne altri."
   }
 }

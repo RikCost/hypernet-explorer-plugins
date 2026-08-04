@@ -1563,7 +1563,11 @@
             // Match "Teleport - CityName" or "teleport CityName"
             const match = name.match(/^teleport\s*-?\s*(.+)/i);
             if (match) {
-                const cityName = match[1].trim();
+                // The event carries the Destinations.json key; the label on the
+                // map is that entry's readable name.
+                const key = match[1].trim();
+                const cityName = window.WorkSystem?.destinationName
+                    ? window.WorkSystem.destinationName(key) : key;
                 if (cityName) {
                     const labelSprite = new Sprite_CityLabel(ev.x, ev.y, cityName);
                     SceneManager._scene._spriteset._tilemap.addChild(labelSprite);

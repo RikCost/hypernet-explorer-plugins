@@ -463,7 +463,7 @@
         legendHtml() {
             const keys = ['selectHorse', 'changeBet1', 'changeBet10', 'confirmSelection', 'exitGame'];
             return `<div class="hr-legend">${
-                keys.map(k => `<div>${escapeHtml(getText(k))}</div>`).join('')
+                keys.map(k => `<div>${escapeHtml(T('AnimatedHorseRace.' + k))}</div>`).join('')
             }</div>`;
         }
 

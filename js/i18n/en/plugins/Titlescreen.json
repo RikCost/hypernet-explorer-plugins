@@ -50,6 +50,17 @@
     "arcadeCentipede": "Arcade: Centipede",
     "piano": "Piano"
   },
+  "minigameSetup": {
+    "venueTitle": "Where",
+    "timeTitle": "When",
+    "exterior": "Outdoors",
+    "interior": "Indoors",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night",
+    "back": "Back"
+  },
   "disclaimer": {
     "text": "This first playable build requires your help! Please report any bug, collision problem, features you want to be added or things to rebalance in #bug-feedback channel of Esoteric Heavy Industries server",
     "noclip": "If you get stuck in a wall, hold CTRL to use noclip mode."

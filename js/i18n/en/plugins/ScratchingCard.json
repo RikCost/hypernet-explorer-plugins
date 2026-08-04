@@ -14,6 +14,21 @@
   "stake": "STAKE €{cost}",
   "topPrize": "TOP PRIZE €{amount}",
   "serial": "SERIAL {serial}",
+  "select": {
+    "title": "Choose your card",
+    "wallet": "Wallet: €{amount}",
+    "terms": "Stake €{cost}  ·  Top prize €{amount}",
+    "back": "Back",
+    "backDesc": "Leave the counter with your money in your pocket.",
+    "needMoney": "Not enough money for this ticket.",
+    "controls": "Left/Right choose  ·  OK buys  ·  ESC leaves the counter",
+    "desc": {
+      "esoteric": "Purple foil and borrowed sigils. A modest ceiling.",
+      "corporate": "Blue ink, quarterly optimism, half a million on the table.",
+      "vacation": "Sun-bleached stock, sold at the counter of every coastal bar.",
+      "hypercapitalist": "Black card, gold foil, printed for people who already won."
+    }
+  },
   "controlsMouse": "Drag to turn the card  ·  Rub or click a panel to scratch it  ·  ESC scratches the rest",
   "controlsPad": "Arrows choose  ·  OK scratches  ·  Right stick turns  ·  L2/R2 zoom  ·  SHIFT squares up",
   "noRenderer": "3D renderer unavailable"

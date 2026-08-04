@@ -303,6 +303,47 @@
     }
   }
 
+  // --------------------------------------------------------------------------
+  // Travellers are their actor
+  // --------------------------------------------------------------------------
+  // A party member's profile carries the social half of them only: the level,
+  // the vitals and the stats belong to the actor the player levels up, equips
+  // and heals. A profile minted for a traveller (character creation writes one
+  // for every character it finalizes) rolled its own set of numbers once and
+  // then never moved, so the Empathize panel showed a stranger's character
+  // sheet next to their own portrait. Mirror the actor onto the profile
+  // whenever it is accessed, so the panel, the wiki and the simulation all read
+  // the character the player is actually playing.
+  function _partyActorFor(eventName) {
+    const members = $gameParty?.members?.() ?? [];
+    return members.find(a => a && a.name() === eventName) ?? null;
+  }
+
+  function _syncPartyMemberStats(eventName, profile) {
+    const actor = _partyActorFor(eventName);
+    if (!actor || !profile) return;
+    profile.level = actor.level;
+    profile.mhp   = actor.mhp;
+    profile.mmp   = actor.mmp;
+    profile.atk   = actor.atk;
+    profile.def   = actor.def;
+    profile.mat   = actor.mat;
+    profile.mdf   = actor.mdf;
+    profile.agi   = actor.agi;
+    profile.luk   = actor.luk;
+    // Equip-derived stats live on the actor (ActorCharacterFields), and read 0
+    // rather than a rolled value when the character has none of them.
+    if (actor.pvArcane)       profile.arcane       = actor.pvArcane();
+    if (actor.pvSubstance)    profile.substance    = actor.pvSubstance();
+    if (actor.pvStealth)      profile.stealth      = actor.pvStealth();
+    if (actor.pvIntimidation) profile.intimidation = actor.pvIntimidation();
+    // The class the player is playing outranks the one the society guessed, and
+    // the experience bar reads against it (the sim's curve is RMMZ's own).
+    const classId = actor.currentClass()?.id;
+    if (classId) profile.assignedClassId = classId;
+    if (actor.currentExp) profile.exp = actor.currentExp();
+  }
+
   function _generateEquipment(eventName, classId, wealthTierBase) {
     const worldSeed = window.NPCShared.worldSeed();
     const rng = new SeededRng(nameToSeed(eventName + "_equip") ^ (worldSeed >>> 0));
@@ -729,6 +770,9 @@
       // gets one: a local resident's is then overwritten with the party median,
       // on this and on every later access, so it keeps following the party.
       _syncLocalLevel(eventName, profile);
+      // Last, so a traveller's own actor wins over both the generated roll and
+      // the local-NPC party-median peg.
+      _syncPartyMemberStats(eventName, profile);
       _generatePreexistingRelationships(eventName, profile);
       return profile;
     },
@@ -1126,9 +1170,15 @@
       });
       scored.sort((a, b) => b.score - a.score);
       const pickCount = candidates.length >= 15 ? 3 : 2;
+      // The i18n key travels with the snapshot: an NPC's formative events are
+      // copied out of the timeline, and a copy that kept only the finished
+      // prose would freeze the bio in the language the century was simulated
+      // in (an English coup quoted inside an Italian sentence).
       const formativeEvents = scored.slice(0, pickCount).map(s => ({
         date:        (s.event.date || '').slice(0, 7),
         description: s.event.description || '',
+        descKey:     s.event.descKey || null,
+        descParams:  s.event.descParams || null,
         category:    s.event.category || 'social',
       }));
 
@@ -1172,9 +1222,9 @@
       const pr  = pronounOf(seed.gender);
       const adj = adjectiveAt(seed.adjIdx);
       const evs = backstory.formativeEvents || [];
-      const ev0 = _shortDesc(evs[0]?.description ?? '');
+      const ev0 = _shortDesc(_eventText(evs[0]));
       const ev1 = evs[1]
-        ? T('NPCSociety.bio.later', Object.assign({}, pr, { event: _shortDesc(evs[1].description) }))
+        ? T('NPCSociety.bio.later', Object.assign({}, pr, { event: _shortDesc(_eventText(evs[1])) }))
         : '';
 
       const moral = seed.moral;
@@ -1182,12 +1232,17 @@
                  : moral > -60 ? 'loose' : 'lawless';
       const moralLine = T('NPCSociety.bio.moral.' + band, pr);
 
-      let birthplace = backstory.birthplace;
+      // A birthplace is a country for most people and a town for anyone born
+      // from a dossier hometown; a town reads by its Destinations.json "name",
+      // a country passes through untouched.
+      let birthplace = window.WorkSystem?.destinationName
+        ? window.WorkSystem.destinationName(backstory.birthplace) : backstory.birthplace;
       let key;
       if (seed.isCreature) {
         // Creatures aren't born into a nation, they come out of the wilds near
         // the city closest to their birthplace country.
-        birthplace = T('NPCSociety.bio.wildsNear', { city: CITY_BY_COUNTRY[birthplace] || birthplace });
+        const country = backstory.birthplace;
+        birthplace = T('NPCSociety.bio.wildsNear', { city: CITY_BY_COUNTRY[country] || birthplace });
         key = 'creature';
       } else if (backstory.birthYear <= 1919) key = 'turbulent';
       else if (backstory.birthYear <= 1945) key = 'warYears';
@@ -1240,6 +1295,16 @@
     return text.replace(_pnRe, m => _pnMap.get(m.toLowerCase()) || m);
   }
 
+  // A snapshotted event's sentence in the active language. A snapshot taken
+  // before the timeline was keyed keeps the prose it was saved with.
+  function _eventText(ev) {
+    if (!ev) return '';
+    if (ev.descKey && window.HistoryManager?.describeRecord) {
+      return window.HistoryManager.describeRecord(ev);
+    }
+    return ev.description || '';
+  }
+
   function _shortDesc(desc) {
     if (!desc) return T('NPCSociety.bio.uncertainTimes');
     // Event descriptions are read as clauses inside the narrative, so they are
@@ -1247,7 +1312,10 @@
     // trailing off mid-thought. Only a runaway description is trimmed, and then
     // at a word boundary.
     const MAX = 240;
-    const text = desc.replace(/\.$/, '');
+    // The clause is dropped into the middle of a sentence that supplies its
+    // own full stop, so it gives up whatever it ended on: a headline event
+    // ("...overthrowing Sniper Zaitsev!") otherwise read as "Zaitsev!.".
+    const text = desc.replace(/[.!?…]+\s*$/, '');
     if (text.length <= MAX) return _restoreProperNouns(text.toLowerCase());
     const cut = text.slice(0, MAX).replace(/\s\S*$/, '');
     return _restoreProperNouns(cut.toLowerCase()) + '…';
@@ -1262,11 +1330,21 @@
 
     generateBackstoryNow(name) {
       const p = SocietyRegistry.getProfile(name);
-      const histLen = window.HistoryManager
-        ? window.HistoryManager.getEvents().length
-        : $gameSystem?._historicalEvents?.length;
-      if (p && !p.backstory && histLen)
-        p.backstory = BackstoryGenerator.generate(name, p);
+      if (!p) return;
+      const events = window.HistoryManager
+        ? window.HistoryManager.getEvents()
+        : ($gameSystem?._historicalEvents || []);
+      if (!events.length) return;
+      // A backstory built against an unkeyed timeline froze its formative
+      // events in one language. Once the world's history carries keys, drop it
+      // so it regenerates: the picks are seeded by name, so the same events
+      // come back, this time able to follow the language.
+      if (p.backstory &&
+          (p.backstory.formativeEvents || []).some(e => e && !e.descKey) &&
+          events.some(e => e && e.descKey)) {
+        p.backstory = null;
+      }
+      if (!p.backstory) p.backstory = BackstoryGenerator.generate(name, p);
     },
 
     generateAllBackstories() {
@@ -1283,12 +1361,13 @@
         return `<img src="img/system/IconSet.png" style="width:16px;height:16px;object-fit:none;object-position:-${(id % 16) * 32}px -${Math.floor(id / 16) * 32}px;image-rendering:pixelated;vertical-align:middle;margin-right:3px;">`;
       };
       const eventsHTML = (backstory.formativeEvents ?? []).map(e =>
-        `<div class="npc-backstory-event">${iconFor(e.category)}<span>${escapeHtml(e.date)}</span>, ${escapeHtml(e.description)}</div>`
+        `<div class="npc-backstory-event">${iconFor(e.category)}<span>${escapeHtml(e.date)}</span>, ${escapeHtml(_eventText(e))}</div>`
       ).join('');
       return `
         <div class="npc-backstory-text">${escapeHtml(BackstoryGenerator.narrativeOf(backstory))}</div>
         <div class="npc-backstory-events">${eventsHTML}</div>
-        <div class="npc-backstory-meta">${escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear, place: backstory.birthplace }))}</div>`;
+        <div class="npc-backstory-meta">${escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear,
+          place: window.WorkSystem?.destinationName ? window.WorkSystem.destinationName(backstory.birthplace) : backstory.birthplace }))}</div>`;
     },
   };
 

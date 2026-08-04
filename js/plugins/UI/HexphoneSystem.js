@@ -310,7 +310,7 @@
     // still pass the original English label, which is slugged to the key here, so
     // adding a string means adding one JSON entry and nothing else.
     const _hexSlug = k => String(k).trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
-        .split(/s+/).map((w, i) => i ? w[0].toUpperCase() + w.slice(1) : w).join('');
+        .split(/\s+/).map((w, i) => i ? w[0].toUpperCase() + w.slice(1) : w).join('');
 
     function getText(key) {
         const resolved = 'Hexphone.' + _hexSlug(key); // i18n-ignore: key prefix

@@ -251,7 +251,9 @@
     const grp = $gameSystem?._npcMapGroups?.[groupName];
     if (grp?.displayName) return grp.displayName;
     if (/^Proc:/i.test(groupName)) return grp?.country ? T('Empathize.frontierOf', { country: grp.country }) : T('Empathize.frontierSettlement');
-    return groupName;
+    // Map-group keys are written without spaces ("FrozenStation"); the town of
+    // that name in Destinations.json knows how it is meant to read.
+    return window.WorkSystem?.destinationName ? window.WorkSystem.destinationName(groupName) : groupName;
   }
 
   // ============================================================================
@@ -1957,7 +1959,8 @@
       backstoryHTML = `
         <div class="npc-backstory-text">${_escapeHtml(window.NPCHistSim?.narrativeOf?.(backstory) ?? backstory.narrative ?? '')}</div>
         <div class="npc-backstory-events">${evRows}</div>
-        <div class="npc-backstory-meta">${_escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear, place: backstory.birthplace }))}</div>`;
+        <div class="npc-backstory-meta">${_escapeHtml(T('NPCSociety.bio.bornMeta', { year: backstory.birthYear,
+          place: window.WorkSystem?.destinationName ? window.WorkSystem.destinationName(backstory.birthplace) : backstory.birthplace }))}</div>`;
     }
 
     let lifeSummaryHTML = '';
@@ -2152,7 +2155,7 @@
         const rows = live.map(e => {
           const pct = (ES.prevalenceAt(place.key, e) * 100).toFixed(1);
           return `<div class="npc-ident-row"><div style="flex:1;"><b>${_escapeHtml(e.name)}</b>
-            <div style="opacity:0.6;font-size:0.9em;">${_escapeHtml(place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
+            <div style="opacity:0.6;font-size:0.9em;">${_escapeHtml(ES.placeName ? ES.placeName(place.key) : place.key)} &mdash; ${pct}% ${_escapeHtml(T.epidemicIll)}</div></div></div>`;
         }).join('');
         localHTML = `<div class="npc-sec-hdr" style="margin-top:10px;">${_escapeHtml(T.epidemicLocal)}</div>${rows}`;
       }
@@ -2820,16 +2823,20 @@
   // "Teleport - Roma". Only the place on the far side is worth saying out loud,
   // so the map id, the plumbing word and the punctuation between them all go.
   function _destinationName(rawName) {
+    // A place that is a travel destination is said the way its Destinations.json
+    // entry names it; anything else is said as the event wrote it.
+    const spoken = (s) => window.WorkSystem?.destinationName
+      ? window.WorkSystem.destinationName(s) : s;
     const name = String(rawName || '').trim();
     const paren = name.match(/\(([^)]*)\)/);
     if (paren) {
       const inner = paren[1].replace(/^\s*\d+\s*[-–—:.]?\s*/, '').trim();
-      if (inner) return inner;
+      if (inner) return spoken(inner);
     }
     // "Teleport - Roma", "Door: Cellar", "Transfer 2 - Docks"
     const dashed = name.match(/^[A-Za-z]+\s*\d*\s*[-–—:]\s*(.+)$/);
-    if (dashed && dashed[1].trim()) return dashed[1].trim();
-    return name;
+    if (dashed && dashed[1].trim()) return spoken(dashed[1].trim());
+    return spoken(name);
   }
 
   // Four doors onto the same Grove are one place as far as the player is

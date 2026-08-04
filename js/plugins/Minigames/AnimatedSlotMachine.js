@@ -102,6 +102,16 @@
         return WEIGHTED_POOL[Math.floor(Math.random() * WEIGHTED_POOL.length)];
     }
 
+    // Opened from the title screen's free-play arcade the machine runs on a
+    // throwaway game context, so every visit starts from the same fixed
+    // bankroll instead of carrying over whatever the last visit left behind.
+    const FREE_PLAY_TOKENS = 50;
+
+    function isFreePlay() {
+        const arcade = window.MinigameArcade;
+        return !!(arcade && arcade.isFreePlay && arcade.isFreePlay());
+    }
+
     const ICONSET_URL = 'img/system/IconSet.png';
     const ICON_PX = 72;          // rendered icon size
     const CELL_H = 112;          // reel cell height
@@ -382,6 +392,7 @@
 
         create() {
             super.create();
+            this.resetFreePlayTokens();
             this._ui = new SlotMachineDOM({
                 onSpin: () => { this._spinRequested = true; },
                 onClose: () => { this._closeRequested = true; },
@@ -433,6 +444,20 @@
                 this.refreshStats();
                 if (this._ui) this._ui.flashBet();
             }
+        }
+
+        // In free play the wallet is set back to the fixed bankroll on entry, so
+        // reopening the machine from the title's minigame list always deals the
+        // same starting tokens. A real save is never touched.
+        resetFreePlayTokens() {
+            if (!isFreePlay()) return;
+            const tokens = $dataItems[TOKEN_ITEM_ID];
+            if (!tokens) return;
+            const arcade = window.MinigameArcade;
+            const want = (arcade && arcade.STIPEND_TOKENS) || FREE_PLAY_TOKENS;
+            const have = $gameParty.numItems(tokens);
+            if (have < want) $gameParty.gainItem(tokens, want - have);
+            else if (have > want) $gameParty.loseItem(tokens, have - want);
         }
 
         currentTokens() {

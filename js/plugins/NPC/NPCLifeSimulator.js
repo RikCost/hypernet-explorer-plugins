@@ -265,13 +265,24 @@
     if (record.lifeEvents.length > LIFE_EVENT_CAP) record.lifeEvents.pop();
   }
 
+  // Places are recorded by their Destinations.json key; a biography reads out
+  // the "name" that entry carries ("GreenWitch" -> "Green Witch"). Anything the
+  // catalogue does not know (a map group, a country) passes through unchanged.
+  function placeLabel(place) {
+    return window.WorkSystem?.destinationName
+      ? window.WorkSystem.destinationName(place)
+      : String(place ?? "");
+  }
+
   // A life event as a sentence. Records written before the log was keyed hold
   // a finished English string, which is returned as it stands.
   function lifeEventText(entry) {
     if (!entry) return "";
     if (typeof entry === "string") return entry;
     if (!entry.key || !T.has(entry.key)) return entry.desc || "";
-    return T(entry.key, entry.params || {});
+    const params = entry.params || {};
+    if (params.place == null) return T(entry.key, params);
+    return T(entry.key, Object.assign({}, params, { place: placeLabel(params.place) }));
   }
 
   function rollHonesty(name, profile, rng) {
@@ -1047,20 +1058,20 @@
     const lines = [];
 
     lines.push(T('NPCLife.bio.header', {
-      name: name, age: age, date: record.birthDate, place: record.birthplace,
+      name: name, age: age, date: record.birthDate, place: placeLabel(record.birthplace),
     }));
 
     const stops = record.locationHistory || [];
     if (stops.length > 1) {
-      lines.push(T('NPCLife.bio.hasLivedIn', { path: stops.map(s => s.place).join(" → ") }));
+      lines.push(T('NPCLife.bio.hasLivedIn', { path: stops.map(s => placeLabel(s.place)).join(" → ") }));
       const lastMove = stops[stops.length - 1];
       if (lastMove.reason && lastMove.reason !== BORN_HERE) {
         lines.push(T('NPCLife.bio.settledIn', {
-          place: lastMove.place, year: lastMove.fromYear, reason: moveReasonLabel(lastMove.reason),
+          place: placeLabel(lastMove.place), year: lastMove.fromYear, reason: moveReasonLabel(lastMove.reason),
         }));
       }
     } else {
-      lines.push(T('NPCLife.bio.neverLeft', { place: record.birthplace }));
+      lines.push(T('NPCLife.bio.neverLeft', { place: placeLabel(record.birthplace) }));
     }
 
     const openJob = (record.careerHistory || []).find(seg => seg.toYear === null);

@@ -5,10 +5,11 @@
   "skillBookTitle": "",
   "forgottenTitle": "",
   "schoolTitle": "",
-  "thisReader": "",
   "noSpells": "",
   "ui": {
     "blurb": "",
+    "alreadyKnown": "",
+    "beyondReach": "",
     "partyReader": "",
     "psychicDiagnostics": "",
     "medianPsi": "",
