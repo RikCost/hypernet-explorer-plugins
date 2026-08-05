@@ -3307,6 +3307,19 @@
     // or null when the event is currently showing its own defined identity.
     getShopShiftData(evName, mapId, evId) { return ShopShiftManager.getActivePersona(mapId, evId); },
 
+    // The name of the person actually standing at this event right now. A
+    // <Shop> counter is manned in shifts, so its event name ("Shop", "Bar",
+    // ...) is the name of the fixture and not of anybody; whoever is covering
+    // the current shift outranks it. Everything the player reads or that keys
+    // a society profile off an event should go through here.
+    npcNameForEvent(ev) {
+      if (!ev) return '';
+      const persona = this.isShopShiftCovered(ev)
+        ? ShopShiftManager.getActivePersona($gameMap.mapId(), ev.eventId())
+        : null;
+      return persona?.name || ev.event()?.name?.trim() || '';
+    },
+
     // Personal daily routines (see SECTION 3b), exposed so UI plugins like
     // NPCEmpathize can render past/planned activity timelines on demand.
     RoutineManager,

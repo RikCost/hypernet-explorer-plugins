@@ -111,6 +111,22 @@
   "retiredLoreDated": "Ha viaggiato con {leader} come {role} e si è ritirato dalla strada il {date}, al livello {level}.",
   "theParty": "il gruppo",
   "companion": "compagno",
+  "skins": "Aspetto",
+  "skinHint": "Pag Su / Pag Giu o Shift per sfogliare gli aspetti.",
+  "skin": {
+    "statesman": "Statista",
+    "arcane": "Arcano",
+    "pontiff": "Pontefice",
+    "seated": "Seduto",
+    "astronomer": "Astronoma",
+    "eva": "Tuta EVA",
+    "flightSuit": "Tuta di volo",
+    "banker": "Banchiere",
+    "ascended": "Asceso",
+    "senator": "Senatrice",
+    "labCoat": "Camice",
+    "magus": "Mago"
+  },
   "unknownClass": "Sconosciuta",
   "statsExplanation": "Spiegazione Statistiche",
   "stat": {

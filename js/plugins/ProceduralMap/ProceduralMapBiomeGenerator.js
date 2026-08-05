@@ -4515,10 +4515,18 @@
   }
 
   /**
+   * PROCEDURAL INTERIORS
+   *
    * A biome that is roofed over: every cave variant plus the enclosed
    * floor/ceiling/wall family (Dungeon, Crypt, Sewer, LootCellar,
-   * TempleInside, CaveDen). Nothing generated in one of these should ever see
-   * the sky, so weather and day/night light are suppressed there.
+   * TempleInside, CaveDen, PatronVault). Nothing generated in one of these
+   * should ever see the sky, so weather and day/night light are suppressed
+   * there, and nothing that belongs outdoors (a parked or summoned vehicle)
+   * may be placed there.
+   *
+   * They all share map id 636 with the open-air square they were entered from,
+   * so a plain map note tag cannot tell them apart: every consumer has to ask
+   * window.ProceduralInteriors instead.
    */
   function isInteriorBiome(biomeName) {
     const name = biomeName || "";
@@ -4527,10 +4535,10 @@
   }
 
   /**
-   * True while the player stands on a procedural map that must be treated as an
-   * Interior: an enclosed biome, or any layer below the surface (the layer
-   * stack is non-empty once the player has gone down). WeatherSystem and
-   * DynamicLightingSystem ask this instead of reading map 636's <Exterior> tag.
+   * True while the player stands on a procedural interior: an enclosed biome,
+   * or any layer below the surface (the layer stack is non-empty once the
+   * player has gone down). WeatherSystem, DynamicLightingSystem and
+   * VehicleSystem ask this instead of reading map 636's <Exterior> tag.
    */
   function isProceduralInteriorMap() {
     if (!$gameMap || $gameMap.mapId() !== PROC_MAP_ID) return false;
@@ -4852,4 +4860,21 @@
   window.placePolicemanEvents = placePolicemanEvents;
   window.isInteriorBiome = isInteriorBiome;
   window.isProceduralInteriorMap = isProceduralInteriorMap;
+
+  // The named façade for the procedural interiors (dungeon, crypt, sewer, loot
+  // cellar, temple inside, cave den, patron vault, every cave and every layer
+  // below the surface). The two bare globals above are the historical spelling
+  // and stay for the plugins already calling them.
+  window.ProceduralInteriors = {
+    // True for a biome NAME that generates an enclosed, roofed-over map.
+    isBiome: isInteriorBiome,
+    // True while the loaded procedural map IS one of them.
+    isCurrent: isProceduralInteriorMap,
+    // The biome the player is standing in, or "" off the procedural map.
+    currentBiome() {
+      if (!isProceduralInteriorMap()) return "";
+      const data = $gameSystem && $gameSystem._procGenData;
+      return (data && data.currentBiome) || "";
+    }
+  };
 })();

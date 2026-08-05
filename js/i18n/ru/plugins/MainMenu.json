@@ -159,6 +159,7 @@
   },
   "vehicles": {
     "spawn": "",
+    "spawnIndoors": "",
     "noFuelNeeded": "",
     "none": ""
   },

@@ -3617,6 +3617,7 @@
   },
   {
     "name": "MountainDesert",
+    "displayName": "Desert Mountain",
     "lockTravel": true,
     "hasNPC": false,
     "tilesetId": 300,
@@ -6400,6 +6401,7 @@
   },
   {
     "name": "ForestTropical",
+    "displayName": "Tropical Forest",
     "hasNPC": false,
     "tilesetId": 300,
     "color": "#006400",
@@ -6595,6 +6597,7 @@
   },
   {
     "name": "ForestIce",
+    "displayName": "Ice Forest",
     "hasNPC": false,
     "tilesetId": 300,
     "color": "#add8e6",
@@ -10008,6 +10011,7 @@
   },
   {
     "name": "MountainIce",
+    "displayName": "Ice Mountain",
     "lockTravel": true,
     "hasNPC": false,
     "tilesetId": 300,

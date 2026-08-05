@@ -111,6 +111,22 @@
   "retiredLoreDated": "Travelled with {leader} as a {role} and stepped back from the road on {date}, at level {level}.",
   "theParty": "the party",
   "companion": "companion",
+  "skins": "Appearance",
+  "skinHint": "Page Up / Page Down or Shift to leaf through the looks.",
+  "skin": {
+    "statesman": "Statesman",
+    "arcane": "Arcane",
+    "pontiff": "Pontiff",
+    "seated": "Seated",
+    "astronomer": "Astronomer",
+    "eva": "EVA Suit",
+    "flightSuit": "Flight Suit",
+    "banker": "Banker",
+    "ascended": "Ascended",
+    "senator": "Senator",
+    "labCoat": "Lab Coat",
+    "magus": "Magus"
+  },
   "unknownClass": "Unknown",
   "statsExplanation": "Stats Explanation",
   "stat": {

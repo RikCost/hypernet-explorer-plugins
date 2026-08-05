@@ -1319,7 +1319,9 @@
                     let displayName    = $gameSystem._procGenData.currentBiome;
                     if ($gameSystem._procGenData.displayAsIsland)     displayName = 'Island';
                     else if ($gameSystem._procGenData.displayAsBeach) displayName = 'Beach';
-                    $dataMap.displayName = displayName;
+                    // The map name window reads the biome's declared name, not
+                    // its id ("ForestTropical" -> "Tropical Forest").
+                    $dataMap.displayName = window.BiomeNames.display(displayName);
                 }
                 $gameSystem._procGenData.lastLoadedProcMapX = currentWorldX;
                 $gameSystem._procGenData.lastLoadedProcMapY = currentWorldY;
@@ -1958,7 +1960,7 @@
                 let displayName    = $gameSystem._procGenData.currentBiome;
                 if ($gameSystem._procGenData.displayAsIsland)     displayName = 'Island';
                 else if ($gameSystem._procGenData.displayAsBeach) displayName = 'Beach';
-                $dataMap.displayName = displayName;
+                $dataMap.displayName = window.BiomeNames.display(displayName);
             }
         }
 
@@ -3402,9 +3404,11 @@
             biome = $gameSystem._procGenData.currentBiome || '';
         }
         if (biome === 'Unknown') biome = '';
+        if (!biome) return '';
         // Roads and rivers carry a direction suffix ("Road cross", "River
         // vertical") that is layout, not a place.
-        return biome.replace(/^(Road|River)\s+.*$/, '$1');  // i18n-ignore  biome ids
+        biome = biome.replace(/^(Road|River)\s+.*$/, '$1');  // i18n-ignore  biome ids
+        return window.BiomeNames.display(biome);
     }
 
     // mapId is the map a record was made on; coords are the world coordinates it

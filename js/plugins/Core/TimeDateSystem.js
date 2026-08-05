@@ -2048,9 +2048,9 @@
       name = $gameSystem._procGenData.currentBiome;
     }
     if (name.startsWith('Road ')) name = 'Road';
-    // Special biomes are defined in CamelCase ("SpiritWoods", "DeepForest");
-    // split them so the card reads "Spirit Woods" like every other location.
-    return name.replace(/([a-z])([A-Z])/g, '$1 $2');
+    // The cached value is a biome id ("ForestTropical"); the card shows the
+    // readable name Biomes.json declares for it ("Tropical Forest").
+    return window.BiomeNames.display(name);
   };
 
   // Country the player is standing in, plus the hyperpower controlling it.

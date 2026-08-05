@@ -2359,7 +2359,7 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         grp.country  = country?.country || null;
         // Readable home-town label for menus (the raw key is "Proc:x,y").
         const isPlace = biomeName && !['Normal', 'Road'].includes(biomeName); // i18n-ignore: Biomes.json ids
-        const place   = isPlace ? biomeName : T('NPCSystem.frontier');
+        const place   = isPlace ? window.BiomeNames.display(biomeName) : T('NPCSystem.frontier');
         grp.displayName = country
           ? T('NPCSystem.placeOfCountry', { place: place, country: country.country })
           : T('NPCSystem.placeSettlement', { place: place });

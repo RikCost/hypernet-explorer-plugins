@@ -2076,6 +2076,8 @@
     "demeanor": "Contegno",
     "youEris": "Tu (Eris)",
     "pressEnterToContinue": "Premi Invio per continuare",
+    "autoPlaying": "Auto - premi per riprendere il controllo",
+    "cancelToAutoPlay": "Esc: continua da solo",
     "unread": "Non letto",
     "evasive": "Evasivo",
     "composed": "Composto",

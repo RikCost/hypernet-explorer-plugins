@@ -1,0 +1,12 @@
+{
+  "tools": {
+    "pencil": "PENCIL",
+    "eraser": "ERASER",
+    "fill": "FILL",
+    "picker": "PICKER"
+  },
+  "size": "{size}px",
+  "clear": "CLEAR",
+  "save": "SAVE",
+  "exit": "EXIT"
+}

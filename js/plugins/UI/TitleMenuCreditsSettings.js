@@ -1,8 +1,8 @@
 /*:
  * @target MZ
- * @plugindesc Enhanced Credits System with Formatted Text Parsing
+ * @plugindesc HTML credits roll for the title screen menu
  * @author Omni-Lex
- * @version 2.0
+ * @version 3.0
  *
  * @param Credits Speed
  * @desc Speed at which credits scroll (1-10, higher is faster)
@@ -10,318 +10,176 @@
  * @min 1
  * @max 10
  * @default 3
- * 
+ *
  * @param Background Image
  * @desc Background image for the credits screen (leave blank for default)
  * @type file
  * @dir img/titles1/
  * @default
- * 
- * @help 
+ *
+ * @help
  * ===========================================================================
- * Enhanced Credits System Plugin
+ * Credits
  * ===========================================================================
- * 
- * This plugin adds a Credits option to the RPG Maker MZ title screen menu
- * with automatic parsing of formatted credit data.
- * 
- * Features:
- * - Automatic parsing of formatted credits text
- * - Section headers with decorative formatting
- * - Bold text support for emphasized content
- * - URL cleaning (removes https://)
- * - Scrolling credits with adjustable speed
- * - Optional background image
- * 
- * Format Rules:
- * - ## starts a section header
- * - **text** makes text bold
- * - URLs are automatically cleaned of https://
- * - Links are displayed as plain text (not clickable)
- * 
+ *
+ * Adds a Credits entry to the title menu, above Exit.
+ *
+ * The roll is an HTML overlay like the rest of the game's menus, wearing the
+ * title screen's own chrome ('Square' monospace, gold on black) and styled
+ * from css/theme.css (#credits-overlay).
+ *
+ * The credits themselves are a data table below: every entry is a name, an
+ * optional author and any number of addresses. Only the section titles are
+ * translated (TitleCredits.sections in the i18n files); a person, a pack or a
+ * URL reads the same in every language.
+ *
+ * Controls: the roll scrolls on its own, Up/Down and the wheel take it over,
+ * OK pauses and resumes, Cancel returns to the title.
+ *
  * ===========================================================================
  */
 
 (() => {
     'use strict';
-    
+
     const pluginName = "TitleMenuCreditsSettings";
-    
+
     //=============================================================================
     // Plugin Parameters
     //=============================================================================
-    
+
     const parameters = PluginManager.parameters(pluginName);
     const creditsSpeed = Number(parameters['Credits Speed'] || 3);
     const backgroundImage = parameters['Background Image'] || "";
-    
-    // Hardcoded credits data (formatted text)
-    const CREDITS_DATA = `
 
----
-
-## Team
-
-* **Mapper** by fedepperez;
-[https://github.com/fedepperez]
-
----
-
-## Localization
-
-* **Korean Localization** by citrusMB;
-[https://github.com/citrusMB]
-* **Russian Translation** by Lobshisdik;
-[https://github.com/Lobshisdik]
-* **French Localization** by sarvvvvvv;
-[https://github.com/sarvvvvvv]
-
----
-
-## Sprites and Characters
-
-* **Horror Monster Battler Sprite Pack** by invalid-user621; 
-[https://invalid-user621.itch.io/horror-monster-battler-sprite-pack]
-* **Watercolour Monster Pack** by metalsnail; 
-[https://metalsnail.itch.io/watercolour-monster-pack]
-* **The Mighty Pack** by themightypalm; 
-[https://themightypalm.itch.io/the-mighty-pack]
-* **95% Off Ultimate Portrait Pack**; 
-[https://itch.io/s/121612/95-off-ultimate-portrait-pack]
-
----
-
-## Tilesets
-
-* **Damp Dungeons** by arex‑v; 
-[https://arex-v.itch.io/damp-dungeons]
-* **Modern Exteriors** by limezu; 
-[https://limezu.itch.io/modernexteriors]
-* **Chronicle Tileset Pack** by wardwellgames; 
-[https://wardwellgames.itch.io/chronicle-tileset-pack]
-* **Ashlands Tileset** by finalbossblues; 
-[https://finalbossblues.itch.io/ashlands-tileset]
-* **TF Jungle Tileset** by finalbossblues; 
-[https://finalbossblues.itch.io/tf-jungle-tileset]
-* **Atlantis Tileset** by finalbossblues; 
-[https://finalbossblues.itch.io/atlantis-tileset]
-* **Dark Dimension Tileset** by finalbossblues; 
-[https://finalbossblues.itch.io/dark-dimension-tileset]
-* **TF Beach Tileset** by finalbossblues; 
-[https://finalbossblues.itch.io/tf-beach-tileset]
-* **Fantasy** by arex‑v; 
-[https://arex-v.itch.io/fantasy]
-* **Occult Steampunk** by arex‑v; 
-[https://arex-v.itch.io/occult-steampunk]
-
----
-
-## Plugin & Script
-
-* **Smooth Battle Log 2.0 **; 
-[https://forums.rpgmakerweb.com/index.php?threads/smooth-battle-log-2-0-mz.131465/]
-* **Event Spawner** by cocomode; 
-[https://cocomode.itch.io/event-spawner]
-* **Enemy Levels Plugin for RPG Maker MZ** by cocomode; 
-[https://cocomode.itch.io/enemy-levels-plugin-for-rpg-maker-mz]
-* **Customized Dynamically Generated Chest Loot** by cocomode; 
-[https://cocomode.itch.io/customized-dynamically-generated-chest-loot-for-rpg-maker-mz]
-* **Revealed Area Map for RPG Maker MZ** by cocomode; 
-[https://cocomode.itch.io/revealed-area-map-for-rpg-maker-mz]
-* **TurnInPlace.js** by mjshi; 
-[https://github.com/mjshi/RPGMakerRepo/blob/master/TurnInPlace.js]
-* **OZZ\_DebugPasability.js** by orochii; 
-[https://github.com/orochii/RMXPVXA-Scripts/blob/master/MZ/OZZ\_DebugPasability.js]
-* **SLIM’s This and That’s **; 
-[https://forums.rpgmakerweb.com/index.php?threads/slims-this-and-thats-mz-edition.125627/]
-* **CandaCi’s Resources for MZ**; 
-[https://forums.rpgmakerweb.com/index.php?threads/candacis-resources-for-mz.126137/]
-* **Avery’s Experimental XP→MZ Conversions**; 
-[https://forums.rpgmakerweb.com/index.php?threads/averys-experimental-xp-to-mz-conversions-default-and-original.153808/]
-
----
-
-## UI and animations
-
-* **Pixel UI & SFX Pack** by jdsherbert; 
-[https://jdsherbert.itch.io/pixel-ui-sfx-pack]
-* **Effekseer Animation MZ** by nowis‑337; 
-[https://nowis-337.itch.io/effekseer-animation-mz]
-
-
----
-
-## Maps
-
-* **Europa MZ Free Semi‑Detailed Map of Europe**; 
-[https://forums.rpgmakerweb.com/index.php?threads/europa-mz-free-semi-detailed-map-of-europe.125607/]
-* **The Metropolitan Museum of Art – Collection Search **; 
-[https://www.metmuseum.org/art/collection/search?page=3\&searchField=AccessionNum]
-
----
-
-## Music
-
-* **Creepy Forest F** ; 
-[https://opengameart.org/content/creepy-forest-f]
-* **Cave Theme** ; * **Three Red Hearts; 
-Prepare to Dev** by tallbeard; 
-[https://tallbeard.itch.io/three-red-hearts-prepare-to-dev]
-[https://opengameart.org/content/cave-theme]
-* **Swamp Environment Audio** ; 
-[https://opengameart.org/content/swamp-environment-audio]
-* **Ambient Noise** ; 
-[https://opengameart.org/content/ambient-noise]
-* **Ambient Mountain, River, Wind & Waterfall** ; 
-[https://opengameart.org/content/ambient-mountain-river-wind-and-forest-and-waterfall]
-* **Music Loop Bundle** by tallbeard; 
-[https://tallbeard.itch.io/music-loop-bundle]
-* **Music Loops** by comigo; 
-[https://comigo.itch.io/music-loops]
-* **Techno Trance Melodic Techno 03 ** by moogify; 
-[https://pixabay.com/music/techno-trance-melodic-techno-03-extended-version-moogify-9867/]
-* **Techno Trance Dark Dub Techno – Somewhere We Got Lost**; 
-[https://pixabay.com/music/techno-trance-dark-dub-techno-somewhere-we-got-lost-no-copyright-music-144827/]
-* **Medieval; 
-Exploration **:
-
-  * [https://www.youtube.com/watch?v=XZO331MAAi0]
-  * [https://www.youtube.com/watch?v=wGqJseFSWbA]
-
----
-
-## Sound fx
-
-* **Underwater** by freesound\_community; 
-[https://pixabay.com/sound-effects/underwater-6236/]
-* **SFX ** by freesound\_community; 
-[https://pixabay.com/?utm\_source=link-attribution\&utm\_medium=referral\&utm\_campaign=music\&utm\_content=14814]
-* **SFX ** by David Dumais; 
-[https://pixabay.com/?utm\_source=link-attribution\&utm\_medium=referral\&utm\_campaign=music\&utm\_content=185435]
-* **SFX ** by David Dumais; 
-[https://pixabay.com/sound-effects/?utm\_source=link-attribution\&utm\_medium=referral\&utm\_campaign=music\&utm\_content=185432]
-* **SFX ** by u\_xjrmmgxfru; 
-[https://pixabay.com/sound-effects/?utm\_source=link-attribution\&utm\_medium=referral\&utm\_campaign=music\&utm\_content=266299]
-* **Tyler J Warren SFX**; 
-[https://tylerjwarren.itch.io/]
-RPG Maker MV UPP Windowskin Pack by theunpropro
-https://theunpropro.itch.io/rpg-maker-mv-upp-windowskin-packpg
-
-SFX  by freesound_community 
-https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=45475
----
-
-`;
-    
     //=============================================================================
-    // Credits Parser
+    // Credits data
     //=============================================================================
-    
-    class CreditsParser {
-        static parse(text) {
-            const lines = text.split('\n');
-            const parsedData = [];
-            
-            for (let line of lines) {
-                line = line.trim();
-                
-                // Skip empty lines and dividers
-                if (!line || line === '---') continue;
-                
-                // Section headers (## text)
-                if (line.startsWith('##')) {
-                    const headerText = line.replace('##', '').trim();
-                    parsedData.push({
-                        type: 'header',
-                        text: headerText
-                    });
-                }
-                // List items (* text)
-                else if (line.startsWith('*')) {
-                    const itemText = line.replace('*', '').trim();
-                    
-                    // Split by semicolon to separate resource name from author
-                    const parts = itemText.split(';').map(p => p.trim()).filter(p => p);
-                    
-                    for (let i = 0; i < parts.length; i++) {
-                        const part = parts[i];
-                        const processedText = this.processTextFormatting(part);
-                        
-                        parsedData.push({
-                            type: i === 0 ? 'item' : 'author', // First part is item, rest is author info
-                            text: processedText.text,
-                            formatting: processedText.formatting
-                        });
-                    }
-                }
-                // URLs in brackets
-                else if (line.startsWith('[') && line.endsWith(']')) {
-                    const url = line.slice(1, -1);
-                    const cleanUrl = url.replace('https://', '').replace('http://', '');
-                    parsedData.push({
-                        type: 'url',
-                        text: cleanUrl
-                    });
-                }
-            }
-            
-            return parsedData;
+    // section: an i18n key under TitleCredits.sections
+    // name:    what was used (a pack, a plugin, a piece of music)
+    // by:      who made it, when they are credited by name
+    // urls:    where it came from, written without the protocol
+
+    const CREDITS_SECTIONS = [
+        {
+            section: 'team',
+            entries: [
+                { name: 'Mapper', by: 'fedepperez', urls: ['github.com/fedepperez'] }
+            ]
+        },
+        {
+            section: 'localization',
+            entries: [
+                { name: 'Korean Localization', by: 'citrusMB', urls: ['github.com/citrusMB'] },
+                { name: 'Russian Translation', by: 'Lobshisdik', urls: ['github.com/Lobshisdik'] },
+                { name: 'French Localization', by: 'sarvvvvvv', urls: ['github.com/sarvvvvvv'] }
+            ]
+        },
+        {
+            section: 'sprites',
+            entries: [
+                { name: 'Horror Monster Battler Sprite Pack', by: 'invalid-user621', urls: ['invalid-user621.itch.io/horror-monster-battler-sprite-pack'] },
+                { name: 'Watercolour Monster Pack', by: 'metalsnail', urls: ['metalsnail.itch.io/watercolour-monster-pack'] },
+                { name: 'The Mighty Pack', by: 'themightypalm', urls: ['themightypalm.itch.io/the-mighty-pack'] },
+                { name: '95% Off Ultimate Portrait Pack', urls: ['itch.io/s/121612/95-off-ultimate-portrait-pack'] }
+            ]
+        },
+        {
+            section: 'tilesets',
+            entries: [
+                { name: 'Damp Dungeons', by: 'arex-v', urls: ['arex-v.itch.io/damp-dungeons'] },
+                { name: 'Modern Exteriors', by: 'limezu', urls: ['limezu.itch.io/modernexteriors'] },
+                { name: 'Chronicle Tileset Pack', by: 'wardwellgames', urls: ['wardwellgames.itch.io/chronicle-tileset-pack'] },
+                { name: 'Ashlands Tileset', by: 'finalbossblues', urls: ['finalbossblues.itch.io/ashlands-tileset'] },
+                { name: 'TF Jungle Tileset', by: 'finalbossblues', urls: ['finalbossblues.itch.io/tf-jungle-tileset'] },
+                { name: 'Atlantis Tileset', by: 'finalbossblues', urls: ['finalbossblues.itch.io/atlantis-tileset'] },
+                { name: 'Dark Dimension Tileset', by: 'finalbossblues', urls: ['finalbossblues.itch.io/dark-dimension-tileset'] },
+                { name: 'TF Beach Tileset', by: 'finalbossblues', urls: ['finalbossblues.itch.io/tf-beach-tileset'] },
+                { name: 'Fantasy', by: 'arex-v', urls: ['arex-v.itch.io/fantasy'] },
+                { name: 'Occult Steampunk', by: 'arex-v', urls: ['arex-v.itch.io/occult-steampunk'] }
+            ]
+        },
+        {
+            section: 'plugins',
+            entries: [
+                { name: 'Smooth Battle Log 2.0', urls: ['forums.rpgmakerweb.com/index.php?threads/smooth-battle-log-2-0-mz.131465/'] },
+                { name: 'Event Spawner', by: 'cocomode', urls: ['cocomode.itch.io/event-spawner'] },
+                { name: 'Enemy Levels Plugin for RPG Maker MZ', by: 'cocomode', urls: ['cocomode.itch.io/enemy-levels-plugin-for-rpg-maker-mz'] },
+                { name: 'Customized Dynamically Generated Chest Loot', by: 'cocomode', urls: ['cocomode.itch.io/customized-dynamically-generated-chest-loot-for-rpg-maker-mz'] },
+                { name: 'Revealed Area Map for RPG Maker MZ', by: 'cocomode', urls: ['cocomode.itch.io/revealed-area-map-for-rpg-maker-mz'] },
+                { name: 'TurnInPlace.js', by: 'mjshi', urls: ['github.com/mjshi/RPGMakerRepo/blob/master/TurnInPlace.js'] },
+                { name: 'OZZ_DebugPasability.js', by: 'orochii', urls: ['github.com/orochii/RMXPVXA-Scripts/blob/master/MZ/OZZ_DebugPasability.js'] },
+                { name: "SLIM's This and That's", urls: ['forums.rpgmakerweb.com/index.php?threads/slims-this-and-thats-mz-edition.125627/'] },
+                { name: "CandaCi's Resources for MZ", urls: ['forums.rpgmakerweb.com/index.php?threads/candacis-resources-for-mz.126137/'] },
+                { name: "Avery's Experimental XP to MZ Conversions", urls: ['forums.rpgmakerweb.com/index.php?threads/averys-experimental-xp-to-mz-conversions-default-and-original.153808/'] }
+            ]
+        },
+        {
+            section: 'ui',
+            entries: [
+                { name: 'Pixel UI & SFX Pack', by: 'jdsherbert', urls: ['jdsherbert.itch.io/pixel-ui-sfx-pack'] },
+                { name: 'Effekseer Animation MZ', by: 'nowis-337', urls: ['nowis-337.itch.io/effekseer-animation-mz'] },
+                { name: 'RPG Maker MV UPP Windowskin Pack', by: 'theunpropro', urls: ['theunpropro.itch.io/rpg-maker-mv-upp-windowskin-pack'] }
+            ]
+        },
+        {
+            section: 'maps',
+            entries: [
+                { name: 'Europa MZ Free Semi-Detailed Map of Europe', urls: ['forums.rpgmakerweb.com/index.php?threads/europa-mz-free-semi-detailed-map-of-europe.125607/'] },
+                { name: 'The Metropolitan Museum of Art, Collection Search', urls: ['metmuseum.org/art/collection/search'] }
+            ]
+        },
+        {
+            section: 'music',
+            entries: [
+                { name: 'Creepy Forest F', urls: ['opengameart.org/content/creepy-forest-f'] },
+                { name: 'Cave Theme', urls: ['opengameart.org/content/cave-theme'] },
+                { name: 'Three Red Hearts: Prepare to Dev', by: 'tallbeard', urls: ['tallbeard.itch.io/three-red-hearts-prepare-to-dev'] },
+                { name: 'Swamp Environment Audio', urls: ['opengameart.org/content/swamp-environment-audio'] },
+                { name: 'Ambient Noise', urls: ['opengameart.org/content/ambient-noise'] },
+                { name: 'Ambient Mountain, River, Wind & Waterfall', urls: ['opengameart.org/content/ambient-mountain-river-wind-and-forest-and-waterfall'] },
+                { name: 'Music Loop Bundle', by: 'tallbeard', urls: ['tallbeard.itch.io/music-loop-bundle'] },
+                { name: 'Music Loops', by: 'comigo', urls: ['comigo.itch.io/music-loops'] },
+                { name: 'Techno Trance Melodic Techno 03', by: 'moogify', urls: ['pixabay.com/music/techno-trance-melodic-techno-03-extended-version-moogify-9867/'] },
+                { name: 'Techno Trance Dark Dub Techno, Somewhere We Got Lost', urls: ['pixabay.com/music/techno-trance-dark-dub-techno-somewhere-we-got-lost-no-copyright-music-144827/'] },
+                { name: 'Medieval Exploration', urls: ['youtube.com/watch?v=XZO331MAAi0', 'youtube.com/watch?v=wGqJseFSWbA'] }
+            ]
+        },
+        {
+            section: 'sound',
+            entries: [
+                { name: 'Underwater', by: 'freesound_community', urls: ['pixabay.com/sound-effects/underwater-6236/'] },
+                { name: 'SFX', by: 'freesound_community', urls: ['pixabay.com/'] },
+                { name: 'SFX', by: 'David Dumais', urls: ['pixabay.com/sound-effects/'] },
+                { name: 'SFX', by: 'u_xjrmmgxfru', urls: ['pixabay.com/sound-effects/'] },
+                { name: 'Tyler J Warren SFX', urls: ['tylerjwarren.itch.io/'] }
+            ]
         }
-        
-        static processTextFormatting(text) {
-            const formatting = [];
-            let processedText = text;
-            
-            // Find bold text (**text**)
-            const boldRegex = /\*\*(.*?)\*\*/g;
-            let match;
-            let offset = 0;
-            
-            while ((match = boldRegex.exec(text)) !== null) {
-                const start = match.index - offset;
-                const length = match[1].length;
-                
-                formatting.push({
-                    start: start,
-                    length: length,
-                    type: 'bold'
-                });
-                
-                // Remove the ** markers
-                processedText = processedText.replace(match[0], match[1]);
-                offset += 4; // Length of "**" * 2
-            }
-            
-            return {
-                text: processedText,
-                formatting: formatting
-            };
-        }
-    }
-    
+    ];
+
     //=============================================================================
     // Scene_Title Modifications
     //=============================================================================
-    
+
     const _Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
     Scene_Title.prototype.createCommandWindow = function() {
         _Scene_Title_createCommandWindow.call(this);
         this._commandWindow.setHandler("credits", this.commandCredits.bind(this));
         this._commandWindow.setHandler("exitGame", this.commandExitGame.bind(this));
     };
-    
+
     Scene_Title.prototype.commandCredits = function() {
         SceneManager.push(Scene_Credits);
     };
-    
+
     Scene_Title.prototype.commandExitGame = function() {
         SceneManager.exit();
     };
-    
+
     //=============================================================================
     // Window_TitleCommand Modifications
     //=============================================================================
-    
+
     const _Window_TitleCommand_makeCommandList = Window_TitleCommand.prototype.makeCommandList;
     Window_TitleCommand.prototype.makeCommandList = function() {
         _Window_TitleCommand_makeCommandList.call(this);
@@ -357,29 +215,107 @@ https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaig
     }
 
     //=============================================================================
+    // Layout
+    //=============================================================================
+    // The game renders into a fixed 1280x720 canvas that is stretched (and, on an
+    // off-aspect window, letterboxed) into whatever window the player has, while
+    // the roll is a DOM node on document.body measured in real viewport pixels.
+    // It is therefore placed over the measured canvas rect and typed in design
+    // pixels multiplied by the canvas scale, the way Titlescreen.js places its
+    // own panels.
+
+    const canvasRect = () => {
+        const canvas = Graphics._canvas;
+        const r = canvas ? canvas.getBoundingClientRect() : null;
+        if (r && r.width > 0 && r.height > 0) {
+            return { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+        return {
+            left: 0, top: 0,
+            width: window.innerWidth || Graphics.width,
+            height: window.innerHeight || Graphics.height
+        };
+    };
+
+    // Clamped at both ends so a small window still has readable text and a 4K one
+    // does not turn the panel into a slab.
+    const canvasScale = (rect) => {
+        const r = rect || canvasRect();
+        const s = Math.min(r.width / Graphics.width, r.height / Graphics.height);
+        if (!isFinite(s) || s <= 0) return 1;
+        return Math.max(0.75, Math.min(2, s));
+    };
+
+    const rectSignature = (r) => [r.left, r.top, r.width, r.height].map(Math.round).join(':');
+
+    //=============================================================================
+    // Markup
+    //=============================================================================
+
+    const escapeHtml = (text) => String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const entryHtml = (entry) => {
+        const parts = ['<div class="credits-entry">'];
+        parts.push('<div class="credits-entry-name">' + escapeHtml(entry.name));
+        if (entry.by) {
+            parts.push('<span class="credits-entry-by"> ' +
+                escapeHtml(T('TitleCredits.by')) + ' ' + escapeHtml(entry.by) + '</span>');
+        }
+        parts.push('</div>');
+        for (const url of entry.urls || []) {
+            parts.push('<div class="credits-entry-link">' + escapeHtml(url) + '</div>');
+        }
+        parts.push('</div>');
+        return parts.join('');
+    };
+
+    const creditsBodyHtml = () => {
+        const parts = [];
+        for (const block of CREDITS_SECTIONS) {
+            parts.push('<div class="credits-section">');
+            parts.push('<div class="credits-section-title">' +
+                escapeHtml(T('TitleCredits.sections.' + block.section)) + '</div>');
+            for (const entry of block.entries) parts.push(entryHtml(entry));
+            parts.push('</div>');
+        }
+        // Trailing air, so the last address clears the frame before the roll ends.
+        parts.push('<div class="credits-tail"></div>');
+        return parts.join('');
+    };
+
+    //=============================================================================
     // Scene_Credits
     //=============================================================================
-    
+
     function Scene_Credits() {
         this.initialize(...arguments);
     }
-    
+
     Scene_Credits.prototype = Object.create(Scene_Base.prototype);
     Scene_Credits.prototype.constructor = Scene_Credits;
-    
+
+    // Design pixels per frame at speed 10, i.e. a shade over a line a second at
+    // the default 3.
+    const SCROLL_UNIT = 0.6;
+    // How far one wheel notch or one held direction takes the roll.
+    const STEP_PIXELS = 48;
+
     Scene_Credits.prototype.initialize = function() {
         Scene_Base.prototype.initialize.call(this);
-        this._scrollY = 0;
-        this._scrollSpeed = creditsSpeed;
-        this._isDone = false;
+        this._scrollRest = 0;      // sub-pixel remainder of the automatic roll
+        this._paused = false;
+        this._layoutKey = null;
     };
-    
+
     Scene_Credits.prototype.create = function() {
         Scene_Base.prototype.create.call(this);
         this.createBackground();
-        this.createCreditsWindow();
+        this.createOverlay();
     };
-    
+
     Scene_Credits.prototype.createBackground = function() {
         this._backgroundSprite = new Sprite();
         if (backgroundImage) {
@@ -389,174 +325,110 @@ https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaig
         }
         this.addChild(this._backgroundSprite);
     };
-    
-    Scene_Credits.prototype.createCreditsWindow = function() {
-        this._creditsWindow = new Window_Credits();
-        this.addChild(this._creditsWindow);
+
+    Scene_Credits.prototype.createOverlay = function() {
+        // Always a fresh element: the listeners below are added with
+        // addEventListener, so a leftover node would stack a second handler.
+        const stale = document.getElementById('credits-overlay');
+        if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+
+        const overlay = document.createElement('div');
+        overlay.id = 'credits-overlay';
+        overlay.innerHTML =
+            '<div class="credits-panel">' +
+                '<div class="credits-title">' + escapeHtml(T('TitleCredits.title')) + '</div>' +
+                '<div class="credits-scroll"><div class="credits-body">' +
+                    creditsBodyHtml() +
+                '</div></div>' +
+                '<div class="credits-hint">' + escapeHtml(T('TitleCredits.hint')) + '</div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        this._overlay = overlay;
+        this._scroller = overlay.querySelector('.credits-scroll');
+
+        // RMMZ preventDefaults every wheel event on document, so a pane only
+        // scrolls if it handles the notch itself and keeps it from getting there.
+        overlay.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.scrollBy(e.deltaY > 0 ? STEP_PIXELS : -STEP_PIXELS);
+        }, { passive: false });
+        // Swallow presses so they never reach the canvas underneath.
+        overlay.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); });
+
+        this.layoutOverlay();
     };
-    
+
+    // Every metric in design pixels: the panel's own type is written in em off
+    // this font size, so rescaling the whole roll is one assignment.
+    Scene_Credits.prototype.layoutOverlay = function() {
+        const overlay = this._overlay;
+        if (!overlay) return;
+        const rect = canvasRect();
+        this._layoutKey = rectSignature(rect);
+        const s = canvasScale(rect);
+        overlay.style.left = Math.round(rect.left) + 'px';
+        overlay.style.top = Math.round(rect.top) + 'px';
+        overlay.style.width = Math.round(rect.width) + 'px';
+        overlay.style.height = Math.round(rect.height) + 'px';
+        overlay.style.fontSize = Math.round(13 * s) + 'px';
+    };
+
+    Scene_Credits.prototype.scrollBy = function(pixels) {
+        if (!this._scroller) return;
+        this._paused = true;      // the player has taken the roll over
+        this._scrollRest = 0;
+        this._scroller.scrollTop += pixels;
+    };
+
+    Scene_Credits.prototype.maxScroll = function() {
+        const el = this._scroller;
+        return el ? Math.max(0, el.scrollHeight - el.clientHeight) : 0;
+    };
+
     Scene_Credits.prototype.update = function() {
         Scene_Base.prototype.update.call(this);
-        
-        if (this._isDone) {
+        if (!this._overlay) return;
+
+        if (Input.isTriggered('cancel') || TouchInput.isCancelled()) {
+            SoundManager.playCancel();
             this.popScene();
             return;
         }
-        
-        if (Input.isTriggered("cancel")) {
-            this._isDone = true;
-            SoundManager.playCancel();
-            return;
+        if (Input.isTriggered('ok')) {
+            this._paused = !this._paused;
+            SoundManager.playCursor();
         }
-        
-        // Update scrolling
-        this._scrollY += this._scrollSpeed;
-        this._creditsWindow.setScrollY(this._scrollY);
-        
-        // Check if credits have scrolled completely
-        if (this._scrollY >= this._creditsWindow.maxScrollY()) {
-            this._isDone = true;
+        if (Input.isRepeated('down')) this.scrollBy(STEP_PIXELS);
+        if (Input.isRepeated('up')) this.scrollBy(-STEP_PIXELS);
+
+        if (this._layoutKey !== rectSignature(canvasRect())) this.layoutOverlay();
+
+        if (this._paused) return;
+
+        // The roll runs on whole pixels, so the remainder is carried rather than
+        // dropped: a slow speed would otherwise never move at all.
+        this._scrollRest += creditsSpeed * SCROLL_UNIT;
+        const step = Math.floor(this._scrollRest);
+        if (step > 0) {
+            this._scrollRest -= step;
+            this._scroller.scrollTop += step;
         }
-    };
-    
-    //=============================================================================
-    // Window_Credits
-    //=============================================================================
-    
-    function Window_Credits() {
-        this.initialize(...arguments);
-    }
-    
-    Window_Credits.prototype = Object.create(Window_Base.prototype);
-    Window_Credits.prototype.constructor = Window_Credits;
-    
-    Window_Credits.prototype.initialize = function() {
-        const width = Graphics.boxWidth;
-        const height = Graphics.boxHeight;
-        Window_Base.prototype.initialize.call(this, new Rectangle(0, 0, width, height));
-        this.opacity = 255;
-        this._parsedCredits = CreditsParser.parse(CREDITS_DATA);
-        
-        // Calculate required content height first
-        this._totalHeight = this.calculateContentHeight();
-        
-        // Create contents with proper height
-        this.createContents();
-        this.refresh();
-    };
-    
-    Window_Credits.prototype.refresh = function() {
-        this.contents.clear();
-        
-        const lineHeight = this.lineHeight();
-        let y = lineHeight * 2;
-        
-        // Draw main title
-        this.contents.fontSize += 12;
-        this.drawText(T('TitleCredits.title'), 0, y, this.contents.width, "center");
-        this.contents.fontSize -= 12;
-        y += lineHeight * 3;
-        
-        // Process and draw parsed credits
-        for (const entry of this._parsedCredits) {
-            switch (entry.type) {
-                case 'header':
-                    y += lineHeight;
-                    this.contents.fontSize += 6;
-                    this.changeTextColor(ColorManager.textColor(14)); // Yellow
-                    this.drawText(entry.text, 0, y, this.contents.width, "center");
-                    this.resetTextColor();
-                    this.contents.fontSize -= 6;
-                    y += lineHeight * 2;
-                    break;
-                    
-                case 'item':
-                    this.drawFormattedText(entry.text, entry.formatting, 40, y, this.contents.width - 80);
-                    y += lineHeight * 1.2;
-                    break;
-                    
-                case 'author':
-                    this.changeTextColor(ColorManager.textColor(8)); // Gray for author
-                    this.drawTextEx("  " + entry.text, 60, y);
-                    this.resetTextColor();
-                    y += lineHeight * 1.5;
-                    break;
-                    
-                case 'url':
-                    this.changeTextColor(ColorManager.textColor(23)); // Light blue
-                    this.drawTextEx(entry.text, 60, y);
-                    this.resetTextColor();
-                    y += lineHeight * 2; // More space after URLs to separate entries
-                    break;
-            }
-        }
-        
-        // Add some space at the end
-        y += lineHeight * 4;
-        
-        // Store total content height (should match calculated height)
-        this._actualHeight = y;
-    };
-    
-    Window_Credits.prototype.drawFormattedText = function(text, formatting, x, y, width) {
-        // Check if text has bold formatting
-        const hasBold = formatting && formatting.some(f => f.type === 'bold');
-        
-        if (hasBold) {
-            // Extract bold parts and draw them specially
-            let processedText = text;
-            
-            // Simple approach: if it contains bold formatting, make the whole resource name bold
-            this.contents.fontSize += 2;
-            this.changeTextColor(ColorManager.textColor(17)); // Light green
-            this.drawTextEx(processedText, x, y);
-            this.resetTextColor();
-            this.contents.fontSize -= 2;
-        } else {
-            // Draw normal text
-            this.drawTextEx(text, x, y);
+        // Only the automatic roll ends the scene; a player reading at their own
+        // pace is left where they are. A roll short enough to fit the frame has
+        // nowhere to go and simply stays up until Cancel.
+        const max = this.maxScroll();
+        if (max > 0 && this._scroller.scrollTop >= max) {
+            this.popScene();
         }
     };
-    
-    Window_Credits.prototype.setScrollY = function(y) {
-        this.origin.y = y;
-    };
-    
-    Window_Credits.prototype.maxScrollY = function() {
-        return Math.max(0, this._totalHeight - this.height + this.padding * 4);
-    };
-    Window_Credits.prototype.calculateContentHeight = function() {
-        const lineHeight = this.lineHeight();
-        let height = lineHeight * 5; // Initial spacing for title
-        
-        // Calculate height needed for all content
-        for (const entry of this._parsedCredits) {
-            switch (entry.type) {
-                case 'header':
-                    height += lineHeight * 3; // Space before + header + space after
-                    break;
-                case 'item':
-                    height += lineHeight * 1.2;
-                    break;
-                case 'author':
-                    height += lineHeight * 1.5;
-                    break;
-                case 'url':
-                    height += lineHeight * 2;
-                    break;
-            }
+
+    Scene_Credits.prototype.terminate = function() {
+        Scene_Base.prototype.terminate.call(this);
+        if (this._overlay && this._overlay.parentNode) {
+            this._overlay.parentNode.removeChild(this._overlay);
         }
-        
-        height += lineHeight * 4; // Final spacing
-        return height;
-    };
-    
-    Window_Credits.prototype.createContents = function() {
-        // Create contents bitmap with calculated height
-        const width = this.contentsWidth();
-        const height = Math.max(this._totalHeight, this.contentsHeight());
-        this.contents = new Bitmap(width, height);
-        this.contentsBack = new Bitmap(width, height);
-        this.resetFontSettings();
+        this._overlay = null;
+        this._scroller = null;
     };
 })();

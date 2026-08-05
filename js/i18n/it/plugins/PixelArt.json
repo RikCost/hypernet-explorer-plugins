@@ -1,0 +1,12 @@
+{
+  "tools": {
+    "pencil": "MATITA",
+    "eraser": "GOMMA",
+    "fill": "RIEMPI",
+    "picker": "CONTAGOCCE"
+  },
+  "size": "{size}px",
+  "clear": "PULISCI",
+  "save": "SALVA",
+  "exit": "ESCI"
+}

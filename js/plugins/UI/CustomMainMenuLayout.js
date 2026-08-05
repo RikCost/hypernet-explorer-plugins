@@ -677,6 +677,15 @@
     // vehicle beside the player. Spawning needs Scene_Map, so it runs after popScene.
     Scene_Menu.prototype.spawnUIVehicle = function (key) {
         if (!window.MergedVehicleSystem) return;
+        // Indoors (a house, a vehicle cabin, or a procedural interior such as a
+        // dungeon, sewer or loot cellar) there is nowhere for most vehicles to
+        // land, so the button is inert rather than closing the menu on a summon
+        // that cannot happen. The bike answers true everywhere.
+        if (window.MergedVehicleSystem.canSpawnHere &&
+            !window.MergedVehicleSystem.canSpawnHere(key)) {
+            SoundManager.playBuzzer();
+            return;
+        }
         SoundManager.playOk();
         this.popScene();
         setTimeout(() => {
@@ -1477,6 +1486,13 @@
         } else if (this._isVehiclesPage) {
             const vehicles = window.MergedVehicleSystem && window.MergedVehicleSystem.getOwnedVehicles
                 ? window.MergedVehicleSystem.getOwnedVehicles() : [];
+            // Indoors (a house, a vehicle's own cabin, a procedural interior
+            // such as a dungeon, crypt, sewer, loot cellar or cave) only the
+            // bike can be summoned. The others are drawn inert there rather
+            // than left to fail once the menu has already closed.
+            const canSpawnKey = (key) => !window.MergedVehicleSystem?.canSpawnHere ||
+                window.MergedVehicleSystem.canSpawnHere(key);
+            let anyBlocked = false;
             let vehicleRows = '';
             vehicles.forEach(v => {
                 const fuelLine = v.usesFuel
@@ -1489,6 +1505,13 @@
                 const boardBtn = v.type === 'airship'
                     ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.teleportToShipUI?.()">${T('MainMenu.cmd.teleportToShip')}</div>`
                     : '';
+                // Disabled tiles drop `focusable` as well as the handler, so the
+                // menu's focus ring walks straight past them.
+                const canSpawn = canSpawnKey(v.key);
+                if (!canSpawn) anyBlocked = true;
+                const spawnBtn = canSpawn
+                    ? `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.spawnUIVehicle?.('${v.key}')">${T('MainMenu.vehicles.spawn')}</div>`
+                    : `<div class="command-item is-disabled" style="flex:1;" title="${escapeHtml(T('MainMenu.vehicles.spawnIndoors'))}">${T('MainMenu.vehicles.spawn')}</div>`;
                 vehicleRows += `
                     <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
                         <div class="portrait-frame" style="flex-shrink:0;">
@@ -1499,7 +1522,7 @@
                                 ${escapeHtml(v.name)}${fuelLine}
                             </div>
                             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                                <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.spawnUIVehicle?.('${v.key}')">${T('MainMenu.vehicles.spawn')}</div>
+                                ${spawnBtn}
                                 ${repairBtn}
                                 ${boardBtn}
                             </div>
@@ -1509,12 +1532,16 @@
             if (!vehicles.length) {
                 vehicleRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.vehicles.none')}</div>`;
             }
+            const indoorsNote = anyBlocked
+                ? `<div class="pockets-hint" style="font-style:italic;margin-bottom:12px;font-family:'Lora',serif;">${T('MainMenu.vehicles.spawnIndoors')}</div>`
+                : '';
             leftPageHTML = `
                 <div class="tools-pockets">
                     <div class="page-header-bar">
                         <div class="back-button" onclick="SceneManager._scene?.hideVehiclesPage?.()">${T('MainMenu.dynamics.back')}</div>
                         <h2 class="tools-title">${T('MainMenu.page.vehicles')}</h2>
                     </div>
+                    ${indoorsNote}
                     ${vehicleRows}
                 </div>`;
         } else {
@@ -1641,8 +1668,11 @@
             if ($gameMap.mapId() === 315) {
                 currentRegionName = T('MainMenu.place.worldWilderness');
             } else if ($gameMap.mapId() === 636) {
+                // The procedural map tracks the square's biome as `currentBiome`;
+                // the codex shows the name that biome declares for itself.
                 const procGenData = $gameSystem._procGenData;
-                currentRegionName = (procGenData && procGenData.currentBiomeName) ? procGenData.currentBiomeName : T('MainMenu.place.proceduralSector');
+                const biome = procGenData && procGenData.currentBiome;
+                currentRegionName = biome ? window.BiomeNames.display(biome) : T('MainMenu.place.proceduralSector');
             } else {
                 currentRegionName = ($dataMap && $dataMap.displayName) || T('MainMenu.place.localSector');
             }

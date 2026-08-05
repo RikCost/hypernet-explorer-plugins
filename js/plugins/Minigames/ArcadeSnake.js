@@ -40,7 +40,14 @@
             this.alive = true;
         }
         head() { return this.body[0]; }
-        init(points) { this.body = points.slice(); this.alive = true; }
+        // The direction must be re-seeded here: the game object is a reused
+        // singleton, so a snake that died facing its own tail would walk straight
+        // back into it on the very first step of the next run.
+        init(points, dir) {
+            this.body = points.slice();
+            this.dir = dir ? { x: dir.x, y: dir.y } : { x: 1, y: 0 };
+            this.alive = true;
+        }
         move(next) { this.body.unshift(next); this.body.pop(); }
         grow(next) { this.body.unshift(next); }
     }
@@ -92,8 +99,8 @@
             this.spawnPowerup();
             const cx = Math.floor(GRID_WIDTH / 2);
             const cy = Math.floor(GRID_HEIGHT / 2);
-            this.player.init([{ x: cx, y: cy }, { x: cx - 1, y: cy }]);
-            this.competitor.init([{ x: 1, y: 1 }, { x: 0, y: 1 }]);
+            this.player.init([{ x: cx, y: cy }, { x: cx - 1, y: cy }], { x: 1, y: 0 });
+            this.competitor.init([{ x: 1, y: 1 }, { x: 0, y: 1 }], { x: 1, y: 0 });
             this.stop(); // ensure no stale ticker from a previous run
             Graphics.app.ticker.add(this._boundUpdate);
             this._running = true;
@@ -151,7 +158,7 @@
             if (this.awaitRespawn) {
                 this.respawnTimer += dt;
                 if (this.respawnTimer >= RESPAWN_DELAY) {
-                    this.competitor.init([{ x: 1, y: 1 }, { x: 0, y: 1 }]);
+                    this.competitor.init([{ x: 1, y: 1 }, { x: 0, y: 1 }], { x: 1, y: 0 });
                     this.awaitRespawn = false;
                     this.respawnTimer = 0;
                 }

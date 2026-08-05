@@ -161,6 +161,7 @@
   },
   "vehicles": {
     "spawn": "Evoca",
+    "spawnIndoors": "Solo la bici può essere evocata al chiuso. Per gli altri esci all'aperto.",
     "noFuelNeeded": "Non richiede carburante",
     "none": "Nessun veicolo posseduto. Procurati l'oggetto di richiamo di un veicolo per aggiungerlo qui."
   },

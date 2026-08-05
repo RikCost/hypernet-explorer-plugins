@@ -551,6 +551,46 @@
     }
   };
 
+  //=============================================================================
+  // Scene_Map - the court owns the input while it is sitting
+  //=============================================================================
+  // Escape, the pad's cancel/menu button and a right click all call the map
+  // menu, and the parchment menu adopts whatever #menu-container it finds on
+  // the page. During a hearing that container IS the courtroom, so the menu
+  // took the transcript and the choice panel with it and the trial played on
+  // blind: every line went past unseen, and a choice with no panel to draw
+  // answered its own question. A court in session is marked in the DOM, and
+  // while that mark is there the menu cannot be called at all. The mark goes
+  // with the node, so a hearing that ends badly cannot leave the menu locked.
+  let courtNode = null;
+  function markCourt(el) {
+    courtNode = el;
+    el.dataset.erisCourt = '1';
+  }
+  // `isConnected` is what makes the mark self-clearing: once the page is off the
+  // document the court is not sitting, however the hearing ended.
+  function courtIsSitting() {
+    return !!(courtNode && courtNode.isConnected);
+  }
+
+  const _Scene_Map_isMenuCalled = Scene_Map.prototype.isMenuCalled;
+  Scene_Map.prototype.isMenuCalled = function () {
+    return courtIsSitting() ? false : _Scene_Map_isMenuCalled.call(this);
+  };
+
+  const _Scene_Map_isMenuEnabled = Scene_Map.prototype.isMenuEnabled;
+  Scene_Map.prototype.isMenuEnabled = function () {
+    return courtIsSitting() ? false : _Scene_Map_isMenuEnabled.call(this);
+  };
+
+  // Every way in eventually goes through here (Tab, the pad, a right click), so
+  // the door is barred at the door itself rather than at each key.
+  const _Scene_Map_callMenu = Scene_Map.prototype.callMenu;
+  Scene_Map.prototype.callMenu = function () {
+    if (courtIsSitting()) return;
+    _Scene_Map_callMenu.call(this);
+  };
+
   const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
     _Scene_Map_onMapLoaded.call(this);
@@ -1174,22 +1214,34 @@
   // the brief's DOM page: the player picks the person they will meet on the
   // street, not a portrait invented for a menu. Big (!$) sheets are 3x4, normal
   // ones pack eight characters into a 12x8 grid.
-  function lawyerSpriteStyle(characterName, characterIndex = 0, size = 64) {
-    if (!characterName) return "";
-    const isBig = ImageManager.isBigCharacter(characterName);
-    const url = `img/characters/${characterName}.png`;
-    const pattern = 1;      // standing, middle frame
-    const directionRow = 0; // facing the player
-    if (isBig) {
-      return `background-image:url('${url}');background-position:${(pattern / 2) * 100}% ${(directionRow / 3) * 100}%;` +
-        `background-size:300% 400%;width:${size}px;height:${size}px;image-rendering:pixelated;`;
-    }
-    const col = characterIndex % 4;
-    const row = Math.floor(characterIndex / 4);
-    const fx = col * 3 + pattern;
-    const fy = row * 4 + directionRow;
-    return `background-image:url('${url}');background-position:${(fx / 11) * 100}% ${(fy / 7) * 100}%;` +
-      `background-size:1200% 800%;width:${size}px;height:${size}px;image-rendering:pixelated;`;
+  //
+  // It is drawn onto a canvas rather than stretched as a CSS background: a sheet
+  // cell is only square by convention, and forcing one into a square box
+  // squashed every sprite that was not. The frame is fitted into the box at its
+  // own proportions and centred, the same way the menu portraits are.
+  function paintLawyerSprite(canvas, characterName, characterIndex = 0) {
+    if (!canvas || !characterName) return;
+    const bitmap = ImageManager.loadCharacter(characterName);
+    const draw = () => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx || !bitmap.width || !bitmap.height) return;
+      ctx.imageSmoothingEnabled = false;
+      const isBig = ImageManager.isBigCharacter(characterName);
+      const pw = bitmap.width / (isBig ? 3 : 12);
+      const ph = bitmap.height / (isBig ? 4 : 8);
+      const blockX = isBig ? 0 : (characterIndex % 4) * 3;
+      const blockY = isBig ? 0 : Math.floor(characterIndex / 4) * 4;
+      const sx = (blockX + 1) * pw; // standing, middle frame
+      const sy = blockY * ph;       // facing the player
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const fit = Math.min(canvas.width / pw, canvas.height / ph);
+      const dw = pw * fit;
+      const dh = ph * fit;
+      ctx.drawImage(bitmap.canvas, sx, sy, pw, ph,
+        (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+    };
+    if (bitmap.isReady()) draw();
+    else bitmap.addLoadListener(draw);
   }
 
   // How much argument is actually being carried, 0..1. Stats do most of it,
@@ -1309,6 +1361,154 @@
   const LAWYER_ERIS_REPLIES = () => trialBank('ErisTrial.lawyerErisReplies');
 
   //=============================================================================
+  // Advancing the hearing, message by message
+  //=============================================================================
+  // Cancel (Escape, the pad's B button, a right click) does not skip anything:
+  // it hands the pace over to the court. Auto-play closes one message after
+  // another on a timer, so every line is still spoken into the transcript
+  // exactly as if the player had pressed on, and it gives the reins back the
+  // moment a question is asked or the player presses anything themselves.
+  //
+  // Both benches use this: the ordinary hearing and the one where the player
+  // wears the robe.
+  const AUTO_BASE_MS = 190;
+  const AUTO_PER_CHAR_MS = 7;
+  const AUTO_MAX_MS = 900;
+
+  // Long lines hold the page longer than short ones, so an auto-played hearing
+  // still reads as a hearing rather than a scroll.
+  function autoAdvanceDelay(trial) {
+    const log = trial._dialogueLog;
+    const last = log && log.length ? log[log.length - 1] : null;
+    const chars = last ? String(last.text).length : 0;
+    return Math.min(AUTO_MAX_MS, AUTO_BASE_MS + chars * AUTO_PER_CHAR_MS);
+  }
+
+  // Escape and the pad's cancel button both read as 'cancel' through Input;
+  // the right mouse button arrives as a TouchInput cancel. Polled in one place
+  // so a single press can only ever be counted once.
+  function cancelPressed() {
+    return Input.isTriggered('cancel') || TouchInput.isCancelled();
+  }
+
+  function waitForAdvance(trial, minReadMs = 260) {
+    const log = trial._ensureBook();
+    let hint = null;
+    if (log) {
+      hint = document.createElement('div');
+      hint.className = 'eris-continue-hint';
+      log.appendChild(hint);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    return new Promise(resolve => {
+      const advanceKeys = ['Enter', 'NumpadEnter', 'Space'];
+      let readyAt = performance.now() + minReadMs;
+      let autoAt = trial._autoPlay ? performance.now() + autoAdvanceDelay(trial) : 0;
+      let armed = false;
+      let active = true;
+
+      const paintHint = () => {
+        if (!hint) return;
+        hint.classList.toggle('auto', !!trial._autoPlay);
+        if (trial._autoPlay) {
+          hint.textContent = T('ErisTrial.line.autoPlaying');
+          hint.classList.add('ready');
+        } else {
+          hint.textContent = armed
+            ? `${T('ErisTrial.line.pressEnterToContinue')}   ${T('ErisTrial.line.cancelToAutoPlay')}`
+            : T('ErisTrial.line.pressEnterToContinue');
+          hint.classList.toggle('ready', armed);
+        }
+      };
+
+      const done = () => {
+        active = false;
+        document.removeEventListener('keydown', kh);
+        if (log) log.removeEventListener('click', ch);
+        if (hint && hint.parentNode) hint.parentNode.removeChild(hint);
+        // Drop the press so the next wait or choice does not inherit it.
+        Input.clear();
+        resolve();
+      };
+
+      const startAuto = () => {
+        trial._autoPlay = true;
+        autoAt = performance.now() + autoAdvanceDelay(trial);
+        SoundManager.playCursor();
+        paintHint();
+      };
+
+      // Taking the pace back leaves the player on the line they are reading,
+      // with the usual read gate in front of them.
+      const stopAuto = () => {
+        trial._autoPlay = false;
+        armed = false;
+        readyAt = performance.now() + 200;
+        paintHint();
+      };
+
+      const kh = (e) => {
+        if (!armed || e.repeat || trial._autoPlay) return;
+        if (advanceKeys.includes(e.code)) { e.preventDefault(); SoundManager.playOk(); done(); }
+      };
+      // The whole transcript is the continue button, the prompt under the
+      // newest line included.
+      const ch = () => {
+        if (trial._autoPlay) { stopAuto(); SoundManager.playOk(); done(); return; }
+        if (armed) { SoundManager.playOk(); done(); }
+      };
+      document.addEventListener('keydown', kh);
+      if (log) log.addEventListener('click', ch);
+      paintHint();
+
+      const poll = () => {
+        if (!active) return;
+
+        if (trial._autoPlay) {
+          // Cancel again stops the playback; pressing on takes the line AND
+          // the pace back.
+          if (cancelPressed()) {
+            stopAuto();
+          } else if (Input.isTriggered('ok')) {
+            stopAuto();
+            SoundManager.playOk();
+            done();
+            return;
+          } else if (performance.now() >= autoAt) {
+            done();
+            return;
+          }
+          requestAnimationFrame(poll);
+          return;
+        }
+
+        // Cancel plays the rest of the hearing out; it is offered before the
+        // read gate, since it is not an answer to anything.
+        if (cancelPressed()) {
+          startAuto();
+          requestAnimationFrame(poll);
+          return;
+        }
+
+        if (!armed) {
+          const held = Input.isPressed('ok') || Input.isPressed('down') || Input.isPressed('right');
+          if (!held && performance.now() >= readyAt) {
+            armed = true;
+            paintHint();
+          }
+        } else if (Input.isTriggered('ok') || Input.isTriggered('down') || Input.isTriggered('right')) {
+          SoundManager.playOk();
+          done();
+          return;
+        }
+        requestAnimationFrame(poll);
+      };
+      poll();
+    });
+  }
+
+  //=============================================================================
   // ErisTrial Class
   //=============================================================================
   class ErisTrial {
@@ -1324,6 +1524,8 @@
       this._container = null;
       this._dialogueLog = [];
       this._updateInterval = null;
+      // Cancel plays the hearing out on its own until the next question.
+      this._autoPlay = false;
 
       // Who is actually in the dock. Bubba outranks Em: the grudge she tries Em
       // for is about him, and with him standing there she cannot perform any of
@@ -1488,6 +1690,7 @@
       this._dialogueLog = [];
       this._container = document.createElement('div');
       this._container.id = 'menu-container';
+      markCourt(this._container);
       document.body.appendChild(this._container);
       this._renderBook();
       this._updateInterval = setInterval(() => this._updateTrialUI(), 500);
@@ -1578,75 +1781,72 @@
       }
     }
 
-    _waitForAdvance() {
-      return new Promise(resolve => {
-        let active = true;
-        const done = () => {
-          active = false;
-          document.removeEventListener('keydown', kh);
-          const log = document.getElementById('eris-log');
-          if (log) log.removeEventListener('click', ch);
-          resolve();
-        };
-        const kh = (e) => {
-          if (['Enter','Space','ArrowDown','ArrowRight'].includes(e.code)) { SoundManager.playOk(); done(); }
-        };
-        const ch = () => { SoundManager.playOk(); done(); };
-        document.addEventListener('keydown', kh);
-        const log = document.getElementById('eris-log');
-        if (log) log.addEventListener('click', ch);
+    // The transcript is the record, not the screen. If something has taken the
+    // page away underneath the hearing, draw it again from the log rather than
+    // play the rest of the trial out to nobody.
+    _ensureBook() {
+      let log = document.getElementById('eris-log');
+      if (log) return log;
+      if (!this._container) return null;
+      if (!this._container.parentNode) document.body.appendChild(this._container);
+      this._renderBook();
+      return document.getElementById('eris-log');
+    }
 
-        // Gamepad/Controller & RPG Maker Input Polling Loop
-        const poll = () => {
-          if (!active) return;
-          if (Input.isTriggered('ok') || Input.isTriggered('down') || Input.isTriggered('right')) {
-            SoundManager.playOk();
-            done();
-            return;
-          }
-          requestAnimationFrame(poll);
-        };
-        poll();
-      });
+    // Shows one message at a time and blocks until the player presses on, or
+    // until auto-play closes it for them.
+    _waitForAdvance(minReadMs = 260) {
+      return waitForAdvance(this, minReadMs);
     }
 
     _showChoicesDOM(rawChoices) {
       // Choices carry alternations too, so the defendant never reads back the
       // same line twice either.
       const choices = rawChoices.map(vary);
+      // A question is where auto-play always hands the hearing back.
+      this._autoPlay = false;
       return new Promise(resolve => {
-        const panel = document.getElementById('eris-choices');
+        // A question with nowhere to draw its answers used to answer itself.
+        let panel = document.getElementById('eris-choices');
+        if (!panel) {
+          this._ensureBook();
+          panel = document.getElementById('eris-choices');
+        }
         if (!panel) { resolve(0); return; }
         panel.innerHTML = '';
         let sel = 0;
         let active = true;
+        // The press that closed the last message must not also answer the
+        // question it asked.
+        let armed = false;
+        const readyAt = performance.now() + 200;
         const btns = choices.map((text, i) => {
           const btn = document.createElement('div');
           btn.className = 'eris-choice-btn' + (i === 0 ? ' selected' : '');
           btn.textContent = text;
-          btn.addEventListener('click', () => finish(i));
+          btn.addEventListener('click', () => { if (armed) finish(i); });
           panel.appendChild(btn);
           return btn;
         });
         const upd = () => btns.forEach((b, i) => b.classList.toggle('selected', i === sel));
-        const kh = (e) => {
-          if (e.code === 'ArrowDown' || e.code === 'ArrowRight') { sel = (sel + 1) % btns.length; upd(); SoundManager.playCursor(); }
-          else if (e.code === 'ArrowUp' || e.code === 'ArrowLeft') { sel = (sel - 1 + btns.length) % btns.length; upd(); SoundManager.playCursor(); }
-          else if (e.code === 'Enter' || e.code === 'Space') { finish(sel); }
-        };
         const finish = (idx) => {
           active = false;
-          document.removeEventListener('keydown', kh);
           this._addDialogue(choices[idx], true);
           panel.innerHTML = '';
           SoundManager.playOk();
+          Input.clear();
           resolve(idx);
         };
-        document.addEventListener('keydown', kh);
 
-        // Gamepad/Controller & RPG Maker Input Polling Loop
+        // Keyboard and pad both arrive through Input alone: a DOM keydown
+        // handler beside this poll moved the cursor twice per press.
         const poll = () => {
           if (!active) return;
+          if (!armed) {
+            if (!Input.isPressed('ok') && performance.now() >= readyAt) armed = true;
+            requestAnimationFrame(poll);
+            return;
+          }
           if (Input.isTriggered('down') || Input.isRepeated('down') || Input.isTriggered('right') || Input.isRepeated('right')) {
             sel = (sel + 1) % btns.length;
             upd();
@@ -1755,7 +1955,7 @@
       const affordable = option.fee <= gold;
 
       const sprite = option.characterName
-        ? `<div class="eris-lawyer-sprite" style="${lawyerSpriteStyle(option.characterName, option.characterIndex, 64)}"></div>`
+        ? `<canvas class="eris-lawyer-sprite" width="64" height="64" data-lawyer-sprite="1"></canvas>`
         : `<div class="eris-lawyer-sprite eris-lawyer-sprite-empty"></div>`;
 
       const lawLevel = lawLevelOf(option);
@@ -1819,58 +2019,66 @@
 
       const container = document.createElement("div");
       container.id = "menu-container";
+      markCourt(container);
       document.body.appendChild(container);
 
       const esc = window.NPCShared ? window.NPCShared.escapeHtml : ((s) => String(s ?? ""));
       const gold = () => ($gameParty ? $gameParty.gold() : 0);
       let sel = 0;
 
+      // The spread is built once. Moving the cursor only marks the new row and
+      // rewrites the dossier on the right page: rebuilding the whole page made
+      // it flash on every keypress and threw away the row nodes (and their
+      // listeners) mid-hover.
+      const listHTML = options.map((o, i) => {
+        const cost = o.kind === "npc" ? this.formatEuros(o.fee) : (T('ErisTrial.line.free'));
+        const poor = o.kind === "npc" && o.fee > gold();
+        return `<div class="eris-choice-btn eris-lawyer-row${poor ? " eris-row-poor" : ""}" data-index="${i}">
+                  <span>${esc(o.name)}</span><span class="eris-lawyer-cost">${cost}</span>
+                </div>`;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="book-spread">
+          <div class="left-page" style="justify-content:flex-start;">
+            <h2 class="title">${T('ErisTrial.line.theDefence')}</h2>
+            <div class="eris-brief-note">${T('ErisTrial.line.erisSCourtHasNever')}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
+              <span class="eris-mood-badge">${moodIconHTML(this.mood)} ${this.mood}</span>
+              <span class="eris-lawyer-cost">${T('ErisTrial.line.funds')}: ${this.formatEuros(gold())}</span>
+            </div>
+            <div class="eris-choices-panel" id="eris-lawyer-list">${listHTML}</div>
+          </div>
+          <div class="right-page" style="justify-content:flex-start;" id="eris-lawyer-card"></div>
+        </div>`;
+
+      const rows = Array.from(container.querySelectorAll(".eris-lawyer-row"));
+      const cardPage = container.querySelector("#eris-lawyer-card");
+
       const render = () => {
-        const listHTML = options.map((o, i) => {
-          const cost = o.kind === "npc" ? this.formatEuros(o.fee) : (T('ErisTrial.line.free'));
-          const poor = o.kind === "npc" && o.fee > gold();
-          return `<div class="eris-choice-btn eris-lawyer-row${i === sel ? " selected" : ""}${poor ? " eris-row-poor" : ""}" data-index="${i}">
-                    <span>${esc(o.name)}</span><span class="eris-lawyer-cost">${cost}</span>
-                  </div>`;
-        }).join("");
-
-        container.innerHTML = `
-          <div class="book-spread">
-            <div class="left-page" style="justify-content:flex-start;">
-              <h2 class="title">${T('ErisTrial.line.theDefence')}</h2>
-              <div class="eris-brief-note">${T('ErisTrial.line.erisSCourtHasNever')}</div>
-              <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
-                <span class="eris-mood-badge">${moodIconHTML(this.mood)} ${this.mood}</span>
-                <span class="eris-lawyer-cost">${T('ErisTrial.line.funds')}: ${this.formatEuros(gold())}</span>
-              </div>
-              <div class="eris-choices-panel" id="eris-lawyer-list">${listHTML}</div>
-            </div>
-            <div class="right-page" style="justify-content:flex-start;" id="eris-lawyer-card">
-              ${this._lawyerCardHTML(options[sel])}
-            </div>
-          </div>`;
-
-        container.querySelectorAll(".eris-lawyer-row").forEach(el => {
-          // render() replaces these nodes, so the element under the cursor
-          // re-fires mouseenter immediately: only redraw on a real change, or
-          // hovering one row loops forever.
-          el.addEventListener("mouseenter", () => {
-            const i = Number(el.dataset.index);
-            if (i === sel) return;
-            sel = i;
-            render();
-          });
-          el.addEventListener("click", () => { sel = Number(el.dataset.index); confirm(); });
-        });
+        rows.forEach((el, i) => el.classList.toggle("selected", i === sel));
+        cardPage.innerHTML = this._lawyerCardHTML(options[sel]);
+        paintLawyerSprite(cardPage.querySelector("canvas[data-lawyer-sprite]"),
+          options[sel].characterName, options[sel].characterIndex || 0);
       };
+
+      rows.forEach(el => {
+        el.addEventListener("mouseenter", () => {
+          const i = Number(el.dataset.index);
+          if (i === sel) return;
+          sel = i;
+          render();
+        });
+        el.addEventListener("click", () => { sel = Number(el.dataset.index); confirm(); });
+      });
 
       let done = null;
       const finished = new Promise(resolve => { done = resolve; });
       let active = true;
 
       const confirm = () => {
-        // The DOM keydown handler and the Input poll can both see the same
-        // press; the fee must only ever be paid once.
+        // The mouse and the Input poll can both reach here; the fee must only
+        // ever be paid once.
         if (!active) return;
         const option = options[sel];
         if (option.kind === "npc" && option.fee > gold()) {
@@ -1878,8 +2086,8 @@
           return;
         }
         active = false;
-        document.removeEventListener("keydown", onKey);
         SoundManager.playOk();
+        Input.clear();
         if (option.kind === "npc" && option.fee > 0) $gameParty.loseGold(option.fee);
         // The empty bench is kept as an option object rather than nulled: a
         // defendant with trained Law still argues their own case, and the maths
@@ -1897,19 +2105,25 @@
         render();
       };
 
-      const onKey = (e) => {
-        if (e.code === "ArrowDown" || e.code === "ArrowRight") move(1);
-        else if (e.code === "ArrowUp" || e.code === "ArrowLeft") move(-1);
-        else if (e.code === "Enter" || e.code === "Space") confirm();
-      };
-
       render();
-      document.addEventListener("keydown", onKey);
-
+      // Keyboard and pad both arrive through Input alone. A DOM keydown handler
+      // used to run alongside this poll, so one arrow press moved the cursor
+      // twice: with two names on the bench that is a move back to where it
+      // started, which read as the menu ignoring the key.
+      Input.clear();
+      let armed = false;
       const poll = () => {
         if (!active) return;
-        if (Input.isTriggered("down") || Input.isRepeated("down")) move(1);
-        else if (Input.isTriggered("up") || Input.isRepeated("up")) move(-1);
+        if (!armed) {
+          // The same press that opened the brief must not also retain counsel.
+          if (!Input.isPressed("ok")) armed = true;
+          requestAnimationFrame(poll);
+          return;
+        }
+        if (Input.isTriggered("down") || Input.isRepeated("down") ||
+          Input.isTriggered("right") || Input.isRepeated("right")) move(1);
+        else if (Input.isTriggered("up") || Input.isRepeated("up") ||
+          Input.isTriggered("left") || Input.isRepeated("left")) move(-1);
         else if (Input.isTriggered("ok")) { confirm(); return; }
         requestAnimationFrame(poll);
       };
@@ -3167,6 +3381,9 @@
 
       this._container = null;
       this._dialogueLog = [];
+      // Cancel plays the hearing out on its own until the next question, on the
+      // bench as well as in the dock.
+      this._autoPlay = false;
       this._readSignal = 0;   // > 0 reads as evasive, < 0 as composed
       this._pressCount = 0;
     }
@@ -3212,6 +3429,7 @@
       this._dialogueLog = [];
       this._container = document.createElement('div');
       this._container.id = 'menu-container';
+      markCourt(this._container);
       document.body.appendChild(this._container);
       this._renderBook();
     }
@@ -3303,68 +3521,35 @@
       }
     }
 
-    // Shows one message at a time and blocks until the player deliberately
-    // presses on. The advance only arms once every advance input has been
-    // released and a short minimum read time has passed, so a single keypress
-    // can never skip several lines at once.
+    // The transcript is the record, not the screen: if something has taken the
+    // page away underneath the hearing, draw it again from the log.
+    _ensureBook() {
+      let log = document.getElementById('eris-log');
+      if (log) return log;
+      if (!this._container) return null;
+      if (!this._container.parentNode) document.body.appendChild(this._container);
+      this._renderBook();
+      return document.getElementById('eris-log');
+    }
+
+    // Shows one message at a time and blocks until the player presses on, or
+    // until auto-play closes it for them.
     _waitForAdvance(minReadMs = 260) {
-      const log = document.getElementById('eris-log');
-      let hint = null;
-      if (log) {
-        hint = document.createElement('div');
-        hint.className = 'eris-continue-hint';
-        hint.textContent = T('ErisTrial.line.pressEnterToContinue');
-        log.appendChild(hint);
-        log.scrollTop = log.scrollHeight;
-      }
-
-      return new Promise(resolve => {
-        const readyAt = performance.now() + minReadMs;
-        const advanceKeys = ['Enter', 'NumpadEnter', 'Space'];
-        let armed = false;
-        let active = true;
-
-        const done = () => {
-          active = false;
-          document.removeEventListener('keydown', kh);
-          if (log) log.removeEventListener('click', ch);
-          if (hint && hint.parentNode) hint.parentNode.removeChild(hint);
-          // Drop the press so the next wait/choice does not inherit it.
-          Input.clear();
-          resolve();
-        };
-        const kh = (e) => {
-          if (!armed || e.repeat) return;
-          if (advanceKeys.includes(e.code)) { e.preventDefault(); SoundManager.playOk(); done(); }
-        };
-        const ch = () => { if (armed) { SoundManager.playOk(); done(); } };
-        document.addEventListener('keydown', kh);
-        if (log) log.addEventListener('click', ch);
-
-        const poll = () => {
-          if (!active) return;
-          if (!armed) {
-            const held = Input.isPressed('ok') || Input.isPressed('down') || Input.isPressed('right');
-            if (!held && performance.now() >= readyAt) {
-              armed = true;
-              if (hint) hint.classList.add('ready');
-            }
-          } else if (Input.isTriggered('ok')) {
-            SoundManager.playOk();
-            done();
-            return;
-          }
-          requestAnimationFrame(poll);
-        };
-        poll();
-      });
+      return waitForAdvance(this, minReadMs);
     }
 
     // choices: array of strings. When `echo` is false the picked line is not
     // logged as spoken dialogue (used for menu-like picks such as the mood).
     _showChoicesDOM(choices, echo = true) {
+      // A question is where auto-play always hands the hearing back.
+      this._autoPlay = false;
       return new Promise(resolve => {
-        const panel = document.getElementById('eris-choices');
+        // A question with nowhere to draw its answers used to answer itself.
+        let panel = document.getElementById('eris-choices');
+        if (!panel) {
+          this._ensureBook();
+          panel = document.getElementById('eris-choices');
+        }
         if (!panel) { resolve(0); return; }
         panel.innerHTML = '';
         let sel = 0;
@@ -3380,23 +3565,17 @@
           return btn;
         });
         const upd = () => btns.forEach((b, i) => b.classList.toggle('selected', i === sel));
-        const kh = (e) => {
-          if (e.repeat && (e.code === 'Enter' || e.code === 'Space')) return;
-          if (e.code === 'ArrowDown' || e.code === 'ArrowRight') { sel = (sel + 1) % btns.length; upd(); SoundManager.playCursor(); }
-          else if (e.code === 'ArrowUp' || e.code === 'ArrowLeft') { sel = (sel - 1 + btns.length) % btns.length; upd(); SoundManager.playCursor(); }
-          else if (e.code === 'Enter' || e.code === 'Space') { if (armed) finish(sel); }
-        };
         const finish = (idx) => {
           active = false;
-          document.removeEventListener('keydown', kh);
           if (echo) this._addDialogue(choices[idx], 'eris');
           panel.innerHTML = '';
           SoundManager.playOk();
           Input.clear();
           resolve(idx);
         };
-        document.addEventListener('keydown', kh);
 
+        // Keyboard and pad both arrive through Input alone: a DOM keydown
+        // handler beside this poll moved the cursor twice per press.
         const poll = () => {
           if (!active) return;
           if (!armed) {

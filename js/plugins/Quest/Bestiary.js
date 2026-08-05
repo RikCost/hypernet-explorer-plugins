@@ -935,7 +935,7 @@
                                 </div>
                                 <div class="ecology-row">
                                     <span class="ecology-lbl">${T('Bestiary.naturalHabitat')}</span>
-                                    <span class="ecology-val">${noteData.biome || T('Bestiary.proceduralWorld')}</span>
+                                    <span class="ecology-val">${window.BiomeNames.displayList(noteData.biome) || T('Bestiary.proceduralWorld')}</span>
                                 </div>
                                 <div class="ecology-row">
                                     <span class="ecology-lbl">${T('Bestiary.commonTerritories')}</span>

@@ -60,14 +60,19 @@
  * says so.
  *
  * How an update runs
+ *   Switching to a build is a single action. The player highlights it and
+ *   confirms once, on the build itself or on the one button in the action list,
+ *   and everything below happens without another press.
  *   1. The branch history is read from the GitHub API and the player picks a
- *      build. The newest one is picked and checked on opening the screen.
+ *      build. The newest one is picked and compared on opening the screen, so
+ *      the button already knows how large the switch will be.
  *   2. Every file in that build is compared with the local one by git blob
  *      hash, so only files that really differ are downloaded, and only those
  *      count toward the download size. A text file whose only difference is
  *      CRLF line endings holds the same content as the LF blob the repository
  *      stores, so it is left alone as well. Going back to an older build works
- *      the same way, it just replaces newer files with the older ones.
+ *      the same way, it just replaces newer files with the older ones. A build
+ *      already compared skips this step and goes straight to the download.
  *   3. All of them are fetched into save/updater/tmp and verified against the
  *      hash the repository declared.
  *   4. Only once every file is downloaded and verified are they moved into
@@ -75,6 +80,10 @@
  *      first, and the three most recent backups are kept.
  *   5. The game must be restarted for the new files to load. The updater
  *      offers to do it.
+ *
+ *   A build that turns out to hold nothing this copy lacks stops after step 2
+ *   and says so, and "Check this build" still compares a build without touching
+ *   anything, for a player who wants to read the file list first.
  *
  * Nothing is ever deleted: files that exist here but not in the repository are
  * left alone, and so is everything under save/. Going back to an older build
@@ -104,7 +113,7 @@
  *   Up / Down / W / S  , move between builds or actions
  *   Right / D          , enter the action list
  *   Left / A           , back to the build list
- *   OK / Enter         , check the highlighted build or run the action
+ *   OK / Enter         , switch to the highlighted build, or run the action
  *   Cancel / Esc       , back to the title (aborts a running download)
  * ============================================================================
  */
@@ -1082,9 +1091,9 @@
             scene._wasdInput.up = scene._wasdInput.down = scene._wasdInput.left = scene._wasdInput.right = false;
 
             if (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled()) {
-                if (GameUpdater.isBusy()) {
+                if (scene._isWorking()) {
                     SoundManager.playCancel();
-                    GameUpdater.cancel();
+                    scene._cancelWork();
                 } else if (scene._section === 'actions') {
                     SoundManager.playCancel();
                     scene._section = 'builds';
@@ -1171,6 +1180,10 @@
             this._log          = [];
             this._progress     = null;
             this._status       = {};   // commit sha -> 'checking' | 'failed'
+            // A switch is a compare and a download back to back, so the screen
+            // stays busy across the gap between them.
+            this._working      = false;
+            this._cancelRequested = false;
             this._progressDirty = false;
             this._dom          = null; // the page, built once and then kept
             this._cache        = {};   // region key -> the markup already on screen
@@ -1237,6 +1250,17 @@
             return list[this._buildIndex];
         }
 
+        // The model is idle for a moment between the compare and the download
+        // of the same switch; to the player that is one running job.
+        _isWorking() {
+            return GameUpdater.isBusy() || this._working;
+        }
+
+        _cancelWork() {
+            this._cancelRequested = true;
+            GameUpdater.cancel();
+        }
+
         _buildStatus(commit) {
             const T = getT();
             if (!commit) return { text: T.unchecked, cls: 'gu-badge--idle' };
@@ -1252,12 +1276,14 @@
             return { text: T.upToDate, cls: 'gu-badge--ok' };
         }
 
+        // Switching to a build is one action: it compares the files and, when
+        // any of them differ, downloads and applies them without asking again.
         _actions() {
             const T = getT();
             const commit = this._selectedBuild();
             const plan = commit ? GameUpdater.plan(commit.sha) : null;
             const list = [];
-            if (GameUpdater.isBusy()) {
+            if (this._isWorking()) {
                 list.push({ key: 'cancel', label: T.actCancel });
                 return list;
             }
@@ -1266,12 +1292,24 @@
                 list.push({ key: 'history', label: T.actHistory });
                 return list;
             }
-            list.push({ key: 'check', label: T.actCheck });
-            if (DOWNLOADS_ENABLED && plan && plan.changed.length) {
+            // A build already known to match the files here has nothing to do,
+            // so the one button is only offered while there is work in it.
+            if (DOWNLOADS_ENABLED && !(plan && !plan.changed.length)) {
                 const isRollback = GameUpdater.indexOf(commit.sha) > 0;
                 const verb = isRollback ? T.actRollback : T.actInstall;
-                list.push({ key: 'install', label: fmt('%1 (%2)', verb, formatBytes(plan.bytes)) });
+                // The size is only known once the build has been compared; an
+                // unchecked one is switched to just the same, it simply cannot
+                // say beforehand how much of it will come down.
+                list.push({
+                    key: 'switch',
+                    label: (plan && plan.changed.length)
+                        ? fmt('%1 (%2)', verb, formatBytes(plan.bytes))
+                        : verb
+                });
             }
+            // Comparing without downloading stays available for a build nobody
+            // has looked at yet, so its file list can be read first.
+            if (!plan) list.push({ key: 'check', label: T.actCheck });
             if (!GameUpdater.historyExhausted()) {
                 list.push({ key: 'more', label: T.actMore });
             }
@@ -1303,26 +1341,19 @@
 
         // -- actions ---------------------------------------------------------
 
-        // OK on a build checks it; a build already checked hands over to the
-        // action list so the next press can install it.
+        // OK on a build switches the game to it: comparing, downloading and
+        // applying are one press, whether or not it has been checked before.
         _useSelectedBuild() {
             const commit = this._selectedBuild();
-            if (!isAvailable() || GameUpdater.isBusy() || !commit) return;
-            if (GameUpdater.plan(commit.sha)) {
-                this._section = 'actions';
-                this._actionIndex = 0;
-                SoundManager.playOk();
-                this._selectionChanged();
-                return;
-            }
-            this._runAction('check');
+            if (!isAvailable() || this._isWorking() || !commit) return;
+            this._runAction(DOWNLOADS_ENABLED ? 'switch' : 'check');
         }
 
         // `thenCheck` chains the first check onto the very first listing, so
         // opening the screen answers "is there a new build" on its own.
         _loadHistory(more, thenCheck) {
             const T = getT();
-            if (!isAvailable() || GameUpdater.isBusy()) return;
+            if (!isAvailable() || this._isWorking()) return;
             const before = GameUpdater.commits().length;
             this._progress = 0;
             this._refreshDOM();
@@ -1351,7 +1382,7 @@
 
             if (key === 'cancel') {
                 SoundManager.playCancel();
-                GameUpdater.cancel();
+                this._cancelWork();
                 return;
             }
             if (!isAvailable()) {
@@ -1360,7 +1391,7 @@
                 this._refreshDOM();
                 return;
             }
-            if (GameUpdater.isBusy()) return;
+            if (this._isWorking()) return;
 
             if (key === 'history' || key === 'more') {
                 SoundManager.playOk();
@@ -1396,7 +1427,7 @@
                     });
                 return;
             }
-            if (key === 'install') {
+            if (key === 'switch' || key === 'install') {
                 if (!DOWNLOADS_ENABLED) {
                     SoundManager.playBuzzer();
                     this._pushLog(T.downloadsOff);
@@ -1404,20 +1435,64 @@
                     return;
                 }
                 SoundManager.playOk();
-                this._progress = 0;
-                this._refreshDOM();
-                GameUpdater.install(sha, (info) => this._onProgress(info))
-                    .then(() => {
-                        this._progress = null;
-                        this._actionIndex = 0;
-                        this._refreshDOM();
-                    })
-                    .catch((err) => {
-                        this._progress = null;
-                        this._pushLog(fmt(T.logError, err.message));
-                        this._refreshDOM();
-                    });
+                this._runSwitch(sha);
             }
+        }
+
+        // The whole switch, in one press: compare the build with what is here,
+        // then download and apply whatever differs. A build already compared
+        // skips straight to the download, and one that holds nothing new simply
+        // reports so.
+        _runSwitch(sha) {
+            const T = getT();
+            const onProgress = (info) => this._onProgress(info);
+            const finish = () => {
+                this._working = false;
+                this._cancelRequested = false;
+                this._progress = null;
+                delete this._status[sha];
+                this._actionIndex = 0;
+                this._refreshDOM();
+            };
+
+            this._working = true;
+            this._cancelRequested = false;
+            this._status[sha] = 'checking';
+            this._progress = 0;
+            this._refreshDOM();
+
+            const known = GameUpdater.plan(sha);
+            const compared = known ? Promise.resolve(known) : GameUpdater.check(sha, onProgress);
+            compared
+                .then((plan) => {
+                    delete this._status[sha];
+                    if (this._cancelRequested) {
+                        this._pushLog(T.logCancel);
+                        return null;
+                    }
+                    // Nothing to fetch: the compare has already recorded this
+                    // build as the one running.
+                    if (!plan || !plan.changed.length) return null;
+                    this._progress = 0;
+                    this._refreshDOM();
+                    return GameUpdater.install(sha, onProgress);
+                })
+                .then(finish)
+                .catch((err) => {
+                    // A compare stopped by the player is not a failure: it is
+                    // simply unanswered, so the badge goes back to unchecked.
+                    const aborted = this._cancelRequested;
+                    // A build that never got compared has no answer to show, so
+                    // its badge says so; one that failed while downloading keeps
+                    // the answer the compare gave and reports the error in the log.
+                    if (!aborted && !GameUpdater.plan(sha)) this._status[sha] = 'failed';
+                    else delete this._status[sha];
+                    this._pushLog(aborted ? T.logCancel : fmt(T.logError, err.message));
+                    this._working = false;
+                    this._cancelRequested = false;
+                    this._progress = null;
+                    this._refreshDOM();
+                });
         }
 
         // -- HTML ------------------------------------------------------------
@@ -1486,7 +1561,7 @@
             if (back) {
                 back.addEventListener('click', () => {
                     SoundManager.playCancel();
-                    if (GameUpdater.isBusy()) GameUpdater.cancel();
+                    if (this._isWorking()) this._cancelWork();
                     else SceneManager.pop();
                 });
             }

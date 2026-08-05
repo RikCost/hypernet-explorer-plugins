@@ -1,5 +1,18 @@
 {
   "credits": "Riconoscimenti",
   "exit": "Esci",
-  "title": "Riconoscimenti del gioco"
+  "title": "Riconoscimenti del gioco",
+  "by": "di",
+  "hint": "Su/Giù o rotellina: scorri   OK: pausa   Annulla: indietro",
+  "sections": {
+    "team": "Squadra",
+    "localization": "Localizzazione",
+    "sprites": "Sprite e personaggi",
+    "tilesets": "Tileset",
+    "plugins": "Plugin e script",
+    "ui": "Interfaccia e animazioni",
+    "maps": "Mappe",
+    "music": "Musica",
+    "sound": "Effetti sonori"
+  }
 }

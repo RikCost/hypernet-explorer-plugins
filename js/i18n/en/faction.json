@@ -335,7 +335,7 @@
     },
     "esotericheavyindustries": {
       "name": "Esoteric Heavy Industries",
-      "description": "A massive and misterious conglomerate.",
+      "description": "A massive and mysterious conglomerate.",
       "troops": {
         "factoryworker": {
           "name": "Factory Worker"

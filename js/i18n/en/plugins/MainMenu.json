@@ -161,6 +161,7 @@
   },
   "vehicles": {
     "spawn": "Spawn",
+    "spawnIndoors": "Only the bike can be summoned indoors. Step outside for the rest.",
     "noFuelNeeded": "No fuel needed",
     "none": "No vehicles owned. Acquire a vehicle's summoning item to add it here."
   },

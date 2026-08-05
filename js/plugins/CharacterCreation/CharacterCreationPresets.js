@@ -34,6 +34,8 @@
  *   (proceduralHometown: "em")
  * - Dossier vehicles (vehicle: { key, mapId, x, y, worldX, worldY }) parked for
  *   their owner at creation time
+ * - Dossier skins (skins: [{ key, sprite, spriteIndex, busts }]), the alternate
+ *   looks a pre-made character can be played as, picked on the dossier page
  * - Preset CRUD operations (create, read, update, delete)
  * - Character creation completion tracking
  * - Preset selection UI (Window_CharacterPresets)
@@ -55,6 +57,9 @@
  * - window.CharacterPresets.getPresetSwitchIds()
  * - window.CharacterPresets.getPresetLore(preset)
  * - window.CharacterPresets.getPresetHometown(preset)
+ * - window.CharacterPresets.getPresetSkins(preset)
+ * - window.CharacterPresets.getPresetSkin(preset, index)
+ * - window.CharacterPresets.getPresetSkinLabel(skin)
  * - window.CharacterPresets.getEmBackstory()
  * - window.CharacterPresets.isEmPlaythrough()
  * - window.CharacterPresets.isBeastCrew()
@@ -75,6 +80,20 @@
   //=============================================================================
   // Default Character Presets Data
   //=============================================================================
+
+  // Some historical dossiers were drawn more than once: the same person in a
+  // second outfit, a second office, a second state of being. Those alternates
+  // are skins, picked on the dossier page before the character is taken, and a
+  // skin is a sprite and a bust that share one asset name (img/characters/Skab
+  // and img/busts). `key` is the label the skin reads by, resolved from
+  // CharPresets.skin.<key>; only the walk-cycle sheets qualify, since a skin is
+  // what the player then walks around as.
+  const skin = (key, asset) => ({
+    key,
+    sprite: "Skab/!$" + asset,
+    spriteIndex: 0,
+    busts: asset,
+  });
 
   // i18n-ignore-start: proper names, nation keys into HistorySimulator_COUNTRIES
   // and asset ids. Each dossier's prose lives in CharPresets.lore.<id>.
@@ -217,6 +236,12 @@
         { id: 218, level: 2 }, // Public Speaking
       ],
       busts: "Andreotti",
+      skins: [
+        skin("statesman", "Andreotti"),
+        skin("arcane", "AndreottiArcane"),
+        skin("pontiff", "AndreottiPope"),
+        skin("seated", "AndreottiSitting"),
+      ],
     },
     {
       id: 5,
@@ -246,6 +271,11 @@
         { id: 429, level: 3 }, // Radio Astronomy
       ],
       busts: "MargheritaHack",
+      skins: [
+        skin("astronomer", "MargheritaHack"),
+        skin("eva", "MargheritaHackEVA"),
+        skin("flightSuit", "MargheritaHackSpace"),
+      ],
     },
     {
       id: 6,
@@ -395,6 +425,10 @@
         { id: 258, level: 3 }, // Statistics
       ],
       busts: "MarioDraghi",
+      skins: [
+        skin("banker", "MarioDraghi"),
+        skin("ascended", "MarioDraghiAscended"),
+      ],
     },
     {
       id: 11,
@@ -455,6 +489,10 @@
         { id: 634, level: 2 }, // Immunology
       ],
       busts: "RitaLeviMontalcini",
+      skins: [
+        skin("senator", "RitaLeviMontalcini"),
+        skin("labCoat", "RitaLeviMontalciniScientist"),
+      ],
     },
     {
       id: 13,
@@ -485,6 +523,11 @@
         { id: 137, level: 3 }, // Hypnosis
       ],
       busts: "AleisterCrowley",
+      skins: [
+        skin("magus", "AleisterCrowley"),
+        // Asset name keeps the misspelling both files were shipped with.
+        skin("arcane", "AleisteirCrowleyArcane"),
+      ],
     },
     {
       id: 14,
@@ -916,6 +959,54 @@
     return getCharacterPresets().filter(
       (preset) => preset.endless || used.indexOf(preset.id) < 0
     );
+  }
+
+  //=============================================================================
+  // Dossier skins (alternate looks)
+  //=============================================================================
+  // A dossier without a `skins` list still has exactly one look, built here out
+  // of the fields it already carries, so every consumer can treat presets
+  // uniformly instead of branching on whether alternates exist. The first entry
+  // is always the dossier's own sprite and bust.
+
+  /**
+   * Every look a dossier can be played as.
+   * @param {object} preset - Preset dossier
+   * @returns {Array<{key: string, sprite: string, spriteIndex: number, busts: string}>}
+   */
+  function getPresetSkins(preset) {
+    if (!preset) return [];
+    if (Array.isArray(preset.skins) && preset.skins.length > 0) return preset.skins;
+    return [{
+      key: "",
+      sprite: preset.sprite,
+      spriteIndex: preset.spriteIndex || 0,
+      busts: preset.busts,
+    }];
+  }
+
+  /**
+   * One look of a dossier, by position. Out-of-range indices wrap back to the
+   * dossier's own look rather than returning nothing.
+   * @param {object} preset - Preset dossier
+   * @param {number} index - Position in the skin list
+   * @returns {object|null} Skin record
+   */
+  function getPresetSkin(preset, index) {
+    const skins = getPresetSkins(preset);
+    if (skins.length === 0) return null;
+    const i = Number(index) || 0;
+    return skins[(i % skins.length + skins.length) % skins.length];
+  }
+
+  /**
+   * What a skin reads as on the dossier page.
+   * @param {object} skinData - Skin record from getPresetSkins
+   * @returns {string} Localized label
+   */
+  function getPresetSkinLabel(skinData) {
+    if (!skinData || !skinData.key) return "";
+    return T("CharPresets.skin." + skinData.key);
   }
 
   //=============================================================================
@@ -1704,15 +1795,24 @@
     initialize(rect) {
       // Only presets still free in this world; a played one never comes back.
       this._data = getAvailableCharacterPresets();
+      // Which look each dossier is currently being shown in, kept per preset id
+      // so moving the cursor away and back keeps the skin the player chose.
+      // Set before super, which draws, and drawing reads it.
+      this._skinIndexById = {};
+      this._skinHandler = null;
       super.initialize(rect);
 
-      // Preload all character sprites
+      // Preload all character sprites, alternate looks included: the DOM
+      // dossier sizes a big-character frame from the loaded bitmap, so a skin
+      // nobody has loaded yet would render at the wrong aspect ratio.
       this._loadedBitmaps = [];
       this._data.forEach((preset, index) => {
-        const bitmap = ImageManager.loadCharacter(preset.sprite);
-        this._loadedBitmaps[index] = bitmap;
-        bitmap.addLoadListener(() => {
-          this.refresh();
+        getPresetSkins(preset).forEach((skinData, skinIdx) => {
+          const bitmap = ImageManager.loadCharacter(skinData.sprite);
+          if (skinIdx === 0) this._loadedBitmaps[index] = bitmap;
+          bitmap.addLoadListener(() => {
+            this.refresh();
+          });
         });
       });
 
@@ -1738,10 +1838,70 @@
       return this._data && this._data[index] ? this._data[index] : null;
     }
 
+    //-------------------------------------------------------------------------
+    // Skins: alternate looks for the dossier under the cursor
+    //-------------------------------------------------------------------------
+
+    /**
+     * Which look a dossier is currently being shown in.
+     * @param {number} [presetIndex] - Board position; defaults to the cursor
+     * @returns {number} Position in that dossier's skin list
+     */
+    skinIndex(presetIndex) {
+      const preset = this.itemAt(presetIndex === undefined ? this.index() : presetIndex);
+      if (!preset) return 0;
+      const stored = (this._skinIndexById || {})[preset.id] || 0;
+      const count = getPresetSkins(preset).length;
+      return count > 0 ? Math.min(stored, count - 1) : 0;
+    }
+
+    /**
+     * The look the highlighted dossier would be played as right now.
+     * @returns {object|null} Skin record
+     */
+    currentSkin() {
+      return getPresetSkin(this.currentPreset(), this.skinIndex());
+    }
+
+    /**
+     * Show the highlighted dossier in one of its other looks.
+     * @param {number} skinIdx - Position in the skin list
+     */
+    selectSkin(skinIdx) {
+      const preset = this.currentPreset();
+      if (!preset) return;
+      const skins = getPresetSkins(preset);
+      if (skins.length < 2) return;
+      const next = (Number(skinIdx) % skins.length + skins.length) % skins.length;
+      if (next === this.skinIndex()) return;
+      this._skinIndexById[preset.id] = next;
+      SoundManager.playCursor();
+      this.refresh();
+      if (this._skinHandler) this._skinHandler();
+    }
+
+    /**
+     * Step through the highlighted dossier's looks.
+     * @param {number} dir - +1 forward, -1 back
+     */
+    cycleSkin(dir) {
+      this.selectSkin(this.skinIndex() + (dir > 0 ? 1 : -1));
+    }
+
+    /**
+     * Called whenever the shown look changes, so the scene can redraw the
+     * parchment dossier the player is actually reading.
+     * @param {Function} handler - Callback
+     */
+    setSkinHandler(handler) {
+      this._skinHandler = handler;
+    }
+
     drawItem(index) {
       const preset = this.itemAt(index);
       if (!preset) return;
 
+      const skinData = getPresetSkin(preset, this.skinIndex(index));
       const rect = this.itemRect(index);
       const padding = 8;
 
@@ -1758,8 +1918,8 @@
       const spriteY = rect.y + padding;
       const spriteHeight = 48;
       this.drawCharacterSprite(
-        preset.sprite,
-        preset.spriteIndex,
+        skinData ? skinData.sprite : preset.sprite,
+        skinData ? skinData.spriteIndex : preset.spriteIndex,
         rect.x + rect.width / 2 - 24,
         spriteY
       );
@@ -1935,6 +2095,9 @@
     getPresetSwitchIds,
     getPresetLore,
     getPresetHometown,
+    getPresetSkins,
+    getPresetSkin,
+    getPresetSkinLabel,
     getEmBackstory,
     isEmPlaythrough,
     isBeastCrew,

@@ -1465,7 +1465,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                 { text: `${pl('atmosphere')} ${p.atmosphere ? pl('yes') : pl('no')}  ${pl('moons')} ${p.moons}`, color: '#FFA500', size: 10 }
             ];
             if (p.biome) {
-                lines.push({ text: pl('biome') + p.biome.toUpperCase(), color: '#FFA500', size: 10 });
+                lines.push({ text: pl('biome') + window.BiomeNames.display(p.biome).toUpperCase(), color: '#FFA500', size: 10 });
             }
             addInfoLines(this, size, lines, size - 6);
 
@@ -4605,7 +4605,7 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                 this._stat(`${pl('period')} ${p.period.toFixed(2)} ${pl('years')}  TEMP ${p.temperature} K`),
                 this._stat(`${pl('atmosphere')} ${p.atmosphere ? pl('yes') : pl('no')}  ${pl('moons')} ${p.moons}`)
             ];
-            if (p.biome) lines.push(this._stat(pl('biome') + String(p.biome).toUpperCase()));
+            if (p.biome) lines.push(this._stat(pl('biome') + window.BiomeNames.display(p.biome).toUpperCase()));
             return lines;
         }
 

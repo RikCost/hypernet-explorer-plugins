@@ -14,6 +14,7 @@
   "liminalUnavailable": "The liminal drive is unavailable",
   "liminalDrive": "Liminal Drive",
   "noSpaceToSummon": "There is no space to summon the vehicle",
+  "noSummonIndoors": "Only the bike can be summoned indoors",
   "noValidPosition": "No valid position found to summon the vehicle",
   "stopDriving": "Stop driving",
   "startDriving": "Start driving",

@@ -289,7 +289,7 @@
   },
   "49": {
     "name": "Piledriver",
-    "description": "Drops the enemyon their head,\nmay cause instant KO.",
+    "description": "Drops the enemy on their head,\nmay cause instant KO.",
     "message1": "%1 performs a piledriver!",
     "message2": ""
   },
@@ -2322,9 +2322,9 @@
     "message2": ""
   },
   "388": {
-    "name": "STRening Compound",
-    "description": "Creates a STRening compound that\nboosts an ally's attack power.",
-    "message1": "%1 administers a STRening compound!",
+    "name": "Strengthening Compound",
+    "description": "Creates a strengthening compound that\nboosts an ally's attack power.",
+    "message1": "%1 administers a strengthening compound!",
     "message2": ""
   },
   "389": {
@@ -3697,7 +3697,7 @@
   },
   "617": {
     "name": "PSI Shockwave",
-    "description": "Channels PSI energy to create electrical d\nischarges that strike enemies with uncanny accuracy.",
+    "description": "Channels PSI energy to create electrical\ndischarges that strike enemies with uncanny accuracy.",
     "message1": "%1 unleashes a psychic shock!",
     "message2": ""
   },
@@ -4327,12 +4327,12 @@
   },
   "722": {
     "name": "Core Training",
-    "description": "STRen your core muscles,\nslightly increasing COS and SAG.",
-    "message1": "%1 STRens their core!",
+    "description": "Strengthen your core muscles,\nslightly increasing COS and SAG.",
+    "message1": "%1 strengthens their core!",
     "message2": ""
   },
   "723": {
-    "name": "Vita lTargeting",
+    "name": "Vital Targeting",
     "description": "Focus your aim on vital points,\nslightly increasing Accuracy and critical rate.",
     "message1": "%1 targets vital points!",
     "message2": ""
@@ -4525,7 +4525,7 @@
   },
   "755": {
     "name": "HolyChant",
-    "description": "Recite a holy chant that incrasees your\nspiritual connection.",
+    "description": "Recite a holy chant that increases your\nspiritual connection.",
     "message1": "%1 recites a holy chant!",
     "message2": ""
   },

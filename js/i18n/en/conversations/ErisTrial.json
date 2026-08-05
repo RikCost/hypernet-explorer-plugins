@@ -2076,6 +2076,8 @@
     "demeanor": "Demeanor",
     "youEris": "You (Eris)",
     "pressEnterToContinue": "Press Enter to continue",
+    "autoPlaying": "Auto - press to take over",
+    "cancelToAutoPlay": "Esc: play on",
     "unread": "Unread",
     "evasive": "Evasive",
     "composed": "Composed",

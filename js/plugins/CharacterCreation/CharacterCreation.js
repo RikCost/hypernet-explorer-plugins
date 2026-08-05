@@ -106,7 +106,15 @@
     VAR_PLAYER3_REPRODUCTIVE_TYPE
   } = window.CharacterCreationUtils || {};
   const { equipRandomCompatibleWeapon, GLOBAL_STARTER_SKILLS, applyStartingGear, getClassStartingItems, giveClassStartingItems } = window.StartingEquipment || {};
-  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets } = window.CharacterPresets || {};
+  const { getCharacterPresets, getAvailableCharacterPresets, markPresetUsed, getPresetLore, getPresetHometown, getPresetSkins, getPresetSkin, getPresetSkinLabel, markStepCompleted, isStepCompleted, hasCompletedFirstCreation, Window_CharacterPresets } = window.CharacterPresets || {};
+  // Alternate looks a dossier can be played as. Falls back to the dossier's own
+  // sprite and bust when the presets plugin is an older build without skins.
+  function presetSkins(preset) {
+    if (typeof getPresetSkins === "function") return getPresetSkins(preset);
+    return preset
+      ? [{ key: "", sprite: preset.sprite, spriteIndex: preset.spriteIndex || 0, busts: preset.busts }]
+      : [];
+  }
   // Presets still free in this world (each pre-made character can be played
   // only once per world). Falls back to the full list if the presets plugin is
   // an older build without the per-world API.
@@ -2178,6 +2186,11 @@
       this._presetWindow = new Window_CharacterPresets(rect);
       this._presetWindow.setHandler("ok", this.onPresetSelect.bind(this));
       this._presetWindow.setHandler("cancel", this.onPresetCancel.bind(this));
+      // Leafing through a dossier's alternate looks leaves the cursor where it
+      // is, so the parchment overlay has to be told to redraw.
+      if (this._presetWindow.setSkinHandler) {
+        this._presetWindow.setSkinHandler(this.onPresetSkinChange.bind(this));
+      }
       this._presetWindow.visible = false;
       this._presetWindow.opacity = 0;
       this.addWindow(this._presetWindow);
@@ -2201,10 +2214,14 @@
       if (!preset) return;
       this._presetApplied = true;
 
+      const skinData = this._presetWindow.currentSkin
+        ? this._presetWindow.currentSkin()
+        : null;
+
       const actor = Scene_CharacterCreation.getCurrentActor();
       if (actor) {
         try {
-          this._applyPreset(preset, actor);
+          this._applyPreset(preset, actor, skinData);
         } catch (e) {
           // A broken field in one dossier must never strand the player inside
           // the wizard with no way out: log it and start with what was applied.
@@ -2251,11 +2268,14 @@
     }
 
     // Applies one preset dossier (class, inventory, skills, traits, gear,
-    // switches) onto the actor being created.
-    _applyPreset(preset, actor) {
+    // switches) onto the actor being created. `skinData` is the look picked on
+    // the dossier page; without one the dossier's own sprite and bust stand.
+    _applyPreset(preset, actor, skinData) {
+      const look = skinData || presetSkins(preset)[0] || preset;
+
       // Set actor properties
       actor.setName(preset.name);
-      actor.setCharacterImage(preset.sprite, preset.spriteIndex);
+      actor.setCharacterImage(look.sprite, look.spriteIndex || 0);
 
       // A stale dossier classId would otherwise take the actor's class down
       // with it; fall back to the default class instead.
@@ -2356,9 +2376,11 @@
       }
 
       // Pre-made dossiers ship with a drawn bust, so that is their portrait.
-      if (preset.busts) {
+      // Every alternate look was drawn twice, sprite and bust, so the portrait
+      // follows whichever look was picked.
+      if (look.busts) {
         const presetActor = $gameActors.actor(1);
-        presetActor.setVnBust(preset.busts);
+        presetActor.setVnBust(look.busts);
         if (presetActor.setPortraitMode) presetActor.setPortraitMode("bust");
       }
 
@@ -2792,17 +2814,39 @@
               </div>
           ` : "";
 
+          // Some of these people were drawn more than once. The dossier shows
+          // the look the player is currently reading it in, and offers the
+          // others as a row of thumbnails under the portrait.
+          const skins = presetSkins(preset);
+          const skinIdx = this._presetWindow.skinIndex ? this._presetWindow.skinIndex() : 0;
+          const currentSkin = skins[skinIdx] || skins[0] || preset;
+          const skinsCardHtml = skins.length > 1 ? `
+              <div class="cc-dossier-card">
+                <h3 class="cc-subheader">${T('CharPresets.skins')}</h3>
+                <div class="cc-skins-row">
+                  ${skins.map((s, i) => `
+                    <div class="cc-wanted-card cc-skin-card${i === skinIdx ? ' selected' : ''}" onclick="SceneManager._scene.onPresetSkinClick(${i})">
+                      <div class="cc-wanted-sprite" style="${this.getSpriteStyle(s.sprite, s.spriteIndex)}"></div>
+                      <div class="cc-skin-name">${typeof getPresetSkinLabel === "function" ? getPresetSkinLabel(s) : ""}</div>
+                    </div>
+                  `).join("")}
+                </div>
+                <div class="cc-skins-hint">${T('CharPresets.skinHint')}</div>
+              </div>
+          ` : "";
+
           rightHtml = `
             <div class="cc-page cc-page-right">
               <h2 class="cc-header-gothic">${T('CharCreate.personalDossier')}</h2>
 
-              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(preset.sprite, preset.spriteIndex)}; margin: 0 auto 16px auto; transform: scale(1.6);"></div>
+              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(currentSkin.sprite, currentSkin.spriteIndex)}; margin: 0 auto 16px auto; transform: scale(1.6);"></div>
 
               <div class="cc-dossier-card">
                 <h3 class="cc-subheader">${T('CharCreate.identityProfile')}</h3>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.vocation')}:</span><span class="cc-dossier-value">${className}</span></div>
                 <div class="cc-dossier-row"><span class="cc-dossier-label">${T('CharCreate.startingWealth')}:</span><span class="cc-dossier-value">${(preset.money / 100).toFixed(2)}€</span></div>
               </div>
+              ${skinsCardHtml}
               ${loreCardHtml}
               ${originCardHtml}
               <div class="cc-dossier-card">
@@ -2849,10 +2893,14 @@
           // its card wears a running border instead of the pinned-poster look.
           const endlessClass = p.endless ? " cc-card-endless" : "";
           const endlessRing = p.endless ? `<div class="cc-endless-ring"></div>` : "";
+          // The poster shows the dossier in whichever look it is filed under
+          // right now, so the board agrees with the page being read.
+          const cardSkins = presetSkins(p);
+          const cardSkin = cardSkins[this._presetWindow.skinIndex ? this._presetWindow.skinIndex(index) : 0] || cardSkins[0] || p;
           return `
             <div class="cc-wanted-card${endlessClass} ${isSelected ? 'selected' : ''}" onclick="SceneManager._scene.onPresetCardClick(${index})">
               ${endlessRing}
-              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(p.sprite, p.spriteIndex)}"></div>
+              <div class="cc-wanted-sprite" style="${this.getSpriteStyle(cardSkin.sprite, cardSkin.spriteIndex)}"></div>
               <div class="cc-wanted-name">${p.name}</div>
               <div class="cc-wanted-class">${className}</div>
             </div>
@@ -3712,6 +3760,23 @@
 
     onPresetCancelClick() {
       this.onPresetCancel();
+    }
+
+    // A thumbnail in the dossier's look picker was clicked.
+    onPresetSkinClick(skinIndex) {
+      if (this._presetWindow && this._presetWindow.selectSkin) {
+        this._presetWindow.selectSkin(skinIndex);
+      }
+    }
+
+    // The highlighted dossier changed look (thumbnail, shoulder button, Shift).
+    // The cursor has not moved, so the overlay's own change check would skip
+    // the redraw: force the full rebuild, since the board poster and the
+    // dossier portrait both follow the look.
+    onPresetSkinChange() {
+      this._lastStep = -1;
+      this._lastIndex = -1;
+      this.refreshUIOverlayDOM();
     }
 
     onOptionCardClick(index) {
@@ -4862,6 +4927,21 @@
           this.onPresetCancel();
         }
         return;
+      }
+
+      // Dossiers that were drawn more than once can be leafed through into
+      // their other looks without leaving the card. The shoulder buttons do it
+      // both ways; Shift steps forward, being the one spare keyboard key here
+      // (W is remapped to "up" game-wide).
+      if (isPreset && windowObj.cycleSkin) {
+        if (Input.isTriggered('pagedown') || Input.isTriggered('shift')) {
+          windowObj.cycleSkin(1);
+          return;
+        }
+        if (Input.isTriggered('pageup')) {
+          windowObj.cycleSkin(-1);
+          return;
+        }
       }
 
       let moved = false;

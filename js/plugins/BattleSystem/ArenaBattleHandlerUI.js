@@ -679,7 +679,7 @@
     };
 
     Scene_BiomeTrialSelect.prototype.renderRow = function (entry) {
-        return `<div class="arena-row-label" style="flex:1;">${esc(entry.biome)}</div>
+        return `<div class="arena-row-label" style="flex:1;">${esc(window.BiomeNames.display(entry.biome))}</div>
             <span class="arena-badge">Lv ${entry.minLevel}-${entry.maxLevel} &middot; ${entry.count} ${T('Arena.vessels')}</span>`;
     };
 
@@ -690,7 +690,7 @@
             : `<div class="arena-preview-missing">${T('Arena.noPreview')}</div>`;
         return `<div class="arena-right">
             <div class="arena-detail-head">
-                <h3 class="arena-detail-title">${esc(entry.biome)}</h3>
+                <h3 class="arena-detail-title">${esc(window.BiomeNames.display(entry.biome))}</h3>
                 <div class="arena-detail-sub">${entry.count} ${T('Arena.combatantVessels')} &middot; ${T('Arena.levels')} ${entry.minLevel}-${entry.maxLevel}</div>
             </div>
             ${previewHTML}

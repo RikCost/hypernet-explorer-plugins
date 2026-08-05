@@ -808,7 +808,10 @@
         for (const key in stats) {
             result.push({ biome: folderByLower.get(key), count: stats[key].count, minLevel: stats[key].minLevel, maxLevel: stats[key].maxLevel });
         }
-        result.sort((a, b) => a.biome.localeCompare(b.biome));
+        // Sorted the way the list reads: the trial board shows each biome's
+        // declared name, not the folder id it is keyed by.
+        result.sort((a, b) => window.BiomeNames.display(a.biome)
+            .localeCompare(window.BiomeNames.display(b.biome)));
         return result;
     };
 

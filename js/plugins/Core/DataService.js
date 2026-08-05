@@ -477,4 +477,93 @@
     window.I18N = T;
     i18nSync();
     console.log('DataService: i18n resolver ready (' + T.namespaces().length + ' namespaces).');
+
+    // ── Biome display names ─────────────────────────────────────────────────
+    // A biome's `name` in Biomes.json is its identity, not its label: roads,
+    // prefabs, enemy <Biome:> tags, battleback folders, map <Biome:> notes and
+    // every generator branch match on it, so it can never be reworded. What the
+    // player reads is resolved here instead, in this order:
+    //
+    //   1. a translation under the i18n key "Biomes.<id>", when the game is not
+    //      being played in English;
+    //   2. the biome's own `displayName` field, which is where an id that does
+    //      not read as English is fixed ("ForestTropical" -> "Tropical Forest");
+    //   3. the English "Biomes.<id>" entry, so a biome can be named from the
+    //      i18n file alone (that file is also the translators' source list);
+    //   4. the CamelCase split ("SpiritWoods" -> "Spirit Woods"), which is what
+    //      most ids already amount to.
+    //
+    // `displayName` deliberately outranks the English i18n entry: editing
+    // Biomes.json is how a biome is renamed, and an English copy of the name
+    // sitting in front of the data file would silently ignore that edit.
+    (function () {
+        let index = null;
+        let indexSize = -1;
+
+        function biomeList() {
+            return (window.WorldGen && Array.isArray(window.WorldGen.Biomes))
+                ? window.WorldGen.Biomes : [];
+        }
+
+        // Rebuilt whenever the catalogue grows: the alien biomes are merged in
+        // above, and a mod may append more after this plugin has run.
+        function biomeIndex() {
+            const list = biomeList();
+            if (index && indexSize === list.length) return index;
+            index = {};
+            list.forEach(function (b) {
+                if (b && b.name) index[String(b.name).toLowerCase()] = b;
+            });
+            indexSize = list.length;
+            return index;
+        }
+
+        function splitCamel(id) {
+            return String(id).replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+        }
+
+        function translated(id) {
+            const key = 'Biomes.' + id;
+            return (T.language() !== I18N_FALLBACK && T.has(key)) ? T(key) : null;
+        }
+
+        function english(id) {
+            const key = 'Biomes.' + id;
+            return T.has(key) ? T(key) : null;
+        }
+
+        window.BiomeNames = {
+            // The readable name of one biome id. An id the catalogue does not
+            // know still reads, through the CamelCase split, so a map note or a
+            // mod naming an unlisted biome degrades instead of showing nothing.
+            display: function (id) {
+                const raw = String(id == null ? '' : id).trim();
+                if (!raw) return '';
+                const entry = biomeIndex()[raw.toLowerCase()];
+                const name = entry ? entry.name : raw;
+                return translated(name) ||
+                       (entry && typeof entry.displayName === 'string' && entry.displayName.trim()
+                           ? entry.displayName.trim() : null) ||
+                       english(name) ||
+                       splitCamel(name);
+            },
+
+            // A comma-separated list of ids ("Ice, Permafrost, ForestIce"), the
+            // shape the enemy <Biome:> tag stores, resolved name by name.
+            displayList: function (ids) {
+                return String(ids == null ? '' : ids)
+                    .split(',')
+                    .map(function (s) { return window.BiomeNames.display(s); })
+                    .filter(function (s) { return !!s; })
+                    .join(', ');
+            },
+
+            // The Biomes.json entry behind an id, or null. Exposed so callers
+            // that already need the record do not build a second index.
+            entry: function (id) {
+                const raw = String(id == null ? '' : id).trim();
+                return raw ? (biomeIndex()[raw.toLowerCase()] || null) : null;
+            }
+        };
+    })();
 })();

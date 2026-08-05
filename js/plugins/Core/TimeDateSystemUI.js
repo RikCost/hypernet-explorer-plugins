@@ -142,6 +142,28 @@
     return mainCommands;
   }
 
+  // RMMZ swallows every wheel event at the document level (rmmz_core.js,
+  // TouchInput._onWheel calls preventDefault), so the duration list never
+  // scrolls on its own and the scrollbar can only be dragged. The overlay
+  // handles the wheel itself instead; it is bound once per overlay and looks
+  // the pane up live, since the dialog's innerHTML is rebuilt on every refresh.
+  function bindSleepMenuWheel(el) {
+    if (!el || el._sleepMenuWheelBound) return;
+    el._sleepMenuWheelBound = true;
+    el.addEventListener(
+      "wheel",
+      (e) => {
+        const pane = el.querySelector(".army-dialog-options--scroll");
+        if (!pane) return;
+        e.preventDefault();
+        // Wheel deltas arrive in pixels, lines or pages depending on the device.
+        const step = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 400 : 1;
+        pane.scrollTop += e.deltaY * step;
+      },
+      { passive: false }
+    );
+  }
+
   function titleForMode(mode) {
     const t = sleepLabels();
     if (mode === "sleep") return t.titleSleep;
@@ -249,13 +271,13 @@
       if (isUp) {
         scene._sleepMenuIndex = (scene._sleepMenuIndex - 1 + total) % total;
         SoundManager.playCursor();
-        scene._updateSleepMenuHighlight();
+        scene._updateSleepMenuHighlight(true);
         return;
       }
       if (isDown) {
         scene._sleepMenuIndex = (scene._sleepMenuIndex + 1) % total;
         SoundManager.playCursor();
-        scene._updateSleepMenuHighlight();
+        scene._updateSleepMenuHighlight(true);
         return;
       }
       if (Input.isTriggered("ok")) {
@@ -331,6 +353,7 @@
 
   Scene_Map.prototype._refreshSleepMenuDOM = function () {
     if (!this._sleepMenuEl) return;
+    bindSleepMenuWheel(this._sleepMenuEl);
     const mode = this._sleepMenuMode;
     const cmds = commandsForMode(mode, sleepAllowedFor(this));
     const optionsHTML = cmds
@@ -370,6 +393,9 @@
       arrows.forEach((arrow) => {
         arrow.addEventListener("click", () => this._toggleSleepMenuType());
       });
+      // The list is rebuilt scrolled to the top, so a selection kept across a
+      // Sleep <-> Wait flip has to be brought back under the cursor.
+      this._updateSleepMenuHighlight(true);
     }
   };
 
@@ -397,11 +423,22 @@
     this._refreshSleepMenuDOM();
   };
 
-  Scene_Map.prototype._updateSleepMenuHighlight = function () {
+  // scroll: drag the list along with the cursor. Keyboard and pad navigation
+  // pass it, since the duration list runs well past the bottom of its pane and
+  // a cursor moved off screen would otherwise be invisible; the mouse never
+  // does, because the row it highlights is by definition already under the
+  // pointer and nudging the list would move it out from under it.
+  Scene_Map.prototype._updateSleepMenuHighlight = function (scroll) {
     if (!this._sleepMenuEl) return;
+    let selected = null;
     this._sleepMenuEl.querySelectorAll(".army-dialog-btn").forEach((btn, i) => {
-      btn.classList.toggle("selected", i === this._sleepMenuIndex);
+      const on = i === this._sleepMenuIndex;
+      btn.classList.toggle("selected", on);
+      if (on) selected = btn;
     });
+    if (scroll && selected && selected.scrollIntoView) {
+      selected.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
   };
 
   Scene_Map.prototype._setSleepMenuMode = function (mode) {

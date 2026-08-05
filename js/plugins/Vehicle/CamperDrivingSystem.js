@@ -758,8 +758,9 @@
         }
         let best = null, bestN = 0;
         for (const [n, c] of tally) { if (c > bestN) { best = n; bestN = c; } }
-        const biome = (best || sampleBiomeAt(wx, wy).name).replace(/^Road\s+.*/i, 'Open Road');  // i18n-ignore  biome id
-        return biome.replace(/([a-z])([A-Z])/g, '$1 $2');
+        const biome = (best || sampleBiomeAt(wx, wy).name);
+        if (/^Road\s+/i.test(biome)) return T('CamperDrive.openRoad');
+        return window.BiomeNames.display(biome);
     }
 
     // A road number for the stretch of asphalt under the camper. Roads carry no

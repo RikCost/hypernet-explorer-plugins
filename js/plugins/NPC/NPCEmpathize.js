@@ -158,12 +158,30 @@
     return 'npc';
   }
 
+  // The name of whoever is standing at this event. A <Shop> counter is worked
+  // in shifts, so the event is named after the fixture ("Shop") and the person
+  // behind it changes three times a day: everything the panel says or files on
+  // a society profile has to use the covering persona's name, not the sign.
   function _getNPCName(eventId) {
-    return $gameMap?.event(eventId)?.event()?.name?.trim() || '';
+    const ev = $gameMap?.event(eventId);
+    if (!ev) return '';
+    return window.NPCSim?.npcNameForEvent?.(ev) ?? (ev.event()?.name?.trim() || '');
   }
 
   function _getProfile(npcName) {
     return window.NPCSocietyRegistry?.getProfile(npcName) ?? null;
+  }
+
+  // Finds the event a name refers to: the authored event name first (that is
+  // what event commands are written against), then the person currently
+  // covering a shop counter, so "Only" finds the till she is standing at.
+  function _findEventByName(name) {
+    const target = String(name ?? '').trim().toLowerCase();
+    if (!target) return null;
+    const events = $gameMap?.events() ?? [];
+    return events.find(e => e?.event()?.name?.trim().toLowerCase() === target)
+        ?? events.find(e => _getNPCName(e?.eventId()).toLowerCase() === target)
+        ?? null;
   }
 
   // ── Social-interaction line bank (praise / joke / story / insult / ...) ──
@@ -2992,8 +3010,7 @@
         Scene_NPCEmpathize._entity  = null;
         SceneManager.push(Scene_NPCEmpathize);
       } else {
-        const target = String(evNameOrId).trim().toLowerCase();
-        const ev = $gameMap?.events().find(e => e?.event()?.name?.trim().toLowerCase() === target);
+        const ev = _findEventByName(evNameOrId);
         if (ev) {
           Scene_NPCEmpathize._eventId = ev.eventId();
           Scene_NPCEmpathize._actorId = null;
@@ -3010,8 +3027,7 @@
         $gameTemp._NPCEmpathizeBypass = false;
         return;
       }
-      const target = String(npcName).trim().toLowerCase();
-      const ev = $gameMap?.events().find(e => e?.event()?.name?.trim().toLowerCase() === target);
+      const ev = _findEventByName(npcName);
 
       _pushReturnContext();
       const ctx = ev

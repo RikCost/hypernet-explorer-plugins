@@ -340,6 +340,14 @@
         }
     }
 
+    // Who is standing at this event right now. A <Shop> counter is worked in
+    // shifts, so its event name is the fixture ("Shop") and the person behind
+    // it is the covering persona, which is the name a recruit must join under.
+    function npcNameOf(event) {
+        if (!event) return "";
+        return window.NPCSim?.npcNameForEvent?.(event) ?? (event.event()?.name?.trim() || "");
+    }
+
     function transferNPCNeeds(actorId, eventName) {
         const profile = window.NPCSocietyRegistry?.getProfile(eventName);
         if (!profile) return;
@@ -477,7 +485,7 @@
         // Em unhealthy for whoever is nearby. The Empathize panel hides Join for
         // him and answers in his own voice; this covers the event-command path.
         if ($gameSwitches.value(48)
-            && event.event().name.trim().toLowerCase() === 'bubba'
+            && npcNameOf(event).toLowerCase() === 'bubba'
             && $gameParty.members().some(m => m.name() === 'Em')) {
             $gameTemp._npcJoinFailReason = 'refused';
             if (!window._npcEmpathizeSilentJoin) {
@@ -528,7 +536,7 @@
             return false;
         }
 
-        const eventName     = event.event().name.trim();
+        const eventName     = npcNameOf(event);
         const gender        = parseGenderFromNote(event.event().note);
         const selfSwitchKey = [$gameMap.mapId(), eventId, 'A'];
 
@@ -615,9 +623,9 @@
         // Apply changes to target actor properties
         targetActor._classId = classId;
         
-        // Get the event name directly from the event data
-        const eventName = event.event().name;
-        
+        // The person at the event, not the sign over the counter
+        const eventName = npcNameOf(event);
+
         // Only set name if not in random class mode
         if (!randomClassMode) {
             targetActor._name = eventName;
@@ -632,7 +640,7 @@
         }
         
         // Use NPC profile level+exp if available, otherwise fall back to Actor1's level
-        const _eventNameForLevel = event.event().name;
+        const _eventNameForLevel = npcNameOf(event);
         const _npcProfile = window.NPCSocietyRegistry?.getProfile(_eventNameForLevel);
         const newLevel = _npcProfile?.level ?? actor1._level;
         const newExp   = _npcProfile?.exp   ?? targetActor.expForLevel(newLevel);
@@ -673,9 +681,9 @@
         const event = $gameMap.event(eventId);
         if (!event) return;
         
-        // Get the event name directly from the event data
-        const eventName = event.event().name;
-        
+        // The person at the event, not the sign over the counter
+        const eventName = npcNameOf(event);
+
         // Get class from event note
         let className = "Unknown";
         const noteData = event.event().note;
@@ -722,9 +730,9 @@
         const event = $gameMap.event(eventId);
         if (!event) return;
         
-        // Get the event name directly from the event data
-        const eventName = event.event().name;
-        
+        // The person at the event, not the sign over the counter
+        const eventName = npcNameOf(event);
+
         // Show the join message
         window.skipLocalization = true;
         const message = T('NPCParty.joinsParty', { name: eventName });

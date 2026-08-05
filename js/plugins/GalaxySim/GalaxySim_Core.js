@@ -1651,7 +1651,9 @@
       session.ctx.leader = ($gameParty && $gameParty.leader()) ? $gameParty.leader().name() : "";
       const db = anomalyDB();
       const biome = (db.biomes && db.biomes[session.biome]) || {};
-      session.ctx.biome = biome.label || session.biome;
+      // Anomaly.json names the surfaces it writes for; anything it does not
+      // cover falls back to the biome's own declared name, never the raw id.
+      session.ctx.biome = biome.label || window.BiomeNames.display(session.biome);
       session.scenario = anomScenarioFor(session);
       if (!session.scenario) return null;
       const sc = db.scenarios[session.scenario];

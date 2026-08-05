@@ -341,6 +341,11 @@
       canRefuelAtPump: false,
       roadBoost: true,
       boatSubType: 'bike',
+      // The one vehicle that comes indoors. A bicycle is wheeled through a
+      // doorway, carried down a flight of stairs and ridden along a corridor,
+      // so it alone may be summoned, parked and ridden on an <Interior> map and
+      // in a procedural interior (dungeon, crypt, sewer, loot cellar, cave).
+      indoorsAllowed: true,
       summonItemId: 131
     };
 
@@ -619,6 +624,12 @@
   //                  world-map tile and is never shown on map 315
   //   layer          depth in the procedural layer stack, since one world square
   //                  generates a different map per cave floor / ocean depth
+  //   interior       the procedural interior the park was made in ("" in the open
+  //                  air). A dungeon, cellar or sewer is generated onto the same
+  //                  map id, world square and layer as the field it was entered
+  //                  from, so only this tells the two apart. Only the Bike ever
+  //                  carries a non-empty one: it is the one vehicle allowed
+  //                  indoors (VehicleConfig.BIKE.indoorsAllowed)
   //   order          park sequence, so when several vehicles share one tile the
   //                  last one parked there is the one drawn
 
@@ -633,6 +644,46 @@
   function isAlienSurfaceNow() {
     return !!(window.GalaxySim && window.GalaxySim.isAlienSurface &&
       window.GalaxySim.isAlienSurface());
+  }
+
+  // True while the loaded procedural map is a PROCEDURAL INTERIOR: a dungeon,
+  // crypt, sewer, loot cellar, temple inside, cave den, patron vault, any cave,
+  // or any layer below the surface. No vehicle is ever summoned into, parked in
+  // or drawn inside one of these (ProceduralMapBiomeGenerator.js).
+  function isProceduralInteriorNow() {
+    const api = window.ProceduralInteriors;
+    if (api && typeof api.isCurrent === 'function') return !!api.isCurrent();
+    return typeof window.isProceduralInteriorMap === 'function' &&
+      !!window.isProceduralInteriorMap();
+  }
+
+  // The name of the procedural interior the player is standing in, or "" in the
+  // open air and off the procedural map. A park record carries this so a bike
+  // left in the cellar and a camper left on the field above it can be told
+  // apart: both are map 636, the same world square and the same layer depth.
+  function currentProcInterior() {
+    const api = window.ProceduralInteriors;
+    return (api && typeof api.currentBiome === 'function' && api.currentBiome()) || '';
+  }
+
+  // Vehicles are outdoor things, with one exception: the Bike (config flag
+  // `indoorsAllowed`). It may be summoned, parked and ridden inside a house, a
+  // dungeon or a cave; every other vehicle is refused there.
+  function configAllowedIndoors(config) {
+    return !!(config && config.indoorsAllowed);
+  }
+
+  function keyAllowedIndoors(key) {
+    return configAllowedIndoors(configForVehicleKey(key));
+  }
+
+  // The config a summon(type, subType) call is asking for, resolved BEFORE the
+  // shared 'boat' slot has been switched over to that sub-type.
+  function configForSummon(vehicleType, subType) {
+    if (vehicleType === 'boat') return configForVehicleKey(subType || 'car');
+    if (vehicleType === 'ship') return VehicleConfig.CAMPER;
+    if (vehicleType === 'airship') return VehicleConfig.AIRSHIP;
+    return null;
   }
 
   // How deep in the layer stack (cave floors, ocean depths) the loaded procedural
@@ -731,8 +782,9 @@
       const onProcMap = mapId === proceduralMapId() && mapId === $gameMap.mapId();
       const alien = onProcMap && isAlienSurfaceNow();
       const layer = onProcMap ? currentProcLayer() : 0;
+      const interior = onProcMap ? currentProcInterior() : '';
       this._store()[key] = {
-        mapId, x, y, worldX: wx, worldY: wy, alien, layer, order: nextParkOrder()
+        mapId, x, y, worldX: wx, worldY: wy, alien, layer, interior, order: nextParkOrder()
       };
     },
 
@@ -806,7 +858,8 @@
    *   - map 315:    at its world coordinates, wherever it is actually parked
    *                 (an alien landing grid has no world tile, so it shows nothing)
    *   - proc map:   only when it was left in THIS biome (same world coordinates,
-   *                 same realm), at the internal tile it was left on
+   *                 same realm, same layer, and the same procedural interior or
+   *                 the open air alike), at the internal tile it was left on
    *   - any other:  only when it was parked on that very map
    */
   function parkedTileOnCurrentMap(key) {
@@ -825,6 +878,12 @@
       if (pos.mapId !== procMap) return null;
       if (!!pos.alien !== isAlienSurfaceNow()) return null;
       if ((pos.layer || 0) !== currentProcLayer()) return null;
+      // Which side of the hatch the park is on. The dungeon, the cellar and the
+      // field they were entered from all answer to map 636, the same world
+      // square and the same layer, so without this the camper left on the
+      // surface would be re-placed in the middle of the dungeon. A record made
+      // before this field existed reads as "" and so belongs to the open air.
+      if ((pos.interior || '') !== currentProcInterior()) return null;
       const wc = currentWorldCoords();
       if (VehiclePosition.worldX(key) !== wc.x || VehiclePosition.worldY(key) !== wc.y) return null;
       tx = pos.x; ty = pos.y;
@@ -1046,6 +1105,14 @@
         return true;
       }
 
+      // Procedural interiors (dungeon, crypt, sewer, loot cellar, temple
+      // inside, cave den, patron vault, caves, every layer below the surface)
+      // are generated onto the SAME map id as the open-air square they were
+      // entered from, so map 636's own <Exterior> note says nothing about
+      // them. window.ProceduralInteriors is the only thing that can tell, and
+      // it only ever speaks about the map currently loaded.
+      if (mapId === $gameMap.mapId() && isProceduralInteriorNow()) return true;
+
       if (mapId === $gameMap.mapId() && $dataMap) {
         const note = $dataMap.note;
         if (note && note.includes('<Interior>') && !note.includes('<Covered>')) {
@@ -1182,14 +1249,18 @@
     }
 
     // Re-place every parked (non-ridden) vehicle on the current map from the
-    // internal position store, and take off the map any vehicle parked elsewhere.
-    // Placing is what stops a memorized vehicle vanishing across map changes;
-    // evicting is what stops a vehicle left in one procedural biome from standing
-    // in the middle of the next one (all biomes share map id 636).
+    // internal position store, and take off the map any vehicle parked elsewhere
+    // or standing in an interior. Placing is what stops a memorized vehicle
+    // vanishing across map changes; evicting is what stops a vehicle left in one
+    // procedural biome from standing in the middle of the next one, or inside
+    // the dungeon generated under it (all biomes share map id 636).
+    //
+    // Interiors are no longer skipped: they need the eviction most of all, since
+    // a dungeon is generated over the very square the camper was parked on. Only
+    // the Bike can hold a park record made indoors, so only the Bike is placed
+    // there; everything else fails parkedTileOnCurrentMap and is taken off.
     reconcileToStore() {
       const currentMap = $gameMap.mapId();
-      if (mapCache.isInterior(currentMap)) return;
-
       const ridden = $gamePlayer.isInVehicle() ? $gamePlayer.vehicle() : null;
       const boatVehicle = this.getVehicle('boat');
 
@@ -1292,7 +1363,11 @@
 
     savePosition(vehicle) {
       const config = this.getConfig(vehicle);
-      if (!config || mapCache.isInterior($gameMap.mapId())) return;
+      if (!config) return;
+      // Indoors only the Bike keeps a park record; leaving any other vehicle on
+      // an interior map is a state the store must never learn about, so its last
+      // outdoor spot stands.
+      if (mapCache.isInterior($gameMap.mapId()) && !configAllowedIndoors(config)) return;
       const key = VehiclePosition.keyForConfig(config);
       const mapId = $gameMap.mapId();
 
@@ -1317,8 +1392,14 @@
     }
 
     summon(vehicleType, subType) {
-      if (mapCache.isInterior($gameMap.mapId())) {
-        showLocalizedMessage(T('VehicleSystem.noSpaceToSummon'));
+      // Indoors covers both the hand-made <Interior> maps and the procedural
+      // interiors (dungeon, crypt, sewer, loot cellar, cave...), which carry no
+      // note tag of their own. The Bike is exempt: it goes wherever the player
+      // goes. The Vehicles menu greys its Spawn button out on the same test, so
+      // this is the last line rather than the usual one.
+      if (mapCache.isInterior($gameMap.mapId()) &&
+        !configAllowedIndoors(configForSummon(vehicleType, subType))) {
+        showLocalizedMessage(T('VehicleSystem.noSummonIndoors'));
         return;
       }
 
@@ -1557,8 +1638,12 @@
     _Game_Vehicle_setLocation.call(this, mapId, x, y);
     if (movingVehicleInternally || this._driving) return;
     if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
-    if (!mapId || mapCache.isInterior(mapId)) return;
-    const key = VehiclePosition.keyForConfig(vehicleManager.getConfig(this));
+    if (!mapId) return;
+    const config = vehicleManager.getConfig(this);
+    // Same rule as savePosition: an interior park is only ever recorded for the
+    // Bike, so nothing else can be memorized standing in a house or a dungeon.
+    if (mapCache.isInterior(mapId) && !configAllowedIndoors(config)) return;
+    const key = VehiclePosition.keyForConfig(config);
     if (!key) return;
     const pos = VehiclePosition.get(key);
     if (pos && pos.mapId === mapId && pos.x === x && pos.y === y) return;
@@ -1630,11 +1715,20 @@
   const _Game_Vehicle_isMapPassable = Game_Vehicle.prototype.isMapPassable;
   Game_Vehicle.prototype.isMapPassable = function (x, y, d) {
     if (this.isShip() || this.isBoat() || this.isAirship()) {
-      if (mapCache.isInterior($gameMap.mapId())) return false;
       if (!FuelSystem.hasFuel(this)) return false;
 
       const x2 = $gameMap.roundXWithDirection(x, d);
       const y2 = $gameMap.roundYWithDirection(y, d);
+
+      // Indoors (a house, a dungeon, a cave) the Bike is the only vehicle that
+      // may move at all, and there it simply goes wherever the player could
+      // walk: the outdoor terrain-tag whitelist below describes open country
+      // and would refuse every corridor tile.
+      if (mapCache.isInterior($gameMap.mapId())) {
+        if (!configAllowedIndoors(vehicleManager.getConfig(this))) return false;
+        if (isVehicleBlockedTile(x2, y2, $gameMap.mapId())) return false;
+        return $gameMap.isPassable(x2, y2, this.reverseDir(d));
+      }
 
       // The Starship is an airship: it flies over everything (blocked tiles and
       // water alike). Only fuel and the interior-map rule above restrict it (#156).
@@ -2767,6 +2861,8 @@
       if (mapId && mapCache.isInterior(mapId)) {
         const config = vehicleManager.getConfig(vehicle);
         if (!config) return false;
+        // The Bike is wheeled in through the door with the player.
+        if (configAllowedIndoors(config)) return false;
         showLocalizedMessage(T('VehicleSystem.cannotFit', { vehicle: vehicleNounName(config) }));
         return true;
       }
@@ -3503,10 +3599,24 @@
       return ownsVehicleConfig(configByVehicleKey(key));
     },
 
-    // Summon an owned vehicle to a nearby valid tile. Returns false if unowned.
+    // False wherever the given vehicle may not be summoned: any hand-made
+    // <Interior> map, a vehicle's own cabin, and every PROCEDURAL INTERIOR
+    // (dungeon, crypt, sewer, loot cellar, temple inside, cave den, patron
+    // vault, cave, or any layer below the surface). The Bike answers true
+    // everywhere, being the one vehicle that comes indoors. The Vehicles menu
+    // greys out its Spawn button per row on this answer.
+    canSpawnHere(key) {
+      if (typeof $gameMap === 'undefined' || !$gameMap) return false;
+      if (!mapCache.isInterior($gameMap.mapId())) return true;
+      return keyAllowedIndoors(key);
+    },
+
+    // Summon an owned vehicle to a nearby valid tile. Returns false if unowned
+    // or if the party is standing somewhere that vehicle cannot be summoned.
     spawnVehicleByKey(key) {
       const c = configByVehicleKey(key);
       if (!c || !ownsVehicleConfig(c)) return false;
+      if (!this.canSpawnHere(key)) return false;
       vehicleManager.summon(c.type, c.boatSubType);
       return true;
     },
