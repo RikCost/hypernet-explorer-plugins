@@ -2777,7 +2777,14 @@ Sprite_BowWeapon.prototype.clear = function () {
         if (window.PSXShader && window.PSXShader.disposeContext) {
           window.PSXShader.disposeContext(this.renderer);
         }
+        // dispose() leaves the WebGL context itself alive. The browser caps how
+        // many contexts may live at once and force-loses the OLDEST past the
+        // cap, which is the game's own canvas: PIXI then silently stops
+        // rendering and the picture freezes until the game is restarted.
         this.renderer.dispose();
+        try {
+          if (this.renderer.forceContextLoss) this.renderer.forceContextLoss();
+        } catch (e) { /* context already gone */ }
       }
       this.renderer = null;
       this.scene = null;

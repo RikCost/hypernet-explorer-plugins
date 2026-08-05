@@ -28,6 +28,9 @@
  *                       Letters in any order and any case; the colon form
  *                       <Worldmap: N S E W>, full words (<Worldmap west,north>)
  *                       and a bare <Worldmap> (all four edges) all work too.
+ *                       An edge painted with a fence (void, cliff or wall, so
+ *                       the outermost tiles cannot be stood on) is crossed by
+ *                       walking into it, up to EDGE_FENCE_DEPTH tiles thick.
  *   <Coords x y>        World coords this map connects to.
  *   <Borders mapId x y> Override border teleport destination (all borders).
  *
@@ -1481,19 +1484,94 @@
                this.isPassable(x, y, 6) || this.isPassable(x, y, 8);
     };
 
+    // ------------------------------------------------------------------------
+    // FENCED EDGES
+    // ------------------------------------------------------------------------
+    // Most hand-made maps do not leave their outermost ring walkable: it is a
+    // void, a cliff or a wall painted along the edge (terrain tag 7 and 4 both
+    // read as impassable through MovementInteractionSystem). The party can never
+    // STAND on such a tile, so a rule that waits for them to step onto it never
+    // fires and the map's <Worldmap> tag looks dead, chevrons and all.
+    //
+    // Walking INTO that fence is the same intent, so a blocked step counts as a
+    // crossing when nothing but fence lies between the tile bumped into and the
+    // map edge. The depth is capped so only a fence really painted along the
+    // border qualifies: a building whose wall happens to run out to the edge
+    // deeper inside the map must stay a wall.
+    // ------------------------------------------------------------------------
+
+    const EDGE_FENCE_DEPTH = 3;
+
+    const BORDER_STEP     = { 2: [0, 1], 4: [-1, 0], 6: [1, 0], 8: [0, -1] };
+    const BORDER_DIR_NAME = { 2: 'south', 4: 'west', 6: 'east', 8: 'north' };
+
+    // Distance from (x, y) to the map edge it is heading for when moving in
+    // direction d. 0 on the outermost ring.
+    Game_Map.prototype.borderEdgeDistance = function(x, y, d) {
+        switch (d) {
+            case 2: return this.height() - 1 - y;
+            case 4: return x;
+            case 6: return this.width() - 1 - x;
+            case 8: return y;
+        }
+        return Infinity;
+    };
+
+    // How many impassable tiles a border tile is buried under, counting inward
+    // from the edge: 0 when the tile is walkable, n when the nearest walkable
+    // tile inward is n away, -1 when the party can never get close enough to
+    // push against it.
+    Game_Map.prototype.borderFenceDepth = function(x, y) {
+        if (this.isBorderTilePassable(x, y)) return 0;
+        for (let step = 1; step <= EDGE_FENCE_DEPTH; step++) {
+            const ix = x === 0 ? step : (x === this.width()  - 1 ? this.width()  - 1 - step : x);
+            const iy = y === 0 ? step : (y === this.height() - 1 ? this.height() - 1 - step : y);
+            if (!this.isValid(ix, iy)) break;
+            if (this.isBorderTilePassable(ix, iy)) return step;
+        }
+        return -1;
+    };
+
+    // Does a step in direction d from (x, y) leave the map through an enabled
+    // border? True when the next tile is already off the map, and when the next
+    // tile starts a run of impassable tiles that reaches the edge.
+    Game_Map.prototype.isBorderCrossing = function(x, y, d) {
+        const step = BORDER_STEP[d];
+        if (!step) return false;
+        if (!this._borderDestination && !this._coordsDest) return false;
+        if (!this.isBorderDirectionAllowed([BORDER_DIR_NAME[d]])) return false;
+
+        let nx = x + step[0], ny = y + step[1];
+        if (!this.isValid(nx, ny)) return true;
+        if (this.borderEdgeDistance(nx, ny, d) >= EDGE_FENCE_DEPTH) return false;
+        while (this.isValid(nx, ny)) {
+            // Walkable ground still ahead: this is scenery inside the map, not
+            // the fence along its edge.
+            if (this.isBorderTilePassable(nx, ny)) return false;
+            nx += step[0];
+            ny += step[1];
+        }
+        return true;
+    };
+
     Game_Map.prototype.getNearbyBorderTiles = function(playerX, playerY) {
         const nearbyBorders = [];
-        for (let dx = -BORDER_DETECTION_RANGE; dx <= BORDER_DETECTION_RANGE; dx++) {
-            for (let dy = -BORDER_DETECTION_RANGE; dy <= BORDER_DETECTION_RANGE; dy++) {
+        // A fenced border tile is signposted from where the party can actually
+        // stand, which is its fence depth further in than a walkable one.
+        const scan = BORDER_DETECTION_RANGE + EDGE_FENCE_DEPTH;
+        for (let dx = -scan; dx <= scan; dx++) {
+            for (let dy = -scan; dy <= scan; dy++) {
                 if (dx === 0 && dy === 0) continue;
                 const x = playerX + dx;
                 const y = playerY + dy;
                 if (x < 0 || y < 0 || x >= this.width() || y >= this.height()) continue;
-                if (this.isBorderTile(x, y) && this.isBorderTileEnabled(x, y) && this.isBorderTilePassable(x, y)) {
-                    const directions = this.getBorderDirection(x, y);
-                    if (this.isBorderDirectionAllowed(directions)) {
-                        nearbyBorders.push({ x, y, arrow: getArrowForDirection(directions), directions });
-                    }
+                if (!this.isBorderTile(x, y) || !this.isBorderTileEnabled(x, y)) continue;
+                const depth = this.borderFenceDepth(x, y);
+                if (depth < 0) continue;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) > BORDER_DETECTION_RANGE + depth) continue;
+                const directions = this.getBorderDirection(x, y);
+                if (this.isBorderDirectionAllowed(directions)) {
+                    nearbyBorders.push({ x, y, arrow: getArrowForDirection(directions), directions });
                 }
             }
         }
@@ -1998,37 +2076,66 @@
         });
     };
 
+    // Leave the map through its declared border. <Coords x y> lands on the world
+    // map, <Borders mapId x y> anywhere it names.
+    Game_Player.prototype.performBorderReturn = function() {
+        let dest = null;
+        if ($gameMap._coordsDest) {
+            dest = { mapId: worldMapId, x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
+        } else if ($gameMap._borderDestination) {
+            dest = $gameMap._borderDestination;
+        }
+        if (!dest) return false;
+        $gameVariables.setValue(VAR_DEST_MAP, dest.mapId);
+        // The world position has to move with the party: the travel menu and the
+        // procedural generator both read it, and without this they keep working
+        // from wherever the party last stood on map 315.
+        if (dest.mapId === worldMapId) {
+            $gameVariables.setValue(VAR_WORLD_X, dest.x);
+            $gameVariables.setValue(VAR_WORLD_Y, dest.y);
+        }
+        this.reserveTransfer(dest.mapId, dest.x, dest.y, 0, 0);
+        return true;
+    };
+
     // Auto-transfer when player steps on a border tile that has a Coords/Borders destination
     Game_Player.prototype.checkBorderTeleport = function() {
         if (this._justWrapped) { this._justWrapped = false; return; }
 
         const x = this.x, y = this.y;
         if ($gameMap.isBorderTile(x, y) && $gameMap.isBorderTilePassable(x, y)) {
+            // The flag remembers the tile, not just "a border was handled": walking
+            // along the edge from a tile that yielded to a Transfer event must still
+            // be able to cross on the next one.
+            const tileKey = x + ',' + y;
             // A Transfer event on this border tile takes precedence: let it run and
             // skip the border return so we don't bounce through the world map first.
-            if (this.hasTransferEventAt(x, y)) { this._borderChoiceShown = true; return; }
+            if (this.hasTransferEventAt(x, y)) { this._borderChoiceShown = tileKey; return; }
 
             const directions         = $gameMap.getBorderDirection(x, y);
             const hasBorderDest      = $gameMap._borderDestination || $gameMap._coordsDest;
             const isDirectionAllowed = $gameMap.isBorderDirectionAllowed(directions);
 
-            if (hasBorderDest && !this._borderChoiceShown && isDirectionAllowed) {
-                this._borderChoiceShown = true;
-                let borderDest = null;
-                if ($gameMap._coordsDest) {
-                    borderDest = { mapId: worldMapId, x: $gameMap._coordsDest.x, y: $gameMap._coordsDest.y };
-                } else if ($gameMap._borderDestination) {
-                    borderDest = $gameMap._borderDestination;
-                }
-                if (borderDest) {
-                    $gameVariables.setValue(VAR_DEST_MAP, borderDest.mapId);
-                    this.reserveTransfer(borderDest.mapId, borderDest.x, borderDest.y, 0, 0);
-                }
+            if (hasBorderDest && this._borderChoiceShown !== tileKey && isDirectionAllowed) {
+                this._borderChoiceShown = tileKey;
+                this.performBorderReturn();
                 return;
             }
         } else {
-            this._borderChoiceShown = false;
+            this._borderChoiceShown = null;
         }
+    };
+
+    // The party pushing against a fenced map edge on a <Worldmap> map: the step is
+    // blocked, but the intent is to leave, so cross instead of bumping.
+    Game_Player.prototype.tryBorderReturn = function(d) {
+        if (this.isTransferring() || this.isMoving()) return false;
+        if ($gameMap.mapId() === worldMapId || $gameMap.mapId() === procMapId) return false;
+        if (this.canPass(this.x, this.y, d)) return false;
+        if (this.hasTransferEventAt(this.x, this.y)) return false;
+        if (!$gameMap.isBorderCrossing(this.x, this.y, d)) return false;
+        this.setDirection(d);
+        return this.performBorderReturn();
     };
 
     Game_Player.prototype.getExitDirection = function(directions) {
@@ -2043,6 +2150,10 @@
     const _orig_Player_moveStraight = Game_Player.prototype.moveStraight;
     Game_Player.prototype.moveStraight = function(d) {
         if ($gameMap.mapId() !== procMapId) {
+            // Hand-made maps declare their exits with <Worldmap>: walking off a
+            // walkable edge is handled by checkBorderTeleport, pushing against a
+            // fenced one here.
+            if (this.tryBorderReturn(d)) return;
             _orig_Player_moveStraight.call(this, d);
             return;
         }

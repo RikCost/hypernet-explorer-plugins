@@ -3377,7 +3377,14 @@
         GS.Scene3DCosmos.disposeObject3D(this._background);
       }
       if (this._renderer) {
+        // dispose() leaves the WebGL context itself alive. The browser caps how
+        // many contexts may live at once and force-loses the OLDEST past the
+        // cap, which is the game's own canvas: PIXI then silently stops
+        // rendering and the picture freezes until the game is restarted.
         this._renderer.dispose();
+        try {
+          if (this._renderer.forceContextLoss) this._renderer.forceContextLoss();
+        } catch (e) { /* context already gone */ }
         if (this._renderer.domElement && this._renderer.domElement.parentNode) {
           this._renderer.domElement.parentNode.removeChild(this._renderer.domElement);
         }

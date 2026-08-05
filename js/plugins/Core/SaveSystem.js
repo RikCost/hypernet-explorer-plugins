@@ -1214,7 +1214,17 @@
             onConfirm: () => {
                 SoundManager.playOk();
                 const saveName = DataManager.makeSavename(index);
-                StorageManager.remove(saveName).then(() => {
+                // StorageManager.remove() only returns a Promise on the
+                // localforage backend; the local-file backend (NW.js) unlinks
+                // synchronously and returns undefined, so it cannot be chained
+                // directly. Promise.resolve() normalizes both.
+                let removal;
+                try {
+                    removal = Promise.resolve(StorageManager.remove(saveName));
+                } catch (e) {
+                    removal = Promise.reject(e);
+                }
+                removal.then(() => {
                     if (DataManager._globalInfo) {
                         DataManager._globalInfo[index] = null;
                     }

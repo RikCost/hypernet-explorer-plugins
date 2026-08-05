@@ -64,6 +64,7 @@
             this._paddleWidth = 3;
             this._wideTimer = 0;
             this._ball = null;
+            this._ballSprite = null;
             this._ballHeld = true;
             this._bricks = [];
             this._capsules = [];
@@ -160,6 +161,32 @@
                     this._gridCells[y][x] = cell;
                 }
             }
+
+            this._gridOriginX = startX;
+            this._gridOriginY = startY;
+            this.createBallSprite(font);
+        }
+
+        // The ball used to be an 'o' glyph snapped to a cell: the hole in the
+        // middle of the letter strobed black/white as it jumped from tile to
+        // tile. A filled disc drawn at the ball's real position keeps the same
+        // size without the flicker.
+        createBallSprite(font) {
+            const probe = new PIXI.Text('o', {
+                fontFamily: font,
+                fontSize: 20,
+                fill: '#ffffff'
+            });
+            this._glyphWidth = probe.width;
+            this._glyphHeight = probe.height;
+            probe.destroy();
+
+            const radius = Math.max(3, Math.min(this._glyphWidth, this._glyphHeight) * 0.38);
+            this._ballSprite = new PIXI.Graphics();
+            this._ballSprite.beginFill(0xE8E8E8);
+            this._ballSprite.drawCircle(0, 0, radius);
+            this._ballSprite.endFill();
+            this._container.addChild(this._ballSprite);
         }
 
         resetGame() {
@@ -558,13 +585,7 @@
                 b.color = '#00FF00';
             }
 
-            // Ball
-            const bx = Math.round(this._ball.x), by = Math.round(this._ball.y);
-            if (inBounds(bx, by)) {
-                const b = buf[by][bx];
-                b.char = 'o';
-                b.color = '#FFFFFF';
-            }
+            this.drawBall();
 
             for (let y = 0; y < GRID_HEIGHT; y++) {
                 for (let x = 0; x < GRID_WIDTH; x++) {
@@ -574,6 +595,20 @@
                     cell.style.fill = b.color;
                 }
             }
+        }
+
+        drawBall() {
+            const sprite = this._ballSprite;
+            if (!sprite || !this._ball) return;
+            sprite.visible = this._ball.x >= 0 && this._ball.x <= GRID_WIDTH - 1 &&
+                this._ball.y >= 0 && this._ball.y <= GRID_HEIGHT - 1;
+            if (!sprite.visible) return;
+            // Follow the ball's continuous position so it glides instead of
+            // snapping a whole cell at a time.
+            sprite.position.set(
+                this._gridOriginX + this._ball.x * CELL_SIZE + this._glyphWidth / 2,
+                this._gridOriginY + this._ball.y * CELL_SIZE + this._glyphHeight / 2
+            );
         }
     }
 

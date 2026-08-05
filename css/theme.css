@@ -5509,6 +5509,7 @@
     display: block;
     background: transparent;
     border-radius: 0;
+    object-fit: contain;
 }
 
 .status-gauges-box {
@@ -5521,9 +5522,26 @@
 
 .status-gauge-row {
     margin-bottom: 10px;
+    min-width: 0;
 }
 
 .status-gauge-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Gauges are laid out two per line so the whole block fits the page without
+   scrolling; the grid gap replaces the per-row bottom margin. */
+.status-gauge-grid,
+.status-needs-rows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 18px;
+    row-gap: 8px;
+    align-content: start;
+}
+
+.status-gauge-grid .status-gauge-row,
+.status-needs-rows .status-gauge-row {
     margin-bottom: 0;
 }
 
@@ -5572,10 +5590,6 @@
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px dashed var(--border-primary-hover-translucent-15);
-}
-
-.status-needs-rows .status-gauge-row:last-child {
-    margin-bottom: 0;
 }
 
 .status-gauge-bar-inner.hunger {
@@ -6737,6 +6751,10 @@
     background: transparent;
     border: none;
     box-shadow: none;
+    /* The portrait yields height first, so the gauges below it are never
+       clipped by the page's overflow:hidden at small resolutions. */
+    flex: 0 1 auto;
+    min-height: 0;
 }
 
 #biologic-bust {

@@ -1700,7 +1700,16 @@
                 if (window.PSXShader && window.PSXShader.disposeContext) {
                     window.PSXShader.disposeContext(this.renderer);
                 }
+                // dispose() leaves the WebGL context itself alive. The browser
+                // caps live contexts and force-loses the OLDEST past the cap,
+                // which is the game's own canvas: PIXI then silently stops
+                // rendering and the picture freezes until the game is
+                // restarted. Every battle builds a fresh renderer, so the
+                // context has to be handed back here too.
                 this.renderer.dispose();
+                try {
+                    if (this.renderer.forceContextLoss) this.renderer.forceContextLoss();
+                } catch (e) { /* context already gone */ }
             }
             this._disposed = true;
             debugLog('3D scene disposed');

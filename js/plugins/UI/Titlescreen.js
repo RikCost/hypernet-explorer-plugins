@@ -340,6 +340,19 @@
         this._commandWindow._itemPadding = commandPadding;
     };
 
+    // Explore always opens on the Train start map, whatever start position the
+    // database carries, so a new game begins on the intro train.
+    const EXPLORE_START = { mapId: 557, x: 13, y: 5, dir: 2 };
+
+    Scene_Title.prototype.commandNewGame = function () {
+        DataManager.setupNewGame();
+        $gamePlayer.reserveTransfer(
+            EXPLORE_START.mapId, EXPLORE_START.x, EXPLORE_START.y, EXPLORE_START.dir, 0);
+        this._commandWindow.close();
+        this.fadeOutAll();
+        SceneManager.goto(Scene_Map);
+    };
+
     // Tutorial command: start the tutorial directly (no info popup)
     Scene_Title.prototype.commandTutorial = function () {
         this._commandWindow.close();
@@ -3095,7 +3108,15 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (this._canvasEl && this._canvasEl.parentNode) {
                 this._canvasEl.parentNode.removeChild(this._canvasEl);
             }
+            // dispose() leaves the WebGL context itself alive. The browser caps
+            // live contexts and force-loses the OLDEST past the cap, which is
+            // the game's own canvas: PIXI then silently stops rendering and the
+            // picture freezes until the game is restarted. The title screen is
+            // re-entered freely, so the context has to be handed back here.
             try { if (this._renderer) this._renderer.dispose(); } catch (e) { /* ignore */ }
+            try {
+                if (this._renderer && this._renderer.forceContextLoss) this._renderer.forceContextLoss();
+            } catch (e) { /* ignore */ }
             this._renderer = null;
             this._enabled = false;
         }
@@ -4896,7 +4917,15 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             if (this._canvasEl && this._canvasEl.parentNode) this._canvasEl.parentNode.removeChild(this._canvasEl);
             this._canvasEl = null;
             this._disposeLens();
+            // dispose() leaves the WebGL context itself alive. The browser caps
+            // live contexts and force-loses the OLDEST past the cap, which is
+            // the game's own canvas: PIXI then silently stops rendering and the
+            // picture freezes until the game is restarted. The title screen is
+            // re-entered freely, so the context has to be handed back here.
             try { if (this._renderer) this._renderer.dispose(); } catch (e) { /* ignore */ }
+            try {
+                if (this._renderer && this._renderer.forceContextLoss) this._renderer.forceContextLoss();
+            } catch (e) { /* ignore */ }
             this._renderer = null;
             this._enabled = false;
         }

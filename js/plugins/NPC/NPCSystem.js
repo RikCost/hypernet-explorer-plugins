@@ -1997,6 +1997,68 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     return found;
   }
 
+  // A door/tent tile is the building's entrance: the player has to stand on a
+  // tile touching it and face it to go in (see
+  // ProceduralHouseSystem.facedInteractFeatureName), so the ring around it must
+  // stay walkable. Citizens belonging to that building are scattered in the
+  // band beyond the doorstep instead of parked on it.
+  const DOOR_CLEARANCE = 1;        // Chebyshev ring kept free around every door
+  const DOOR_CLUSTER_RADIUS = 5;   // still counts as "outside this building"
+
+  // Keys of every tile within DOOR_CLEARANCE of one of the given door tiles.
+  function getDoorwayClearance(doorTiles) {
+    const blocked = new Set();
+    for (const d of doorTiles) {
+      for (let dy = -DOOR_CLEARANCE; dy <= DOOR_CLEARANCE; dy++) {
+        for (let dx = -DOOR_CLEARANCE; dx <= DOOR_CLEARANCE; dx++) {
+          blocked.add(`${d.x + dx},${d.y + dy}`);
+        }
+      }
+    }
+    return blocked;
+  }
+
+  // One tile per NPC, scattered around the doors round-robin (so several lone
+  // buildings each get their own citizens instead of everyone piling onto the
+  // first). Picking at random out of the whole free band beats picking the
+  // nearest tile, which always resolved to the doorstep the player needs.
+  function pickDoorClusterTiles(doorTiles, validTiles, count, baseSeed) {
+    const blocked = getDoorwayClearance(doorTiles);
+    const free = validTiles.filter(t => !blocked.has(`${t.x},${t.y}`));
+    const used = new Set();
+    const tiles = [];
+
+    for (let i = 0; i < count; i++) {
+      const door = doorTiles[i % doorTiles.length];
+      const band = [];
+      for (const t of free) {
+        if (used.has(`${t.x},${t.y}`)) continue;
+        const dist = Math.max(Math.abs(t.x - door.x), Math.abs(t.y - door.y));
+        if (dist <= DOOR_CLUSTER_RADIUS) band.push(t);
+      }
+
+      let pick = null;
+      if (band.length) {
+        const roll = Utils.seededRandom(baseSeed ^ ((i + 1) * 0x9e3779b1));
+        pick = band[Math.min(band.length - 1, Math.floor(roll * band.length))];
+      } else {
+        // Nothing free around this building (walled in, water, other NPCs):
+        // fall back to the closest tile that is still outside the doorway.
+        let bestDist = Infinity;
+        for (const t of free) {
+          if (used.has(`${t.x},${t.y}`)) continue;
+          const dist = Math.abs(t.x - door.x) + Math.abs(t.y - door.y);
+          if (dist < bestDist) { bestDist = dist; pick = t; }
+        }
+      }
+      if (!pick) continue;
+
+      used.add(`${pick.x},${pick.y}`);
+      tiles.push(pick);
+    }
+    return tiles;
+  }
+
   const ProceduralManager = {
     setupProceduralMapNPCs: () => {
       if (!$gameMap || !$dataMap) return;
@@ -2041,7 +2103,11 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
       // Lone building doors/tents scattered outside a proper settlement (see
       // SETTLEMENT_DOOR_FEATURES) get their own small NPC cluster below,
       // regardless of the biome's own hasNPC/cull rules.
-      const settlementDoorTiles = isSettlementBiome ? [] : getSettlementDoorTiles();
+      // Every door/tent on the map, whatever the biome: their doorsteps are kept
+      // clear in both placement paths below. Only the ones outside a proper
+      // settlement additionally get their own NPC cluster.
+      const doorTiles = getSettlementDoorTiles();
+      const settlementDoorTiles = isSettlementBiome ? [] : doorTiles;
 
       let hasNPC = true;
       if (window.WorldGen && window.WorldGen.Biomes) {
@@ -2102,31 +2168,25 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
 
       let placementTiles;
       if (settlementDoorTiles.length > 0) {
-        // Cluster each kept NPC on the nearest still-free passable tile to one
-        // of the doors (round-robin across doors so several lone buildings
-        // each get their own NPC instead of everyone piling onto the first).
-        const used = new Set();
-        placementTiles = [];
-        for (let i = 0; i < activeEvents.length; i++) {
-          const door = settlementDoorTiles[i % settlementDoorTiles.length];
-          let best = null, bestDist = Infinity;
-          for (const t of validTiles) {
-            const key = `${t.x},${t.y}`;
-            if (used.has(key)) continue;
-            const dist = Math.abs(t.x - door.x) + Math.abs(t.y - door.y);
-            if (dist < bestDist) { bestDist = dist; best = t; }
-          }
-          if (best) {
-            used.add(`${best.x},${best.y}`);
-            placementTiles.push(best);
-          }
-        }
+        placementTiles = pickDoorClusterTiles(settlementDoorTiles, validTiles, activeEvents.length, baseSeed);
       } else {
         for (let i = validTiles.length - 1; i > 0; i--) {
           const j = Math.floor(Utils.seededRandom(baseSeed ^ (i * 54321)) * (i + 1));
           [validTiles[i], validTiles[j]] = [validTiles[j], validTiles[i]];
         }
-        placementTiles = validTiles;
+        // Doorsteps go to the back of the queue rather than being dropped, so a
+        // crowded city keeps its full spawn capacity but only blocks an
+        // entrance when the map has literally nowhere else left to stand.
+        if (doorTiles.length > 0) {
+          const blocked = getDoorwayClearance(doorTiles);
+          const open = [], doorstep = [];
+          for (const t of validTiles) {
+            (blocked.has(`${t.x},${t.y}`) ? doorstep : open).push(t);
+          }
+          placementTiles = open.concat(doorstep);
+        } else {
+          placementTiles = validTiles;
+        }
       }
 
       activeEvents.forEach((ev, i) => {

@@ -661,6 +661,7 @@
                         </div>
                         
                         <div class="status-gauges-box">
+                            <div class="status-gauge-grid">
                             <div class="status-gauge-row">
                                 <div class="status-gauge-meta">
                                     <span class="gauge-label">${T('SceneStatus.ui.hp')}</span>
@@ -699,6 +700,7 @@
                                 <div class="status-gauge-bar-outer">
                                     <div class="status-gauge-bar-inner exp" id="status-exp-bar"></div>
                                 </div>
+                            </div>
                             </div>
 
                             <div class="status-needs-rows" id="status-needs"></div>
@@ -1193,7 +1195,12 @@
             const make = () => window.Battler3D.create(info.archKey, 0, 0, fakeBattler);
             const built = (storedSeed && window.CC3DModel && window.CC3DModel.withGenSeed)
                 ? window.CC3DModel.withGenSeed(storedSeed, make) : make();
-            if (!built) { try { renderer.dispose(); } catch (e) {} this._status3D = null; return; }
+            if (!built) {
+                try { renderer.dispose(); } catch (e) {}
+                try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) {}
+                this._status3D = null;
+                return;
+            }
             loadPromise = Promise.resolve(built.load(null, 0, 0, 0)).then(() => built);
         }
 
@@ -1317,7 +1324,13 @@
         }
         window.removeEventListener('mouseup',  L.onUp);
         window.removeEventListener('touchend', L.onTEnd);
+        // dispose() leaves the WebGL context alive. The browser caps live
+        // contexts and force-loses the OLDEST past the cap, which is the game's
+        // own canvas: PIXI then silently stops rendering and the picture freezes
+        // until the game is restarted. A fresh canvas is built on every open, so
+        // releasing the context here costs nothing.
         try { s.renderer.dispose(); } catch (e) {}
+        try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
         this._status3D = null;
     };
 

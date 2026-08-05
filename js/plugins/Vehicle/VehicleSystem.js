@@ -2568,14 +2568,14 @@
       } else if (currentMapId === window.WorldMapReturn.procMapId) {
         choices.push(T('VehicleSystem.returnToWorldMap'));
         handlers.push(() => window.WorldMapReturn.returnToWorldMap());
-      } else {
-        choices.push(T('VehicleSystem.continueDriving'));
-        handlers.push(() => { });
       }
-    } else {
-      choices.push(isRiding ? T('VehicleSystem.continueDriving') : T('VehicleSystem.leave'));
-      handlers.push(() => { });
     }
+
+    // The last row is what cancelling the menu picks, so it must always be a
+    // do-nothing one: "Visit map" / "Return to the world map" are real map
+    // transfers, and pressing ESC on them teleported the party away.
+    choices.push(isRiding ? T('VehicleSystem.continueDriving') : T('VehicleSystem.leave'));
+    handlers.push(() => { });
 
     const cancelIndex = choices.length - 1;
     $gameMessage.setChoices(choices, 0, cancelIndex);

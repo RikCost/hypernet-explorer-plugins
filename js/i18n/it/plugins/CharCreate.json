@@ -110,7 +110,7 @@
   "horned": "Cornuto",
   "cyclops": "Ciclope",
   "default": "Predefinita",
-  "randomizeAll": "Casualizza Tutto",
+  "randomizeAll": "Randomizza Tutto",
   "structure": "Struttura",
   "body": "Corpo",
   "variation": "Variante",
@@ -324,7 +324,7 @@
       "desc": "Scegli un ritratto disegnato dalla galleria. Il personaggio sarà mostrato con quel ritratto ovunque."
     },
     "randomizeAllParty": {
-      "name": "Casualizza tutto il gruppo",
+      "name": "Randomizza tutto il gruppo",
       "desc": "Riempi ogni slot del gruppo con un personaggio casuale all'istante, poi scegli la tua origine."
     },
     "totalRandom": {

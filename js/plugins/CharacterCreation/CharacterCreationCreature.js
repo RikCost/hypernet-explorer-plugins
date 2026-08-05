@@ -1389,7 +1389,12 @@
     if (window.Battler3D.setGenSeed) window.Battler3D.setGenSeed(reseed);
     const battler = window.Battler3D.create(archKey, 0, 0, fakeBattler);
     if (window.Battler3D.setGenSeed && prevGenSeed != null) window.Battler3D.setGenSeed(prevGenSeed);
-    if (!battler) { try { renderer.dispose(); } catch (e) {} this._creature3D = null; return; }
+    if (!battler) {
+      try { renderer.dispose(); } catch (e) {}
+      try { if (renderer.forceContextLoss) renderer.forceContextLoss(); } catch (e) {}
+      this._creature3D = null;
+      return;
+    }
 
     Promise.resolve(battler.load(null, 0, 0, 0)).then(() => {
       if (state.disposed || !battler.model) return;

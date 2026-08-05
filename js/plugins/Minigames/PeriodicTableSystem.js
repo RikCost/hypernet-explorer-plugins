@@ -398,9 +398,9 @@
 
             if (!this._uiBuilt) {
                 this._container.innerHTML = `
-                    <div class="book-spread pt-spread" style="width:1560px;height:960px;">
+                    <div class="book-spread pt-spread" style="width:min(1560px,100%);height:min(960px,100%);">
                         <!-- LEFT PAGE: table grid -->
-                        <div class="left-page" style="overflow:hidden;padding:28px 40px 28px 40px;justify-content:flex-start;">
+                        <div class="left-page" style="overflow-y:auto;padding:28px 40px 28px 40px;justify-content:flex-start;">
                             <div class="pt-header" style="position:relative;display:flex;align-items:center;justify-content:center;
                                         border-bottom:2px dashed #bba16d;padding-bottom:8px;margin-bottom:12px;min-height:36px;flex-shrink:0;">
                                 <div class="back-button" onclick="SceneManager._scene.popScene()"

@@ -1021,7 +1021,16 @@
             if (this._scene) {
                 for (const child of this._scene.children.slice()) disposeObj(child);
             }
-            if (this._renderer) this._renderer.dispose();
+            if (this._renderer) {
+                // dispose() leaves the WebGL context itself alive. The browser
+                // caps live contexts and force-loses the OLDEST past the cap,
+                // which is the game's own canvas: PIXI then silently stops
+                // rendering and the picture freezes until the game is restarted.
+                this._renderer.dispose();
+                try {
+                    if (this._renderer.forceContextLoss) this._renderer.forceContextLoss();
+                } catch (e) { /* context already gone */ }
+            }
             if (this._overlay && this._overlay.parentNode) this._overlay.parentNode.removeChild(this._overlay);
             this._enemies.length = 0;
             this._props.length = 0;

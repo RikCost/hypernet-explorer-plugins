@@ -1777,7 +1777,14 @@
     window.removeEventListener("mouseup", L.onUp);
     window.removeEventListener("touchend", L.onTEnd);
     if (s.holder) disposeObject3D(s.holder);
+    // dispose() leaves the WebGL context alive. The browser caps live contexts
+    // and force-loses the OLDEST past the cap, which is the game's own canvas:
+    // PIXI then silently stops rendering and the picture freezes until the game
+    // is restarted. Release it, then swap in a clean canvas node, since the
+    // element a context was lost on can never host a new one.
     try { s.renderer.dispose(); } catch (e) { /* already lost */ }
+    try { if (s.renderer.forceContextLoss) s.renderer.forceContextLoss(); } catch (e) {}
+    if (c && c.parentNode) c.parentNode.replaceChild(c.cloneNode(false), c);
     this._view3D = null;
   };
 

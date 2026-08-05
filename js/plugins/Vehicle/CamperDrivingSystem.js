@@ -6754,7 +6754,16 @@
             this._terrain.dispose();
             this._van.dispose();
             this._hud.dispose();
-            if (this._renderer) this._renderer.dispose();
+            if (this._renderer) {
+                // dispose() leaves the WebGL context itself alive. The browser
+                // caps live contexts and force-loses the OLDEST past the cap,
+                // which is the game's own canvas: PIXI then silently stops
+                // rendering and the picture freezes until the game is restarted.
+                this._renderer.dispose();
+                try {
+                    if (this._renderer.forceContextLoss) this._renderer.forceContextLoss();
+                } catch (e) { /* context already gone */ }
+            }
             if (this._overlay && this._overlay.parentNode) {
                 this._overlay.parentNode.removeChild(this._overlay);
             }
