@@ -1002,6 +1002,7 @@ function generatePaintingDescription(random = Math.random, customSubject = "") {
         showPaged: (text, colorPrefix) => showPaged(text, colorPrefix),
         generateTitle:  (random) => generateTitle(random || Math.random),
         generateAuthor: (random) => generateAuthor(random || Math.random),
+        generateDescription: (random) => generateDescription(random || Math.random),
         randomSubject:  (random) => {
             const subjects = (titleSubjects()).concat(getMonsterSubjects());
             const r = random || Math.random;

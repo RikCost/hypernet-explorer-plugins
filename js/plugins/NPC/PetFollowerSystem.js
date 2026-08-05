@@ -31,6 +31,7 @@
  *   getPet(id)           → one record or null
  *   getActivePet()       → the active (following) record or null
  *   setActivePet(id)     → make a registered pet the active follower
+ *   renamePet(id, name)  → give a registered pet a new name
  *   releasePet(id)       → remove a pet from the registry
  *   refreshFollower()    → re-sync the on-map trailing sprite
  *
@@ -120,6 +121,10 @@ window.Game_PetFollower = Game_PetFollower;
     // window.PetSystem — registry + active-follower management.
     //-------------------------------------------------------------------------
 
+    // Same ceiling the name-entry screen uses for actors (AltNameInput.js), so a
+    // pet name can never be longer than a party member's.
+    const PET_NAME_MAX_LENGTH = 16;
+
     function _store() {
         if (!$gameSystem) return null;
         if (!$gameSystem._petRegistry) $gameSystem._petRegistry = [];
@@ -133,6 +138,10 @@ window.Game_PetFollower = Game_PetFollower;
     }
 
     window.PetSystem = {
+        // The rename field in the Pets page caps typing at the same length
+        // renamePet() enforces.
+        NAME_MAX_LENGTH: PET_NAME_MAX_LENGTH,
+
         getPets() {
             return _store() || [];
         },
@@ -180,6 +189,19 @@ window.Game_PetFollower = Game_PetFollower;
             const pet = this.getPet(id);
             $gameSystem._activePetId = pet ? pet.id : null;
             _refreshFollower();
+        },
+
+        // A pet joins under the name of the monster it was; the player renames it
+        // from the Pets page. An empty or whitespace-only name is refused (the
+        // pet keeps the one it has) and anything longer than the name-entry limit
+        // is cut, so the registry never holds a name a menu row cannot show.
+        renamePet(id, name) {
+            const pet = this.getPet(id);
+            if (!pet) return null;
+            const trimmed = String(name == null ? "" : name).trim().slice(0, PET_NAME_MAX_LENGTH);
+            if (!trimmed) return pet;
+            pet.name = trimmed;
+            return pet;
         },
 
         releasePet(id) {

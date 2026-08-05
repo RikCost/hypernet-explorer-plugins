@@ -773,9 +773,11 @@
     const specs = {
       hunger:  { get: (a) => a._hunger,   set: (a, v) => { a._hunger  = v; }, max: maxHunger },
       sleep:   { get: (a) => a._sleep,    set: (a, v) => { a._sleep   = v; }, max: maxSleep  },
-      hygiene: { get: (a) => a.hygiene(), set: (a, v) => { a._hygiene = v; }, max: maxNeed   },
-      social:  { get: (a) => a.social(),  set: (a, v) => { a._social  = v; }, max: maxNeed   },
-      leisure: { get: (a) => a.leisure(), set: (a, v) => { a._leisure = v; }, max: maxNeed   },
+      // Hygiene / Social / Fun go through setExtendedNeed so a companion's
+      // meter is written where it actually lives (their society profile).
+      hygiene: { get: (a) => a.hygiene(), set: (a, v) => a.setExtendedNeed("hygiene", v), max: maxNeed },
+      social:  { get: (a) => a.social(),  set: (a, v) => a.setExtendedNeed("social",  v), max: maxNeed },
+      leisure: { get: (a) => a.leisure(), set: (a, v) => a.setExtendedNeed("leisure", v), max: maxNeed },
     };
     const spec = specs[need];
     if (!spec) {
@@ -1002,46 +1004,74 @@
 
   // Extended needs (Hygiene / Social / Leisure) - mirror the NPC society meters
   // so the whole party shares one needs vocabulary. Stored 0-100.
+  //
+  // Where the value lives depends on who the member is. The player (Actor 1)
+  // keeps the three meters on the actor; a recruited companion keeps them on
+  // their NPC society profile, which is the copy the society simulation drains
+  // and every panel reads for party slots 2/3. The accessors below resolve that
+  // for the caller, so anything writing through them (plugin commands, item
+  // NeedRestore tags, bathing, minigames) moves the meter the UI is showing
+  // instead of an actor field nobody reads.
+  function extendedNeedProfile(actor) {
+    if (!actor || !actor.actorId || actor.actorId() === 1) return null;
+    return window.NPCSocietyRegistry?.getProfile?.(actor.name()) || null;
+  }
+
+  Game_Actor.prototype.extendedNeed = function (key) {
+    const profile = extendedNeedProfile(this);
+    if (profile && typeof profile[key] === "number") return profile[key];
+    const field = "_" + key;
+    if (this[field] === undefined) this[field] = maxNeed;
+    return this[field];
+  };
+
+  Game_Actor.prototype.setExtendedNeed = function (key, value) {
+    const clamped = Math.max(0, Math.min(maxNeed, value));
+    const profile = extendedNeedProfile(this);
+    if (profile && typeof profile[key] === "number") {
+      profile[key] = clamped;
+      return;
+    }
+    this["_" + key] = clamped;
+  };
+
   Game_Actor.prototype.hygiene = function () {
-    if (this._hygiene === undefined) this._hygiene = maxNeed;
-    return this._hygiene;
+    return this.extendedNeed("hygiene");
   };
   Game_Actor.prototype.hygienePercent = function () {
     return Math.floor((this.hygiene() / maxNeed) * 100);
   };
   Game_Actor.prototype.addHygiene = function (amount) {
-    this._hygiene = Math.min(maxNeed, this.hygiene() + amount);
+    this.setExtendedNeed("hygiene", this.hygiene() + amount);
   };
   Game_Actor.prototype.reduceHygiene = function (amount) {
-    this._hygiene = Math.max(0, this.hygiene() - amount);
+    this.setExtendedNeed("hygiene", this.hygiene() - amount);
   };
 
   Game_Actor.prototype.social = function () {
-    if (this._social === undefined) this._social = maxNeed;
-    return this._social;
+    return this.extendedNeed("social");
   };
   Game_Actor.prototype.socialPercent = function () {
     return Math.floor((this.social() / maxNeed) * 100);
   };
   Game_Actor.prototype.addSocial = function (amount) {
-    this._social = Math.min(maxNeed, this.social() + amount);
+    this.setExtendedNeed("social", this.social() + amount);
   };
   Game_Actor.prototype.reduceSocial = function (amount) {
-    this._social = Math.max(0, this.social() - amount);
+    this.setExtendedNeed("social", this.social() - amount);
   };
 
   Game_Actor.prototype.leisure = function () {
-    if (this._leisure === undefined) this._leisure = maxNeed;
-    return this._leisure;
+    return this.extendedNeed("leisure");
   };
   Game_Actor.prototype.leisurePercent = function () {
     return Math.floor((this.leisure() / maxNeed) * 100);
   };
   Game_Actor.prototype.addLeisure = function (amount) {
-    this._leisure = Math.min(maxNeed, this.leisure() + amount);
+    this.setExtendedNeed("leisure", this.leisure() + amount);
   };
   Game_Actor.prototype.reduceLeisure = function (amount) {
-    this._leisure = Math.max(0, this.leisure() - amount);
+    this.setExtendedNeed("leisure", this.leisure() - amount);
   };
 
   // New method for handling overeating state
@@ -1799,22 +1829,16 @@
 
     getMemberNeeds(mem) {
       if (!mem) return {};
-      if (mem.actorId && mem.actorId() === 1) {
-        return {
-          hunger:  mem.hungerPercent  ? mem.hungerPercent()  : 100,
-          sleep:   mem.sleepPercent   ? mem.sleepPercent()   : 100,
-          hygiene: mem.hygienePercent ? mem.hygienePercent() : 100,
-          social:  mem.socialPercent  ? mem.socialPercent()  : 100,
-          leisure: mem.leisurePercent ? mem.leisurePercent() : 100,
-        };
-      }
+      // The actor accessors already resolve where each meter lives (actor
+      // fields for the player, society profile for a recruited companion), so
+      // every member is read the same way.
       const profile = window.NPCSocietyRegistry?.getProfile?.(mem.name());
       return {
-        hunger:  mem.hungerPercent ? mem.hungerPercent() : Math.round(profile?.hunger  ?? 100),
-        sleep:   mem.sleepPercent  ? mem.sleepPercent()  : Math.round(profile?.sleep   ?? 100),
-        hygiene: Math.round(profile?.hygiene ?? 100),
-        social:  Math.round(profile?.social  ?? 100),
-        leisure: Math.round(profile?.leisure ?? 100),
+        hunger:  mem.hungerPercent   ? mem.hungerPercent()   : Math.round(profile?.hunger ?? 100),
+        sleep:   mem.sleepPercent    ? mem.sleepPercent()    : Math.round(profile?.sleep  ?? 100),
+        hygiene: mem.hygienePercent  ? mem.hygienePercent()  : Math.round(profile?.hygiene ?? 100),
+        social:  mem.socialPercent   ? mem.socialPercent()   : Math.round(profile?.social  ?? 100),
+        leisure: mem.leisurePercent  ? mem.leisurePercent()  : Math.round(profile?.leisure ?? 100),
       };
     },
 
@@ -1835,10 +1859,9 @@
     },
 
     // Apply a signed delta to one of the extended meters (Hygiene / Social /
-    // Fun) of every party member. The leader (Actor 1) uses the actor need
-    // methods; recruited NPC members (party slots 2/3) keep their meters on the
-    // society profile, mirroring the dual-write pattern used by
-    // ItemSystemUtils.applyNeedRestores.
+    // Fun) of every party member, through the actor need methods, which write
+    // to the actor for the player and to the society profile for a recruited
+    // companion.
     //
     // opts.focus is the member the moment belongs to, the one doing the talking
     // or the playing: they get opts.focusBonus times the delta, so a shared
@@ -1857,17 +1880,10 @@
         if (!mem) return;
         const d = (focus && mem === focus) ? delta * bonus : delta;
         if (!d) return;
-        if (mem.actorId && mem.actorId() === 1) {
-          if (d >= 0) {
-            if (mem[spec.add]) mem[spec.add](d);
-          } else if (mem[spec.reduce]) {
-            mem[spec.reduce](-d);
-          }
-          return;
-        }
-        const profile = window.NPCSocietyRegistry?.getProfile?.(mem.name());
-        if (profile && typeof profile[key] === 'number') {
-          profile[key] = Math.max(0, Math.min(maxNeed, profile[key] + d));
+        if (d >= 0) {
+          if (mem[spec.add]) mem[spec.add](d);
+        } else if (mem[spec.reduce]) {
+          mem[spec.reduce](-d);
         }
       });
     },

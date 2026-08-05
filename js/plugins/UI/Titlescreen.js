@@ -946,28 +946,49 @@
         this.contents.fontFace = 'Lora';
     };
 
+    // Nothing that starts or continues a game can run without a world to put it
+    // in: the history, the people, the dungeon and the savegame all live in the
+    // world folder, and none is invented on the player's behalf any more. With
+    // an empty world folder Explore, Reconnect, Tutorial and Sandbox are greyed
+    // out until one is made from the Worlds screen. The minigame arcade runs on
+    // its own throwaway context and stays playable regardless.
+    function hasActiveWorld() {
+        return !!(window.WorldManager && window.WorldManager.activeWorldName);
+    }
+
+    const _Window_TitleCommand_isContinueEnabled = Window_TitleCommand.prototype.isContinueEnabled;
+    Window_TitleCommand.prototype.isContinueEnabled = function () {
+        return hasActiveWorld() && _Window_TitleCommand_isContinueEnabled.call(this);
+    };
+
     // Always start the cursor on Reconnect (or Explore if no save data exists),
-    // ignoring the engine's "remember last selected command" behavior.
+    // ignoring the engine's "remember last selected command" behavior. With no
+    // world both are disabled, so the cursor falls to Worlds: the one thing the
+    // player can actually do from here.
     Window_TitleCommand.prototype.selectLast = function () {
         if (this.isContinueEnabled()) {
             this.selectSymbol('continue');
-        } else {
+        } else if (hasActiveWorld()) {
             this.selectSymbol('newGame');
+        } else {
+            this.selectSymbol('worlds');
         }
     };
 
     // Add Tutorial command to the title menu
 Window_TitleCommand.prototype.makeCommandList = function () {
+    const worldReady = hasActiveWorld();
+
     if (!hideStartOptions) {
-        this.addCommand(T('Titlescreen.menu.explore'), 'newGame');
+        this.addCommand(T('Titlescreen.menu.explore'), 'newGame', worldReady);
     }
 
     this.addCommand(T('Titlescreen.menu.reconnect'), 'continue', this.isContinueEnabled());
-    this.addCommand(T('Titlescreen.menu.tutorial'), 'tutorial');
+    this.addCommand(T('Titlescreen.menu.tutorial'), 'tutorial', worldReady);
     this.addCommand(T('Titlescreen.menu.minigames'), 'minigames');
 
     if (!hideStartOptions) {
-        this.addCommand(T('Titlescreen.menu.sandbox'), 'sandboxGame');
+        this.addCommand(T('Titlescreen.menu.sandbox'), 'sandboxGame', worldReady);
     }
 
     this.addCommand(T('Titlescreen.menu.worlds'), 'worlds');
@@ -5436,13 +5457,17 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         ru: svgBandsH('#FFFFFF', '#0039A6', '#D52B1E'),
         ko: svgFlag(
             '<path d="M0,0 v40 h60 v-40 z" fill="#FFFFFF"/>' +
-            '<g transform="rotate(-33.69 30 20)">' +
+            // The taegeuk is drawn split left/right, so it has to be turned until
+            // red sits above blue: the dividing line runs along the flag's
+            // top-left/bottom-right diagonal, 33.69 degrees off the horizontal,
+            // which puts the base split 56.31 degrees from where it is wanted.
+            '<g transform="rotate(-56.31 30 20)">' +
             '<circle cx="30" cy="20" r="8" fill="#CD2E3A"/>' +
             '<path d="M30,12 A4,4 0 0,1 30,20 A4,4 0 0,0 30,28 A8,8 0 0,1 30,12 z" fill="#0047A0"/>' +
             '</g>' +
             svgTrigram(45, [true, true, true]) +          // geon, upper hoist
-            svgTrigram(-45, [false, true, false]) +        // gam, lower hoist
-            svgTrigram(135, [true, false, true]) +         // ri, upper fly
+            svgTrigram(-45, [true, false, true]) +         // ri, lower hoist
+            svgTrigram(135, [false, true, false]) +        // gam, upper fly
             svgTrigram(-135, [false, false, false])        // gon, lower fly
         )
     };
@@ -5657,28 +5682,58 @@ Window_TitleCommand.prototype.makeCommandList = function () {
             e.stopPropagation();
             e.preventDefault();
             if (SceneManager._scene !== this) return;
-            if (btn.style.cursor !== 'pointer' || !window.Scene_GameUpdater) return;
-            SoundManager.playOk();
-            SceneManager.push(window.Scene_GameUpdater);
+            if (btn.style.cursor !== 'pointer') return;
+            this.startUpdateDownload();
         });
 
         this.refreshUpdateButton();
     };
 
+    // How much of a build's name the button can carry before the corner of the
+    // title screen starts to look like a paragraph.
+    const UPDATE_NAME_MAX = 34;
+
+    const updateBuildLabel = (result) => {
+        const name = result && result.latestName ? String(result.latestName).trim() : '';
+        if (name) {
+            const short = name.length > UPDATE_NAME_MAX
+                ? name.slice(0, UPDATE_NAME_MAX - 1).trimEnd() + '…'
+                : name;
+            return T('Titlescreen.update.download', { name: short });
+        }
+        const build = result ? result.latestBuild : null;
+        return (typeof build === 'number')
+            ? T('Titlescreen.update.downloadBuild', { build: build })
+            : T('Titlescreen.update.readyPlain');
+    };
+
     // Three states, and two of them are silence: checking says so quietly, a
     // build waiting is a real button, everything else (up to date, offline, a
-    // failed check) shows nothing at all.
+    // failed check) shows nothing at all. While the build is being fetched the
+    // button becomes its own progress readout, so nothing else has to open.
     Scene_Title.prototype.refreshUpdateButton = function () {
         const btn = this._updateButton;
         if (!btn) return;
+        if (this._updateBusy) return;
         const api = updaterApi();
         const result = api ? api.autoResult() : null;
 
-        if (result && result.available) {
-            const build = result.latestBuild;
-            btn.textContent = (typeof build === 'number')
-                ? T('Titlescreen.update.ready', { build: build })
-                : T('Titlescreen.update.readyPlain');
+        // A build fetched and swapped in by an earlier visit to this screen (or
+        // by the updater itself) only wants the game restarted onto it.
+        if (api && api.needsRestart && api.needsRestart()) {
+            btn.textContent = T('Titlescreen.update.restartReady');
+            btn.title = T('Titlescreen.update.restartTip');
+            btn.style.display = 'flex';
+            btn.style.cursor = 'pointer';
+            btn.style.pointerEvents = 'auto';
+            btn.style.color = '#FFD700';
+            btn.style.animation = 'title-update-pulse 2.4s ease-in-out infinite';
+            this.layoutUpdateButton();
+            return;
+        }
+
+        if (result && result.available && !this._updateDone) {
+            btn.textContent = updateBuildLabel(result);
             btn.title = T('Titlescreen.update.tip');
             btn.style.display = 'flex';
             btn.style.cursor = 'pointer';
@@ -5715,6 +5770,105 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         TitleLayout.place(btn, { left: 18, top: Math.round(below) });
         btn.style.padding = TitleLayout.px(5, s) + ' ' + TitleLayout.px(10, s);
         btn.style.fontSize = TitleLayout.px(12, s);
+    };
+
+    // Pressing the notice installs the build there and then: the newest commit
+    // is fetched, swapped in and the game restarted onto it, with the button
+    // itself reporting every step. The updater screen is still there under the
+    // menu for anyone who wants to read a build before taking it, or to go back
+    // to an older one, but the ordinary case never has to open it.
+    Scene_Title.prototype.startUpdateDownload = function () {
+        if (this._updateBusy) return;
+        const api = updaterApi();
+        // Already fetched, waiting only on the restart.
+        if (api && api.needsRestart && api.needsRestart()) {
+            SoundManager.playOk();
+            this._updateBusy = true;
+            if (this._updateButton) this._updateButton.textContent = T('Titlescreen.update.restarting');
+            setTimeout(() => api.restart(), 400);
+            return;
+        }
+        // The updater is working for somebody else (a check left running, or an
+        // install started before the screen was rebuilt): let it finish.
+        if (api && api.isBusy && api.isBusy()) return;
+        const result = api ? api.autoResult() : null;
+        if (!api || !result || !result.available || !result.latest) return;
+
+        // Downloads switched off in the plugin parameters: only the updater
+        // screen can explain that, so hand over to it.
+        if (api.downloadsEnabled && !api.downloadsEnabled()) {
+            if (window.Scene_GameUpdater) {
+                SoundManager.playOk();
+                SceneManager.push(window.Scene_GameUpdater);
+            }
+            return;
+        }
+
+        const btn = this._updateButton;
+        const sha = result.latest;
+        this._updateBusy = true;
+        SoundManager.playOk();
+
+        const say = (text) => {
+            if (!btn) return;
+            btn.textContent = text;
+            btn.style.cursor = 'default';
+            btn.style.pointerEvents = 'none';
+            btn.style.animation = '';
+            btn.style.display = 'flex';
+        };
+        const release = (text, dim) => {
+            this._updateBusy = false;
+            if (!btn) return;
+            btn.textContent = text;
+            btn.title = text;
+            btn.style.color = dim ? 'rgba(255, 215, 0, 0.55)' : '#FFD700';
+        };
+
+        const onProgress = (p) => {
+            if (!p) return;
+            if (p.phase === 'download') {
+                const pct = typeof p.ratio === 'number'
+                    ? Math.round(Math.max(0, Math.min(1, p.ratio)) * 100) : 0;
+                say(T('Titlescreen.update.downloading', { percent: pct }));
+            } else if (p.phase === 'apply' || p.phase === 'done') {
+                say(T('Titlescreen.update.installing'));
+            } else {
+                say(T('Titlescreen.update.preparing'));
+            }
+        };
+
+        say(T('Titlescreen.update.preparing'));
+
+        // The launch check already measured this build, so the plan is usually
+        // in hand; anything else is measured now.
+        const planned = api.plan(sha);
+        const ready = (planned && planned.changed.length)
+            ? Promise.resolve(planned)
+            : api.check(sha, onProgress);
+
+        ready.then((plan) => {
+            if (!plan || !plan.changed.length) {
+                // The comparison found nothing after all: this copy is already
+                // the build being offered, so the notice has nothing left to say.
+                this._updateDone = true;
+                release(T('Titlescreen.update.upToDate'), true);
+                setTimeout(() => { if (btn) btn.style.display = 'none'; }, 2500);
+                return null;
+            }
+            return api.install(sha, onProgress);
+        }).then((done) => {
+            if (!done) return;
+            say(T('Titlescreen.update.restarting'));
+            setTimeout(() => api.restart(), 700);
+        }).catch((err) => {
+            console.warn('Titlescreen: the update could not be installed', err);
+            release(T('Titlescreen.update.failed'), false);
+            if (btn) {
+                btn.style.cursor = 'pointer';
+                btn.style.pointerEvents = 'auto';
+            }
+        });
     };
 
     Scene_Title.prototype.removeUpdateButton = function () {
@@ -6300,11 +6454,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
     Scene_Title.prototype.getTitleCommandText = function () {
         const commands = [];
+        // Mirrors Window_TitleCommand.makeCommandList: with no world there is
+        // nowhere to start a game, so every entry that would need one is shown
+        // greyed out rather than silently kicking the player to another screen.
+        const worldReady = hasActiveWorld();
 
         if (!hideStartOptions) {
             commands.push({
                 text: T('Titlescreen.menuOverlay.explore'),
-                symbol: 'newGame'
+                symbol: 'newGame',
+                enabled: worldReady
             });
         }
 
@@ -6316,7 +6475,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         commands.push({
             text: T('Titlescreen.menuOverlay.tutorial'),
-            symbol: 'tutorial'
+            symbol: 'tutorial',
+            enabled: worldReady
         });
 
         // Keep these in the SAME order as Window_TitleCommand.makeCommandList: the
@@ -6330,7 +6490,8 @@ Window_TitleCommand.prototype.makeCommandList = function () {
         if (!hideStartOptions) {
             commands.push({
                 text: T('Titlescreen.menuOverlay.sandbox'),
-                symbol: 'sandboxGame'
+                symbol: 'sandboxGame',
+                enabled: worldReady
             });
         }
 
@@ -6338,7 +6499,9 @@ Window_TitleCommand.prototype.makeCommandList = function () {
 
         commands.push({
             text: T('Titlescreen.menuOverlay.worlds') +
-                (activeWorld ? ` [${activeWorld.toUpperCase()}]` : ''),
+                (activeWorld
+                    ? ` [${activeWorld.toUpperCase()}]`
+                    : ` [${T('Titlescreen.menuOverlay.noWorld')}]`),
             symbol: 'worlds'
         });
 
@@ -6531,9 +6694,16 @@ Window_TitleCommand.prototype.makeCommandList = function () {
                 moved = true;
             }
         } else if (Input.isTriggered('ok')) {
-            SoundManager.playOk();
-            this._commandWindow.select(this._selectedCommandIndex);
-            this._commandWindow.callOkHandler();
+            // callOkHandler bypasses the window's own enabled check, so a
+            // greyed-out entry (no world yet) has to be refused here.
+            const chosen = commands[this._selectedCommandIndex];
+            if (!chosen || chosen.enabled === false) {
+                SoundManager.playBuzzer();
+            } else {
+                SoundManager.playOk();
+                this._commandWindow.select(this._selectedCommandIndex);
+                this._commandWindow.callOkHandler();
+            }
         } else if (Input.isTriggered('cancel')) {
             // No cancel on title screen - do nothing
         }

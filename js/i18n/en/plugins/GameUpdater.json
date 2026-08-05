@@ -15,6 +15,7 @@
   "committed": "Published",
   "author": "Built by",
   "message": "Notes",
+  "changelog": "Changelog",
   "age": "Position",
   "tracked": "Files in build",
   "toUpdate": "Files to replace",

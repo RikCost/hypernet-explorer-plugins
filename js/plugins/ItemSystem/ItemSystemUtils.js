@@ -264,9 +264,11 @@
 
     /**
      * Silently apply an item's declared need restoration to a single actor.
-     * Writes both the actor need meter (used for Actor 1 / hunger / sleep) and,
-     * for recruited NPC members, their society profile (used for the extended
-     * meters of party members 2 and 3). Returns the applied restores.
+     * The actor need methods already write where each meter lives (the extended
+     * meters of a recruited member live on their society profile), so only
+     * hunger and sleep, which the party shares, are mirrored onto the profile
+     * of a recruited member so the society simulation sees the meal too.
+     * Returns the applied restores.
      */
     applyNeedRestores: function (actor, item) {
       const restores = this.getNeedRestores(item);
@@ -278,7 +280,8 @@
       restores.forEach((r) => {
         const adder = this.NEED_ADDERS[r.key];
         if (adder && typeof actor[adder] === "function") actor[adder](r.amount);
-        if (profile && typeof profile[r.key] === "number") {
+        const mirrored = r.key === "hunger" || r.key === "sleep";
+        if (mirrored && profile && typeof profile[r.key] === "number") {
           profile[r.key] = Math.max(0, Math.min(100, profile[r.key] + r.amount));
         }
       });
@@ -443,16 +446,19 @@
         return "img/busts/7";
       }
 
-      // Players 2 & 3: Check Variables 107 and 108 first, then SpritesAssociation
-      if (actorId === 2) {
-        const player2BustName = $gameActors.actor(2).vnBattler();
-        if (player2BustName && player2BustName !== "") {
-          return "img/busts/" + player2BustName;
+      // Players 2 & 3: same priority as Player 1. The bust name comes first,
+      // then the battler image when the slot is flagged as a creature (switch
+      // 78/79) - that field holds an img/enemies/ name, never a bust one.
+      if (actorId === 2 || actorId === 3) {
+        const bustName = actor.vnBust();
+        if (bustName && bustName !== "") {
+          return "img/busts/" + bustName;
         }
-      } else if (actorId === 3) {
-        const player3BustName = $gameActors.actor(3).vnBattler();
-        if (player3BustName && player3BustName !== "") {
-          return "img/busts/" + player3BustName;
+        if ($gameSwitches.value(actorId === 2 ? 78 : 79)) {
+          const monsterName = actor.vnBattler();
+          if (monsterName && monsterName !== "") {
+            return "img/enemies/" + monsterName;
+          }
         }
       }
 

@@ -163,6 +163,14 @@
     function shortSha(sha) {
         return sha ? String(sha).slice(0, 7) : null;
     }
+    // A commit message is a title and, under it, whatever the build wanted to
+    // say about itself: the first is the build's name, the rest its changelog.
+    function messageTitle(message) {
+        return String(message || '').split('\n')[0].trim();
+    }
+    function messageBody(message) {
+        return String(message || '').split('\n').slice(1).join('\n').trim();
+    }
     function formatBytes(bytes) {
         const b = Number(bytes) || 0;
         if (b < 1024) return b + ' B';
@@ -614,7 +622,8 @@
             if (!latest) {
                 this._auto = {
                     ran: true, available: false, latest: null, latestDate: null,
-                    latestBuild: null, build: this.buildNumber(), files: 0, bytes: 0, error: null
+                    latestBuild: null, latestName: null, build: this.buildNumber(),
+                    files: 0, bytes: 0, error: null
                 };
                 return this._auto;
             }
@@ -646,6 +655,9 @@
                 latest: latest.sha,
                 latestDate: latest.date,
                 latestBuild: latestBuild,
+                // What the branch calls that build: the title screen offers the
+                // update by name rather than by number.
+                latestName: latest.message || null,
                 build: this.buildNumber(),
                 files: plan ? plan.changed.length : 0,
                 bytes: plan ? plan.bytes : 0,
@@ -742,11 +754,15 @@
                 for (const c of list) {
                     if (!c || !c.sha) continue;
                     if (c.sha === BASE_COMMIT) { reachedOrigin = true; break; }
+                    const full = c.commit ? String(c.commit.message || '') : '';
                     rows.push({
                         sha: c.sha,
                         date: c.commit && c.commit.author ? c.commit.author.date : null,
                         author: c.commit && c.commit.author ? c.commit.author.name : '',
-                        message: c.commit ? String(c.commit.message || '').split('\n')[0] : ''
+                        message: messageTitle(full),
+                        // Everything the commit says under its first line: what
+                        // the build dossier shows as that build's changelog.
+                        body: messageBody(full)
                     });
                 }
 
@@ -790,11 +806,13 @@
                 if (!commit) {
                     const raw = await githubApi(`/repos/${OWNER}/${REPO}/commits/${encodeURIComponent(commitSha)}`); // i18n-ignore: api path
                     if (!raw || !raw.sha) throw new Error('build ' + shortSha(commitSha) + ' not found'); // i18n-ignore: diagnostic
+                    const full = raw.commit ? String(raw.commit.message || '') : '';
                     commit = {
                         sha: raw.sha,
                         date: raw.commit && raw.commit.author ? raw.commit.author.date : null,
                         author: raw.commit && raw.commit.author ? raw.commit.author.name : '',
-                        message: raw.commit ? String(raw.commit.message || '').split('\n')[0] : ''
+                        message: messageTitle(full),
+                        body: messageBody(full)
                     };
                 }
 
@@ -845,6 +863,7 @@
                     date: commit.date,
                     author: commit.author,
                     message: commit.message,
+                    body: commit.body || '',
                     total: blobs.length,
                     changed: changed,
                     bytes: changed.reduce((sum, c) => sum + (c.size || 0), 0),
@@ -1437,6 +1456,7 @@
                             </div>
                             <div class="gu-note" id="gu-note" style="display:none"></div>
                             <div class="inspect-lore" id="gu-specs"></div>
+                            <div class="gu-changelog" id="gu-changelog" style="display:none"></div>
                             <div class="inspect-actions" id="gu-actions"></div>
                             <div class="gu-files" id="gu-files" style="display:none"></div>
                         </div>
@@ -1455,6 +1475,7 @@
                 status:   q('#gu-status'),
                 note:     q('#gu-note'),
                 specs:    q('#gu-specs'),
+                changelog: q('#gu-changelog'),
                 actions:  q('#gu-actions'),
                 files:    q('#gu-files')
             };
@@ -1558,6 +1579,25 @@
             return specs;
         }
 
+        // What the selected build says about itself, under its title: the body
+        // of its commit message, one line per entry, with list markers turned
+        // into bullets. A build whose message is a title alone shows nothing.
+        _changelogHTML(T) {
+            const commit = this._selectedBuild();
+            const body = commit && commit.body ? String(commit.body) : '';
+            if (!body.trim()) return '';
+            const lines = body.split('\n').map(l => l.replace(/\s+$/, ''))
+                .filter(l => l.trim().length);
+            if (!lines.length) return '';
+            return `
+                <div class="gu-changelog-header">${esc(T.changelog || T.message || '')}</div>
+                ${lines.map(line => {
+                    const item = /^\s*[-*•]\s+/.test(line);
+                    const text = item ? line.replace(/^\s*[-*•]\s+/, '') : line.trim();
+                    return `<div class="gu-changelog-line${item ? ' gu-changelog-line--item' : ''}">${esc(text)}</div>`;
+                }).join('')}`;
+        }
+
         _filesHTML(T) {
             const commit = this._selectedBuild();
             const plan = commit ? GameUpdater.plan(commit.sha) : null;
@@ -1597,6 +1637,12 @@
                 this._dom.note.style.display = note.text ? '' : 'none';
                 this._dom.note.classList.toggle('gu-note--bad', !!note.bad);
             }
+
+            const changelog = this._changelogHTML(T);
+            if (this._setRegion('changelog', this._dom.changelog, changelog) && this._dom.changelog) {
+                this._dom.changelog.scrollTop = 0;
+            }
+            if (this._dom.changelog) this._dom.changelog.style.display = changelog ? '' : 'none';
 
             const files = this._filesHTML(T);
             if (this._setRegion('files', this._dom.files, files) && this._dom.files) {

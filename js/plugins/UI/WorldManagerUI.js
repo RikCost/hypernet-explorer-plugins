@@ -1037,6 +1037,10 @@
     // Title screen: starting a game requires an active world
     //=========================================================================
 
+    // The title screen already greys these out with no world (Titlescreen.js),
+    // so this is the backstop for any other route into them: it sends the
+    // player to the create form rather than starting a game with nowhere to
+    // keep its history, its people or its savegame.
     function requireActiveWorld() {
         if (window.WorldManager && window.WorldManager.activeWorldName) return true;
         SoundManager.playBuzzer();
@@ -1049,6 +1053,18 @@
     Scene_Title.prototype.commandNewGame = function () {
         if (!requireActiveWorld()) return;
         _Scene_Title_commandNewGame.call(this);
+    };
+
+    const _Scene_Title_commandTutorial = Scene_Title.prototype.commandTutorial;
+    Scene_Title.prototype.commandTutorial = function () {
+        if (!requireActiveWorld()) return;
+        _Scene_Title_commandTutorial.call(this);
+    };
+
+    const _Scene_Title_commandSandboxGame = Scene_Title.prototype.commandSandboxGame;
+    Scene_Title.prototype.commandSandboxGame = function () {
+        if (!requireActiveWorld()) return;
+        _Scene_Title_commandSandboxGame.call(this);
     };
 
     const _Scene_Title_onTutorialContinue = Scene_Title.prototype.onTutorialContinue;

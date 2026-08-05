@@ -1094,6 +1094,20 @@
         // old behaviour of preferring the 3D model when one resolves.
         const portraitMode = typeof actor.portraitMode === 'function' ? actor.portraitMode() : 0;
         if (portraitMode === 'bust' || portraitMode === 'sprite') return null;
+        // A monster recruited through the talk system records the enemy it came
+        // from, so its own bespoke model is built instead of the first enemy
+        // that happens to share the same battler art. The record is ignored once
+        // the slot's portrait no longer matches it (a later character rewrote
+        // the slot and never cleared the id).
+        const recruitedId = actor._recruitedEnemyId;
+        const recruited = recruitedId ? $dataEnemies[recruitedId] : null;
+        const battlerField = typeof actor.vnBattler === 'function' ? actor.vnBattler() : null;
+        if (recruited && battlerField && recruited.battlerName === battlerField) {
+            const recruitKey = window.Battler3D.resolveKey(recruited);
+            if (recruitKey) {
+                return { kind: 'enemy', archKey: recruitKey, enemyId: recruited.id, actorId: actor.actorId() };
+            }
+        }
         // Creature monster form: getActorBustImagePath returns an img/enemies/
         // path precisely in that case, and the flat 2D enemy battler is
         // replaced by its procedural 3D model.

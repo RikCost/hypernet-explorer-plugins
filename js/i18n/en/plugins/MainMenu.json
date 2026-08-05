@@ -154,6 +154,8 @@
     "worldMapTitle": "World map"
   },
   "pets": {
+    "rename": "Rename",
+    "active": "Active",
     "release": "Release",
     "none": "No pets or followers recruited yet. Ask an enemy to join as a pet or follower during battle."
   },

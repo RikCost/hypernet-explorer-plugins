@@ -4200,6 +4200,17 @@
       if (this._step === STEP.COMBAT_MODE) {
         $gameSwitches.setValue(45, false);
         $gameSwitches.setValue(46, false);
+        // Map Battle (BattleSystem/MapBattleMode.js) is a ConfigManager option,
+        // not a save switch, so a copy of the game that has it on carries it
+        // into a brand new party. The step's handler used to clear it; with the
+        // step skipped, the FIRST creation of a playthrough clears it here so a
+        // new game always starts on the classic battle scene. Later creations
+        // (adding a party member) leave it alone: by then it is the player's own
+        // Options > Gameplay choice.
+        if (!hasCompletedFirstCreation()) {
+          ConfigManager.mapBattleMode = false;
+          ConfigManager.save();
+        }
         markStepCompleted(STEP.COMBAT_MODE);
         this._step++;
         this.setupStep();

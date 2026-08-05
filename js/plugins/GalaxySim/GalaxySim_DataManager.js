@@ -405,6 +405,13 @@
         departurePosition: null,
         targetPosition: null,
         travelDistance: 0,
+        // Immutable anchor of the whole trip. departurePosition/travelDistance
+        // are rebased every time the warp slider moves (see
+        // recalculateDepartureOnSpeedChange), so they only describe the leg
+        // being flown right now; anything that draws how far along the route
+        // the ship is must measure against these instead.
+        originPosition: null,
+        originDistance: 0,
         orbitRadius: 0.5,
         // Exotic fuels (see HYPERFLUX_MAX / SCHRODINGERITE_MAX). Start full.
         hyperflux: HYPERFLUX_MAX,
@@ -478,6 +485,7 @@
       const dy = this.playerShip.targetPosition.y - this.playerShip.departurePosition.y;
       const dz = this.playerShip.targetPosition.z - this.playerShip.departurePosition.z;
       this.playerShip.travelDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      this._anchorTravelOrigin();
 
       return true;
     }
@@ -534,8 +542,38 @@
       const dy = this.playerShip.targetPosition.y - this.playerShip.departurePosition.y;
       const dz = this.playerShip.targetPosition.z - this.playerShip.departurePosition.z;
       this.playerShip.travelDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      this._anchorTravelOrigin();
 
       return true;
+    }
+
+    // Pin the start of the route, once per departure. Everything that reports
+    // "how far along is the ship" measures from here, so a mid-flight warp
+    // change (which rewrites departurePosition/travelDistance) cannot make the
+    // trip look like it is starting over.
+    _anchorTravelOrigin() {
+      this.playerShip.originPosition = { ...this.playerShip.departurePosition };
+      this.playerShip.originDistance = this.playerShip.travelDistance;
+    }
+
+    /**
+     * Fraction of the plotted route already flown, 0..1, measured against the
+     * trip's origin rather than the current leg.
+     * @param {object} [ship] defaults to the player ship
+     */
+    travelProgress(ship) {
+      const s = ship || this.playerShip;
+      if (!s) return 0;
+      // A course plotted before origins were tracked (or restored from an old
+      // save mid-flight) falls back to the leg it is flying.
+      const origin = s.originPosition || s.departurePosition;
+      const span = s.originDistance || s.travelDistance;
+      if (!origin || !span || !s.position) return 0;
+      const dx = s.position.x - origin.x;
+      const dy = s.position.y - origin.y;
+      const dz = s.position.z - origin.z;
+      const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      return Math.max(0, Math.min(1, d / span));
     }
 
     stopTravel(userStopped = true) {
@@ -547,6 +585,8 @@
       this.playerShip.lastFuelTime = null;
       this.playerShip.departurePosition = null;
       this.playerShip.targetPosition = null;
+      this.playerShip.originPosition = null;
+      this.playerShip.originDistance = 0;
       if (userStopped) {
         this.playerShip.stoppedMidTravel = true;
         // A course the player abandoned no longer hands off to the pumps.
@@ -991,9 +1031,20 @@
       return true;
     }
 
+    // A warp change restarts the clock from where the ship is now, so the new
+    // speed applies to the rest of the route instead of retroactively to the
+    // part already flown. The trip ORIGIN is deliberately left alone: it is
+    // what the star map draws the ship's position along, and rebasing it made
+    // the craft jump back to the system it departed from.
     recalculateDepartureOnSpeedChange() {
       if (!this.playerShip.isMoving || !this.playerShip.departureTime) {
         return;
+      }
+
+      // A course plotted before origins were tracked keeps its true start.
+      if (!this.playerShip.originPosition && this.playerShip.departurePosition) {
+        this.playerShip.originPosition = { ...this.playerShip.departurePosition };
+        this.playerShip.originDistance = this.playerShip.travelDistance;
       }
 
       this.playerShip.departurePosition = {

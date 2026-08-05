@@ -243,7 +243,8 @@ const GameOptions = {
             // other one reads, so it must stay first.
             symbols: [
                 'language', 'fogOfWar', 'fowEnabled', 'enemySpawnMode', 'enemyDifficulty',
-                'cpuPartyMembers', 'skillCategoryMode', 'commandRemember', 'smoothBattleLog'
+                'mapBattleMode', 'cpuPartyMembers', 'skillCategoryMode', 'commandRemember',
+                'smoothBattleLog'
             ]
         },
         {
@@ -274,7 +275,7 @@ const GameOptions = {
             nameKey: 'experimental',
             categories: ['experimental'],
             symbols: [
-                'weaponSprites3D', 'cardCombat', 'mapBattleMode', 'asciiModeEnabled', 'asciiHudEnabled'
+                'weaponSprites3D', 'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
             ]
         }
     ]
@@ -1672,16 +1673,17 @@ window.GameOptions = GameOptions;
         },
         'experimental', 'boolean');
 
-    // Map Battle replaces the standard battle scene the same way card combat
-    // does, so it sits next to it under Experimental. Off by default; it is
-    // still offered up front as a combat mode during character creation.
+    // Map Battle replaces the standard battle scene, so it belongs with the rest
+    // of the combat settings on the Gameplay page (card combat, which is still
+    // experimental, stays where it is). Off by default; it is also offered up
+    // front as a combat mode during character creation.
     GameOptions.registerOption('mapBattleMode', T('GameOptions.label.mapBattle'),
         () => ConfigManager.mapBattleMode === true,
         (value) => {
             ConfigManager.mapBattleMode = !!value;
             if (value) ConfigManager.cardCombat = false;
         },
-        'experimental', 'boolean');
+        'gameplay', 'boolean');
 
     //=========================================================================
     // Retro shader options (the low-poly/low-res 3D shader, PSXShader.js)

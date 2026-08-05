@@ -32,6 +32,14 @@
  * every other savegame that visits the same world tile — and it will not be
  * re-placed when the map regenerates.
  *
+ * That includes scenery stamped by a PREFAB (an authored map dropped onto the
+ * square, ProceduralMapPrefabs): it is felled, mined and dismantled like any
+ * generated feature, and the prefab pass reads the removals back through
+ * TerrainInteractions.removedTilesFor(), so the tree cut down in a prefab
+ * orchard is stamped bare every time that square is built again. It is keyed by
+ * world coordinate, not by prefab, so the same prefab standing on another
+ * square still has all of its trees.
+ *
  * Structure entrances (coordinate-seeded, generated on entry) are WALKED INTO,
  * not pressed: there is no choice window and the action button does nothing on
  * them. A passable entrance (a grate set into the floor) opens when the party
@@ -260,6 +268,22 @@
   const DEFAULT_CONFIG = { verb: VERB.DISMANTLE, spec: "Carpentry", rewards: [[MAT.WOOD, 1, 2]] };
   // i18n-ignore-end
 
+  // Scenery a prefab painted that the biome tileset gives no feature name to.
+  // A prefab is an authored map, and nearly everything it puts on the object
+  // layers IS a named feature of the biome tileset (classified above like any
+  // other) -- but the handful that is not used to be dead decoration standing in
+  // the middle of a square where everything around it comes apart. Whatever a
+  // prefab stood on an object layer is salvaged like the rest.
+  function prefabFixtureAt(x, y, tileId) {
+    // A5 (1536-1663) and A1-A4 (2048+) autotiles are ground and walls, never
+    // loose scenery, so a bare floor inside a prefab is not "dismantlable".
+    if (!tileId || tileId >= 1536) return false;
+    const P = window.ProceduralMapPrefabs;
+    const rects = (P && typeof P.getPrefabFootprints === "function") ? P.getPrefabFootprints() : null;
+    if (!rects) return false;
+    return rects.some(r => x >= r.x && y >= r.y && x < r.x + r.width && y < r.y + r.height);
+  }
+
   // Resolve the interaction config for a feature name, or null to skip.
   function classify(name) {
     if (!name) return null;
@@ -373,6 +397,33 @@
       return String(window.FurnitureSystem.furnitureMapKey());
     }
     return String($gameMap ? $gameMap.mapId() : 0);
+  }
+
+  // The same key composed for an EXPLICIT biome + world coordinate rather than
+  // for the map the party is standing on. The prefab pass asks for a square's
+  // removals from DataManager.loadMapData, before Game_Map has switched to it,
+  // so currentMapKey() would still be answering for the square being left.
+  // Mirrors WorldMapReturn's FurnitureSystem.mapKeyProvider exactly.
+  function procMapKeyFor(biomeName, worldCoords) {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg || !biomeName || !worldCoords) return null;
+    const depth = (pg.biomeLayerStack && pg.biomeLayerStack.length) || 0;
+    const sess = pg._dungeonSession;
+    const salt = (sess && sess.salt) ? `:${sess.salt}` : "";
+    return `proc:${biomeName}:${worldCoords.x},${worldCoords.y}:${depth}${salt}`;
+  }
+
+  // Every tile the party has removed on one proc-map square, as a Set of "x,y",
+  // or null when that square has none. ProceduralMapPrefabs reads it so a felled
+  // tree is stamped bare instead of being put back by the prefab it stood in.
+  function removedTilesFor(biomeName, worldCoords) {
+    const store = terrainStore();
+    if (!store) return null;
+    const key = procMapKeyFor(biomeName, worldCoords);
+    const tiles = key && store.dismantled[key];
+    if (!tiles) return null;
+    const keys = Object.keys(tiles);
+    return keys.length ? new Set(keys) : null;
   }
 
   function recordDismantled(tiles, name) {
@@ -956,10 +1007,12 @@
     const RBG = window.RandomBookGenerator;
     if (!RBG) return;
     const rng = seededRngForTile(t.x, t.y, 0x1157A2);
+    if (typeof RBG.generateTitle !== "function") return;
     const title = RBG.generateTitle(rng);
-    const author = RBG.generateAuthor(rng);
-    const description = RBG.generateDescription(rng);
-    showLoreMessage([`"${title}" — ${author}`, description]);
+    const author = typeof RBG.generateAuthor === "function" ? RBG.generateAuthor(rng) : "";
+    const description = typeof RBG.generateDescription === "function" ? RBG.generateDescription(rng) : "";
+    const heading = author ? `"${title}" — ${author}` : `"${title}"`;
+    showLoreMessage(description ? [heading, description] : [heading]);
   };
 
   // --- Chair / Throne / Stool: sit, exactly like a region-102 seat tile ---
@@ -1376,7 +1429,11 @@
       return true;
     }
 
-    const cfg = classify(info.name);
+    let cfg = classify(info.name);
+    // Unnamed scenery inside a prefab: generic salvage rather than nothing.
+    if (!cfg && !SKIP.has(info.name) && prefabFixtureAt(x, y, info.tileId)) {
+      cfg = DEFAULT_CONFIG;
+    }
     if (!cfg) return false;
 
     const tiles = computeFootprint(x, y, info.layer, info.tileId);
@@ -1423,6 +1480,11 @@
 
   window.TerrainInteractions = {
     tryInteract, applyDismantledToMap,
+    // Every removal recorded for one proc-map square (biome + world coordinate),
+    // read by ProceduralMapPrefabs so a prefab never re-stamps scenery the party
+    // already took apart on that square. Other squares running the same prefab
+    // are untouched: the key is the world coordinate, not the prefab.
+    removedTilesFor,
     // Exposed so FurnitureSystem's Features tab can price a placeable feature
     // off the SAME reward table dismantling it would actually pay out (no
     // duplicated classification data). Returns null for un-dismantlable /

@@ -40,7 +40,7 @@
  * @desc Opens the banking system menu
  *
  * @command ProcessDayChange
- * @desc Process a day change for interest and loan calculations
+ * @desc Force one extra day of interest and loan accrual (the ledger already follows the world clock)
  *
  * @help
  * ===========================================================================
@@ -57,9 +57,9 @@
  * How to Use
  * ===========================================================================
  * 1. In an event, use the plugin command "OpenBankMenu" to open the bank menu.
- * 2. Use the plugin command "ProcessDayChange" whenever a game day passes
- *    (typically in your day change events).
- * 
+ * 2. Days are read from the world clock, so interest and loan maturity advance
+ *    on their own. "ProcessDayChange" forces one extra day of accrual.
+ *
  * ===========================================================================
  * Script Calls
  * ===========================================================================
@@ -85,6 +85,15 @@
     const maxLoanAmount = Number(parameters['Max Loan Amount'] || 10000);
     const loanDuration = Number(parameters['Loan Duration'] || 30);
 
+    const MINUTES_PER_DAY = 1440;
+
+    // One toast per catch-up, not one per day the party spent away from a desk.
+    function notifyOverdue(penalized) {
+        if (penalized && window.ParchmentToast) {
+            window.ParchmentToast.show(T('BankLoan.ui.loanOverdue'), { severity: "warning", duration: 180 });
+        }
+    }
+
     //=============================================================================
     // Game_System
     //=============================================================================
@@ -94,9 +103,13 @@
         _Game_System_initialize.call(this);
         this._bankBalance = 0;
         this._loanBalance = 0;
+        this._loanPrincipal = 0;
         this._loanDueDate = 0;
         this._daysSinceInterest = 0;
         this._currentDay = 0;
+        // A new game already stands on day zero of the world clock, so there is
+        // nothing to rebase the first time the ledger is opened.
+        this._bankDaySynced = true;
     };
 
     Game_System.prototype.getBankBalance = function () {
@@ -129,13 +142,21 @@
         return false;
     };
 
-    Game_System.prototype.takeLoan = function (amount) {
-        // Books a bank can follow are books a bank will lend against, so a
-        // party that keeps its accounts borrows more (Accounting, spec 1).
-        const ceiling = window.SpecializationXP
+    // Books a bank can follow are books a bank will lend against, so a party
+    // that keeps its accounts borrows more (Accounting, spec 1). The UI asks for
+    // the same figure, so what is offered is what can actually be signed for.
+    Game_System.prototype.getLoanCeiling = function () {
+        return window.SpecializationXP
             ? Math.floor(maxLoanAmount * window.SpecializationXP.multiplier('Accounting', 0.12))
             : maxLoanAmount;
+    };
+
+    Game_System.prototype.takeLoan = function (amount) {
+        const ceiling = this.getLoanCeiling();
         if (amount > 0 && amount <= ceiling && (this._loanBalance || 0) === 0) {
+            // The term runs from today, not from whatever day the ledger last
+            // caught up to.
+            this.syncBankDays();
             this._loanBalance = amount;
             this._loanPrincipal = amount;
             this._loanDueDate = (this._currentDay || 0) + loanDuration;
@@ -167,9 +188,42 @@
         return false;
     };
 
+    // The day the world clock says it is (Variable 114 counts minutes). The
+    // ledger used to run on a counter only an event could advance, so a loan
+    // never actually fell due; it follows the calendar now.
+    Game_System.prototype.bankToday = function () {
+        if (window.TimeDateSystem && window.TimeDateSystem.getGameTimeMinutes) {
+            return Math.floor(window.TimeDateSystem.getGameTimeMinutes() / MINUTES_PER_DAY);
+        }
+        return this._currentDay || 0;
+    };
+
+    // Brings the ledger up to today, one day at a time. A save made before the
+    // ledger followed the clock is rebased rather than charged for every day it
+    // never knew about: the maturity term moves along with it.
+    // Returns true when an overdue penalty was charged on the way.
+    Game_System.prototype.syncBankDays = function () {
+        const today = this.bankToday();
+        if (!this._bankDaySynced) {
+            this._bankDaySynced = true;
+            const offset = today - (this._currentDay || 0);
+            if (offset > 0 && (this._loanDueDate || 0) > 0) this._loanDueDate += offset;
+            this._currentDay = today;
+            return false;
+        }
+        let penalized = false;
+        let guard = 3650;
+        while ((this._currentDay || 0) < today && guard-- > 0) {
+            if (this.processDayChange()) penalized = true;
+        }
+        return penalized;
+    };
+
+    // Returns true when an overdue penalty was actually charged.
     Game_System.prototype.processDayChange = function () {
         this._currentDay = (this._currentDay || 0) + 1;
         this._daysSinceInterest = (this._daysSinceInterest || 0) + 1;
+        let penalized = false;
 
         // Apply bank interest
         if (this._daysSinceInterest >= interestInterval) {
@@ -193,32 +247,36 @@
                 if (next > penaltyCap) next = penaltyCap;
                 this._loanBalance = next;
 
-                // Notify the player when a penalty is actually applied.
-                if (this._loanBalance > before && window.ParchmentToast) {
-                    window.ParchmentToast.show(T('BankLoan.ui.loanOverdue'), { severity: "warning", duration: 180 });
-                }
+                penalized = this._loanBalance > before;
             }
         }
+
+        return penalized;
     };
 
     //=============================================================================
     // Plugin Commands
     //=============================================================================
 
-    PluginManager.registerCommand(pluginName, "OpenBankMenu", args => {
-        if (window.HypernetOS && SceneManager._scene instanceof Scene_HypernetOS) {
-            if (window.HypernetBankApp) {
-                window.HypernetBankApp.launch();
-            } else {
-                SceneManager.push(Scene_BankSystem);
-            }
-        } else {
-            SceneManager.push(Scene_BankSystem);
+    // Inside the OS the bank is a desktop window; anywhere else it is a scene of
+    // its own. Either way the ledger is brought up to date before it is read.
+    function openBank() {
+        notifyOverdue($gameSystem.syncBankDays());
+        const inOS = window.HypernetOS && window.Scene_HypernetOS &&
+            SceneManager._scene instanceof window.Scene_HypernetOS;
+        if (inOS && window.HypernetBankApp) {
+            window.HypernetBankApp.launch();
+            return;
         }
+        SceneManager.push(Scene_BankSystem);
+    }
+
+    PluginManager.registerCommand(pluginName, "OpenBankMenu", () => {
+        openBank();
     });
 
-    PluginManager.registerCommand(pluginName, "ProcessDayChange", args => {
-        $gameSystem.processDayChange();
+    PluginManager.registerCommand(pluginName, "ProcessDayChange", () => {
+        notifyOverdue($gameSystem.processDayChange());
     });
 
     if (window.HypernetOS) {
@@ -227,11 +285,7 @@
             name: T('BankLoan.ui.appName'),
             icon: 84,
             launchFn: function() {
-                if (window.HypernetBankApp) {
-                    window.HypernetBankApp.launch();
-                } else {
-                    SceneManager.push(Scene_BankSystem);
-                }
+                openBank();
             },
             desktopShortcut: true
         });
@@ -243,7 +297,11 @@
         win: null,
         launch: function(params) {
             if (!window.HypernetWindowManager) return;
-            
+
+            // closeAll() (the OS shutting down) removes the window node without
+            // firing 'hypernet-closed', so a stale instance can outlive its DOM.
+            if (this.win && !this.win.isConnected) this.teardown();
+
             if (!this.win || !document.getElementById('app-bank-system')) {
                 this.win = window.HypernetWindowManager.createWindow({
                     id: 'app-bank-system',
@@ -258,16 +316,17 @@
                 this.appInstance._isAppMode = true;
                 this.appInstance.create();
                 
-                this.win.addEventListener('hypernet-closed', () => {
-                    if (this.appInstance) {
-                        this.appInstance.terminate();
-                        this.appInstance = null;
-                    }
-                    this.win = null;
-                });
+                this.win.addEventListener('hypernet-closed', () => this.teardown());
             } else {
                 window.HypernetWindowManager.bringToFront(this.win);
             }
+        },
+        teardown: function() {
+            if (this.appInstance) {
+                this.appInstance.terminate();
+                this.appInstance = null;
+            }
+            this.win = null;
         },
         update: function() {
             if (this.appInstance && this.win) {
@@ -323,49 +382,60 @@
         const lineHeight = this.lineHeight();
         const x = this.itemPadding();
         let y = 0;
+        // Labels are stored bare; the colon belongs to the view. The panels used
+        // to append one to a label that already carried it ("Bank Balance::").
+        const label = key => T(key) + ":";
 
         // Player's money
-        this.drawText(T('BankLoan.ui.yourMoney'), x, y, 120);
+        this.drawText(label('BankLoan.ui.yourMoney'), x, y, 120);
         this.drawText("€" + ($gameParty.gold() / 100).toFixed(2), x + 140, y, 120, 'right');
         y += lineHeight;
 
         // Bank balance
-        this.drawText(T('BankLoan.ui.bankBalance'), x, y, 120);
+        this.drawText(label('BankLoan.ui.bankBalance'), x, y, 120);
         this.drawText("€" + ($gameSystem.getBankBalance() / 100).toFixed(2), x + 140, y, 120, 'right');
         y += lineHeight;
 
         // Interest rate
-        this.drawText(T('BankLoan.ui.interestRate'), x, y, 120);
-        this.drawText((interestRate * 100).toFixed(1) + "% / " + interestInterval + " days", x + 140, y, 180, 'right');
+        this.drawText(label('BankLoan.ui.interestRate'), x, y, 120);
+        this.drawText(T('BankLoan.ui.ratePerDays',
+            { rate: (interestRate * 100).toFixed(1), days: interestInterval }), x + 140, y, 180, 'right');
         y += lineHeight;
 
         // Loan information
         if ($gameSystem.getLoanBalance() > 0) {
-            this.drawText(T('BankLoan.ui.loanAmount'), x, y, 120);
+            this.drawText(label('BankLoan.ui.loanAmount'), x, y, 120);
             this.drawText("€" + ($gameSystem.getLoanBalance() / 100).toFixed(2), x + 140, y, 120, 'right');
             y += lineHeight;
 
-            this.drawText(T('BankLoan.ui.dueDate'), x, y, 120);
-            const daysLeft = $gameSystem.getLoanDueDate() - ($gameSystem._currentDay || 0);
-            const dueDateText = T('BankLoan.ui.daysLeft', { days: daysLeft });
-            this.drawText(dueDateText, x + 140, y, 120, 'right');
+            this.drawText(label('BankLoan.ui.dueDate'), x, y, 120);
+            this.drawText(maturityText(), x + 140, y, 120, 'right');
             y += lineHeight;
 
-            this.drawText(T('BankLoan.ui.loanRate'), x, y, 120);
+            this.drawText(label('BankLoan.ui.loanRate'), x, y, 120);
             this.drawText((loanInterestRate * 100).toFixed(1) + "%", x + 140, y, 120, 'right');
         } else {
-            this.drawText(T('BankLoan.ui.maxLoan'), x, y, 120);
-            this.drawText("€" + (maxLoanAmount / 100).toFixed(2), x + 140, y, 120, 'right');
+            this.drawText(label('BankLoan.ui.maxLoan'), x, y, 120);
+            this.drawText("€" + ($gameSystem.getLoanCeiling() / 100).toFixed(2), x + 140, y, 120, 'right');
             y += lineHeight;
 
-            this.drawText(T('BankLoan.ui.loanRate'), x, y, 120);
+            this.drawText(label('BankLoan.ui.loanRate'), x, y, 120);
             this.drawText((loanInterestRate * 100).toFixed(1) + "%", x + 140, y, 120, 'right');
             y += lineHeight;
 
-            this.drawText(T('BankLoan.ui.loanDuration'), x, y, 120);
-            this.drawText(loanDuration + " days", x + 140, y, 120, 'right');
+            this.drawText(label('BankLoan.ui.loanDuration'), x, y, 120);
+            this.drawText(T('BankLoan.ui.daysCount', { days: loanDuration }), x + 140, y, 120, 'right');
         }
     };
+
+    // How long the outstanding loan has left, or that it has run out of time. A
+    // ledger that has fallen behind the clock would otherwise count backwards.
+    function maturityText() {
+        const daysLeft = $gameSystem.getLoanDueDate() - ($gameSystem._currentDay || 0);
+        return daysLeft >= 0
+            ? T('BankLoan.ui.daysLeft', { days: daysLeft })
+            : T('BankLoan.ui.overdue');
+    }
 
     //=============================================================================
     // Window_Amount - A simplified window for amount input
@@ -402,59 +472,21 @@
     Window_Amount.prototype.refresh = function () {
         this.contents.clear();
         const lineHeight = this.lineHeight();
-        const title = this._mode + " Amount:";
-        this.drawText(title, 0, 0, 200);
+        this.drawText(T('BankLoan.ui.proposedTransactionBalance'), 0, 0, 300);
 
         const amountText = "€" + (this._amount / 100).toFixed(2);
         this.drawText(amountText, 0, lineHeight, this.width - this.padding * 2, 'right');
 
-        const helpText = "↑↓: ±100  ←→: ±1000";
+        const helpText = T('BankLoan.ui.adjustKeys');
         this.contents.drawText(helpText, 0, lineHeight * 2, this.width - this.padding * 2, lineHeight);
 
         const confirmText = T('BankLoan.ui.confirmKeys');
         this.contents.drawText(confirmText, 0, lineHeight * 3, this.width - this.padding * 2, lineHeight);
     };
 
-    Window_Amount.prototype.update = function () {
-        Window_Base.prototype.update.call(this);
-        if (this.active) {
-            this.processDigitChange();
-            if (Input.isTriggered('ok')) {
-                this.processOk();
-            }
-            if (Input.isTriggered('cancel')) {
-                this.processCancel();
-            }
-        }
-    };
-
-    Window_Amount.prototype.processDigitChange = function () {
-        let changed = false;
-        let newAmount = this._amount;
-
-        if (Input.isRepeated('up')) {
-            newAmount = Math.min(newAmount + 100, this._maxAmount);
-            changed = true;
-        }
-        if (Input.isRepeated('down')) {
-            newAmount = Math.max(newAmount - 100, 0);
-            changed = true;
-        }
-        if (Input.isRepeated('right')) {
-            newAmount = Math.min(newAmount + 1000, this._maxAmount);
-            changed = true;
-        }
-        if (Input.isRepeated('left')) {
-            newAmount = Math.max(newAmount - 1000, 0);
-            changed = true;
-        }
-
-        if (changed && newAmount !== this._amount) {
-            this._amount = newAmount;
-            SoundManager.playCursor();
-            this.refresh();
-        }
-    };
+    // This window holds the amount; it never reads input. The scene polls the
+    // keys itself, and a window that polled them too moved the figure twice on
+    // every press (and the OS focus ring drives it inside HypernetOS).
 
     Window_Amount.prototype.processOk = function () {
         this.deactivate();
@@ -512,6 +544,9 @@
 
     Scene_BankSystem.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
+
+        // Reading the ledger brings it up to date, however it was opened.
+        notifyOverdue($gameSystem.syncBankDays());
 
         // Create status window
         const statusRect = this.statusWindowRect();
@@ -609,7 +644,7 @@
     Scene_BankSystem.prototype.commandLoan = function () {
         if ($gameSystem.getLoanBalance() === 0) {
             this._commandWindow.deactivate();
-            this._amountWindow.setMode("Loan", maxLoanAmount);  // i18n-ignore  mode id
+            this._amountWindow.setMode("Loan", $gameSystem.getLoanCeiling());  // i18n-ignore  mode id
             this._mode = "loan";
             this.refreshUIBankDOM();
         } else {
@@ -665,10 +700,10 @@
             if (success) {
                 SoundManager.playShop();
                 const actionText = {
-                    deposit: "deposited",
-                    withdraw: "withdrew",
-                    loan: "borrowed",
-                    repay: "repaid"
+                    deposit: T('BankLoan.ui.actionDeposited'),
+                    withdraw: T('BankLoan.ui.actionWithdrew'),
+                    loan: T('BankLoan.ui.actionBorrowed'),
+                    repay: T('BankLoan.ui.actionRepaid')
                 }[this._mode];
 
                 this.showMessage(T('BankLoan.ui.transactionDone',
@@ -690,7 +725,15 @@
         this.refreshUIBankDOM();
     };
 
+    // Neither the bank scene nor an OS window carries a message window, so a
+    // $gameMessage line sat in the queue until the party was back on the map.
+    // Toasts are the house style for this kind of notice and show where the
+    // player is actually looking.
     Scene_BankSystem.prototype.showMessage = function (text) {
+        if (window.ParchmentToast) {
+            window.ParchmentToast.show(text, { duration: 180 });
+            return;
+        }
         window.skipLocalization = true;
         $gameMessage.add(text);
         window.skipLocalization = false;
@@ -716,7 +759,24 @@
         this._activeTab = 'transact'; // 'transact', 'loans', 'terms'
 
         this._dndContainer = document.createElement('div');
-        this._dndContainer.id = 'menu-container';
+        // Every control declares data-bank-action and is served by this one
+        // delegated listener, bound to the container (which survives each
+        // innerHTML rewrite) rather than to inline attributes. The scene
+        // instance is captured in the closure, so a click always reaches the
+        // bank that drew the button: inline handlers went through
+        // SceneManager._scene, which inside HypernetOS is the desktop and not
+        // this scene, and every click threw "selectBankCommand is not a
+        // function".
+        this._dndContainer.addEventListener('click', (e) => {
+            const el = e.target && e.target.closest ?
+                e.target.closest('[data-bank-action]') : null;
+            if (!el || !this._dndContainer.contains(el)) return;
+            if (el.classList.contains('disabled')) {
+                if (window.SoundManager) SoundManager.playBuzzer();
+                return;
+            }
+            this.runBankAction(el.dataset.bankAction);
+        });
         this._dndContainer.style.width = '100%';
         this._dndContainer.style.height = '100%';
         this._dndContainer.style.display = 'flex';
@@ -734,7 +794,10 @@
             }
         }
 
-        // Fallback for non-app mode
+        // Fallback for non-app mode. The parchment overlay id belongs to the
+        // fullscreen scene only: it means position:fixed, 100vw/100vh and a dark
+        // backdrop, which inside an OS window paints over the whole desktop.
+        this._dndContainer.id = 'menu-container';
         this._dndContainer.style.position = 'absolute';
         this._dndContainer.style.top = '0';
         this._dndContainer.style.left = '0';
@@ -751,6 +814,36 @@
         this.refreshUIBankDOM();
     };
 
+    // Resolves a data-bank-action string into the matching scene call. Keeping
+    // the vocabulary in one place means the markup never names a global object.
+    Scene_BankSystem.prototype.runBankAction = function (action) {
+        if (!action) return;
+        const [verb, arg] = action.split(':');
+        switch (verb) {
+            case 'tab':
+                this.switchXPTab(arg);
+                break;
+            case 'cmd':
+                this.selectBankCommand(Number(arg));
+                break;
+            case 'amt':
+                this.adjustAmount(Number(arg));
+                break;
+            case 'amtmax':
+                this.adjustAmount(Number(arg), true);
+                break;
+            case 'confirm':
+                this.confirmTransaction();
+                break;
+            case 'void':
+                this.cancelTransaction();
+                break;
+            case 'close':
+                this.popScene();
+                break;
+        }
+    };
+
     Scene_BankSystem.prototype.switchXPTab = function (tabName) {
         if (this._activeTab !== tabName) {
             this._activeTab = tabName;
@@ -764,17 +857,28 @@
         }
     };
 
+    // One action button for the XP window: greyed out (unfocusable, and ignored
+    // by the delegated click handler) whenever the transaction it opens cannot
+    // be made, with the reason as its tooltip.
+    Scene_BankSystem.prototype.actionButtonHTML = function (id, action, label, enabled, disabledHint) {
+        const cls = enabled ? 'action-button focusable' : 'action-button disabled';
+        const tab = enabled ? ' tabindex="0"' : '';
+        const hint = enabled ? '' : ` title="${String(disabledHint).replace(/"/g, '&quot;')}"`;
+        return `
+            <div class="${cls}"${tab} id="${id}" data-bank-action="${action}"${hint}>
+                ${label}
+            </div>
+        `;
+    };
+
     Scene_BankSystem.prototype.refreshUIBankDOM = function () {
         if (!this._dndContainer) return;
 
         if (this._isAppMode) {
-            const useItalian = ConfigManager.language === 'it';
             const bankBalance = $gameSystem.getBankBalance();
             const loanBalance = $gameSystem.getLoanBalance();
-            const loanDueDate = $gameSystem.getLoanDueDate();
-            const currentDay = $gameSystem._currentDay || 0;
-            const daysLeft = loanDueDate - currentDay;
             const gold = $gameParty.gold();
+            const loanCeiling = $gameSystem.getLoanCeiling();
 
             const isAmountActive = this._amountWindow && this._amountWindow.active;
             const currentAmount = isAmountActive ? this._amountWindow.amount() : 0;
@@ -787,7 +891,7 @@
                 // TAB 1: Deposits & Withdrawals
                 let leftHTML = `
                     <h2 class="cc-header-gothic">${T('BankLoan.ui.accountsDeposits')}</h2>
-                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; font-size:11px; margin-bottom:12px;">
+                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px;">
                             <span style="color:#555;">${T('BankLoan.ui.personalWallet')}:</span>
                             <span style="font-weight:bold; color:#000;">€${(gold / 100).toFixed(2)}</span>
@@ -802,12 +906,12 @@
                         </div>
                     </div>
                     <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
-                        <div class="action-button" onclick="SceneManager._scene.selectBankCommand(0)">
-                            ${T('BankLoan.ui.depositFunds')}
-                        </div>
-                        <div class="action-button" onclick="SceneManager._scene.selectBankCommand(1)">
-                            ${T('BankLoan.ui.withdrawFunds')}
-                        </div>
+                        ${this.actionButtonHTML('bank-act-deposit', 'cmd:0',
+                            T('BankLoan.ui.depositFunds'), gold > 0,
+                            T('BankLoan.ui.noMoneyToDeposit'))}
+                        ${this.actionButtonHTML('bank-act-withdraw', 'cmd:1',
+                            T('BankLoan.ui.withdrawFunds'), bankBalance > 0,
+                            T('BankLoan.ui.noBankMoney'))}
                     </div>
                 `;
 
@@ -817,7 +921,7 @@
                 } else {
                     rightHTML = `
                         <h2 class="cc-header-gothic">${T('BankLoan.ui.depositGuidelines')}</h2>
-                        <div style="font-size:11px; line-height:1.4; color:#333; display:flex; flex-direction:column; gap:8px;">
+                        <div style="line-height:1.5; color:#333; display:flex; flex-direction:column; gap:8px;">
                             <p style="margin:0;">${T('BankLoan.ui.secureYourHardEarnedFunds')}</p>
                             <div style="background:#e5effa; border:1px solid #7f9db9; padding:6px; border-radius:3px; font-weight:bold; color:#0b2f70;">
                                 ${T('BankLoan.ui.currentYield')}: ${(interestRate * 100).toFixed(1)}% ${T('BankLoan.ui.every')} ${interestInterval} ${T('BankLoan.ui.days')}.
@@ -838,7 +942,7 @@
                 // TAB 2: Loans & Liabilities
                 let leftHTML = `
                     <h2 class="cc-header-gothic">${T('BankLoan.ui.debtLiabilities')}</h2>
-                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; font-size:11px; margin-bottom:12px;">
+                    <div class="stat-card" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px; color:${loanBalance > 0 ? '#a00' : 'inherit'}; font-weight:${loanBalance > 0 ? 'bold' : 'normal'};">
                             <span>${T('BankLoan.ui.outstandingDebt')}:</span>
                             <span>€${(loanBalance / 100).toFixed(2)}</span>
@@ -846,7 +950,7 @@
                         ${loanBalance > 0 ? `
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px;">
                             <span style="color:#555;">${T('BankLoan.ui.daysUntilDue')}:</span>
-                            <span style="color:#a00; font-weight:bold;">${daysLeft} days left</span>
+                            <span style="color:#a00; font-weight:bold;">${maturityText()}</span>
                         </div>
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px;">
                             <span style="color:#555;">${T('BankLoan.ui.premiumInterest')}:</span>
@@ -855,21 +959,21 @@
                         ` : `
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px;">
                             <span style="color:#555;">${T('BankLoan.ui.maxDebtLimit')}:</span>
-                            <span>€${(maxLoanAmount / 100).toFixed(2)}</span>
+                            <span>€${(loanCeiling / 100).toFixed(2)}</span>
                         </div>
                         <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:3px;">
                             <span style="color:#555;">${T('BankLoan.ui.durationStandard')}:</span>
-                            <span>${loanDuration} days</span>
+                            <span>${T('BankLoan.ui.daysCount', { days: loanDuration })}</span>
                         </div>
                         `}
                     </div>
                     <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
-                        <div class="action-button" onclick="SceneManager._scene.selectBankCommand(2)">
-                            ${T('BankLoan.ui.requestLoan')}
-                        </div>
-                        <div class="action-button" onclick="SceneManager._scene.selectBankCommand(3)">
-                            ${T('BankLoan.ui.repayDebt')}
-                        </div>
+                        ${this.actionButtonHTML('bank-act-loan', 'cmd:2',
+                            T('BankLoan.ui.requestLoan'), loanBalance === 0,
+                            T('BankLoan.ui.alreadyBorrowed'))}
+                        ${this.actionButtonHTML('bank-act-repay', 'cmd:3',
+                            T('BankLoan.ui.repayDebt'), loanBalance > 0 && gold > 0,
+                            loanBalance > 0 ? T('BankLoan.ui.noMoneyToRepay') : T('BankLoan.ui.noOutstandingLoan'))}
                     </div>
                 `;
 
@@ -879,7 +983,7 @@
                 } else {
                     rightHTML = `
                         <h2 class="cc-header-gothic">${T('BankLoan.ui.loanPolicies')}</h2>
-                        <div style="font-size:11px; line-height:1.4; color:#333; display:flex; flex-direction:column; gap:8px;">
+                        <div style="line-height:1.5; color:#333; display:flex; flex-direction:column; gap:8px;">
                             <p style="margin:0;">${T('BankLoan.ui.guildApprovedLoansProvideEmergency')}</p>
                             <div style="background:#fff8e8; border:1px solid #ff9900; padding:6px; border-radius:3px; font-weight:bold; color:#b85c00;">
                                 ${T('BankLoan.ui.notice')}: ${T('BankLoan.ui.unresolvedDebtsDirectlyImpactCredit')}
@@ -909,13 +1013,13 @@
                 <div class="cc-pockets-spread">
                     <!-- XP Tabs Navigation -->
                     <div class="xp-tabs">
-                        <div class="xp-tab ${this._activeTab === 'transact' ? 'active' : ''}" onclick="SceneManager._scene.switchXPTab('transact')">
+                        <div class="xp-tab focusable ${this._activeTab === 'transact' ? 'active' : ''}" tabindex="0" id="bank-tab-transact" data-bank-action="tab:transact">
                             ${T('BankLoan.ui.depositsWithdrawals')}
                         </div>
-                        <div class="xp-tab ${this._activeTab === 'loans' ? 'active' : ''}" onclick="SceneManager._scene.switchXPTab('loans')">
+                        <div class="xp-tab focusable ${this._activeTab === 'loans' ? 'active' : ''}" tabindex="0" id="bank-tab-loans" data-bank-action="tab:loans">
                             ${T('BankLoan.ui.loansLiabilities')}
                         </div>
-                        <div class="xp-tab ${this._activeTab === 'terms' ? 'active' : ''}" onclick="SceneManager._scene.switchXPTab('terms')">
+                        <div class="xp-tab focusable ${this._activeTab === 'terms' ? 'active' : ''}" tabindex="0" id="bank-tab-terms" data-bank-action="tab:terms">
                             ${T('BankLoan.ui.regulatoryTerms')}
                         </div>
                     </div>
@@ -926,9 +1030,9 @@
                     </div>
 
                     <!-- Footer Bar -->
-                    <div style="margin-top:4px; border-top:1px solid #7f9db9; padding-top:6px; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#555; width:100%;">
+                    <div style="margin-top:4px; border-top:1px solid #7f9db9; padding-top:6px; display:flex; justify-content:space-between; align-items:center; color:#555; width:100%;">
                         <span>${T('BankLoan.ui.navHint')}</span>
-                        <div class="back-button btn-stamp" onclick="SceneManager._scene.popScene()" style="padding:2px 12px; cursor:pointer;">
+                        <div class="back-button btn-stamp focusable" tabindex="0" id="bank-dismiss" data-bank-action="close" style="padding:2px 12px; cursor:pointer;">
                             ${T('BankLoan.ui.dismiss')}
                         </div>
                     </div>
@@ -937,12 +1041,8 @@
             return;
         }
 
-        const useItalian = ConfigManager.language === 'it';
         const bankBalance = $gameSystem.getBankBalance();
         const loanBalance = $gameSystem.getLoanBalance();
-        const loanDueDate = $gameSystem.getLoanDueDate();
-        const currentDay = $gameSystem._currentDay || 0;
-        const daysLeft = loanDueDate - currentDay;
         const gold = $gameParty.gold();
 
         const isAmountActive = this._amountWindow && this._amountWindow.active;
@@ -952,7 +1052,7 @@
 
         const selectedIndex = this._commandWindow ? this._commandWindow.index() : 0;
 
-        let leftPageHTML = this.getBankPocketsHTML(selectedIndex, gold, bankBalance, loanBalance, daysLeft);
+        let leftPageHTML = this.getBankPocketsHTML(selectedIndex, gold, bankBalance, loanBalance);
         let rightPageHTML = "";
 
         if (isAmountActive) {
@@ -979,8 +1079,8 @@
         `;
     };
 
-    Scene_BankSystem.prototype.getBankPocketsHTML = function (selectedIndex, gold, bankBalance, loanBalance, daysLeft) {
-        const useItalian = ConfigManager.language === 'it';
+    Scene_BankSystem.prototype.getBankPocketsHTML = function (selectedIndex, gold, bankBalance, loanBalance) {
+        const loanCeiling = $gameSystem.getLoanCeiling();
         const commands = [
             { symbol: "deposit", label: T('BankLoan.ui.depositFunds2') },
             { symbol: "withdraw", label: T('BankLoan.ui.withdrawFunds2') },
@@ -1010,7 +1110,7 @@
             `;
 
             commandListHTML += `
-                <div class="bank-command focusable" style="${itemStyle}" onclick="SceneManager._scene.selectBankCommand(${idx})">
+                <div class="bank-command focusable" tabindex="0" id="bank-cmd-${cmd.symbol}" style="${itemStyle}" data-bank-action="cmd:${idx}">
                     ${cmd.label}
                 </div>
             `;
@@ -1043,7 +1143,7 @@
                     ${loanBalance > 0 ? `
                     <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.8rem; color:#822d2d;">
                         <span>${T('BankLoan.ui.debtMaturityTerm')}:</span>
-                        <span>${daysLeft} days left</span>
+                        <span>${maturityText()}</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.8rem; color:#6b5242;">
                         <span>${T('BankLoan.ui.interestPremiumRate')}:</span>
@@ -1052,11 +1152,11 @@
                     ` : `
                     <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.8rem; color:#6b5242;">
                         <span>${T('BankLoan.ui.maxDebtLimit')}:</span>
-                        <span>€${(maxLoanAmount / 100).toFixed(2)}</span>
+                        <span>€${(loanCeiling / 100).toFixed(2)}</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.2); padding-bottom:2px; font-size:0.8rem; color:#6b5242;">
                         <span>${T('BankLoan.ui.maturityStandard')}:</span>
-                        <span>${loanDuration} days</span>
+                        <span>${T('BankLoan.ui.daysCount', { days: loanDuration })}</span>
                     </div>
                     `}
                 </div>
@@ -1068,8 +1168,44 @@
         `;
     };
 
+    // The ladder of adjustment steps, in gold: €1, €10, €100, €1000... up to the
+    // largest round step the transaction can actually spend. A wallet holding a
+    // few thousand euros is unusable one euro at a time, and a ladder fixed at
+    // the top would be four dead buttons on a small transaction.
+    const TIER_MIN = 100;        // €1.00
+    const TIER_MAX = 1000000;    // €10000.00
+    function amountTiers(maxAmount) {
+        const tiers = [];
+        for (let step = TIER_MIN; step <= TIER_MAX; step *= 10) {
+            // Always offer €1 and €10, then every step the ceiling can reach.
+            if (step > maxAmount && tiers.length >= 2) break;
+            tiers.push(step);
+        }
+        return tiers;
+    }
+
+    // The parchment book dresses its own buttons; the XP window takes them from
+    // the stylesheet.
+    const TIER_STYLE_PARCHMENT = "background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; " +
+        "font-size:0.8rem; font-weight:bold; text-align:center; border:1px solid #4a2711; " +
+        "cursor:pointer; transition: all 0.2s ease;";
+
+    // One row of the ladder per step, subtract on the left and add on the right.
+    Scene_BankSystem.prototype.amountTiersHTML = function (maxAmount) {
+        const style = this._isAppMode ? '' : ` style="${TIER_STYLE_PARCHMENT}"`;
+        return amountTiers(maxAmount).map(step => {
+            const label = "€" + (step / 100).toFixed(2);
+            return `
+                            <div class="btn-stamp focusable" tabindex="0" id="bank-amt-m${step}" data-bank-action="amt:-${step}"${style}>
+                                - ${label}
+                            </div>
+                            <div class="btn-stamp focusable" tabindex="0" id="bank-amt-p${step}" data-bank-action="amt:${step}"${style}>
+                                + ${label}
+                            </div>`;
+        }).join('');
+    };
+
     Scene_BankSystem.prototype.getTransactionDeedHTML = function (activeMode, currentAmount, maxAmount) {
-        const useItalian = ConfigManager.language === 'it';
         let title = "";
         let description = "";
 
@@ -1100,36 +1236,25 @@
 
                 <div style="flex:1; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%;">
                     <div style="border: 1px solid #7f9db9; background: #fcfcfc; padding: 12px; border-radius: 3px; display:flex; flex-direction:column; gap:8px; box-sizing: border-box; width:100%;">
-                        <div style="font-size:11px; font-style:italic; line-height:1.35; color:#555; border-bottom:1px dashed #ccc; padding-bottom:6px; text-align:center;">
+                        <div style="font-style:italic; line-height:1.4; color:#555; border-bottom:1px dashed #ccc; padding-bottom:6px; text-align:center;">
                             "${description}"
                         </div>
 
                         <div style="display:flex; flex-direction:column; align-items:center; gap:2px; margin: 4px 0;">
-                            <span style="font-size:9px; text-transform:uppercase; color:#0b2f70; font-weight:bold;">
+                            <span style="font-size:11px; text-transform:uppercase; color:#0b2f70; font-weight:bold;">
                                 ${T('BankLoan.ui.proposedTransactionBalance')}
                             </span>
-                            <div style="font-size:22px; font-weight:bold; color:#0054e3; line-height:1.1;">
+                            <div style="font-size:26px; font-weight:bold; color:#0054e3; line-height:1.1;">
                                 €${(currentAmount / 100).toFixed(2)}
                             </div>
-                            <span style="font-size:10px; color:#666;">
+                            <span style="font-size:12px; color:#666;">
                                 ${T('BankLoan.ui.permittedThreshold')}: €${(maxAmount / 100).toFixed(2)}
                             </span>
                         </div>
 
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">
-                            <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(-1000)">
-                                - €10.00
-                            </div>
-                            <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(1000)">
-                                + €10.00
-                            </div>
-                            <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(-100)">
-                                - €1.00
-                            </div>
-                            <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(100)">
-                                + €1.00
-                            </div>
-                            <div class="btn-stamp focusable btn-max" onclick="SceneManager._scene.adjustAmount(${maxAmount}, true)" style="grid-column: span 2;">
+                            ${this.amountTiersHTML(maxAmount)}
+                            <div class="btn-stamp focusable btn-max" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}" style="grid-column: span 2;">
                                 ${T('BankLoan.ui.proposeMaximumThreshold')}
                             </div>
                         </div>
@@ -1137,10 +1262,10 @@
                 </div>
 
                 <div style="margin-top:auto; border-top:1px solid #7f9db9; padding-top:8px; display:flex; flex-direction:column; gap:4px; box-sizing:border-box; width:100%;">
-                    <div class="action-button focusable" onclick="SceneManager._scene.confirmTransaction()">
+                    <div class="action-button focusable" tabindex="0" id="bank-confirm" data-bank-action="confirm">
                         ${T('BankLoan.ui.confirmTransaction')}
                     </div>
-                    <div class="action-button focusable" onclick="SceneManager._scene.cancelTransaction()" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important;">
+                    <div class="action-button focusable" tabindex="0" id="bank-void" data-bank-action="void" style="background:#e1e1e1 !important; color:#000 !important; border-color:#7f9db9 !important;">
                         ${T('BankLoan.ui.voidApplication')}
                     </div>
                 </div>
@@ -1171,19 +1296,8 @@
                     </div>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                        <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(-1000)" style="background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; font-size:0.8rem; font-weight:bold; text-align:center; border:1px solid #4a2711; cursor:pointer; transition: all 0.2s ease;">
-                            - €10.00
-                        </div>
-                        <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(1000)" style="background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; font-size:0.8rem; font-weight:bold; text-align:center; border:1px solid #4a2711; cursor:pointer; transition: all 0.2s ease;">
-                            + €10.00
-                        </div>
-                        <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(-100)" style="background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; font-size:0.8rem; font-weight:bold; text-align:center; border:1px solid #4a2711; cursor:pointer; transition: all 0.2s ease;">
-                            - €1.00
-                        </div>
-                        <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(100)" style="background:#8b5a2b; color:#ecdcb9; padding:6px; border-radius:4px; font-size:0.8rem; font-weight:bold; text-align:center; border:1px solid #4a2711; cursor:pointer; transition: all 0.2s ease;">
-                            + €1.00
-                        </div>
-                        <div class="btn-stamp focusable" onclick="SceneManager._scene.adjustAmount(${maxAmount}, true)" style="grid-column: span 2; background:#5c3516; color:#ecdcb9; padding:8px; border-radius:4px; font-size:0.85rem; font-weight:bold; text-align:center; border:1px solid #301107; cursor:pointer; text-transform:uppercase; font-family:'Lora', serif; transition: all 0.2s ease;">
+                        ${this.amountTiersHTML(maxAmount)}
+                        <div class="btn-stamp focusable" tabindex="0" id="bank-amt-max" data-bank-action="amtmax:${maxAmount}" style="grid-column: span 2; background:#5c3516; color:#ecdcb9; padding:8px; border-radius:4px; font-size:0.85rem; font-weight:bold; text-align:center; border:1px solid #301107; cursor:pointer; text-transform:uppercase; font-family:'Lora', serif; transition: all 0.2s ease;">
                             ${T('BankLoan.ui.proposeMaximumThreshold')}
                         </div>
                     </div>
@@ -1191,10 +1305,10 @@
             </div>
 
             <div style="margin-top:auto; border-top:1px dashed rgba(139, 90, 43, 0.4); padding-top:12px; display:flex; flex-direction:column; gap:8px; box-sizing:border-box; width:100%;">
-                <div class="action-button focusable" onclick="SceneManager._scene.confirmTransaction()" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.05rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease;">
+                <div class="action-button focusable" tabindex="0" id="bank-confirm" data-bank-action="confirm" style="background:#4a1d0f; color:#ecdcb9; padding:10px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:2px solid #301107; text-transform:uppercase; font-family:'Lora', serif; font-size:1.05rem; box-shadow:0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s ease;">
                     ${T('BankLoan.ui.sealTransactionVoucher')}
                 </div>
-                <div class="action-button focusable" onclick="SceneManager._scene.cancelTransaction()" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem; transition: all 0.2s ease;">
+                <div class="action-button focusable" tabindex="0" id="bank-void" data-bank-action="void" style="background:#8b5a2b; color:#ecdcb9; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer; text-align:center; border:1px solid #4a2711; text-transform:uppercase; font-family:'Lora', serif; font-size:0.9rem; transition: all 0.2s ease;">
                     ${T('BankLoan.ui.voidApplication')}
                 </div>
             </div>
@@ -1202,15 +1316,13 @@
     };
 
     Scene_BankSystem.prototype.getBankGuidelinesHTML = function () {
-        const useItalian = ConfigManager.language === 'it';
-
         if (this._isAppMode) {
             return `
                 <h2 class="cc-header-gothic" style="text-align:center;">
                     ${T('BankLoan.ui.imperialDepositStatutes')}
                 </h2>
 
-                <div style="flex:1; display:flex; flex-direction:column; gap:8px; line-height:1.4; font-size:11px; text-align:justify; color:#333;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:8px; line-height:1.5; text-align:justify; color:#333;">
                     <p style="margin:0;">
                         ${T('BankLoan.ui.welcomeToTheImperialVault')}
                     </p>
@@ -1285,107 +1397,68 @@
     Scene_BankSystem.prototype.update = function () {
         Scene_MenuBase.prototype.update.call(this);
 
-        if (this._dndContainer) {
-            let moved = false;
-            const isAmountActive = this._amountWindow && this._amountWindow.active;
+        // Inside HypernetOS the desktop owns the keyboard: it drives its focus
+        // ring with the arrows/WASD, activates with Enter and closes on Escape.
+        // Reading the same keys here moved the amount twice per press and closed
+        // the window twice over, so the app mode leaves input to the OS.
+        if (!this._dndContainer || this._isAppMode) return;
 
-            if (this._isAppMode) {
-                if (!isAmountActive) {
-                    if (Input.isTriggered('pageup') || this.isKeyPressed('KeyQ')) {
-                        const tabs = ['transact', 'loans', 'terms'];
-                        const idx = tabs.indexOf(this._activeTab);
-                        const nextTab = tabs[(idx - 1 + tabs.length) % tabs.length];
-                        this.switchXPTab(nextTab);
-                        moved = true;
-                    } else if (Input.isTriggered('pagedown') || this.isKeyPressed('KeyE')) {
-                        const tabs = ['transact', 'loans', 'terms'];
-                        const idx = tabs.indexOf(this._activeTab);
-                        const nextTab = tabs[(idx + 1) % tabs.length];
-                        this.switchXPTab(nextTab);
-                        moved = true;
-                    } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
-                        SoundManager.playCancel();
-                        this.popScene();
-                        return;
-                    }
-                } else {
-                    if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
-                        this.adjustAmount(-100);
-                        moved = true;
-                    } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
-                        this.adjustAmount(100);
-                        moved = true;
-                    } else if (Input.isTriggered('left') || Input.isRepeated('left') || this.isKeyPressed('KeyA')) {
-                        this.adjustAmount(-1000);
-                        moved = true;
-                    } else if (Input.isTriggered('right') || Input.isRepeated('right') || this.isKeyPressed('KeyD')) {
-                        this.adjustAmount(1000);
-                        moved = true;
-                    } else if (Input.isTriggered('ok')) {
-                        this.confirmTransaction();
-                        moved = true;
-                    } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
-                        this.cancelTransaction();
-                        moved = true;
-                    }
+        let moved = false;
+        const isAmountActive = this._amountWindow && this._amountWindow.active;
+
+        if (!isAmountActive && this._commandWindow) {
+            if (Input.isRepeated('down')) {
+                const currentIndex = this._commandWindow.index();
+                const maxItems = this._commandWindow.maxItems();
+                if (maxItems > 0) {
+                    const nextIndex = currentIndex < maxItems - 1 ? currentIndex + 1 : 0;
+                    this._commandWindow.select(nextIndex);
+                    SoundManager.playCursor();
+                    moved = true;
                 }
-            } else {
-                if (!isAmountActive && this._commandWindow) {
-                    if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
-                        const currentIndex = this._commandWindow.index();
-                        const maxItems = this._commandWindow.maxItems();
-                        if (maxItems > 0) {
-                            const nextIndex = currentIndex < maxItems - 1 ? currentIndex + 1 : 0;
-                            this._commandWindow.select(nextIndex);
-                            moved = true;
-                        }
-                    } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
-                        const currentIndex = this._commandWindow.index();
-                        const maxItems = this._commandWindow.maxItems();
-                        if (maxItems > 0) {
-                            const prevIndex = currentIndex > 0 ? currentIndex - 1 : maxItems - 1;
-                            this._commandWindow.select(prevIndex);
-                            moved = true;
-                        }
-                    } else if (Input.isTriggered('ok')) {
-                        SoundManager.playOk();
-                        this._commandWindow.callOkHandler();
-                        moved = true;
-                    } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
-                        SoundManager.playCancel();
-                        this.popScene();
-                    }
-                } else if (isAmountActive && this._amountWindow) {
-                    if (Input.isTriggered('down') || Input.isRepeated('down') || this.isKeyPressed('KeyS')) {
-                        this.adjustAmount(-100);
-                        moved = true;
-                    } else if (Input.isTriggered('up') || Input.isRepeated('up') || this.isKeyPressed('KeyW')) {
-                        this.adjustAmount(100);
-                        moved = true;
-                    } else if (Input.isTriggered('left') || Input.isRepeated('left') || this.isKeyPressed('KeyA')) {
-                        this.adjustAmount(-1000);
-                        moved = true;
-                    } else if (Input.isTriggered('right') || Input.isRepeated('right') || this.isKeyPressed('KeyD')) {
-                        this.adjustAmount(1000);
-                        moved = true;
-                    } else if (Input.isTriggered('ok')) {
-                        this.confirmTransaction();
-                        moved = true;
-                    } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
-                        this.cancelTransaction();
-                        moved = true;
-                    }
+            } else if (Input.isRepeated('up')) {
+                const currentIndex = this._commandWindow.index();
+                const maxItems = this._commandWindow.maxItems();
+                if (maxItems > 0) {
+                    const prevIndex = currentIndex > 0 ? currentIndex - 1 : maxItems - 1;
+                    this._commandWindow.select(prevIndex);
+                    SoundManager.playCursor();
+                    moved = true;
                 }
+            } else if (Input.isTriggered('ok')) {
+                SoundManager.playOk();
+                this._commandWindow.callOkHandler();
+                moved = true;
+            } else if (Input.isTriggered('cancel')) {
+                SoundManager.playCancel();
+                this.popScene();
+                return;
             }
-
-            if (moved) {
-                this.refreshUIBankDOM();
+        } else if (isAmountActive && this._amountWindow) {
+            // The bigger rungs of the ladder are click-only in the book spread,
+            // so Q/E (pageup/pagedown) carry the coarse step for the keyboard.
+            if (Input.isRepeated('down')) {
+                this.adjustAmount(-100);
+            } else if (Input.isRepeated('up')) {
+                this.adjustAmount(100);
+            } else if (Input.isRepeated('left')) {
+                this.adjustAmount(-1000);
+            } else if (Input.isRepeated('right')) {
+                this.adjustAmount(1000);
+            } else if (Input.isRepeated('pageup')) {
+                this.adjustAmount(-10000);
+            } else if (Input.isRepeated('pagedown')) {
+                this.adjustAmount(10000);
+            } else if (Input.isTriggered('ok')) {
+                this.confirmTransaction();
+            } else if (Input.isTriggered('cancel')) {
+                this.cancelTransaction();
             }
         }
-    };
 
-    Scene_BankSystem.prototype.isKeyPressed = function (key) {
-        return Input._currentState[key] && !Input._previousState[key];
+        if (moved) {
+            this.refreshUIBankDOM();
+        }
     };
 
 })();

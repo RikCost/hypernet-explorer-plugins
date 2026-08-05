@@ -55,6 +55,76 @@
   const showInMenu = parameters['showInMenu'] === 'true';
 
   //=============================================================================
+  // Location labels
+  //=============================================================================
+  // A job's locations are raw map ids. They read as "<map group> - <map name>":
+  // the first half is the map's <MapGroup: Name> note tag (resolved through
+  // NPCSystem's group registry, which is what the rest of the game reads for
+  // town membership), the second half is the map's own display name. Reading a
+  // display name means parsing that map's JSON, so every answer is memoized for
+  // the session, per language.
+  const _locationLabels = {};
+
+  // Display name off the map itself, falling back to the MapInfos name with the
+  // editor's numbering prefix stripped ("705 - North Docks" -> "North Docks").
+  function mapDisplayName(mapId) {
+    let data = null;
+    if (typeof $dataMap !== 'undefined' && $dataMap && $dataMap.id === mapId) data = $dataMap;
+    else if (window.NPCSystem && window.NPCSystem.loadMapData) {
+      try { data = window.NPCSystem.loadMapData(mapId); } catch (e) { data = null; }
+    }
+    if (data && data.displayName) return data.displayName;
+
+    const info = (typeof $dataMapInfos !== 'undefined' && $dataMapInfos) ? $dataMapInfos[mapId] : null;
+    const name = (info && info.name) ? String(info.name) : '';
+    const stripped = name.replace(/^\s*[A-Za-z]{0,2}\d+\s*-\s*/, '').trim();
+    return stripped || name.trim();
+  }
+
+  // Readable name of the group the map belongs to, "" when it belongs to none.
+  function mapGroupLabel(mapId) {
+    let groupName = null;
+    try {
+      if (window.NPCSystem && window.NPCSystem.findMapGroupByMap) {
+        groupName = window.NPCSystem.findMapGroupByMap(mapId);
+      }
+    } catch (e) { groupName = null; }
+    if (!groupName) return '';
+
+    // Procedural settlements ("Proc:x,y") carry their own readable label.
+    const grp = (typeof $gameSystem !== 'undefined' && $gameSystem && $gameSystem._npcMapGroups)
+      ? $gameSystem._npcMapGroups[groupName] : null;
+    if (grp && grp.displayName) return grp.displayName;
+    if (/^Proc:/i.test(groupName)) return '';
+
+    // Group keys are written without spaces ("FrozenStation"); the town of that
+    // name in Destinations.json knows how it is meant to read.
+    return (window.WorkSystem && window.WorkSystem.destinationName)
+      ? window.WorkSystem.destinationName(groupName) : groupName;
+  }
+
+  function locationLabel(mapId) {
+    const id = Number(mapId);
+    if (!Number.isFinite(id) || id <= 0) return String(mapId == null ? '' : mapId);
+
+    const lang = (typeof ConfigManager !== 'undefined' && ConfigManager.language) || 'en';
+    const cacheKey = `${lang}:${id}`;
+    if (_locationLabels[cacheKey]) return _locationLabels[cacheKey];
+
+    const location = mapDisplayName(id);
+    const group = mapGroupLabel(id);
+    let label;
+    if (group && location) label = T('WorkSystem.locationInGroup', { group: group, location: location });
+    else label = location || group || T('WorkSystem.mapNumbered', { id: id });
+
+    _locationLabels[cacheKey] = label;
+    return label;
+  }
+
+  window.WorkSystem = window.WorkSystem || {};
+  window.WorkSystem.locationLabel = locationLabel;
+
+  //=============================================================================
   // Plugin Commands
   //=============================================================================
 
@@ -441,10 +511,7 @@
     }
 
     getLocationName(mapId) {
-      if (typeof $dataMapInfos !== 'undefined' && $dataMapInfos && $dataMapInfos[mapId]) {
-        return $dataMapInfos[mapId].name || T('WorkSystem.mapNumbered', { id: mapId });
-      }
-      return T('WorkSystem.mapNumbered', { id: mapId });
+      return locationLabel(mapId);
     }
 
     getJobOfferContractHTML(job, actor) {
@@ -544,12 +611,12 @@
 
                 <div style="display:flex; flex-direction:column; gap:4px; font-size:11px;">
                   <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px;">
-                    <strong style="color:#333;">${T('WorkSystem.category')}:</strong>
+                    <strong style="color:#333;">${T('WorkSystem.categoryLabel')}:</strong>
                     <span>${job.category}</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px;">
                     <strong style="color:#333;">${T('WorkSystem.duration')}:</strong>
-                    <span>${job.duration} hours</span>
+                    <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                   </div>
                   <div style="display:flex; justify-content:space-between; border-bottom:1px dotted #ccc; padding-bottom:2px; font-weight:bold; color:#008000;">
                     <span>${T('WorkSystem.totalReward')}:</span>
@@ -637,12 +704,12 @@
 
               <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem;">
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                  <strong style="color:#5c3516;">${T('WorkSystem.category')}:</strong>
+                  <strong style="color:#5c3516;">${T('WorkSystem.categoryLabel')}:</strong>
                   <span>${job.category}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
                   <strong style="color:#5c3516;">${T('WorkSystem.duration')}:</strong>
-                  <span>${job.duration} hours</span>
+                  <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b;">
                   <span>${T('WorkSystem.totalReward')}:</span>
@@ -1197,10 +1264,7 @@
     }
 
     getLocationName(mapId) {
-      if (typeof $dataMapInfos !== 'undefined' && $dataMapInfos && $dataMapInfos[mapId]) {
-        return $dataMapInfos[mapId].name || T('WorkSystem.mapNumbered', { id: mapId });
-      }
-      return T('WorkSystem.mapNumbered', { id: mapId });
+      return locationLabel(mapId);
     }
 
     getActorStat(actor, stat) {

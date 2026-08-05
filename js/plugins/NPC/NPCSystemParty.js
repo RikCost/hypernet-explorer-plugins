@@ -431,8 +431,13 @@
         if (typeof $gameSystem === 'undefined' || !$gameSystem) return;
         const list = $gameSystem._npcInheritedHouses = $gameSystem._npcInheritedHouses || [];
         if (list.some(h => h.mapId === profile.homeMapId)) return; // dedup by template
+        // Named through WorldMapReturn: a home whose entrance is the procedural
+        // map would otherwise be filed as "ProceduralRoom", the one map every
+        // world square reuses.
         let mapName = T('NPCParty.residence');
-        if ($dataMapInfos && $dataMapInfos[profile.homeMapId] && $dataMapInfos[profile.homeMapId].name) {
+        if (window.WorldMapReturn && window.WorldMapReturn.placeName) {
+            mapName = window.WorldMapReturn.placeName(profile.homeMapId) || mapName;
+        } else if ($dataMapInfos && $dataMapInfos[profile.homeMapId] && $dataMapInfos[profile.homeMapId].name) {
             mapName = $dataMapInfos[profile.homeMapId].name;
         }
         // Deterministic value in the same ~300-900€ band procedural houses use.

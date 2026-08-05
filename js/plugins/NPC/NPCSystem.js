@@ -1168,7 +1168,33 @@
 
       targetEvent.refresh();
       targetEvent.setupPage();
+      SpawnManager.snapshotSpawn(targetEvent);
       return !!targetEvent.page();
+    },
+
+    // Everything transplantData just wrote lives in $dataMap, and $dataMap is
+    // volatile: Scene_Map.create re-reads the map file from disk on EVERY
+    // rebuild of the scene, not just on a transfer, so closing the menu (or the
+    // Empathize panel, or loading a save) throws the whole transplant away and
+    // hands the event back its authored placeholder data. The Game_Event object
+    // survives, keeping the NPC's sprite and position, so the slot reads as a
+    // normal citizen while event() reports a blank "PlayerNN" placeholder with
+    // no commands: a visible NPC that cannot be talked to, named after the slot
+    // it is standing in. Snapshot the transplanted identity onto the event
+    // itself (it is part of the save) so restoreSpawnedEventData can put it
+    // back the moment the fresh $dataMap lands.
+    snapshotSpawn: (targetEvent) => {
+      if (!targetEvent || !$gameMap) return;
+      const data = targetEvent.event();
+      if (!data?.pages) return;
+      targetEvent._npcSpawnData = {
+        mapId: $gameMap.mapId(),
+        name: data.name,
+        note: data.note,
+        characterName: data.characterName,
+        characterIndex: data.characterIndex,
+        pages: JSON.parse(JSON.stringify(data.pages))
+      };
     },
 
     injectBrain: (targetEvent, originalData) => {
@@ -2242,6 +2268,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
         }
         if (!genName || genName === "Unknown") genName = "NPC"; // i18n-ignore: Markov generator sentinel / event-name prefix
         evData.name = genName;
+        // Same volatility as a roster spawn: this name and sprite only exist in
+        // $dataMap, which is re-read from disk on every Scene_Map rebuild. See
+        // SpawnManager.snapshotSpawn.
+        SpawnManager.snapshotSpawn(ev);
 
         // Give every procedural citizen a full identity rooted in the same
         // world-seed+coords+eventId seed as its name/sprite, so class, gender
@@ -3519,8 +3549,55 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     _Scene_Map_createDisplayObjects.call(this);
   };
 
+  // Writes every spawned NPC's identity back into the freshly loaded $dataMap.
+  // Called with the map data current and the Game_Event objects still the ones
+  // that were on screen a moment ago (a transfer is excluded: there the events
+  // are about to be rebuilt from scratch and the spawn re-runs anyway).
+  //
+  // The sprite is re-read from the live event rather than from the snapshot:
+  // several systems restyle a citizen after they are spawned (a rolled
+  // procedural face, a shop-shift stand-in, the society sprite pass) and those
+  // writes go into the same volatile page data. Only substantive pages are
+  // stamped, the trailing blank "hidden on recruit" page has to stay
+  // graphic-less or a recruited NPC comes back as an untalkable ghost.
+  function restoreSpawnedEventData() {
+    if (!$dataMap?.events || !$gameMap) return;
+    const mapId = $gameMap.mapId();
+    for (const ev of $gameMap.events()) {
+      const snap = ev?._npcSpawnData;
+      if (!snap || snap.mapId !== mapId) continue;
+      const data = $dataMap.events[ev.eventId()];
+      if (!data) continue;
+      data.name = snap.name;
+      data.note = snap.note;
+      data.characterName = snap.characterName;
+      data.characterIndex = snap.characterIndex;
+      data.pages = JSON.parse(JSON.stringify(snap.pages));
+      const liveSprite = ev.characterName();
+      if (liveSprite) {
+        data.characterName = liveSprite;
+        data.characterIndex = ev.characterIndex();
+        for (const page of data.pages) {
+          if (!page?.image || (page.list?.length ?? 0) <= 1) continue;
+          page.image.characterName = liveSprite;
+          page.image.characterIndex = ev.characterIndex();
+        }
+      }
+    }
+  }
+
   const _Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
   Scene_Map.prototype.onMapLoaded = function () {
+    // Scene_Map.create reloads the map file on every rebuild of the scene, so at
+    // this point the transplanted NPC identities have just been wiped. Restore
+    // them before anything (page refresh, spriteset, interpreter) reads them.
+    if (!$gamePlayer?.isTransferring()) {
+      try {
+        restoreSpawnedEventData();
+      } catch (e) {
+        console.error("[NPC System] spawn data restore failed", e);
+      }
+    }
     _Scene_Map_onMapLoaded.call(this);
     if (!this._isLoadingFromPauseMenu) {
       maybeRegenerateForTest();

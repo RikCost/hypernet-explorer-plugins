@@ -246,10 +246,12 @@
           return;
         }
       });
-      // Right click closes the open sheet (and never raises a browser menu).
+      // Right click backs out one step, exactly like the cancel button: the open
+      // sheet, then a pending confirmation, then the board itself (and it never
+      // raises a browser menu).
       el.addEventListener("contextmenu", ev => {
         ev.preventDefault();
-        if (this._detail) this._closeDetail();
+        this._back();
       });
       el.addEventListener("mouseover", ev => {
         const card = ev.target.closest("[data-card]");
@@ -470,6 +472,25 @@
       this._refresh();
     }
 
+    // One step back, whatever is on screen: sheet, pending confirmation, board.
+    _back() {
+      if (this._detail) { this._closeDetail(); return; }
+      if (this._confirmAbandon) {
+        this._confirmAbandon = null;
+        SoundManager.playCancel();
+        this._refresh();
+        return;
+      }
+      this._closeBoard();
+    }
+
+    _closeBoard() {
+      if (this._closing) return;
+      this._closing = true;
+      SoundManager.playCancel();
+      this.popScene();
+    }
+
     _acceptCurrent() {
       const api = PQ();
       if (!api || !this._detail || !this._detailIsOffer) return;
@@ -521,6 +542,9 @@
       super.update();
       if (!this._el) return;
 
+      // The right mouse button is handled by the overlay's contextmenu listener,
+      // not here: it fires over the letterboxing too, and taking it from
+      // TouchInput as well would back out twice on one click.
       if (this._detail) {
         if (Input.isTriggered("cancel")) this._closeDetail();
         else if (Input.isTriggered("shift")) this._showOnMap();
@@ -529,8 +553,7 @@
       }
 
       if (Input.isTriggered("cancel")) {
-        SoundManager.playCancel();
-        this.popScene();
+        this._back();
         return;
       }
       if (Input.isTriggered("tab") || Input.isTriggered("pagedown") || Input.isTriggered("pageup")) {

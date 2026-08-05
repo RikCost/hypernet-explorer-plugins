@@ -3369,6 +3369,61 @@
         return name;
     }
 
+    // ------------------------------------------------------------------------
+    // Place names for records and lists (Assets menu, deliveries, ...)
+    //
+    // Map 636 is ONE map reused for every square of the world, so its MapInfos
+    // name ("ProceduralRoom") says nothing about where a thing actually is. A
+    // record that points at it must be named after the world coordinate it was
+    // made on: the hand-authored name of that square if it has one, otherwise
+    // its biome, with the coordinate appended so two fields are told apart.
+    // Anything else is named by its map, minus the editor's numeric prefix
+    // ("700 - Hardware store" -> "Hardware store").
+    // ------------------------------------------------------------------------
+
+    function localizeName(text) {
+        if (!text) return text;
+        return (typeof window.Hendrix_Localization === 'function')
+            ? window.Hendrix_Localization(text) : text;
+    }
+
+    // The name of the world square at (wx, wy), or '' when nothing is known.
+    function worldSquareName(wx, wy) {
+        const named = window.WorldGen && window.WorldGen.HardcodedBiomeNames;
+        const hardcoded = named ? named[`${wx},${wy}`] : null;
+        if (hardcoded) return hardcoded;
+        let biome = '';
+        if ($gameSystem && $gameSystem.getBiomeFromCache) {
+            // Reads the world map's tiles when the square is not cached, which
+            // needs a loaded map: a caller between maps just gets no biome.
+            try { biome = $gameSystem.getBiomeFromCache(wx, wy) || ''; } catch (e) { biome = ''; }
+        }
+        if ((!biome || biome === 'Unknown') && $gameSystem && $gameSystem._procGenData) {
+            biome = $gameSystem._procGenData.currentBiome || '';
+        }
+        if (biome === 'Unknown') biome = '';
+        // Roads and rivers carry a direction suffix ("Road cross", "River
+        // vertical") that is layout, not a place.
+        return biome.replace(/^(Road|River)\s+.*$/, '$1');  // i18n-ignore  biome ids
+    }
+
+    // mapId is the map a record was made on; coords are the world coordinates it
+    // was made at, needed only for the procedural map and falling back to where
+    // the party is now.
+    function placeName(mapId, coords) {
+        const id = Number(mapId);
+        if (id === procMapId) {
+            const vars = (typeof $gameVariables !== 'undefined' && $gameVariables) ? $gameVariables : null;
+            const wx = (coords && coords.x != null) ? Number(coords.x) : (vars ? vars.value(VAR_WORLD_X) | 0 : 0);
+            const wy = (coords && coords.y != null) ? Number(coords.y) : (vars ? vars.value(VAR_WORLD_Y) | 0 : 0);
+            const name = localizeName(worldSquareName(wx, wy)) || T('WorldMapReturn.wilderness');
+            return `${name} (${wx},${wy})`;  // i18n-ignore  coordinate pair
+        }
+        const info = (typeof $dataMapInfos !== 'undefined' && $dataMapInfos) ? $dataMapInfos[id] : null;
+        const raw = (info && info.name) ? String(info.name).replace(/^\d+\s*-\s*/, '') : '';
+        return raw ? localizeName(raw) : T('WorldMapReturn.mapNumbered', { id: id });
+    }
+
     // Shared gate for the travel-decision menu. Named hardcoded locations
     // usually sit on City/Burg tiles, so isSettlementBiomeHere() is true for
     // them. They still get a "Visit <name>" travel choice, so only suppress the
@@ -3594,6 +3649,13 @@
         },
         worldMapId,
         procMapId,
+        // The name to file a place under (Assets menu, delivery targets, ...).
+        // Always use this instead of $dataMapInfos[id].name: the procedural map
+        // is reused for the whole world and would otherwise read as
+        // "ProceduralRoom" everywhere. Pass the world coordinates the record
+        // was made at, or omit them for the party's current square.
+        placeName,
+        currentPlaceName() { return placeName($gameMap ? $gameMap.mapId() : 0); },
         // Re-apply the current map's biome ambience/music. Exposed so plugins
         // that move the player without a normal map load (the procedural house
         // system's floor changes, for one) can refresh the audio themselves.

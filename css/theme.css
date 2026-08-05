@@ -1408,6 +1408,28 @@
     color: var(--text-card-medium);
 }
 
+/* Name field that replaces a pet's button strip while it is being renamed
+   (Pets page). Sized and coloured to sit in the row like the command items it
+   stands among. */
+.pet-rename-input {
+    box-sizing: border-box;
+    background: var(--bg-primary-hover-translucent-35);
+    border: 1px solid var(--border-primary-hover-translucent-15);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-family: 'Lora', serif;
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--text-success-active);
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.pet-rename-input:focus {
+    border-color: var(--text-primary-hover);
+    background: var(--bg-secondary-hover);
+}
+
 .command-item .icon {
     width: 24px;
     height: 24px;
@@ -12206,6 +12228,24 @@
     padding: 4px 8px; margin-bottom: 6px; text-align: center;
 }
 .gu-note--bad { color: var(--text-text-alt-5-hover); border-color: var(--text-text-alt-5-hover); }
+.gu-changelog {
+    margin-top: 8px; padding-top: 6px; margin-bottom: 6px;
+    border-top: 1px dashed var(--border-success);
+    max-height: 22vh; overflow-y: auto;
+}
+.gu-changelog::-webkit-scrollbar { width: 6px; }
+.gu-changelog::-webkit-scrollbar-track { background: transparent; }
+.gu-changelog::-webkit-scrollbar-thumb { background: var(--border-focus-hover); border-radius: 3px; }
+.gu-changelog-header {
+    font-size: 0.75em; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-text-alt-4); margin-bottom: 4px;
+}
+.gu-changelog-line {
+    font-size: 0.78em; color: var(--text-primary-hover);
+    line-height: 1.5; word-break: break-word;
+}
+.gu-changelog-line--item { padding-left: 12px; text-indent: -12px; }
+.gu-changelog-line--item::before { content: '\2022'; color: var(--text-gold-dark); margin-right: 6px; }
 .gu-files {
     margin-top: 8px; padding-top: 6px;
     border-top: 1px dashed var(--border-success);
@@ -14118,7 +14158,9 @@ body, canvas {
     position: relative;
     width: 32px;
     height: 32px;
-    background-image: url('../../img/system/IconSet.png');
+    /* Resolved against css/theme.css, so one level up is the game root. Every
+       other IconSet sprite in this file uses the same single-dot-dot path. */
+    background-image: url('../img/system/IconSet.png');
     background-repeat: no-repeat;
     image-rendering: pixelated;
     flex-shrink: 0;

@@ -154,6 +154,8 @@
     "worldMapTitle": "Mappa del mondo"
   },
   "pets": {
+    "rename": "Rinomina",
+    "active": "Attivo",
     "release": "Libera",
     "none": "Nessun animale o seguace reclutato. Chiedi a un nemico di unirsi come animale o seguace durante una battaglia."
   },

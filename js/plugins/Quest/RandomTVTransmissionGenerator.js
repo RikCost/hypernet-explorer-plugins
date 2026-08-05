@@ -1836,25 +1836,15 @@
     // profile.
     function tvApplyFun(magnitude) {
         if (!magnitude || typeof $gameParty === 'undefined' || !$gameParty) return null;
-        const maxNeed = 100;
         let gained = 0, lost = 0;
         $gameParty.members().forEach(mem => {
             if (!mem) return;
             const delta = tvIsTechnophobe(mem) ? -magnitude : magnitude;
             if (delta >= 0) gained++; else lost++;
-            if (mem.actorId && mem.actorId() === 1) {
-                if (delta >= 0) { if (mem.addLeisure) mem.addLeisure(delta); }
-                else if (mem.reduceLeisure) { mem.reduceLeisure(-delta); }
-                return;
-            }
-            try {
-                const profile = window.NPCSocietyRegistry && window.NPCSocietyRegistry.getProfile
-                    ? window.NPCSocietyRegistry.getProfile(mem.name())
-                    : null;
-                if (profile && typeof profile.leisure === 'number') {
-                    profile.leisure = Math.max(0, Math.min(maxNeed, profile.leisure + delta));
-                }
-            } catch (e) {}
+            // The actor need methods write where the meter lives: the actor for
+            // the player, the society profile for a recruited companion.
+            if (delta >= 0) { if (mem.addLeisure) mem.addLeisure(delta); }
+            else if (mem.reduceLeisure) { mem.reduceLeisure(-delta); }
         });
         return { magnitude, gained, lost };
     }

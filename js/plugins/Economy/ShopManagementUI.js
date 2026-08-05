@@ -407,8 +407,11 @@
 
       const del = SM.getData().globalData?.currentDelivery;
       if (del) {
-        const destName = ($dataMapInfos && $dataMapInfos[del.mapId])
-          ? $dataMapInfos[del.mapId].name : T('ShopManagement.mapN', { id: del.mapId });
+        // Same naming as the delivery announcement: the place, not the map file.
+        const destName = SM.getMapDisplayName
+          ? SM.getMapDisplayName(del.mapId)
+          : (($dataMapInfos && $dataMapInfos[del.mapId])
+            ? $dataMapInfos[del.mapId].name : T('ShopManagement.mapN', { id: del.mapId }));
         html += `<div class="inspect-section-title">${T.delivery}</div>
           <div class="inspect-spec-row">
             <span class="inspect-spec-label">${T('ShopManagement.ui.destination')}</span>

@@ -1244,7 +1244,7 @@
           <div style="margin-top: 10px;">
             <strong style="color:#5c3516; font-size:0.85rem; text-transform:uppercase;">${T('WorkSystem.deploymentLocations')}:</strong>
             <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
-              ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.75rem; color:#4a1d0f;">${loc}</span>`).join('')}
+              ${job.locations.map(loc => `<span style="background:rgba(139,90,43,0.1); border:1px solid rgba(139,90,43,0.2); padding:2px 8px; border-radius:3px; font-size:0.75rem; color:#4a1d0f;">${window.WorkSystem.locationLabel ? window.WorkSystem.locationLabel(loc) : loc}</span>`).join('')}
             </div>
           </div>
         `;
@@ -1278,12 +1278,12 @@
 
             <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem;">
               <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
-                <strong style="color:#5c3516;">${T('WorkSystem.category')}:</strong>
+                <strong style="color:#5c3516;">${T('WorkSystem.categoryLabel')}:</strong>
                 <span>${job.category}</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px;">
                 <strong style="color:#5c3516;">${T('WorkSystem.duration')}:</strong>
-                <span>${job.duration} hours</span>
+                <span>${T('WorkSystem.hoursValue', { hours: job.duration })}</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px dotted rgba(139,90,43,0.15); padding-bottom:4px; font-weight:bold; color:#3d5e4b;">
                 <span>${T('WorkSystem.baseReward')}:</span>

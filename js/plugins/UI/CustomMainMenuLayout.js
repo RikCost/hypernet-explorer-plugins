@@ -648,12 +648,16 @@
     Scene_Menu.prototype.showPetsPage = function () {
         SoundManager.playOk();
         this._isPetsPage = true;
+        this._petRenameId = null;
         this.refreshUIMenuDOM(true);
     };
 
     Scene_Menu.prototype.hidePetsPage = function () {
         SoundManager.playCancel();
         this._isPetsPage = false;
+        // An open name field is abandoned with the page, so coming back never
+        // reopens it half-typed.
+        this._petRenameId = null;
         this.refreshUIMenuDOM(true);
     };
 
@@ -698,8 +702,61 @@
     Scene_Menu.prototype.releasePet = function (petId) {
         if (!window.PetSystem) return;
         SoundManager.playCancel();
+        this._petRenameId = null;
         window.PetSystem.releasePet(petId);
         this.refreshUIMenuDOM(false);
+    };
+
+    // Renaming a pet: the row turns into a name field (see the Pets page), which
+    // takes the keyboard for itself. Every key event is stopped at the field so
+    // the menu's own navigator and the hotkey mapper never see the typing, which
+    // is why Enter and Escape are answered here rather than by the menu.
+    Scene_Menu.prototype.startPetRename = function (petId) {
+        if (!window.PetSystem || !window.PetSystem.getPet(petId)) return;
+        SoundManager.playOk();
+        this._petRenameId = petId;
+        this.refreshUIMenuDOM(false);
+        const field = document.getElementById('pet-rename-input');
+        if (field) {
+            field.focus();
+            field.select();
+        }
+    };
+
+    Scene_Menu.prototype.cancelPetRename = function () {
+        if (this._petRenameId == null) return;
+        SoundManager.playCancel();
+        this._petRenameId = null;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.confirmPetRename = function () {
+        const petId = this._petRenameId;
+        if (petId == null || !window.PetSystem) return;
+        const field = document.getElementById('pet-rename-input');
+        const typed = field ? field.value : '';
+        // An empty name is refused by renamePet, so the pet simply keeps the one
+        // it has instead of turning into a blank row.
+        if (!String(typed).trim()) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playOk();
+        window.PetSystem.renamePet(petId, typed);
+        this._petRenameId = null;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.onPetRenameKey = function (event) {
+        if (!event) return;
+        event.stopPropagation();
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.confirmPetRename();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.cancelPetRename();
+        }
     };
 
     // Draws a pet record's overworld sprite (Down-facing frame) onto its canvas.
@@ -1368,10 +1425,28 @@
             let petRows = '';
             pets.forEach(pet => {
                 const isActive = (pet.id === activeId);
+                const isRenaming = (this._petRenameId === pet.id);
                 const typeLabel = pet.isFollower ? T('MainMenu.roster.follower') : T('MainMenu.roster.pet');
                 const activeBtn = isActive
                     ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.following')}</div>`
                     : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.setActivePet?.(${pet.id})">${T('MainMenu.roster.setActive')}</div>`;
+                const activeTag = isActive ? ` · ${T('MainMenu.pets.active')}` : '';
+                // While a pet is being renamed its row hands the whole button
+                // strip over to the name field, so there is no way to release or
+                // re-leash it by mistake with the keyboard captured by typing.
+                const maxLen = window.PetSystem?.NAME_MAX_LENGTH ?? 16;
+                const buttons = isRenaming
+                    ? `<input type="text" id="pet-rename-input" class="pet-rename-input" style="flex:2;min-width:0;"
+                            maxlength="${maxLen}" autocomplete="off" spellcheck="false"
+                            value="${escapeHtml(pet.name)}"
+                            onkeydown="SceneManager._scene?.onPetRenameKey?.(event)"
+                            onkeyup="event.stopPropagation()"
+                            onkeypress="event.stopPropagation()">
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.confirmPetRename?.()">${T('MainMenu.roster.confirm')}</div>
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetRename?.()">${T('MainMenu.roster.cancel')}</div>`
+                    : `${activeBtn}
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.releasePet?.(${pet.id})">${T('MainMenu.pets.release')}</div>`;
                 petRows += `
                     <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
                         <div class="portrait-frame" style="flex-shrink:0;">
@@ -1380,11 +1455,10 @@
                         <div style="flex:1;">
                             <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:4px;">
                                 ${escapeHtml(pet.name)}
-                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${typeLabel}${isActive ? ' · Active' : ''} · Lv.${pet.level}</span>
+                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${typeLabel}${activeTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
-                            <div style="display:flex;gap:10px;">
-                                ${activeBtn}
-                                <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.releasePet?.(${pet.id})">${T('MainMenu.pets.release')}</div>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                ${buttons}
                             </div>
                         </div>
                     </div>`;
@@ -1654,12 +1728,14 @@
                 (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-')
             ].join(':')
             : '';
-        // Releasing a pet or handing the leash to another one changes the page
-        // without changing which page it is, so the roster is part of the key.
+        // Releasing a pet, handing the leash to another one, renaming one or
+        // opening the name field changes the page without changing which page it
+        // is, so all of it is part of the key.
         const petsKey = this._isPetsPage
             ? [
-                (window.PetSystem?.getPets?.() ?? []).map(p => p.id).join('-'),
-                window.PetSystem?.getActivePet?.()?.id ?? 0
+                (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
+                window.PetSystem?.getActivePet?.()?.id ?? 0,
+                this._petRenameId || 0
             ].join(':')
             : '';
         const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}`;

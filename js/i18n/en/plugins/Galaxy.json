@@ -32,7 +32,7 @@
   },
   "travel": {
     "yourDestination": "your destination",
-    "arrivedAt": "You are arrived at {place}",
+    "arrivedAt": "You have arrived at {place}",
     "timeToArrival": "Time to Arrival",
     "lyRemaining": "{ly} ly remaining"
   },

@@ -631,29 +631,37 @@
     return Math.max(1000, Math.round(base * mult / 100) * 100);
   }
 
+  // The entrance map alone does not say where a deed is: the procedural map is
+  // the same map id on every square of the world. Stamp the world coordinate the
+  // purchase was made on so the property can be named after its actual place
+  // (see listOwnedHouses).
+  function deedRecord() {
+    const vars = (typeof $gameVariables !== 'undefined') ? $gameVariables : null;
+    return {
+      day: vars ? vars.value(113) : 0,
+      gameMin: vars ? vars.value(114) : 0,
+      worldX: vars ? vars.value(43) : 0,
+      worldY: vars ? vars.value(44) : 0,
+    };
+  }
+
   function buyCurrentFloor() {
     const key = getCurrentOwnershipKey();
     if (!key) return false;
-    getOwnedHouses()[key] = {
-      day: (typeof $gameVariables !== 'undefined' ? $gameVariables.value(113) : 0),
-      gameMin: (typeof $gameVariables !== 'undefined' ? $gameVariables.value(114) : 0),
-    };
+    getOwnedHouses()[key] = deedRecord();
     return true;
   }
 
   function markEntranceOwned(mapId, x, y) {
     const key = `${mapId}_${x}_${y}_f0`;
-    getOwnedHouses()[key] = {
-      day: (typeof $gameVariables !== 'undefined' ? $gameVariables.value(113) : 0),
-      gameMin: (typeof $gameVariables !== 'undefined' ? $gameVariables.value(114) : 0),
-    };
+    getOwnedHouses()[key] = deedRecord();
     return key;
   }
 
   // Returns every owned floor with its deterministic base value (gold) and the
-  // entrance map name/coordinates. Ownership keys are `${mapId}_${x}_${y}_f${floor}`
-  // where mapId/x/y identify the map and tile of the entrance event the player
-  // used to enter, so the value can be looked up in $dataMapInfos.
+  // place name/coordinates of its entrance. Ownership keys are
+  // `${mapId}_${x}_${y}_f${floor}` where mapId/x/y identify the map and tile of
+  // the entrance event the player used to enter.
   function listOwnedHouses() {
     const owned = getOwnedHouses();
     return Object.keys(owned).map(key => {
@@ -664,11 +672,18 @@
       const floor = m ? Number(m[4]) : 0;
       const h = (_hashKey(key) ^ getWorldSeed()) >>> 0;
       const value = 30000 + Math.floor(seededRandom(h) * 60000); // gold (300-900 EUR)
+      const rec = owned[key] || {};
+      // Named through WorldMapReturn so a deed on the procedural map reads as the
+      // place it was bought in ("Milano (88,131)") instead of the reused map's
+      // own name, "ProceduralRoom". Deeds signed before the world coordinate was
+      // recorded fall back to the party's current square.
       let mapName = T('ProceduralHouse.unknownLocation');
-      if (mapId != null && $dataMapInfos && $dataMapInfos[mapId] && $dataMapInfos[mapId].name) {
+      if (mapId != null && window.WorldMapReturn && window.WorldMapReturn.placeName) {
+        const coords = (rec.worldX != null) ? { x: rec.worldX, y: rec.worldY } : null;
+        mapName = window.WorldMapReturn.placeName(mapId, coords) || mapName;
+      } else if (mapId != null && $dataMapInfos && $dataMapInfos[mapId] && $dataMapInfos[mapId].name) {
         mapName = $dataMapInfos[mapId].name;
       }
-      const rec = owned[key] || {};
       return { key, mapId, x, y, floor, value, mapName, day: rec.day, gameMin: rec.gameMin };
     });
   }

@@ -858,6 +858,15 @@
   }
 
   function getMapDisplayName(mapId) {
+    // WorldMapReturn names the place rather than the map file, which is the only
+    // way a destination on the procedural map reads as somewhere ("Fields
+    // (88,131)") instead of "ProceduralRoom", the one map every world square
+    // reuses.
+    if (window.WorldMapReturn && window.WorldMapReturn.placeName) {
+      const named = window.WorldMapReturn.placeName(mapId);
+      if (named) return named;
+    }
+
     let mapName = T('ShopManagement.mapN', { id: mapId });
 
     if (window.$dataMapInfos && $dataMapInfos[mapId]) {

@@ -61,7 +61,8 @@
         advertisementbadger: { variant: 'advertisementbadger', scale: 2.4, texturePool: 'void', bodyColor: 0xd83020, accent: 0xffe020, front: true, hue: [0.02, 0.08], sat: [0.70, 0.15], lit: [0.45, 0.10] },
         livingtheorem:     { variant: 'livingtheorem', scale: 2.5, texturePool: 'void', bodyColor: 0x0a1426, accent: 0x40ffd0, front: true, hue: [0.50, 0.08], sat: [0.55, 0.15], lit: [0.14, 0.06] },
         leylineaneurysm:   { variant: 'leylineaneurysm', scale: 2.5, texturePool: 'void', bodyColor: 0x2a0a30, accent: 0xff40a0, front: true, hue: [0.88, 0.08], sat: [0.55, 0.15], lit: [0.20, 0.08] },
-        timeloopstalker:   { variant: 'timeloopstalker', scale: 2.6, texturePool: 'void', bodyColor: 0x101822, accent: 0x60d0ff, front: true, hue: [0.56, 0.08], sat: [0.45, 0.15], lit: [0.18, 0.06] }
+        timeloopstalker:   { variant: 'timeloopstalker', scale: 2.6, texturePool: 'void', bodyColor: 0x101822, accent: 0x60d0ff, front: true, hue: [0.56, 0.08], sat: [0.45, 0.15], lit: [0.18, 0.06] },
+        u_eyeballslug:     { variant: 'eyeballslug', scale: 2.2, texturePool: 'flesh', bodyColor: 0x7a8a4a, accent: 0xffe14a, front: true, hue: [0.24, 0.08], sat: [0.38, 0.14], lit: [0.40, 0.10] }
     };
 
     class AberrationBattler3D extends Base {
@@ -93,6 +94,7 @@
                 case 'livingtheorem':       this._buildLivingTheorem(); break;
                 case 'leylineaneurysm':     this._buildLeylineAneurysm(); break;
                 case 'timeloopstalker':     this._buildTimeLoopStalker(); break;
+                case 'eyeballslug':         this._buildEyeballSlug(); break;
                 default:          this._buildChestMimic(); break;
             }
             this.model = this.bodyGroup;
@@ -503,6 +505,104 @@
                 { gone: ['EXTRA_LIMB_2'], hide: [this.extraLimb2] },
                 { gone: ['EYE_CLUSTER'], hide: [this.eyeCluster] },
                 { gone: ['TAIL_SPIKE'], hide: [this.tailSpike] },
+            ];
+        }
+
+        // ── Eyeball Slug: a ringed leech crawling flat on the ground, every
+        //    segment grown over with eyeballs, a gaping rasping sucker at the
+        //    front and a swollen heart-segment behind it. (SegmentWorm keys.) ──
+        _buildEyeballSlug() {
+            const p = this.profile;
+            const fleshMat = this.applySkin(this._mat(p.bodyColor, 1.0, 0.35));
+            const ringMat = this._mat(p.accent, 1.0, 0.5);
+
+            // Mid body: annulated segments lying low, tapering back, each ring
+            // separated by a darker collar and topped with a staring eye.
+            this.mass = new THREE.Group();
+            const segs = [[0.30, 0.30, 0.34], [0.28, 0.06, 0.30], [0.25, -0.20, 0.27]];
+            for (const [r, z, y] of segs) {
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), fleshMat);
+                seg.position.set(0, y, z); seg.scale.set(1.25, 0.8, 1.0); this.mass.add(seg);
+                const collar = new THREE.Mesh(new THREE.TorusGeometry(r * 0.92, 0.03, 6, 14), ringMat);
+                collar.position.set(0, y, z - r * 0.5); collar.rotation.y = Math.PI / 2; collar.scale.set(1.0, 0.8, 1.25);
+                this.mass.add(collar);
+                this._eye(this.mass, (this.idRand() - 0.5) * 0.24, y + r * 0.62, z, 0.07 + this.idRand() * 0.03, 0x111111);
+            }
+            // Wet trail smeared under the body.
+            const slimeMat = this._mat(p.accent, 0.28, 0.15, p.accent);
+            for (let i = 0; i < 3; i++) {
+                const s = new THREE.Mesh(new THREE.CircleGeometry(0.22 - i * 0.05, 12), slimeMat);
+                s.rotation.x = -Math.PI / 2; s.position.set(0, 0.02, -0.5 - i * 0.3); this.mass.add(s);
+            }
+            this.bodyGroup.add(this.mass);
+
+            // Heart segment: the swollen ring behind the head, a lit organ
+            // visible through the skin.
+            this.core = new THREE.Group();
+            const bulge = new THREE.Mesh(new THREE.SphereGeometry(0.36, 14, 12), fleshMat);
+            bulge.scale.set(1.2, 0.9, 1.05); this.core.add(bulge);
+            this.heart = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), this._mat(0xc03040, 0.85, 0.3, 0xff2a3a));
+            this.heart.position.set(0, 0.06, 0.12); this.core.add(this.heart);
+            this.core.position.set(0, 0.34, 0.5); this.bodyGroup.add(this.core);
+
+            // Head: a raised sucker mouth, ring of rasping teeth, one big eye
+            // over it and two beady eyestalks.
+            this.head = new THREE.Group();
+            const snout = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.24, 0.34, 14), fleshMat);
+            snout.rotation.x = Math.PI / 2; this.head.add(snout);
+            const gum = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.06, 8, 16), ringMat);
+            gum.position.z = 0.17; this.head.add(gum);
+            const gullet = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), this._mat(0x2a0a12, 1.0, 0.6));
+            gullet.position.z = 0.14; gullet.scale.set(1, 1, 0.6); this.head.add(gullet);
+            this.teeth = new THREE.Group();
+            const toothMat = this._mat(0xfff0d8, 1.0, 0.3);
+            for (let i = 0; i < 12; i++) {
+                const a = (i / 12) * Math.PI * 2;
+                const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.028, 0.12, 4), toothMat);
+                tooth.position.set(Math.cos(a) * 0.2, Math.sin(a) * 0.2, 0.2);
+                tooth.rotation.set(Math.PI / 2, 0, -a);
+                this.teeth.add(tooth);
+            }
+            this.head.add(this.teeth);
+            // The one eye the thing is named for, sat above the mouth.
+            const sclera = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 16), this._mat(0xfff0d8, 1.0, 0.25));
+            sclera.position.set(0, 0.3, 0.06); this.head.add(sclera);
+            const iris = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), this._mat(p.accent, 1.0, 0.2, p.accent));
+            iris.position.set(0, 0.3, 0.22); iris.scale.set(1, 1, 0.5); this.head.add(iris);
+            const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 10), this._mat(0x080808, 1.0, 0.2));
+            pupil.position.set(0, 0.3, 0.27); pupil.scale.set(1, 1, 0.4); this.head.add(pupil);
+            this.stalks = new THREE.Group();
+            for (const sx of [-0.22, 0.22]) {
+                const g = new THREE.Group();
+                const stalkMat = this._mat(p.bodyColor, 1.0, 0.5);
+                let py = 0;
+                for (let i = 0; i < 3; i++) { const s = new THREE.Mesh(new THREE.SphereGeometry(0.055 - i * 0.008, 8, 8), stalkMat); s.position.y = py; g.add(s); py += 0.11; }
+                this._eye(g, 0, py, 0, 0.06, 0x111111);
+                g.position.set(sx, 0.24, -0.02); g.rotation.z = sx > 0 ? -0.45 : 0.45;
+                this.stalks.add(g);
+            }
+            this.head.add(this.stalks);
+            this.head.position.set(0, 0.4, 0.98); this.bodyGroup.add(this.head);
+
+            // Tail: two shrinking rings dragging behind the body.
+            this.tail = new THREE.Group();
+            for (let i = 0; i < 2; i++) {
+                const r = 0.2 - i * 0.07;
+                const seg = new THREE.Mesh(new THREE.SphereGeometry(r, 10, 8), fleshMat);
+                seg.position.set(0, 0.22 - i * 0.05, -0.5 - i * 0.3); seg.scale.set(1.15, 0.8, 1.0);
+                this.tail.add(seg);
+            }
+            this.bodyGroup.add(this.tail);
+
+            this._partMeshMap = {
+                HEAD: this.head, HEART_SEGMENT: this.core, HEART: this.core,
+                BODY_SEGMENT: this.mass, BODY: this.mass, MASS: this.mass, TAIL: this.tail
+            };
+            this._cascadeRules = [
+                { gone: ['BODY_SEGMENT', 'BODY', 'MASS'], hide: [this.mass, this.core, this.head, this.tail] },
+                { gone: ['HEART_SEGMENT', 'HEART'], hide: [this.core] },
+                { gone: ['HEAD'], hide: [this.head] },
+                { gone: ['TAIL'], hide: [this.tail] },
             ];
         }
 
@@ -1109,6 +1209,28 @@
                     if (this.extraLimb2 && this.extraLimb2.visible) this.extraLimb2.rotation.z = -0.4 - Math.sin(t * 3 + 1) * 0.3;
                     break;
                 }
+                case 'eyeballslug': {
+                    // Peristaltic crawl: the rings squash forward one after the
+                    // other, the sucker gapes and the eyestalks sway.
+                    const fast = (anim === 'attack' || anim === 'specialattack' || anim === 'run');
+                    this.model.position.y = this._baseY + Math.abs(Math.sin(t * (fast ? 6 : 2))) * 0.02 * this.scale;
+                    this.model.rotation.z = hitJolt;
+                    if (this.mass && this.mass.visible) this.mass.children.forEach((c, i) => {
+                        if (c.geometry && c.geometry.type === 'SphereGeometry') {
+                            const w = Math.sin(t * (fast ? 7 : 3) - i * 0.9) * 0.06;
+                            c.scale.set(1.25 + w, 0.8 - w * 0.5, 1.0 + w);
+                        }
+                    });
+                    if (this.heart && this.heart.material) this.heart.material.emissiveIntensity = 0.5 + Math.sin(t * 5) * 0.4;
+                    if (this.head && this.head.visible) {
+                        this.head.rotation.y = fast ? 0 : Math.sin(t * 1.1) * 0.25;
+                        this.head.rotation.x = -0.1 + Math.sin(t * 2) * 0.05;
+                        const gape = fast ? 1.0 + Math.abs(Math.sin(t * 9)) * 0.4 : 1.0 + Math.sin(t * 2) * 0.06;
+                        if (this.teeth) this.teeth.scale.set(gape, gape, 1);
+                        if (this.stalks) this.stalks.children.forEach((g, i) => { g.rotation.z = (i ? -0.45 : 0.45) + Math.sin(t * 3 + i) * 0.2; });
+                    }
+                    break;
+                }
                 case 'nervoussystem': {
                     this.model.position.y = this._baseY + Math.sin(t * 1.5) * 0.07 * this.scale;
                     this.model.rotation.z = hitJolt;
@@ -1251,7 +1373,8 @@
     reg('timeloopstalker',     { aliases: ['timeloopstalker'], scale: S.timeloopstalker.scale, weapon: 0, create: make });
 
     const NAMED = {
-        floatingeye:      ["Wandering Eyeball", "Eyeball Slug"],
+        floatingeye:      ["Wandering Eyeball"],
+        u_eyeballslug:    ["Eyeball Slug"],
         nervoussystem:    ["Nervous System"],
         realitybender:    ["Reality Bender"],
         recursiveparadox: ["Recursive Paradox"],
@@ -1269,5 +1392,5 @@
 
     debugLog('Aberration family registered');
 
-    ;[['u_eyeballslug',2.2]].forEach(([k,sc]) => reg(k, { aliases: [k], scale: sc, weapon: 0, create: make }));
+    reg('u_eyeballslug', { aliases: ['u_eyeballslug'], scale: S.u_eyeballslug.scale, weapon: 0, create: make });
 })();

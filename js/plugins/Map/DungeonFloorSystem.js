@@ -19,6 +19,13 @@
  * Maps within a valid group that lack Region ID 13 will not be used for
  * the start or end rooms.
  *
+ * --- World generation ---
+ * The floor layout is world data, not run data: it is rolled from the world
+ * seed while the world is being created (WorldManager's "dungeon" step, which
+ * runs the same routine as the Generate Dungeon plugin command) and the
+ * Dungeon Generated switch is turned ON to say the world has one. Being a
+ * world switch, it is shared by every savegame of that world.
+ *
  * --- Special Floor Transitions ---
  * - From Town (Floor 0), using "nextFloor" teleports you to Map ID 101 (X:16, Y:38).
  * - From Floor 1, using "prevFloor" teleports you to the dungeon base Map ID 635 at (X:13, Y:27).
@@ -126,6 +133,12 @@
  * @desc Switch that determines whether to use the arena map instead of the town map
  * @type switch
  * @default 5
+ *
+ * @param dungeonGeneratedSwitch
+ * @text Dungeon Generated Switch
+ * @desc World switch turned ON once the world's dungeon layout has been generated.
+ * @type switch
+ * @default 2
  *
  * @command generateDungeon
  * @text Generate Dungeon
@@ -283,6 +296,7 @@
     maxFloorVariable: parseInt(parameters.maxFloorVariable || 2),
     elevatorFloorVariable: parseInt(parameters.elevatorFloorVariable || 17),
     arenaToggleSwitch: parseInt(parameters.arenaToggleSwitch || 5),
+    dungeonGeneratedSwitch: parseInt(parameters.dungeonGeneratedSwitch || 2),
   };
 
   const params = window.DungeonFloorSystemParams;
@@ -565,7 +579,7 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
         }
 
         this.initializeStairLocations();
-        this._dungeonGenerated = true;
+        this.markDungeonGenerated();
         $gameVariables.setValue(params.maxFloorVariable, 0);
         return;
     }
@@ -636,9 +650,20 @@ Game_System.prototype.findRegion14Tiles = function (mapData) {
 
     this.initializeStairLocations();
 
-    this._dungeonGenerated = true;
+    this.markDungeonGenerated();
     $gameVariables.setValue(params.maxFloorVariable, 0);
 
+  };
+
+  // The layout is world data, so the flag announcing it exists is a world
+  // switch: every savegame of the world descends through the same hundred
+  // floors, and events can tell a generated world from one that never got a
+  // dungeon without reaching into $gameSystem.
+  Game_System.prototype.markDungeonGenerated = function () {
+    this._dungeonGenerated = true;
+    if (typeof $gameSwitches !== "undefined" && $gameSwitches && params.dungeonGeneratedSwitch > 0) {
+      $gameSwitches.setValue(params.dungeonGeneratedSwitch, true);
+    }
   };
 
 
@@ -941,6 +966,10 @@ Game_System.prototype.isPassableTileFromTilesets = function (mapData, x, y) {
       $gameSystem.initDungeonSystem();
       if (!$gameSystem.isDungeonGenerated() || $gameSystem.isDemoLayoutStale()) {
         $gameSystem.generateDungeon();
+      } else {
+        // The layout was already on disk (a world made before this step
+        // existed). It still owes the world switch that says so.
+        $gameSystem.markDungeonGenerated();
       }
     });
   }

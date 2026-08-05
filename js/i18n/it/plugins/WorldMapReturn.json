@@ -10,5 +10,7 @@
   "makeCamp": "Monta il campo",
   "icebushBlocked": "I campi intorno a Icebush sono infestati da Petrodemoni e Neuronebbia, perché non prendi l'Ipermetro come qualsiasi essere umano sano di mente",
   "stop": "Fermati",
-  "worldMapMenu": "Mappa del mondo"
+  "worldMapMenu": "Mappa del mondo",
+  "wilderness": "Terre selvagge",
+  "mapNumbered": "Mappa {id}"
 }

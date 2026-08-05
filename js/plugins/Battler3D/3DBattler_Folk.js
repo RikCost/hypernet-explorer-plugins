@@ -69,7 +69,6 @@
         elvenflameweaver:  { name: 'Elven Flame Weaver',  scale: 2.2, skin: 0xe8d8c0, outfit: 0x8a3a2a, head: 'hair', headColor: 0xcc4422, wpnR: 'staff', robe: true, tex: 'fire', ears: 'elf', accent: 0xff6622 },
         bihuman:           { name: 'Bi Human',           scale: 2.2, skin: 0xc8a888, outfit: 0x4a5a6a, head: 'hair', headColor: 0x3a2a1a, twoHead: true, tex: 'flesh' },
         doublesinger:      { name: 'Double Singer',      scale: 2.2, skin: 0xc8a888, outfit: 0x7a4a8a, head: 'hair', headColor: 0x2a1a10, twoHead: true, wpnR: 'lute', tex: 'flesh', accent: 0xffcc44 },
-        feralalleycat:     { name: 'Feral Alley Cat',    scale: 1.7, skin: 0x6a6058, outfit: 0x4a4038, head: 'none', wpnR: 'fists', tex: 'fur', ears: 'cat', tail: true, snout: true, eyeColor: 0xffdd33 },
         cavegnome:         { name: 'Cave Gnome',         scale: 1.7, skin: 0xc8a070, outfit: 0x6a5238, head: 'conehat', headColor: 0xcc2222, wpnR: 'pickaxe', tex: 'wood', beard: 0xddddcc, accent: 0xffcc44 },
         bonesentinel:      { name: 'Bone Sentinel',      scale: 2.3, skin: 0xd8d0bc, outfit: 0x4a4a52, head: 'helmet', headColor: 0x5a5a62, wpnR: 'halberd', tex: 'bone', eyeColor: 0x88ddff, bony: true },
         stoneshifter:      { name: 'Stone Shifter',      scale: 1.9, skin: 0x7a7068, outfit: 0x5a544a, head: 'none', wpnR: 'fists', tex: 'stone', eyeColor: 0x88aa66, rocky: true },
@@ -952,7 +951,7 @@
     const NAMED = {
         orccaptain: [], bloodaxeraider: ["Bloodaxe Raider"], reanimatedguard: [],
         touristskeleton: [], elvenbladesinger: ["Elven Bladesinger"], elvenflameweaver: ["Elven Flame Weaver"],
-        bihuman: ["Bi Human"], doublesinger: ["Double Singer"], feralalleycat: ["Feral Alley Cat"], cavegnome: ["Cave Gnome"],
+        bihuman: ["Bi Human"], doublesinger: ["Double Singer"], cavegnome: ["Cave Gnome"],
         bonesentinel: ["Bone Sentinel"], stoneshifter: ["Stone Shifter"], banditarcher_rep: ["Bandit Archer"], banditbard_rep: ["Bandit Bard"],
         abandonednovice: ["Abandoned Novice"], apprenticepyro: ["Apprentice Pyromancer"], bloodinitiate: ["Blood Initiate"],
         cultistacolyte: ["Cultist Acolyte"], forestpoacher: ["Forest Poacher"], marshskulk: ["Marsh Skulk"],

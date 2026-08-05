@@ -841,10 +841,74 @@
     }
   }
 
+  // ==========================================================================
+  // Player removals (ProceduralTerrainInteractions)
+  // ==========================================================================
+  // What a prefab paints on the object layers is ordinary scenery: a tree in a
+  // prefab orchard is felled with the same axe as the one the biome generator
+  // scattered next to it, and it must stay felled. The removals are recorded
+  // per world square in the world folder, and Game_Map.setup re-applies them --
+  // but the prefab pass runs from DataManager.loadMapData, and loading a
+  // savegame while standing on the procedural map reaches that WITHOUT ever
+  // calling setup (Scene_Map only transfers when the player is transferring).
+  // The felled tree came back on every load. So the pass itself honours the
+  // removals: a tile the party took apart on THIS square is stamped bare, which
+  // leaves every other copy of the same prefab, on every other square,
+  // untouched.
+  function removedTilesFor(biomeName, worldCoords) {
+    const TI = window.TerrainInteractions;
+    if (!TI || typeof TI.removedTilesFor !== "function") return null;
+    try {
+      return TI.removedTilesFor(biomeName, worldCoords);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Footprints of the prefabs standing on the square being played, so
+  // TerrainInteractions can tell prefab-stamped scenery from generated terrain.
+  function footprintKey(biomeName, worldCoords) {
+    return `${biomeName}:${worldCoords.x},${worldCoords.y}`;
+  }
+
+  const MAX_TRACKED_FOOTPRINTS = 64;
+
+  function recordPrefabFootprints(biomeName, worldCoords, rects) {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    if (!pg || !rects || !rects.length) return;
+    const key = footprintKey(biomeName, worldCoords);
+    const prev = pg._prefabFootprints;
+    // A square can be stamped twice (the structure generator runs its own pass
+    // during generation, the loader another), so keep both sets of footprints.
+    let merged = rects;
+    if (prev && prev.key === key && Array.isArray(prev.rects)) {
+      const seen = new Set();
+      merged = prev.rects.concat(rects).filter(r => {
+        const id = `${r.x},${r.y},${r.width},${r.height}`;
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+    }
+    pg._prefabFootprints = { key, rects: merged.slice(0, MAX_TRACKED_FOOTPRINTS) };
+  }
+
+  // The footprints of the square currently being stood on, or null when the
+  // stored set belongs to another square (or none was ever recorded).
+  function getPrefabFootprints() {
+    const pg = $gameSystem && $gameSystem._procGenData;
+    const fp = pg && pg._prefabFootprints;
+    if (!fp || !Array.isArray(fp.rects) || !pg.currentBiome) return null;
+    const wx = $gameVariables ? $gameVariables.value(43) : 0;
+    const wy = $gameVariables ? $gameVariables.value(44) : 0;
+    if (fp.key !== footprintKey(pg.currentBiome, { x: wx, y: wy })) return null;
+    return fp.rects;
+  }
+
   /**
    * Place a single prefab map into the procedural map
    */
-  function placePrefab(mapData, prefabMap, position, nonTerrainTileIds) {
+  function placePrefab(mapData, prefabMap, position, nonTerrainTileIds, removedTiles) {
     if (!prefabMap || !prefabMap.data) return;
 
     const prefabData = prefabMap.data;
@@ -886,6 +950,11 @@
         const shadowBits = shadowSrcIdx < prefabData.length ? prefabData[shadowSrcIdx] : 0;
 
         if (hasPrefabContent) {
+          // A tile the party already took apart on this square: the ground the
+          // prefab lays down still goes in (no hole in its floor), the scenery
+          // it stood on the object layers does not.
+          const removedHere = removedTiles && removedTiles.has(`${mapX},${mapY}`);
+
           // Clear non-terrain features
           for (let layer = 0; layer < 4; layer++) {
             const idx = calculateIndex(mapX, mapY, layer, PROC_MAP_WIDTH, PROC_MAP_HEIGHT);
@@ -901,6 +970,10 @@
             const tile = prefabTilesAtPosition[layer];
 
             if (dstIdx < mapData.length) {
+              if (removedHere && layer > 0) {
+                mapData[dstIdx] = 0;
+                continue;
+              }
               if (layer === 0 && tile === 0) continue;
               mapData[dstIdx] = tile;
             }
@@ -1176,6 +1249,9 @@
     const isCaveTerrain = caveFloorTile !== undefined && caveFloorTile !== null;
     const placedFootprints = [];
 
+    // What the party has already cleared away on this exact world square.
+    const removedTiles = removedTilesFor(biomeName, worldCoords);
+
     // Place each prefab
     for (let i = 0; i < positions.length; i++) {
       const position = positions[i];
@@ -1185,10 +1261,12 @@
         if (isCaveTerrain) {
           carveCaveSpaceForPrefab(mapData, position, caveFloorTile, placedFootprints);
         }
-        placePrefab(mapData, prefabInfo.data, position, nonTerrainTileIds);
+        placePrefab(mapData, prefabInfo.data, position, nonTerrainTileIds, removedTiles);
         placedFootprints.push({ x: position.x, y: position.y, width: position.width, height: position.height });
       }
     }
+
+    recordPrefabFootprints(biomeName, worldCoords, placedFootprints);
 
     return mapData;
   }
@@ -1254,6 +1332,7 @@
     buildSummedAreaTable,
     rectsCollide,
     enforceNoPrefabCollisions,
+    getPrefabFootprints,
     getGasPumpTileIds,
     prefabHasGasPump,
     tryPlaceRoadsidePair,

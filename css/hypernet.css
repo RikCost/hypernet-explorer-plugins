@@ -491,6 +491,11 @@
                     cursor: default;
                     height: 28px;
                     box-sizing: border-box;
+                    /* An app whose content declares height:100% (the bank, for one)
+                       overflows the client area, and as a flex item the titlebar
+                       would then shrink to nothing: no title, no controls and
+                       nothing left to drag the window by. */
+                    flex-shrink: 0;
                 }
 
                 .hypernet-os-window.active .hypernet-window-titlebar {
@@ -559,6 +564,9 @@
                     overflow: auto;
                     display: flex;
                     flex-direction: column;
+                    /* Let the client area scroll its own overflow instead of
+                       pushing the titlebar out of the window. */
+                    min-height: 0;
                 }
 
                 /* Resize Handles */
@@ -570,6 +578,16 @@
                 .resize-s { bottom: -3px; left: 0; width: 100%; height: 6px; cursor: s-resize; }
                 .resize-e { top: 0; right: -3px; width: 6px; height: 100%; cursor: e-resize; }
                 .resize-w { top: 0; left: -3px; width: 6px; height: 100%; cursor: w-resize; }
+                /* While a window is being dragged or resized, iframe apps stop
+                   eating the pointer so the gesture survives crossing over
+                   them and ends where the mouse is actually released. */
+                #hypernet-os-desktop.os-window-dragging {
+                    user-select: none;
+                }
+                #hypernet-os-desktop.os-window-dragging iframe {
+                    pointer-events: none;
+                }
+
                 .resize-ne { top: -3px; right: -3px; width: 10px; height: 10px; cursor: ne-resize; }
                 .resize-nw { top: -3px; left: -3px; width: 10px; height: 10px; cursor: nw-resize; }
                 .resize-se { bottom: -3px; right: -3px; width: 10px; height: 10px; cursor: se-resize; }
@@ -1259,6 +1277,9 @@
     width: 100%;
     height: 100%;
     font-family: 'Tahoma', sans-serif !important;
+    /* Base size for the whole teller window: the panels inherit it instead of
+       each declaring its own 11px, which read as fine print on a game screen. */
+    font-size: 13px;
     background: var(--xp-bg);
     color: var(--text-pure-black);
     box-sizing: border-box;
@@ -1280,6 +1301,20 @@
     padding: 8px;
     gap: 0px;
     position: relative;
+    /* .cc-pockets-spread globally means "parchment book spread": a 6px double
+       border, an inset antique outline and the paper-rustle scale-in. Inside the
+       XP window chrome that reads as a second frame, so it is undressed here. */
+    border: none;
+    outline: none;
+    box-shadow: none;
+    animation: none;
+    background-image: none;
+    font-size: inherit;
+}
+/* The spine shading of the book spread, a dark vertical bar at 57.5%. */
+#bank-system-content .cc-pockets-spread::before,
+#bank-system-content .cc-pockets-spread::after {
+    display: none !important;
 }
 #bank-system-content .xp-tabs {
     display: flex;
@@ -1288,13 +1323,13 @@
     padding-left: 6px;
 }
 #bank-system-content .xp-tab {
-    padding: 6px 12px;
+    padding: 7px 14px;
     background: var(--xp-gray-light);
     border: 1px solid var(--xp-border);
     border-bottom: none;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: bold;
     color: #555;
     cursor: pointer;
@@ -1325,7 +1360,7 @@
     height: 100%;
 }
 #bank-system-content .cc-header-gothic {
-    font-size: 11px !important;
+    font-size: 14px !important;
     font-weight: bold !important;
     color: var(--xp-blue-dark) !important;
     border-bottom: 1px solid var(--xp-border) !important;
@@ -1342,14 +1377,19 @@
     border-radius: 3px;
     padding: 10px;
     margin-bottom: 8px;
+    /* The global .stat-card is a single row (flex, align-items:center). Here it
+       is a column of label/value rows, and inherited centering shrink-wrapped
+       every row, so the values sat against their labels and the dotted rules
+       stopped short. */
+    align-items: stretch;
 }
 #bank-system-content .action-button {
     background: var(--xp-blue) !important;
     border: 1px solid var(--xp-blue) !important;
     color: var(--text-pure-white) !important;
     font-weight: bold !important;
-    font-size: 11px !important;
-    padding: 6px 16px !important;
+    font-size: 13px !important;
+    padding: 8px 16px !important;
     border-radius: 3px !important;
     cursor: pointer;
     text-align: center;
@@ -1360,14 +1400,24 @@
     background: var(--xp-blue-hover) !important;
     border-color: var(--xp-blue-hover) !important;
 }
+/* An action whose transaction cannot be made: greyed out, unfocusable, and
+   ignored by the delegated click handler, with the reason in its tooltip. */
+#bank-system-content .action-button.disabled,
+#bank-system-content .action-button.disabled:hover {
+    background: var(--xp-disabled) !important;
+    border-color: var(--xp-gray-mid) !important;
+    color: var(--xp-parchment) !important;
+    cursor: default;
+    text-shadow: 0 1px 0 var(--xp-near-white);
+}
 #bank-system-content .btn-stamp {
     background: var(--xp-border-light) !important;
     border: 1px solid var(--xp-border) !important;
     color: var(--text-pure-black) !important;
     font-weight: bold !important;
     border-radius: 3px !important;
-    font-size: 11px !important;
-    padding: 4px 8px !important;
+    font-size: 13px !important;
+    padding: 6px 8px !important;
     cursor: pointer;
     text-align: center;
 }

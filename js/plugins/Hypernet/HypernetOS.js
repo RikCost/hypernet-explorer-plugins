@@ -723,6 +723,16 @@
             return win;
         },
 
+        // An app whose client area is an iframe (the browser) swallows every
+        // mousemove and mouseup the moment the pointer crosses into it, which
+        // strands a titlebar drag or a border resize halfway through. Marking
+        // the desktop while either is running lets the CSS switch iframes off
+        // for the duration, so the OS titlebar and handles stay in charge.
+        setDragState: function(active) {
+            const desktop = document.getElementById('hypernet-os-desktop');
+            if (desktop) desktop.classList.toggle('os-window-dragging', !!active);
+        },
+
         setupWindowEvents: function(win) {
             const titlebar = win.querySelector('.hypernet-window-titlebar');
             const closeBtn = win.querySelector('.hypernet-btn-close');
@@ -762,7 +772,8 @@
                 
                 isDragging = true;
                 this.bringToFront(win);
-                
+                this.setDragState(true);
+
                 const rect = win.getBoundingClientRect();
                 dragOffsetX = e.clientX - rect.left;
                 dragOffsetY = e.clientY - rect.top;
@@ -784,6 +795,7 @@
                 
                 const onMouseUp = () => {
                     isDragging = false;
+                    this.setDragState(false);
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
                 };
@@ -799,7 +811,8 @@
                     e.stopPropagation();
                     if (win.classList.contains('maximized')) return;
                     this.bringToFront(win);
-                    
+                    this.setDragState(true);
+
                     const direction = handle.className.replace('resize-handle resize-', '');
                     const startX = e.clientX;
                     const startY = e.clientY;
@@ -841,6 +854,7 @@
                     };
 
                     const onMouseUp = () => {
+                        this.setDragState(false);
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);
                     };
@@ -1151,6 +1165,28 @@
         };
         document.addEventListener('click', this._documentClickHandler);
 
+        // Right click anywhere on the OS surface is the mouse equivalent of
+        // Escape / controller B: it closes the frontmost window, and leaves the
+        // OS when the desktop is bare. The native context menu never shows.
+        this._contextMenuHandler = (e) => {
+            if (!this.isActive()) return;
+            e.preventDefault();
+
+            // A right click inside a text field is left to the field itself, so
+            // typing in Notepad or a terminal is never interrupted.
+            const tag = e.target && e.target.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+            if (startMenu && startMenu.classList.contains('open')) {
+                startMenu.classList.remove('open');
+                startBtn.classList.remove('active');
+                return;
+            }
+
+            this.closeTopWindowOrExit();
+        };
+        this._container.addEventListener('contextmenu', this._contextMenuHandler);
+
         // Start Menu Navigation Links
         document.getElementById('link-my-computer').addEventListener('click', () => {
             window.HypernetOS.launchApp('my-computer');
@@ -1253,14 +1289,7 @@
                 // closes its window at the top level).
                 if (selfNav) return;
 
-                // If there's an active window, close it first
-                const activeWin = document.querySelector('.hypernet-os-window.active');
-                if (activeWin) {
-                    window.HypernetOS.WindowManager.closeWindow(activeWin);
-                } else {
-                    // Otherwise close OS
-                    this.onExitClick();
-                }
+                this.closeTopWindowOrExit();
                 return;
             }
 
@@ -1515,6 +1544,26 @@
         }
     };
 
+    // The single "go back" action shared by Escape, the controller's B button and
+    // a right click on the desktop: close the frontmost window, or leave the OS
+    // when nothing is open. The active window is preferred, falling back to the
+    // highest window still on screen so a stale focus state never swallows the
+    // press.
+    Scene_HypernetOS.prototype.closeTopWindowOrExit = function() {
+        const active = document.querySelector('.hypernet-os-window.active:not(.minimized)');
+        const win = active || window.HypernetOS.WindowManager.windows
+            .filter(w => w.isConnected && !w.classList.contains('minimized'))
+            .sort((a, b) => (parseInt(a.style.zIndex, 10) || 0) - (parseInt(b.style.zIndex, 10) || 0))
+            .pop();
+
+        if (win) {
+            if (window.SoundManager) SoundManager.playCancel();
+            window.HypernetOS.WindowManager.closeWindow(win);
+        } else {
+            this.onExitClick();
+        }
+    };
+
     Scene_HypernetOS.prototype.onExitClick = function() {
         if (window.SoundManager) SoundManager.playCancel();
         this.popScene();
@@ -1546,12 +1595,7 @@
         }
         if (bPressed && !this._gamepadBHeld) {
             this._gamepadBHeld = true;
-            const activeWin = document.querySelector('.hypernet-os-window.active');
-            if (activeWin) {
-                window.HypernetOS.WindowManager.closeWindow(activeWin);
-            } else {
-                this.onExitClick();
-            }
+            this.closeTopWindowOrExit();
         } else if (!bPressed) {
             this._gamepadBHeld = false;
         }
@@ -1653,6 +1697,14 @@
         if (this._documentClickHandler) {
             document.removeEventListener('click', this._documentClickHandler);
             this._documentClickHandler = null;
+        }
+
+        // Remove the right-click (close frontmost window) hook
+        if (this._contextMenuHandler) {
+            if (this._container) {
+                this._container.removeEventListener('contextmenu', this._contextMenuHandler);
+            }
+            this._contextMenuHandler = null;
         }
 
         // Close all windows

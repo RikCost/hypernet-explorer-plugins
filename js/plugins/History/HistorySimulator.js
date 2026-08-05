@@ -1862,8 +1862,9 @@
             if (WM && WM.activeWorldName) {
                 const info = WM.worldInfo();
                 if (!info.historyInitialized) {
-                    // Uninitialized world (e.g. the default world WorldManager
-                    // creates on an empty world folder): generate history now.
+                    // A world folder that exists but never got a timeline (an
+                    // older install, or a run interrupted mid-creation):
+                    // generate its history now.
                     manager.initializeWorldHistory({ years: null, seed: info.seed });
                 } else {
                     manager.migrateKeyedHistory();

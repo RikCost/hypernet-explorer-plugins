@@ -2942,13 +2942,23 @@
       }
     }
 
+    // Where along the plotted route the craft is drawn, 0..1. Measured from the
+    // trip's origin, NOT from departurePosition: the warp slider rebases the
+    // latter to wherever the ship is at the moment it moves (see
+    // DataManager.recalculateDepartureOnSpeedChange), which would read as a
+    // fresh departure and snap the ship back to the system it left.
     _travelProgress(ship) {
-      if (!ship.departurePosition || !ship.travelDistance) return 0;
-      const dx = ship.position.x - ship.departurePosition.x;
-      const dy = ship.position.y - ship.departurePosition.y;
-      const dz = ship.position.z - ship.departurePosition.z;
+      if (!ship) return 0;
+      const dm = this.dataManager;
+      if (dm && typeof dm.travelProgress === "function") return dm.travelProgress(ship);
+      const origin = ship.originPosition || ship.departurePosition;
+      const span = ship.originDistance || ship.travelDistance;
+      if (!origin || !span) return 0;
+      const dx = ship.position.x - origin.x;
+      const dy = ship.position.y - origin.y;
+      const dz = ship.position.z - origin.z;
       const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      return Math.max(0, Math.min(1, d / ship.travelDistance));
+      return Math.max(0, Math.min(1, d / span));
     }
 
     /** Radius of whatever the current view is drawing, in world units. */

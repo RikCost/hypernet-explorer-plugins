@@ -1279,6 +1279,12 @@
    * @param {Game_Actor} actor - Member leaving the active party
    * @returns {object} Preset object
    */
+  // Switches 77/78/79 flag Actor 1/2/3 as portrayed by a battler image.
+  function isCreatureSlot(actor) {
+    const slot = actor && actor.actorId ? actor.actorId() : 0;
+    return !!($gameSwitches && slot >= 1 && slot <= 3 && $gameSwitches.value(76 + slot));
+  }
+
   function buildRetiredPreset(actor) {
     const minute = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
     // Same calendar the roster history prints (NPCSystemParty.js).
@@ -1339,7 +1345,12 @@
       traits: (actor._selectedTraits || []).map((trait) => trait.id || 0).filter((id) => id > 0),
       specializations,
       busts: actor.vnBust ? actor.vnBust() : "",
-      isCreature: false,
+      // A creature or a recruited monster is portrayed by a battler image, not
+      // by a bust, so the dossier carries the image and the enemy it came from
+      // (the status screen builds that enemy's 3D model from the id).
+      battler: actor.vnBattler ? actor.vnBattler() : "",
+      enemyId: actor._recruitedEnemyId || 0,
+      isCreature: isCreatureSlot(actor),
       gender: actor.gender ? actor.gender() : 0,
       retired: true,
       retiredAtMin: minute,
@@ -1481,9 +1492,21 @@
     }
 
     if (actor.setGender && preset.gender !== undefined) actor.setGender(preset.gender);
+    // Whoever held the slot before is gone, including the monster it may have
+    // been recruited from.
+    actor._recruitedEnemyId = 0;
     if (preset.busts && actor.setVnBust) {
       actor.setVnBust(preset.busts);
       if (actor.setPortraitMode) actor.setPortraitMode("bust");
+    } else if (preset.battler && actor.setVnBattler) {
+      // Portrayed by a battler image (a creature, or a monster recruited in
+      // battle). Leaving the portrait mode unset lets the status screen build
+      // the 3D model of the recorded enemy when one resolves, and fall back to
+      // the flat battler image when it does not.
+      if (actor.setVnBust) actor.setVnBust("");
+      actor.setVnBattler(preset.battler);
+      if (actor.setPortraitMode) actor.setPortraitMode(0);
+      actor._recruitedEnemyId = preset.enemyId || 0;
     }
 
     // Anatomy skills need no call here: Health_Core grants them on addActor.

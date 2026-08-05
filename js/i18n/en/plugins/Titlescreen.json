@@ -20,7 +20,8 @@
     "worlds": "WORLDS",
     "preferences": "PREFERENCES",
     "mods": "MODS",
-    "exit": "EXIT"
+    "exit": "EXIT",
+    "noWorld": "NO WORLD"
   },
   "minigame": {
     "arena": "Arena",
@@ -121,7 +122,17 @@
     "checkingTip": "Asking the update server what the newest build is.",
     "ready": "✦ BUILD {build} READY",
     "readyPlain": "✦ NEW BUILD READY",
-    "tip": "A newer build is waiting. Open the updater to install it."
+    "download": "✦ DOWNLOAD {name}",
+    "downloadBuild": "✦ DOWNLOAD BUILD {build}",
+    "preparing": "✦ PREPARING UPDATE",
+    "downloading": "✦ DOWNLOADING {percent}%",
+    "installing": "✦ INSTALLING UPDATE",
+    "restarting": "✦ RESTARTING",
+    "restartReady": "✦ RESTART TO FINISH",
+    "restartTip": "The new build is installed. Click to restart the game onto it.",
+    "upToDate": "✦ ALREADY UP TO DATE",
+    "failed": "✦ UPDATE FAILED, RETRY",
+    "tip": "A newer build is waiting. Click to install it and restart."
   },
   "hyperverse": {
     "lead": "HYPERVERSE // ",

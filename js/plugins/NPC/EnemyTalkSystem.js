@@ -802,6 +802,32 @@
         return this.getArchetypeSprite(archetype);
     };
 
+    // Give the recruited monster its own portrait. The actor slot may still
+    // carry the bust, 3D model config and creature flag of whoever held it
+    // before, so all of it is rewritten here: the enemy's battler art becomes
+    // the actor's portrait image, and the status screen builds the procedural
+    // 3D model of the recorded enemy when one resolves, falling back to the
+    // flat battler image otherwise (what an unset portrait mode means).
+    Scene_Battle.prototype.applyRecruitPortrait = function (actor, enemyData) {
+        if (!actor || !enemyData) return;
+        const slot = actor.actorId();
+        if (actor.setVnBust) actor.setVnBust("");
+        if (actor.setPortraitMode) actor.setPortraitMode(0);
+        if (actor.setVnBattler) actor.setVnBattler(enemyData.battlerName || "");
+        actor._recruitedEnemyId = enemyData.id;
+        // Switches 77/78/79 say whether Actor 1/2/3 is portrayed by a battler
+        // image instead of a bust.
+        if ($gameSwitches && slot >= 1 && slot <= 3) {
+            $gameSwitches.setValue(76 + slot, !!enemyData.battlerName);
+        }
+        // Drop the previous occupant's custom 3D model and look seed: the
+        // recruit is portrayed by its own species, not by theirs.
+        if (window.CC3DModel) {
+            if (window.CC3DModel.setConfig) window.CC3DModel.setConfig(slot, null);
+            if (window.CC3DModel.setCreatureSeed) window.CC3DModel.setCreatureSeed(slot, null);
+        }
+    };
+
     Scene_Battle.prototype.onTalkJoinParty = function () {
         const enemy = this._talkEnemy();
         const systemMessages = getSystemMessages();
@@ -881,6 +907,10 @@
             // this battle, then the archetype sprite (#142).
             const recruitSprite = this.resolveRecruitSprite(archetype, enemy.enemy().note);
             newActor.setCharacterImage(recruitSprite.characterName, recruitSprite.characterIndex);
+
+            // Portrait: the monster's own battler art / 3D model, replacing
+            // whatever the slot inherited from its previous occupant.
+            this.applyRecruitPortrait(newActor, enemy.enemy());
 
             // Set level to median of current party
             const levels = $gameParty.members().map(m => m.level);
@@ -963,14 +993,10 @@
             return;
         }
 
-        // Name: archetype flavor name when available, else the enemy's own name.
-        let petName;
-        if (archetype && archetypeNames[archetype]) {
-            const names = archetypeNames[archetype];
-            petName = names[Math.floor(Math.random() * names.length)];
-        } else {
-            petName = enemy.name();
-        }
+        // Name: the monster's own name, so a tamed creature is recognisable as
+        // what it is instead of arriving under an archetype nickname the player
+        // never chose. The Pets page renames it to anything they prefer.
+        const petName = enemy.name();
 
         const sprite = this.resolveRecruitSprite(archetype, enemy.enemy().note);
 

@@ -173,6 +173,7 @@
         bst_reflectivetiger:    { variant: 'bst_reflectivetiger',    front: false, scale: 2.5, texturePool: 'fur', bodyColor: 0xd4e0ec, accent: 0x2a3038, hue: [0.55, 0.06], sat: [0.12, 0.08], lit: [0.78, 0.08] },
         bst_sabercat:           { variant: 'bst_sabercat',           front: false, scale: 2.6, texturePool: 'fur', bodyColor: 0xc8a24a, accent: 0xfff0d0, hue: [0.10, 0.05], sat: [0.48, 0.14], lit: [0.48, 0.10] },
         bst_wildcat:            { variant: 'bst_wildcat',            front: false, scale: 2.1, texturePool: 'fur', bodyColor: 0x9a7a44, accent: 0xffe14a, hue: [0.10, 0.05], sat: [0.44, 0.14], lit: [0.44, 0.10] },
+        bst_feralalleycat:      { variant: 'bst_feralalleycat',      front: false, scale: 1.9, texturePool: 'fur', bodyColor: 0x6a6058, accent: 0xffdd33, hue: [0.09, 0.06], sat: [0.14, 0.10], lit: [0.34, 0.12] },
         bst_goldenlion:         { variant: 'bst_goldenlion',         front: false, scale: 2.7, texturePool: 'fur', bodyColor: 0xd0a850, accent: 0x6a3a10, hue: [0.11, 0.04], sat: [0.50, 0.12], lit: [0.52, 0.08] },
         bst_stripedtiger:       { variant: 'bst_stripedtiger',       front: false, scale: 2.6, texturePool: 'fur', bodyColor: 0xd88a30, accent: 0x1a1008, hue: [0.07, 0.03], sat: [0.60, 0.12], lit: [0.48, 0.08] },
         bst_umbrapanthera:      { variant: 'bst_umbrapanthera',      front: false, scale: 2.5, texturePool: 'fur', bodyColor: 0x14121c, accent: 0x9944ff, hue: [0.74, 0.06], sat: [0.35, 0.12], lit: [0.12, 0.06] },
@@ -416,6 +417,7 @@
                 case 'bst_reflectivetiger':    this._buildBstReflectivetiger(fur); break;
                 case 'bst_sabercat':           this._buildBstSabercat(fur); break;
                 case 'bst_wildcat':            this._buildBstWildcat(fur); break;
+                case 'bst_feralalleycat':      this._buildBstFeralalleycat(fur); break;
                 case 'bst_goldenlion':         this._buildBstGoldenlion(fur); break;
                 case 'bst_stripedtiger':       this._buildBstStripedtiger(fur); break;
                 case 'bst_umbrapanthera':      this._buildBstUmbrapanthera(fur); break;
@@ -1148,6 +1150,16 @@
             const st = this._mat(this.profile.accent, 1.0, 0.4); for (let i = 0; i < 5; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.05), st); s.position.set(0, 1.06, 0.3 - i * 0.18); this._deco(s); } }
         _buildBstSabercat(fur)         { this._felineBase(fur, { sizeBody: 1.05, fangs: 0.28, ear: 'round', eyeGlow: true, legLen: 0.9 }); }
         _buildBstWildcat(fur)          { this._felineBase(fur, { sizeBody: 0.8, ear: 'tuft', eyeGlow: false, legLen: 0.78 }); }
+        // Street tomcat: small, half-starved, one ear torn off in a fight and
+        // a patchy coat of raised hackles down the spine.
+        _buildBstFeralalleycat(fur)    { this._felineBase(fur, { sizeBody: 0.68, ear: 'tuft', eyeGlow: true, legLen: 0.72 });
+            // Notch the left ear (first ear cone added to the head group).
+            if (this.head) { const ear = this.head.children.find(c => c.geometry && c.geometry.type === 'ConeGeometry'); if (ear) { ear.scale.set(0.9, 0.55, 0.9); ear.rotation.z = -0.4; } }
+            // Ribs showing through a scruffy coat, and bristling hackles.
+            const scruff = this._mat(this.profile.bodyColor, 1.0, 0.95);
+            for (let i = 0; i < 5; i++) { const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.13, 4), scruff); tuft.position.set((i % 2 ? 0.03 : -0.03), 1.12, 0.26 - i * 0.14); tuft.rotation.x = -0.4; this._deco(tuft); }
+            const rib = this._mat(this.profile.accent, 0.35, 0.8);
+            for (let i = 0; i < 3; i++) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.02, 0.03), rib); r.position.set(0, 0.86, 0.28 - i * 0.12); this._deco(r); } }
         _buildBstGoldenlion(fur)       { this._felineBase(fur, { sizeBody: 1.1, mane: true, maneMat: this._mat(0x6a3a10, 1.0, 0.8), eyeGlow: false, legLen: 0.92 }); }
         _buildBstStripedtiger(fur)     { this._felineBase(fur, { sizeBody: 1.05, eyeGlow: false, legLen: 0.9 });
             const st = this._mat(this.profile.accent, 1.0, 0.6); for (let i = 0; i < 6; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.03, 0.06), st); s.position.set(0, 1.06, 0.36 - i * 0.16); this._deco(s); } }
@@ -2337,6 +2349,13 @@
                     // Barely moves; a lazy tail flick.
                     if (this.tail && this.tail.visible) this.tail.rotation.x = Math.sin(t * 1.2) * 0.3;
                     break;
+                case 'bst_feralalleycat':
+                    // Skittish: quick head snaps, a fast flicking tail, and a
+                    // low crouch before it springs.
+                    if (fast) { const c = Math.max(0, Math.sin(Math.min(t * 8, Math.PI))); this.model.position.y += c * 0.22 * this.scale; }
+                    if (this.head && this.head.visible) { this.head.rotation.y = Math.sin(t * 2.6) * 0.35; this.head.rotation.x = (fast ? 0.2 : -0.08); }
+                    if (this.tail && this.tail.visible) this.tail.rotation.x = Math.sin(t * 6) * 0.3;
+                    break;
                 case 'bst_blackpanther':
                 case 'bst_reflectivetiger':
                 case 'bst_sabercat':
@@ -2488,7 +2507,7 @@
     reg('tunnelingmole',       { aliases: ['tunnelingmole'],       scale: S.tunnelingmole.scale,       weapon: 0, create: make });
     reg('icelemming',          { aliases: ['icelemming'],          scale: S.icelemming.scale,          weapon: 0, create: make });
     // Bespoke Beast splits (narrow aliases; pinned by exact name below).
-    ["bst_arcticfox","bst_cottonfox","bst_icewolfpup","bst_rabidhyena","bst_feralhyenapack","bst_graywolf","bst_manedterrorwolf","bst_redfox","bst_alphadirewolf","bst_alphawarg","bst_arcticwolf","bst_rabidcoyote","bst_scavengingcoyote","bst_lazycat","bst_blackpanther","bst_reflectivetiger","bst_sabercat","bst_wildcat","bst_goldenlion","bst_stripedtiger","bst_umbrapanthera","bst_mysticpanther","bst_sabertoothalpha","bst_diresabertoothalpha","bst_thirstycamel","bst_foreststag","bst_pastoralsheep","bst_armoredrhinoceros","bst_bloodbellcow","bst_deersprite","bst_hollowgoat","bst_ironhoofcharger","bst_rancorousbull","bst_titanotherealpha","bst_brownbear","bst_hornedbear","bst_youngyeti","bst_frostbackursid","bst_panda","bst_polarbear","bst_timewornowlbear","bst_demonbear","bst_kodiakbear","bst_emberclawbear","bst_frostfangbear","bst_thundermawursine","bst_titaniccavebear","bst_direpig","bst_flyingpig","bst_razorbackboar","bst_wildboar","bst_flyingpig2","bst_normalpig","bst_madboar","bst_maleficentape","bst_organgrindermonkey","bst_treemonkey"].forEach(k => reg(k, { aliases: [k], scale: S[k].scale, weapon: 0, create: make }));
+    ["bst_arcticfox","bst_cottonfox","bst_icewolfpup","bst_rabidhyena","bst_feralhyenapack","bst_graywolf","bst_manedterrorwolf","bst_redfox","bst_alphadirewolf","bst_alphawarg","bst_arcticwolf","bst_rabidcoyote","bst_scavengingcoyote","bst_lazycat","bst_blackpanther","bst_reflectivetiger","bst_sabercat","bst_wildcat","bst_feralalleycat","bst_goldenlion","bst_stripedtiger","bst_umbrapanthera","bst_mysticpanther","bst_sabertoothalpha","bst_diresabertoothalpha","bst_thirstycamel","bst_foreststag","bst_pastoralsheep","bst_armoredrhinoceros","bst_bloodbellcow","bst_deersprite","bst_hollowgoat","bst_ironhoofcharger","bst_rancorousbull","bst_titanotherealpha","bst_brownbear","bst_hornedbear","bst_youngyeti","bst_frostbackursid","bst_panda","bst_polarbear","bst_timewornowlbear","bst_demonbear","bst_kodiakbear","bst_emberclawbear","bst_frostfangbear","bst_thundermawursine","bst_titaniccavebear","bst_direpig","bst_flyingpig","bst_razorbackboar","bst_wildboar","bst_flyingpig2","bst_normalpig","bst_madboar","bst_maleficentape","bst_organgrindermonkey","bst_treemonkey"].forEach(k => reg(k, { aliases: [k], scale: S[k].scale, weapon: 0, create: make }));
 
     //=========================================================================
     // Name assignments. Every "beast" enemy carries <Archetype: Beast>, which
@@ -2525,6 +2544,7 @@
         bst_reflectivetiger: ["Reflective Tiger"],
         bst_sabercat: ["Saber Cat"],
         bst_wildcat: ["Wildcat"],
+        bst_feralalleycat: ["Feral Alley Cat"],
         bst_goldenlion: ["Golden Lion"],
         bst_stripedtiger: ["Striped Tiger"],
         bst_umbrapanthera: ["Umbra Panthera"],

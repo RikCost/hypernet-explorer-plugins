@@ -102,8 +102,8 @@
     "noneValue": "None"
   },
   "effect": {
-    "addStates": "Add States",
-    "removeStates": "Remove States",
+    "addStates": "Add Status",
+    "removeStates": "Remove Status",
     "addBuffs": "Add Buffs",
     "addDebuffs": "Add Debuffs",
     "removeBuffs": "Remove Buffs",

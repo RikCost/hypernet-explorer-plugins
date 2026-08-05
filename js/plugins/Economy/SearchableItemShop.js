@@ -2107,7 +2107,7 @@
                 const border = isSelected ? '1px solid #1a3c75' : '1px solid transparent';
                 
                 gridHTML += `
-                    <div style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
+                    <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
                         ${getIconSpriteHTML(cat.icon, 20)}
                         <span style="font-weight: bold; font-size: 11px;">${cat.name}</span>
                     </div>
@@ -2194,7 +2194,7 @@
                 const border = isSelected ? '1px solid #1a3c75' : '1px solid transparent';
                 
                 gridHTML += `
-                    <div style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
+                    <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 3px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-radius: 3px; background: ${bg}; color: ${color}; border: ${border}; box-sizing: border-box; transition: background 0.1s;" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectCategoryItem(${idx})">
                         ${getIconSpriteHTML(cat.icon, 20)}
                         <span style="font-weight: bold; font-size: 11px;">${cat.name}</span>
                     </div>
@@ -2214,7 +2214,7 @@
                 const orderedStyle = isOrdered ? 'opacity: 0.55;' : '';
 
                 itemsHTML += `
-                    <div style="padding: 8px 12px; margin-bottom: 4px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.02); ${activeStyle} ${borderStyle} ${orderedStyle}" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectShopItem(${idx})">
+                    <div ${isSelected ? 'data-selected="1"' : ''} style="padding: 8px 12px; margin-bottom: 4px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 2px rgba(0,0,0,0.02); ${activeStyle} ${borderStyle} ${orderedStyle}" onclick="if(window.HypercapitalisEmporiumApp && window.HypercapitalisEmporiumApp.appInstance) window.HypercapitalisEmporiumApp.appInstance.selectShopItem(${idx})">
                         <div style="display: flex; align-items: center; gap: 8px; overflow: hidden; flex-grow: 1; margin-right: 8px; box-sizing: border-box;">
                             ${getIconSpriteHTML(item.iconIndex, 20)}
                             <span style="font-weight: bold; font-size: 11.5px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; max-width: 150px;">${item.name}</span>
@@ -2316,7 +2316,7 @@
                 
                 <div style="display: flex; gap: 15px; flex-grow: 1; height: calc(100% - 38px); overflow: hidden; box-sizing: border-box;">
                     <!-- Item Grid Left Column -->
-                    <div style="flex: 1.3; overflow-y: auto; padding-right: 4px; box-sizing: border-box; height: 100%;">
+                    <div id="emporium-item-scroll" style="flex: 1.3; overflow-y: auto; padding-right: 4px; box-sizing: border-box; height: 100%;">
                         ${itemsHTML}
                     </div>
                     
@@ -2346,25 +2346,57 @@
 
         const leftEl = document.getElementById('emporium-left-page');
         const rightEl = document.getElementById('emporium-right-page');
-        
+
+        // Rewriting a pane throws its scroller away and the replacement starts at
+        // the top, which sent the catalog back to the first row every time an
+        // item was picked. Remember where each one stood and put it back.
+        const itemScrollEl = document.getElementById('emporium-item-scroll');
+        const itemScrollTop = itemScrollEl ? itemScrollEl.scrollTop : 0;
+        const leftScrollTop = leftEl ? leftEl.scrollTop : 0;
+
         // Only update innerHTML if it has changed to prevent full redraws
         if (leftEl && leftEl.innerHTML !== leftPageHTML) {
             leftEl.innerHTML = leftPageHTML;
+            leftEl.scrollTop = leftScrollTop;
         }
         if (rightEl && rightEl.innerHTML !== rightPageHTML) {
             rightEl.innerHTML = rightPageHTML;
+            const newItemScrollEl = document.getElementById('emporium-item-scroll');
+            if (newItemScrollEl) newItemScrollEl.scrollTop = itemScrollTop;
+        }
+
+        this.scrollSelectionIntoView();
+    };
+
+    // Keeping the scroll where it was is only half the answer: moving the
+    // selection with the keyboard has to be able to walk off the visible page,
+    // so a row outside the scroller is brought just inside it.
+    Scene_SearchableShop.prototype.scrollSelectionIntoView = function () {
+        for (const id of ['emporium-item-scroll', 'emporium-left-page']) {
+            const scroller = document.getElementById(id);
+            if (!scroller) continue;
+
+            const row = scroller.querySelector('[data-selected="1"]');
+            if (!row) continue;
+
+            const rowBox = row.getBoundingClientRect();
+            const viewBox = scroller.getBoundingClientRect();
+            if (rowBox.top < viewBox.top) {
+                scroller.scrollTop -= (viewBox.top - rowBox.top);
+            } else if (rowBox.bottom > viewBox.bottom) {
+                scroller.scrollTop += (rowBox.bottom - viewBox.bottom);
+            }
         }
     };
 
+    // A sidebar category opens on the first click. It used to count as OK only
+    // when the row clicked was already the selected one, so every category had
+    // to be clicked twice and the sidebar read as half dead.
     Scene_SearchableShop.prototype.selectCategoryItem = function (idx) {
         if (this._categoryGridWindow) {
-            const currentIdx = this._categoryGridWindow.index();
             this._categoryGridWindow.select(idx);
-            if (currentIdx === idx) {
-                this.onCategoryOk();
-            } else {
-                SoundManager.playCursor();
-            }
+            SoundManager.playOk();
+            this.onCategoryOk();
             this.refreshUIShopDOM();
         }
     };
