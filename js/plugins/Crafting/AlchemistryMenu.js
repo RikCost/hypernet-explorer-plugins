@@ -78,6 +78,8 @@
     Scene_Alchemistry.prototype.create = function () {
         ensureAlchemistryProjects();
         Scene_MenuBase.prototype.create.call(this);
+        // Name the skill this menu runs on while it is open.
+        if (window.SpecBadge) window.SpecBadge.show('Alchemy');  // i18n-ignore  Specialization.json id
 
         if ($gameSystem && $gameSystem._isSandboxMode && !$gameSystem._alchemistryRecipesLoaded) {
             this.loadRecipesToProjects();

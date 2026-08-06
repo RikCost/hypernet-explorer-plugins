@@ -2797,6 +2797,17 @@
             const topTab = this.topTab || 'buildables';
             const affordFn = purchasing ? canPurchaseFurniture : canAffordFurniture;
 
+            // The Animals tab is not carpentry: it sells livestock, and that is
+            // a different skill. The badge follows the open tab.
+            if (window.SpecBadge) {
+                // The build menu can be an overlay on the map rather than a
+                // scene of its own, so it is tied to its own container: the
+                // badge goes when the panel does.
+                // i18n-ignore-next-line  Specialization.json ids
+                window.SpecBadge.show(topTab === 'animals' ? 'Animal Husbandry' : 'Carpentry',
+                    { el: this.container });
+            }
+
             // Per-category item counts for the Buildables dropdown labels.
             const categories = getBuildCategories();
             const catCounts = {};

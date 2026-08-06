@@ -40,6 +40,8 @@
     "unknownEnemy": "미상",
     "noParts": "",
     "butcher": "",
+    "butcherAll": "",
+    "butcherAllResult": "",
     "leave": "",
     "alreadyCollected": "",
     "partDestroyed": "",

@@ -612,9 +612,7 @@
                         </div>
 
                         <div class="right-page">
-                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-                              <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${T('Bestiary.speciesPortfolio')}</h2>
-                            </div>
+                            <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #5e2f17; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;"></div>
                             <div id="bestiary-portfolio-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;"></div>
                         </div>
                     </div>

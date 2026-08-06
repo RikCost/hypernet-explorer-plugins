@@ -40,6 +40,8 @@
     "unknownEnemy": "Unknown",
     "noParts": "No harvestable parts found.",
     "butcher": "Butcher (x{n})",
+    "butcherAll": "Butcher All ({n})",
+    "butcherAllResult": "Butchered {parts} parts: {items} items",
     "leave": "Leave",
     "alreadyCollected": "Already Collected",
     "partDestroyed": "Part Destroyed",

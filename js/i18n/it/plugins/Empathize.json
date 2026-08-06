@@ -118,6 +118,7 @@
   "giftTitle": "Dai un Regalo",
   "noItemsToGive": "Nessun oggetto da donare.",
   "gaveItem": "Hai dato {item} a {name}.",
+  "giftRefused": "{name} non accetta {item} da te.",
   "bribeTitle": "Corruzione",
   "briberyCaught": "{name} intasca l'oro ma ti avverte.",
   "bribeRefused": "{name} è troppo ostile per accettare.",
@@ -260,12 +261,12 @@
     "Nella borsa ci sta. Apprezzato.",
     "Non è molto, ma conta il pensiero."
   ],
-  "giftReactionCold": [
-    "Non credere che {item} ti compri qualcosa.",
-    "Lo prendo. Non cambia nulla.",
-    "Regali con facilità. Dice più di te che di me.",
-    "Va bene. Ora lasciami in pace.",
-    "Carità, eh? Continua così e forse ti ascolto."
+  "giftRefusalLines": [
+    "Non credere che {item} ti compri qualcosa. Riprenditelo.",
+    "Tienilo. Tra noi non cambierebbe nulla.",
+    "Non voglio niente dalle tue mani.",
+    "No. Ora lasciami in pace.",
+    "Credi che mi si possa comprare? Non da te."
   ],
   "giftReactionRepeat": [
     "Continui a mettermi roba in mano. Cosa vuoi davvero?",
@@ -311,6 +312,10 @@
   "transmitNoneResultNoBounty": "Tossisci vicino a {name}.",
   "socializeLabel": "Socializza",
   "courtLabel": "Corteggia",
+  "courtHarassmentFiled": "{name} ne ha abbastanza di {actor}. Una denuncia per molestie finisce agli atti: {fine}.",
+  "courtHarassmentFiledFree": "{name} ne ha abbastanza di {actor}. Una denuncia per molestie finisce agli atti.",
+  "hygieneCourtSelf": "Non ti lavi da un po', e {name} sta cercando di non farci caso.",
+  "hygieneCourtNpc": "{name} non si lava da un po', e non c'è modo di non farci caso.",
   "directionsLabel": "Chiedi Indicazioni",
   "directionsIntro": "\"Dove posso trovare {target}?\"",
   "directionsNone": "\"Qui non c'è nulla che valga la pena indicarti.\"",

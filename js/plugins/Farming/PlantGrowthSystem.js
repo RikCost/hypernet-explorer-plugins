@@ -1098,6 +1098,8 @@
 
     create() {
       super.create();
+      // Name the skill this menu runs on while it is open.
+      if (window.SpecBadge) window.SpecBadge.show('Farming');  // i18n-ignore  Specialization.json id
       this.createUIMenuDOM();
     }
 

@@ -7295,10 +7295,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor3RMVX",
+            "characterName": "Skab/!$ElvenSwordsman",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 6
+            "characterIndex": 0
           },
           "list": [
             {
@@ -8509,7 +8509,7 @@
     },
     {
       "id": 15,
-      "name": "Policeman",
+      "name": "Officer Dagnus",
       "note": "",
       "pages": [
         {
@@ -8576,7 +8576,7 @@
     },
     {
       "id": 16,
-      "name": "Policeman",
+      "name": "Officer Gria",
       "note": "",
       "pages": [
         {
@@ -8759,7 +8759,7 @@
     },
     {
       "id": 17,
-      "name": "Policeman",
+      "name": "Officer Landiley",
       "note": "",
       "pages": [
         {
@@ -8942,7 +8942,7 @@
     },
     {
       "id": 18,
-      "name": "Policeman",
+      "name": "Officer Naraphea",
       "note": "",
       "pages": [
         {
@@ -9125,7 +9125,7 @@
     },
     {
       "id": 19,
-      "name": "Policeman",
+      "name": "Officer Aman",
       "note": "",
       "pages": [
         {

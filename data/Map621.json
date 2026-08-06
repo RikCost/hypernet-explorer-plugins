@@ -1595,7 +1595,7 @@
     },
     {
       "id": 2,
-      "name": "Dog",
+      "name": "Odon",
       "note": "NPC-63 AI 0",
       "pages": [
         {
@@ -1811,7 +1811,7 @@
     },
     {
       "id": 3,
-      "name": "Crystal collector",
+      "name": "Shura",
       "note": "NPC-5 AI 0",
       "pages": [
         {
@@ -1970,13 +1970,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 5,
       "y": 4
     },
     {
       "id": 4,
-      "name": "Priest",
+      "name": "Pariela",
       "note": "NPC-4 AI 0",
       "pages": [
         {
@@ -1998,7 +1998,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Priest",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -2135,7 +2135,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 3,
       "y": 5
     },
@@ -2999,10 +2999,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor1",
+            "characterName": "Skab/!$Witch1",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {

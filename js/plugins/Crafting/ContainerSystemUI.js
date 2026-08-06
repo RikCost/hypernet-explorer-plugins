@@ -794,7 +794,20 @@
             if (sel) sel.scrollIntoView({ block: 'nearest' });
         }
 
-        // Focusable actions for the selected part (Leave is always available).
+        // Parts that can still be butchered right now, in list order.
+        _butcherableKeys() {
+            const harvestedParts = this._corpse._harvestedParts || {};
+            return this._partKeys.filter(key => {
+                const partDef = this._archetype.parts[key];
+                const cl = _classifyPart(partDef, this._savedParts[key], this._enemyDef, harvestedParts, key);
+                if (!cl.canAct) return false;
+                if (cl.state === 'surgery' && !_hasSurgicalTools()) return false;
+                return !!$dataItems[partDef.itemId];
+            });
+        }
+
+        // Focusable actions for the selected part (Butcher All and Leave are
+        // corpse-wide, so they stay available whatever the selection is).
         _buildActions(selectedKey) {
             const actions = [];
             if (!selectedKey) return actions;
@@ -807,6 +820,10 @@
                 const ratio      = savedPart && savedPart.maxHp > 0 ? savedPart.currentHp / savedPart.maxHp : 1;
                 const butcherAmt = Math.max(1, Math.ceil(ratio * (partDef.hpPercent / 10)));
                 actions.push({ type: 'butcher', label: T('Container.harvest.butcher', { n: butcherAmt }), danger: false });
+            }
+            const remaining = this._butcherableKeys().length;
+            if (remaining > 1) {
+                actions.push({ type: 'butcherAll', label: T('Container.harvest.butcherAll', { n: remaining }), danger: false });
             }
             actions.push({ type: 'leave', label: T('Container.harvest.leave'), danger: true });
             return actions;
@@ -831,6 +848,7 @@
                 const focused = this._activeSection === 'actions' && this._actionIndex === i;
                 const handler = a.type === 'harvest' ? `executeHarvest('${selectedKey}')` // i18n-ignore: inline handler body
                               : a.type === 'butcher' ? `executeButcher('${selectedKey}')` // i18n-ignore: inline handler body
+                              : a.type === 'butcherAll' ? 'executeButcherAll()' // i18n-ignore: inline handler body
                               : 'handleBack()';
                 html += `<div class="cs-actbtn ${a.danger ? 'danger' : ''} ${focused ? 'selected' : ''}"
                     onclick="SceneManager._scene && SceneManager._scene.${handler}">${a.label}</div>`;
@@ -858,9 +876,10 @@
             const key = this._partKeys[this._selectedIndex];
             const a   = (this._actions || [])[this._actionIndex];
             if (!key || !a) return;
-            if (a.type === 'harvest')      this.executeHarvest(key);
-            else if (a.type === 'butcher') this.executeButcher(key);
-            else                           this.handleBack();
+            if (a.type === 'harvest')         this.executeHarvest(key);
+            else if (a.type === 'butcher')    this.executeButcher(key);
+            else if (a.type === 'butcherAll') this.executeButcherAll();
+            else                              this.handleBack();
         }
 
         _setupIcons() {
@@ -935,21 +954,51 @@
             this._refreshDOM();
         }
 
-        executeButcher(partKey) {
-            const partDef      = this._archetype.parts[partKey];
-            const savedPart    = this._savedParts[partKey];
+        // Butchers one part and returns how many items it yielded (0 when it
+        // could not be butchered at all).
+        _butcherPart(partKey) {
+            const partDef        = this._archetype.parts[partKey];
+            const savedPart      = this._savedParts[partKey];
             const harvestedParts = this._corpse._harvestedParts || {};
-            if (harvestedParts[partKey]) { SoundManager.playBuzzer(); return; }
+            if (!partDef || harvestedParts[partKey]) return 0;
             const item = $dataItems[partDef.itemId];
-            if (!item) { SoundManager.playBuzzer(); return; }
-            const ratio   = savedPart && savedPart.maxHp > 0 ? savedPart.currentHp / savedPart.maxHp : 1;
-            const amount  = Math.max(1, Math.ceil(ratio * (partDef.hpPercent / 10)));
-            SoundManager.playOk();
+            if (!item) return 0;
+            const ratio  = savedPart && savedPart.maxHp > 0 ? savedPart.currentHp / savedPart.maxHp : 1;
+            const amount = Math.max(1, Math.ceil(ratio * (partDef.hpPercent / 10)));
             $gameParty.gainItem(item, amount);
             if (!this._corpse._harvestedParts) this._corpse._harvestedParts = {};
             this._corpse._harvestedParts[partKey] = true;
             const pd = window.BSE && window.BSE.enemyPartDamage[this._corpse.enemyId];
             if (pd && pd.parts[partKey]) pd.parts[partKey].destroyed = true;
+            return amount;
+        }
+
+        executeButcher(partKey) {
+            if (!this._butcherPart(partKey)) { SoundManager.playBuzzer(); return; }
+            SoundManager.playOk();
+            this._activeSection = 'items';
+            this._refreshDOM();
+        }
+
+        // One press for the whole carcass: every part still worth butchering,
+        // skipping collected, ruined and (without tools) surgical ones.
+        executeButcherAll() {
+            const keys = this._butcherableKeys();
+            if (!keys.length) { SoundManager.playBuzzer(); return; }
+            let items = 0;
+            let parts = 0;
+            keys.forEach(key => {
+                const amount = this._butcherPart(key);
+                if (amount) { items += amount; parts++; }
+            });
+            if (!parts) { SoundManager.playBuzzer(); return; }
+            SoundManager.playOk();
+            if (window.ParchmentToast && typeof window.ParchmentToast.show === 'function') {
+                window.ParchmentToast.show(
+                    T('Container.harvest.butcherAllResult', { parts, items }),
+                    { severity: 'info', duration: 150, key: 'harvest-butcher-all' }
+                );
+            }
             this._activeSection = 'items';
             this._refreshDOM();
         }

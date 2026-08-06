@@ -1668,6 +1668,8 @@
     // Modify create to pass limited mode parameters and establish the D&D overlay
     Scene_SearchableShop.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
+        // Name the skill this menu runs on while it is open.
+        if (window.SpecBadge) window.SpecBadge.show('Haggling');  // i18n-ignore  Specialization.json id
         this.createHelpWindow();
         this.createHeaderWindow();
         this.createCategoryGridWindow();
@@ -2271,6 +2273,10 @@
                 if (window.ItemSystemUtils && typeof window.ItemSystemUtils.loreFor === "function") {
                     const loreText = window.ItemSystemUtils.loreFor(selectedItem);
                     if (loreText) loreBlockHTML = `<div style="margin-top:6px;padding-top:6px;border-top:1px dotted #c3d3e3;opacity:0.85;">${loreText}</div>`;
+                }
+                // What it takes to make one instead of buying it.
+                if (window.ItemSystemUtils && typeof window.ItemSystemUtils.craftHTML === "function") {
+                    loreBlockHTML += window.ItemSystemUtils.craftHTML(selectedItem);
                 }
 
                 inspectorHTML = `

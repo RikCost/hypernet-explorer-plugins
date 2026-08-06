@@ -1924,10 +1924,17 @@
     // regardless of skin.
     use() { return this; },
 
-    // A call carries either a legacy theme string or { spec, points, actor }.
+    // A call carries a bare string or { spec, points, actor }. A bare string is
+    // a legacy skin id when it is one of the themes above and the name of a
+    // specialization otherwise, which is how most minigames call this
+    // ("Lockpicking", "Tenpin Bowling", "Surfing"): before this, those went in
+    // as themes, matched nothing, and quietly taught the party nothing at all.
     _opts(arg) {
       if (!arg) return {};
-      if (typeof arg === 'string') return { theme: arg, spec: this.THEME_SPEC[arg] };
+      if (typeof arg === 'string') {
+        const themed = this.THEME_SPEC[arg];
+        return themed ? { theme: arg, spec: themed } : { spec: arg };
+      }
       return Object.assign({}, arg, {
         spec: arg.spec || (arg.theme ? this.THEME_SPEC[arg.theme] : null)
       });
@@ -1938,6 +1945,13 @@
       const delta = this.DELTA[kind] || 0;
       if (delta && window.PartyNeeds && window.PartyNeeds.addLeisureToAll) {
         window.PartyNeeds.addLeisureToAll(delta);
+      }
+
+      // Every minigame names the skill it is training on screen. played() is
+      // called as a session opens, so this is where the badge goes up; it takes
+      // itself down when the minigame's scene ends.
+      if (opts.spec && window.SpecBadge) {
+        try { window.SpecBadge.show(opts.spec); } catch (e) { /* cosmetic only */ }
       }
 
       // Points are banked immediately; the level-up toast is queued behind the

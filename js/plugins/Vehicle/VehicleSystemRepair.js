@@ -546,6 +546,8 @@
 
     create() {
       super.create();
+      // Name the skill this menu runs on while it is open.
+      if (window.SpecBadge) window.SpecBadge.show('Mechanics');  // i18n-ignore  Specialization.json id
       this._maintenanceWindow = new Window_VehicleMaintenance(this._vehicleType);
       this.addWindow(this._maintenanceWindow);
       this.createUIVehicleDOM();

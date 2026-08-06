@@ -720,6 +720,11 @@
                         </div>
 
                         <div class="bodyparts-card" style="margin-bottom:8px;">
+                            <div class="card-label" id="status-archetype-label">${T('SceneStatus.ui.archetype')}</div>
+                            <div id="status-archetype" style="padding:4px 2px; font-family:'Lora',serif;"></div>
+                        </div>
+
+                        <div class="bodyparts-card" style="margin-bottom:8px;">
                             <div class="card-label" id="status-passive-label">${T('SceneStatus.ui.classAbility')}</div>
                             <div id="status-class-passive" style="padding:4px 2px; font-family:'Lora',serif;"></div>
                         </div>
@@ -941,6 +946,41 @@
         }
         const traitsEl = spread.querySelector("#status-traits");
         if (traitsEl) traitsEl.innerHTML = traitsHTML;
+
+        // Body archetype, sourced from Health_Core. A creature built from two
+        // archetypes is a hybrid and is named as both; the gestation term shown
+        // is the one a pregnancy of this actor would actually run for (the
+        // median of the two, or a single day for mitosis).
+        const archetypeLabelEl = spread.querySelector("#status-archetype-label");
+        const archetypeEl = spread.querySelector("#status-archetype");
+        if (archetypeEl) {
+            const health = window.HealthCore;
+            const keys = (health && health.getActorArchetypeKeys)
+                ? health.getActorArchetypeKeys(actor) : [];
+            const names = keys.map(k => health.getArchetypeDisplayName(k)).filter(Boolean);
+            const isHybrid = names.length > 1;
+            if (archetypeLabelEl) {
+                archetypeLabelEl.textContent = isHybrid
+                    ? T("SceneStatus.ui.hybridArchetype")
+                    : T("SceneStatus.ui.archetype");
+            }
+            if (names.length) {
+                const ccUtils = window.CharacterCreationUtils;
+                const memberIndex = $gameParty.members().indexOf(actor);
+                const repVar = (ccUtils && ccUtils.getReproductiveVariableId)
+                    ? ccUtils.getReproductiveVariableId(Math.max(0, memberIndex)) : 87;
+                const repType = $gameVariables.value(repVar);
+                const term = health.getPregnancyDuration(actor, repType);
+                archetypeEl.innerHTML = `
+                    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px;">
+                        <span style="font-weight:bold; color:var(--text-primary-hover); font-size:0.92em;">${names.join(" / ")}</span>
+                        <span style="color:var(--text-card-medium); font-size:0.8em; white-space:nowrap;">${T('SceneStatus.ui.gestationTerm', { days: term })}</span>
+                    </div>
+                `;
+            } else {
+                archetypeEl.innerHTML = `<div style="font-style:italic; color:var(--text-card-medium); font-size:0.8em;">${T('SceneStatus.ui.noArchetype')}</div>`;
+            }
+        }
 
         // Class base skill (signature passive) sourced from BattleSystemPassiveSkills.
         const passiveLabelEl = spread.querySelector("#status-passive-label");

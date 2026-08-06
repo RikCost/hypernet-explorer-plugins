@@ -1,3 +1,7 @@
 {
-  "defaultName": "Companion"
+  "defaultName": "Companion",
+  "defaultChildName": "Little One",
+  "born": "{name} is born, and joins the family.",
+  "cloneJoined": "{parent} divides. {name} takes up a place in the party.",
+  "cloneFollows": "{parent} divides. There is no room in the party, so {name} follows behind."
 }

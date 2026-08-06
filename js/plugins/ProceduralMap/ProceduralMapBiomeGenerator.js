@@ -3703,7 +3703,19 @@
     // caches -- those numbers can coincidentally match real Earth world-map
     // coordinates. The whole planet is a single biome and always resolves
     // directly.
-    const alienGrid = this._procGenData.alienGrid;
+    //
+    // Standing on Earth's world map is proof the landing is over, whatever the
+    // stored grid still says (a save made before the grid was cleared on
+    // leaving, GalaxySim_Core's clearAlienSurfaceState): map 315 is Earth, so
+    // the square is resolved against Earth and the grid is dropped for good.
+    let alienGrid = this._procGenData.alienGrid;
+    if (alienGrid && onWorldMap) {
+      this._procGenData.alienGrid = null;
+      alienGrid = null;
+      if (/^Alien/.test(String(this._procGenData.currentBiome || ""))) {
+        this._procGenData.currentBiome = null;
+      }
+    }
 
     // A bridge marker on the world map wins over every other classification:
     // the crossing is always a road running along the marker's orientation with
@@ -4724,10 +4736,14 @@
   }
 
   /**
-   * Place the "Policeman" patrols (map 636 template, 3 copies). Cities and
+   * Place the officer patrols (map 636 template, 3 copies). Cities and
    * burgs are policed (1-3 officers on duty); villages only rarely see one.
    * Everywhere else - wilderness, roads, underground - the officers are parked
    * at (0,0) and hidden.
+   *
+   * The patrol events are named after the officer standing in them ("Officer
+   * <name>"), so they are matched on that rank prefix rather than on a single
+   * shared event name.
    *
    * Unlike the chests/traps above this roll is deliberately NOT seeded on the
    * world coordinate: the patrol is re-rolled every single time the player
@@ -4735,12 +4751,15 @@
    * Officers are dropped on street tiles when the tileset exposes any, and kept
    * a few tiles away from the player so nobody spawns in their face.
    */
+  const POLICE_EVENT_PREFIX = "Officer ";  // i18n-ignore: event-name prefix
+
   function placePolicemanEvents() {
     const procGenData = $gameSystem._procGenData;
     if (!procGenData) return;
 
     const policeEvents = $gameMap._events.filter((ev) =>
-      ev && $dataMap.events[ev._eventId] && $dataMap.events[ev._eventId].name === "Policeman");
+      ev && $dataMap.events[ev._eventId] &&
+      String($dataMap.events[ev._eventId].name || "").startsWith(POLICE_EVENT_PREFIX));
     if (!policeEvents.length) return;
 
     const park = () => policeEvents.forEach((ev) => {

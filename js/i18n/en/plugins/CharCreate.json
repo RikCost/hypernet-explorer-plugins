@@ -285,7 +285,7 @@
     },
     "ageElder": {
       "name": "Elder (60+)",
-      "desc": "Old, with a lifetime of stories."
+      "desc": "Old, have lived through the Psichic Wars."
     },
     "ageMiddle": {
       "name": "Middle-aged (41-60)",
@@ -297,7 +297,7 @@
     },
     "ageYoung": {
       "name": "Young (18-25)",
-      "desc": "A young adult, just setting out."
+      "desc": "A young adult."
     },
     "randomTraits": {
       "name": "Randomize traits",
@@ -313,15 +313,15 @@
     },
     "selectClass": {
       "name": "Select a class",
-      "desc": "Choose your starting class from a list."
+      "desc": "Choose your starting class from a list of archetypes."
     },
     "portraitModel": {
       "name": "3D Model",
-      "desc": "Sculpt a procedural 3D model instead of choosing a portrait. \\C[1]No bust is used.\\C[0]"
+      "desc": "Create a 3d model. \\C[1]No bust is used.\\C[0]"
     },
     "portraitBust": {
       "name": "Portrait",
-      "desc": "Pick a drawn bust from the portrait gallery. Your character is shown as that portrait everywhere."
+      "desc": "Pick a bust from the portrait gallery."
     },
     "randomizeAllParty": {
       "name": "Randomize all party",
@@ -353,7 +353,7 @@
     },
     "hometownPick": {
       "name": "Pick on map",
-      "desc": "Choose your hometown from the fast-travel map, the same picker used to choose a starting city."
+      "desc": "Choose your hometown from the map."
     },
     "existingCharacter": {
       "name": "Use Existing Character",
@@ -361,11 +361,11 @@
     },
     "modeFull": {
       "name": "Full",
-      "desc": "Detailed creation: choose class, traits, hometown and birth date for every member."
+      "desc": "Detailed creation: live through your character's life."
     },
     "modeQuick": {
       "name": "Quick",
-      "desc": "Fast creation for each member: quick class pick, random traits, no flavor steps."
+      "desc": "Fast creation for each member."
     },
     "combatMonsters": {
       "name": "Monsters",

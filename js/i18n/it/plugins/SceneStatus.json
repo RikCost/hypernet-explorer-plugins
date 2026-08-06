@@ -40,6 +40,10 @@
     "alignment": "Allineamento",
     "noTraits": "Nessun tratto assegnato...",
     "noVitals": "Nessun parametro vitale registrato...",
-    "noClassAbility": "Nessuna abilità di classe"
+    "noClassAbility": "Nessuna abilità di classe",
+    "archetype": "Archetipo Corporeo",
+    "hybridArchetype": "Archetipo Ibrido",
+    "gestationTerm": "Gestazione: {days} giorni",
+    "noArchetype": "Nessun archetipo registrato..."
   }
 }

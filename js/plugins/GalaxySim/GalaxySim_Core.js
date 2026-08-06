@@ -568,6 +568,9 @@
   function teleportToLandingSite(loc) {
     if (!loc || loc.mapId == null) return false;
     if (typeof $gameSystem !== "undefined" && $gameSystem) $gameSystem._awayFromShip = true;
+    // A landing site is a hand-authored map, never a procedural planet surface,
+    // so the previous landing ends here (see clearAlienSurfaceState).
+    clearAlienSurfaceState();
     const x = loc.x || 1, y = loc.y || 1;
     if (loc.mapId === 315 && window.VehiclePosition) {
       const shipVehicle = $gameMap.vehicle && $gameMap.vehicle("airship");
@@ -579,10 +582,36 @@
   }
   window.GalaxySim.teleportToLandingSite = teleportToLandingSite;
 
+  // The landing grid is what makes the procedural generator answer "this
+  // planet's biome" for every square it is asked about (generateProceduralMap's
+  // alienGrid branch, and WorldMapReturn's edge crossing, which keys off an
+  // "Alien*" currentBiome). Both live in $gameSystem._procGenData, which is
+  // world state that outlives the trip, so leaving the planet has to strike
+  // them out: otherwise every Earth square entered afterwards still generates
+  // as the surface of the last planet visited.
+  function clearAlienSurfaceState() {
+    if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+    const pg = $gameSystem._procGenData;
+    if (pg) {
+      pg.alienGrid = null;
+      if (/^Alien/.test(String(pg.currentBiome || ""))) {
+        pg.currentBiome = null;
+        pg.currentRoadDirection = null;
+      }
+    }
+    $gameSystem._alienPlanetHasLife = false;
+    _alienGridTextureCache = null;
+  }
+  window.GalaxySim.clearAlienSurfaceState = clearAlienSurfaceState;
+
   // Leaving the alien surface (any map that isn't the proc map) drops the suits
   // and the landed-planet descriptor. Arriving in the Starship interior (map 721)
   // clears the "away from ship" flag that keeps Return to Ship visible planetside.
+  // Both the ship interior and Earth's world map (315) also end the landing
+  // itself: nothing reached through either is on a planet surface any more, so
+  // the next procedural map generated resolves against Earth again.
   const SHIP_INTERIOR_MAP = 721;
+  const EARTH_WORLD_MAP = 315;
   const _GS_Game_Map_setup = Game_Map.prototype.setup;
   Game_Map.prototype.setup = function (mapId) {
     _GS_Game_Map_setup.call(this, mapId);
@@ -590,6 +619,9 @@
     if (mapId !== 636) {
       if ($gameSystem._evaSuitActive) removeEVASuits();
       $gameSystem._landedPlanet = null;
+    }
+    if (mapId === SHIP_INTERIOR_MAP || mapId === EARTH_WORLD_MAP) {
+      clearAlienSurfaceState();
     }
     if (mapId === SHIP_INTERIOR_MAP) {
       $gameSystem._awayFromShip = false;

@@ -142,6 +142,7 @@
         save: 121,
         cooking: 219,
         thinker: 359,
+        blacksmithing: 108,
         build: 390,
         quest_log: 191,
         training: 189,
@@ -296,7 +297,23 @@
         }
 
         static update() {
-            if (!this.active || this.activeElements.length === 0) return;
+            if (!this.active) return;
+
+            // Backing out is answered before anything else: a page can be empty
+            // of focusable tiles (a Followers list with nobody in it, a Vehicles
+            // list with nothing owned) and the cancel key still has to work
+            // there, so it must not sit behind the focus-ring guard below.
+            if (Input.isTriggered('cancel') || Input.isTriggered('tab')) {
+                // Tab backs out of the menu the way it opened it (Bethesda).
+                const scene = SceneManager._scene;
+                if (!scene || !scene.backOutOneLevel || !scene.backOutOneLevel()) {
+                    SoundManager.playCancel();
+                    if (scene) scene.popScene();
+                }
+                return;
+            }
+
+            if (this.activeElements.length === 0) return;
 
             let moved = false;
             const len = this.activeElements.length;
@@ -339,13 +356,6 @@
                 SoundManager.playOk();
                 const el = this.activeElements[this.focusIndex];
                 if (el) el.click();
-            } else if (Input.isTriggered('cancel') || Input.isTriggered('tab')) {
-                // Tab backs out of the menu the way it opened it (Bethesda).
-                const scene = SceneManager._scene;
-                if (!scene || !scene.backOutOneLevel || !scene.backOutOneLevel()) {
-                    SoundManager.playCancel();
-                    SceneManager._scene.popScene();
-                }
             }
 
             // Keyboard direct hotkeys when the menu is open. The Sandbox tile is
@@ -405,6 +415,7 @@
         this._dynamicsView = 'hub';
         this._dynamicsPendingRetireId = null;
         this._isPetsPage = false;
+        this._petAbandonId = null;
         this._isVehiclesPage = false;
         this._rightClickStartedOnMenu = false;
 
@@ -649,15 +660,18 @@
         SoundManager.playOk();
         this._isPetsPage = true;
         this._petRenameId = null;
+        this._petAbandonId = null;
         this.refreshUIMenuDOM(true);
     };
 
     Scene_Menu.prototype.hidePetsPage = function () {
         SoundManager.playCancel();
         this._isPetsPage = false;
-        // An open name field is abandoned with the page, so coming back never
-        // reopens it half-typed.
+        // An open name field or a pending abandonment is dropped with the page,
+        // so coming back never reopens it half-typed or one press from parting
+        // with somebody.
         this._petRenameId = null;
+        this._petAbandonId = null;
         this.refreshUIMenuDOM(true);
     };
 
@@ -708,11 +722,43 @@
         this.refreshUIMenuDOM(false);
     };
 
-    Scene_Menu.prototype.releasePet = function (petId) {
-        if (!window.PetSystem) return;
-        SoundManager.playCancel();
+    // Abandoning a companion. A follower came along of its own accord and may
+    // leave the same way, but a pet or a child left behind is a charge with a
+    // bounty on it, so the row asks once and says what it will cost.
+    Scene_Menu.prototype.petAbandonWarning = function (pet) {
+        const charge = window.PetSystem?.abandonCrimeFor?.(pet.id);
+        if (!charge) return T('MainMenu.pets.abandonFree', { name: escapeHtml(pet.name) });
+        const fine = window.CrimeSystem
+            ? window.CrimeSystem.goldToEuros(charge.bounty || 0)
+            : String(charge.bounty || 0);
+        return T('MainMenu.pets.abandonWarn', {
+            name: escapeHtml(pet.name),
+            crime: escapeHtml(charge.name || ''),
+            fine: fine,
+        });
+    };
+
+    Scene_Menu.prototype.startPetAbandon = function (petId) {
+        if (!window.PetSystem || !window.PetSystem.getPet(petId)) return;
+        SoundManager.playOk();
         this._petRenameId = null;
-        window.PetSystem.releasePet(petId);
+        this._petAbandonId = petId;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.cancelPetAbandon = function () {
+        if (this._petAbandonId == null) return;
+        SoundManager.playCancel();
+        this._petAbandonId = null;
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.confirmPetAbandon = function () {
+        const petId = this._petAbandonId;
+        if (petId == null || !window.PetSystem) return;
+        SoundManager.playCancel();
+        this._petAbandonId = null;
+        window.PetSystem.abandonPet(petId);
         this.refreshUIMenuDOM(false);
     };
 
@@ -723,6 +769,7 @@
     Scene_Menu.prototype.startPetRename = function (petId) {
         if (!window.PetSystem || !window.PetSystem.getPet(petId)) return;
         SoundManager.playOk();
+        this._petAbandonId = null;
         this._petRenameId = petId;
         this.refreshUIMenuDOM(false);
         const field = document.getElementById('pet-rename-input');
@@ -1431,32 +1478,49 @@
             const pets = window.PetSystem ? window.PetSystem.getPets() : [];
             const activePet = window.PetSystem ? window.PetSystem.getActivePet() : null;
             const activeId = activePet ? activePet.id : null;
-            let petRows = '';
-            pets.forEach(pet => {
+
+            const petRow = (pet) => {
                 const isActive = (pet.id === activeId);
                 const isRenaming = (this._petRenameId === pet.id);
-                const typeLabel = pet.isFollower ? T('MainMenu.roster.follower') : T('MainMenu.roster.pet');
+                const isAbandoning = (this._petAbandonId === pet.id);
+                const typeLabel = pet.isChild
+                    ? T('MainMenu.roster.child')
+                    : (pet.isFollower ? T('MainMenu.roster.follower') : T('MainMenu.roster.pet'));
                 const activeBtn = isActive
                     ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.following')}</div>`
                     : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.setActivePet?.(${pet.id})">${T('MainMenu.roster.setActive')}</div>`;
                 const activeTag = isActive ? ` · ${T('MainMenu.pets.active')}` : '';
                 // While a pet is being renamed its row hands the whole button
-                // strip over to the name field, so there is no way to release or
+                // strip over to the name field, so there is no way to abandon or
                 // re-leash it by mistake with the keyboard captured by typing.
                 const maxLen = window.PetSystem?.NAME_MAX_LENGTH ?? 16;
-                const buttons = isRenaming
-                    ? `<input type="text" id="pet-rename-input" class="pet-rename-input" style="flex:2;min-width:0;"
+                let buttons;
+                if (isRenaming) {
+                    buttons = `<input type="text" id="pet-rename-input" class="pet-rename-input" style="flex:2;min-width:0;"
                             maxlength="${maxLen}" autocomplete="off" spellcheck="false"
                             value="${escapeHtml(pet.name)}"
                             onkeydown="SceneManager._scene?.onPetRenameKey?.(event)"
                             onkeyup="event.stopPropagation()"
                             onkeypress="event.stopPropagation()">
                         <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.confirmPetRename?.()">${T('MainMenu.roster.confirm')}</div>
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetRename?.()">${T('MainMenu.roster.cancel')}</div>`
-                    : `${activeBtn}
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>
-                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.releasePet?.(${pet.id})">${T('MainMenu.pets.release')}</div>`;
-                petRows += `
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetRename?.()">${T('MainMenu.roster.cancel')}</div>`;
+                } else if (isAbandoning) {
+                    // Walking away from a dependent is an offence, so the row
+                    // says which charge and what it costs before it is done.
+                    buttons = `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.confirmPetAbandon?.()">${T('MainMenu.roster.confirm')}</div>
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.cancelPetAbandon?.()">${T('MainMenu.roster.cancel')}</div>`;
+                } else {
+                    buttons = `${activeBtn}
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetAbandon?.(${pet.id})">${T('MainMenu.pets.abandon')}</div>
+                        <div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.startPetRename?.(${pet.id})">${T('MainMenu.pets.rename')}</div>`;
+                }
+                const parentLine = pet.isChild && pet.parentName
+                    ? `<div style="font-size:0.78em;color:#7a5c3a;margin-bottom:4px;">${T('MainMenu.pets.childOf', { parent: escapeHtml(pet.parentName) })}</div>`
+                    : '';
+                const warning = isAbandoning
+                    ? `<div style="font-size:0.8em;color:#8e2a20;margin-bottom:4px;font-style:italic;">${this.petAbandonWarning(pet)}</div>`
+                    : '';
+                return `
                     <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
                         <div class="portrait-frame" style="flex-shrink:0;">
                             <canvas id="pet-canvas-${pet.id}" width="48" height="48"></canvas>
@@ -1466,12 +1530,28 @@
                                 ${escapeHtml(pet.name)}
                                 <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${typeLabel}${activeTag} · ${T('MainMenu.roster.levelAbbr')}${pet.level}</span>
                             </div>
+                            ${parentLine}
+                            ${warning}
                             <div style="display:flex;gap:10px;align-items:center;">
                                 ${buttons}
                             </div>
                         </div>
                     </div>`;
-            });
+            };
+
+            // Three kinds of company, kept apart: animals taken in, offspring
+            // born to the party, and creatures that talked their way in.
+            const groups = [
+                { label: T('MainMenu.pets.groupPets'), rows: pets.filter(p => !p.isChild && !p.isFollower) },
+                { label: T('MainMenu.pets.groupChildren'), rows: pets.filter(p => p.isChild) },
+                { label: T('MainMenu.pets.groupFollowers'), rows: pets.filter(p => !p.isChild && p.isFollower) },
+            ];
+            let petRows = groups
+                .filter(g => g.rows.length)
+                .map(g => `
+                    <div style="font-family:'Lora',serif;font-size:1.15em;color:#58180D;font-weight:bold;margin:10px 0 8px;border-bottom:2px solid rgba(74,39,17,0.35);">${g.label}</div>
+                    ${g.rows.map(petRow).join('')}`)
+                .join('');
             if (!pets.length) {
                 petRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.pets.none')}</div>`;
             }
@@ -1597,7 +1677,6 @@
                 // Party: the people and creatures travelling with you
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.dynamics'), "dynamics"),
-                    this.generateUICommandItemHTML(emLabel("menuThinker", T('MainMenu.cmd.thinker')), "thinker"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.pets'), "pets"),
                     this.generateUICommandItemHTML(emLabel("menuWorkforce", T('MainMenu.cmd.workforce')), "army"),
                 ],
@@ -1612,6 +1691,10 @@
                 // Activities: things you do in the world
                 [
                     this.generateUICommandItemHTML(T('MainMenu.cmd.cooking'), "cooking"),
+                    // The workbench sits with the other benches, immediately
+                    // ahead of the anvil it shares its recipes with.
+                    this.generateUICommandItemHTML(emLabel("menuThinker", T('MainMenu.cmd.thinker')), "thinker"),
+                    this.generateUICommandItemHTML(T('MainMenu.cmd.blacksmithing'), "blacksmithing"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.build'), "build"),
                     this.generateUICommandItemHTML(emLabel("menuTraining", T('MainMenu.cmd.training')), "training"),
                     this.generateUICommandItemHTML(T('MainMenu.cmd.research'), "research"),
@@ -1758,14 +1841,15 @@
                 (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-')
             ].join(':')
             : '';
-        // Releasing a pet, handing the leash to another one, renaming one or
-        // opening the name field changes the page without changing which page it
-        // is, so all of it is part of the key.
+        // Abandoning a pet, handing the leash to another one, renaming one or
+        // opening the name field or the abandonment warning changes the page
+        // without changing which page it is, so all of it is part of the key.
         const petsKey = this._isPetsPage
             ? [
                 (window.PetSystem?.getPets?.() ?? []).map(p => `${p.id}.${p.name}`).join('-'),
                 window.PetSystem?.getActivePet?.()?.id ?? 0,
-                this._petRenameId || 0
+                this._petRenameId || 0,
+                this._petAbandonId || 0
             ].join(':')
             : '';
         const leftPageKey = `${this._isToolsPage}_${this._isWorldMapPage}_${this._isDynamicsPage}${dynamicsKey}_${this._isPetsPage}${petsKey}_${this._isVehiclesPage}`;
@@ -2294,6 +2378,7 @@
         quest_log:  () => pushMapScene(typeof Scene_KanbanQuest !== "undefined" && Scene_KanbanQuest),
         help:       () => pushMapScene(typeof Scene_Help !== "undefined" && Scene_Help),
         cooking:    () => pushMapScene(typeof Scene_Cooking !== "undefined" && Scene_Cooking),
+        blacksmithing: () => pushMapScene(typeof Scene_Blacksmithing !== "undefined" && Scene_Blacksmithing),
         training:   () => pushMapScene(typeof Scene_SkillEncyclopedia !== "undefined" && Scene_SkillEncyclopedia),
         bestiary:   () => pushMapScene(typeof Scene_CDCollection !== "undefined" && Scene_CDCollection),
         factions:   () => pushMapScene(typeof Scene_FactionStatus !== "undefined" && Scene_FactionStatus),

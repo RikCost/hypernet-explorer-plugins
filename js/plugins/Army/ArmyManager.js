@@ -1051,7 +1051,6 @@ Scene_Army.prototype.refreshUIDOM = function () {
         <!-- Right Page: Roster & Dossier -->
         <div class="right-page" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
             <div>
-                <h2 class="title">${this._activeTab === 'troops' ? T('ArmyManager.companyRoster') : T('ArmyManager.companyDossier')}</h2>
                 
                 <div class="choices-scroll" style="max-height:210px; overflow-y:auto; padding-right:4px;">
                     ${rosterHTML}
@@ -1362,7 +1361,6 @@ Scene_BuyTroops.prototype.refreshUIDOM = function () {
 
         <!-- Right Page: Available Troops -->
         <div class="right-page" style="display:flex; flex-direction:column; height:100%;">
-            <h2 class="title">${T('ArmyManager.hireMercenaries')}</h2>
             
             <div class="choices-scroll" style="max-height: 480px; overflow-y:auto; padding-right:4px; margin-top:10px;">
                 ${itemsHTML}
@@ -1608,7 +1606,6 @@ Scene_Squads.prototype.refreshUIDOM = function () {
 
         <!-- Right Page: Officer Assignment -->
         <div class="right-page" style="display:flex; flex-direction:column; height:100%;">
-            <h2 class="title">${T('ArmyManager.assignOfficer')}</h2>
             
             <div class="choices-scroll" style="max-height: 480px; overflow-y:auto; padding-right:4px; margin-top:10px;">
                 ${leadersHTML}

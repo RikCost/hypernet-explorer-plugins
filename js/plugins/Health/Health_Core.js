@@ -323,6 +323,67 @@
     for (const actor of $gameParty.members()) ensureBodyPartSkills(actor);
   }
 
+  //---------------------------------------------------------------------------
+  // Archetype identity and gestation
+  //---------------------------------------------------------------------------
+  // Every archetype in EnemyArchetypes.json declares how long one of its kind is
+  // carried, as `pregnancyDuration` in game days. That figure is the only source
+  // a pregnancy reads: a hybrid is carried for the median of its two archetypes'
+  // terms, and mitosis is always over in a day, since a split is not a gestation.
+  const DEFAULT_ARCHETYPE = "Humanoid";
+  const MITOSIS_DURATION = 1;
+  const REPRODUCTION_MITOSIS = 4;
+  // Only reached when EnemyArchetypes has not loaded at all.
+  const FALLBACK_PREGNANCY_DURATION = 270;
+
+  // An actor's archetype is stored as "A" (one) or "A / B" (a hybrid), written
+  // by changeArchetype below and by the creature builder. An actor that never
+  // went through either is a plain humanoid.
+  function getActorArchetypeKeys(actor) {
+    const stored = actor && actor._currentArchetype;
+    const keys = String(stored || DEFAULT_ARCHETYPE)
+      .split("/")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return keys.length ? keys : [DEFAULT_ARCHETYPE];
+  }
+
+  // The i18n bank is keyed by the lower-cased archetype id.
+  function getArchetypeDisplayName(key) {
+    if (!key) return "";
+    const text = getArchetypeText(
+      "enemyArchetypes." + String(key).toLowerCase() + ".name"
+    );
+    return text && !text.includes(".") ? text : String(key);
+  }
+
+  function getArchetypePregnancyDuration(key) {
+    const { EnemyArchetypes } = window.Health || {};
+    const entry = EnemyArchetypes && EnemyArchetypes[key];
+    const days = entry ? Number(entry.pregnancyDuration) : 0;
+    return days > 0 ? days : 0;
+  }
+
+  // Days one pregnancy of this actor runs for. Pass the actor's reproduction
+  // type so mitosis can take its day.
+  function getPregnancyDuration(actor, reproductionType) {
+    if (reproductionType === REPRODUCTION_MITOSIS) return MITOSIS_DURATION;
+    const terms = getActorArchetypeKeys(actor)
+      .map(getArchetypePregnancyDuration)
+      .filter((d) => d > 0);
+    if (!terms.length) {
+      return (
+        getArchetypePregnancyDuration(DEFAULT_ARCHETYPE) ||
+        FALLBACK_PREGNANCY_DURATION
+      );
+    }
+    const sorted = terms.slice().sort((a, b) => a - b);
+    const mid = sorted.length >> 1;
+    const median =
+      sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    return Math.max(1, Math.round(median));
+  }
+
   // Change actor's archetype to a different body structure
   function changeArchetype(actor, archetypeName) {
     if (!actor) return false;
@@ -1626,6 +1687,12 @@
   window.HealthCore.getPartSkillIds = getPartSkillIds;
   window.HealthCore.ensureBodyPartSkills = ensureBodyPartSkills;
   window.HealthCore.ensureAllPartyBodyPartSkills = ensureAllPartyBodyPartSkills;
+  // Archetype identity + gestation, read by the biologic simulation and the
+  // status screen.
+  window.HealthCore.getActorArchetypeKeys = getActorArchetypeKeys;
+  window.HealthCore.getArchetypeDisplayName = getArchetypeDisplayName;
+  window.HealthCore.getArchetypePregnancyDuration = getArchetypePregnancyDuration;
+  window.HealthCore.getPregnancyDuration = getPregnancyDuration;
 
   // --- Grant body-part skills on party join ---------------------------------
   const _Game_Party_addActor = Game_Party.prototype.addActor;

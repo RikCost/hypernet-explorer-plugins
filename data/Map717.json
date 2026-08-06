@@ -1385,7 +1385,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$ElvenBarbarian",
             "direction": 2,
             "pattern": 2,
             "characterIndex": 0
@@ -1464,10 +1464,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$PirateHacker",
             "direction": 2,
             "pattern": 2,
-            "characterIndex": 4
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1534,10 +1534,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$SunCultist",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 1
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1631,7 +1631,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$ElvenBarbarian",
             "direction": 2,
             "pattern": 2,
             "characterIndex": 0

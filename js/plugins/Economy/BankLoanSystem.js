@@ -544,6 +544,8 @@
 
     Scene_BankSystem.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
+        // Name the skill this menu runs on while it is open.
+        if (window.SpecBadge) window.SpecBadge.show('Accounting');  // i18n-ignore  Specialization.json id
 
         // Reading the ledger brings it up to date, however it was opened.
         notifyOverdue($gameSystem.syncBankDays());

@@ -16,7 +16,8 @@
   "section": {
     "damage": "Danno",
     "skillEffects": "Effetti dell'abilità",
-    "classifications": "Classificazioni"
+    "classifications": "Classificazioni",
+    "training": "Addestramento"
   },
   "role": {
     "offensive": {
@@ -80,5 +81,9 @@
     "hint": "Scegli un'abilità dall'elenco a sinistra per esaminarne la scala elementale, il costo d'uso e le azioni alchemiche.",
     "section": "Nessuna abilità catalogata in questa sezione.",
     "category": "Nessuna abilità catalogata in questa categoria."
+  },
+  "spec": {
+    "trains": "Allena",
+    "bonus": "Bonus abilità"
   }
 }

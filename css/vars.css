@@ -743,6 +743,33 @@ select option:hover {
     color: var(--text-pure-white) !important;
 }
 
+/* ==========================================================================
+   Blacksmithing (Anvil) menu, dark-theme readability
+   The trade list and the blueprint rows under it are the same .category-row
+   widget as the Thinker's, so they carry the same muddy brown fill and the
+   dark-brown ink. Strip the fill (border only) and repaint trade names, their
+   x / y counts and the piece names white.
+   ========================================================================== */
+#blacksmith-container .category-row,
+#blacksmith-container .blueprint-row {
+    background: transparent;
+}
+#blacksmith-container .category-row:hover,
+#blacksmith-container .category-row.focused,
+#blacksmith-container .blueprint-row:hover,
+#blacksmith-container .blueprint-row.focused,
+#blacksmith-container .blueprint-row.active {
+    background: var(--bg-tertiary-focus-translucent-45);
+}
+
+#blacksmith-container .category-name,
+#blacksmith-container .category-count,
+#blacksmith-container .blueprint-name,
+#blacksmith-container .blueprint-name-locked,
+#blacksmith-container .workbench-item-name {
+    color: var(--text-pure-white) !important;
+}
+
 /* Disassemble owned-count is painted dark brown (#5c2c16) inline -> lift it. */
 #thinker-container .blueprint-count[style*="#5c2c16"] {
     color: var(--text-text-alt-8) !important;

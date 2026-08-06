@@ -4572,10 +4572,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor3RMVX",
+            "characterName": "Skab/!$ElvenSwordsman",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 6
+            "characterIndex": 0
           },
           "list": [
             {

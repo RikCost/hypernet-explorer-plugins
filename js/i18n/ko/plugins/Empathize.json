@@ -118,6 +118,7 @@
   "giftTitle": "",
   "noItemsToGive": "",
   "gaveItem": "",
+  "giftRefused": "",
   "bribeTitle": "",
   "briberyCaught": "",
   "bribeRefused": "",
@@ -260,7 +261,7 @@
     "",
     ""
   ],
-  "giftReactionCold": [
+  "giftRefusalLines": [
     "",
     "",
     "",
@@ -311,6 +312,8 @@
   "transmitNoneResultNoBounty": "",
   "socializeLabel": "",
   "courtLabel": "",
+  "courtHarassmentFiled": "",
+  "courtHarassmentFiledFree": "",
   "directionsLabel": "",
   "directionsIntro": "",
   "directionsNone": "",

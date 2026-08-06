@@ -65,6 +65,12 @@
     "category": "Violence",
     "name_int": "crime.aggravatedassault.name"
   },
+  "abandonChild": {
+    "name": "Child Abandonment",
+    "bounty": 7500,
+    "category": "Violence",
+    "name_int": "crime.abandonchild.name"
+  },
   "murder": {
     "name": "Murder",
     "bounty": 10000,
@@ -124,6 +130,12 @@
     "bounty": 50,
     "category": "Public Order",
     "name_int": "crime.disorderlyconduct.name"
+  },
+  "harassment": {
+    "name": "Harassment",
+    "bounty": 250,
+    "category": "Public Order",
+    "name_int": "crime.harassment.name"
   },
   "trespassing": {
     "name": "Trespassing",
@@ -304,6 +316,12 @@
     "bounty": 600,
     "category": "Environmental",
     "name_int": "crime.animalcruelty.name"
+  },
+  "abandonPet": {
+    "name": "Pet Abandonment",
+    "bounty": 900,
+    "category": "Environmental",
+    "name_int": "crime.abandonpet.name"
   },
   "environmentalCrime": {
     "name": "Environmental Crime",

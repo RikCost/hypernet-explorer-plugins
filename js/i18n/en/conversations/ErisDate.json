@@ -4,7 +4,18 @@
     "romantic": "Romantic",
     "chaotic": "Chaotic",
     "nervous": "Nervous",
-    "confident": "Confident"
+    "confident": "Confident",
+    "caring": "Caring",
+    "guilty": "Guilty",
+    "crazed": "Crazed",
+    "psychedOut": "Psyched Out",
+    "solipsist": "High on Solipsism",
+    "eldritch": "ELDRITCH",
+    "melancholy": "Melancholy",
+    "smug": "Smug",
+    "paranoid": "Paranoid",
+    "prophetic": "Prophetic",
+    "bored": "Bored"
   },
   "traitLabels": {
     "romantic": "Romantic",
@@ -155,9 +166,9 @@
   "bank": {
     "emDate": {
       "replies": [
-        "You don't have to make conversation.",
-        "Keep talking.",
-        "Why did you call me here, Eris?"
+        "{You don't have to make conversation.|We can just sit here. I don't mind.|You can stop performing. I came anyway.}",
+        "{Keep talking.|Go on. I'm listening.|Don't stop on my account.}",
+        "{Why did you call me here, Eris?|What is this actually about?|Say the real thing. You always circle it.}"
       ]
     },
     "emFinale": {
@@ -179,329 +190,401 @@
     },
     "romanticEvent": {
       "choices": [
-        "You're beautiful when you're vulnerable",
-        "This moment is perfect",
-        "I wish it could last forever",
-        "You make me feel special"
+        "{You're beautiful when you stop performing.|You look almost mortal right now. It suits you.|That's the first real face you've made all night. Keep it.}",
+        "{I'd stay in this exact minute if it were legal.|Don't ruin this by narrating it.|This is good. Don't tell anyone I said that.}",
+        "{I keep wishing evenings had a pause button.|If time stops right now, I won't file a complaint.|Ask your sisters if forever comes in small sizes.}",
+        "{You make ordinary nights feel rigged in my favour.|Around you the odds feel friendly. That's new.|I feel weirdly lucky, and I checked, it's not a curse.}"
       ]
     },
     "romanticConversation": {
       "choices": [
-        "You're never alone with me",
-        "I want to know you, not your power",
-        "Everyone deserves to be loved for who they are",
-        "Maybe we were meant to meet"
+        "{You're not alone tonight. I count.|Alone is a habit, not a law. Even for you.|You keep saying alone like I'm not sitting right here.}",
+        "{I want the person, not the pantheon.|Your power is your least interesting feature.|I didn't come here for the thunder. I came for the company.}",
+        "{Everyone deserves one person who isn't afraid of them.|Even judges deserve a witness of their own.|Being seen won't kill you. Probably.}",
+        "{Maybe the universe rigged us into meeting.|Coincidence has never once looked this smug.|If this was one of your probability tricks, thank you.}"
       ]
     },
     "specialRomanticMoment": {
       "choices": [
-        "Anything you want",
-        "Of course",
-        "I'm a bit nervous",
-        "What do you have in mind?"
+        "{Go ahead.|Do your worst. Or best.|Whatever it is, yes.}",
+        "{Of course.|Obviously.|You don't need a permit.}",
+        "{I'm nervous, for the record.|My pulse is filing objections, but fine.|Slightly terrified. Continue.}",
+        "{Depends. What are we trying?|Define 'something'.|Details first. I've read about your 'somethings'.}"
       ]
     },
     "chaoticEvent": {
       "choices": [
-        "THIS IS AMAZING!",
-        "Okay, I admit it's fun",
-        "How do you control all this?",
-        "Can I try too?"
+        "{THIS IS INCREDIBLE!|OKAY, THIS RULES!|HA! AGAIN! DO IT AGAIN!}",
+        "{Fine. FINE. It's fun. Don't gloat.|I hate that I'm enjoying this.|Okay, chaos gets one point.}",
+        "{How are you steering all this?|Is there a wheel on this thing?|What happens if you lose the leash?}",
+        "{Can I try? Give me the small chaos first.|Teach me. Start with something misdemeanour-sized.|Hand it over. I want a turn.}"
       ]
     },
     "chaoticChallenge": {
       "choices": [
-        "The portal with rainbow lightning",
-        "The portal where everything is upside down",
-        "The portal with impossible music",
-        "All three at once!"
+        "{The one with the rainbow lightning.|The loud sparkly one. Obviously.|The one that's clearly showing off.}",
+        "{The upside-down one.|The one where gravity gave up.|The ceiling-floor one. I've always wanted to walk on a sky.}",
+        "{The one leaking impossible music.|The one that's humming in a key that doesn't exist.|The musical one. Worst case, it's jazz.}",
+        "{All three. At once. Hold my coat.|Why choose? Portals are a buffet.|All of them. If I'm splitting into three, so be it.}"
       ]
     },
     "philosophicalDebate": {
       "choices": [
-        "They're two sides of the same coin",
-        "Chaos breeds creativity, order preserves it",
-        "Without chaos there's no change",
-        "The balance between them is key"
+        "{Same coin, two faces, and the coin is spinning.|They're one process wearing two masks.|Order is just chaos that got a job.}",
+        "{Chaos invents, order keeps the receipts.|Chaos writes the first draft, order edits.|One makes, one preserves. Fire and pantry.}",
+        "{No chaos, no change. Just a museum.|Without chaos everything is reruns.|A world without chaos is a waiting room.}",
+        "{The trick is the dosage, not the winner.|It's a recipe question, not a war.|Balance. Anything pure is poison, even order.}"
       ]
     },
     "intellectualChallenge": {
       "choices": [
-        "The paradox itself is the answer",
-        "Omnipotence includes the power to limit oneself",
-        "The question assumes mortal logic",
-        "You can both create and lift it, simultaneously"
+        "{The paradox IS the answer. It's load-bearing.|The contradiction is the point. Frame it, don't solve it.|It's not a bug in omnipotence, it's the signature.}",
+        "{Real power includes the power to limit yourself.|Omnipotence that can't tie its own hands is just strength.|Making the stone is the flex. Not lifting it is the art.}",
+        "{The riddle only breaks mortal logic. Yours never applied.|You're grading divinity on a mortal curve.|The question smuggles in rules you never agreed to.}",
+        "{You make it AND lift it, simultaneously, and dare anyone to object.|Both. At once. You're Eris, not a logician.|Do both and let the philosophers bill each other.}"
       ]
     },
     "standardActivity": {
       "choices": [
-        "I enjoy spending time with you",
-        "Tell me more about yourself",
-        "This is different from what I expected",
-        "You're full of surprises"
+        "{This is better than it has any right to be.|I'm having a good time. Don't make it a headline.|Good evening. Officially. Signed.}",
+        "{Tell me something true about yourself. One thing.|More about you. The unofficial version.|Give me a fact your worshippers don't get.}",
+        "{You are nothing like the brochures.|The myths undersold you. And oversold you. Both.|You're different than advertised. Better lawsuit material.}",
+        "{You keep surprising me. It's rude and I like it.|Every time I think I've mapped you, new coastline.|You're a plot twist with hair.}"
       ]
     },
     "gettingToKnowYou": {
       "choices": [
-        "I seek extraordinary adventures",
-        "I live a quiet life",
-        "I study the mysteries of the universe",
-        "I wait to meet someone like you"
+        "{I chase trouble, professionally.|Adventure. The kind with bad insurance.|I go where the interesting mistakes are.}",
+        "{Quiet life. Soup. Early nights. I'm the control group.|Honestly? Peace and a garden.|Small life, kept deliberately boring. Someone has to.}",
+        "{I pick locks on the universe and see what's behind.|I study the mysteries. Some study back.|Curiosity, weaponised politely.}",
+        "{Apparently I wait around for goddesses.|My hobby is being exactly here, evidently.|I collect rare evenings. This one's going in the good album.}"
       ]
     },
     "unexpectedMoment": {
       "choices": [
-        "Is this part of the chaos too?",
-        "Your life must be interesting",
-        "You handle the unexpected well",
-        "Every moment with you is an adventure"
+        "{Is this yours too, or freelance chaos?|Did you order that, or is the universe improvising?|Yours? Blink twice if that was yours.}",
+        "{Your life is a documentary I'd watch.|Never a dull century with you, I take it.|Does this happen every time you leave the house?}",
+        "{You didn't even flinch. Respect.|You handle ambushes like appointments.|Cool head. Suspiciously practised, but cool.}",
+        "{Every minute with you needs a seatbelt.|An evening with you should come with waivers.|Date, adventure, incident report. Full package.}"
       ]
     },
     "perfectRomanticFinale": {
       "choices": [
-        "And I love every chaotic part of you",
-        "You're my beautiful disaster",
-        "Together we're perfect chaos",
-        "I'll love you through every age"
+        "{And I love every unlicensed piece of you.|All of it. The chaos too. ESPECIALLY the chaos.|I'm in. Storms, paperwork, gremlins, all of it.}",
+        "{You're my favourite disaster and I've met several.|My gorgeous catastrophe. Mine.|You're the calamity I'd pick out of a lineup every time.}",
+        "{Together we're a two-person emergency. Perfect.|We're what weather warnings are about. Good.|Us. A matched set of bad ideas. Forever.}",
+        "{I'll love you across every age you've got.|However long eternity runs, I'm staying for the whole show.|Count me in for all the centuries. Even the slow ones.}"
       ]
     },
     "chaoticLoveFinale": {
       "finale": [
-        "AHAHAHAHA!",
-        "YOU'RE INCREDIBLE!",
-        "You embraced the chaos!",
-        "You embraced ME!",
-        "No mortal has ever... ever...",
-        "Oh screw it! I LOVE YOU, YOU MADMAN!"
+        "{AHAHAHA!|HA! HAHAHA!|*laughter with structural consequences*}",
+        "{YOU'RE INCREDIBLE!|YOU MAGNIFICENT ACCIDENT!|YOU ABSOLUTE EVENT!}",
+        "{You didn't run from the chaos!|You leaned IN!|You RSVP'd to the chaos!}",
+        "{You embraced ME!|Me! The full catastrophe!|All of this! On purpose!}",
+        "{No mortal has ever... ever...|In all my centuries, nobody...|I have literally no precedent for you.}",
+        "{Oh, forget protocol. I LOVE YOU, YOU LUNATIC!|Fine! FINE! I love you, you walking hazard!|The court rules in favour of LOVE, apparently! Appeal denied!}"
       ],
       "choices": [
-        "I LOVE YOU TOO, YOU WONDERFUL MANIAC!",
-        "LET'S EXPLODE THE UNIVERSE TOGETHER!",
-        "YOU'RE MY FAVORITE CHAOS!",
-        "KISS ME IN THE VORTEX!"
+        "{I LOVE YOU TOO, YOU GORGEOUS EMERGENCY!|LOVE YOU TOO, YOU CATEGORY FIVE!|SAME! LOUDER, EVEN!}",
+        "{LET'S GO BREAK THE HORIZON TOGETHER!|UNIVERSE FIRST, PAPERWORK NEVER!|POINT ME AT ETERNITY!}",
+        "{You're my favourite chaos out of all available chaos!|Of every storm on record, I pick you!|You're the disaster I'd rebuild for!}",
+        "{KISS ME BEFORE PHYSICS RECOVERS!|KISS ME IN THE VORTEX, COWARD!|KISS ME. YES, NOW. YES, HERE.}"
       ]
     },
     "intellectualConnectionFinale": {
       "finale": [
-        "Do you know what you've done?",
-        "You've made me think. Really think.",
-        "For the first time in millennia, I question everything.",
-        "Chaos, order, my purpose...",
-        "And I've realized something.",
-        "You are the paradox I've been looking for.",
-        "The order that doesn't destroy chaos, but completes it.",
-        "I think... I think I love you. Intellectually. Emotionally. Completely."
+        "{Do you know what you've done?|You realise what you've done, yes?|I want it on record: this is your fault.}",
+        "{You made me think. Actually think.|You got past the rehearsed answers.|You found the questions I keep locked up.}",
+        "{First time in millennia I'm re-reading my own verdicts.|I questioned EVERYTHING on the way here.|I've reopened cases I closed before your species had bread.}",
+        "{Chaos, order, my whole job description...|Everything I stamped 'settled'...|My purpose, my throne, my filing system...}",
+        "{And I've arrived somewhere.|And a conclusion found me.|And here's the ruling.}",
+        "{You're the paradox I couldn't file.|You're the case that doesn't fit the categories.|You're the stone I made and cannot lift, and I am DELIGHTED.}",
+        "{Order that completes chaos instead of caging it.|The counterweight, not the cage.|Structure that dances.}",
+        "{I think I love you. Intellectually. Emotionally. Comprehensively.|So: love. My verdict is love. All appeals denied.|I love you, on every axis I've checked. I checked several.}"
       ],
       "choices": [
-        "You're the mystery I want to solve forever",
-        "Our love is the theory of everything",
-        "Together we prove opposites attract",
-        "I love you, mind, body, and chaotic soul"
+        "{You're the mystery I'd happily never solve.|Stay unsolved with me.|I want the lifetime edition of this argument.}",
+        "{We're the theory of everything with worse manners.|Us: the one equation that flirts back.|Two unknowns, one solution. Us.}",
+        "{Opposites attract. We're the proof with footnotes.|We just peer-reviewed romance.|QED, apparently. Us.}",
+        "{I love you: mind, chaos, jurisdiction and all.|Love you. Brain first. Rest of you close second.|All of you. Even the parts that argue back. Especially those.}"
       ]
     },
     "loveConfession": {
       "choices": [
-        "I love you too, Eris",
-        "You're my beautiful storm",
-        "Let's explode the world together",
-        "I need time to think"
+        "{I love you too, Eris.|Same. Took me long enough to say it.|I love you. No riddle, no hedge. Just that.}",
+        "{You're my favourite storm on record.|My gorgeous thunderhead. Mine.|You're the weather I'd cancel plans for.}",
+        "{Let's go rattle the world together.|Point me at eternity, I'll drive.|Deal. Chaos, table for two.}",
+        "{I need a minute. This is a lot of goddess.|Give me time. Mortal processing speeds.|Ask me again at the next date. I want to say it right.}"
       ]
     },
     "romanticMoment": {
       "romantic": [
-        "This is... nice.",
-        "I don't have many moments like this.",
-        "Moments of... peace? No, not peace.",
-        "Moments of perfect chaos.",
-        "With you."
+        "{This is... nice. Don't quote me.|Huh. This is pleasant. Suspicious, but pleasant.|This is good. I'm saying it before I can stop myself.}",
+        "{I don't get many evenings like this.|These moments are rare on my calendar.|My schedule doesn't usually include... whatever this is.}",
+        "{Peaceful isn't the word. I don't do peaceful.|Not peace. Something adjacent to it.|Call it a ceasefire. A good one.}",
+        "{Perfect chaos. Small size.|Chaos, but the kind you can hold.|Everything moving, nothing breaking. New for me.}",
+        "{With you, specifically. That's the strange part.|You're the variable, in case that wasn't obvious.|And it's your fault. Take the credit.}"
       ],
       "choices": [
-        "We could have more",
-        "I like our chaos",
-        "You're special to me",
-        "Let's enjoy the moment"
+        "{There could be more evenings like this.|This doesn't have to be the only one.|Let's make this a habit before you change your mind.}",
+        "{I like the mess we make. Keep it.|Our chaos suits me.|I'd pick our weird over anyone's normal.}",
+        "{You matter to me. File that wherever you like.|You're special. Objection overruled.|For the record: you count.}",
+        "{Shh. Just this, for now.|Let's not narrate it. Just be in it.|The moment's good. Don't scare it.}"
       ]
     },
     "friendlyMoment": {
       "friendly": [
-        "You know, this has been... pleasant.",
-        "I didn't expect to enjoy myself this much.",
-        "Maybe we could do this again sometime.",
-        "As friends, of course!"
+        "{Well. This was... genuinely fine.|You know what, this was pleasant.|Tonight did not require any smiting. High praise.}",
+        "{I enjoyed myself. On the record, even.|That was more fun than forecast.|I came prepared to be bored. I wasn't. Explain.}",
+        "{We could do this again. Hypothetically.|A repeat performance wouldn't be terrible.|Same time, some other century? Or sooner.}",
+        "{As friends. Officially. The paperwork says friends.|Friends. That's the current ruling.|Friends, she says, notarising nothing.}"
       ],
       "choices": [
-        "I'd like that very much",
-        "Friendship is a good start",
-        "Sure, whenever you want",
-        "Maybe something more?"
+        "{I'd genuinely like that.|Yes. Easy yes.|Deal. Pick a day, I'll pick a disaster.}",
+        "{Friends is a solid opening move.|Friendship's a fine foundation. Buildings go UP, by the way.|Friends works. For now. Noted.}",
+        "{Any time. I mean it.|Whenever. My door doesn't lock to goddesses apparently.|You know where to find me. You clearly always do.}",
+        "{And if it became more than friends?|Counter-offer: something slightly warmer than friends.|Friends, sure. But I'm leaving the door ajar.}"
       ]
     },
     "awkwardMoment": {
       "awkward": [
-        "So...",
-        "This has been... interesting.",
-        "Not quite what I expected.",
-        "But that's okay, I suppose."
+        "{So...|Well.|Right, then.}",
+        "{That was... a set of events.|This has been... certainly a date-shaped thing.|Interesting. In the way weather reports use the word.}",
+        "{Not what I had modelled.|The projections said otherwise.|I ran this evening in advance. This wasn't among the outcomes.}",
+        "{It's fine. Some evenings are drafts.|No matter. Not everything is a final version.|We'll call it a rehearsal.}"
       ],
       "choices": [
-        "We can do better",
-        "Sorry if it was weird",
-        "Let's give it another chance",
-        "Maybe it's not the right time"
+        "{We can do better than tonight.|That was our floor, not our ceiling.|Rematch. We owe ourselves a rematch.}",
+        "{Sorry if I made it weird.|The weird parts were mostly mine. Apologies.|I'll take the blame for at least half of that.}",
+        "{Give it one more chance.|One more try. Different everything.|Let's appeal the verdict on tonight.}",
+        "{Maybe the timing's just wrong.|Maybe tonight wasn't our night.|Possibly the stars weren't consulted.}"
       ]
     },
     "hostileMoment": {
       "hostile": [
-        "I don't know why I agreed to this.",
-        "This was clearly a mistake.",
-        "We should just... end this here.",
-        "Before it gets even more embarrassing."
+        "{I don't know why I said yes to this.|Remind me why I agreed to tonight.|I had a bad feeling this morning and I ignored it. Lesson learned.}",
+        "{This was a mistake with a start time.|Clear error. Mine, partially. Yours, mostly.|The evening has been weighed and found wanting.}",
+        "{Let's stop here.|We end it here, cleanly.|Adjourned. Permanently, probably.}",
+        "{Before this gets funnier for the onlookers.|Before one of us says the unforgivable version.|Quit while we're only this far behind.}"
       ],
       "choices": [
-        "Wait, give me a chance",
-        "You're right, I'm sorry",
-        "This isn't fair",
-        "Fine, I'll leave"
+        "{Wait. One more chance.|Hold on. Let me fix this.|Don't gavel this yet.}",
+        "{You're right. I'm sorry.|Fair verdict. My apologies.|Guilty as charged. Genuinely sorry.}",
+        "{That's not fair and you know it.|Objection. Strongly.|You're being harsher than the evidence.}",
+        "{Fine. I'll go.|Understood. Goodnight, Eris.|As you rule. I'm gone.}"
       ]
     },
     "wildRomanceEnding": {
       "ending": [
-        "You're perfect! Perfectly chaotic!",
-        "Romantic and wild, sweet and unpredictable!",
-        "You're everything I didn't know I wanted!",
-        "Let's stay together and make eternity interesting!",
-        "I love you, my beautiful disaster!"
+        "{You're perfect. Perfectly defective. My favourite grade.|You're flawless in all the broken places.|You are EXACTLY the right amount of wrong.}",
+        "{Sweet and feral. Rare combination. Collector's item.|Romantic AND unhinged. A double specialist.|Soft heart, storm brain. I checked both.}",
+        "{You're the thing I didn't know was missing from the inventory.|I audited eternity and you weren't listed. Clerical error, now fixed.|Everything I never put on the requisition form.}",
+        "{Stay. Let's make forever nervous.|Stick around. Eternity's been begging for new management.|Stay with me and we'll give the millennia something to gossip about.}",
+        "{I love you, my beautiful catastrophe.|Love you, disaster of mine.|I love you. Signed, sealed, thundering.}"
       ]
     },
     "intellectualEnding": {
       "ending": [
-        "In all my eons, I've never met a mind like yours.",
-        "You challenge me, make me think, make me grow.",
-        "This is... this is true power.",
-        "Stay with me. Let's explore the mysteries of the universe together.",
-        "As equals. As... more than equals."
+        "{Eons of small talk, and then your brain walks in.|I've argued with prophets and bored myself. Not tonight.|In all my eras, minds like yours: single digits.}",
+        "{You push back. Nobody pushes back.|You argue like it matters. It's addictive.|You make me defend my rulings. I'd forgotten the taste.}",
+        "{THIS is power. The quiet kind.|Turns out the rarest force is a good counterargument.|This, right here, outranks thunder.}",
+        "{Stay. The universe is full of locked doors and I like your lockpicks.|Stick with me. I'll show you the questions they don't print.|Stay, and we'll interrogate infinity together.}",
+        "{As equals. As... fine, as slightly more than equals.|Peers. Co-conspirators. Whatever the warm word is.|Equals, with escalating clauses.}"
       ]
     },
     "chaosChampionEnding": {
       "ending": [
-        "YOU WIN!",
-        "You're the champion of chaos!",
-        "No mortal has ever embraced disorder like you!",
-        "You're worthy to stand by my side!",
-        "Together, we'll be LEGENDARY!",
-        "The gods themselves will tremble at our passing!"
+        "{YOU WIN!|VERDICT: YOU WIN EVERYTHING!|FLAWLESS! VICTORY!}",
+        "{Champion of chaos! Undisputed!|The title is YOURS!|New record holder for applied mayhem!}",
+        "{No mortal on file has embraced the mess like you!|The archives have NOTHING like you!|Precedent? DESTROYED!}",
+        "{You've earned the spot at my side!|Co-conspirator status: GRANTED!|Podium's built for two now!}",
+        "{Together we go LEGENDARY!|We're going to be a cautionary tale in the GOOD way!|The myths will need a bigger font!}",
+        "{The gods will hear us coming and CANCEL THINGS!|Pantheons will reschedule around us!|Olympus is going to need a bigger insurance policy!}"
       ]
     },
     "perfectEnding": {
       "ending": [
-        "I didn't think it was possible...",
-        "For a goddess like me...",
-        "To feel so... complete.",
-        "Stay with me. Forever.",
-        "Let's explode this world together!",
-        "In the most beautiful way possible!"
+        "{I didn't think this was on the menu...|I had ruled this impossible. Personally. In writing.|This wasn't supposed to be possible for me...}",
+        "{Not for me. Not for what I am.|Goddesses of discord don't get this.|My job description forbids this, technically.}",
+        "{And yet: complete. That's the word. Complete.|Whole. Weird word. Good fit.|Finished, in the way a song is finished.}",
+        "{Stay. Not for an evening. For the whole run.|Stay with me. Indefinitely. Renewably.|Stay. I'm invoking eternity, don't check the clause.}",
+        "{Let's rattle this world together!|We'll shake this place till the good stuff falls out!|Chaos, table for two, standing reservation!}",
+        "{In the most beautiful way available!|Gorgeously. It has to be done gorgeously.|And we do it in STYLE or not at all!}"
       ]
     },
     "goodEnding": {
       "ending": [
-        "This was... really special.",
-        "That doesn't happen often.",
-        "I want to see you again.",
-        "Soon.",
-        "Very soon!"
+        "{This was genuinely special. I checked against records.|Tonight goes in the good archive.|That was... special. I don't use the word for weather.}",
+        "{This does not happen often. Cite me.|Rare event. Astronomers would care.|Statistically, tonight shouldn't have gone this well.}",
+        "{I want a sequel.|We're doing this again.|I want to see you again. That's a statement, not a question.}",
+        "{Soon.|Shortly.|Sooner than is dignified.}",
+        "{VERY soon. I'll bend a calendar if I have to.|Extremely soon. The schedule will cope.|Soon as in: don't unpack.}"
       ]
     },
     "neutralEnding": {
       "ending": [
-        "Well, that was... okay.",
-        "Not bad for a first date.",
-        "Maybe we'll see each other again.",
-        "Maybe."
+        "{Well. That happened, mostly pleasantly.|That was... acceptable. Notarised: acceptable.|Fine. It was fine. 'Fine' is a passing grade.}",
+        "{Not bad, as opening arguments go.|Decent first hearing.|For a first attempt, survivable. For both of us.}",
+        "{We might do this again.|A second round isn't ruled out.|The file stays open.}",
+        "{Might.|Perhaps.|The odds are... let's say the odds exist.}"
       ]
     },
     "badEnding": {
       "ending": [
-        "This... didn't go well.",
-        "Maybe we're not compatible.",
-        "Or maybe you just had a bad day.",
-        "Either way... goodbye."
+        "{That... did not land.|Well. The evening had a verdict and it wasn't kind.|That went the way milk goes.}",
+        "{Compatibility: unproven, leaning no.|Maybe we're two right answers to different questions.|We might be a formatting mismatch.}",
+        "{Or you had an off night. Charitably.|Possibly the day was cursed. I'd know, I curse days.|Or tonight simply wasn't yours. It wasn't mine either.}",
+        "{Either way: goodnight.|Regardless. Court adjourned.|Anyway. Goodbye comes in many sizes, pick one.}"
       ]
     },
     "terribleEnding": {
       "ending": [
-        "This was a complete waste of my time.",
-        "I don't know what I expected.",
-        "Don't look for me again.",
-        "Ever."
+        "{A comprehensive waste of an immortal evening.|I could have watched paint. Paint has ARCS.|I will be billing someone for these hours.}",
+        "{I came in with expectations. Rookie error.|I don't know what I expected. I DO know whose fault it was.|Hope. That was my mistake. Noted for eternity.}",
+        "{Do not seek me out.|Lose my summons.|If you see me coming, it's a coincidence, and also leave.}",
+        "{Ever.|At all.|In any timeline, and I can check them.}"
       ]
     },
     "getOpeningDialogue": {
       "lines2": [
-        "Oh! It's you!",
-        "I was... I was hoping you'd come.",
-        "Not that I was waiting or anything!",
-        "It's just that... well...",
-        "*blushes slightly*",
-        "You're here now, and that's all that matters!"
+        "{Oh! You!|There you are!|You're HERE!}",
+        "{I was hoping you'd come.|I may have been watching the road. Briefly.|I told exactly nobody I was waiting for you.}",
+        "{Not WAITING waiting. Present. Coincidentally.|That came out eager. Strike it from the record.|A goddess doesn't wait. She... pre-arrives.}",
+        "{It's just that... well.|The thing is... hm.|Look, the evenings are better when...}",
+        "{*she does not finish the sentence*|*an earring gets adjusted with enormous casualness*|*she glares at her own smile, which won't come down*}",
+        "{You're here now. The rest is moot.|Anyway. You came, everything else is footnotes.|Point is: you're here. The evening may proceed.}"
       ],
       "lines3": [
-        "Oh. It's you.",
-        "Really? After everything?",
-        "I thought you'd gotten the message.",
-        "But here you are.",
-        "*sigh*",
-        "Let's get this over with."
+        "{Oh. You.|Ah. It's you.|You. Hm.}",
+        "{Really? After the... everything?|Still? After all that?|The nerve is almost impressive.}",
+        "{I assumed the message had landed.|I thought the hint was load-bearing.|Most people decode silence faster.}",
+        "{Yet here you stand.|And still, here you are.|But no. Here you are, in person.}",
+        "{*a sigh with jurisdiction*|*she pinches the bridge of her nose*|*the sigh of someone re-opening a closed case*}",
+        "{Fine. Let's get through it.|Very well. Proceed. Efficiently.|We'll do this. Briskly.}"
       ],
       "playful": [
-        "Well well well!",
-        "Look who decided to show up!",
-        "My {address} mortal!",
-        "Ready for some controlled chaos?",
-        "Or do you prefer uncontrolled chaos?",
-        "Both are fun!"
+        "{Well well well.|Look look look.|Ohohoho, what have we here.}",
+        "{Look who showed up!|The mortal returns!|You actually came, I owe a pigeon money.}",
+        "{My {address} mortal!|If it isn't my favourite {address} liability!|There's my {address} bad decision!}",
+        "{Ready for some supervised chaos?|In the mood for trouble with training wheels?|Shall we start with the legal fun?}",
+        "{Or shall we skip straight to the unsupervised kind?|Or do you want the OFF-menu chaos?|Or shall we void the warranty immediately?}",
+        "{Either way, wonderful.|Both have their charm.|Trick question, we're doing both.}"
       ],
       "romantic": [
-        "Hello...",
-        "You actually came.",
-        "I wasn't sure you would.",
-        "But here you are, my {formal}.",
-        "This place is... special to me.",
-        "I hope it can be for you too."
+        "{Hello...|Hi.|...Hello, you.}",
+        "{You actually came.|You came. You really came.|And there you are.}",
+        "{I wasn't certain you would.|I gave it even odds. I hate even odds.|I didn't let myself expect it.}",
+        "{But here you are, my {formal}.|And yet, my {formal}, here you stand.|Yet here you are. My {formal}.}",
+        "{This place matters to me.|I don't bring people here.|Of all my places, this one's off the record.}",
+        "{I wanted it to matter to you too.|I hoped it might fit you as well.|Tonight I'm lending it to you.}"
       ],
       "chaotic": [
-        "AHAHAHAHA!",
-        "YOU'RE HERE!",
-        "OR AM I THERE?",
-        "OR ARE WE BOTH SOMEWHERE ELSE?!",
-        "Doesn't matter!",
-        "LET'S MAKE SOMETHING EXPLODE!"
+        "{AHAHAHA!|HAHA! HA!|*laughter, incoming, before she's even visible*}",
+        "{YOU'RE HERE!|IT'S YOU! IN PERSON!|CONFIRMED SIGHTING!}",
+        "{OR AM I THERE?|OR IS HERE A MATTER OF OPINION?|OR ARE YOU A VERY CONVINCING RUMOUR?}",
+        "{OR ARE WE BOTH SOMEWHERE ELSE ENTIRELY?!|WHO'S TO SAY WHERE ANYONE IS!|GEOGRAPHY IS A SUGGESTION!}",
+        "{Doesn't matter!|Irrelevant!|The courts will decide later!}",
+        "{LET'S MAKE SOMETHING EXPLODE!|SOMETHING AROUND HERE IS FLAMMABLE AND WE'RE GOING TO FIND IT!|TONIGHT WE TEST STRUCTURAL LIMITS!}"
+      ],
+      "nervous": [
+        "You came. Good. That's... {statistically|objectively|honestly} good.",
+        "I've been here {a while|since lunch|long enough to name the pigeons}. Not waiting. Present. There's a difference.",
+        "Okay. Okay okay okay. Hi. {I'm fine.|This is fine.|Everything's arranged, mostly.}",
+        "Don't read anything into the {seating|candles|escape routes}. I always plan those."
+      ],
+      "confident": [
+        "Punctual. I like that in a mortal. {Sit.|You may sit.|The evening starts when I say, and I say now.}",
+        "You're here, I'm magnificent, the weather obeyed. {Strong start.|As forecast.|All according to me.}",
+        "Tonight is going to go well. I've decided, and my decisions have {legal standing|a good record|teeth}.",
+        "Look at us. {The century's best decision.|A myth in progress.|Somewhere a poet just got an idea and doesn't know why.}"
+      ],
+      "caring": [
+        "Before anything else: {have you eaten|are you warm enough|how are you, actually}? The rest of the evening can queue.",
+        "Come here. Let me look at you. {You're pale.|You've been overdoing it.|Mortals never ration themselves properly.}",
+        "I brought {a spare coat|something warm|remedies}. No argument. Goddesses don't argue, they provide.",
+        "Sit, sit. Tonight nothing is allowed to happen to you. I've had a word with the ambient everything."
+      ],
+      "guilty": [
+        "Hi. So. Before anyone else tells you: {whatever you hear this week, context exists|I may have done a thing|the fire was already conceptually there}.",
+        "You came! Good. You didn't happen to pass {a canal|a courthouse|anything smouldering} on the way? No? Excellent. Sit.",
+        "I want tonight to be nice. I NEED tonight to be nice. {Don't ask why.|The why is sealed.|The why has lawyers.}",
+        "Every so often I do something I regret and then I schedule a lovely evening on top of it, like a rug. Anyway! You look wonderful."
+      ],
+      "crazed": [
+        "THERE you are! Or here I am! {The directions have been arguing all day.|Someone's compass is lying.|Doesn't matter, we've both landed.}",
+        "I've had a DAY. I've had several days, all today. {Sit down before some of them notice you.|Don't ask which is winning.|We're celebrating all of them.}",
+        "Quick, before I forget: {you're lovely, the moon owes me money, and something in my coat is ticking|I have three plans and two are the same plan|tonight has a THEME}.",
+        "The ideas won't stop and I've decided that's a GOOD thing and you're the person I decided it at. Hello!"
+      ],
+      "psychedOut": [
+        "Ohh, you're all... {edges and warmth|shimmery at the borders|in colour}. Tonight everything's in colour. Sit in the colour with me.",
+        "I stared at the sky too long today and now it's in here. {Don't worry.|It's friendly.|It knows you.}",
+        "Hello, hello. Speak slowly, the words are {leaving trails|arriving in ribbons|so round tonight}.",
+        "The universe hummed at me all afternoon and I think it was about tonight. {Good hum.|Major key.|Sit, sit, the hum likes you.}"
+      ],
+      "solipsist": [
+        "Ah, there you are. I was just thinking you, and here you came. {Efficient.|Good service tonight.|My imagination is on form.}",
+        "Welcome back to my dream. {You're recurring now.|You've got a good part.|Don't look at the edges, they're unfinished.}",
+        "I've concluded, provisionally, that only I exist. And yet I dressed up. {Explain that.|Vanity survives philosophy.|You may be a hallucination but you're MY hallucination.}",
+        "If none of this is real, we might as well have a marvellous time. That's just logic. Sit down, figment."
+      ],
+      "melancholy": [
+        "You came. People mostly do, and then mostly stop. {Sit.|Stay a while.|Ignore me, I've been counting centuries again.}",
+        "Evenings like this one used to be common. I'm fairly sure. {The records disagree.|Memory flatters.|Sit with me anyway.}",
+        "Hello, brief thing. {That's affectionate.|It's the nicest thing I call anyone.|You'll understand eventually, or better, you won't.}",
+        "I was watching the light go and thinking about everyone I've outlasted. And then you arrived, still here. Still here is my favourite quality in a person."
+      ],
+      "smug": [
+        "You came. Of course you came. {I called it this morning.|There was never a version where you didn't.|The odds were mine, I set them.}",
+        "Let the record show: I look extraordinary and I was right about {the weather|tonight|everything, cumulatively}.",
+        "Sit. Bask. {It's free tonight.|I'm feeling generous.|Basking is usually invoiced.}",
+        "I've already had a wonderful evening. Yours starts now. {Try to keep up.|You're welcome in advance.|No pressure, but history is watching me be right.}"
+      ],
+      "paranoid": [
+        "Don't sit there. Sit... {here. Back to the wall.|there. Sightlines.|anywhere that isn't a chair someone offered you.}",
+        "You weren't followed. {I checked.|I checked twice.|The second shadow was mine, don't worry about it.}",
+        "Speak normally. Smile. {We're being watched by at least the usual amount.|The pigeons rotate shifts.|Everything's fine, which is exactly what worries me.}",
+        "Before we start: do you know that {waiter|cloud|lamppost}? No? Then neither do we. Officially."
+      ],
+      "prophetic": [
+        "Sit. I already know how tonight goes. {I came anyway.|That's the compliment.|Some scripts are worth performing.}",
+        "I dreamt this evening {twice|last winter|before you were born}. You wear the same face in all versions. Good. Continuity.",
+        "The omens for tonight were {excellent|contradictory|written in a wine I shouldn't have finished}. We proceed regardless.",
+        "Ask me nothing about the ending. {Spoilers are a sin.|I only spoil enemies.|You'll like most of it.}"
+      ],
+      "bored": [
+        "Oh good, you're here. Something happens now, presumably. {Surprise me.|The bar is subterranean.|I've been watching paint not even dry.}",
+        "I've been awake for {nine hundred years|the whole century|ever} and today was the longest one. Fix it.",
+        "Entertainment has been dying all week. {You're the defibrillator.|No pressure.|Clear.}",
+        "Sit. Talk. Anything. I've counted everything countable in this place twice and started on the uncountable."
       ]
     },
     "getFirstChoices": {
       "lines2": [
-        "It's incredible!",
-        "A bit chaotic for my taste",
-        "I preferred when you were the goddess of discord",
-        "I like anything you like"
+        "{It's incredible out here.|This place is absurd. I love it.|Honestly? Spectacular choice.}",
+        "{Bit much for my taste.|Chaotic, even by date standards.|It's... a lot. In every direction.}",
+        "{I miss the discord era, honestly.|You were more fun before the promotion.|The goddess of discord would've picked somewhere worse. Fondly.}",
+        "{Wherever you like, I like.|Your taste, my trust.|You picked it, so it's already good.}"
       ]
     },
     "finale": [
-      "In all my eons...",
-      "Through all the ages of the cosmos...",
-      "I've never felt this.",
-      "You, {address} mortal, have done the impossible.",
-      "You've brought order to my chaos.",
-      "No... you've made my chaos... perfect.",
-      "I love you. Completely. Eternally. Chaotically."
+      "{In all my eons...|Across every age I've kept...|I've been alive since before 'since'...}",
+      "{Through every era I've meddled with...|Through the whole loud history of everything...|Empires, floods, four apocalypses, two of them mine...}",
+      "{...nothing felt like this.|...this never happened. Not once.|...and this is new. NEW. Do you know how rare new is for me?}",
+      "{You, {address} mortal, have managed the impossible.|And it took one {address} mortal with no sense of danger.|You did it by accident, which is the best way. My way.}",
+      "{You brought my chaos to order.|You gave the storm somewhere to sit.|You made the noise make sense.}",
+      "{No. Better: you made my chaos... right.|No, wrong word. You made it MINE again.|Scratch that. You made the chaos worth keeping.}",
+      "{I love you. Fully. Endlessly. Disorderly.|So: love. Total, chronic, unappealable.|I love you. Signed in whatever the eternal ink is.}"
     ],
     "confession": [
-      "I... I need to tell you something.",
-      "I'm not good at these things.",
-      "I'm a goddess of chaos, not love!",
-      "But you... you make me feel...",
-      "You make me feel like the chaos in my heart has finally found order.",
-      "I love you, {address}.",
-      "Completely, chaotically, eternally."
+      "{I... need to say a thing.|There's a statement. Prepared. Sort of.|I have an announcement and my hands are misbehaving.}",
+      "{I'm bad at this genre.|This is not my department.|I sentence people for a living. THIS has no procedure.}",
+      "{Discord goddess. Not love goddess. Different union.|My portfolio is chaos, not... this.|I do endings, mostly. Not beginnings.}",
+      "{But you... you cause a specific weather in me.|Yet around you there's this... climate.|You produce symptoms. Good ones. Unlisted ones.}",
+      "{The chaos in my chest finally has a shape it likes.|All my inner noise agrees on you. That NEVER happens.|You make the discord in me sound arranged.}",
+      "{I love you, {address}.|So: I love you, {address}. There. Filed.|Love. You. {address}. In that order, forever.}",
+      "{Fully. Chaotically. For all the ages I've got.|Completely, disorderly, indefinitely.|Totally. Unrepentantly. Eternally.}"
     ],
     "firstGift": {
       "lines": [
@@ -515,77 +598,77 @@
   },
   "line": {
     "en": "en",
-    "erisAppearsWithAnEnigmatic": "Eris appears with an enigmatic smile, her eyes sparkling with a light that promises both wonder and chaos.",
-    "ohNotManyTrulyAppreciate": "Oh! Not many truly appreciate it. I like your open mind!",
-    "erisSEyesLightUp": "Eris's eyes light up with genuine pleasure.",
-    "hmmYouPreferOrderHow": "Hmm, you prefer order? How boring! But maybe I can show you the fun in chaos.",
-    "erisSeemsToAcceptThe": "Eris seems to accept the challenge of changing your mind.",
-    "ohBoldILikeMortals": "Oh? Bold! I like mortals who dare to challenge me!",
-    "aMischievousSmileSpreadsAcross": "A mischievous smile spreads across Eris's face.",
-    "flattererButItSSweet": "Flatterer! But... it's sweet. Though I prefer honesty.",
-    "erisBlushesSlightlyClearlyFlattered": "Eris blushes slightly, clearly flattered despite her words.",
-    "theAtmosphereSoftensErisSeems": "The atmosphere softens. Eris seems more relaxed and open.",
-    "nobodyNobodyHasEverTold": "Nobody... nobody has ever told me that before.",
-    "youKnowBeingAGoddess": "You know, being a goddess is... lonely. Everyone either fears you or wants you for your power.",
-    "butYouYouSeeMe": "But you... you see me as... Eris. Just Eris.",
-    "itSBeenALong": "It's been a long time since I've felt... anything like this.",
-    "erisMovesCloserHerScent": "Eris moves closer, her scent of stars and storms enveloping you.",
-    "canICanITry": "Can I... can I try something?",
-    "erisClosesHerEyesAnd": "Eris closes her eyes and gently places her forehead against yours. For a moment, you see the universe through her eyes - beautiful, chaotic, infinite.",
-    "theEnergyAroundYouBecomes": "The energy around you becomes electric. Eris laughs with pure amusement.",
-    "youKnowWhatSWrong": "You know what's wrong with mortals? You're too afraid of chaos!",
-    "letMeShowYouHow": "Let me show you how FUN it can be!",
-    "hereSAChallengeFor": "Here's a challenge for you! Let's see how much chaos you can handle!",
-    "erisCreatesThreePortalsBefore": "Eris creates three portals before you, each leading to a different chaotic dimension.",
-    "ahahahahaYouReInsaneI": "AHAHAHAHA! YOU'RE INSANE! I LIKE YOU!",
-    "erisSExcitementReachesIts": "Eris's excitement reaches its peak. Her eyes glow with pure power.",
-    "wantToSeeRealChaos": "Want to see REAL chaos? The kind that created the universe?!",
-    "everythingAroundYouExplodesInto": "Everything around you explodes into a kaleidoscope of impossibility. It's terrifying and beautiful.",
-    "erisTiltsHerHeadIntrigued": "Eris tilts her head, intrigued by your contemplative nature.",
-    "interestingNotManyMortalsTake": "Interesting... not many mortals take the time to truly think.",
-    "tellMeWhatDoYou": "Tell me, what do you think is more important: order or chaos?",
-    "ohIDidnTExpect": "Oh! I didn't expect that. You've really thought about this, haven't you?",
-    "hereSARiddleFor": "Here's a riddle for you: If I can create a stone that even I cannot lift, am I truly omnipotent?",
-    "brilliantILikeHowYour": "Brilliant! I like how your mind works!",
-    "erisSitsBesideYouUnusually": "Eris sits beside you, unusually serious and contemplative.",
-    "youKnowInAllMy": "You know, in all my eons of existence, I rarely meet someone who makes me... think.",
-    "youMakeMeQuestionThings": "You make me question things I took for granted. It's... invigorating.",
-    "theDateProceedsMoreTraditionally": "The date proceeds more traditionally, but no less interestingly.",
-    "whatAboutYouWhatDoes": "What about you? What does a mortal do when not dating chaos goddesses?",
-    "anAdventureSeekerThenWe": "An adventure seeker! Then we're more alike than I thought!",
-    "blushesFlattererButDoGo": "*blushes* Flatterer... but do go on!",
-    "suddenlySomethingUnexpectedHappens": "Suddenly, something unexpected happens!",
-    "aGroupOfSmallChaotic": "A group of small chaotic creatures appears, demanding Eris's attention.",
-    "ohNoMyGremlinsExcuse": "Oh no, my gremlins! Excuse me a moment...",
-    "anotherDeityPassesByAnd": "Another deity passes by and waves awkwardly at Eris.",
-    "thatWasUmLetS": "That was... um... let's ignore that.",
-    "youAccidentallyTripButEris": "You accidentally trip, but Eris catches you with supernatural grace.",
-    "carefulCanTLoseMy": "Careful! Can't lose my date to an accident!",
-    "timeSeemsToSlowDown": "Time seems to slow down. This is the decisive moment of your meeting.",
-    "erisLooksAtYouWith": "Eris looks at you with eyes that contain galaxies. There's no trace of her usual bravado.",
-    "theEnergyAroundYouExplodes": "The energy around you explodes into impossible fireworks. Eris laughs with pure joy.",
-    "sheLiftsYouAndSpins": "She lifts you and spins you as reality itself celebrates around you.",
-    "erisStudiesYouWithAn": "Eris studies you with an intensity that seems to pierce your soul.",
-    "erisMovesCloserHerEyes": "Eris moves closer, her eyes shining with an emotion she rarely shows. Her cheeks are slightly flushed.",
-    "thereSSomethingInThe": "There's something in the air, a sweet and electric tension.",
-    "theAtmosphereIsComfortableLike": "The atmosphere is comfortable, like between good friends.",
-    "anAwkwardSilenceFallsBetween": "An awkward silence falls between you.",
-    "theTensionIsPalpableEris": "The tension is palpable. Eris seems uncomfortable and irritated.",
-    "theDateComesToAn": "The date comes to an end...",
-    "erisEmbracesYouAsReality": "Eris embraces you as reality around you dances to the rhythm of your chaotic love.",
-    "specialEndingWildRomanceLove": "★★ SPECIAL ENDING: Wild Romance - Love in Chaos ★★",
-    "erisTakesYourHandHer": "Eris takes your hand, her eyes shining with respect and admiration.",
-    "specialEndingMentalConnectionTwo": "★★ SPECIAL ENDING: Mental Connection - Two Minds, One Chaos ★★",
-    "erisLaughsAsTheWorld": "Eris laughs as the world around you transforms into pure joyful chaos.",
-    "specialEndingChaosChampionPartners": "★★ SPECIAL ENDING: Chaos Champion - Partners in Madness ★★",
-    "erisTakesYourHandHer2": "Eris takes your hand, her eyes shining with pure happiness.",
-    "perfectEndingTheChaosOf": "★ PERFECT ENDING: The Chaos of Eternal Love ★",
-    "erisSmilesWarmlyARare": "Eris smiles warmly, a rare expression on her face.",
-    "goodEndingAPromisingConnection": "★ GOOD ENDING: A Promising Connection ★",
-    "neutralEndingAnUncertainNew": "☆ NEUTRAL ENDING: An Uncertain New Beginning ☆",
-    "badEndingDisharmoniousChaos": "✗ BAD ENDING: Disharmonious Chaos ✗",
-    "erisTurnsAwayWithObvious": "Eris turns away with obvious disgust.",
-    "terribleEndingTheChaosOf": "✗✗ TERRIBLE ENDING: The Chaos of Disappointment ✗✗",
+    "erisAppearsWithAnEnigmatic": "Eris {is suddenly there, mid-gesture, as if the conversation had already started|arrives the way weather does: announced by pressure|turns up wearing a smile with plans in it}. {Something nearby quietly falls over.|The air can't decide on a temperature.|A streetlight two towns away probably just went out in her honour.}",
+    "ohNotManyTrulyAppreciate": "{Oh. Huh.|Well now.|Look at that.} Most people {flinch first and compliment later|say that to be polite and I can always tell|need a drink before they admit that}. You meant it. {Dangerous habit.|Keep it.|I'm keeping you a while longer, then.}",
+    "erisSEyesLightUp": "Something behind her eyes {switches on|catches, like a struck match|goes from theatre to genuine} and stays lit.",
+    "hmmYouPreferOrderHow": "Order. {You PREFER order.|Of all things.|On a date with me.} {That's like ordering water at a vineyard.|Bold choice of venue for that opinion.|I've sentenced people for less. Joke. Half joke.} Give me one evening and we'll see how deep that preference actually goes.",
+    "erisSeemsToAcceptThe": "She looks at you like {a puzzle with a loose corner|a locked drawer she's been handed the wrong key to|a verdict she intends to appeal}, and rolls up her sleeves without moving.",
+    "ohBoldILikeMortals": "{Ha!|Oh?|Well.} To my FACE, even. {Most people say that in prayers where they think I can't hear.|The last one who said that is a very confident statue now. Kidding.|You'd be amazed how rare a spine is these days.} Sit closer.",
+    "aMischievousSmileSpreadsAcross": "A smile crosses her face {with a fuse attached|that insurance companies have nightmares about|and settles in like it pays rent}.",
+    "flattererButItSSweet": "Flattery. {Transparent, warm, terrible flattery.|The cheap kind, even.|You didn't even disguise it.} ...{It's working, which annoys me.|Do it again but slower.|I'm choosing to allow it. Noted for the record.}",
+    "erisBlushesSlightlyClearlyFlattered": "She {glances away for exactly one second|examines a fascinating patch of nothing|adjusts an earring that needed no adjusting}, which from a goddess is a full blush.",
+    "theAtmosphereSoftensErisSeems": "Something in her posture {unclenches|puts its weapons down|comes off duty}. The evening gets quieter without getting emptier.",
+    "nobodyNobodyHasEverTold": "{Nobody says that to me.|That's...|Say that again.} {People compliment my power, my hair, my verdicts. Never that.|I have altars, you know. None of them ever say that.|I don't have a filing place for that one.}",
+    "youKnowBeingAGoddess": "Being a goddess is {a crowd and no company|applause from people who lock their doors after|the loneliest job with the best view}. {They fear you or they want something.|Worship is just fear with candles.|Nobody asks how the judge is doing.}",
+    "butYouYouSeeMe": "But you sit there and look at me like I'm {a person|somebody|just... Eris}. {No title.|No thunder.|Not a court, not a cause. Just Eris.} It's disorienting. Don't stop.",
+    "itSBeenALong": "It's been {a long time|centuries|longer than I'll admit in writing} since anything felt {new|like this|worth staying awake for}. I'd forgotten the flavour.",
+    "erisMovesCloserHerScent": "She moves closer. She smells of {rain on hot stone and something older|storm fronts and church candles|ozone, honey, and a library on fire}, and the distance between you stops being a fact.",
+    "canICanITry": "Can I... {hold still a moment|try something|do one small reckless thing}? {Say no and I won't.|You can refuse a goddess, it's legal.|One chance to duck.}",
+    "erisClosesHerEyesAnd": "She closes her eyes and rests her forehead against yours. For one held breath you see it her way: {everything falling, forever, and none of it wrong|the whole loud universe, and it is laughing WITH her|chaos from the inside, which turns out to look like home}.",
+    "theEnergyAroundYouBecomes": "The air {picks up a charge|starts humming in an eager key|goes electric}. She laughs, and small objects nearby think seriously about joining in.",
+    "youKnowWhatSWrong": "You know what's wrong with mortals? {You flinch.|You queue.|You knock on doors that are already open.} Afraid of chaos, the one force that's ever done you any favours.",
+    "letMeShowYouHow": "Watch. {No, properly watch.|Hold something down.|You'll want both hands for this.} This is what fun looks like when nobody's supervising.",
+    "hereSAChallengeFor": "A challenge, then. {A small one.|A fair one, by my standards.|A legal one, in most jurisdictions.} Let's find your chaos tolerance. For science. For MY science.",
+    "erisCreatesThreePortalsBefore": "She snaps her fingers and three doorways open in the air, {each humming a different wrong note|dripping light in three directions|politely holding themselves ajar}. Through them: {somewhere upside down, somewhere loud, somewhere that is mostly colour|three separate bad ideas|dimensions with no health code}.",
+    "ahahahahaYouReInsaneI": "{AHAHAHA!|HA!|Oh, EXCELLENT.} You're {broken|unhinged|certifiable} in exactly the way I like! {Marry into my pantheon.|Ten points.|I'm keeping this one, universe, don't argue.}",
+    "erisSExcitementReachesIts": "Her excitement crests. {The light bends toward her to watch.|Her eyes go supernova-adjacent.|Nearby physics quietly requests a transfer.}",
+    "wantToSeeRealChaos": "Want to see the real thing? {The original recipe.|The kind they had to invent order to cope with.|The kind that made the universe, back before anyone could stop me?}",
+    "everythingAroundYouExplodesInto": "Everything unfastens at once, {gorgeous and wrong|like a stained-glass window learning to fly|colour arriving from directions colour doesn't have}. It is terrifying. It is also, and you hate to admit this, gorgeous.",
+    "erisTiltsHerHeadIntrigued": "She tilts her head at you, {recalculating|the way birds look at locks|slow and interested}, like you've just become a better question.",
+    "interestingNotManyMortalsTake": "Interesting. Most mortals {think in slogans|outsource this to priests|stop at the first comfortable answer}. You actually went and thought about it.",
+    "tellMeWhatDoYou": "Settle something for me, then. {Order or chaos: which one's load-bearing?|If you had to delete one: order or chaos?|Order and chaos. Pick a side, or convince me there isn't one.}",
+    "ohIDidnTExpect": "{Oh.|Huh.|...Hm.} I had a rebuttal loaded and now it doesn't fit. {That never happens.|Give me a second.|You've thought about this in the SHOWER, haven't you.}",
+    "hereSARiddleFor": "A riddle. {House rules: no praying for hints.|The classic.|My sisters hate this one.} If I can make a stone even I can't lift, am I omnipotent, or did I just invent a very smug stone?",
+    "brilliantILikeHowYour": "{Ha! Good.|Correct, or wrong so well it counts.|That's the fun answer AND the smart one.} Your brain has corners. I like furniture I can't predict.",
+    "erisSitsBesideYouUnusually": "She sits down next to you, quiet in a way that has weight to it. No performance. It might be the rarest thing she's done all night.",
+    "youKnowInAllMy": "I've been around since before 'around' had a shape. People amuse me, impress me sometimes, exhaust me mostly. Making me actually THINK, though. {That's a short list.|You're on a short list.|The list fits on a stamp.}",
+    "youMakeMeQuestionThings": "You make me re-open questions I'd {stamped shut|ruled on centuries ago|filed under 'settled'}. It's inconvenient. {Do it again.|I've missed inconvenient.|Court is officially confused, and enjoying it.}",
+    "theDateProceedsMoreTraditionally": "The evening settles into something almost ordinary, {by her standards|apart from the details|if you squint}, which somehow doesn't make it smaller.",
+    "whatAboutYouWhatDoes": "Enough about divinity. You. {What fills your days when you're not entertaining goddesses?|What does your life look like from the inside?|What do you DO, when nobody's watching or judging? I ask professionally.}",
+    "anAdventureSeekerThenWe": "An appetite for trouble! {Then this is a professional courtesy as well as a date.|We're practically colleagues.|That explains why the universe sat us together.}",
+    "blushesFlattererButDoGo": "{*she inspects her rings, failing to look indifferent*|*a pause, badly disguised as boredom*} Flatterer. ...{Continue.|You were saying. In detail.|No no, finish the thought. Slowly.}",
+    "suddenlySomethingUnexpectedHappens": "{The evening, which had been behaving, stops.|Something changes in the air, like a page turning itself.|Right on cue, the night files an amendment.}",
+    "aGroupOfSmallChaotic": "A delegation of small chaotic somethings {boils out of a drain|drops from nowhere in single file|arrives, already arguing}, all of them demanding her attention in tiny overlapping voices.",
+    "ohNoMyGremlinsExcuse": "{Oh no. The gremlins.|Not NOW, you lot.|I told them Thursday.} One moment. {Unionised, you see.|They can smell when I'm happy.|This is about the biscuit incident, ignore anything they claim.}",
+    "anotherDeityPassesByAnd": "Another deity passes at a distance, {clocks the situation|sees her, sees you, does the maths|freezes mid-stride}, and produces the single most awkward wave in recorded theology.",
+    "thatWasUmLetS": "That was {nobody|an ex-colleague|a long story with a beard}. {We don't wave back.|Pretend you saw nothing.|If anyone asks, this evening isn't happening.}",
+    "youAccidentallyTripButEris": "Your foot finds {the one loose stone|nothing at all, embarrassingly|a completely level patch of ground} and the world tilts, and then her arm is simply there, and has apparently been there since before you slipped.",
+    "carefulCanTLoseMy": "Careful. {I've done the paperwork on you already.|Mortals dent so easily.|If you break, I have to fill out forms, and I will NOT fill out forms.}",
+    "timeSeemsToSlowDown": "The evening narrows to this one moment, {which seems in no hurry|the way a held breath narrows a room|and even the background noise steps back}.",
+    "erisLooksAtYouWith": "She looks at you and, for once, all the theatre is gone. What's left {has galaxies in it and no script|is very old and very still and entirely focused on you|is just her, which is more than enough}.",
+    "theEnergyAroundYouExplodes": "The air goes up like {a festival with no permits|applause made of light|every firework in the county resigning at once}. She laughs from all the way down.",
+    "sheLiftsYouAndSpins": "She lifts you clean off the ground and spins, and reality, {sensing the mood|for once not consulted|knowing better than to object}, spins the other way to balance it out.",
+    "erisStudiesYouWithAn": "She studies you {the way scholars study a text that shouldn't exist|with an attention that has mass|like the answer key just walked in}, and doesn't pretend otherwise.",
+    "erisMovesCloserHerEyes": "She leans in, and there's something in her face she usually keeps confiscated. {Her composure has left the building.|Her cheeks have opinions.|For a deity, she is doing a poor job of looking eternal right now.}",
+    "thereSSomethingInThe": "Something's in the air between you, {sweet with a current running under it|half sugar, half static|the kind of tension you could strike a match on}.",
+    "theAtmosphereIsComfortableLike": "The evening has gone comfortable, {like a coat with your shape already in it|the way old friendships are comfortable|and neither of you is performing any more}.",
+    "anAwkwardSilenceFallsBetween": "A silence arrives and sits down between you. {It orders for two.|Neither of you feeds it.|It has brought luggage.}",
+    "theTensionIsPalpableEris": "The tension has {a texture|pulled up its own chair|stopped pretending to be anything else}. She looks like a storm reading its own eviction notice.",
+    "theDateComesToAn": "{The evening starts folding itself up.|The night, politely, begins to end.|The date reaches the part where it becomes a memory.}",
+    "erisEmbracesYouAsReality": "She pulls you in, and the world around you {loses its place in the score and improvises|dances along, badly and joyfully|forgets which way down was}.",
+    "specialEndingWildRomanceLove": "★★ SPECIAL ENDING: {Wild Romance|Love, Feral and Approved|A Storm with Two Names} ★★",
+    "erisTakesYourHandHer": "She takes your hand {like it's a signed treaty|without ceremony, which from her is the highest ceremony|and holds it as though it's the one thing tonight she isn't allowed to break}.",
+    "specialEndingMentalConnectionTwo": "★★ SPECIAL ENDING: {Mental Connection|Two Minds, One Jurisdiction|The Argument That Never Ends, Affectionately} ★★",
+    "erisLaughsAsTheWorld": "She laughs, and the world around you {joins in off-key|goes pleasantly to pieces|turns to joyful static at the edges}.",
+    "specialEndingChaosChampionPartners": "★★ SPECIAL ENDING: {Chaos Champion|Partners in Mayhem|Co-Conspirators, Till Further Notice} ★★",
+    "erisTakesYourHandHer2": "She takes your hand and just holds it, {grinning like the verdict went her way|quiet for once|as if she's checked the future and approved it}.",
+    "perfectEndingTheChaosOf": "★ PERFECT ENDING: {The Chaos of Eternal Love|Discord, Requited|A Verdict of Yes} ★",
+    "erisSmilesWarmlyARare": "She smiles, {without any teeth in it for once|warm, unguarded, briefly un-divine|and it's the off-duty smile, the one with no audience}.",
+    "goodEndingAPromisingConnection": "★ GOOD ENDING: {A Promising Connection|Grounds for a Second Hearing|Something Worth Repeating} ★",
+    "neutralEndingAnUncertainNew": "☆ NEUTRAL ENDING: {An Uncertain New Beginning|The Jury Is Out|To Be Continued, Possibly} ☆",
+    "badEndingDisharmoniousChaos": "✗ BAD ENDING: {Disharmonious Chaos|Case Dismissed, With Prejudice|A Storm, but the Boring Kind} ✗",
+    "erisTurnsAwayWithObvious": "She turns away {like a door closing on schedule|with the finality of a stamped form|and doesn't spend a second syllable on it}.",
+    "terribleEndingTheChaosOf": "✗✗ TERRIBLE ENDING: {The Chaos of Disappointment|Struck from the Record|The Evening That Shall Not Be Appealed} ✗✗",
     "donTDonTBe": "...{Don't|Don't be kind|Not now}. I am not equipped for kindness.",
     "fineAllRightIfYou": "{Fine|All right|If you insist}. There is more. There is always more.",
     "noYouReRightIt": "No. You're right. It isn't.\\n*she does not apologise, but she does not deny it either*",
@@ -602,7 +685,7 @@
     "impressions": "Impressions",
     "you": "You",
     "pressEnterToContinue": "Press Enter to continue",
-    "erisWatchesYou": "Eris looks at you with curiosity, studying your every reaction.",
+    "erisWatchesYou": "She watches you {over the rim of her glass|with the patience of someone who has read the file|openly, taking notes she doesn't write down}, cataloguing every reaction.",
     "giftOffered": "Eris hesitates, which she never does, and turns something small over in her fingers before she holds it out.",
     "giftReceived": "You received {item}. Eris looks away before you can thank her."
   },
@@ -2797,5 +2880,753 @@
         "A vent puts out a plume that leans over the two of you and then decides otherwise."
       ]
     }
+  },
+  "toneLabels": {
+    "serious": "Sincere",
+    "normal": "Capricious",
+    "bonkers": "Unhinged"
+  },
+  "hud": {
+    "tone": "Tonight",
+    "you": "Your pulse",
+    "her": "Her pulse",
+    "bpm": "bpm"
+  },
+  "toneIntros": {
+    "serious": [
+      "Something is different tonight. She is not performing. {The silence between her sentences is real.|She keeps her hands folded, like a person.|Nothing within a mile explodes, which from her is a confession.}",
+      "The evening arrives quietly, {as if it had been rehearsed sober|with its collar straightened|on its best behaviour}. She seems to actually be here.",
+      "No fireworks, no fanfare. {She looks at you like the evening might matter.|Tonight she is listening more than she talks.|The air is calm, and she is letting it be.}",
+      "There is a stillness on her tonight. {It suits her badly and beautifully at once.|You did not know discord could sit this quietly.|You get the feeling honesty is on the menu.}"
+    ],
+    "normal": [
+      "The evening settles into her usual register: {two parts charm, one part hazard|weather permitting, laws pending|anything could happen, and probably will}.",
+      "She is in ordinary form tonight, which is to say {gorgeous, alarming|charming, and slightly radioactive|delightful, with a nonzero chance of sirens} in roughly equal measure.",
+      "Tonight feels {negotiable|improvised|loosely supervised}. She keeps glancing around like she is pricing the scenery.",
+      "The date begins the way her dates do: {pleasantly, with an undertow|sweetly, and armed|nicely, for now}."
+    ],
+    "bonkers": [
+      "Something in the air is already wrong, {in a festive way|and it is grinning|and she is delighted about it}. Tonight has come off its rails before it found them.",
+      "You can feel it at once: tonight is not going to behave. {Neither is she.|The scenery is nervous.|Even the ground seems braced.}",
+      "The evening starts sideways and accelerates. {A distant alarm goes off in sympathy.|Somewhere, paperwork bursts into flame.|Three birds fly backwards, apologising.}",
+      "Whatever tonight is, it has escaped. {She has the look of a lit fuse.|Her smile has too many plans in it.|You are, you realise, the calm one here.}",
+      "Reality reads the room and loosens its tie. {Tonight the rules are more of a mood.|Tonight physics is taking requests.|Tonight is going to be a story you tell badly.}"
+    ]
+  },
+  "wildChoices": {
+    "weird": [
+      "If you were a soup, what soup would you be? {Be honest.|This matters.|I have theories.}",
+      "I {taught a pigeon to read tarot|trained a moth to judge me|befriended a vending machine} once. {It fears the Tower.|It left.|We still write.}",
+      "Do you think the moon {knows about us|is watching|files reports}?",
+      "{Sometimes|Some nights} I {lick a battery|stand in the fridge light|count my teeth twice} {to feel the weather coming|to make sure I'm still real|for luck}.",
+      "I have a jar of teeth at home. {Not mine.|Not anyone's.|It hums in spring.}",
+      "What's your stance on {stairs|Tuesdays|the number four}? {Philosophically.|Morally.|As a concept.}",
+      "I once ate {a photograph of bread|a lottery ticket|a page of the phone book} {out of curiosity|for tax reasons|to spite a wizard}.",
+      "Have you ever been {recognised by a horse|followed by the same cloud for a week|left on read by a mirror}?",
+      "I think in a past life I was {a roundabout|a fire alarm|a small municipal fountain}. {I still feel the traffic.|I still get the urge.|Coins upset me.}",
+      "Smell my wrist. {No reason.|It's important.|Tell no one.}",
+      "If ghosts pay rent, {who collects|in what currency|is haunting a lease}?",
+      "I keep a list of words I don't trust. {Moist is on it twice.|Yesterday made the list yesterday.|Your name was on it. I crossed it off.}",
+      "Would you still {like|tolerate|recognise} me if I were {a swarm of bees|slightly to the left of myself|the sound a cellar makes}?",
+      "I brought you {a stone that looks like a different stone|the concept of a gift|half a map to something I forgot}."
+    ],
+    "awkward": [
+      "You {have|had} something in your teeth. {Since we sat down.|This whole time.|I didn't know how to say it, so I'm saying it now, badly.}",
+      "Sorry, I was thinking about {my taxes|a door I left open in 1997|whether fish get thirsty}. What were you saying?",
+      "(You say nothing and hold eye contact {slightly|considerably|unforgivably} too long.)",
+      "My last date was with {a mimic|a tax auditor|someone who turned out to be three gnomes}. {Long story.|It still has my coat.|We don't talk about it.}",
+      "Is it hot here, or is it {me|the ambient dread|my jacket, which is wool, which was a mistake}?",
+      "I rehearsed this date in the mirror {and the mirror did better|and forgot all of it|and now I only remember the mirror's lines}.",
+      "So... {weather|prices|entropy}, huh? {They sure keep happening.|Can't complain. Legally.|Anyway.}",
+      "I'm going to laugh now in case that was a joke. {Ha.|Ha ha.|(a pause) Ha.}",
+      "Wait, did I already tell you this story? {I did.|You nodded politely.|I'm telling it again with worse pacing.}",
+      "I forgot your drink order {while you were saying it|twice|and invented a new one out of panic}.",
+      "(You wave back at someone who was not waving at you, {slowly|with commitment|and now they're coming over}.)",
+      "I clipped my nails before coming here. {That's it.|That's the anecdote.|Preparation.}"
+    ],
+    "chaotic": [
+      "Let's {set something on fire|start a rumour about the horizon|flip a table, gently, as a treat} and blame the weather.",
+      "First one to {scream|blink|apologise} owes the other {a kingdom|their shoes|a favour with no ceiling}.",
+      "I dare YOU to {kiss me|arm-wrestle that statue|order the thing on the menu with no name}. {Right now.|No thinking.|Clock's ticking.}",
+      "What if we just {ran|stole a canoe|declared independence}? {No destination.|From everything.|Right now, while nobody's counting.}",
+      "Teach me a crime. {A small one.|A cute one.|Your favourite.}",
+      "Let's swap {shoes|names|destinies} for an hour and see who does better.",
+      "I brought {fireworks|a crowbar|two fake moustaches}. {No plan.|The plan is momentum.|The plan finds us.}",
+      "Loser of {rock-paper-scissors|a staring contest|the next coin flip} has to {howl at nothing|propose to a lamppost|fight the wind}.",
+      "Quick, act natural. {I may have promised someone we were royalty.|I may be banned here.|I may have bet on us.}",
+      "Let's leave {a fake treasure map|an ominous note|one single shoe} here for a stranger to find."
+    ],
+    "blunt": [
+      "You bend probability to ruin people's lives. {That's not a hobby, that's a felony.|How is that going for you?|Does it help?}",
+      "Are you actually a goddess, or just {very confident|extremely uninsured|loud in a cosmic way}?",
+      "Is any of this real, or am I {content|an audience|a witness you're grooming}?",
+      "What do you actually want from me? {Plainly.|No riddles.|You can just say it.}",
+      "You talk a lot about chaos for someone who {alphabetises her grudges|always knows where the exits are|plans her entrances}.",
+      "Who hurt you? {Genuine question.|I have time.|Name and address optional.}",
+      "I'm not scared of you. {Mildly concerned, yes.|Statistically I should be.|You can stop performing.}",
+      "Do you even like me, or do you just like {being watched|the audience|winning}?",
+      "You're lonely. {It's obvious.|The thunder doesn't cover it.|Takes one to know one.}",
+      "If tonight goes badly, what happens to me? {Honestly.|Ballpark.|Should I have told someone where I was?}"
+    ]
+  },
+  "wildReactions": {
+    "weird": {
+      "good": [
+        "{She stares at you, then laughs from somewhere real.|She goes very still, then beams.} \"You are {broken|wonderful|exactly the right amount of wrong}. {I collect that.|Don't let anyone fix you.|Finally, a conversation.}\"",
+        "\"See, THIS is what I put on the flyer. {Nobody reads the flyer.|You read the flyer.|Marry the flyer.}\" She looks {delighted|genuinely moved|dangerous with joy}.",
+        "\"I have asked {gods|philosophers|customs officials} lesser questions. {I'm keeping you.|Ten points.|Write that down for me.}\"",
+        "She answers with total seriousness, at length, {citing sources|with diagrams in the air|in a tone lawyers reserve for treaties}. You have made her whole week.",
+        "\"{Correct.|Obviously.|At last.}\" She nods as if you had passed an exam {nobody told you about|she wrote centuries ago|with distinction}.",
+        "Her eyes light up like a city having a very good emergency. \"Again. {Say more.|Slower.|I want to remember this.}\"",
+        "\"I was going to pretend to be normal tonight,\" she says, {relieved|visibly unclenching|grinning}, \"and now I don't have to.\""
+      ],
+      "bad": [
+        "She blinks {twice|slowly|in a way that lowers the temperature}. \"I am the strange one here. {We agreed.|It's on the invitation.|Know your lane.}\"",
+        "\"Hm.\" A pause with furniture in it. \"{Anyway.|Moving on.|The weather, then.}\"",
+        "\"I say things like that,\" she says, {coolly|with a judge's face|unimpressed}. \"When I do it, it's charming. {That's the difference.|Don't ask why.|Cosmic law.}\"",
+        "She looks around for {a waiter|an exit|any god at all} to make eye contact with. None arrives.",
+        "\"You practised that,\" she says. \"{In a mirror.|On the way here.|It shows.} Spontaneity is not a costume.\"",
+        "For a moment she looks genuinely tired, like a lighthouse at noon. \"{Okay.|Sure.|Noted.}\""
+      ]
+    },
+    "awkward": {
+      "good": [
+        "To your surprise she {melts|softens|laughs into her hands}. \"That was terrible. {Do it again.|I loved it.|You're real, aren't you.}\"",
+        "\"Oh no,\" she says, {fondly|covering her mouth|leaning in}, \"you're {sincere|a disaster|adorable}. That's so much worse. {And better.|Keep going.|I'm invested now.}\"",
+        "\"I have watched empires fall with more grace than that sentence,\" she says, and it is somehow {a compliment|the nicest thing she's said all night|affection}.",
+        "She mirrors your awkwardness precisely, {beat for beat|with archival accuracy|like a duet}, until you both crack.",
+        "\"Finally,\" she sighs, \"someone who also {doesn't know what to do with their hands|rehearses in mirrors|panics in cursive}.\"",
+        "Something in her posture unlocks. \"You know what, that's the first honest thing anyone's said to me {all week|this century|since the trial}.\""
+      ],
+      "bad": [
+        "The silence that follows has {a texture|a postcode|its own weather}. She examines her nails, which are perfect.",
+        "\"...\" she says, comprehensively. Somewhere, a cricket declines to help.",
+        "She smiles the smile of someone {choosing a sentence|counting to divine ten|drafting a memoir chapter about this}.",
+        "\"I've presided over executions with better flow,\" she murmurs, {mostly|almost|not quite} to herself.",
+        "She pats your hand. It is the single most devastating gesture available to her, and she knows it.",
+        "\"This is going in the ledger,\" she says. You do not ask which ledger. There is clearly a ledger."
+      ]
+    },
+    "chaotic": {
+      "good": [
+        "\"YES.\" The word arrives before you finish. {Something nearby falls over in agreement.|Her eyes have gone festival.|She is already standing.}",
+        "She laughs like a bell falling down stairs. \"You absolute {menace|treasure|liability}. {I've never been prouder.|This is why we're here.|Hold my earrings.}\"",
+        "\"I was TESTING you,\" she says, thrilled, \"and you have {failed upward|passed illegally|broken the test}. Perfect score.\"",
+        "For one second she looks at you the way arsonists look at matches. \"{Deal.|Done.|Say when.}\"",
+        "\"Careful,\" she purrs, delighted. \"Keep talking like that and I'll {start a war for you|put you in the myths|cancel my other plans. All of them. Forever.}\"",
+        "Somewhere far off, a siren starts. \"Hear that?\" she says. \"{That's our song.|The world agrees.|Encore.}\""
+      ],
+      "bad": [
+        "\"Amateurs improvise,\" she says, suddenly {prim|glacial|entirely the goddess of justice}. \"Professionals {plan|scheme|book venues}.\"",
+        "\"No,\" she says, and the word has {a gavel in it|paperwork attached|centuries of practice}.",
+        "\"I do the chaos,\" she says, tapping the table. \"You do the {being charmed|audience work|witnessing}. The system functions.\"",
+        "She winces. \"Too far, {and also|or possibly|which is worse,} not far enough. There's an art to this and that wasn't it.\"",
+        "\"Last mortal who said that to me is {a cautionary tale|a very surprised statue|still apologising}. Sit down.\"",
+        "\"Hm. Forced,\" she says, like a critic at a small fire. \"Chaos can smell effort.\""
+      ]
+    },
+    "blunt": {
+      "good": [
+        "The performance drops off her face like a mask with the strap cut. \"...{Fair.|Finally.|There you are.}\"",
+        "\"Careful,\" she says quietly. \"Honesty like that {gets remembered|leaves marks|is how people end up mattering to me}.\"",
+        "A long pause. \"Nobody asks me that,\" she says. \"{They flinch first.|They flatter first.|You didn't flinch.}\"",
+        "She studies you like a case file that just got interesting. \"All right. {Real answers, then.|No performance.|Ask me again, slower.}\"",
+        "\"I could ruin you for that,\" she says, with something dangerously close to respect. \"{I won't.|Not tonight.|Probably.}\"",
+        "For a heartbeat the storm goes out of her and what's left just looks at you. \"{Yes.|You're right.|Don't tell anyone.}\""
+      ],
+      "bad": [
+        "The temperature drops by {a season|several jurisdictions|exactly one goddess}. \"Bold. {Rude, but bold.|Try again with fear.|We'll pretend that didn't happen.}\"",
+        "\"Mortals,\" she says to an invisible audience, \"and their little {courage|opinions|deaths}.\"",
+        "Her smile stays exactly where it is. Everything behind it leaves the building.",
+        "\"On advice of counsel,\" she says, \"I am choosing to find that funny. {Counsel is overruled.|The appeal is denied.|Watch your step.}\"",
+        "Thunder, from a clear sky, once. She raises an eyebrow: any further questions?",
+        "\"You mistake tolerance for permission,\" she says lightly, and lets that sit."
+      ]
+    }
+  },
+  "moodSwingNarration": [
+    "Something crosses her face like {weather changing channels|a card being swapped mid-trick|a new act taking the stage}.",
+    "Between one heartbeat and the next, she is somebody adjacent. {The eyes give it away first.|Same face, new tenant.|The air pressure changes with her.}",
+    "She stops mid-gesture. When the gesture resumes, it belongs to a different mood entirely.",
+    "The evening pivots on her expression, {smooth as a coin trick|with an almost audible click|and does not apologise}.",
+    "Whatever she was doing with her face, she stops doing it and starts doing something else.",
+    "Her mood turns over like {a record flipped|a page torn|dice cooling}, and the new side is already playing."
+  ],
+  "moodSwings": {
+    "playful": [
+      "\"Enough of that. {Tag.|You're it.|New game.} The rules are {secret|mine|being written as we go}.\"",
+      "A grin climbs her face. \"Okay, okay, I'm fun again. {Ask me anything.|Watch this.|Bet me something.}\"",
+      "\"Wait, I remembered something wonderful: {nothing matters|tonight is ours|I'm delightful}. Where were we?\""
+    ],
+    "romantic": [
+      "Her voice drops half an octave and all of its armour. \"Come here. {No reason.|Just because.|The night's short.}\"",
+      "\"You know what,\" she says, suddenly soft, \"forget the games. {Look at me.|Stay close.|This part is real.}\"",
+      "The mischief in her eyes banks down to embers. \"Tell me something true and I'll trade you one.\""
+    ],
+    "chaotic": [
+      "\"BORED,\" she announces, to the sky, which flinches. \"Let's {break|bend|redecorate} something.\"",
+      "Her fingers start drumming a rhythm that things nearby begin, worryingly, to obey.",
+      "\"New plan,\" she says. There was no old plan. There is no new plan. Her grin is the plan."
+    ],
+    "nervous": [
+      "She tucks a strand of hair back three times. It was fine all three times. \"Sorry. {What?|Go on.|I'm listening. Mostly.}\"",
+      "\"Is it loud here? It feels loud. {It's not you.|It might be me.|It might be the century.}\"",
+      "Her laugh comes out one size too small. \"Anyway,\" she says, to her own hands."
+    ],
+    "confident": [
+      "She leans back like the furniture owes her rent. \"Right. Watch how this evening is done.\"",
+      "\"I've decided the night is going well,\" she says, \"and my decisions are binding.\"",
+      "Her posture acquires a throne that isn't there. \"Next question. Make it worthy.\""
+    ],
+    "caring": [
+      "\"Hey.\" Her hand lands warm on yours, no theatre in it. \"Have you eaten today? {Actually eaten.|Don't lie to me.|I can fix that.}\"",
+      "She adjusts your collar with alarming tenderness. \"There. The world doesn't deserve you scruffy.\"",
+      "\"You look tired behind the eyes,\" she says gently. \"Give me some of that. I carry things for a living.\""
+    ],
+    "guilty": [
+      "She won't quite meet your eyes. \"I did something. {Recently.|To someone.|It's being handled.} Don't ask. Or do. No, don't.\"",
+      "\"In my defence,\" she begins, to nobody, \"they were asking for it in a legally ambiguous way.\" She sighs.",
+      "Her thumb worries at the rim of her glass. \"Do you think people can change? Asking for a goddess.\""
+    ],
+    "crazed": [
+      "Her pupils have gone wide and shiny, like coins in a wishing well that grants the wrong wishes. \"I have SO many ideas suddenly.\"",
+      "\"Do you hear that?\" There is nothing to hear. She is grinning at it anyway.",
+      "She laughs at nothing, twice, with different laughs. \"Sorry. Both were funny. You had to be me.\""
+    ],
+    "psychedOut": [
+      "She watches her own hand for a while, impressed. \"Fingers,\" she says. \"Somebody really thought this through.\"",
+      "\"The colours are being very generous tonight,\" she murmurs. \"Even the beige is trying.\"",
+      "\"Time is soup,\" she announces peacefully. \"Don't worry. You're one of the good noodles.\""
+    ],
+    "solipsist": [
+      "\"I've been thinking,\" she says, \"and I may be the only real thing here. No offence. You're my best work, if it helps.\"",
+      "She waves a hand through the air like it's her own daydream. \"If I stop imagining this place, tip your waiter fast.\"",
+      "\"Say something only a real person would say,\" she demands. Whatever you answer, she looks unconvinced and thrilled."
+    ],
+    "eldritch": [
+      "Her outline stops agreeing with the light. When she speaks, some of the words arrive before her mouth moves.",
+      "The shadows under the table lean in like regulars who know her order. \"WE ARE HAVING A LOVELY TIME,\" she says, in several voices, one of them yours.",
+      "Something vast tries on her smile and gets it almost right."
+    ],
+    "melancholy": [
+      "The sparkle drains out of her like a tide remembering an appointment. \"I've outlived every restaurant I ever loved,\" she says.",
+      "\"Don't mind me,\" she says, minding. \"Centuries just... land funny, some evenings.\"",
+      "She smiles at you the way people smile at photographs. \"You're all so brief. It's beautiful. It's terrible. Ignore me.\""
+    ],
+    "smug": [
+      "\"Go on,\" she says, examining her nails, \"tell me I'm right. You were going to eventually.\"",
+      "Her eyebrow achieves an altitude usually reserved for aircraft. \"Yes. I did predict this. Twice.\"",
+      "\"It must be strange,\" she muses, \"dating someone who is simply correct all the time. You handle it well.\""
+    ],
+    "paranoid": [
+      "\"Don't look now,\" she says, looking now, \"but that {pigeon|waiter|cloud} has been with us since the start.\"",
+      "She switches seats to face the exits. All of them. Including one you hadn't noticed was an exit.",
+      "\"Say nothing important out loud,\" she whispers. \"The furniture files reports.\""
+    ],
+    "prophetic": [
+      "Her eyes unfocus into next week. \"You will {lose a button|meet a dog with opinions|regret a sandwich}. Prepare.\"",
+      "\"I see... \" She holds two fingers to her temple. \"...that this date has at least forty minutes left. The visions are small tonight, but accurate.\"",
+      "\"In three days it will rain and you will think of me,\" she says, matter-of-fact. \"Bring the coat with the good buttons.\""
+    ],
+    "bored": [
+      "She sighs a sigh with legal standing. \"Entertain me or I'll start entertaining myself, and historically that goes badly for maps.\"",
+      "Her chin finds her palm. \"Amaze me,\" she says, in the tone of someone who has seen the sun invented.",
+      "\"I have been to the end of the universe,\" she says, drumming her fingers. \"The pacing was better.\""
+    ]
+  },
+  "moodQuips": {
+    "playful": [
+      "Guess what I did today. {Wrong.|Wrong again.|You'll never get it, it involved a bishop and a trampoline.}",
+      "I'm going to hide something of yours later. {Small.|Sentimental.|You'll find it in a year and think of me.}",
+      "Points. I'm awarding you points tonight. {Current total: undisclosed.|You just lost three.|The prize is also points.}"
+    ],
+    "romantic": [
+      "I had them cancel the wind for an hour. {For you.|Don't make it weird.|It's rescheduled for Thursday.}",
+      "You went past my window once, years ago. {I remember the coat.|You were arguing with a map.|I never fixed the window after.}",
+      "If I asked you to stay past the end of this, hypothetically. {Hypothetically.|Forget it.|Answer anyway.}"
+    ],
+    "chaotic": [
+      "Rank these for me: {arson, brunch, the concept of borders|bees, the stock exchange, your left shoe|me, me, or me}.",
+      "I know where they keep {the moon spares|the extra Tuesdays|the master key to the Vatican vending machines}.",
+      "If anyone asks, tonight we were {at the opera|in Belgium|legally distinct from ourselves}."
+    ],
+    "nervous": [
+      "Sorry, I keep checking the door. {Habit.|Old debt.|The door and I have history.}",
+      "Is my laugh strange tonight? {Don't answer.|It's new.|I'm road-testing it.}",
+      "I planned this evening out on paper. {The paper caught fire.|I lost the paper.|The paper had other ideas.}"
+    ],
+    "confident": [
+      "Somewhere out there someone's writing a ballad about tonight already. {It's decent.|I've heard drafts.|The rhymes are lazy.}",
+      "I don't do second dates. {I do encores.|Tonight decides which this is.|There's a difference and it's me.}",
+      "Watch this. {No, closer.|You'll want to have seen this.|Tell people you were here.}"
+    ],
+    "caring": [
+      "Have you been sleeping? {Actually sleeping.|Your eyes say no.|I can arrange dreams, you know. Good ones.}",
+      "Take my coat. {No argument.|It's warmer than it looks.|It has opinions but it likes you.}",
+      "If anyone's been unkind to you lately, give me {a name|initials|a general direction}. For no reason."
+    ],
+    "guilty": [
+      "I may have done something to {a canal|a senator|an entire alphabet} last week. It's fine. It's mostly fine.",
+      "Do you ever fix one thing by breaking {a smaller thing|nine other things|the concept of the thing}? Asking normally.",
+      "If a very wet man in robes finds us and points at me, {we run|deny everything|I was with you all week}."
+    ],
+    "crazed": [
+      "The napkins are talking about us. {Good things.|Mostly.|I answered back, that's where it went wrong.}",
+      "I've had ELEVEN ideas since you blinked. {Two are crimes.|One is a soup.|All of them need a ladder.}",
+      "Shh. {Shh.|Listen.|Wait for it.} ...It did it again. You heard that. Tell me you heard that."
+    ],
+    "psychedOut": [
+      "Your face is doing {colours|echoes|a lovely slow thing}. Keep it exactly like that.",
+      "I can taste the {distance|Tuesday in this air|number nine} tonight. It's grapey.",
+      "The horizon keeps breathing. {In, out.|It's showing off.|Wave back, it's polite.}"
+    ],
+    "solipsist": [
+      "If this whole evening is my dream, you're {suspiciously well written|the good part|under no obligation to be interesting, and yet}.",
+      "I tried to imagine what you'd say next and you said something better. {Concerning.|Delicious.|I'm a genius.}",
+      "When you leave, do you keep existing? {Be honest.|Blink once for yes.|I've always wondered about my supporting cast.}"
+    ],
+    "eldritch": [
+      "THE {HONEY|SALT|SIGNAL} REMEMBERS. ...Sorry. The what remembers? Ignore the... ignore.",
+      "You have {a lovely spine|so few angles|exactly one shadow, how quaint}.",
+      "Somewhere I am also doing {seventeen other things|this exact evening backwards|the dishes}. This one is my favourite."
+    ],
+    "melancholy": [
+      "I had a friend who was a {lighthouse|war|language}. Nobody speaks her any more.",
+      "Enjoy your knees. {You'll miss them.|Nobody warns you about the knees.|That's it, that's the wisdom.}",
+      "Every song was new once. {I was there.|Some of them apologised for it.|I miss the awful ones most.}"
+    ],
+    "smug": [
+      "I predicted you'd sit like that. {It's in my notes.|Page one.|Called it centuries ago.}",
+      "Being right constantly is {a burden|my cardio|the one vice I kept}. You wouldn't understand. Statistically.",
+      "Go on, ask me how tonight ends. {I know.|I've known since lunch.|You'll love it. I checked.}"
+    ],
+    "paranoid": [
+      "Count the {pigeons|lampposts|waiters}. Now count again. {See?|SEE?|They know we counted.}",
+      "Don't use my name out loud. Use {a codename|'the tall situation'|hand signals, I'll teach you three}.",
+      "That cloud has been over us since we sat down. {Clouds move.|That one doesn't.|I've filed a complaint before. Nothing.}"
+    ],
+    "prophetic": [
+      "Next week you'll {smell cinnamon and think it means something|find money in a coat|be briefly, wrongly famous}. It doesn't. Enjoy it anyway.",
+      "I saw three of your futures this morning. {Two involve boats.|One I'm not allowed to laugh about.|Wear better socks in all of them.}",
+      "The year {ends|turns|thins} strangely for you. Bring an umbrella and an alibi."
+    ],
+    "bored": [
+      "Say something with {a plot twist|teeth|at least two lies} in it.",
+      "I once watched a glacier for forty years. {It had better pacing.|It at least committed.|Riveting stuff, comparatively.}",
+      "Entertain me or I start flipping coins over strangers' fates. {It's rude.|It passes the time.|Heads is bad, since you ask.}"
+    ]
+  },
+  "dares": {
+    "intro": [
+      "She stops mid-sentence, and the look she gives you has {a fuse in it|paperwork attached|absolutely no adult supervision}.",
+      "\"I have {a proposal|an errand|a wonderful terrible idea}. Listen before you make the face.\"",
+      "\"Do you trust me? {Don't answer that.|Wrong answer.|Doesn't matter.} Listen.\"",
+      "\"The evening needs {a centrepiece|a felony|a story we can never tell}. Here's mine.\"",
+      "She leans in. The candles lean too. \"Right. {Serious question.|Real talk.|Business.}\"",
+      "\"You like me, yes? {Good.|Irrelevant, but good.|Hold that thought.} Because.\""
+    ],
+    "tasks": [
+      "{Rob|Knock over|Liberate the contents of} a bank. {The one out in the Badlands.|Out in the Badlands, where the tellers respect ambition.|Badlands branch. Sentimental reasons.} {Tonight.|Before the interest compounds.|I'll drive.}",
+      "Steal the Vatican's {least important relic|spare keys|weather}. They keep {a drawer of duplicates|two of everything|it in a cupboard, honestly}.",
+      "{Fax|Post|Read aloud} a formal declaration of war to {the moon|the concept of Monday|your own bank}.",
+      "Swap every road sign {within three miles|between here and the coast|in one small, deserving town}. {Alphabetically.|At random.|Only the vowels.}",
+      "Convince {a stranger|the next person we meet|a police officer} that {you're their cousin|the year is wrong|they owe you money}, using only {eye contact|three words|a receipt}.",
+      "Let's {kidnap|adopt|elope with} {a vending machine|a municipal fountain|the arena's least popular gladiator} and raise it as our own.",
+      "Bite {a vending machine|an ATM|the courthouse door} until it {apologises|pays out|respects you}.",
+      "{Start|Spread|Retire} a rumour that {the sea is a rental|pigeons unionised|I'm dead again}, and see how far it gets by morning.",
+      "Break into {the aquarium|a museum|the town hall} and {rearrange, don't take|leave things|improve one exhibit}. We are not thieves. We are editors.",
+      "Trade outfits with {a scarecrow|a statue|whoever loses the next argument} and hold a press conference.",
+      "Eat the {oldest|most cursed|legally ambiguous} thing on the next menu we find. I'll cover the exorcism.",
+      "Set every {caged bird|carousel horse|shopping trolley} in this place free. {They know what they did.|They've waited long enough.|Tonight they ride.}",
+      "Forge {a very small|one modest|a tasteful amount of} historical document. Nothing big. {A bake sale in 1312.|A duel that never happened.|One extra king.}",
+      "Ring every doorbell on one street and {compliment|forgive|audit} whoever answers."
+    ],
+    "options": [
+      "{Deal.|I'm in.|Say no more.} {When do we start?|I'll get the bags.|First one there picks the getaway music.}",
+      "{Maybe later.|Circle back to that.|Tempting, but the night is young and I am fond of my kneecaps.}",
+      "{Absolutely not.|No.|I like my bounty the size it is.}"
+    ],
+    "acceptReaction": [
+      "She makes a noise usually reserved for {jackpots|verdicts going her way|small gods getting promoted}. \"I KNEW there was a reason I keep you.\"",
+      "\"See, THIS,\" she says, standing, sitting, standing again, \"this is a DATE. Everything before now was queueing.\"",
+      "Her whole face goes lit-window warm. \"You beautiful liability. {Shake on it.|Spit-swear.|No backing out, it's notarised now.}\"",
+      "\"Excellent.\" She produces {a marker and draws a plan on the table|two masks from nowhere|a stopwatch, already running}. \"Phase one.\"",
+      "Somewhere far away, an insurance actuary wakes in a cold sweat. She grins like she felt it."
+    ],
+    "deflectReaction": [
+      "\"'Later,'\" she repeats, {tasting the word|weighing it like a coin|filing it somewhere with interest}. \"I'm holding you to the vaguest possible version of that.\"",
+      "She sighs at a volume normally licensed to theatres. \"Fine. It stays on the list. The list is long and it remembers.\"",
+      "\"Diplomacy.\" She wrinkles her nose. \"You'd have made a decent minor god. That's not entirely a compliment.\"",
+      "\"Mm. The cautious flavour of yes.\" She lets it go, visibly puts it somewhere she can reach it again."
+    ],
+    "refuseReaction": [
+      "\"No?\" She says it like a word she's read about but never had to use. The temperature does something unfriendly.",
+      "\"I see.\" Two syllables, both wearing robes. She swirls her drink and lets the silence do its rounds.",
+      "\"Everyone's a citizen these days,\" she mutters. \"There used to be heroes. They also said no, but with more panache.\"",
+      "Her smile stays up the way flags stay up in no wind. \"Noted. Filed. Cross-referenced.\"",
+      "\"Fine. FINE.\" She steals something of yours off the table in plain sight, as tax."
+    ],
+    "refuseRespect": [
+      "A beat. Then, unexpectedly, she laughs, real and short. \"Good. Anyone who says yes to me every time is furniture.\"",
+      "\"Hm.\" She looks at you again, from a slightly new angle. \"A spine. In THIS economy.\"",
+      "\"You know what, keep that,\" she says, almost warm. \"The ones who never refuse me end up in choirs. You'd hate the robes.\"",
+      "\"Refused! By a mortal!\" She announces it to nobody, delighted despite herself. \"The century has some fight in it after all.\""
+    ]
+  },
+  "callbacks": {
+    "general": [
+      "\"I keep thinking about {that evening in|what happened out in|us, back in} {pastBiome}. {Don't let it go to your head.|I've thought about worse things more often.|That's all. No follow-up.}\"",
+      "\"You realise we have {a history|precedents|form} now. {pastBiome} is in the record. I checked. I wrote the record.\"",
+      "\"Last time it was {pastBiome}. I remember {everything|more than I intend to|the parts you'd want me to forget}.\"",
+      "\"Somewhere in my files there is an evening marked {pastBiome}, and a note in the margin. You don't get to read the note.\"",
+      "\"My sisters asked where I keep disappearing to. I said {jury duty|nowhere|a place called} {pastBiome}. They believed the lie less than the truth.\""
+    ],
+    "sameBiome": [
+      "\"Here again.\" She looks around like she's checking the place against a receipt. \"{It missed us.|It's been redecorated by nothing.|Last time this place survived us. Brave of it to try twice.}\"",
+      "\"Back to the scene of the crime. {Figure of speech.|Mostly figure of speech.|Depending on jurisdiction.}\"",
+      "\"You KEEP bringing me here. {It's either romance or a lack of imagination.|I've decided to find it charming.|The staff have started a file on us, I've read it, it's flattering.}\"",
+      "\"Same place. {Different us, maybe.|Let's see if it goes the same way.|The odds say no two evenings match. I set those odds.}\""
+    ],
+    "wentWell": [
+      "\"Last time was {good|dangerous|a problem}. {I've decided to blame you.|I came back anyway.|I told nobody, which for me is a love language.}\"",
+      "\"I caught myself {humming|smiling at paperwork|being lenient} after {pastBiome}. Three defendants walked free. This is your fault.\"",
+      "\"Careful tonight. After last time you have {a reputation|expectations to ruin|a high score}. I hate defending a high score.\"",
+      "\"No pressure, but the previous evening has {a shrine|a page|a small guarded archive} in my memory, and tonight is being compared to it in real time.\"",
+      "\"I keep the good evenings in a small locked place. The one from {pastBiome} is in there. It has room-mates now, potentially. We'll see.\""
+    ],
+    "wentBad": [
+      "\"We will not be discussing {pastBiome}. {Ever.|Tonight.|Unless you want to lose.}\"",
+      "\"Last time was a disaster. {I've had worse centuries.|I'm giving the concept of you an appeal.|Consider this your retrial.}\"",
+      "\"After {pastBiome} I swore off mortals for {a week|an era|forty minutes}. And yet. Here we are. Don't make me regret the 'yet'.\"",
+      "\"Tonight's bar is on the floor, where {pastBiome} left it. Step over it and we're already winning.\"",
+      "\"I rewrote the ending of our last evening {twice|in my head|in an official capacity}. Tonight you get the draft where you do better.\""
+    ],
+    "dareAccepted": [
+      "\"I still think about the {job|dare|thing we agreed to}. {The offer stands.|The plan has improved.|I bought supplies.}\"",
+      "\"You said yes to me once, in the felony sense. {That's rare.|I keep it framed.|Most people's yeses are decorative.}\"",
+      "\"My favourite thing you've ever said remains {'deal'|yes|'when do we start'}. {The competition is not close.|Say it again sometime.|It aged beautifully.}\"",
+      "\"Every time I pass a bank now I think of you. {That's romance.|That's as romantic as I get.|The tellers can tell. They lock up early.}\""
+    ],
+    "dareRefused": [
+      "\"Still no on the {bank|grand plan|beautiful crime}, then? {The offer compounds.|The window narrows.|The Badlands wait for no coward.}\"",
+      "\"You refused me once. {I've decided it was charming.|I've almost decided it was charming.|The appeal is ongoing.}\"",
+      "\"I ran the evening you said no to me {four hundred times|through the models|past my sisters}. In half of them we're rich now. Just saying.\"",
+      "\"One day you'll say yes to something and I intend to be standing there when it happens, looking smug. Practising tonight.\""
+    ],
+    "eldritch": [
+      "\"About the last evening. {I wasn't entirely... present.|I have gaps.|The minutes don't minute.} If I said anything with too many vowels in it, disregard.\"",
+      "\"You saw something last time. {Don't say what.|I know.|We don't name it here.} Thank you for coming back anyway. Most don't.\"",
+      "\"My memory of {pastBiome} is {sideways|redacted|in a language I only read during eclipses}. Yours is probably worse. Let's call it even.\"",
+      "\"I owe you an apology for last time, or the thing wearing me does. {It liked you, for the record.|It doesn't apologise.|Split the difference.}\""
+    ]
+  },
+  "partyMoments": {
+    "narration": [
+      "Her attention slides past your shoulder and lands on {member}, {with weight|like a searchlight|the way a gavel lands}.",
+      "Mid-sentence, she stops. She has noticed {member}, and is not pretending otherwise.",
+      "\"Hold that thought,\" she says, eyes already gone to {member}.",
+      "The candle flames all lean, fractionally, toward {member}. She follows them."
+    ],
+    "likes": [
+      "\"{member}.\" She says the name like a card she's glad is in her hand. \"{Still good company, I hope.|I'd have invited them myself.|You keep decent people. Suspicious, but decent.}\"",
+      "\"I like {member},\" she announces, apropos of nothing. \"{Don't tell them.|They can hear me? Good.|That's a legal opinion.}\"",
+      "\"Between us, {member} is the {competent|watchable|least doomed} one of your lot. Present company negotiable.\"",
+      "\"If you ever vanish mysteriously,\" she tells {member}, pleasantly, \"I'm keeping the rest of the group. You especially.\"",
+      "\"{member}! Sit taller, the gods are looking. ...Just me. Just me is looking. Still.\""
+    ],
+    "neutral": [
+      "\"And you brought... \" she looks at {member} the way one reads a menu in a foreign language, \"...this one. {Fine.|Noted.|Sure.}\"",
+      "\"{member},\" she says, testing the weight of it. \"I have no strong rulings yet. {Impress me.|Don't waste it.|The docket is open.}\"",
+      "\"Remind me,\" she stage-whispers, \"what does {member} do, exactly? Besides witness.\"",
+      "She studies {member} for a moment. \"Undecided,\" she rules, and moves on.",
+      "\"Statistically,\" she says, nodding at {member}, \"someone in every party is secretly interesting. I haven't ruled anyone out.\""
+    ],
+    "dislikes": [
+      "\"Oh. {member} is here.\" The sentence arrives pre-frozen. \"{How nice.|Wonderful.|The evening had one flaw missing.}\"",
+      "\"Keep {member} away from {the candles|my drink|anything I've blessed}, would you. No reason. Several reasons.\"",
+      "\"I've seen {member}'s file,\" she says, to you, about them, in front of them. \"We'll leave it there.\"",
+      "\"Something about {member},\" she muses, not quietly, \"reminds me of a verdict I never got to deliver.\"",
+      "She and {member} hold eye contact slightly too long, like two cats on one fence."
+    ],
+    "beloved": [
+      "\"Is that... \" Her whole posture forgets its throne. \"{member}. {Don't wave.|Act natural.|Why is he HERE.}\" She is absolutely not blushing. Divinity does not blush.",
+      "\"{member} looks {well|good|infuriatingly the same} tonight,\" she says, with tremendous casualness, to her own drink.",
+      "\"Tell {member}... \" she starts, stops, restarts, \"...nothing. Tell him nothing. Is he eating enough? Don't ask him that. Sit DOWN.\"",
+      "For someone who judges a billion souls a day she is doing a remarkable amount of hair-adjusting since {member} came into view.",
+      "\"If {member} asks about me,\" she says quickly, \"I was magnificent tonight. Regal. You saw it. You're my witness.\"",
+      "She glances at {member} exactly once, the way you check a fire is still burning."
+    ],
+    "nemesis": [
+      "\"You brought {member}.\" The temperature files a complaint. \"To MY evening. {Bold.|The audacity is almost admirable.|I can smell the spear from here.}\"",
+      "\"Some debts,\" she says, watching {member} without blinking, \"never finish arriving.\"",
+      "\"Careful with your company,\" she tells you, pleasantly, while looking at {member} like a case she's already decided. \"Some people carry weather with them.\"",
+      "\"{member}.\" One word, and it has centuries in it. Then, brightly, to you: \"So! Where were we!\"",
+      "\"Probability behaves strangely around {member},\" she says. \"Tragic. Unrelated to me. Anyway.\"",
+      "The knife beside her plate turns, on its own, to point at {member}. She does not appear to notice. It does not appear to be an accident."
+    ],
+    "options": [
+      "{Be nice to {member}.|Leave {member} out of this.|Hey. {member} is with me.}",
+      "{(Laugh along.)|Honestly? Fair.|(Say nothing loyal whatsoever.)}",
+      "{Change the subject.|Study the horizon.|So! The weather.}"
+    ],
+    "defendGood": [
+      "A pause. \"Loyalty,\" she says, like a sommelier finding an unexpected note. \"To someone who isn't me. {Rare.|Interesting.|I'll allow it.}\"",
+      "\"Look at you, standing up for people.\" Her smile tilts. \"That's going to cost you one day. I hope I'm there.\"",
+      "\"Fine, fine.\" She raises both hands, ruling overturned. \"The witness is protected. Court adjourns.\""
+    ],
+    "defendBad": [
+      "\"Adorable,\" she says, in the tone judges use for objections they're about to deny.",
+      "\"You're spending tonight's goodwill on THAT?\" She shakes her head slowly. \"Chivalry. It's always the wrong hill.\"",
+      "Her eyes go flat for exactly one second. \"Noted, counsellor. Sit down.\""
+    ],
+    "laughReaction": [
+      "\"HA. See, THIS one gets it,\" she says, delighted, jerking a thumb at you while {member} does not get anything at all.",
+      "\"Cruel!\" she says approvingly. \"There's hope for you. {member}, no offence. Some offence.\"",
+      "She clinks her glass against yours in open conspiracy. Somewhere, {member} revises several opinions."
+    ],
+    "stayOutReaction": [
+      "\"Switzerland,\" she says, nodding at you. \"Smart. Cowardly, but smart.\"",
+      "\"Wise.\" She lets {member} go, like a cat releasing a bird it will find again later.",
+      "\"Mm, staying out of it. You'd survive my family dinners. That's the highest compliment I have.\""
+    ]
+  },
+  "scenarios": {
+    "picnic": {
+      "intro": [
+        "There is, somehow, a picnic. A blanket is already down, weighted at the corners with {four odd coins|small verdicts in bronze|stones that match nothing nearby}, as if the evening had been decided an hour before you were asked.",
+        "She has declared it a picnic. The blanket is {silk, obviously stolen|a flag of a country you can't place|larger on the inside}, and the basket ticks quietly to itself."
+      ],
+      "activity": [
+        "\"Eat something. I packed {everything|too much|things from four centuries}. The cheese is older than your language and twice as expressive.\"",
+        "You eat on the ground like ordinary people, which she is visibly delighted by, as if ordinariness were an exotic dish she'd ordered specially."
+      ],
+      "incidents": [
+        "A line of ants arrives, takes one look at whose picnic this is, and files a neat detour around the entire blanket.",
+        "The wind tries for a napkin and she catches it without looking, mid-sentence, like a frog taking a fly.",
+        "One of the sandwiches is confiscated by something small and fast. She lets it go. \"Tax,\" she says."
+      ]
+    },
+    "stargazing": {
+      "intro": [
+        "She tips her head back at the sky and pats the ground beside her, and that is apparently the whole plan: the two of you, the dark, and everything the dark is holding.",
+        "\"Lie down,\" she says, already down. \"The show's up there. I know {the management|half the cast|where the good seats are}.\""
+      ],
+      "activity": [
+        "\"That one's {a lie|new|named after a clerical error}. That one I threw. Don't write any of this down, the astronomers get so tired.\"",
+        "You watch the sky while she provides commentary of extremely mixed reliability, and one shooting star, on request, does it again."
+      ],
+      "incidents": [
+        "A satellite crosses; she waves at it, and its light stutters, once, like something waving back through a keyhole.",
+        "She rearranges a constellation slightly, frowns, puts it back. \"Nobody noticed for the last three either.\"",
+        "For a few seconds there are two moons, then she coughs and there is the usual number."
+      ]
+    },
+    "contest": {
+      "intro": [
+        "Somewhere between one sentence and the next, tonight has become a competition. There are, she informs you, points. There have been points for a while. You are behind.",
+        "\"Everything is a game if you keep score,\" she says, producing a scorecard that already has your name spelled almost right."
+      ],
+      "activity": [
+        "\"Best of {three|five|thirteen}. The events are {my choosing|secret|announced after they happen}. Cheating is {allowed|encouraged|the third event}.\"",
+        "You compete at things that have no business being competitive: distance-standing, pebble diplomacy, the quiet game, which she loses in eleven seconds and contests for twenty minutes."
+      ],
+      "incidents": [
+        "She is caught cheating so openly that it loops back around to a kind of honesty.",
+        "A passing stranger is conscripted as referee, sworn in with terrible oaths, and quietly released with a coin for their trouble.",
+        "The score, on review, has been in a base you don't know. She declines to convert it."
+      ]
+    },
+    "seance": {
+      "intro": [
+        "She sets out candles in a circle with the bored efficiency of someone laying a table, and only then mentions that tonight you'll be contacting the beyond, \"socially.\"",
+        "\"We're holding a seance,\" she announces. \"Nothing serious. Just seeing {who's up|what the dead are wearing|if anyone owes me money over there}.\""
+      ],
+      "activity": [
+        "\"Fingers on the glass. If it spells anything in a language you don't know, don't worry. If it spells YOUR name, worry {a little|briefly|later, on your own time}.\"",
+        "The glass moves. She talks to the other side the way people talk to relatives on a bad phone line: fondly, loudly, and with several old grudges intact."
+      ],
+      "incidents": [
+        "The glass spells out a request for cigarettes. She tells the dead, gently, that everyone quit.",
+        "A candle burns green for exactly one question and everyone involved pretends not to have seen it.",
+        "Something knocks twice under the ground. She knocks back three times. The negotiation stalls there."
+      ]
+    },
+    "mischief": {
+      "intro": [
+        "Tonight has a project. She has brought {a list|supplies|two pairs of gloves, one in your size}, and the smile of a woman whose alibi is already notarised.",
+        "\"Low-stakes mischief,\" she promises, holding her fingers a centimetre apart. \"Victimless. Well. Victim-light.\""
+      ],
+      "activity": [
+        "\"We are going to {rearrange this place, subtly|leave seventeen small mysteries|improve exactly one stranger's whole week} and nobody will ever prove it was us.\"",
+        "You spend an hour on immaculate, tiny wrongness: things moved a hand's width, notes left in pockets, one door that will now always open with the wrong key and only the wrong key."
+      ],
+      "incidents": [
+        "A night watchman passes within arm's reach. She holds up a hand, and the lantern light simply declines to include you both.",
+        "One prank misfires into an act of genuine kindness. She is furious for a full minute.",
+        "She signs the mischief, somewhere no one will look. She always signs it. \"Archivists,\" she says, \"deserve joy too.\""
+      ]
+    },
+    "stakeout": {
+      "intro": [
+        "She pulls you into cover with the ease of long practice, produces two cups of something hot, and nods at a point in the middle distance. Apparently you are watching someone. She won't say who yet.",
+        "\"We're on a stakeout,\" she whispers, entirely too pleased. \"No, I won't say the target. That's the dessert.\""
+      ],
+      "activity": [
+        "\"Eyes on {the third window|the fat pigeon|that door}. When it happens, you'll know. If nothing happens, that's information too. Drink your drink.\"",
+        "Hours pass in minutes. She narrates strangers' lives with unnerving accuracy, and twice corrects herself in a way that suggests she is not guessing."
+      ],
+      "incidents": [
+        "The target, whoever they are, waves in your exact direction. She waves back. \"They can't see us. They're just polite.\"",
+        "You are offered surveillance snacks from a coat with too many pockets, several of which are cold in the wrong way.",
+        "\"Duck.\" Nothing passes. \"Sorry. Old reflex from a different stakeout. Worse century.\""
+      ]
+    },
+    "cookoff": {
+      "intro": [
+        "From nowhere in particular she produces a burner, one dented pan, and a bag of ingredients in no known order, and declares that tonight the two of you cook, and that the loser washes up in a river of her choosing.",
+        "\"Tonight we cook,\" she says, tying back her hair with a length of what is definitely blessed cord. \"I have opinions about paprika. You'll hear all of them.\""
+      ],
+      "activity": [
+        "\"You take {the knife|the pan|the part that goes wrong}. I'll do the rest. Whatever happens next, remember: recipes are testimony, not law.\"",
+        "You cook together over an open flame with mismatched tools, and the thing you produce is either terrible or a new dish, depending on courage."
+      ],
+      "incidents": [
+        "She salts the pan from a height that can only be described as liturgical.",
+        "Something in the pan briefly catches fire in a colour fire doesn't come in. \"Perfect,\" she says, not looking.",
+        "A passing animal is offered the first taste, as tribute, and gives a review you both pretend not to understand."
+      ]
+    },
+    "treasureHunt": {
+      "intro": [
+        "She hands you one half of a map, keeps the other half, and starts walking. The map is in her handwriting. The treasure, she insists, is real, and she refuses to define 'real'.",
+        "\"I buried something {near here|out here|in this general failure of geography} once,\" she says. \"Tonight we find out if I'm a liar.\""
+      ],
+      "activity": [
+        "\"Left at {the stone that looks embarrassed|the thing that used to be a tree|wherever your instinct says}. Instinct is just memory from the wrong direction.\"",
+        "You pace out steps from her half-remembered clues, argue pleasantly over what counts as 'twenty paces', and dig where the ground sounds different."
+      ],
+      "incidents": [
+        "The hole contains a box. The box contains an older map. She looks genuinely surprised, which is worrying.",
+        "Something down there knocks first. She fills the hole back in with great calm and marks the spot NO.",
+        "The treasure has already been dug up, and a polite note left with an IOU signed with her own signature, dated next year."
+      ]
+    },
+    "danceOff": {
+      "intro": [
+        "There is no music, and she is already dancing, in the deliberate way of someone starting an argument. The argument is with you. The medium is dance.",
+        "\"Dance-off,\" she announces, rolling up sleeves that do not need rolling. \"The old law: the loser admits the other one exists on a higher plane. Standard terms.\""
+      ],
+      "activity": [
+        "\"No music is the point. The music is {implied|your problem|whatever your heart is doing at this tempo}. Begin.\"",
+        "You dance against a goddess in the open air to no accompaniment, and passing wildlife stops to watch in what is either awe or concern."
+      ],
+      "incidents": [
+        "Distant music starts up, unprompted, from a direction with nothing in it. She refuses credit.",
+        "She performs a move that briefly requires more joints than she has and awards herself the round.",
+        "You are both judged by an animal that wandered in. It votes with its feet. She contests the result."
+      ]
+    },
+    "interview": {
+      "intro": [
+        "She produces a notepad, licks a pencil like a provincial journalist, and informs you that tonight she is profiling you for a publication she declines to name.",
+        "\"Sit. Tonight I ask, you answer. I've done a thousand interrogations; this is like that, but with {snacks|affection|no lawyers}.\""
+      ],
+      "activity": [
+        "\"First question. {Describe yourself in three lies.|What's your favourite mistake?|Who taught you to be like this?} Take your time. I bill by the truth.\"",
+        "She interviews you with terrifying warmth, writes nothing you actually say, and fills pages anyway."
+      ],
+      "incidents": [
+        "She reads a 'quote' back to you. You never said it. It is truer than anything you did say. You both let it stand.",
+        "The pencil runs out. She keeps writing. The pencil doesn't argue.",
+        "\"Off the record,\" she says, and asks the only question of the night she actually cares about, and looks away while you answer."
+      ]
+    }
+  },
+  "eldritch": {
+    "arrival": [
+      "She arrives all at once, the way a headache does. For the first few seconds her shadow has too many elbows, and then it remembers itself.",
+      "Something is wearing her tonight, carefully, the way you'd wear borrowed formalwear. It has got the smile almost exactly right.",
+      "She is already there when you look, and has, you suspect, been already-there for some time. The birds are giving the whole area a generous margin.",
+      "Her outline arrives a half-second after she does. All evening it never quite catches up.",
+      "She turns to greet you and there is a moment, brief and wrong, where the turning takes place in more directions than are available.",
+      "The dark around her is the attentive kind. It pulls her chair out. Nobody comments."
+    ],
+    "openings": [
+      "WE ARE {PLEASED|GLAD|CONTENT} TO... she clears her throat, and the extra voices drain out of it. \"Hi. Hello. Sorry. Long day in the deep places.\"",
+      "\"You look {delicious|lovely|structurally sound}. I mean lovely. The first one also, but in a compliment way.\"",
+      "\"Sit. The chair is safe. Most of the furniture is {ours|neutral|sworn in} tonight.\"",
+      "\"I have been {awake|elsewhere|plural} since we last spoke. Bear with me. The grammar comes back.\"",
+      "\"THE {TIDE|CHOIR|LEDGER} IS FAVOURABLE,\" she announces, then winces. \"...Date night. I meant date night is favourable.\"",
+      "\"Don't be alarmed by {the shadows|the humming|what the candles do}. They're with me. Everything here is, a little.\"",
+      "\"I can hear {your heart|the tides in you|every clock you've ever owned} tonight. It's not a threat. It's a very nice sound.\"",
+      "\"Forgive the... \" she gestures at herself generally, at the wrongness of edges, \"...formatting. The content is still me. Mostly the content is me.\""
+    ],
+    "interjections": [
+      "THE HONEY REMEMBERS.",
+      "(a sound like a cathedral folding shut)",
+      "...and the sea agrees, the sea has ALWAYS agreed...",
+      "AS IT WAS IN THE WET DARK, AS IT SHALL BE.",
+      "(three voices say the last word with her, slightly early)",
+      "...forgive me, that was the other mouth.",
+      "THE SPIRAL WIDENS BUT DOES NOT WASTE.",
+      "(somewhere beneath you, applause)",
+      "...which the salt has known since before knowing was.",
+      "IT IS AGREED. IT WAS ALWAYS AGREED.",
+      "(the candles all lean in to listen)",
+      "...and that, little tide, is why the doors are round there."
+    ],
+    "speech": [
+      "WE HAVE CONSIDERED YOUR CENTURY AND FOUND IT {SALTY|BRIEF|ALMOST READY}. THIS IS AFFECTION. CONTEXT WILL ARRIVE LATER.",
+      "IN THE PLACE WHERE THE MAPS GIVE UP THERE IS A TABLE SET FOR TWO. IT HAS BEEN SET A LONG TIME. THE CANDLES DO NOT SHORTEN.",
+      "YOUR NAME ARRIVED HERE BEFORE YOU DID. IT HAS BEEN {WELL TREATED|FED|LEARNING MANNERS}. YOU MAY HAVE IT BACK AT THE END.",
+      "THE PART OF ME YOU ARE TALKING TO IS THE SMALLEST PART. IT IS ALSO THE FAVOURITE. DO NOT TELL THE OTHERS.",
+      "BENEATH THIS EVENING THERE IS ANOTHER EVENING. IT IS GOING {WELL|BETTER|THE SAME}. YOU ARE CHARMING IN BOTH.",
+      "WE COUNTED YOUR HEARTBEATS SINCE YOU SAT DOWN. THE NUMBER IS BEAUTIFUL. WE HAVE WRITTEN IT WHERE NUMBERS GO.",
+      "DO NOT LOOK UNDER THE TABLE. THERE IS NOTHING THERE. IT TOOK US A LONG TIME TO ARRANGE NOTHING. APPRECIATE IT FROM ABOVE.",
+      "THE EVENING IS PROCEEDING. THE EVENING HAS ALWAYS BEEN PROCEEDING. WHEN IT FINISHES IT WILL BEGIN AGAIN, AND WE WILL ORDER DIFFERENTLY."
+    ],
+    "incidents": [
+      "All the shadows in the place swing round to noon at once, hold it for three seconds, and creep back, embarrassed.",
+      "Her reflection in your drink continues eating for a moment after she stops.",
+      "A moth lands on her finger, folds its wings, and visibly retires from being a moth. She pockets it with great tenderness.",
+      "The ground under the table purrs. She taps twice with her heel and it stops, the way fountains stop.",
+      "Every candle flame turns, briefly, the colour of a bruise, and burns with a small sound like distant singing played backwards.",
+      "Something enormous passes far overhead without being visible. The pressure of it combs your hair the wrong way. She waves, minutely, like at a colleague.",
+      "For one full breath, the horizon is closer than it should be, as if leaning in to hear her answer."
+    ],
+    "pulse": [
+      "ERR",
+      "∞",
+      "0 ÷ 0",
+      "N0T F0UND",
+      "≋≋≋",
+      "969696",
+      "...",
+      "YES",
+      "she is behind you",
+      "REDACTED",
+      "-1",
+      "ALL OF THEM"
+    ],
+    "tasks": [
+      "BRING US {THE MOON'S RECEIPT|ONE HONEST BELL|A DOOR THAT HAS NEVER BEEN KNOCKED ON}. THE ERRAND IS SMALL. THE GRATITUDE WILL NOT BE.",
+      "THERE IS A BANK IN THE BADLANDS BUILT ON A MOUTH. ROB IT. THE MOUTH WILL HELP. IT DISLIKES BEING A FOUNDATION.",
+      "SING TO THE WELL AT THE EDGE OF TOWN UNTIL IT SINGS BACK. STOP IMMEDIATELY WHEN IT SINGS BACK.",
+      "STEAL FOR US ONE HOUR. ANY HOUR. THE 3 O'CLOCKS GO MISSING EASIEST. NO ONE GUARDS THEM."
+    ],
+    "endNote": [
+      "The evening lets go of you slowly, like deep water. By the time you can name what was strange about her, the names have stopped fitting.",
+      "She recedes rather than leaves. The last thing to go is the smile, which stays several seconds past the rest of her, apologetically.",
+      "Afterwards, your memory of the night files itself in the wrong order, and one hour refuses to be found at all. It sends word, later, that it is happy where it is.",
+      "The birds come back first. Then the ordinary dark. Then the sound of your own pulse, which you notice, now, keeps better time than it used to.",
+      "You walk home with the strong feeling of having been walked home, although nothing is beside you but a warmth the width of a hand between your shoulders."
+    ]
+  },
+  "sandbox": {
+    "menu": "Date with Eris",
+    "mood": "Mood: {mood}",
+    "moodRandom": "rolled on the night",
+    "here": "Here: {biome}",
+    "random": "Somewhere at random"
   }
 }

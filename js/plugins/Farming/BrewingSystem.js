@@ -126,6 +126,8 @@
 
         create() {
             super.create();
+            // Name the skill this menu runs on while it is open.
+            if (window.SpecBadge) window.SpecBadge.show('Brewing');  // i18n-ignore  Specialization.json id
             if (this._helpWindow) this._helpWindow.hide();
 
             this._mapId        = Scene_Brewery._pendingMapId   || $gameMap.mapId();

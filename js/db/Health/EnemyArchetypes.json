@@ -4,6 +4,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 70,
+    "pregnancyDuration": 270,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -678,6 +679,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 70,
+    "pregnancyDuration": 270,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -1352,6 +1354,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 20,
+    "pregnancyDuration": 63,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -1581,6 +1584,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 2,
+    "pregnancyDuration": 21,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -1819,6 +1823,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 8,
+    "pregnancyDuration": 21,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -1998,6 +2003,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 800,
+    "pregnancyDuration": 540,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -2238,6 +2244,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 100,
+    "pregnancyDuration": 180,
     "parts": {
       "HEAD": {
         "hpPercent": 25,
@@ -2378,6 +2385,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 200,
+    "pregnancyDuration": 90,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -2546,6 +2554,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 8,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -2675,6 +2684,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 50,
+    "pregnancyDuration": 200,
     "parts": {
       "SKULL": {
         "hpPercent": 15,
@@ -2828,6 +2838,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 5,
+    "pregnancyDuration": 35,
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -3144,6 +3155,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 2,
+    "pregnancyDuration": 30,
     "parts": {
       "HEAD": {
         "hpPercent": 12,
@@ -3425,6 +3437,7 @@
     "defaultBattler": "",
     "reproduction": 3,
     "lifeSpan": 30,
+    "pregnancyDuration": 7,
     "parts": {
       "FLOWER": {
         "hpPercent": 20,
@@ -3550,6 +3563,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 1000,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -3678,6 +3692,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 10,
+    "pregnancyDuration": 14,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -3836,6 +3851,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 2,
+    "pregnancyDuration": 40,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -3973,6 +3989,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 75,
+    "pregnancyDuration": 30,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4125,6 +4142,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 12,
+    "pregnancyDuration": 21,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4282,6 +4300,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 35,
+    "pregnancyDuration": 70,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -4451,6 +4470,7 @@
     "defaultBattler": "",
     "reproduction": 3,
     "lifeSpan": 10,
+    "pregnancyDuration": 5,
     "parts": {
       "CAP": {
         "hpPercent": 30,
@@ -4549,6 +4569,7 @@
     "defaultBattler": "",
     "reproduction": 3,
     "lifeSpan": 200,
+    "pregnancyDuration": 120,
     "parts": {
       "CROWN": {
         "hpPercent": 25,
@@ -4668,6 +4689,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 1,
+    "pregnancyDuration": 1,
     "parts": {
       "NUCLEUS": {
         "hpPercent": 30,
@@ -4764,6 +4786,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 60,
+    "pregnancyDuration": 300,
     "parts": {
       "HEAD_LEFT": {
         "hpPercent": 10,
@@ -4924,6 +4947,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 20,
+    "pregnancyDuration": 60,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -5043,6 +5067,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 1000,
+    "pregnancyDuration": 90,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -5182,6 +5207,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 700,
+    "pregnancyDuration": 333,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -5343,6 +5369,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 1000,
+    "pregnancyDuration": 100,
     "parts": {
       "FACE": {
         "hpPercent": 25,
@@ -5459,6 +5486,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 15,
+    "pregnancyDuration": 30,
     "parts": {
       "SENSOR_ARRAY": {
         "hpPercent": 25,
@@ -5555,6 +5583,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 1000,
+    "pregnancyDuration": 1,
     "parts": {
       "ABYSSAL_EYE": {
         "hpPercent": 20,
@@ -5666,6 +5695,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 20,
+    "pregnancyDuration": 1,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -5804,6 +5834,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 1000,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -5930,6 +5961,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 10,
+    "pregnancyDuration": 21,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -6044,6 +6076,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 75,
+    "pregnancyDuration": 60,
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -6164,6 +6197,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 50,
+    "pregnancyDuration": 300,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -6321,6 +6355,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 40,
+    "pregnancyDuration": 60,
     "parts": {
       "BRAIN": {
         "hpPercent": 5,
@@ -7006,6 +7041,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 6,
+    "pregnancyDuration": 30,
     "parts": {
       "CLAW_LEFT": {
         "hpPercent": 10,
@@ -7162,6 +7198,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 50,
+    "pregnancyDuration": 45,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -7283,6 +7320,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 100,
+    "pregnancyDuration": 90,
     "parts": {
       "SHELL": {
         "hpPercent": 40,
@@ -7439,6 +7477,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 75,
+    "pregnancyDuration": 240,
     "parts": {
       "BRAIN": {
         "hpPercent": 5,
@@ -7738,6 +7777,7 @@
     "defaultBattler": "",
     "reproduction": 4,
     "lifeSpan": 75,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 15,
@@ -7857,6 +7897,7 @@
     "defaultBattler": "",
     "reproduction": 2,
     "lifeSpan": 1000,
+    "pregnancyDuration": 100,
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -8030,6 +8071,7 @@
     "defaultBattler": "",
     "reproduction": 1,
     "lifeSpan": 70,
+    "pregnancyDuration": 330,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8169,6 +8211,7 @@
     "defaultBattler": "",
     "reproduction": 0,
     "lifeSpan": 10,
+    "pregnancyDuration": 30,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -8302,6 +8345,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 20,
     "parts": {
       "HEAD": {
         "hpPercent": 10,
@@ -8403,6 +8447,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 365,
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -8493,6 +8538,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 120,
     "parts": {
       "HEAD_ONE": {
         "hpPercent": 15,
@@ -8608,6 +8654,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 300,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8774,6 +8821,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 50,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -8891,6 +8939,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 31,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -9062,6 +9111,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 270,
     "parts": {
       "HELMET": {
         "hpPercent": 15,
@@ -9209,6 +9259,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 340,
     "parts": {
       "HEAD": {
         "hpPercent": 12,
@@ -9402,6 +9453,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 14,
     "parts": {
       "MANDIBLES": {
         "hpPercent": 20,
@@ -9516,6 +9568,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 45,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -9630,6 +9683,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 60,
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -9743,6 +9797,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 65,
     "parts": {
       "EYES": {
         "hpPercent": 20,
@@ -9839,6 +9894,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 600,
     "parts": {
       "EYE": {
         "hpPercent": 15,
@@ -9958,6 +10014,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 28,
     "parts": {
       "SHELL": {
         "hpPercent": 40,
@@ -10093,6 +10150,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10208,6 +10266,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10338,6 +10397,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 20,
@@ -10476,6 +10536,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10571,6 +10632,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10661,6 +10723,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 25,
@@ -10793,6 +10856,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 4,
+    "pregnancyDuration": 1,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -10926,6 +10990,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 3,
+    "pregnancyDuration": 60,
     "parts": {
       "CORE": {
         "hpPercent": 30,
@@ -11047,6 +11112,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 365,
     "parts": {
       "WHEEL_ONE": {
         "hpPercent": 20,
@@ -11165,6 +11231,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 365,
     "parts": {
       "LEFT_WING": {
         "hpPercent": 12.5,
@@ -11324,6 +11391,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 720,
     "parts": {
       "HEAD": {
         "hpPercent": 15,
@@ -11462,6 +11530,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 300,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -11604,6 +11673,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 645,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -11778,6 +11848,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 60,
     "parts": {
       "EYE": {
         "hpPercent": 15,
@@ -11878,6 +11949,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 2,
+    "pregnancyDuration": 90,
     "parts": {
       "BODY": {
         "hpPercent": 40,
@@ -12071,6 +12143,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 120,
     "parts": {
       "SPIKES": {
         "hpPercent": 25,
@@ -12186,6 +12259,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 340,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12341,6 +12415,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 400,
     "parts": {
       "HORN": {
         "hpPercent": 20,
@@ -12492,6 +12567,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 66,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12648,6 +12724,7 @@
     ],
     "defaultBattler": "",
     "reproduction": 1,
+    "pregnancyDuration": 333,
     "parts": {
       "HEAD": {
         "hpPercent": 20,
@@ -12777,6 +12854,7 @@
     "skills": [],
     "defaultBattler": "",
     "reproduction": 0,
+    "pregnancyDuration": 30,
     "parts": {
       "TRASH_PILE": {
         "hpPercent": 50,

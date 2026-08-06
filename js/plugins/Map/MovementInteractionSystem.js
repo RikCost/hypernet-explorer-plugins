@@ -51,6 +51,8 @@
  * - Disables event interaction while climbing (prevents accidental triggers)
  * - Blocks swim/fish/climb options on region ID 10 tiles
  * - Water reflections for events north of region 99 tiles
+ * - An event named "Mirror" shows an upright reflection of whoever stands on
+ *   the tile in front of it (the tile in the mirror event's facing direction)
  * - Layered bridges on region ID 12 (walk on top from region 11/5, pass under
  *   from anywhere else)
  *
@@ -259,7 +261,11 @@
     kickableNames: [
       "barrel", "crate", "box", "bucket", "can", "bottle", "pot", "jar",
       "pebble", "rock", "stone", "ball", "junk", "trash", "debris"
-    ]
+    ],
+
+    // Event name (lowercased) that reflects whoever stands in front of it.
+    mirrorEventName: "mirror",
+    mirrorOpacityRate: 0.8
   };
 
   // --- State ---
@@ -268,6 +274,8 @@
   let lastClimbSoundFrame = 0;
   let reflectionSprites = new Map();
   let reflectionContainer = null;
+  let mirrorSprites = new Map();
+  let mirrorContainer = null;
   let originalCanMoveFunction = null;
 
   // --- Helper Functions ---
@@ -453,15 +461,14 @@
       }
 
       // Issue #153: swimming washes the swimmer clean. Cleanliness is the
-      // hygiene need (TimeDateSystem). If the player was dirty (hygiene below
-      // the threshold) before getting in the water, leave a green grime puddle
-      // around them as they rinse off.
+      // hygiene need (TimeDateSystem), and it comes off a stroke at a time now
+      // rather than all at once on entry, for the whole party (see
+      // Game_Player.increaseSteps below). Getting in dirty still leaves a green
+      // grime puddle around them as the first of it rinses off.
       if (character === $gamePlayer) {
         const actor = $gameParty && $gameParty.leader ? $gameParty.leader() : null;
-        if (actor && typeof actor.hygiene === "function") {
-          const wasDirty = actor.hygienePercent() < 50;
-          if (typeof actor.addHygiene === "function") actor.addHygiene(100);
-          if (wasDirty) MovementSystem.spawnGrimePuddle(character);
+        if (actor && typeof actor.hygienePercent === "function" && actor.hygienePercent() < 50) {
+          MovementSystem.spawnGrimePuddle(character);
         }
       }
     },
@@ -1151,6 +1158,195 @@
     }
   };
 
+  // --- Mirror Reflection System ---
+  // An event named "Mirror" reflects whoever stands on the tile in front of it
+  // (the tile in the mirror's own facing direction). The reflection is the same
+  // kind of sprite the water uses, but upright: only the facing is flipped
+  // across the mirror's plane, so a character looking into it shows their face.
+  const MirrorSystem = {
+    _mirrors: null,
+    _mapId: -1,
+    _eventCount: -1,
+
+    invalidate() {
+      this._mirrors = null;
+      this._mapId = -1;
+      this._eventCount = -1;
+    },
+
+    initialize() {
+      if (!SceneManager._scene || !SceneManager._scene._spriteset) return;
+      const spriteset = SceneManager._scene._spriteset;
+
+      if (!mirrorContainer) {
+        mirrorContainer = new PIXI.Container();
+        mirrorContainer.z = 0;
+        if (spriteset._tilemap) {
+          spriteset._baseSprite.addChild(mirrorContainer);
+        }
+      }
+    },
+
+    // The mirror list is cached per map and recomputed when the event table
+    // changes (dynamically spawned mirrors on the procedural maps).
+    mirrors() {
+      if (!$gameMap) return [];
+      const count = $gameMap._events ? $gameMap._events.length : 0;
+      if (!this._mirrors || this._mapId !== $gameMap.mapId() || this._eventCount !== count) {
+        const mirrors = [];
+        const events = $gameMap.events ? $gameMap.events() : [];
+        for (const event of events) {
+          if (!event) continue;
+          const data = event.event ? event.event() : null;
+          if (!data || !data.name) continue;
+          if (String(data.name).trim().toLowerCase() !== Config.mirrorEventName) continue;
+          mirrors.push(event);
+        }
+        this._mirrors = mirrors;
+        this._mapId = $gameMap.mapId();
+        this._eventCount = count;
+      }
+      return this._mirrors;
+    },
+
+    // Whoever stands on the given tile: the player first, then a follower, then
+    // any other event with a graphic (the mirror itself never reflects itself).
+    occupantAt(x, y, mirror) {
+      if ($gamePlayer && $gamePlayer.x === x && $gamePlayer.y === y && $gamePlayer._characterName) {
+        return $gamePlayer;
+      }
+      if ($gamePlayer && $gamePlayer.followers && $gamePlayer.followers()._data) {
+        for (const follower of $gamePlayer.followers()._data) {
+          if (!follower || !follower._characterName) continue;
+          if (follower.isVisible && !follower.isVisible()) continue;
+          if (follower.x === x && follower.y === y) return follower;
+        }
+      }
+      for (const event of $gameMap.eventsXy(x, y)) {
+        if (!event || event === mirror || event._erased) continue;
+        if (event._characterName) return event;
+      }
+      return null;
+    },
+
+    // Direction seen in the glass: flipped along the mirror's own axis, so a
+    // wall mirror facing south turns an upward-facing character downward and
+    // leaves left/right alone.
+    reflectDirection(direction, mirrorDirection) {
+      const vertical = mirrorDirection === 2 || mirrorDirection === 8;
+      if (vertical) {
+        if (direction === 2) return 8;
+        if (direction === 8) return 2;
+      } else {
+        if (direction === 4) return 6;
+        if (direction === 6) return 4;
+      }
+      return direction;
+    },
+
+    createMirrorSprite(character, mirrorDirection) {
+      if (!character._characterName) return null;
+      const sprite = new Sprite_Character(character);
+      sprite._mirrorDirection = mirrorDirection;
+      sprite.characterPatternY = function () {
+        const reflected = MirrorSystem.reflectDirection(
+          this._character.direction(), this._mirrorDirection
+        );
+        return (reflected - 2) / 2;
+      };
+      // A faint cool cast so the reflection reads as glass rather than a twin.
+      sprite.setBlendColor([20, 25, 45, 30]);
+      return sprite;
+    },
+
+    updateMirrorSprite(sprite, character, mirror, mirrorDirection, frontX, frontY) {
+      sprite._mirrorDirection = mirrorDirection;
+      sprite.update();
+
+      const tw = $gameMap.tileWidth();
+      const th = $gameMap.tileHeight();
+      const anchorX = $gameMap.adjustX(frontX) * tw + tw / 2;
+      const anchorY = ($gameMap.adjustY(frontY) + 1) * th;
+      // Sub-tile offsets carry into the glass: sideways motion slides along the
+      // mirror, motion toward it moves the reflection the opposite way.
+      const dx = character.screenX() - anchorX;
+      const dy = character.screenY() - anchorY;
+      const vertical = mirrorDirection === 2 || mirrorDirection === 8;
+
+      sprite.x = mirror.screenX() + (vertical ? dx : -dx);
+      sprite.y = mirror.screenY() + (vertical ? -dy : dy);
+      // Sprite_Character.update resets opacity from the source character, so the
+      // reflection is re-dimmed every frame.
+      sprite.opacity = Math.floor(character.opacity() * Config.mirrorOpacityRate);
+      // Never force a hidden source (a stowed follower) back into view.
+      if (character.isVisible && !character.isVisible()) sprite.visible = false;
+    },
+
+    removeSprite(mirror) {
+      const entry = mirrorSprites.get(mirror);
+      if (!entry) return;
+      if (mirrorContainer) mirrorContainer.removeChild(entry.sprite);
+      mirrorSprites.delete(mirror);
+    },
+
+    update() {
+      const mirrors = this.mirrors();
+      if (!mirrors.length) {
+        if (mirrorSprites.size > 0) {
+          for (const mirror of Array.from(mirrorSprites.keys())) this.removeSprite(mirror);
+        }
+        return;
+      }
+
+      if (!mirrorContainer) this.initialize();
+      if (!mirrorContainer || !SceneManager._scene || !SceneManager._scene._spriteset) return;
+
+      const active = new Set();
+
+      for (const mirror of mirrors) {
+        if (!mirror || mirror._erased) continue;
+        if (mirror.isNearTheScreen && !mirror.isNearTheScreen()) continue;
+
+        const direction = mirror.direction();
+        const frontX = $gameMap.roundXWithDirection(mirror.x, direction);
+        const frontY = $gameMap.roundYWithDirection(mirror.y, direction);
+        const character = this.occupantAt(frontX, frontY, mirror);
+        if (!character) continue;
+
+        let entry = mirrorSprites.get(mirror);
+        if (!entry || entry.character !== character) {
+          if (entry) this.removeSprite(mirror);
+          const sprite = this.createMirrorSprite(character, direction);
+          if (!sprite) continue;
+          entry = { character, sprite };
+          mirrorSprites.set(mirror, entry);
+          mirrorContainer.addChild(sprite);
+        }
+
+        active.add(mirror);
+        this.updateMirrorSprite(entry.sprite, character, mirror, direction, frontX, frontY);
+      }
+
+      for (const mirror of Array.from(mirrorSprites.keys())) {
+        if (!active.has(mirror)) this.removeSprite(mirror);
+      }
+    },
+
+    cleanup() {
+      if (mirrorContainer) {
+        for (const [, entry] of mirrorSprites) {
+          mirrorContainer.removeChild(entry.sprite);
+        }
+        if (mirrorContainer.parent) {
+          mirrorContainer.parent.removeChild(mirrorContainer);
+        }
+        mirrorContainer = null;
+      }
+      mirrorSprites.clear();
+      this.invalidate();
+    }
+  };
+
   // --- Overrides ---
 
   // Game_Player
@@ -1415,6 +1611,21 @@
     }
   };
 
+  // Washing off, one stroke at a time. Every step taken in the water gives the
+  // WHOLE party a point of hygiene (TimeDateSystem's meter is 0-100, so a point
+  // is a percent), companions included: they are swimming alongside the leader,
+  // not watching from the bank. PartyNeeds.addNeedToAll writes each member's
+  // meter where it actually lives, the actor for the player and the society
+  // profile for a recruited companion, and clamps at full.
+  const SWIM_HYGIENE_PER_STEP = 1;
+  const _Game_Player_increaseSteps = Game_Player.prototype.increaseSteps;
+  Game_Player.prototype.increaseSteps = function () {
+    _Game_Player_increaseSteps.call(this);
+    if (this._isSwimming && window.PartyNeeds?.addNeedToAll) {
+      window.PartyNeeds.addNeedToAll("hygiene", SWIM_HYGIENE_PER_STEP);
+    }
+  };
+
   const _Game_Player_gatherFollowers = Game_Player.prototype.gatherFollowers;
   Game_Player.prototype.gatherFollowers = function () {
     _Game_Player_gatherFollowers.call(this);
@@ -1446,6 +1657,7 @@
     if (!SceneManager.isSceneChanging()) {
       this.updateSwimFishInput();
       ReflectionSystem.update();
+      MirrorSystem.update();
     }
   };
 
@@ -2327,6 +2539,7 @@
   Spriteset_Map.prototype.createCharacters = function () {
     _Spriteset_Map_createCharacters.call(this);
     ReflectionSystem.initialize();
+    MirrorSystem.initialize();
   };
 
   // Compute per-map fast-path flags once on setup: whether the map contains any
@@ -2335,6 +2548,7 @@
   Game_Map.prototype.setup = function (mapId) {
     _Game_Map_setup_MIS.call(this, mapId);
     ReflectionSystem.invalidateWaterScan();
+    MirrorSystem.invalidate();
     this._misScanSpecialPassability();
   };
 
@@ -2362,6 +2576,7 @@
   const _Scene_Map_terminate = Scene_Map.prototype.terminate;
   Scene_Map.prototype.terminate = function () {
     ReflectionSystem.cleanup();
+    MirrorSystem.cleanup();
     _Scene_Map_terminate.call(this);
   };
 
@@ -2370,6 +2585,7 @@
     const wasClimbing = this._isClimbing;
 
     ReflectionSystem.cleanup();
+    MirrorSystem.cleanup();
     _Game_Player_performTransfer.call(this);
 
     // Queue swim/climb rearm to run on the next player update after the transfer

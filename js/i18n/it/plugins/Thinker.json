@@ -24,6 +24,12 @@
   "noCategories": "Nessuna categoria...",
   "noRecipes": "Nessuna formula...",
   "lockedRecipeHint": "Seleziona i materiali e completa la trasmutazione per catalogare questa formula.",
+  "tierLabel": "Lavoro di livello {tier} - Fabbricazione: {level}",
+  "botchRisk": "{pct}% di rischio di rovinarlo",
+  "needFabrication": "Troppo complesso per queste mani. Richiede Fabbricazione: {level}",
+  "botchTitle": "Rovinato",
+  "botchNote": "Metà dei materiali è sprecata, ma l'errore ti ha insegnato qualcosa.",
+  "botched": "{item} si è disfatto sul banco.",
   "category": {
     "Arctic": "Artico",
     "Artisan": "Artigianato",

@@ -78,10 +78,22 @@
   "belowNormalHypogonadism": "Below normal (Hypogonadism)",
   "noReproductiveSystemAvailableSetVariable87Fi": "No reproductive system available. Set Variable 87 first.",
   "alreadyInReproductiveProcess": "Already in reproductive process!",
-  "pregnancyInitiatedDueIn270Days": "Pregnancy initiated! Due in 270 days.",
-  "eggDevelopmentInitiated14EggsWillBeReadyIn27": "Egg development initiated! 1-4 eggs will be ready in 270 days.",
-  "seedGenerationInitiatedSeedWillBeReadyIn7Day": "Seed generation initiated! Seed will be ready in 7 days.",
-  "mitosisInitiatedCellDivisionWillCompleteIn1D": "Mitosis initiated! Cell division will complete in 1 day.",
+  "pregnancyInitiatedDue": {
+    "one": "Pregnancy initiated! Due in {count} day.",
+    "other": "Pregnancy initiated! Due in {count} days."
+  },
+  "eggDevelopmentInitiated": {
+    "one": "Egg development initiated! 1-4 eggs will be ready in {count} day.",
+    "other": "Egg development initiated! 1-4 eggs will be ready in {count} days."
+  },
+  "seedGenerationInitiated": {
+    "one": "Seed generation initiated! Seed will be ready in {count} day.",
+    "other": "Seed generation initiated! Seed will be ready in {count} days."
+  },
+  "mitosisInitiated": {
+    "one": "Mitosis initiated! Cell division will complete in {count} day.",
+    "other": "Mitosis initiated! Cell division will complete in {count} days."
+  },
   "notCurrentlyInReproductiveProcess": "Not currently in reproductive process.",
   "pregnancyAcceleratedToCompletionBirthIsImmin": "Pregnancy accelerated to completion! Birth is imminent.",
   "eggDevelopmentAcceleratedToCompletionEggsRea": "Egg development accelerated to completion! Eggs ready to lay.",
@@ -202,6 +214,7 @@
   "weeks": "Weeks",
   "currentTrimester": "Current Trimester",
   "trimester": "Trimester",
+  "gestationalTerm": "Gestational Term",
   "gestationalProgress": "Gestational Progress",
   "fetalBiometricRegister": "Fetal Biometric Register",
   "developmentalStage": "Developmental Stage",

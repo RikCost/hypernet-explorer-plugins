@@ -33,6 +33,9 @@
     "aggravatedassault": {
       "name": "Aggravated Assault"
     },
+    "abandonchild": {
+      "name": "Child Abandonment"
+    },
     "murder": {
       "name": "Murder"
     },
@@ -62,6 +65,9 @@
     },
     "disorderlyconduct": {
       "name": "Disorderly Conduct"
+    },
+    "harassment": {
+      "name": "Harassment"
     },
     "trespassing": {
       "name": "Trespassing"
@@ -152,6 +158,9 @@
     },
     "animalcruelty": {
       "name": "Animal Cruelty"
+    },
+    "abandonpet": {
+      "name": "Pet Abandonment"
     },
     "environmentalcrime": {
       "name": "Environmental Crime"

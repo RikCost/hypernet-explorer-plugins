@@ -176,6 +176,62 @@
   // Items always stocked in the tavern, regardless of the daily random selection
   const TAVERN_FIXED_IDS = [499, 179, 573, 22, 39, 24, 438, 535, 430, 439, 460, 518, 468, 529, 188, 182, 183, 184];
 
+  // Staples a shop of a given kind is never out of: a pharmacy always has
+  // painkillers, a weaponsmith always has a plain knife on the rack. They are
+  // listed before the daily random draw and kept out of its pool, so a shelf slot
+  // is never spent on something the shop is guaranteed to carry anyway. Ids read
+  // from $dataItems unless the shop trades in another database (see FIXED_SOURCES).
+  // The themed (ID-based) shops further down declare their own `fixed` list.
+  const CATEGORY_FIXED_IDS = {
+    shop: [115, 179],              // candle, batteries
+    tavern: TAVERN_FIXED_IDS,
+    library: [262, 128],           // blank spellbook, travel journal
+    pharmacy: [1, 3, 19],          // sanitizer, paracetamol, medical spray
+    magic: [648, 651],             // health potion, mana potion
+    luxury: [543, 535],            // gourmet chocolate, aged wine
+    adventurer: [648, 125, 121],   // health potion, bedroll, lantern
+    tools: [814, 136],             // multi-tool, flashlight
+    alchemistry: [884, 898],       // distilled water, ethanol
+    organTrader: [1014, 1017],     // heart, liver
+    weapon: [11, 46],              // knife, cheap sword
+    armor: [53, 48, 762]           // homespun tunic, iron helm, patrol shield
+  };
+
+  // Shops whose stock is not drawn from $dataItems.
+  const FIXED_SOURCES = {
+    weapon: () => $dataWeapons,
+    armor: () => $dataArmors
+  };
+
+  function fixedDatabaseFor(shopKey) {
+    return FIXED_SOURCES[shopKey] ? FIXED_SOURCES[shopKey]() : $dataItems;
+  }
+
+  // The always-stocked entries of a shop kind, as database objects.
+  function fixedItemsFor(shopKey) {
+    const db = fixedDatabaseFor(shopKey);
+    return (CATEGORY_FIXED_IDS[shopKey] || [])
+      .map(id => db[id])
+      .filter(entry => entry && entry.name);
+  }
+
+  // Drop the staples from a random pool so they cannot take a second slot. The
+  // comparison is by object, not id: a mixed pool holds items, weapons and armors
+  // that share id numbers across their databases.
+  function withoutFixed(shopKey, pool) {
+    const ids = CATEGORY_FIXED_IDS[shopKey];
+    if (!ids || !ids.length) return pool;
+    const db = fixedDatabaseFor(shopKey);
+    const fixedSet = new Set(ids);
+    return pool.filter(entry => !(entry && fixedSet.has(entry.id) && db[entry.id] === entry));
+  }
+
+  // One shelf: the staples first, then the location's random draw.
+  function stockWithFixed(shopKey, pool, seed) {
+    const shuffled = seededShuffle(withoutFixed(shopKey, pool), seed);
+    return [...fixedItemsFor(shopKey), ...shuffled.slice(0, pickShopItemCount(seed))];
+  }
+
   // Parse game date from variable 113
   function getGameDateFromVariable() {
     const dateStr = $gameVariables.value(113) || '01 JAN 2001 12:00';
@@ -381,7 +437,8 @@
       }
       if (validArtifacts.length > 0) {
         const art = validArtifacts[Math.floor(seededRandom(seed + 888) * validArtifacts.length)];
-        if (items.length > 0) items[0] = art;
+        // Takes the last slot: the first ones are the shop's always-stocked staples.
+        if (items.length > 0) items[items.length - 1] = art;
         else items.push(art);
       }
     }
@@ -516,8 +573,7 @@
     if (!shopInventoryCache[locKey]) {
       const allItems = getAllItems(true); // Exclude food items
       const seed = generateLocationSeed(mapId, x, y, 'shop');
-      const shuffled = seededShuffle(allItems, seed);
-      shopInventoryCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      shopInventoryCache[locKey] = stockWithFixed('shop', allItems, seed);
     }
 
     const items = [...shopInventoryCache[locKey]];
@@ -529,12 +585,8 @@
     const locKey = `${mapId}_${x}_${y}`;
 
     if (!tavernInventoryCache[locKey]) {
-      // Exclude fixed items from the random pool to avoid duplicates
-      const fixedSet = new Set(TAVERN_FIXED_IDS);
-      const foodItems = getFoodItems().filter(item => !fixedSet.has(item.id));
       const seed = generateLocationSeed(mapId, x, y, 'tavern');
-      const shuffled = seededShuffle(foodItems, seed);
-      tavernInventoryCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      tavernInventoryCache[locKey] = stockWithFixed('tavern', getFoodItems(), seed);
     }
 
     return tavernInventoryCache[locKey];
@@ -546,10 +598,9 @@
     const locKey = `${mapId}_${x}_${y}`;
 
     if (!libraryInventoryCache[locKey]) {
-      const foodItems = getBookItems();
+      const bookItems = getBookItems();
       const seed = generateLocationSeed(mapId, x, y, 'library');
-      const shuffled = seededShuffle(foodItems, seed);
-      libraryInventoryCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      libraryInventoryCache[locKey] = stockWithFixed('library', bookItems, seed);
     }
 
     return libraryInventoryCache[locKey];
@@ -565,8 +616,7 @@
         if (armor && armor.name && !isArtifact(armor)) allArmors.push(armor);
       }
       const seed = generateLocationSeed(mapId, x, y, 'armor');
-      const shuffled = seededShuffle(allArmors, seed);
-      armorShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      armorShopCache[locKey] = stockWithFixed('armor', allArmors, seed);
     }
 
     const items = [...armorShopCache[locKey]];
@@ -584,8 +634,7 @@
         if (weapon && weapon.name && !isArtifact(weapon)) allWeapons.push(weapon);
       }
       const seed = generateLocationSeed(mapId, x, y, 'weapon');
-      const shuffled = seededShuffle(allWeapons, seed);
-      weaponShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      weaponShopCache[locKey] = stockWithFixed('weapon', allWeapons, seed);
     }
 
     const items = [...weaponShopCache[locKey]];
@@ -599,8 +648,7 @@
     if (!pharmacyCache[locKey]) {
       const medicalItems = getMedicalItems();
       const seed = generateLocationSeed(mapId, x, y, 'pharmacy');
-      const shuffled = seededShuffle(medicalItems, seed);
-      pharmacyCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      pharmacyCache[locKey] = stockWithFixed('pharmacy', medicalItems, seed);
     }
 
     return pharmacyCache[locKey];
@@ -612,8 +660,7 @@
     if (!magicShopCache[locKey]) {
       const magicItems = getMagicShopItems();
       const seed = generateLocationSeed(mapId, x, y, 'magic');
-      const shuffled = seededShuffle(magicItems, seed);
-      magicShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      magicShopCache[locKey] = stockWithFixed('magic', magicItems, seed);
     }
 
     return magicShopCache[locKey];
@@ -648,8 +695,7 @@
       }
 
       const seed = generateLocationSeed(mapId, x, y, 'luxury');
-      const shuffled = seededShuffle(luxuryItems, seed);
-      luxuryShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      luxuryShopCache[locKey] = stockWithFixed('luxury', luxuryItems, seed);
     }
 
     const items = [...luxuryShopCache[locKey]];
@@ -688,8 +734,7 @@
       }
 
       const seed = generateLocationSeed(mapId, x, y, 'adventurer');
-      const shuffled = seededShuffle(adventurerItems, seed);
-      adventurerShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      adventurerShopCache[locKey] = stockWithFixed('adventurer', adventurerItems, seed);
     }
 
     const items = [...adventurerShopCache[locKey]];
@@ -747,15 +792,10 @@
     const loc = resolveShopLocation(mapId, x, y);
     if (!loc) return;
 
-    const randomItems = getTavernItems(loc.mapId, loc.x, loc.y);
+    // Always-stocked items already lead the shelf (stockWithFixed)
+    const items = getTavernItems(loc.mapId, loc.x, loc.y);
 
-    // Fixed items always appear first
-    const fixedGoods = TAVERN_FIXED_IDS
-      .map(id => $dataItems[id])
-      .filter(item => item && item.name)
-      .map(item => [0, item.id, 0, 0]);
-
-    const randomGoods = randomItems.map(item => {
+    const goods = items.map(item => {
       let type;
       if (DataManager.isItem(item)) type = 0;
       else if (DataManager.isWeapon(item)) type = 1;
@@ -763,8 +803,6 @@
       else return null;
       return [type, item.id, 0, 0];
     }).filter(Boolean);
-
-    const goods = [...fixedGoods, ...randomGoods];
 
     SceneManager.push(Scene_Shop);
     SceneManager.prepareNextScene(goods, false);
@@ -936,8 +974,7 @@
         }
       }
       const seed = generateLocationSeed(mapId, x, y, 'tools');
-      const shuffled = seededShuffle(toolsItems, seed);
-      toolsShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      toolsShopCache[locKey] = stockWithFixed('tools', toolsItems, seed);
     }
 
     return toolsShopCache[locKey];
@@ -1005,8 +1042,7 @@
         if (item && item.name && isBodyPartItem(item)) bodyParts.push(item);
       }
       const seed = generateLocationSeed(mapId, x, y, 'organTrader');
-      const shuffled = seededShuffle(bodyParts, seed);
-      organTraderCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      organTraderCache[locKey] = stockWithFixed('organTrader', bodyParts, seed);
     }
 
     return organTraderCache[locKey];
@@ -1039,8 +1075,7 @@
     if (!alchemistryShopCache[locKey]) {
       const items = getAlchemistryItems();
       const seed = generateLocationSeed(mapId, x, y, 'alchemistry');
-      const shuffled = seededShuffle(items, seed);
-      alchemistryShopCache[locKey] = shuffled.slice(0, pickShopItemCount(seed));
+      alchemistryShopCache[locKey] = stockWithFixed('alchemistry', items, seed);
     }
 
     return alchemistryShopCache[locKey];
@@ -1079,8 +1114,9 @@
   //   stockMult:  multiplies the per-item stock rolled by ItemSystemShop
   //   fixed:      IDs always on the shelf at every location of that shop type,
   //               listed first, on top of the random draw (same idea as
-  //               TAVERN_FIXED_IDS). For items a mechanic depends on being
-  //               buyable somewhere, e.g. the lockpick.
+  //               CATEGORY_FIXED_IDS). What the trade itself guarantees: a
+  //               fishmonger has rods, a cafe has coffee, plus the items a
+  //               mechanic depends on being buyable somewhere (the lockpick).
   //   dining:     venue that serves prepared food and drink, so a seated player
   //               can order from it remotely (see the remote-ordering section
   //               below). Grocers selling only raw supplies are left out.
@@ -1090,23 +1126,27 @@
       get label() { return T('DailyShop.shopType.iceCream'); },
       ids: [458, 469, 511, 540, 488, 543, 560, 589, 562, 432, 443, 439, 461,
             471, 472, 477, 719, 485, 467, 492, 448, 476, 590],
+      fixed: [469, 458, 461],   // ice cream, sundae, shake
       dining: true
     },
     fastFood: {
       get label() { return T('DailyShop.shopType.fastFood'); },
       ids: [481, 519, 450, 451, 460, 462, 474, 500, 447, 457, 442, 445, 461,
             439, 458, 433, 468, 453, 720, 464, 441, 440, 436, 432],
+      fixed: [481, 450, 442],   // burger, fries, soda
       dining: true
     },
     gym: {
       get label() { return T('DailyShop.shopType.gym'); },
       ids: [52, 53, 36, 40, 41, 33, 55, 54, 26, 47, 17, 18, 23, 431, 463, 195,
             315, 325, 331, 832, 833, 834, 50, 723, 728, 91, 87, 38],
+      fixed: [431, 315],        // protein bar, grip powder
     },
     fisherman: {
       get label() { return T('DailyShop.shopType.fisherman'); },
       ids: [123, 167, 141, 425, 507, 523, 508, 501, 513, 576, 569, 531, 532,
             581, 120, 811, 813, 810, 155, 161, 116, 121, 807, 78, 805, 870],
+      fixed: [123, 78],         // fishing rod, net
     },
     supermarket: {
       get label() { return T('DailyShop.shopType.supermarket'); },
@@ -1115,245 +1155,288 @@
             464, 465, 466, 467, 471, 475, 492, 499, 510, 528, 533, 535, 536,
             862, 858, 1, 3, 5, 25, 115, 118, 119, 120, 127, 132, 136,
             177, 178, 179, 185, 711, 804, 806, 807],
+      fixed: [418, 438, 454],   // bottled water, milk, bread
       stockMult: 6
     },
     cafe: {
       get label() { return T('DailyShop.shopType.cafe'); },
       ids: [459, 528, 564, 547, 585, 467, 434, 455, 516, 574, 471, 439, 540,
             560, 468, 473, 196, 543, 511, 589, 719, 178, 711],
+      fixed: [459, 528, 439],   // coffee, cup of coffee, donut
       dining: true
     },
     liquor: {
       get label() { return T('DailyShop.shopType.liquor'); },
       ids: [480, 498, 517, 535, 544, 572, 587, 552, 557, 568, 37, 178, 466,
             441, 440, 442, 445, 444, 449, 461, 898],
+      fixed: [480, 535, 544],   // ale, wine, whiskey
     },
     electronics: {
       get label() { return T('DailyShop.shopType.electronics'); },
       ids: [122, 133, 134, 136, 137, 143, 144, 149, 153, 154, 157, 160, 162,
             179, 185, 186, 190, 193, 721, 726, 394, 852, 853, 854, 135, 130,
             388, 387],
+      fixed: [179, 122],        // batteries, charger
     },
     hardware: {
       get label() { return T('DailyShop.shopType.hardware'); },
       ids: [138, 156, 814, 811, 813, 132, 119, 807, 118, 121, 115, 870, 859,
             863, 867, 855, 856, 146, 406, 151, 374, 739, 861, 868, 805, 804],
-      fixed: [374],
+      fixed: [374, 814, 138],   // lockpick, multi-tool, shovel
     },
     camping: {
       get label() { return T('DailyShop.shopType.camping'); },
       ids: [125, 126, 129, 815, 806, 813, 810, 807, 804, 809, 808, 120, 121,
             136, 137, 142, 116, 117, 152, 159, 161, 512, 421, 465, 466, 418,
             123, 811],
+      fixed: [125, 136, 813],   // bedroll, flashlight, climbing rope
     },
     butcher: {
       get label() { return T('DailyShop.shopType.butcher'); },
       ids: [862, 430, 465, 452, 479, 486, 496, 497, 514, 522, 527, 529, 538,
             548, 573, 577, 550, 524, 493, 860, 575, 500, 505, 539],
+      fixed: [862, 430],        // meat, mystery meat
     },
     bakery: {
       get label() { return T('DailyShop.shopType.bakery'); },
       ids: [454, 424, 419, 533, 456, 471, 439, 443, 488, 540, 511, 562, 560,
             589, 719, 539, 505, 536, 432, 428],
+      fixed: [454, 439],        // fresh bread, donut
       dining: true
     },
     greengrocer: {
       get label() { return T('DailyShop.shopType.greengrocer'); },
       ids: [423, 437, 448, 476, 499, 435, 546, 554, 555, 583, 584, 591, 590,
             551, 578, 563, 565, 792, 858, 406, 660, 240, 492, 429],
+      fixed: [437, 448],        // apple, wild berries
     },
     deli: {
       get label() { return T('DailyShop.shopType.deli'); },
       ids: [510, 542, 828, 456, 462, 440, 524, 479, 438, 473, 550, 567, 535,
             452, 465, 493, 587, 466],
+      fixed: [510, 524],        // cheese wheel, prosciutto
       dining: true
     },
     streetFood: {
       get label() { return T('DailyShop.shopType.streetFood'); },
       ids: [470, 478, 482, 484, 489, 490, 491, 494, 495, 502, 503, 504, 520,
             521, 525, 475, 477, 485, 501, 508, 530, 483, 487, 433],
+      fixed: [442, 490],        // soda, pad thai
       dining: true
     },
     trattoria: {
       get label() { return T('DailyShop.shopType.trattoria'); },
       ids: [518, 541, 549, 545, 553, 536, 531, 532, 540, 511, 473, 550, 524,
             720, 719, 535, 459, 510, 567, 573],
+      fixed: [518, 535],        // bolognese, house wine
       dining: true
     },
     giftShop: {
       get label() { return T('DailyShop.shopType.giftShop'); },
       ids: [114, 192, 316, 318, 313, 311, 321, 322, 710, 128, 127, 113, 144,
             150, 163, 185, 189, 180, 211, 326, 332],
+      fixed: [114, 316],        // rose, keychain
     },
     newsstand: {
       get label() { return T('DailyShop.shopType.newsstand'); },
       ids: [711, 178, 181, 182, 183, 187, 442, 445, 441, 436, 431, 418, 113,
             127, 159, 161, 179, 124, 528, 185],
+      fixed: [711, 178],        // newspaper, cigarettes
     },
     tabaccheria: {
       get label() { return T('DailyShop.shopType.tabaccheria'); },
       ids: [178, 181, 182, 183, 187, 711, 113, 127, 124, 528, 442, 445, 436,
             441, 466, 179, 122, 153, 161, 159, 130, 185, 543, 459, 719, 184,
             535, 544, 480, 115],
+      fixed: [178, 181, 711],   // cigarettes, scratch card, newspaper
     },
     hunter: {
       get label() { return T('DailyShop.shopType.hunter'); },
       ids: [78, 79, 712, 465, 486, 514, 515, 811, 145, 138, 121, 813, 129,
             774, 758, 766, 806, 868, 860, 512, 147, 76],
+      fixed: [78, 465, 811],    // hunting net, jerky, whetstone
     },
     occult: {
       get label() { return T('DailyShop.shopType.occult'); },
       ids: [352, 354, 346, 675, 676, 683, 673, 724, 725, 650, 652, 97, 98,
             262, 264, 680, 349, 359, 360, 355, 679, 682, 348],
+      fixed: [262, 115],        // empty spellbook, candle
     },
     streetDealer: {
       get label() { return T('DailyShop.shopType.streetDealer'); },
       ids: [178, 22, 29, 30, 31, 35, 37, 380, 43, 39, 24, 32, 2, 356, 358,
             361, 376, 375, 381, 714],
+      fixed: [178, 380],        // cigarettes, street blend
     },
     spy: {
       get label() { return T('DailyShop.shopType.spy'); },
       ids: [374, 375, 377, 378, 379, 381, 382, 383, 384, 385, 386, 387, 388,
             389, 390, 391, 392, 393, 394, 148, 157, 158, 718],
-      fixed: [374],
+      fixed: [374, 388, 384],   // lockpick, recorder, disguise kit
     },
     stationery: {
       get label() { return T('DailyShop.shopType.stationery'); },
       ids: [113, 127, 128, 148, 230, 647, 672, 386, 262, 711, 394, 393, 130,
             185, 159, 161, 145, 277],
+      fixed: [113, 127],        // pen, notebook
     },
     toyStore: {
       get label() { return T('DailyShop.shopType.toyStore'); },
       ids: [124, 318, 726, 180, 710, 348, 347, 316, 432, 446, 181, 182, 183,
             187, 193, 192, 114, 186],
+      fixed: [318, 180],        // action figure, board game
     },
     arcticOutfitter: {
       get label() { return T('DailyShop.shopType.arcticOutfitter'); },
       ids: [208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 155, 579, 529,
             815, 812, 655, 678, 121, 120, 467],
+      fixed: [208, 815],        // pemmican, sleeping bag
     },
     jungleTrader: {
       get label() { return T('DailyShop.shopType.jungleTrader'); },
       ids: [623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 588,
             476, 472, 141, 810, 869],
+      fixed: [810, 869],        // rope, herb extract
     },
     wellness: {
       get label() { return T('DailyShop.shopType.wellness'); },
       ids: [604, 605, 606, 607, 608, 609, 610, 611, 177, 184, 434, 516, 574,
             869, 42, 229, 192, 4, 15, 13],
+      fixed: [177, 516],        // bath kit, herbal tea
     },
     materials: {
       get label() { return T('DailyShop.shopType.materials'); },
       ids: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861,
             862, 863, 864, 865, 866, 867, 868, 869, 870, 871],
+      fixed: [859, 861, 863],   // wood, cloth, steel ore
     },
     enoteca: {
       get label() { return T('DailyShop.shopType.enoteca'); },
       ids: [535, 587, 517, 572, 544, 568, 552, 557, 480, 498, 524, 510, 542,
             581, 550, 543, 466, 473, 567, 501, 528, 585],
+      fixed: [535, 587],        // aged wine, house wine
       dining: true
     },
     pizzeria: {
       get label() { return T('DailyShop.shopType.pizzeria'); },
       ids: [536, 460, 462, 720, 473, 451, 450, 442, 445, 480, 535, 540, 719,
             510, 456, 532, 539, 505, 549, 518, 458, 481],
+      fixed: [536, 460, 442],   // margherita, slice, soda
       dining: true
     },
     optician: {
       get label() { return T('DailyShop.shopType.optician'); },
       ids: [233, 142, 217, 242, 679, 683, 150, 249, 158, 144, 143, 867, 234,
             135, 676, 388, 390, 130],
+      fixed: [233, 142],        // lens, sunglasses
     },
     jeweler: {
       get label() { return T('DailyShop.shopType.jeweler'); },
       ids: [242, 334, 332, 322, 328, 866, 865, 864, 211, 214, 649, 659, 685,
             675, 681, 677, 678, 674, 673, 316, 241, 663],
+      fixed: [242, 866],        // loupe, crystal
     },
     tailor: {
       get label() { return T('DailyShop.shopType.tailor'); },
       ids: [132, 861, 868, 235, 231, 239, 246, 212, 682, 384, 91, 330, 325,
             834, 326, 329, 152, 117, 116, 815],
+      fixed: [132, 861],        // sewing kit, cloth
     },
     musicStore: {
       get label() { return T('DailyShop.shopType.musicStore'); },
       ids: [236, 133, 134, 154, 185, 186, 190, 321, 213, 1428, 193, 726, 179,
             122, 184, 187, 543],
+      fixed: [185, 133],        // CD case, mp3 player
     },
     antiques: {
       get label() { return T('DailyShop.shopType.antiques'); },
       ids: [331, 324, 313, 327, 333, 97, 249, 241, 234, 150, 320, 710, 675,
             289, 262, 317, 312, 323, 294, 290],
+      fixed: [320, 324],        // old chair, ancient coin
     },
     florist: {
       get label() { return T('DailyShop.shopType.florist'); },
       ids: [114, 671, 792, 757, 681, 192, 240, 660, 670, 406, 858, 869, 690,
             165, 674, 626, 229, 119, 546],
+      fixed: [114, 792],        // rose, dandelion
     },
     petShop: {
       get label() { return T('DailyShop.shopType.petShop'); },
       ids: [27, 710, 145, 147, 680, 777, 752, 862, 78, 1423, 311, 121, 126,
             807, 869, 858, 32],
+      fixed: [710, 862],        // pet rock, feed meat
     },
     fertilityClinic: {
       get label() { return T('DailyShop.shopType.fertilityClinic'); },
       ids: [716, 717, 729, 730, 738, 737, 32, 733, 734, 887, 962, 958, 1, 884,
             19, 59, 949],
+      fixed: [729, 737],        // human sample, gestation accelerator
     },
     cyberClinic: {
       get label() { return T('DailyShop.shopType.cyberClinic'); },
       ids: [731, 732, 733, 734, 735, 736, 59, 763, 768, 769, 857, 851, 853,
             727, 722, 715, 852, 961, 960],
+      fixed: [59, 731],         // repair nanites, neural amplifier
     },
     travelAgency: {
       get label() { return T('DailyShop.shopType.travelAgency'); },
       ids: [159, 161, 163, 155, 137, 135, 128, 129, 130, 152, 142, 164, 131,
             166, 668, 696, 234, 1442, 162, 120],
+      fixed: [159, 161],        // routes map, local map
     },
     garage: {
       get label() { return T('DailyShop.shopType.garage'); },
       ids: [164, 131, 146, 909, 917, 854, 863, 928, 855, 814, 156, 167, 668,
             852, 870, 138, 811, 856, 864],
+      fixed: [146, 870],        // fuel tank, oil flask
     },
     drogheria: {
       get label() { return T('DailyShop.shopType.drogheria'); },
       ids: [1, 177, 884, 890, 896, 883, 886, 894, 901, 905, 893, 115, 132,
             861, 118, 13, 11, 7, 867],
+      fixed: [1, 883, 115],     // sanitizer, salt, candle
     },
     casalinghi: {
       get label() { return T('DailyShop.shopType.casalinghi'); },
       ids: [118, 119, 807, 804, 809, 120, 232, 1427, 542, 811, 115, 867, 805,
             121, 136, 179, 132, 870],
+      fixed: [118, 119, 804],   // utensils, clay pot, bowl set
     },
     bettingParlor: {
       get label() { return T('DailyShop.shopType.bettingParlor'); },
       ids: [181, 182, 183, 187, 124, 311, 313, 323, 1437, 1440, 178, 544, 568,
             26, 346, 312, 322, 445],
+      fixed: [181, 182, 183],   // the three scratch cards
     },
     reliquary: {
       get label() { return T('DailyShop.shopType.reliquary'); },
       ids: [45, 265, 278, 282, 293, 263, 275, 276, 115, 692, 1401, 498, 229,
             230, 673, 681, 355, 267, 266, 264],
+      fixed: [115, 45],         // votive candle, holy remedy
     },
     surplusArmory: {
       get label() { return T('DailyShop.shopType.surplusArmory'); },
       ids: [512, 718, 76, 78, 80, 73, 79, 77, 712, 88, 1430, 1426, 136, 129,
             808, 141, 715, 940, 957, 811],
+      fixed: [512, 808],        // field ration, escape kit
     },
     junkShop: {
       get label() { return T('DailyShop.shopType.junkShop'); },
       ids: [836, 828, 829, 830, 831, 832, 833, 834, 835, 710, 320, 317, 312,
             424, 709, 349, 346, 347, 356, 358, 361, 419, 423],
-      fixed: [374],
+      fixed: [374, 836, 709],   // lockpick, rubbish, unidentified item
     },
     academy: {
       get label() { return T('DailyShop.shopType.academy'); },
       ids: [1421, 1422, 1423, 1424, 1425, 1426, 1427, 1428, 1429, 1430, 1431,
             1433, 1435, 1436, 1437, 1438, 1440, 1441, 1442, 1443, 145, 147],
+      fixed: [113, 127],        // pen, notebook
     },
     grimoire: {
       get label() { return T('DailyShop.shopType.grimoire'); },
       ids: [1400, 1401, 1402, 1403, 1404, 1405, 1406, 1407, 1409, 1410, 1411,
             1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1420, 262],
+      fixed: [262, 1400],       // empty spellbook, elemental grimoire
     }
   };
 

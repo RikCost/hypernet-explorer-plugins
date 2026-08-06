@@ -9,12 +9,13 @@
     "biologics": "Biologics",
     "dynamics": "Dynamics",
     "thinker": "Thinker",
-    "pets": "Pets",
+    "pets": "Followers",
     "workforce": "Workforce",
     "worldMap": "World Map",
     "vehicles": "Vehicles",
     "wait": "Wait",
     "cooking": "Cooking",
+    "blacksmithing": "Smithing",
     "build": "Build",
     "training": "Training",
     "research": "Research",
@@ -76,6 +77,7 @@
     "partyLeader": " · party leader",
     "follower": "Follower",
     "pet": "Pet",
+    "child": "Child",
     "classless": "Classless",
     "none": "None",
     "left": "Left {date}",
@@ -126,7 +128,7 @@
   },
   "page": {
     "tools": "Tools",
-    "pets": "Pets &amp; Followers",
+    "pets": "Followers",
     "vehicles": "Vehicles"
   },
   "vital": {
@@ -156,8 +158,14 @@
   "pets": {
     "rename": "Rename",
     "active": "Active",
-    "release": "Release",
-    "none": "No pets or followers recruited yet. Ask an enemy to join as a pet or follower during battle."
+    "none": "No pets, offspring or followers yet. Ask an enemy to join as a pet or follower during battle.",
+    "abandon": "Abandon",
+    "abandonWarn": "Abandon {name}? Filed as {crime}, bounty {fine}.",
+    "abandonFree": "Abandon {name}? They came along freely and may leave the same way.",
+    "childOf": "Child of {parent}",
+    "groupPets": "Pets",
+    "groupChildren": "Offspring",
+    "groupFollowers": "Followers"
   },
   "vehicles": {
     "spawn": "Spawn",

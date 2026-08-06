@@ -1967,7 +1967,7 @@
                     // Full inspect block (Combat Application + Damage side by
                     // side, Skill Effects, Classifications) built by the same
                     // service the Skills menu uses.
-                    const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill) : '';
+                    const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill, this.getTeachActor()) : '';
 
                     // In 'list' mode focus lives on the left skill grid, so the teach
                     // buttons render unfocused (preview only); 'detail' mode lets them focus.

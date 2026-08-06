@@ -78,10 +78,22 @@
   "belowNormalHypogonadism": "Sous la normale (hypogonadisme)",
   "noReproductiveSystemAvailableSetVariable87Fi": "Aucun système reproducteur disponible. Définis d'abord la variable 87.",
   "alreadyInReproductiveProcess": "Déjà engagé dans un processus reproductif !",
-  "pregnancyInitiatedDueIn270Days": "Grossesse démarrée ! Terme dans 270 jours.",
-  "eggDevelopmentInitiated14EggsWillBeReadyIn27": "Développement des œufs démarré ! 1 à 4 œufs seront prêts dans 270 jours.",
-  "seedGenerationInitiatedSeedWillBeReadyIn7Day": "Génération de graine démarrée ! La graine sera prête dans 7 jours.",
-  "mitosisInitiatedCellDivisionWillCompleteIn1D": "Mitose démarrée ! La division cellulaire s'achèvera dans 1 jour.",
+  "pregnancyInitiatedDue": {
+    "one": "Grossesse démarrée ! Terme dans {count} jour.",
+    "other": "Grossesse démarrée ! Terme dans {count} jours."
+  },
+  "eggDevelopmentInitiated": {
+    "one": "Développement des œufs démarré ! 1 à 4 œufs seront prêts dans {count} jour.",
+    "other": "Développement des œufs démarré ! 1 à 4 œufs seront prêts dans {count} jours."
+  },
+  "seedGenerationInitiated": {
+    "one": "Génération de graine démarrée ! La graine sera prête dans {count} jour.",
+    "other": "Génération de graine démarrée ! La graine sera prête dans {count} jours."
+  },
+  "mitosisInitiated": {
+    "one": "Mitose démarrée ! La division cellulaire s'achèvera dans {count} jour.",
+    "other": "Mitose démarrée ! La division cellulaire s'achèvera dans {count} jours."
+  },
   "notCurrentlyInReproductiveProcess": "Aucun processus reproductif en cours.",
   "pregnancyAcceleratedToCompletionBirthIsImmin": "Grossesse accélérée jusqu'à son terme ! La naissance est imminente.",
   "eggDevelopmentAcceleratedToCompletionEggsRea": "Développement des œufs accéléré jusqu'au bout ! Œufs prêts à pondre.",
@@ -202,6 +214,7 @@
   "weeks": "Semaines",
   "currentTrimester": "Trimestre actuel",
   "trimester": "Trimestre",
+  "gestationalTerm": "Durée de gestation",
   "gestationalProgress": "Progression gestationnelle",
   "fetalBiometricRegister": "Registre biométrique fœtal",
   "developmentalStage": "Stade de développement",

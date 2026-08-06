@@ -60,6 +60,9 @@
     "disorderlyconduct": {
       "name": "난동"
     },
+    "harassment": {
+      "name": "괴롭힘"
+    },
     "trespassing": {
       "name": "주거침입"
     },

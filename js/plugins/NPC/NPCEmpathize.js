@@ -65,6 +65,7 @@
     notEnoughGold:  ['g'],
     joinRefused:    ['name'],
     gaveItem:       ['name', 'item'],
+    giftRefused:    ['name', 'item'],
     briberyCaught:  ['name'],
     bribeRefused:   ['name'],
     bribeRefusedLaw:['name'],
@@ -226,14 +227,15 @@
   const JOIN_BASE = 50;   // chance at opinion 0
   const JOIN_MIN  = 5;
   const JOIN_MAX  = 95;
-  function _joinChance(opinion) {
+  function _joinChance(opinion, actor) {
     if (_forceHighJoinChance()) return JOIN_MAX;
     // opinion runs -100..+100, so 0.45/point lands exactly on JOIN_MIN/JOIN_MAX
     // at the extremes. Somebody who can make a case for themselves (Public
     // Speaking, specialization 218) gets a hearing the same goodwill would not
-    // buy on its own, inside the same clamp.
+    // buy on its own, inside the same clamp. It is the member doing the talking
+    // who has to make that case, which is whoever the switcher has focused.
     const persuasion = window.SpecializationXP
-      ? (window.SpecializationXP.partyLevel('Public Speaking') - 1) * 4 : 0;
+      ? (window.SpecializationXP.levelOf(actor, 'Public Speaking') - 1) * 4 : 0;
     const raw = JOIN_BASE + (Number(opinion) || 0) * 0.45 + persuasion;
     return Math.round(Math.max(JOIN_MIN, Math.min(JOIN_MAX, raw)));
   }
@@ -465,6 +467,100 @@
       }
     }
     return bonus;
+  }
+
+  // ── Hygiene: who has washed, and who minds ──────────────────────────────
+  // Standing close enough to talk means smelling the other person, so the state
+  // of BOTH bodies moves the disposition: the party member doing the talking
+  // (their hygiene need, TimeDateSystem) and the NPC (profile.hygiene, drained
+  // by NPCSimulationCore and refilled at a sink or a WC). Recoiling from
+  // somebody costs a conversation as much as being recoiled from does.
+  //
+  // It is felt hardest when courting: _romanceChance (NPCEmpathizeUI.js) reads
+  // the same number a second time, at its own weight, on top of the disposition
+  // this already dulled.
+  //
+  // Above HYGIENE_CLEAN nobody notices anything. Below it, every point costs.
+  const HYGIENE_CLEAN       = 60;   // hygiene % at or above which nobody minds
+  const HYGIENE_WEIGHT      = 0.42; // opinion points per point below the line
+  const HYGIENE_MAX_PENALTY = 45;   // floor, however filthy both parties are
+
+  // How much a trait makes the person CARRYING it mind the state of whoever is
+  // standing in front of them (Traits.json ids). It is read on both sides: an
+  // NPC's traits decide how much the party member offends them, the party
+  // member's traits decide how much the NPC does. Multiplier on the penalty,
+  // 0 means the smell never registers at all, above 1 means it registers twice
+  // over. Several traits multiply together, and a single 0 wins outright.
+  const HYGIENE_TRAIT_MULT = {
+    // ── Does not register it ───────────────────────────────────────────────
+    189: 0,    // Feral, raised in the wilderness: this is what people smell like
+    195: 0,    // Lycanthrope, half of them lives downwind of the other half
+    // ── Tolerates it ───────────────────────────────────────────────────────
+    50:  0.25, // Ascetic, mortifying the flesh is rather the point
+    124: 0.3,  // Street Urchin, grew up where nobody had a bath either
+    184: 0.3,  // Cave Dweller
+    97:  0.3,  // Survivalist, has been worse for longer
+    130: 0.35, // Slave-Born
+    137: 0.35, // Farmer, has spent the morning in the muck
+    86:  0.4,  // Slothful, minds it but not enough to do anything about it
+    27:  0.4,  // Hoarder, lives in worse and defends it
+    136: 0.45, // Veteran, has slept in trenches with the same people for months
+    // ── Minds it far more than most ────────────────────────────────────────
+    91:  1.3,  // Proud, expects better company than this
+    131: 1.4,  // Wealthy, has never had to be near it
+    144: 1.5,  // Beautiful, keeps the company they believe they are owed
+    30:  1.6,  // Perfectionist
+    123: 1.7,  // Noble, raised to treat it as a moral failing
+    56:  1.9,  // Hypochondriac, every unwashed body is a diagnosis
+    78:  2.0,  // OCD
+    23:  2.6,  // Germaphobe, the one trait this is really about
+  };
+
+  function _actorTraitIds(actor) {
+    return (actor?._selectedTraits ?? []).map(t => t?.id).filter(id => id != null);
+  }
+
+  function _hygieneToleranceMult(traitIds) {
+    let mult = 1;
+    for (const id of traitIds || []) {
+      const m = HYGIENE_TRAIT_MULT[id];
+      if (m === undefined) continue;
+      if (m === 0) return 0;
+      mult *= m;
+    }
+    return Math.min(3, mult);
+  }
+
+  // One side's reaction to the other's state. Always <= 0.
+  function _hygieneSidePenalty(hygienePct, perceiverTraitIds) {
+    const raw   = Number(hygienePct ?? 100);
+    if (!isFinite(raw)) return 0; // a meter nobody has written yet is not a smell
+    const short = HYGIENE_CLEAN - Math.max(0, Math.min(100, raw));
+    if (short <= 0) return 0;
+    const mult = _hygieneToleranceMult(perceiverTraitIds);
+    if (!mult) return 0;
+    return -(short * HYGIENE_WEIGHT * mult);
+  }
+
+  // The two halves of the reading, in opinion points (each <= 0): `theirs` is
+  // what the NPC makes of the party member, `mine` what the party member makes
+  // of the NPC. Split out so the UI can say which of the two needs a bath.
+  function _hygieneReadout(profile, actor) {
+    if (!profile || !actor) return { theirs: 0, mine: 0 };
+    const actorHyg = actor.hygienePercent ? actor.hygienePercent() : 100;
+    return {
+      theirs: _hygieneSidePenalty(actorHyg,        profile.traitIds ?? []),
+      mine:   _hygieneSidePenalty(profile.hygiene, _actorTraitIds(actor)),
+    };
+  }
+
+  // Both directions at once, in opinion points (always <= 0). `weight` lets a
+  // caller ask for a harsher reading of the same two bodies.
+  function _hygienePenalty(profile, actor, weight = 1) {
+    const { theirs, mine } = _hygieneReadout(profile, actor);
+    const total = theirs + mine;
+    if (!total) return 0;
+    return Math.round(Math.max(-HYGIENE_MAX_PENALTY, total * weight));
   }
 
   // ── Personality-driven social reactions ─────────────────────────────────
@@ -707,18 +803,40 @@
   // member doing the talking is the one who actually had the exchange, so they
   // take slightly more of it either way. Reported through the same
   // ParchmentToast.need popup the minigames use for Fun.
-  const SOCIAL_PER_OPINION  = 0.7; // social points per point of opinion moved
-  const SOCIAL_MAX_STEP     = 12;  // no single exchange is worth more than this
+  const SOCIAL_PER_OPINION  = 2.2;  // social points per point of opinion moved
+  const SOCIAL_LOSS_FACTOR  = 0.32; // a move that lands badly costs what it always did
+  const SOCIAL_MAX_STEP     = 30;   // no single exchange is worth more than this
   const SOCIAL_TALKER_BONUS = 1.4;
+  // Being with people is worth something on its own, whatever it did to their
+  // opinion, so every exchange also pays a flat base: a trade, a bandage or a
+  // question that moves no needle still counts as company. The base thins out
+  // over the day with the SAME person and stops after SOCIAL_COMPANY_LIMIT
+  // exchanges, so one obliging neighbour cannot be farmed for a full meter.
+  const SOCIAL_COMPANY_BASE  = 6;
+  const SOCIAL_COMPANY_LIMIT = 6;
+  // The actions whose whole effect is elsewhere (a shop, a heal, a signpost),
+  // so nothing else would ever pay them their company.
+  const COMPANY_ACTIONS = new Set(['trade', 'treat', 'directions', 'buyHouse']);
+
+  // What one more exchange with this NPC is worth as company today, spending it
+  // off their daily allowance as it is read.
+  function _companyBase(profile) {
+    const day  = Math.floor(($gameVariables?.value(114) ?? 0) / 1440);
+    const host = profile || $gameSystem; // wiki / party pages share one record
+    if (!host) return SOCIAL_COMPANY_BASE;
+    if (host._socialCompany?.day !== day) host._socialCompany = { day, count: 0 };
+    const used = host._socialCompany.count++;
+    if (used >= SOCIAL_COMPANY_LIMIT) return 0;
+    return Math.max(1, Math.round(SOCIAL_COMPANY_BASE * (1 - used / SOCIAL_COMPANY_LIMIT)));
+  }
 
   function _socialStep(value) {
     const v = Math.max(-SOCIAL_MAX_STEP, Math.min(SOCIAL_MAX_STEP, value));
     return v > 0 ? Math.max(1, Math.round(v)) : Math.min(-1, Math.round(v));
   }
 
-  function _gainSocialFromOpinion(actorId, delta) {
-    if (!delta || !window.PartyNeeds?.addSocialToAll) return;
-    const step  = _socialStep(delta * SOCIAL_PER_OPINION);
+  function _paySocial(actorId, step) {
+    if (!step || !window.PartyNeeds?.addSocialToAll) return;
     const focus = ($gameParty?.members() ?? []).find(m => m && m.actorId() === actorId) || null;
     window.PartyNeeds.addSocialToAll(step, { focus, focusBonus: SOCIAL_TALKER_BONUS });
     try {
@@ -726,15 +844,36 @@
     } catch (e) { /* a popup never breaks a conversation */ }
   }
 
+  // Company on its own, for the actions that never touch an opinion: haggling,
+  // wounds patched up, asking the way, a line typed into the chat box.
+  function _gainSocialFromCompany(actorId, profile) {
+    _paySocial(actorId, _companyBase(profile));
+  }
+
+  function _gainSocialFromOpinion(actorId, delta, profile) {
+    if (!window.PartyNeeds?.addSocialToAll) return;
+    const moved = delta > 0 ? delta * SOCIAL_PER_OPINION
+      : delta < 0 ? delta * SOCIAL_PER_OPINION * SOCIAL_LOSS_FACTOR
+      : 0;
+    // An exchange that went badly is not company, it is a scene: no base for it.
+    const base = delta >= 0 ? _companyBase(profile) : 0;
+    const step = base + (moved ? _socialStep(moved) : 0);
+    _paySocial(actorId, Math.max(-SOCIAL_MAX_STEP, Math.min(SOCIAL_MAX_STEP, Math.round(step))));
+  }
+
   function _addNpcOpinion(profile, actorId, delta) {
-    _gainSocialFromOpinion(actorId, delta);
+    _gainSocialFromOpinion(actorId, delta, profile);
     return _setNpcBaseOpinion(profile, actorId, _npcBaseOpinion(profile, actorId) + delta);
   }
-  // What the NPC actually thinks of one actor: earned base + trait compatibility.
+  // What the NPC actually thinks of one actor: earned base + trait
+  // compatibility + how the two of them smell to each other right now. The
+  // hygiene term is the only part of this that changes with a bath.
   function _npcEffectiveOpinion(profile, actor) {
     if (!actor) return 0;
     return Math.max(-100, Math.min(100,
-      _npcBaseOpinion(profile, actor.actorId()) + _traitCompatBonus(profile, actor)));
+      _npcBaseOpinion(profile, actor.actorId())
+      + _traitCompatBonus(profile, actor)
+      + _hygienePenalty(profile, actor)));
   }
 
   function _computePartyPredisposition(profile) {
@@ -839,10 +978,48 @@
     }
     if ($gameTemp._NPCEmpathizeStartBattle != null) {
       const troopId = $gameTemp._NPCEmpathizeStartBattle;
-      $gameTemp._NPCEmpathizeStartBattle = null;
+      const victim  = $gameTemp._NPCEmpathizeAttackTarget;
+      $gameTemp._NPCEmpathizeStartBattle  = null;
+      $gameTemp._NPCEmpathizeAttackTarget = null;
       BattleManager.setup(troopId, true, false);
+      // Armed after setup on purpose: the setup hook in SECTION 5b clears the
+      // marker, so a battle begun any other way can never inherit this victim.
+      $gameTemp._NPCEmpathizeBattleTarget = victim ?? null;
       SceneManager.push(Scene_Battle);
     }
+  };
+
+  // ============================================================================
+  // SECTION 5b, OUTCOME OF AN ATTACKED NPC
+  // ============================================================================
+  // Killing the NPC the player set on from the panel flips that event's self
+  // switch A, the same page swap a recruited NPC gets, so the map author decides
+  // what is left standing there (a corpse page, an empty one, nothing). Only a
+  // kill counts: fleeing the fight, or being beaten by them, leaves the NPC and
+  // their page exactly as they were.
+
+  const _BattleManager_setup_npcAttack = BattleManager.setup;
+  BattleManager.setup = function (troopId, canEscape, canLose) {
+    if ($gameTemp) $gameTemp._NPCEmpathizeBattleTarget = null;
+    _BattleManager_setup_npcAttack.call(this, troopId, canEscape, canLose);
+  };
+
+  const _BattleManager_processVictory_npcAttack = BattleManager.processVictory;
+  BattleManager.processVictory = function () {
+    const victim = $gameTemp?._NPCEmpathizeBattleTarget;
+    if (victim) {
+      $gameTemp._NPCEmpathizeBattleTarget = null;
+      // A win is not always a kill: an enemy that runs off leaves the troop
+      // with nobody alive in it and still ends the fight in victory. Bodies
+      // only, so an NPC who got away is still there to be found.
+      const troop  = $gameTroop?.members() ?? [];
+      const killed = troop.length > 0 && troop.every(e => e.hp <= 0);
+      if (killed && $gameSelfSwitches) {
+        $gameSelfSwitches.setValue([victim.mapId, victim.eventId, 'A'], true);
+        if ($gameMap?.mapId() === victim.mapId) $gameMap.event(victim.eventId)?.refresh();
+      }
+    }
+    _BattleManager_processVictory_npcAttack.call(this);
   };
 
   // ============================================================================
@@ -1469,6 +1646,17 @@
         case 'romance':    this._romance();     break;
         case 'directions': this._askDirections(); break;
       }
+      // These four never move an opinion, but haggling, being patched up, being
+      // pointed at a door and buying a house off somebody are all time spent in
+      // company, so they pay the social meter the same flat base an exchange does.
+      if (COMPANY_ACTIONS.has(id)) this._gainCompany();
+    }
+
+    // Pay the focused member (and the party around them) for the company of the
+    // NPC this panel is open on.
+    _gainCompany() {
+      _gainSocialFromCompany(this._focusActor()?.actorId(),
+        _getProfile(_getNPCName(this._eventId)));
     }
 
     // Incidental (unintended) two-way transmission for a single interaction.
@@ -1860,11 +2048,39 @@
       const profile = _getProfile(npcName);
       const T       = _getT();
 
-      $gameParty.loseItem(item, 1);
-
       // Read before the present moves the needle, so the reaction is to the
       // giver they knew walking in.
       const priorOpinion = this._focusOpinion(profile);
+
+      // Somebody who thinks badly of the giver does not take presents from
+      // them. The item never leaves the bag, and the attempt is remembered as
+      // one more thing they had to push away. Party members (actor mode, no
+      // society profile) always accept: the reading there is only hygiene.
+      if (profile && this._actorId == null && priorOpinion < 0) {
+        SoundManager.playBuzzer();
+        this._joinMessage = { type: 'reject', text: T.giftRefused(npcName, item.name) };
+        const refusal = _rand(T.giftRefusalLines || []);
+        if (refusal) {
+          this._chatHistory.push({
+            role: 'npc',
+            text: String(refusal).replace(/\{item\}/g, item.name).replace(/\{name\}/g, npcName),
+          });
+          if (this._chatHistory.length > 16) this._chatHistory = this._chatHistory.slice(-16);
+        }
+        if (profile) {
+          (profile.eventLog ??= []).push({
+            tag: 'gift', desc: `refused ${item.name}`, // i18n-ignore: event-log record id
+            timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+          });
+        }
+        this._giftMode = false;
+        this._render();
+        this._scrollChatToBottom();
+        return;
+      }
+
+      $gameParty.loseItem(item, 1);
+
       const recentGifts = _countRecentInteractions(profile, 'gift', 5);
       const giftMult    = recentGifts >= 3 ? 0.5 : 1;
       const delta = Math.round(Math.max(5, Math.min(25, (item.price || 0) / 50)) * giftMult);
@@ -1882,10 +2098,10 @@
       this._joinMessage = { type: 'accept', text: T.gaveItem(npcName, item.name) };
 
       // They say something about what they have just been handed: warmly for
-      // something worth having, flatly for a trinket, coldly from someone who
-      // has no time for the giver, wearily at the fourth present in a row.
+      // something worth having, flatly for a trinket, wearily at the fourth
+      // present in a row. Anyone who would have taken it coldly refused it
+      // above, so there is no cold bank left to reach here.
       const bank = recentGifts >= 3 ? 'giftReactionRepeat'
-        : priorOpinion <= -20       ? 'giftReactionCold'
         : delta >= 18               ? 'giftReactionWarm'
         :                             'giftReactionPlain';
       const line = _rand(T[bank] || []);
@@ -2012,7 +2228,7 @@
         const actorId = this._focusActor()?.actorId();
         // Hitting somebody is the opposite of company: it costs the party the
         // same social need a friendly exchange would have paid them.
-        _gainSocialFromOpinion(actorId, -100 - _npcBaseOpinion(profile, actorId));
+        _gainSocialFromOpinion(actorId, -100 - _npcBaseOpinion(profile, actorId), profile);
         _setNpcBaseOpinion(profile, actorId, -100);
         (profile.eventLog ??= []).push({ tag: 'crime', desc: 'attacked by player', timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0 }); // i18n-ignore: event-log record id
         const dl      = window._NPCSocietyDataLoader;
@@ -2029,6 +2245,12 @@
       this._removeOverlay();
       this._releaseEventLock();
       SceneManager.pop();
+      // Who is being fought, so a kill can be written back onto their event
+      // (SECTION 5b). Taken here, while the map they stand on is still the
+      // current one; the panel may have been opened on a different event than
+      // the one it ends up acting for (wiki navigation), so `evId` rules.
+      if (evId != null && $gameMap)
+        $gameTemp._NPCEmpathizeAttackTarget = { mapId: $gameMap.mapId(), eventId: evId };
       $gameTemp._NPCEmpathizeStartBattle = 2;
     }
 
@@ -2127,10 +2349,11 @@
       // party can actually talk it down to on top of that. The clamps are wider
       // than the opinion-only ones they replace so a trained trader has room to
       // work, but they still exist: nobody sells at half price out of fondness.
+      const trader = this._focusActor();
       const barterBuy = window.SpecializationXP
-        ? window.SpecializationXP.discount('Barter', 0.05, 0.8) : 1;
+        ? window.SpecializationXP.discountFor(trader, 'Barter', 0.05, 0.8) : 1;
       const barterSell = window.SpecializationXP
-        ? window.SpecializationXP.multiplier('Barter', 0.08) : 1;
+        ? window.SpecializationXP.multiplierFor(trader, 'Barter', 0.08) : 1;
       const buyFactor  = Math.max(0.65, (1 - Math.max(0, opinion) / 500) * barterBuy);
       const sellFactor = Math.min(1.5, (1 + Math.max(0, opinion) / 500) * barterSell);
       const ev         = $gameMap?.event(evId);
@@ -2153,7 +2376,7 @@
       // Opening the haggle is the practice; the shop itself then trains
       // Haggling and Appraising on whatever actually changes hands.
       if (window.SpecializationXP) {
-        window.SpecializationXP.awardCapped('Barter', 1);
+        window.SpecializationXP.awardCapped('Barter', 1, { actor: trader });
       }
       this._removeOverlay();
       this._releaseEventLock();
@@ -2237,7 +2460,7 @@
       // Same formula the Join label advertises (50% at neutral, lower when the
       // NPC dislikes you, higher when they like you, level ignored). Debug/sandbox
       // play forces it near-certain so companions can be assembled for testing.
-      const chance  = _joinChance(opinion);
+      const chance  = _joinChance(opinion, this._focusActor());
 
       if (Math.random() * 100 >= chance) {
         SoundManager.playBuzzer();
@@ -2267,7 +2490,7 @@
       // party roster changes below.
       const priorMembers = ($gameParty?.members() ?? []).slice();
       if (profile) profile.playerOpinion = Math.min(100, (profile.playerOpinion ?? 0) + 40);
-      _gainSocialFromOpinion(this._focusActor()?.actorId(), 40);
+      _gainSocialFromOpinion(this._focusActor()?.actorId(), 40, profile);
       for (const member of priorMembers) {
         if (member.actorId() === 1) continue; // leader bond lives in playerOpinion
         window.NPCSim?.bumpMutualOpinion?.(npcName, member.name(), 40);
@@ -2361,6 +2584,8 @@
       phrase = String(phrase || '').trim();
       if (!phrase) return;
       this._askDraft = '';
+      // Small talk moves no opinion, but it is still somebody to talk to.
+      this._gainCompany();
 
       this._chatHistory.push({ role: 'player', text: phrase });
       this._isTyping = true;
@@ -2494,12 +2719,17 @@
       $gameTemp._NPCEmpathizeReturnFrames = 0;
     }
 
-    _leave() {
+    // `force` shuts the panel outright instead of walking the wiki return
+    // stack back one step. The mouse-only close button passes it: an X is
+    // read as "shut this", never as "go back one page".
+    _leave(force) {
       SoundManager.playCancel();
       // A non-empty return stack means we're backing out of a wiki hyperlink
       // jump, swap the panel's subject in place rather than tearing down
       // and recreating the whole overlay (which flickered).
-      if (Scene_NPCEmpathize._returnStack.length) {
+      if (force) {
+        Scene_NPCEmpathize._returnStack.length = 0;
+      } else if (Scene_NPCEmpathize._returnStack.length) {
         const ctx = Scene_NPCEmpathize._returnStack.pop();
         _navigateInPlace(ctx);
         return;
@@ -3104,7 +3334,7 @@
       _travellingPartyCount, SPOKEN_LOG_MAX,
       // Social/romance maths, shared with the UI layer's romance submenu.
       _socialLines, _rand, _addNpcOpinion, _npcEffectiveOpinion,
-      _traitCompatBonus, _personalitySocialMult,
+      _traitCompatBonus, _personalitySocialMult, _hygienePenalty, _hygieneReadout,
       // Em (Switch 48): stance resolution, shared with the UI layer so it can
       // hide what she is not allowed to do and label what she is walking into.
       _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,

@@ -78,10 +78,22 @@
   "belowNormalHypogonadism": "Ниже нормы (гипогонадизм)",
   "noReproductiveSystemAvailableSetVariable87Fi": "Репродуктивной системы нет. Сначала задайте переменную 87.",
   "alreadyInReproductiveProcess": "Репродуктивный процесс уже идёт!",
-  "pregnancyInitiatedDueIn270Days": "Беременность начата! Срок через 270 дней.",
-  "eggDevelopmentInitiated14EggsWillBeReadyIn27": "Развитие яиц начато! От 1 до 4 яиц будут готовы через 270 дней.",
-  "seedGenerationInitiatedSeedWillBeReadyIn7Day": "Образование семени начато! Семя будет готово через 7 дней.",
-  "mitosisInitiatedCellDivisionWillCompleteIn1D": "Митоз начат! Деление клеток завершится через 1 день.",
+  "pregnancyInitiatedDue": {
+    "one": "Беременность начата! Срок через {count} день.",
+    "other": "Беременность начата! Срок через {count} дней."
+  },
+  "eggDevelopmentInitiated": {
+    "one": "Развитие яиц начато! От 1 до 4 яиц будут готовы через {count} день.",
+    "other": "Развитие яиц начато! От 1 до 4 яиц будут готовы через {count} дней."
+  },
+  "seedGenerationInitiated": {
+    "one": "Образование семени начато! Семя будет готово через {count} день.",
+    "other": "Образование семени начато! Семя будет готово через {count} дней."
+  },
+  "mitosisInitiated": {
+    "one": "Митоз начат! Деление клеток завершится через {count} день.",
+    "other": "Митоз начат! Деление клеток завершится через {count} дней."
+  },
   "notCurrentlyInReproductiveProcess": "Репродуктивный процесс сейчас не идёт.",
   "pregnancyAcceleratedToCompletionBirthIsImmin": "Беременность ускорена до конца! Роды вот-вот наступят.",
   "eggDevelopmentAcceleratedToCompletionEggsRea": "Развитие яиц ускорено до конца! Яйца готовы к кладке.",
@@ -202,6 +214,7 @@
   "weeks": "Недель",
   "currentTrimester": "Текущий триместр",
   "trimester": "Триместр",
+  "gestationalTerm": "Срок вынашивания",
   "gestationalProgress": "Ход беременности",
   "fetalBiometricRegister": "Биометрический реестр плода",
   "developmentalStage": "Стадия развития",

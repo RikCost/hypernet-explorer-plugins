@@ -40,6 +40,8 @@
     "unknownEnemy": "Sconosciuto",
     "noParts": "Nessuna parte raccoglibile.",
     "butcher": "Macella (x{n})",
+    "butcherAll": "Macella tutto ({n})",
+    "butcherAllResult": "Macellate {parts} parti: {items} oggetti",
     "leave": "Lascia",
     "alreadyCollected": "Già raccolto",
     "partDestroyed": "Parte distrutta",

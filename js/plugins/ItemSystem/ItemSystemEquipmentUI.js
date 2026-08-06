@@ -639,6 +639,12 @@
             const loreText = window.ItemSystemUtils.loreFor(loreItem);
             if (loreText) loreHTML += `<div class="equip-lore" style="font-style:italic;opacity:0.78;margin-top:6px;font-family:'Lora',serif;line-height:1.35;">${loreText}</div>`;
         }
+        // What it is made of, the trade that makes it and the tier that trade
+        // needs: the same block the forge shows, so a piece of gear explains
+        // itself without the player opening a crafting menu.
+        if (loreItem && window.ItemSystemUtils && typeof window.ItemSystemUtils.craftHTML === 'function') {
+            loreHTML += window.ItemSystemUtils.craftHTML(loreItem);
+        }
 
         return `
             <div class="equip-right-content">

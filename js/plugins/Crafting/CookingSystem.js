@@ -194,6 +194,18 @@
             }
         },
 
+        // Whoever the Cooking menu's party switcher currently has at the stove.
+        // Called from a plugin command instead (no scene, no switcher), it is
+        // the leader, which is what every award defaulted to before.
+        activeCook: function () {
+            const scene = SceneManager._scene;
+            if (scene && typeof scene.cookActor === 'function') {
+                const actor = scene.cookActor();
+                if (actor) return actor;
+            }
+            return ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+        },
+
         cookItems: function (item1, item2) {
 
             // Remove items from inventory
@@ -250,9 +262,11 @@
 
             // Calculate hunger recovery using the same formula as TimeDateSystem.
             // A cook who knows what they are doing wastes less of the same two
-            // ingredients (Cooking, specialization 75).
+            // ingredients (Cooking, specialization 75). It is the member the
+            // switcher has at the stove who is judged, not the party's best.
+            const cook = this.activeCook();
             const cookSkill = window.SpecializationXP
-                ? window.SpecializationXP.multiplier('Cooking', 0.10) : 1;
+                ? window.SpecializationXP.multiplierFor(cook, 'Cooking', 0.10) : 1;
             const totalHungerRecovery =
                 ((totalCalories * calorieFactor) +
                  (totalProtein * proteinFactor) +
@@ -288,7 +302,8 @@
             // and the Cooking tier if this one pushed the cook over the line.
             if (window.ParchmentToast) {
                 const gained = window.SpecializationXP
-                    ? (window.SpecializationXP.award('Cooking', isSameItem ? 1 : 2, { silent: true }) || [])
+                    ? (window.SpecializationXP.award('Cooking', isSameItem ? 1 : 2,
+                        { actor: cook, silent: true }) || [])
                     : [];
                 window.ParchmentToast.group([
                     () => window.ParchmentToast.show(recoverMsg, {
@@ -464,8 +479,43 @@
         CookingSystem.clearSelectedItems();
     };
 
+    // Who is at the stove. The party switcher in the header picks them, and it
+    // is their Cooking that decides how much of the meal survives the pan.
+    Scene_Cooking.prototype.cookMembers = function () {
+        return ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+    };
+
+    Scene_Cooking.prototype.cookActor = function () {
+        const members = this.cookMembers();
+        if (!members.length) return null;
+        const idx = Math.max(0, Math.min(members.length - 1, this._cookActorIndex || 0));
+        return members[idx];
+    };
+
+    Scene_Cooking.prototype.selectCookActor = function (index) {
+        const members = this.cookMembers();
+        if (!members.length) return;
+        const next = ((index % members.length) + members.length) % members.length;
+        if (next === this._cookActorIndex) return;
+        this._cookActorIndex = next;
+        SoundManager.playCursor();
+        this.refreshUICooking();
+    };
+
+    Scene_Cooking.prototype.cycleCookActor = function (dir) {
+        this.selectCookActor((this._cookActorIndex || 0) + dir);
+    };
+
     Scene_Cooking.prototype.create = function () {
         Scene_MenuBase.prototype.create.call(this);
+        this._cookActorIndex = 0;
+        // Name the skill this menu runs on, and whose hands are on it.
+        if (window.SpecBadge) {
+            window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
+        }
+        if (window.CharSwitcher) {
+            window.CharSwitcher.installTabKey(this, (dir) => this.cycleCookActor(dir));
+        }
         this.createHelpWindow();
         this.createItemListWindow();
         this.createConfirmWindow();
@@ -752,6 +802,8 @@
         if (window.AsciiMode && window.AsciiMode.canvas) {
             window.AsciiMode.canvas.style.display = 'none';
         }
+        if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
+        if (window.SpecBadge) window.SpecBadge.hide();
 
         // Cleanup D&D container
         const container = document.getElementById("cooking-container");
@@ -1052,8 +1104,8 @@
                         <div class="pantry-list-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;"></div>
                     </div>
                     <div class="right-page">
-                        <h2 class="title">${T('Cooking.cooking')}</h2>
-                        
+                        <div id="cooking-companion-row" class="companion-switcher companion-switcher--header"></div>
+
                         <div class="pot-label">${T('Cooking.nutritionalBase')}</div>
                         <div class="slot-container-1"></div>
                         
@@ -1099,6 +1151,26 @@
     Scene_Cooking.prototype.refreshUICooking = function () {
         const container = document.getElementById("cooking-container");
         if (!container) return;
+
+        // The party switcher heads the right page: the same companion-tab row
+        // the Skills and Training menus use.
+        const compRow = document.getElementById("cooking-companion-row");
+        if (compRow && window.CharSwitcher) {
+            // The switcher heads the page in place of its old title, so it is
+            // drawn even for a party of one: the single name says whose hands
+            // the skill badge underneath is reporting.
+            const members = this.cookMembers();
+            let tabs = "";
+            members.forEach((m, idx) => {
+                const sel = idx === (this._cookActorIndex || 0) ? "selected" : "";
+                tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene.selectCookActor(${idx})">${m.name()}</div>`;
+            });
+            compRow.innerHTML = window.CharSwitcher.inner(
+                `<div class="companion-tabs-row">${tabs}</div>`, members.length);
+        }
+        if (window.SpecBadge) {
+            window.SpecBadge.show('Cooking', { actor: this.cookActor() });  // i18n-ignore  Specialization.json id
+        }
 
         const itemsList = this.getCachedFoodList();
         const item1 = CookingSystem.getFirstItem();
@@ -1389,6 +1461,11 @@
         const itemsList = this.getCachedFoodList();
         const item1 = CookingSystem.getFirstItem();
         const item2 = CookingSystem.getSecondItem();
+
+        // Shoulder buttons change who is cooking, wherever the cursor is (TAB
+        // does the same on a keyboard, through CharSwitcher).
+        if (Input.isTriggered('pagedown')) { this.cycleCookActor(1); return; }
+        if (Input.isTriggered('pageup')) { this.cycleCookActor(-1); return; }
 
         if (this._activeArea === "pantry") {
             if (itemsList.length === 0) {

@@ -1,3 +1,7 @@
 {
-  "defaultName": "Compagno"
+  "defaultName": "Compagno",
+  "defaultChildName": "Piccolo",
+  "born": "{name} è nato, ed entra nella famiglia.",
+  "cloneJoined": "{parent} si divide. {name} prende posto nel gruppo.",
+  "cloneFollows": "{parent} si divide. Non c'è posto nel gruppo, così {name} segue da dietro."
 }

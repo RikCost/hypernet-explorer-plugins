@@ -78,10 +78,22 @@
   "belowNormalHypogonadism": "Sotto il normale (Ipogonadismo)",
   "noReproductiveSystemAvailableSetVariable87Fi": "Nessun sistema riproduttivo disponibile. Imposta prima la Variabile 87.",
   "alreadyInReproductiveProcess": "Già  in processo riproduttivo!",
-  "pregnancyInitiatedDueIn270Days": "Gravidanza iniziata! Parto previsto tra 270 giorni.",
-  "eggDevelopmentInitiated14EggsWillBeReadyIn27": "Sviluppo uova iniziato! 1-4 uova saranno pronte tra 270 giorni.",
-  "seedGenerationInitiatedSeedWillBeReadyIn7Day": "Generazione seme iniziata! Seme sarà pronto tra 7 giorni.",
-  "mitosisInitiatedCellDivisionWillCompleteIn1D": "Mitosi iniziata! Divisione cellulare completerà in 1 giorno.",
+  "pregnancyInitiatedDue": {
+    "one": "Gravidanza iniziata! Parto previsto tra {count} giorno.",
+    "other": "Gravidanza iniziata! Parto previsto tra {count} giorni."
+  },
+  "eggDevelopmentInitiated": {
+    "one": "Sviluppo uova iniziato! 1-4 uova saranno pronte tra {count} giorno.",
+    "other": "Sviluppo uova iniziato! 1-4 uova saranno pronte tra {count} giorni."
+  },
+  "seedGenerationInitiated": {
+    "one": "Generazione seme iniziata! Seme sarà pronto tra {count} giorno.",
+    "other": "Generazione seme iniziata! Seme sarà pronto tra {count} giorni."
+  },
+  "mitosisInitiated": {
+    "one": "Mitosi iniziata! Divisione cellulare completerà in {count} giorno.",
+    "other": "Mitosi iniziata! Divisione cellulare completerà in {count} giorni."
+  },
   "notCurrentlyInReproductiveProcess": "Non attualmente in processo riproduttivo.",
   "pregnancyAcceleratedToCompletionBirthIsImmin": "Gravidanza accelerata al completamento! Il parto à¨ imminente.",
   "eggDevelopmentAcceleratedToCompletionEggsRea": "Sviluppo uova accelerato al completamento! Uova pronte da deporre.",
@@ -202,6 +214,7 @@
   "weeks": "Settimane",
   "currentTrimester": "Trimestre",
   "trimester": "Trimestre",
+  "gestationalTerm": "Durata Gestazione",
   "gestationalProgress": "Progresso Sviluppo",
   "fetalBiometricRegister": "Registro Biometrico Fetale",
   "developmentalStage": "Fase dello Sviluppo",

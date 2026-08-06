@@ -16,7 +16,8 @@
   "section": {
     "damage": "Damage",
     "skillEffects": "Skill Effects",
-    "classifications": "Classifications"
+    "classifications": "Classifications",
+    "training": "Training"
   },
   "role": {
     "offensive": {
@@ -80,5 +81,9 @@
     "hint": "Select a skill from the list on the left to inspect its elemental scale, use cost, and alchemical actions.",
     "section": "No skills cataloged under this section.",
     "category": "No skills cataloged in this category."
+  },
+  "spec": {
+    "trains": "Trains",
+    "bonus": "Skill bonus"
   }
 }

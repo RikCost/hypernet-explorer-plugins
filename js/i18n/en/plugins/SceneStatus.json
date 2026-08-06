@@ -40,6 +40,10 @@
     "alignment": "Alignment",
     "noTraits": "No traits assigned...",
     "noVitals": "No biological vitals recorded...",
-    "noClassAbility": "No class ability"
+    "noClassAbility": "No class ability",
+    "archetype": "Body Archetype",
+    "hybridArchetype": "Hybrid Archetype",
+    "gestationTerm": "Gestation: {days} days",
+    "noArchetype": "No archetype recorded..."
   }
 }

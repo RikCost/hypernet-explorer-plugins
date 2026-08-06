@@ -274,12 +274,41 @@
 
             const section = (title, body) => `<div class="inspect-section-title">${esc(title)}</div>${body}`;
 
-            function build(skill) {
+            // The specialization a skill is practised through (window.SkillSpecs,
+            // SpecializationMenu.js): which discipline it trains, how far along
+            // the character reading the page is, and what that is worth on the
+            // skill's own numbers. Absent for the engine basics, which belong to
+            // no discipline.
+            const specRowsOf = (skill, actor) => {
+                const svc = window.SkillSpecs;
+                const def = svc ? svc.forSkill(skill) : null;
+                if (!def) return [];
+                const rows = [{
+                    label: T("SkillsMenu.spec.trains"),
+                    val: (typeof window.translateText === 'function')
+                        ? window.translateText(def.name) : def.name
+                }];
+                if (actor && actor.specializationLevel) {
+                    const level = actor.specializationLevel(def.id);
+                    rows.push({
+                        label: actor.name(),
+                        val: window.Specializations.levelName(level)
+                    });
+                    const bonus = Math.round((svc.multiplier(actor, skill) - 1) * 100);
+                    if (bonus > 0) {
+                        rows.push({ label: T("SkillsMenu.spec.bonus"), val: `+${bonus}%` });
+                    }
+                }
+                return rows;
+            };
+
+            function build(skill, actor) {
                 if (!skill) return "";
                 const combat = combatSpecsOf(skill);
                 const damage = damageSpecsOf(skill);
                 const effects = effectsOf(skill);
                 const noteTags = noteTagsOf(skill);
+                const training = specRowsOf(skill, actor);
 
                 let html = "";
 
@@ -294,6 +323,9 @@
                     html += section(T("SkillsMenu.section.skillEffects"), effects.map(desc =>
                         `<div class="inspect-effect-row"><span style="color:var(--text-primary-hover); margin-right:6px;">✦</span><span style="color:var(--text-success-active);">${esc(desc)}</span></div>`
                     ).join(""));
+                }
+                if (training.length) {
+                    html += section(T("SkillsMenu.section.training"), specRows(training));
                 }
                 if (noteTags.length) {
                     html += section(T("SkillsMenu.section.classifications"), specRows(noteTags));
@@ -2645,7 +2677,7 @@
             // Full spec block (Combat Application + Damage side by side, then
             // Skill Effects and Classifications) from the shared service, which
             // SkillMaster's Training encyclopedia renders too.
-            const detailedInfoHTML = window.SkillDetails.build(skill);
+            const detailedInfoHTML = window.SkillDetails.build(skill, actor);
 
             const actions = this.getUISkillActions();
             let actionsHTML = "";
@@ -2943,7 +2975,7 @@
 
             // Same inspect block as the full refresh, so hovering a skill and
             // selecting it show identical information.
-            const detailedInfoHTML = window.SkillDetails.build(skill);
+            const detailedInfoHTML = window.SkillDetails.build(skill, actor);
 
             const actions = this.getUISkillActions();
             let actionsHTML = "";

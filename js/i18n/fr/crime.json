@@ -60,6 +60,9 @@
     "disorderlyconduct": {
       "name": "Conduite désordonnée"
     },
+    "harassment": {
+      "name": "Harcèlement"
+    },
     "trespassing": {
       "name": "Intrusion"
     },

@@ -40,6 +40,8 @@
     "unknownEnemy": "Inconnu",
     "noParts": "",
     "butcher": "",
+    "butcherAll": "",
+    "butcherAllResult": "",
     "leave": "",
     "alreadyCollected": "",
     "partDestroyed": "",

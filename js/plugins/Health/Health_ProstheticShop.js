@@ -1777,6 +1777,8 @@
 
   Scene_ProstheticShop.prototype.create = function () {
     Scene_MenuBase.prototype.create.call(this);
+    // Name the skill this menu runs on while it is open.
+    if (window.SpecBadge) window.SpecBadge.show('Surgery');  // i18n-ignore  Specialization.json id
 
     // Inject styles unique to this scene
     this._dndContainer = document.createElement('div');

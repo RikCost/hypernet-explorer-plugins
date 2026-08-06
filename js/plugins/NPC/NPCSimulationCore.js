@@ -1455,10 +1455,14 @@
         // Personality-flavored reaction to the new purchase (shown as a bubble).
         _emitItemThought(profile, pick.data, "buy");
 
-        // A sale warms the buyer ↔ on-shift shopkeeper relationship.
+        // A sale warms the buyer ↔ shopkeeper relationship. Whoever is behind
+        // the counter: the covering persona on a rota till, otherwise the
+        // event's own keeper (a Shop event with a face of its own is one
+        // named person, always on duty), provided they are a real citizen.
         const persona = ShopShiftManager.getActivePersona($gameMap.mapId(), targetEvent.eventId());
-        if (persona?.name && persona.name !== name) {
-          bumpMutualOpinion(name, persona.name, 2);
+        const keeper  = persona?.name || (targetEvent.event()?.name || "").trim();
+        if (keeper && keeper !== name && $gameSystem?._npcSociety?.[keeper]) {
+          bumpMutualOpinion(name, keeper, 2);
         }
         EventBus.emit("npc:capability_end", {
           name, capabilityId: "shop_counter",
@@ -2445,9 +2449,13 @@
   // ============================================================================
   // SECTION 11c, SHOP SHIFT MANAGER
   // ============================================================================
-  // "Shop" events have no graphic of their own, they're covered around the
+  // "Shop" events with no graphic of their own are covered around the
   // clock by three 8-hour shifts (00-08, 08-16, 16-24), each staffed by a
   // persona drawn from the map group's own NPC pool (window.NPCSystem.getNPCPool).
+  //
+  // A "Shop" event the map author DID draw a face on is left out of all of
+  // this (see isShopEvent): that face is a shopkeeper of their own, not a
+  // fixture, and they stand their counter at every hour of every day.
   //
   // For now this is purely cosmetic: 3 random NPCs are picked per Shop event
   // (regardless of whether they already have a job/routine elsewhere) and
@@ -2498,8 +2506,57 @@
       if (persist) this._persistedPersonas()[key] = shifts;
     },
 
+    // A <Shop> counter belongs to the rota only while it has no graphic of its
+    // own. A face drawn on it by the map author names the one person who keeps
+    // that till: they are never covered, never swapped at a shift boundary and
+    // are always found standing there, so every pass here has to walk past them
+    // and every reader (npcNameForEvent, the Empathize panel, MousePan) falls
+    // back to the event's own identity.
+    //
+    // The verdict is cached on the Game_Event because _applyPersonaSprite
+    // writes the covering persona onto the page data: asking the same question
+    // a second time would then see a graphic that the author never drew. The
+    // first ask always precedes any such write (every application path filters
+    // through here first) and Game_Event objects are rebuilt from the map file
+    // on setup, so the cached answer is always the one taken from clean data.
     isShopEvent(ev) {
-      return window.NPCSystem?.hasShopTag?.(ev?.event()?.note) ?? false;
+      if (!ev) return false;
+      if (ev._npcShopRota === undefined) {
+        const data = ev.event();
+        const tagged = !!window.NPCSystem?.hasShopTag?.(data?.note);
+        ev._npcShopRota = tagged && !window.NPCSystem?.hasOwnGraphic?.(data);
+        if (tagged && !ev._npcShopRota) this._releaseRota($gameMap?.mapId(), ev.eventId());
+      }
+      return ev._npcShopRota;
+    },
+
+    // Hands back a rota this counter should never have had. Worlds made before
+    // author-drawn shopkeepers were recognised staffed them like any other
+    // counter, which left three citizens believing they worked a till that has
+    // its own keeper: they showed as "at work" all day and were held out of the
+    // map's spawn roster. Runs once per event, the first time the counter is
+    // recognised as static.
+    _releaseRota(mapId, evId) {
+      if (!$gameSystem || mapId == null) return;
+      const key = `${mapId}_${evId}`;
+      const stored = this._persistedPersonas()[key];
+      if (!stored) return;
+      delete this._persistedPersonas()[key];
+      delete this._personas[key];
+      const assigns  = $gameSystem._npcShopAssignments || {};
+      const reserved = $gameSystem._npcShopReservedNames?.[mapId];
+      for (const persona of Object.values(stored)) {
+        const name = persona?.name;
+        const a = name ? assigns[name] : null;
+        // Only the shift held at THIS counter is released, a persona booked
+        // elsewhere keeps the shift it really works.
+        if (!a || a.mapId !== mapId || a.eventId !== evId) continue;
+        delete assigns[name];
+        const prof = $gameSystem._npcSociety?.[name];
+        if (prof) prof._routineDay = -1; // today's routine still says "shopkeeper"
+        const i = reserved ? reserved.indexOf(name) : -1;
+        if (i >= 0) reserved.splice(i, 1);
+      }
     },
 
     // The map's <Shop> events, cached so updateSprites doesn't re-scan and
@@ -2905,9 +2962,10 @@
       for (const mapId of [...mapIds].sort((a, b) => a - b)) {
         let entries = [];
         try { entries = NPCSys.getShopIndex(mapId) || []; } catch (e) { entries = []; }
-        // Only <Shop>-tagged counters are staffed by a persona; a plain Shop
-        // Processing event keeps whatever face its own page defines.
-        const counters = entries.filter(e => e && e.shopTagged);
+        // Only graphic-less <Shop> counters are staffed by a persona; a plain
+        // Shop Processing event, and a <Shop> counter whose shopkeeper the
+        // author drew, keep whatever face their own page defines.
+        const counters = entries.filter(e => e && e.shopTagged && !e.hasGraphic);
         if (!counters.length) continue;
 
         const groupName = NPCSys.findMapGroupByMap?.(mapId) || null;

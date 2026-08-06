@@ -33,6 +33,9 @@
     "aggravatedassault": {
       "name": "Aggressione Aggravata"
     },
+    "abandonchild": {
+      "name": "Abbandono di Minore"
+    },
     "murder": {
       "name": "Omicidio"
     },
@@ -62,6 +65,9 @@
     },
     "disorderlyconduct": {
       "name": "Condotta Molesta"
+    },
+    "harassment": {
+      "name": "Molestie"
     },
     "trespassing": {
       "name": "Violazione di Domicilio"
@@ -152,6 +158,9 @@
     },
     "animalcruelty": {
       "name": "Maltrattamento di Animali"
+    },
+    "abandonpet": {
+      "name": "Abbandono di Animale"
     },
     "environmentalcrime": {
       "name": "Reato Ambientale"

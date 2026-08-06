@@ -68,6 +68,7 @@
   "buy": "BUY",
   "sell": "SELL",
   "hoverOrSelectAnItem": "Hover or select an item to inspect its alchemical specifications...",
+  "max": "Max:",
   "totalCost": "Total Cost:",
   "sellValue": "Sell Value:",
   "confirmTransaction": "CONFIRM TRANSACTION",

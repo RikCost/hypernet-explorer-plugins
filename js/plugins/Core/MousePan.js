@@ -427,11 +427,13 @@
         return false;
     }
 
-    // "Shop" events have no graphic/identity of their own, they're covered
-    // by an NPC persona (see ShopShiftManager in NPCSimulationCore.js). When
-    // covered, returns that persona's name + their actual class, otherwise null.
+    // "Shop" events with no graphic/identity of their own are covered by an NPC
+    // persona (see ShopShiftManager in NPCSimulationCore.js). When covered,
+    // returns that persona's name + their actual class, otherwise null, which
+    // includes a Shop event whose shopkeeper the author drew: that one is
+    // hovered under their own name like any other NPC.
     function shopPersonaDisplay(ev) {
-        if (!window.NPCSystem?.hasShopTag?.(ev.event().note) || !window.NPCSim?.getShopShiftData) return null;
+        if (!window.NPCSim?.isShopShiftCovered?.(ev) || !window.NPCSim?.getShopShiftData) return null;
         const persona = window.NPCSim.getShopShiftData(ev.event().name, $gameMap.mapId(), ev.eventId());
         if (!persona) return null;
         const profile = $gameSystem?._npcSociety?.[persona.name];

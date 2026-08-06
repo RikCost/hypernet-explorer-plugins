@@ -843,11 +843,75 @@
     return fill(loreTemplate(item.meta.Lore), item.id, reseed);
   }
 
+  /* -----------------------------------------------------------------------
+   * How a thing is made, for every panel that inspects one.
+   *
+   * An entry carries its own recipe and, for weapons and armor, the trade and
+   * the tier of that trade the forge asks for (BlacksmithingMenu.js):
+   *
+   *   <Recipe: 865x13, 863x5>   <Craft: Bladesmithing>   <CraftLevel: 5>
+   *
+   * craftInfo() reads them; craftHTML() draws the block the equip screen, the
+   * shops and the forge all show, so a recipe reads the same everywhere and
+   * the player never has to open a crafting menu to find out what a thing
+   * costs to make. Quantities are shown against what the party actually holds.
+   * --------------------------------------------------------------------- */
+  function craftInfo(item) {
+    if (!item || !item.note) return null;
+    const m = item.note.match(/<Recipe:\s*(.+?)>/i);
+    if (!m) return null;
+    const materials = [];
+    for (const part of m[1].split(",")) {
+      const bits = part.trim().split("x");
+      const id = parseInt(bits[0]);
+      if (!id) continue;
+      materials.push({ id: id, qty: parseInt(bits[1]) || 1 });
+    }
+    if (!materials.length) return null;
+    const trade = (item.meta && item.meta.Craft) ? String(item.meta.Craft).trim() : "";
+    const tier = Number(item.meta && item.meta.CraftLevel) || 0;
+    return { materials: materials, trade: trade, tier: tier };
+  }
+
+  function craftHTML(item) {
+    const info = craftInfo(item);
+    if (!info || typeof $dataItems === "undefined" || !$dataItems) return "";
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const tr = (s) => (typeof window.translateText === "function" ? window.translateText(s) : s);
+
+    let head = T.has("Blacksmith.materials") ? T("Blacksmith.materials") : "Materials";
+    if (info.trade) {
+      const levels = window.Specializations;
+      const tierName = (info.tier && levels && levels.ready && levels.levelName)
+        ? levels.levelName(info.tier) : "";
+      head += " - " + esc(tr(info.trade)) + (tierName ? ", " + esc(tierName) : "");
+    }
+
+    let rows = "";
+    for (const mat of info.materials) {
+      const data = $dataItems[mat.id];
+      if (!data) continue;
+      const owned = (typeof $gameParty !== "undefined" && $gameParty) ? $gameParty.numItems(data) : 0;
+      const enough = owned >= mat.qty;
+      const idx = Number(data.iconIndex) || 0;
+      const icon = `<span class="toast-icon" style="width:1.1em;height:1.1em;` +
+        `background-size:17.6em auto;background-position:-${1.1 * (idx % 16)}em -${1.1 * Math.floor(idx / 16)}em;"></span>`;
+      rows += `<div class="craft-mat-row${enough ? "" : " short"}">` +
+        `<span class="craft-mat-name">${icon}${esc(tr(data.name))}</span>` +
+        `<span class="craft-mat-count">${owned}/${mat.qty}</span></div>`;
+    }
+    if (!rows) return "";
+    return `<div class="craft-block"><div class="craft-block-title">${head}</div>${rows}</div>`;
+  }
+
   window.ItemSystemUtils = window.ItemSystemUtils || {};
   window.ItemSystemUtils.fillLore = fill;
   window.ItemSystemUtils.resolveLoreTokens = resolve;
   window.ItemSystemUtils.loreFor = loreFor;
   window.ItemSystemUtils.loreTemplate = loreTemplate;
+  window.ItemSystemUtils.craftInfo = craftInfo;
+  window.ItemSystemUtils.craftHTML = craftHTML;
   window.ArmorLore = { fill: fill, resolve: resolve, loreFor: loreFor };
 })();
 

@@ -1,14 +1,14 @@
 //=============================================================================
 // ErisDateSystem.js - Enhanced Dating System with Branching Paths
-// Version: 2.1.0
+// Version: 3.0.0
 // Author: Assistant
 //=============================================================================
 
 /*:
  * @target MZ
- * @plugindesc Eris Dating System v2.1.0 - Branching dialogue paths on the parchment book spread
+ * @plugindesc Eris Dating System v3.0.0 - Procedural moods, dares, heartbeats and memory on the parchment book spread
  * @author Assistant
- * @version 2.1.0
+ * @version 3.0.0
  * @description A dating system featuring Eris with dynamic branching dialogue paths
  *
  * @param opinionVariable
@@ -17,11 +17,6 @@
  * @type variable
  * @default 78
  *
- * @param genderVariable
- * @text Gender Variable ID
- * @desc Variable ID for player gender (1=male, 2=female, 3=nonbinary, 4=cocoon)
- * @type variable
- * @default 38
  *
  * @help ErisDateSystem.js
  *
@@ -47,6 +42,30 @@
  *   up, what she brought and the incidents between phases are all rolled per
  *   date, and every spoken line resolves "{a|b|c}" alternations as it is said,
  *   so no two dates read the same
+ * - Every date also rolls a register (tone): a sincere evening, an ordinary
+ *   capricious one, or a total bonkers one, which scales how often the evening
+ *   is interrupted and how hard her feelings swing
+ * - Her mood is rolled fresh each date from a pool of sixteen date-only moods
+ *   (the trial keeps its own): playful, romantic, chaotic, nervous, confident,
+ *   caring, guilty, crazed, psyched out, high on solipsism, eldritch,
+ *   melancholy, smug, paranoid, prophetic, bored. It can shift mid-date,
+ *   changing her voice and her heartbeat. When the mood is eldritch the thing
+ *   across the table is not entirely Eris any more: her lines warp, her pulse
+ *   meter shows readings that are not numbers and the portrait misbehaves
+ * - The player's answers are procedural too: any choice list can grow weird,
+ *   awkward, chaotic or blunt wildcard answers, and how she takes them is a
+ *   roll of her mood, so she stays unpredictable
+ * - She sometimes interrupts the evening with a dare (up to and including
+ *   robbing a bank out in the Badlands)
+ * - A scenario is rolled on top of the biome (picnic, seance, stakeout, ...),
+ *   so the same biome hosts many different evenings
+ * - Two pulses on the HUD: the player's heartbeat and hers, moved by every
+ *   beat of the evening
+ * - She remembers past dates ($gameSystem._erisDateMemory) and brings them up
+ * - She keeps a relationship score for every party member, active or benched,
+ *   keyed by name ($gameSystem._erisMemberOpinions, window.ErisRelations).
+ *   Everyone starts at 0; Em starts at -92 and Bubba at +92 (docs/Lore.odt),
+ *   and mid-date she sometimes turns on (or towards) a companion
  * - The first date that ends well (one of the good endings, or a bond of 0.45
  *   with Em) earns a parting gift: a Blade seed, handed over once per save and
  *   remembered in $gameSystem._erisGiftGiven
@@ -66,8 +85,10 @@
  *
  * @arg mood
  * @text Eris's Initial Mood
- * @desc Her starting mood for the date
+ * @desc Leave empty to roll one of the sixteen date moods; set one only to force it.
  * @type select
+ * @option (random)
+ * @value
  * @option Playful
  * @value playful
  * @option Romantic
@@ -78,7 +99,29 @@
  * @value nervous
  * @option Confident
  * @value confident
- * @default playful
+ * @option Caring
+ * @value caring
+ * @option Guilty
+ * @value guilty
+ * @option Crazed
+ * @value crazed
+ * @option Psyched Out
+ * @value psychedOut
+ * @option High on Solipsism
+ * @value solipsist
+ * @option Eldritch
+ * @value eldritch
+ * @option Melancholy
+ * @value melancholy
+ * @option Smug
+ * @value smug
+ * @option Paranoid
+ * @value paranoid
+ * @option Prophetic
+ * @value prophetic
+ * @option Bored
+ * @value bored
+ * @default
  */
 
 (() => {
@@ -87,19 +130,68 @@
   const pluginName = "ErisDateSystem";
   const parameters = PluginManager.parameters(pluginName);
   const opinionVariableId = parseInt(parameters["opinionVariable"] || 78);
-  const genderVariableId = parseInt(parameters["genderVariable"] || 38);
 
   // Eris's date mood, shown as a real IconSet glyph instead of an emoji
   // (indices per js/db/Sprites/Icons.json), same as the trial's mood badge.
   const MOOD_ICONS = {
-    playful: 89,    // Pink Star
-    romantic: 84,   // Heart
-    chaotic: 10,    // Confusion
-    nervous: 86,    // Half Heart
-    confident: 87   // Gold Star
+    playful: 89,      // Pink Star
+    romantic: 84,     // Heart
+    chaotic: 10,      // Confusion
+    nervous: 86,      // Half Heart
+    confident: 87,    // Gold Star
+    caring: 7,        // Charmed
+    guilty: 85,       // Broken Heart
+    crazed: 5,        // Rage
+    psychedOut: 307,  // Crystal Ball
+    solipsist: 3,     // Blind
+    eldritch: 321,    // Void Edge
+    melancholy: 11,   // Sleep
+    smug: 88,         // Silver Star
+    paranoid: 126,    // Skull Shield
+    prophetic: 308,   // Crystal Ball
+    bored: 4          // Silence
   };
   const MOOD_ICON_DEFAULT = 7; // Charmed
   const OPINION_ICON = 84;     // Heart
+
+  // The full date-only mood pool. The trial keeps its own mood wheel; none of
+  // this leaks into ErisTrial.js. One is rolled fresh for every date, and
+  // moodSwing() can move her to any other mid-evening.
+  const DATE_MOODS = Object.keys(MOOD_ICONS);
+
+  // Where her pulse sits while a mood holds, before the evening moves it.
+  // Eldritch has no number: the meter shows readings that are not numbers.
+  const MOOD_HEART_BASE = {
+    playful: 78, romantic: 88, chaotic: 104, nervous: 112, confident: 68,
+    caring: 64, guilty: 92, crazed: 138, psychedOut: 120, solipsist: 54,
+    eldritch: 0, melancholy: 52, smug: 62, paranoid: 116, prophetic: 72,
+    bored: 48
+  };
+
+  // How likely she is to take a wildcard answer well, per mood. The rest of
+  // the odds come from the tone, so the same answer can land either way.
+  const MOOD_WILD_TASTE = {
+    playful: 0.62, romantic: 0.5, chaotic: 0.72, nervous: 0.45, confident: 0.55,
+    caring: 0.68, guilty: 0.5, crazed: 0.78, psychedOut: 0.7, solipsist: 0.38,
+    eldritch: 0.6, melancholy: 0.42, smug: 0.48, paranoid: 0.34, prophetic: 0.55,
+    bored: 0.36
+  };
+
+  // The evening's register, rolled once per date on top of the mood: how
+  // seriously the whole thing is being played. It scales interruptions, the
+  // odds of wildcard answers, her own swings and how hard her opinion moves.
+  const TONE_WEIGHTS = [['serious', 25], ['normal', 45], ['bonkers', 30]];
+  function rollTone() {
+    const total = TONE_WEIGHTS.reduce((s, t) => s + t[1], 0);
+    let r = Math.random() * total;
+    for (const [key, w] of TONE_WEIGHTS) { if ((r -= w) < 0) return key; }
+    return 'normal';
+  }
+  const TONE_TUNING = {
+    serious:  { incident: 0.6, wild: 0.30, swing: 0.07, dare: 0.4, volatility: 0.9 },
+    normal:   { incident: 1.0, wild: 0.55, swing: 0.16, dare: 1.0, volatility: 1.0 },
+    bonkers:  { incident: 1.5, wild: 0.80, swing: 0.28, dare: 1.9, volatility: 1.2 }
+  };
 
   // The one thing she owns that a mortal cannot buy off her. She parts with it
   // at the end of the first evening that actually went well, once per save, and
@@ -276,6 +368,21 @@
   // Things she brings up unprompted, in her own voice.
   const DATE_SMALL_TALK = () => dateBank('ErisDate.dateSmallTalk');
 
+  // The new procedural banks. All of them live in the same namespace file
+  // (js/i18n/<lang>/conversations/ErisDate.json) and resolve per language.
+  const TONE_LABELS = () => dateBank('ErisDate.toneLabels');
+  const TONE_INTROS = () => dateBank('ErisDate.toneIntros');
+  const WILD_CHOICES = () => dateBank('ErisDate.wildChoices');
+  const WILD_REACTIONS = () => dateBank('ErisDate.wildReactions');
+  const MOOD_SWING_NARRATION = () => dateBank('ErisDate.moodSwingNarration');
+  const MOOD_SWINGS = () => dateBank('ErisDate.moodSwings');
+  const MOOD_QUIPS = () => dateBank('ErisDate.moodQuips');
+  const DARES = () => dateBank('ErisDate.dares');
+  const CALLBACKS = () => dateBank('ErisDate.callbacks');
+  const PARTY_MOMENTS = () => dateBank('ErisDate.partyMoments');
+  const SCENARIOS = () => dateBank('ErisDate.scenarios');
+  const ELDRITCH = () => dateBank('ErisDate.eldritch');
+
   //=============================================================================
   // Em
   //=============================================================================
@@ -314,6 +421,52 @@
     }
   };
 
+  // What she remembers of the evenings already spent ($gameSystem, per save).
+  // Each finished date leaves a record, and later dates bring them up: the
+  // biome it happened in, whether it went anywhere, what was dared and whether
+  // the thing across the table was entirely her that night.
+  const ErisMemory = {
+    all() {
+      if (!window.$gameSystem) return [];
+      if (!$gameSystem._erisDateMemory) $gameSystem._erisDateMemory = [];
+      return $gameSystem._erisDateMemory;
+    },
+    add(rec) {
+      const list = this.all();
+      list.push(rec);
+      while (list.length > 12) list.shift();
+    }
+  };
+
+  // Eris keeps her own ledger on every companion the party has ever fielded,
+  // active or benched, keyed by name so it survives retirement and recall
+  // ($gameSystem._erisMemberOpinions, -100..100). Everybody starts at zero
+  // except the two she has history with (docs/Lore.odt): the witch who fed the
+  // spear, and the man that witch cost her.
+  const ErisRelations = {
+    _store() {
+      if (!window.$gameSystem) return {};
+      if (!$gameSystem._erisMemberOpinions) $gameSystem._erisMemberOpinions = {};
+      return $gameSystem._erisMemberOpinions;
+    },
+    seed(name) {
+      if (name === 'Em') return -92;
+      if (name === 'Bubba') return 92;
+      return 0;
+    },
+    get(name) {
+      const store = this._store();
+      if (!(name in store)) store[name] = this.seed(name);
+      return store[name];
+    },
+    change(name, delta) {
+      const store = this._store();
+      store[name] = Math.max(-100, Math.min(100, this.get(name) + (Number(delta) || 0)));
+      return store[name];
+    }
+  };
+  window.ErisRelations = ErisRelations;
+
   // Everything she has never said to the witch, in the order she is least able
   // to keep it in. Each one is spent for good once told.
   const EM_SECRETS_META = [{"key":"cList"},{"key":"route666"},{"key":"paradox"},{"key":"bubba"},{"key":"jealousy"},{"key":"throne"},{"key":"futureSelf"}];
@@ -350,7 +503,7 @@
       // A biome key from here on ("Beach", "Sewer", "SaltFlats"), never a
       // landmark. Anything the caller hands over is resolved against the bank.
       this.location = BIOME_BANK()[location] ? location : resolveDateBiome(location);
-      this.mood = mood || 'playful';
+      this.mood = mood || null;
       this.opinion = $gameVariables.value(opinionVariableId) || 500;
 
       // Is it the witch across the table? Everything below reads differently.
@@ -360,6 +513,33 @@
       // and only a set one buys the parting gift.
       this._wentWell = false;
 
+      // The register the whole evening is played in. Em always gets the
+      // sincere one: with her, Eris is not performing.
+      this.tone = this.isEm ? 'serious' : rollTone();
+      this._tuning = TONE_TUNING[this.tone] || TONE_TUNING.normal;
+      if (this.isEm) this.mood = 'nervous';
+      else if (DATE_MOODS.indexOf(this.mood) < 0) this.mood = pick(DATE_MOODS);
+
+      // One of several framings an evening in this biome can take, or none.
+      const scenarioKeys = Object.keys(SCENARIOS() || {});
+      this.scenario = (!this.isEm && scenarioKeys.length && Math.random() < 0.65)
+        ? pick(scenarioKeys) : null;
+
+      // Once-per-date beats and the token wells _fillTokens draws from.
+      this._dareDone = false;
+      this._dareAccepted = false;
+      this._dareRefused = false;
+      this._partyMoments = 0;
+      this._memberName = '';
+      this._pastBiomeLabel = '';
+
+      // Two pulses on the HUD: the player's and hers. Hers re-anchors to the
+      // mood whenever it swings; in the eldritch mood it stops being a number.
+      this.hearts = {
+        you: 68 + Math.floor(Math.random() * 10),
+        her: (MOOD_HEART_BASE[this.mood] || 70) + Math.floor(Math.random() * 10) - 5
+      };
+
       // The evening itself, rolled fresh: weather, how she turned up, what she
       // brought. None of it repeats between dates.
       this.scene = {
@@ -367,7 +547,13 @@
         look: pickFrom(DATE_ERIS_LOOK()),
         gift: pickFrom(DATE_GIFTS())
       };
-      this.playerGender = $gameVariables.value(genderVariableId) || 1;
+      if (this.isEldritch()) this.scene.look = pickFrom(ELDRITCH().arrival) || this.scene.look;
+      // Gender comes off the actor (ActorCharacterFields: 0=Male, 1=Female,
+      // 2=Non-binary, 3=Cocoon), not a variable; the genderTerms table in the
+      // i18n file is keyed 1..4, hence the shift.
+      const leader = window.$gameParty && $gameParty.leader && $gameParty.leader();
+      this.playerGender = (leader && typeof leader.gender === 'function')
+        ? (Number(leader.gender()) || 0) + 1 : 3;
       this._container = null;
       this._dialogueLog = [];
       this._datePhase = 0;
@@ -411,8 +597,13 @@
 
       try {
         await this.showNarration(this.getLocationIntro());
+        // The framing this particular evening takes here, when one rolled.
+        const scenIntro = this._scenario('intro');
+        if (scenIntro.length) await this.showNarration(pick(scenIntro));
         // The evening's own details, rolled for this date only.
         await this.showNarration(`${this.scene.weather}\n${this.scene.look}`);
+        const toneIntro = pickFrom(TONE_INTROS()[this.tone] || []);
+        if (toneIntro) await this.showNarration(toneIntro);
 
         // With Em the whole script is different: she is not playing.
         if (this.isEm) {
@@ -420,12 +611,15 @@
           return;
         }
 
+        // She remembers the last evenings, and says so.
+        await this.maybeCallback(0.65);
+
         await this.showOpening();
         await this.showNarration(this.scene.gift);
 
         // Main date phases with branching
         await this.firstInteraction();
-        await this.maybeIncident(0.5);
+        await this.maybeTwist(0.5);
 
         // Branch based on first interaction
         if (this.conversationFlags.impressedHer || this.playerTraits.romantic > 0) {
@@ -438,7 +632,7 @@
           await this.standardPath();
         }
 
-        await this.maybeIncident(0.55);
+        await this.maybeTwist(0.6);
         await this.finalMoment();
         await this.dateEnding();
       } finally {
@@ -452,17 +646,185 @@
       return biomeField(this.location, field);
     }
 
+    // A field of this date's scenario, or an empty list when none rolled.
+    _scenario(field) {
+      const bank = SCENARIOS() || {};
+      const entry = this.scenario && bank[this.scenario];
+      const value = entry && entry[field];
+      return Array.isArray(value) ? value : [];
+    }
+
+    // The eldritch behaviours hang off the MOOD, not the tone, so a swing can
+    // bring the horror on mid-date and another swing can take it away again.
+    isEldritch() {
+      return this.mood === 'eldritch';
+    }
+
+    // Something happens between the scripted phases: a dare, her turning on a
+    // party member, a mood swing, or a plain incident. The tone decides how
+    // often the evening is allowed to stay quiet.
+    async maybeTwist(chance = 0.5) {
+      const tune = this._tuning;
+      let dareChance = this._dareDone ? 0 : 0.16 * tune.dare;
+      if (this.mood === 'chaotic' || this.mood === 'crazed') dareChance *= 1.8;
+      if (this.mood === 'psychedOut') dareChance *= 1.4;
+      if (Math.random() < dareChance) return this.runDare();
+
+      const others = (window.$gameParty ? $gameParty.members() : []).slice(1).filter(m => m);
+      if (others.length && this._partyMoments < 2 && Math.random() < 0.2) {
+        return this.partyMoment(others);
+      }
+
+      let swingChance = tune.swing;
+      if (this.mood === 'crazed' || this.mood === 'psychedOut') swingChance *= 1.6;
+      if (Math.random() < swingChance) return this.moodSwing();
+
+      return this.maybeIncident(chance * tune.incident);
+    }
+
     // Drops a small incident or an unprompted remark between the scripted
     // phases. Most of the time it says nothing, so the pacing varies as well.
-    // Two incidents in three are local to the biome when it has any of its own.
+    // The pool layers up: eldritch intrusions when she is that far gone, the
+    // scenario's own mishaps, the biome's local ones, then the generic bank.
     async maybeIncident(chance = 0.5) {
       if (Math.random() > chance) return;
-      if (Math.random() < 0.6) {
-        const local = this._biome('incidents');
-        const useLocal = Array.isArray(local) && local.length && Math.random() < 0.66;
-        await this.showNarration(useLocal ? pick(local) : pickFrom(DATE_INCIDENTS()));
+      if (Math.random() < 0.55) {
+        let pool = null;
+        const scen = this._scenario('incidents');
+        if (this.isEldritch() && Math.random() < 0.45) pool = bank(ELDRITCH().incidents);
+        else if (scen.length && Math.random() < 0.35) pool = scen;
+        if (!pool || !pool.length) {
+          const local = this._biome('incidents');
+          const useLocal = Array.isArray(local) && local.length && Math.random() < 0.66;
+          pool = useLocal ? local : bank(DATE_INCIDENTS());
+        }
+        await this.showNarration(pick(pool));
+      } else if (!this.isEm && ErisMemory.all().length && Math.random() < 0.25) {
+        await this.maybeCallback(1);
       } else {
-        await this.showErisDialogue(pickFrom(DATE_SMALL_TALK()));
+        // Half her unprompted remarks come out of the mood she is in.
+        const quips = bank((MOOD_QUIPS() || {})[this.mood]);
+        const line = (quips.length && Math.random() < 0.5) ? pick(quips) : pickFrom(DATE_SMALL_TALK());
+        await this.showErisDialogue(line);
+      }
+    }
+
+    // She brings up a past date. Which facet of it she reaches for depends on
+    // how that evening actually went; the biome it happened in fills the
+    // {pastBiome} token in the lines.
+    async maybeCallback(chance) {
+      const past = ErisMemory.all();
+      if (!past.length || Math.random() > chance) return;
+      const rec = (Math.random() < 0.7) ? past[past.length - 1] : pick(past);
+      this._pastBiomeLabel = biomeField(rec.biome, 'label') || rec.biome || '';
+      let facet = 'general';
+      if (Math.random() >= 0.25) {
+        if (rec.biome === this.location) facet = 'sameBiome';
+        else if (rec.eldritch) facet = 'eldritch';
+        else if (rec.dareAccepted) facet = 'dareAccepted';
+        else if (rec.dareRefused) facet = 'dareRefused';
+        else if (rec.wentWell) facet = 'wentWell';
+        else facet = 'wentBad';
+      }
+      const lines = bank((CALLBACKS() || {})[facet]);
+      if (lines.length) await this.showErisDialogue(pick(lines));
+    }
+
+    // Her mood turns over mid-date: a new voice, and her pulse re-anchors to
+    // wherever the new mood sits. Eldritch is allowed but kept rarer, since it
+    // takes the rest of the evening with it.
+    async moodSwing() {
+      let candidates = DATE_MOODS.filter(m => m !== this.mood);
+      let next = pick(candidates);
+      if (next === 'eldritch' && Math.random() < 0.5) next = pick(candidates.filter(m => m !== 'eldritch'));
+      this.mood = next;
+      const base = MOOD_HEART_BASE[next] || 70;
+      this.hearts.her = base + Math.floor(Math.random() * 14) - 7;
+      this._bumpHearts(4 + Math.random() * 6, 0);
+      const narration = pickFrom(MOOD_SWING_NARRATION());
+      if (narration) await this.showNarration(narration);
+      const line = pickFrom(MOOD_SWINGS()[next] || []);
+      if (line) await this.showErisDialogue(line);
+    }
+
+    // She interrupts the evening with a demand. Sometimes it is small.
+    // Sometimes it is armed robbery out in the Badlands. Accepting is worth
+    // more than any compliment; refusing is a gamble, because now and then she
+    // respects it.
+    async runDare() {
+      this._dareDone = true;
+      await this.showErisDialogue(pickFrom(DARES().intro));
+      let tasks = bank(DARES().tasks).slice();
+      if (this.isEldritch()) tasks = tasks.concat(bank(ELDRITCH().tasks));
+      await this.showErisDialogue(pick(tasks));
+
+      const idx = await this._showChoicesDOM(bank(DARES().options));
+      this._choicesMade.push(idx);
+      if (idx === 0) {
+        this._dareAccepted = true;
+        this.playerTraits.chaotic += 2;
+        this.playerTraits.bold += 1;
+        this.conversationFlags.causedChaos = true;
+        this.changeOpinion(40 + Math.floor(Math.random() * 21));
+        this._bumpHearts(16, 22);
+        await this.showErisDialogue(pickFrom(DARES().acceptReaction));
+      } else if (idx === 1) {
+        this.playerTraits.thoughtful += 1;
+        this.changeOpinion(5);
+        await this.showErisDialogue(pickFrom(DARES().deflectReaction));
+      } else {
+        this._dareRefused = true;
+        if (Math.random() < 0.3) {
+          this.playerTraits.bold += 1;
+          this.changeOpinion(12);
+          await this.showErisDialogue(pickFrom(DARES().refuseRespect));
+        } else {
+          this.changeOpinion(-25);
+          await this.showErisDialogue(pickFrom(DARES().refuseReaction));
+        }
+      }
+    }
+
+    // She notices a companion. What she says is picked by her standing with
+    // that member (window.ErisRelations, seeded -92 for Em and +92 for Bubba),
+    // and how the player handles it moves both ledgers.
+    async partyMoment(others) {
+      this._partyMoments++;
+      const member = pick(others);
+      const name = member.name();
+      this._memberName = name;
+      const score = ErisRelations.get(name);
+      const key = score <= -80 ? 'nemesis'
+        : score >= 80 ? 'beloved'
+        : score <= -25 ? 'dislikes'
+        : score >= 25 ? 'likes' : 'neutral';
+      await this.showNarration(pickFrom(PARTY_MOMENTS().narration));
+      await this.showErisDialogue(pickFrom(PARTY_MOMENTS()[key]));
+      const drift = { nemesis: -3, dislikes: -2, neutral: 0, likes: 2, beloved: 2 }[key];
+      ErisRelations.change(name, drift + Math.floor(Math.random() * 5) - 2);
+
+      const idx = await this._showChoicesDOM(bank(PARTY_MOMENTS().options));
+      this._choicesMade.push(idx);
+      if (idx === 0) {
+        // Standing up for them. She either respects the spine or resents it.
+        this.playerTraits.bold += 1;
+        ErisRelations.change(name, 6);
+        if (Math.random() < 0.45) {
+          this.changeOpinion(15);
+          await this.showErisDialogue(pickFrom(PARTY_MOMENTS().defendGood));
+        } else {
+          this.changeOpinion(-10);
+          await this.showErisDialogue(pickFrom(PARTY_MOMENTS().defendBad));
+        }
+      } else if (idx === 1) {
+        this.playerTraits.chaotic += 1;
+        this.changeOpinion(15);
+        ErisRelations.change(name, -8);
+        await this.showErisDialogue(pickFrom(PARTY_MOMENTS().laughReaction));
+      } else {
+        this.playerTraits.thoughtful += 1;
+        ErisRelations.change(name, 1);
+        await this.showErisDialogue(pickFrom(PARTY_MOMENTS().stayOutReaction));
       }
     }
 
@@ -587,6 +949,8 @@
       } else {
         await this.showNarration(T('ErisDate.line.nothingHasChangedTheOdds'));
       }
+
+      this._recordDateMemory();
     }
 
     getLocationIntro() {
@@ -607,6 +971,18 @@
     }
 
     getOpeningDialogue() {
+      // The eldritch mood owns her first words outright: whatever arrived is
+      // not opening with pleasantries.
+      if (this.isEldritch()) {
+        const lines = bank(ELDRITCH().openings);
+        if (lines.length >= 2) {
+          const first = pick(lines);
+          let second = pick(lines);
+          while (second === first && lines.length > 1) second = pick(lines);
+          return [first, second];
+        }
+        if (lines.length) return lines.slice();
+      }
       // A biome may own her very first words here, the way the station does.
       const local = this._biome('opening');
       if (Array.isArray(local) && local.length) return local;
@@ -615,19 +991,15 @@
       } else if (this.opinion < 100) {
         return T.pool('ErisDate.bank.getOpeningDialogue.lines3');
       }
-      
-      // Normal openings based on mood
-      const openings = {
-        playful: T.pool('ErisDate.bank.getOpeningDialogue.playful')
-          .map(line => line.replace('{address}', this.genderTerms.address)),
-        
-        romantic: T.pool('ErisDate.bank.getOpeningDialogue.romantic')
-          .map(line => line.replace('{formal}', this.genderTerms.formal)),
-        
-        chaotic: T.pool('ErisDate.bank.getOpeningDialogue.chaotic')
-      };
-      
-      return openings[this.mood] || openings.playful;
+
+      // Every date-only mood owns an opening bank; playful is the last net
+      // under any mood whose bank has not been written yet.
+      const moodLines = T.pool(`ErisDate.bank.getOpeningDialogue.${this.mood}`);
+      const lines = moodLines.length ? moodLines
+        : T.pool('ErisDate.bank.getOpeningDialogue.playful');
+      return lines.map(line => line
+        .replace('{address}', this.genderTerms.address)
+        .replace('{formal}', this.genderTerms.formal));
     }
     getFirstQuestion() {
       return this._biome('question');
@@ -657,9 +1029,20 @@
       await this.handleFirstChoice(choiceIndex);
     }
     // Presents the choices on the left page and resolves with the picked index
-    // so callers can branch on what the player actually said.
+    // so callers can branch on what the player actually said. Before showing,
+    // the list can grow wildcard answers (weird, awkward, chaotic, blunt): the
+    // player is allowed to be as strange as she is. Picking one resolves
+    // entirely in here (her reaction is a roll of her mood) and returns -1, so
+    // callers' scripted follow-ups simply do not fire for it.
     async presentChoice(choices, opinionChanges = null) {
-      const index = await this._showChoicesDOM(choices);
+      const prepared = this._prepareChoices(choices);
+      const index = await this._showChoicesDOM(prepared.list);
+
+      if (prepared.wild[index]) {
+        await this._resolveWildChoice(prepared.wild[index]);
+        this._choicesMade.push(-1);
+        return -1;
+      }
 
       if (opinionChanges && opinionChanges[index] !== undefined) {
         this.changeOpinion(opinionChanges[index]);
@@ -671,6 +1054,53 @@
 
       this._choicesMade.push(index);
       return index;
+    }
+
+    // Swaps one or two of the scripted answers for wildcard ones. Em's date is
+    // left alone: nobody jokes their way through a confession.
+    _prepareChoices(choices) {
+      const list = choices.slice();
+      const wild = {};
+      if (this.isEm) return { list, wild };
+      if (Math.random() < this._tuning.wild) {
+        const flavors = Object.keys(WILD_CHOICES() || {});
+        if (flavors.length) {
+          const count = Math.random() < 0.35 ? 2 : 1;
+          const order = list.map((_, i) => i).sort(() => Math.random() - 0.5);
+          for (const i of order.slice(0, count)) {
+            const flavor = pick(flavors);
+            const lines = bank(WILD_CHOICES()[flavor]);
+            if (lines.length) {
+              list[i] = pick(lines);
+              wild[i] = flavor;
+            }
+          }
+        }
+      }
+      return { list, wild };
+    }
+
+    // How she takes a wildcard answer is a roll of her mood and the tone, so
+    // the same line can charm her one night and lose her the next.
+    async _resolveWildChoice(flavor) {
+      const traitMap = { weird: 'chaotic', awkward: 'thoughtful', chaotic: 'chaotic', blunt: 'bold' };
+      this.playerTraits[traitMap[flavor] || 'chaotic'] += 1;
+
+      let goodChance = MOOD_WILD_TASTE[this.mood] !== undefined ? MOOD_WILD_TASTE[this.mood] : 0.55;
+      if (this.tone === 'bonkers') goodChance += 0.1;
+      if (this.tone === 'serious') goodChance -= 0.12;
+      if (this.isEldritch() && flavor === 'weird') goodChance += 0.25;
+      const good = Math.random() < goodChance;
+
+      const delta = good ? 12 + Math.floor(Math.random() * 24) : -(8 + Math.floor(Math.random() * 22));
+      this.changeOpinion(delta);
+      this._bumpHearts(6 + Math.random() * 8, good ? 8 + Math.random() * 10 : 4 + Math.random() * 6);
+      if (flavor === 'chaotic' && good) this.conversationFlags.madeHerLaugh = true;
+      if (flavor === 'blunt' && !good) this.conversationFlags.challengedHer = true;
+
+      const reactions = (WILD_REACTIONS() || {})[flavor] || {};
+      const lines = bank(reactions[good ? 'good' : 'bad']);
+      if (lines.length) await this.showErisDialogue(pick(lines));
     }
     async handleFirstChoice(choiceIndex) {
       const useTranslation = ConfigManager.language === "it";
@@ -993,7 +1423,11 @@
       const useTranslation = ConfigManager.language === "it";
       
       // What there is to do here: she suggests it (index 0), then you do it.
-      const activity = this._biome('activity') || [];
+      // A rolled scenario brings its own idea of an activity more often than
+      // not, so the same biome hosts different evenings.
+      const scenActivity = this._scenario('activity');
+      const activity = (scenActivity.length && Math.random() < 0.6)
+        ? scenActivity : (this._biome('activity') || []);
       for (let i = 0; i < activity.length; i++) {
         if (i === 0) await this.showErisDialogue(activity[i]);
         else await this.showNarration(activity[i]);
@@ -1293,8 +1727,33 @@
         await this.terribleEnding();
       }
 
+      // On the nights she was something else, the evening does not so much
+      // end as recede.
+      if (this.isEldritch()) {
+        const coda = bank(ELDRITCH().endNote);
+        if (coda.length) await this.showNarration(pick(coda));
+      }
+
+      this._recordDateMemory();
       await this.maybeGiveGift();
       await this.showCourtroomNote();
+    }
+
+    // The record later dates reach back for ($gameSystem._erisDateMemory).
+    _recordDateMemory() {
+      ErisMemory.add({
+        biome: this.location,
+        tone: this.tone,
+        mood: this.mood,
+        scenario: this.scenario,
+        wentWell: !!this._wentWell,
+        opinion: this.opinion,
+        dareAccepted: this._dareAccepted,
+        dareRefused: this._dareRefused,
+        eldritch: this.isEldritch(),
+        em: this.isEm,
+        minute: window.$gameVariables ? $gameVariables.value(114) : 0
+      });
     }
 
     // The first evening that ends well, she hands over a Blade seed: the one
@@ -1475,7 +1934,20 @@
     }
 
     changeOpinion(amount) {
-      this.opinion = Math.max(0, Math.min(1000, this.opinion + amount));
+      // The tone scales how hard her feelings move: a sincere evening dampens
+      // the swings, a bonkers one amplifies them.
+      const scaled = Math.round((Number(amount) || 0) * (this._tuning ? this._tuning.volatility : 1));
+      this.opinion = Math.max(0, Math.min(1000, this.opinion + scaled));
+      this._bumpHearts(Math.abs(scaled) * 0.1, scaled * 0.15 + Math.abs(scaled) * 0.05);
+      this._updateSheet();
+    }
+
+    // Both pulses drift with the evening, jittered so they never sit still.
+    _bumpHearts(dYou, dHer) {
+      if (!this.hearts) return;
+      const jitter = () => Math.random() * 4 - 2;
+      this.hearts.you = Math.max(48, Math.min(178, this.hearts.you + (Number(dYou) || 0) + jitter()));
+      this.hearts.her = Math.max(40, Math.min(190, this.hearts.her + (Number(dHer) || 0) + jitter()));
       this._updateSheet();
     }
 
@@ -1522,6 +1994,18 @@
       }).join('');
 
       this._container.innerHTML = `
+        <style>
+          @keyframes erisHeartPulse { 0% { transform: scale(1); } 30% { transform: scale(1.35); } 60% { transform: scale(1); } 100% { transform: scale(1); } }
+          .eris-pulse-icon { display: inline-block; animation: erisHeartPulse 0.85s ease-in-out infinite; }
+          @keyframes erisEldritchFlicker {
+            0%, 100% { filter: invert(1) hue-rotate(120deg) saturate(2.2) contrast(1.15); }
+            43% { filter: invert(1) hue-rotate(160deg) saturate(3) contrast(1.3); }
+            47% { filter: invert(0) hue-rotate(300deg) saturate(0.3) brightness(0.5); }
+            52% { filter: invert(1) hue-rotate(90deg) saturate(2.6) contrast(1.4); }
+            56% { filter: invert(1) hue-rotate(120deg) saturate(2.2) contrast(1.15); }
+          }
+          .eris-eldritch-portrait { animation: erisEldritchFlicker 4.3s steps(1) infinite; }
+        </style>
         <div class="book-spread">
           <div class="left-page" style="justify-content:flex-start;">
             <h2 class="title">${T('ErisDate.line.theDate')}</h2>
@@ -1531,11 +2015,12 @@
           <div class="right-page" style="justify-content:flex-start;">
             <h2 class="title">Eris</h2>
             <div class="eris-date-portrait-frame">
-              <img class="eris-date-portrait" src="img/pictures/Eris.png" alt="Eris">
+              <img class="eris-date-portrait${this.isEldritch() ? ' eris-eldritch-portrait' : ''}" id="eris-date-portrait" src="img/pictures/Eris.png" alt="Eris">
             </div>
             <div class="eris-date-badges">
-              <span class="eris-mood-badge">${moodIconHTML(this.mood)} ${this._moodLabel()}</span>
+              <span class="eris-mood-badge" id="eris-mood-badge">${moodIconHTML(this.mood)} ${this._moodLabel()}</span>
               <span class="eris-mood-badge">${this._locationLabel()}</span>
+              <span class="eris-mood-badge">${T('ErisDate.hud.tone')}: ${this._toneLabel()}</span>
             </div>
             <div class="eris-chaos-meter">
               <div class="meter-label">${erisIconHTML(OPINION_ICON, 16)} ${T('ErisDate.line.opinion')}</div>
@@ -1547,6 +2032,14 @@
               <span>${T('ErisDate.line.rapport')}</span>
               <span id="eris-opinion-value">${this.opinion} / 1000</span>
             </div>
+            <div class="eris-bounty-total">
+              <span>${T('ErisDate.hud.you')}</span>
+              <span id="eris-heart-you">${this._heartHTML(this.hearts.you, false)}</span>
+            </div>
+            <div class="eris-bounty-total">
+              <span>${T('ErisDate.hud.her')}</span>
+              <span id="eris-heart-her">${this._heartHTML(this.hearts.her, this.isEldritch())}</span>
+            </div>
             <h3 class="h3">${T('ErisDate.line.impressions')}</h3>
             <div class="eris-crimes-list" id="eris-traits">${this._traitsHTML()}</div>
           </div>
@@ -1554,6 +2047,24 @@
 
       const log = document.getElementById('eris-log');
       if (log) log.scrollTop = log.scrollHeight;
+    }
+
+    // One heartbeat readout: a heart pulsing at the value's real rate. In the
+    // eldritch mood hers is not a number any more; the icon strobes and the
+    // reading comes from the bank of things a pulse meter should never say.
+    _heartHTML(bpm, eldritch) {
+      if (eldritch) {
+        const readings = bank(ELDRITCH().pulse);
+        const glyph = readings.length ? pick(readings) : '???';
+        return `<span class="eris-pulse-icon" style="animation-duration:${(0.1 + Math.random() * 0.2).toFixed(2)}s">${erisIconHTML(OPINION_ICON, 16)}</span> ${glyph}`;
+      }
+      const value = Math.round(bpm);
+      return `<span class="eris-pulse-icon" style="animation-duration:${(60 / value).toFixed(2)}s">${erisIconHTML(OPINION_ICON, 16)}</span> ${value} ${T('ErisDate.hud.bpm')}`;
+    }
+
+    _toneLabel() {
+      const labels = TONE_LABELS() || {};
+      return labels[this.tone] || this._capitalize(this.tone);
     }
 
     _traitsHTML() {
@@ -1573,6 +2084,16 @@
       if (fill) fill.style.width = `${this.opinion / 10}%`;
       if (val) val.textContent = `${this.opinion} / 1000`;
       if (traits) traits.innerHTML = this._traitsHTML();
+      // The living parts of the sheet: both pulses, the mood badge (moods
+      // swing mid-date) and the portrait, which misbehaves while she is gone.
+      const you = document.getElementById('eris-heart-you');
+      const her = document.getElementById('eris-heart-her');
+      if (you) you.innerHTML = this._heartHTML(this.hearts.you, false);
+      if (her) her.innerHTML = this._heartHTML(this.hearts.her, this.isEldritch());
+      const mood = document.getElementById('eris-mood-badge');
+      if (mood) mood.innerHTML = `${moodIconHTML(this.mood)} ${this._moodLabel()}`;
+      const portrait = document.getElementById('eris-date-portrait');
+      if (portrait) portrait.classList.toggle('eris-eldritch-portrait', this.isEldritch());
     }
 
     _removeDateUI() {
@@ -1596,13 +2117,33 @@
       const t = this._t();
       if (who === 'player') return T('ErisDate.line.you');
       if (who === 'narrator') return '';
-      return 'Eris';
+      // Her name is a proper noun in every language; while the eldritch mood
+      // holds even the letters do not sit still.
+      return this.isEldritch() ? 'E̸r̷i̸s̵' : 'Eris';
+    }
+
+    // The single-option tokens the banks may carry, filled before vary() runs
+    // (vary would otherwise eat them as one-option alternations): the biome's
+    // display name, the player's name, the companion of the current party
+    // moment and the biome of the past date she is bringing up.
+    _fillTokens(text) {
+      let out = String(text);
+      if (out.indexOf('{') < 0) return out;
+      const leader = window.$gameParty && $gameParty.leader && $gameParty.leader();
+      const terms = this.genderTerms || {};
+      return out
+        .replace(/\{biome\}/g, this._locationLabel())
+        .replace(/\{name\}/g, leader ? leader.name() : '')
+        .replace(/\{member\}/g, this._memberName || '')
+        .replace(/\{pastBiome\}/g, this._pastBiomeLabel || '')
+        .replace(/\{address\}/g, terms.address || '')
+        .replace(/\{formal\}/g, terms.formal || '');
     }
 
     // Every line goes through vary() first, so the "{a|b|c}" groups written into
     // the banks are rolled as they are spoken.
     _addDialogue(rawText, who = 'eris') {
-      const text = vary(String(rawText));
+      const text = vary(this._fillTokens(rawText));
       const clean = String(text).replace(/\\C\[\d+\]/g, '');
       this._dialogueLog.push({ who, text: clean });
       const log = document.getElementById('eris-log');
@@ -1678,7 +2219,7 @@
 
     _showChoicesDOM(rawChoices) {
       // Choices carry alternations too, so the player's own lines vary as well.
-      const choices = rawChoices.map(vary);
+      const choices = rawChoices.map(c => vary(this._fillTokens(c)));
       return new Promise(resolve => {
         const panel = document.getElementById('eris-choices');
         if (!panel) { resolve(0); return; }
@@ -1757,7 +2298,18 @@
     }
 
     async showErisDialogue(text) {
-      this._addDialogue(text, 'eris');
+      // In the eldritch mood her lines come through wrong: some are replaced
+      // outright by whatever is actually speaking, others pick up a trailing
+      // intrusion. Most survive, so the evening stays followable.
+      let line = text;
+      if (this.isEldritch()) {
+        const r = Math.random();
+        const speech = bank(ELDRITCH().speech);
+        const intrusions = bank(ELDRITCH().interjections);
+        if (r < 0.12 && speech.length) line = pick(speech);
+        else if (r < 0.34 && intrusions.length) line = `${line} ${pick(intrusions)}`;
+      }
+      this._addDialogue(line, 'eris');
       await this._waitForAdvance();
     }
 
@@ -1780,11 +2332,9 @@
     // "location" an old event still passes is ignored on purpose.
     const location = resolveDateBiome(null);
 
-    // Randomize mood on date start
-    const moods = ['playful', 'romantic', 'chaotic', 'nervous', 'confident'];
-    const randomMood = moods[Math.floor(Math.random() * moods.length)];
-
-    const date = new ErisDate(location, randomMood);
+    // The mood is rolled by the constructor from the full date-only pool; the
+    // command's mood argument survives only for events that force one.
+    const date = new ErisDate(location, DATE_MOODS.includes(args.mood) ? args.mood : null);
     date.startDate().catch(e => {
       console.error('[ErisDateSystem] date failed', e);
       date.cleanup();
@@ -1792,4 +2342,32 @@
   });
 
   window.ErisDate = ErisDate;
+
+  // Public entry point for a menu that picks the evening itself (the sandbox
+  // date board). The date is the same date: naming a biome only replaces the
+  // "wherever the party is standing" lookup, and an unnamed mood is still
+  // rolled by the constructor from the full date-only pool.
+  window.ErisDateSystem = {
+    isActive: () => dateActive,
+    moods: () => DATE_MOODS.slice(),
+    moodLabel: (mood) => (MOOD_LABELS() || {})[mood] || mood,
+    // Every biome the bank has prose for, and the name the date itself puts on
+    // the badge for one of them.
+    biomes: () => knownBiomes().slice(),
+    biomeLabel: (key) => (BIOME_BANK()[key] || {}).label || key,
+    // Where a date started right now would happen, resolved exactly as the
+    // plugin command resolves it.
+    currentBiome: () => resolveDateBiome(null),
+    // A biome key, "random", or null/"current" for the party's own biome.
+    start(biome, mood) {
+      if (dateActive) return false;
+      const location = resolveDateBiome(biome == null || biome === '' ? null : biome);
+      const date = new ErisDate(location, DATE_MOODS.includes(mood) ? mood : null);
+      date.startDate().catch(e => {
+        console.error('[ErisDateSystem] date failed', e);
+        date.cleanup();
+      });
+      return true;
+    }
+  };
 })();

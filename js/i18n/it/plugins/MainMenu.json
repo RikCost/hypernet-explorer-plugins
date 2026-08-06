@@ -9,12 +9,13 @@
     "biologics": "Biologia",
     "dynamics": "Dinamiche",
     "thinker": "Assembla",
-    "pets": "Animali",
+    "pets": "Seguaci",
     "workforce": "Manodopera",
     "worldMap": "Mappa del Mondo",
     "vehicles": "Veicoli",
     "wait": "Attendi",
     "cooking": "Cucina",
+    "blacksmithing": "Forgiatura",
     "build": "Costruisci",
     "training": "Addestramento",
     "research": "Ricerca",
@@ -76,6 +77,7 @@
     "partyLeader": " · capogruppo",
     "follower": "Seguace",
     "pet": "Animale",
+    "child": "Figlio",
     "classless": "Senza classe",
     "none": "Nessuno",
     "left": "Andato via il {date}",
@@ -126,7 +128,7 @@
   },
   "page": {
     "tools": "Strumenti",
-    "pets": "Animali e Seguaci",
+    "pets": "Seguaci",
     "vehicles": "Veicoli"
   },
   "vital": {
@@ -156,8 +158,14 @@
   "pets": {
     "rename": "Rinomina",
     "active": "Attivo",
-    "release": "Libera",
-    "none": "Nessun animale o seguace reclutato. Chiedi a un nemico di unirsi come animale o seguace durante una battaglia."
+    "none": "Nessun animale, figlio o seguace. Chiedi a un nemico di unirsi come animale o seguace durante una battaglia.",
+    "abandon": "Abbandona",
+    "abandonWarn": "Abbandonare {name}? Registrato come {crime}, taglia {fine}.",
+    "abandonFree": "Abbandonare {name}? Si è unito liberamente e può andarsene allo stesso modo.",
+    "childOf": "Figlio di {parent}",
+    "groupPets": "Animali",
+    "groupChildren": "Prole",
+    "groupFollowers": "Seguaci"
   },
   "vehicles": {
     "spawn": "Evoca",

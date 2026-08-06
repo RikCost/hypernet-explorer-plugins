@@ -175,6 +175,10 @@
  * @value illegalHunting
  * @option Animal Cruelty
  * @value animalCruelty
+ * @option Pet Abandonment
+ * @value abandonPet
+ * @option Child Abandonment
+ * @value abandonChild
  * @option Environmental Crime
  * @value environmentalCrime
  * @option Pollution Violation
@@ -540,11 +544,22 @@
             );
         }
 
+        // The name a preset crime is charged under. PresetCrimes.json carries the
+        // English wording and, in name_int, the key holding it in every language
+        // (js/i18n/<lang>/crime.json), so the record reads in the player's
+        // language rather than always in English.
+        static presetCrimeName(crimeKey) {
+            const crime = PresetCrimes[crimeKey];
+            if (!crime) return '';
+            if (crime.name_int && T.has(crime.name_int)) return T(crime.name_int);
+            return crime.name;
+        }
+
         static addPresetCrime(crimeKey) {
             const crime = PresetCrimes[crimeKey];
             if (crime) {
                 // Pass the crimeKey as the ID
-                this.addCrime(crime.name, crime.bounty, crimeKey);
+                this.addCrime(this.presetCrimeName(crimeKey), crime.bounty, crimeKey);
             } else {
                 window.skipLocalization = true;
                 $gameMessage.add(`\\C[2]${gettext('errorUnknown')}\\C[0] ${crimeKey}`);

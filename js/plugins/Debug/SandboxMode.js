@@ -103,12 +103,28 @@
         return !row.ancestors || row.ancestors.every(id => _mapTreeOpen.has(id));
     }
 
+    // A wish now spends the orb that opened the sanctum, so a sandbox run is
+    // stocked with orbs the first time it is recognised: five wishes to test
+    // with, rather than one destiny per playthrough.
+    const SANDBOX_WISH_ORB = 697;      // Wish-Granting Orb
+    const SANDBOX_WISH_ORB_COUNT = 5;
+
+    function grantSandboxWishOrbs() {
+        if (!window.$gameSystem || !window.$gameParty || !window.$dataItems) return;
+        if ($gameSystem._sandboxWishOrbsGiven) return;
+        const orb = $dataItems[SANDBOX_WISH_ORB];
+        if (!orb) return;
+        $gameSystem._sandboxWishOrbsGiven = true;
+        $gameParty.gainItem(orb, SANDBOX_WISH_ORB_COUNT);
+    }
+
     // Check if player name is Test to enable Sandbox mode
     const _Scene_Menu_createCommandWindow = Scene_Menu.prototype.createCommandWindow;
     Scene_Menu.prototype.createCommandWindow = function () {
         if ($gameParty && $gameParty.leader() && $gameParty.leader().name().toLowerCase() === "test") {
             $gameSystem._isSandboxMode = true;
         }
+        if ($gameSystem && $gameSystem._isSandboxMode) grantSandboxWishOrbs();
         _Scene_Menu_createCommandWindow.call(this);
     };
 
@@ -234,6 +250,9 @@
         { name: "Quick Actions", symbol: "macro", icon: 218 },
         { name: "Add/Remove Status", symbol: "status", icon: 104 },
         { name: "NPC Manipulation", symbol: "npc", icon: 82 },
+        // The date board: pick the biome (and the mood) the evening runs in
+        // instead of walking to one. Player-facing prose, so it carries a key.
+        { nameKey: "ErisDate.sandbox.menu", symbol: "erisdate", icon: 84 },
         { name: "Skill Animation Test", symbol: "animtest", icon: 79 },
         // Direct openers for whole systems that had no sandbox hook before:
         // star map, bestiary, quest log, tech tree, history archive, thinker,
@@ -242,6 +261,24 @@
         // Full Wishing Sanctum (same flow as the openWishingSystem command).
         { name: "Wishing System", symbol: "wish", icon: 87 }
     ];
+
+    // The readable name of a biome, through the one service that prints them,
+    // falling back to the name the date itself puts on its own badge.
+    function sandboxBiomeLabel(key) {
+        if (!key) return "";
+        if (window.BiomeNames) return window.BiomeNames.display(key);
+        const eris = window.ErisDateSystem;
+        return eris ? eris.biomeLabel(key) : String(key);
+    }
+
+    // A category label. Debug categories are written straight into the table;
+    // one whose label is prose the player also reads elsewhere carries a key
+    // instead, resolved when the page is drawn (the i18n tables are not loaded
+    // yet when this table is built).
+    function categoryName(cat) {
+        if (!cat) return "";
+        return cat.nameKey && window.T ? T(cat.nameKey) : cat.name;
+    }
 
     // =========================================================================
     //  NPC Manipulation actions (see Scene_SandboxMenu.applyNpcAction).
@@ -319,6 +356,18 @@
 
         static update() {
             if (!this.active) return;
+
+            // A granted wish holds the sanctum on its card until the hold runs
+            // out; any key or click dismisses it sooner. Nothing else is read,
+            // so a second destiny can never be picked.
+            if (this.scene._wishGranted) {
+                const readable = Date.now() - (this.scene._wishGrantedAt || 0) > WISH_GRANT_GRACE;
+                if (readable && (Input.isTriggered('ok') || Input.isTriggered('cancel') ||
+                    TouchInput.isTriggered() || TouchInput.isCancelled())) {
+                    this.scene.finishWish();
+                }
+                return;
+            }
 
             const isWish = this.scene._isWishMode;
             const onLeft = this.scene._activeLeftFocus && !isWish;
@@ -434,8 +483,21 @@
     Scene_SandboxMenu.prototype.constructor = Scene_SandboxMenu;
     window.Scene_SandboxMenu = Scene_SandboxMenu;
 
+    // How long the granted-wish card is held before the sanctum closes itself,
+    // and how long it ignores input first (the press that picked the destiny is
+    // still being read this frame). Any key or click closes it sooner after
+    // that (see UISandboxInputManager.update).
+    const WISH_GRANT_HOLD = 3200;
+    const WISH_GRANT_GRACE = 500;
+
     Scene_SandboxMenu.prototype.initialize = function () {
         Scene_MenuBase.prototype.initialize.call(this);
+        // A wish is spent the moment it is granted: the sanctum shows what was
+        // whispered and then closes. Without these the destinies list stayed on
+        // screen after a grant and a single orb bought every wish in it.
+        this._wishGranted = false;
+        this._wishFinished = false;
+        this._wishCloseTimer = null;
     };
 
     Scene_SandboxMenu.prototype.create = function () {
@@ -491,6 +553,10 @@
     Scene_SandboxMenu.prototype.terminate = function () {
         Scene_MenuBase.prototype.terminate.call(this);
         UISandboxInputManager.deactivate();
+        if (this._wishCloseTimer) {
+            clearTimeout(this._wishCloseTimer);
+            this._wishCloseTimer = null;
+        }
         this.removeUIContainer();
     };
 
@@ -576,6 +642,9 @@
 
     Scene_SandboxMenu.prototype.refreshUIDOM = function () {
         if (!this._dndContainer) return;
+        // A granted wish owns the page until the sanctum closes; nothing the
+        // outcome itself triggers may redraw the destinies list under it.
+        if (this._wishGranted) return;
 
         const useTranslation = ConfigManager.language === "it";
         const backBtnText = useTranslation ? "Indietro" : "Back";
@@ -638,7 +707,7 @@
                 categoriesHTML += `
                     <div class="category-item focusable" data-symbol="${cat.symbol}" data-index="${idx}" onclick="SceneManager._scene.selectCategoryByClick('${cat.symbol}', ${idx})" style="padding: 8px 12px; text-align: left; display: flex; align-items: center; gap: 10px; margin-bottom: 3px; cursor: pointer; transition: all 0.2s ease; border-radius: 4px;">
                         <canvas class="cat-icon" width="20" height="20" data-icon="${cat.icon}" style="display:block; image-rendering:pixelated;"></canvas>
-                        <span style="font-family: 'Lora', serif; font-size: 0.95em; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.5px;">${cat.name}</span>
+                        <span style="font-family: 'Lora', serif; font-size: 0.95em; color: var(--text-primary-hover); font-weight: bold; letter-spacing: 0.5px;">${escapeHtml(categoryName(cat))}</span>
                     </div>
                 `;
             });
@@ -693,7 +762,7 @@
 
         const actionsHTML = this.buildActionsListHTML();
 
-        const rightPageTitle = isWish ? "Destinies Whispered" : (CATEGORIES.find(c => c.symbol === this._listWindow._mode)?.name || "Actions List");
+        const rightPageTitle = isWish ? "Destinies Whispered" : (categoryName(CATEGORIES.find(c => c.symbol === this._listWindow._mode)) || "Actions List");
 
         this._dndContainer.innerHTML = `
             <div class="book-spread">
@@ -849,7 +918,7 @@
     // Rebuild only the right-page actions list (and its title) instead of the
     // whole two-page overlay. Used for search input and category cursor moves.
     Scene_SandboxMenu.prototype.refreshActionsListDOM = function () {
-        if (!this._dndContainer) return;
+        if (!this._dndContainer || this._wishGranted) return;
         const container = this._dndContainer.querySelector('.actions-list-container');
         if (!container) { this.refreshUIDOM(); return; }
         container.innerHTML = this.buildActionsListHTML();
@@ -858,7 +927,7 @@
         if (rightTitle) {
             rightTitle.textContent = this._isWishMode
                 ? "Destinies Whispered"
-                : (CATEGORIES.find(c => c.symbol === this._listWindow._mode)?.name || "Actions List");
+                : (categoryName(CATEGORIES.find(c => c.symbol === this._listWindow._mode)) || "Actions List");
         }
 
         // Keep search cursor focus position intact
@@ -923,7 +992,7 @@
         if (this._listWindow._mode === "wish") {
             return item.wishingPhrase;
         }
-        if (["discord", "macro", "player", "environment", "biology", "economy", "faction", "world", "minigame", "animtest", "npc", "systems"].includes(this._listWindow._mode)) {
+        if (["discord", "macro", "player", "environment", "biology", "economy", "faction", "world", "minigame", "animtest", "npc", "systems", "erisdate"].includes(this._listWindow._mode)) {
             let suffix = "";
             if (item.id === "proc_debugger") {
                 suffix = ` (${$gameSystem._isProceduralMapDebuggerActive ? "ON" : "OFF"})`;
@@ -1008,6 +1077,104 @@
         }
     };
 
+    // ---------------------------------------------------------------------
+    //  Granting a wish
+    // ---------------------------------------------------------------------
+    // One visit to the sanctum answers one wish. The card below names what was
+    // whispered and what answered it, the outcome lands as the card is dismissed
+    // (a battle or a teleport needs the sanctum gone first), and the scene closes
+    // behind it, so a spent orb cannot buy a second destiny.
+    Scene_SandboxMenu.prototype.grantWish = function (item) {
+        if (this._wishGranted) return;
+        this._wishGranted = true;
+        this._grantedWish = item;
+        // The press or click that picked the destiny is still live this frame;
+        // hold the card past it or it would dismiss itself instantly.
+        this._wishGrantedAt = Date.now();
+        SoundManager.playUseSkill();
+        this.renderWishGranted(item);
+        this._wishCloseTimer = setTimeout(() => this.finishWish(), WISH_GRANT_HOLD);
+    };
+
+    // The confirmation card: the phrase as it was whispered (scrambled by a low
+    // PSI, exactly as it read on the list) and, underneath, the thing that
+    // actually answered, spelled out in full.
+    Scene_SandboxMenu.prototype.renderWishGranted = function (item) {
+        if (!this._dndContainer) return;
+        const phrase = item.wishingPhrase || item.name || "";
+        this._dndContainer.innerHTML = `
+            <div class="book-spread skill-fullpage">
+                <div class="left-page" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px;">
+                    <span style="font-family: 'Lora', serif; font-size: 3em; color: var(--text-gold-dark); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">&#10022;</span>
+                    <h2 class="title" style="border: none; margin: 0; padding: 0;">${escapeHtml(T("Wish.granted.title"))}</h2>
+                    <div style="font-family: 'Lora', serif; font-size: 0.9em; color: var(--text-card-medium); font-style: italic;">
+                        ${escapeHtml(T("Wish.granted.whispered"))}
+                    </div>
+                    <div style="font-family: 'Lora', serif; font-size: 1.5em; line-height: 1.4; color: var(--text-text-alt-2); max-width: 70%; background: var(--bg-subtle-translucent-10); border: 1px dashed var(--border-focus-hover); border-radius: 4px; padding: 18px 24px;">
+                        &ldquo;${escapeHtml(phrase)}&rdquo;
+                    </div>
+                    <div style="font-family: 'Lora', serif; font-size: 1.05em; font-weight: bold; color: var(--text-gold-dark);">
+                        ${escapeHtml(T("Wish.granted.manifested", { outcome: item.name || "" }))}
+                    </div>
+                    <div style="font-family: 'Lora', serif; font-size: 0.9em; color: var(--text-card-medium); font-style: italic;">
+                        ${escapeHtml(T("Wish.granted.spent"))}
+                    </div>
+                    <div style="font-family: 'Lora', serif; font-size: 0.8em; color: var(--text-card-medium); text-transform: uppercase; letter-spacing: 0.08em;">
+                        ${escapeHtml(T("Wish.granted.close"))}
+                    </div>
+                </div>
+            </div>
+        `;
+        // Nothing on the card is selectable; the cached rows are gone with it.
+        UISandboxInputManager.refreshCache();
+    };
+
+    // Dismiss the card: apply the wish, then leave. Runs once, whether the hold
+    // ran out or the player pressed through it.
+    Scene_SandboxMenu.prototype.finishWish = function () {
+        if (this._wishFinished) return;
+        this._wishFinished = true;
+        if (this._wishCloseTimer) {
+            clearTimeout(this._wishCloseTimer);
+            this._wishCloseTimer = null;
+        }
+        if (SceneManager._scene !== this) return;
+        UISandboxInputManager.deactivate();
+        this.applyWish(this._grantedWish);
+        this.removeUIContainer();
+        // A wish that starts a battle or moves the player has already asked for
+        // the next scene; anything else leaves the sanctum on its own.
+        if (!SceneManager.isSceneChanging()) this.popScene();
+    };
+
+    // What a granted wish actually does. The destinies list only ever whispers
+    // items, states, troops and quick actions (see generateRandomWishes).
+    Scene_SandboxMenu.prototype.applyWish = function (item) {
+        if (!item) return;
+        if (item.mode === "item") {
+            const list = item.type === "weapon" ? $dataWeapons
+                : item.type === "armor" ? $dataArmors : $dataItems;
+            if (list[item.id]) $gameParty.gainItem(list[item.id], 1);
+        } else if (item.mode === "status") {
+            const actor = $gameParty.leader();
+            if (actor) actor.addState(item.id);
+        } else if (item.mode === "battle") {
+            // The fight is the wish: leave the sanctum first and start it from
+            // the map (as popAndRun does), so the party comes back to the world
+            // once it is over instead of to a menu nobody asked for.
+            this.popScene();
+            setTimeout(() => {
+                BattleManager.setup(item.id, true, false);
+                $gamePlayer.makeEncounterCount();
+                SceneManager.push(Scene_Battle);
+            }, 150);
+        } else if (item.mode === "macro") {
+            // Quick actions run their own course; the ones that transfer the
+            // player pop the scene themselves, which finishWish allows for.
+            this.executeMacro(item.id);
+        }
+    };
+
     // Open an external scene / run a map-context plugin command: strip the
     // parchment overlay, drop back to the map, then fire the command a beat later
     // so it runs from Scene_Map (matching the main menu's spawnUIVehicle flow).
@@ -1072,7 +1239,14 @@
         const item = this._listWindow.item();
         if (!item) return;
 
-        const mode = this._listWindow._mode === "wish" ? item.mode : this._listWindow._mode;
+        // A whispered destiny is not an ordinary sandbox row: it is granted
+        // once, shown, and then the sanctum closes on it.
+        if (this._listWindow._mode === "wish") {
+            this.grantWish(item);
+            return;
+        }
+
+        const mode = this._listWindow._mode;
 
         if (mode === "battle") {
             // Remove DOM before transition
@@ -1142,9 +1316,45 @@
                 }
             }
             this.refreshUIDOM();
+        } else if (mode === "erisdate") {
+            this.startErisDate(item);
         } else if (["discord", "macro", "player", "environment", "biology", "economy", "faction", "world", "minigame", "animtest", "npc", "systems"].includes(mode)) {
             this.executeMacro(item.id);
         }
+    };
+
+    // Date board. The mood row cycles in place; every other row leaves the
+    // sandbox and starts the evening from Scene_Map, the same way the
+    // startDate plugin command runs it (see popAndRun).
+    Scene_SandboxMenu.prototype.startErisDate = function (item) {
+        const eris = window.ErisDateSystem;
+        if (!eris || !item || !item.id || eris.isActive()) {
+            SoundManager.playBuzzer();
+            return;
+        }
+
+        if (item.id === "eris_mood") {
+            // ...through the sixteen date moods and back to "rolled on the night".
+            const moods = eris.moods();
+            const next = moods.indexOf($gameSystem._sandboxErisMood) + 1;
+            $gameSystem._sandboxErisMood = next < moods.length ? moods[next] : null;
+            SoundManager.playOk();
+            this._listWindow.refresh();
+            this.refreshActionsListDOM();
+            return;
+        }
+
+        // Null is "wherever the party is standing", which is what the plugin
+        // command passes; "random" is a roll over the whole bank.
+        let biome = null;
+        if (item.id === "eris_random") biome = "random";
+        else if (String(item.id).startsWith("eris_biome:")) biome = String(item.id).slice("eris_biome:".length);
+
+        const mood = $gameSystem._sandboxErisMood;
+        SoundManager.playOk();
+        this.removeUIContainer();
+        this.popScene();
+        setTimeout(() => eris.start(biome, mood), 150);
     };
 
     Scene_SandboxMenu.prototype.executeMacro = function (id) {
@@ -2279,6 +2489,25 @@
                 { id: "anim_test_enemy_all", name: "Enemies Cast Own Skills (1 Battle Each)" },
                 { id: "anim_test_enemy_fast", name: "Enemies Cast Own Skills (Fast)" }
             ];
+        } else if (this._mode === "erisdate") {
+            // First row cycles the mood the evening opens in (unset = the date
+            // rolls its own), then the party's own biome, a random one, and
+            // every biome ErisDateSystem has prose for, in name order.
+            const eris = window.ErisDateSystem;
+            if (eris) {
+                const mood = $gameSystem._sandboxErisMood;
+                const moodName = mood ? eris.moodLabel(mood) : T("ErisDate.sandbox.moodRandom");
+                this._data.push({ id: "eris_mood", name: T("ErisDate.sandbox.mood", { mood: moodName }) });
+                this._data.push({
+                    id: "eris_here",
+                    name: T("ErisDate.sandbox.here", { biome: sandboxBiomeLabel(eris.currentBiome()) })
+                });
+                this._data.push({ id: "eris_random", name: T("ErisDate.sandbox.random") });
+                eris.biomes()
+                    .map(key => ({ id: "eris_biome:" + key, name: sandboxBiomeLabel(key) }))
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .forEach(row => this._data.push(row));
+            }
         } else if (this._mode === "npc") {
             this._data = NPC_ACTIONS.map(a => ({ id: a.id, name: a.name }));
         } else if (this._mode === "wish") {

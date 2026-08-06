@@ -86,7 +86,7 @@
  * @min 0
  * @max 100
  * @default 30
- * @desc Default volume (0-100)
+ * @desc Instrument volume (0-100). Scaled by the SE volume setting.
  */
 
 (() => {
@@ -117,6 +117,14 @@
     // Two strings per note, a few cents apart: the beating between them is most
     // of what a listener hears as "piano" rather than "organ".
     const PIANO_DETUNE = 7;
+
+    // Peak amplitude of a single note, per voice. The raw shapes are levelled
+    // against each other by ear (a sawtooth carries far more energy than a sine
+    // at the same amplitude), so switching voice does not change how loud the
+    // instrument is, and a full chord stays inside the limiter.
+    const VOICE_PEAK = {
+        piano: 0.34, sine: 0.34, triangle: 0.30, square: 0.17, sawtooth: 0.19
+    };
     const OCTAVE_COUNT = 3;
     const MIN_BASE_OCTAVE = 0;
     const MAX_BASE_OCTAVE = 7;
@@ -160,6 +168,18 @@
         BracketLeft: '[', BracketRight: ']', Backslash: '\\',
         Minus: '-', Equal: '=', Backquote: '`'
     };
+
+    // The piano is an instrument the player is holding, so it obeys the SE
+    // slider (and, through it, the master volume) like any other sound effect.
+    function seVolumeScale() {
+        if (typeof AudioManager === 'undefined') return 1;
+        const level = typeof AudioManager.getConfigVolume_Se === 'function'
+            ? AudioManager.getConfigVolume_Se()
+            : AudioManager.seVolume;
+        const n = Number(level);
+        if (!isFinite(n)) return 1;
+        return Math.max(0, Math.min(100, n)) / 100;
+    }
 
     function labelForCode(code) {
         if (PUNCT_LABELS[code]) return PUNCT_LABELS[code];
@@ -222,9 +242,29 @@
         initAudio() {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.audioContext.createGain();
-            this.masterGain.gain.value = defaultVolume;
-            this.masterGain.connect(this.audioContext.destination);
+            this.masterGain.gain.value = defaultVolume * seVolumeScale();
+            // Ten keys down at once must not be ten times as loud as one: the
+            // limiter catches the chord instead of clipping the output.
+            this.limiter = this.audioContext.createDynamicsCompressor();
+            this.limiter.threshold.value = -12;
+            this.limiter.knee.value = 6;
+            this.limiter.ratio.value = 12;
+            this.limiter.attack.value = 0.004;
+            this.limiter.release.value = 0.2;
+            this.masterGain.connect(this.limiter);
+            this.limiter.connect(this.audioContext.destination);
             this.pianoWave = null;
+        }
+
+        // Follow the SE slider live: the options menu can move it between two
+        // notes, and a sustaining chord should ride the change with them.
+        syncVolume() {
+            if (!this.masterGain) return;
+            const target = defaultVolume * seVolumeScale();
+            const now = this.audioContext.currentTime;
+            const gain = this.masterGain.gain;
+            gain.cancelScheduledValues(now);
+            gain.setTargetAtTime(target, now, 0.02);
         }
 
         // Built once and shared by every string: a PeriodicWave is immutable.
@@ -246,6 +286,7 @@
             if (this.isOpen) return;
             this.isOpen = true;
             this.cursorSemitone = 12; // start on the middle octave's C
+            this.syncVolume();
             this.createUI();
 
             if (window.MinigameFun) window.MinigameFun.played('Playing Piano');
@@ -449,11 +490,14 @@
         playNote(midiNote) {
             if (this.activeNotes.has(midiNote)) return;
 
+            this.syncVolume();
+
             const ctx = this.audioContext;
             const now = ctx.currentTime;
             const freq = this.midiToFrequency(midiNote);
             const gainNode = ctx.createGain();
             const sources = [];
+            const peak = VOICE_PEAK[this.waveform] || 0.3;
 
             if (this.waveform === 'piano') {
                 // A hammered string: bright at the strike, dark and quiet a
@@ -478,9 +522,9 @@
                 filter.connect(gainNode);
 
                 gainNode.gain.setValueAtTime(0.0001, now);
-                gainNode.gain.linearRampToValueAtTime(0.5, now + 0.005);
-                gainNode.gain.exponentialRampToValueAtTime(0.16, now + 0.4);
-                gainNode.gain.exponentialRampToValueAtTime(0.02, now + 4);
+                gainNode.gain.linearRampToValueAtTime(peak, now + 0.005);
+                gainNode.gain.exponentialRampToValueAtTime(peak * 0.32, now + 0.4);
+                gainNode.gain.exponentialRampToValueAtTime(peak * 0.04, now + 4);
                 // A held string eventually dies on its own rather than sitting
                 // there humming until the key is let go.
                 gainNode.gain.exponentialRampToValueAtTime(0.0004, now + 10);
@@ -492,7 +536,7 @@
                 sources.push(osc);
 
                 gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(1, now + 0.01);
+                gainNode.gain.linearRampToValueAtTime(peak, now + 0.01);
             }
 
             gainNode.connect(this.masterGain);

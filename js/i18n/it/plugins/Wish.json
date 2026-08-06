@@ -1,0 +1,9 @@
+{
+  "granted": {
+    "title": "Desiderio Esaudito",
+    "whispered": "Hai sussurrato:",
+    "manifested": "Ciò che ha risposto: {outcome}",
+    "spent": "La sfera si spegne. Un desiderio, una volta sola.",
+    "close": "Premi un tasto per chiudere"
+  }
+}

@@ -1553,10 +1553,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Gunman",
             "direction": 4,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1698,7 +1698,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Priest",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1821,7 +1821,7 @@
     },
     {
       "id": 5,
-      "name": "Policeman",
+      "name": "Officer Gara",
       "note": "",
       "pages": [
         {

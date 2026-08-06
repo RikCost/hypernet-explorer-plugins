@@ -1262,6 +1262,7 @@
 .book-spread,
 .cc-pockets-spread,
 #thinker-container .book-spread,
+#blacksmith-container .book-spread,
 .save-book-spread,
 .shop-spread,
 .mp-spread,
@@ -1311,6 +1312,7 @@
 .book-spread::before,
 .cc-pockets-spread::before,
 #thinker-container .book-spread::before,
+#blacksmith-container .book-spread::before,
 .save-book-spread::before,
 .shop-spread::before,
 .mp-spread::before,
@@ -3575,7 +3577,8 @@
 }
 
 /* Extracted from ThinkerMenu.js */
-#thinker-container {
+#thinker-container,
+#blacksmith-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -3605,7 +3608,9 @@
 }
 
 #thinker-container .left-page,
-#thinker-container .right-page {
+#blacksmith-container .left-page,
+#thinker-container .right-page,
+#blacksmith-container .right-page {
     flex: 1;
     padding: 10px 25px;
     box-sizing: border-box;
@@ -3615,11 +3620,13 @@
     height: 100%;
 }
 
-#thinker-container .left-page {
+#thinker-container .left-page,
+#blacksmith-container .left-page {
     border-right: 1px solid var(--border-secondary-hover-translucent-15);
 }
 
-#thinker-container .right-page {
+#thinker-container .right-page,
+#blacksmith-container .right-page {
     /* The pages split at 50% but the painted binding crease runs from 54% to 62%
        of the spread, so the right page has to start past it or its rows, rules and
        buttons are drawn under the shadow. Percentage padding resolves against the
@@ -3627,7 +3634,8 @@
     padding-left: 14%;
 }
 
-#thinker-container .title {
+#thinker-container .title,
+#blacksmith-container .title {
     font-family: 'Lora', serif;
     font-size: 2.2em;
     color: var(--text-secondary-active);
@@ -3912,6 +3920,130 @@
     margin-bottom: 18px;
     font-style: italic;
 }
+
+/* "What it is made of", built by ItemSystemUtils.craftHTML and shown wherever
+   a piece of gear is inspected: the equip screen, the shops, the forge. */
+.craft-block {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px dotted var(--border-subtle);
+    font-size: 0.85em;
+}
+.craft-block-title {
+    color: var(--text-gold-dark);
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+.craft-mat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6em;
+    color: var(--text-secondary-active);
+}
+.craft-mat-row.short { color: var(--border-danger-active); }
+.craft-mat-name { display: flex; align-items: center; gap: 0.35em; }
+.craft-mat-count { font-weight: bold; }
+
+/* The forge (BlacksmithingMenu.js). The book-spread itself is the Thinker's,
+   aliased onto #blacksmith-container above; these are the parts only the anvil
+   page has. */
+.forge-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px dashed var(--border-subtle);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    min-height: 40px;
+    width: 100%;
+}
+.forge-header .back-button {
+    position: absolute;
+    left: 0;
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--text-primary-hover);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1.5px solid var(--text-primary-hover);
+    text-transform: uppercase;
+    user-select: none;
+}
+.forge-header .title { border: none; margin: 0; padding: 0; text-align: center; }
+/* The tier a locked piece is waiting for, and whether a smithable one is stocked. */
+.forge-tier-need { font-size: 0.85em; color: var(--text-amber-hint); white-space: nowrap; }
+.forge-mat-state.ok    { color: var(--text-success-active); }
+.forge-mat-state.short { color: var(--border-danger-active); }
+.forge-skill {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.8em;
+    font-size: 0.9em;
+    color: var(--text-secondary-active);
+    margin: 10px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-secondary-hover-translucent-15);
+}
+.forge-skill.locked { color: var(--border-danger-active); }
+.forge-skill-have { color: var(--text-primary-hover); }
+.forge-meta { margin: 8px 0; }
+
+/* The anvil page carries more than one screenful (preview, tier line, stats,
+   declarations, lore, bill of materials, button), so it scrolls, and every
+   block on it is packed tighter than the equip menu's copy of the same block.
+   The scroll lives on the .workbench itself, which therefore stops centring
+   its content: a centred flex column clips its own top once it overflows. */
+#blacksmith-container .workbench {
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+}
+#blacksmith-container .workbench-empty { margin: auto; }
+#blacksmith-container .workbench-active { height: auto; flex: 0 0 auto; width: 100%; }
+#blacksmith-container .workbench-item-header { margin-bottom: 8px; padding-bottom: 6px; gap: 10px; }
+/* The blurb is read, not admired: plain white rather than muted italics. */
+#blacksmith-container .workbench-desc {
+    color: var(--text-highlight-active);
+    font-style: normal;
+    font-size: 0.88em;
+    margin-bottom: 8px;
+}
+#blacksmith-container .weapon-previews-container {
+    min-height: 0;
+    height: 170px;
+    flex: 0 0 auto;
+    margin-bottom: 8px;
+    padding: 6px;
+}
+#blacksmith-container .forge-skill { margin: 6px 0; font-size: 0.85em; }
+#blacksmith-container .stats-grid { gap: 2px 12px; margin-bottom: 8px; }
+#blacksmith-container .forge-meta { margin: 4px 0; }
+#blacksmith-container .inspect-spec-row { font-size: 0.78rem; margin-bottom: 1px; }
+#blacksmith-container .equip-lore { font-size: 0.82em; margin-top: 4px; }
+#blacksmith-container .reagents-header { font-size: 1.05em; margin-bottom: 6px; padding-bottom: 2px; }
+#blacksmith-container .reagents-list { flex: 0 0 auto; gap: 4px; margin-bottom: 10px; overflow: visible; }
+#blacksmith-container .reagent-row { padding: 3px 8px; }
+#blacksmith-container .transmute-btn { padding: 8px; font-size: 1em; }
+
+/* Fabrication tier line under a Thinker recipe (ThinkerMenu.js) */
+.workbench-skill {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.8em;
+    font-size: 0.9em;
+    color: var(--text-secondary-active);
+    margin-top: 10px;
+}
+.workbench-skill.locked { color: var(--border-muted-focus); opacity: 0.85; }
+.workbench-risk { color: var(--text-amber-hint); }
 
 .reagents-header {
     font-family: 'Lora', serif;
@@ -9910,75 +10042,93 @@
    ========================================================================== */
 
 /* Thinker Menu Font Scaling Overrides */
-#thinker-container .title {
+#thinker-container .title,
+#blacksmith-container .title {
     font-size: 2.2em !important;
 }
 
-#thinker-container .tab-btn {
+#thinker-container .tab-btn,
+#blacksmith-container .tab-btn {
     font-size: 1.1em !important;
 }
 
-#thinker-container .category-name {
+#thinker-container .category-name,
+#blacksmith-container .category-name {
     font-size: 1.25em !important;
 }
 
-#thinker-container .category-count {
+#thinker-container .category-count,
+#blacksmith-container .category-count {
     font-size: 0.95em !important;
 }
 
-#thinker-container .blueprint-name {
+#thinker-container .blueprint-name,
+#blacksmith-container .blueprint-name {
     font-size: 1.05em !important;
 }
 
-#thinker-container .blueprint-count {
+#thinker-container .blueprint-count,
+#blacksmith-container .blueprint-count {
     font-size: 0.9em !important;
 }
 
-#thinker-container .back-btn {
+#thinker-container .back-btn,
+#blacksmith-container .back-btn {
     font-size: 0.95em !important;
 }
 
-#thinker-container .workbench-empty {
+#thinker-container .workbench-empty,
+#blacksmith-container .workbench-empty {
     font-size: 1.1em !important;
 }
 
-#thinker-container .cauldron-animation {
+#thinker-container .cauldron-animation,
+#blacksmith-container .cauldron-animation {
     font-size: 4.5em !important;
 }
 
-#thinker-container .thought-title {
+#thinker-container .thought-title,
+#blacksmith-container .thought-title {
     font-size: 1.25em !important;
 }
 
-#thinker-container .thought-cost {
+#thinker-container .thought-cost,
+#blacksmith-container .thought-cost {
     font-size: 1.05em !important;
 }
 
-#thinker-container .thought-type {
+#thinker-container .thought-type,
+#blacksmith-container .thought-type {
     font-size: 0.95em !important;
 }
 
-#thinker-container .thought-desc {
+#thinker-container .thought-desc,
+#blacksmith-container .thought-desc {
     font-size: 1.0em !important;
 }
 
-#thinker-container .thought-effect {
+#thinker-container .thought-effect,
+#blacksmith-container .thought-effect {
     font-size: 1.1em !important;
 }
 
-#thinker-container .thought-detail-title {
+#thinker-container .thought-detail-title,
+#blacksmith-container .thought-detail-title {
     font-size: 1.5em !important;
 }
 
-#thinker-container .thought-detail-desc {
+#thinker-container .thought-detail-desc,
+#blacksmith-container .thought-detail-desc {
     font-size: 1.25em !important;
 }
 
-#thinker-container .thought-detail-cost {
+#thinker-container .thought-detail-cost,
+#blacksmith-container .thought-detail-cost {
     font-size: 1.0em !important;
 }
 
-#thinker-container .thinker-btn {
+#thinker-container .thinker-btn,
+#blacksmith-container .thinker-btn {
     font-size: 1.35em !important;
 }
 
@@ -12395,6 +12545,59 @@
 .parchment-menu-item { padding: 5px 8px; color: var(--border-subtle); border-radius: 3px; }
 .parchment-menu-item.active { background: var(--bg-subtle-translucent-15); color: var(--text-gold-dark); }
 .parchment-menu-item.active::before { content: '▶ '; font-size: 0.7em; vertical-align: middle; }
+
+/* A book-spread's right page is headed by its party switcher instead of by a
+   second page title: the left page already names the menu, and the tabs say
+   whose hands the work is in. The switcher is drawn even for a party of one, so
+   the name under the heading is never missing. The gap below it is where
+   window.SpecBadge hangs the training chip, which is positioned (fixed) rather
+   than laid out, hence the reserved margin. */
+.companion-switcher--header {
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    min-height: 34px;
+    margin: 0 0 44px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border-muted-focus);
+}
+
+/* Specialization badges (window.SpecBadge, SpecializationMenu.js) — chips
+   naming the skill a menu or minigame is training, and the party's tier in it.
+   Persistent for as long as that menu is open, unlike a toast. The plugin
+   anchors the stack under the open menu's party switcher (or, failing one, in
+   the top right corner of its page) so it always lands inside the border. */
+#spec-badge-stack {
+    position: fixed;
+    z-index: 490;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    /* Anchored at the canvas's right edge and pulled back by its own width, so
+       the chip can never overhang the frame however the canvas is scaled. */
+    transform: translateX(-100%);
+}
+.spec-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+    padding: 0.35em 0.9em;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: var(--bg-subtle-translucent-15);
+    color: var(--border-subtle);
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+}
+.spec-badge-name  { font-weight: bold; color: var(--text-gold-dark); }
+.spec-badge-level { color: var(--text-primary-hover); font-size: 0.9em; }
+.spec-badge-who   { color: var(--border-subtle); font-size: 0.78em; opacity: 0.85; }
+/* Untrained reads flat; every tier above it warms up. */
+.spec-badge--t1 .spec-badge-level { color: var(--border-subtle); }
+.spec-badge--t4, .spec-badge--t5 { border-color: var(--text-gold-dark); }
 
 /* Toast stack (ParchmentToast.js) — top-left transient notifications */
 #html-toast-stack {

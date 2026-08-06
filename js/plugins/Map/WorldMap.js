@@ -120,7 +120,7 @@
     let currentMapState = 0;
 
     // Interactive Zoom Variables
-    let zoomScale = 1.0;
+    let zoomScale = 0.25; // MIN_ZOOM: the map always opens fully zoomed out
     let panX = 0;
     let panY = 0;
     let isDragging = false;
@@ -142,11 +142,27 @@
         return bmp;
     }
 
+    // Every sprite this plugin caches (the map sprite, the city labels, the quest
+    // edge arrows) is held in a module variable that outlives the scene the sprite
+    // was parented to. A scene teardown destroys its children, and PIXI nulls the
+    // transform of a destroyed display object, so writing x/y/scale on one throws
+    // "Cannot read property 'position' of null" (x is an alias for
+    // transform.position.x). Anything cached across scenes must be checked for
+    // liveness before it is positioned, and rebuilt when it is dead.
+    function isLiveSprite(s) {
+        return !!(s && s.transform);
+    }
+
+    function currentTilemap() {
+        const scene = SceneManager._scene;
+        return scene && scene._spriteset ? scene._spriteset._tilemap : null;
+    }
+
     // Assign a bitmap to the minimap sprite, freeing the previous per-render
     // bitmap's GPU texture to stop per-step baseTexture churn. Cached/shared
     // bitmaps (the master world image, the fullscreen composite) are never freed.
     function setWorldMapSpriteBitmap(bmp) {
-        if (!worldMapSprite) return;
+        if (!isLiveSprite(worldMapSprite)) return;
         const old = worldMapSprite.bitmap;
         worldMapSprite.bitmap = bmp;
         if (old && old !== bmp && old !== worldMapBitmap && old !== fullscreenBitmap &&
@@ -245,16 +261,64 @@
     // Initialization & Helpers
     // ------------------------------------------------------------------------
 
+    // The sprite belongs to the scene it was added to. A tile that finishes
+    // loading after a map transfer calls refreshWorldMapDisplay from a scene that
+    // is no longer the running one, so the sprite is dropped and rebuilt against
+    // the live scene rather than kept and written to after it has been destroyed.
+    function belongsToCurrentScene(sprite) {
+        // Walked rather than compared against parent directly: the sprite is added
+        // to the scene, but another plugin may nest it deeper in the same scene.
+        let node = sprite;
+        while (node) {
+            if (node === SceneManager._scene) return true;
+            node = node.parent;
+        }
+        return false;
+    }
+
+    function dropStaleWorldMapSprite() {
+        if (!worldMapSprite) return;
+        if (isLiveSprite(worldMapSprite) && belongsToCurrentScene(worldMapSprite)) return;
+        if (isLiveSprite(worldMapSprite) && worldMapSprite.parent) {
+            worldMapSprite.parent.removeChild(worldMapSprite);
+        }
+        worldMapSprite = null;
+    }
+
     function createWorldMapSprite() {
+        dropStaleWorldMapSprite();
         if (worldMapSprite) return;
-        
+        // Only the map scene owns a world map. Parking the sprite on a menu or a
+        // loading scene (an async tile arriving mid-transition) leaves a dangling
+        // reference to a sprite that scene will destroy.
+        if (!(SceneManager._scene instanceof Scene_Map)) return;
+
         worldMapSprite = new Sprite();
-        worldMapSprite.anchor.x = 0; 
+        worldMapSprite.anchor.x = 0;
         worldMapSprite.anchor.y = 0;
-        
+
+        // Attach to the scene BEFORE anything can call back into this function.
+        // An already-cached picture makes addLoadListener fire synchronously, and
+        // a sprite that is not yet in the scene tree fails belongsToCurrentScene,
+        // so dropStaleWorldMapSprite would discard the half-built sprite and the
+        // callback would rebuild it forever (stack overflow).
+        const scene = SceneManager._scene;
+        if (scene._windowLayer) {
+            const windowLayerIndex = scene.children.indexOf(scene._windowLayer);
+            if (windowLayerIndex >= 0) {
+                scene.addChildAt(worldMapSprite, windowLayerIndex);
+            } else {
+                scene.addChild(worldMapSprite);
+            }
+        } else {
+            scene.addChild(worldMapSprite);
+        }
+
         // Load the master image (for Fullscreen and Map 315 Mini)
         worldMapBitmap = ImageManager.loadPicture('worldmap');
         worldMapBitmap.addLoadListener(() => {
+            // The scene may have changed while the picture was loading.
+            if (!isLiveSprite(worldMapSprite) || !belongsToCurrentScene(worldMapSprite)) return;
             // A focus request (a quest detail asking "show me where this is") may
             // have arrived before the picture finished loading, in which case
             // refreshWorldMapDisplay bailed out at the readiness check. Re-apply
@@ -270,23 +334,15 @@
             }
             refreshWorldMapDisplay();
         });
-
-        // Add world map sprite before window layer (so busts appear in front)
-        const scene = SceneManager._scene;
-        if (scene._windowLayer) {
-            const windowLayerIndex = scene.children.indexOf(scene._windowLayer);
-            if (windowLayerIndex >= 0) {
-                scene.addChildAt(worldMapSprite, windowLayerIndex);
-            } else {
-                scene.addChild(worldMapSprite);
-            }
-        } else {
-            scene.addChild(worldMapSprite);
-        }
     }
 
+    // Zoom bounds for the fullscreen map. The map opens fully zoomed out, so the
+    // whole world is on screen before the player zooms in on anything.
+    const MIN_ZOOM = 0.25;
+    const MAX_ZOOM = 8.0;
+
     function resetZoom() {
-        zoomScale = 0.5; // Default to less zoomed in
+        zoomScale = MIN_ZOOM;
         centerOnCurrentCoordinates();
     }
 
@@ -598,8 +654,14 @@
     }
 
     function ensureQuestEdgeContainer() {
-        if (!worldMapSprite || !worldMapSprite.parent) return null;
+        if (!isLiveSprite(worldMapSprite) || !worldMapSprite.parent) return null;
         const parent = worldMapSprite.parent;
+        // Destroyed along with the scene it hung on: drop it and rebuild, or the
+        // arrows below would be positioned through a null transform.
+        if (questEdgeContainer && !isLiveSprite(questEdgeContainer)) {
+            questEdgeContainer = null;
+            questEdgeKey = null;
+        }
         if (!questEdgeContainer) {
             questEdgeContainer = new Sprite();
             questEdgeContainer._groups = [];
@@ -615,7 +677,7 @@
     }
 
     function removeQuestEdgeMarkers() {
-        if (questEdgeContainer && questEdgeContainer.parent) {
+        if (isLiveSprite(questEdgeContainer) && questEdgeContainer.parent) {
             questEdgeContainer.parent.removeChild(questEdgeContainer);
         }
         questEdgeContainer = null;
@@ -658,7 +720,7 @@
     function updateQuestEdgeMarkers() {
         // Only the world sheet paints quest diamonds; the Bologna and alien-planet
         // fullscreens are other coordinate spaces entirely.
-        if (currentMapState !== 3 || !worldMapSprite || !worldMapSprite.bitmap ||
+        if (currentMapState !== 3 || !isLiveSprite(worldMapSprite) || !worldMapSprite.bitmap ||
             !$gameMap || $gameMap.mapId() === BOLOGNA_MAP_ID || isAlienPlanetSurface()) {
             hideQuestEdgeMarkers();
             return;
@@ -846,8 +908,9 @@
     }
 
     function refreshWorldMapDisplay() {
-        if (!worldMapSprite) createWorldMapSprite();
-        
+        createWorldMapSprite();
+        if (!isLiveSprite(worldMapSprite)) return;
+
         // We only hard-check worldMapBitmap for Fullscreen or Map 315.
         // If we are in Detail Mode (Map != 315), we load dynamic images.
         const isBologna = $gameMap && $gameMap.mapId() === BOLOGNA_MAP_ID;
@@ -1521,6 +1584,18 @@
         if (!cityLabelsContainer || cityLabelsContainer.length === 0) return;
         if (!$gameMap) return;
 
+        // The labels are children of the spriteset's tilemap. A scene change
+        // rebuilds that tilemap and destroys them, so a label that is dead or
+        // hanging off the previous tilemap is rebuilt against the live one instead
+        // of being positioned (which would throw on its null transform).
+        const tilemap = currentTilemap();
+        const first = cityLabelsContainer[0];
+        if (!isLiveSprite(first) || first.parent !== tilemap) {
+            if (!tilemap) { removeCityLabels(); return; }
+            createCityLabelsContainer();
+            if (!cityLabelsContainer || cityLabelsContainer.length === 0) return;
+        }
+
         const tw = $gameMap.tileWidth();
         const th = $gameMap.tileHeight();
         const halfW = Graphics.width / tw / 2;
@@ -1547,7 +1622,8 @@
     }
 
     function createCityLabelsContainer() {
-        if (!SceneManager._scene._spriteset) return;
+        const tilemap = currentTilemap();
+        if (!tilemap) return;
 
         // Remove old container if exists
         removeCityLabels();
@@ -1570,7 +1646,7 @@
                     ? window.WorkSystem.destinationName(key) : key;
                 if (cityName) {
                     const labelSprite = new Sprite_CityLabel(ev.x, ev.y, cityName);
-                    SceneManager._scene._spriteset._tilemap.addChild(labelSprite);
+                    tilemap.addChild(labelSprite);
                     cityLabelsContainer.push(labelSprite);
                 }
             }
@@ -1588,7 +1664,9 @@
     function removeCityLabels() {
         if (cityLabelsContainer) {
             for (const label of cityLabelsContainer) {
-                if (label.parent) {
+                // A label already destroyed with its scene has no transform and
+                // no parent to detach from.
+                if (isLiveSprite(label) && label.parent) {
                     label.parent.removeChild(label);
                 }
             }
@@ -1620,7 +1698,7 @@
         }
 
         // Interactive Controls (Only in Fullscreen Mode)
-        if (currentMapState === 3 && worldMapSprite) {
+        if (currentMapState === 3 && isLiveSprite(worldMapSprite)) {
             updateQuestMarkerInteraction();
             updateZoomControls();
             updatePanControls();
@@ -1707,8 +1785,7 @@
 
         if (zoomChange !== 0) {
             const oldScale = zoomScale;
-            // Allow zoom from 0.25x to 8x for more detail viewing
-            zoomScale = Math.max(0.25, Math.min(8.0, zoomScale + zoomChange));
+            zoomScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomScale + zoomChange));
 
             // Calculate zoom towards center of screen
             const ratio = zoomScale / oldScale;
@@ -1895,10 +1972,8 @@
             // so labels are not built against a terminating/wrong tilemap.
             if (SceneManager._scene !== scene) return;
             if (!$gameMap || $gameMap.mapId() !== startMapId) return;
-            if (scene._spriteset && scene._spriteset._tilemap) {
-                createCityLabelsContainer();
-                updateCityLabels();
-            }
+            createCityLabelsContainer();
+            updateCityLabels();
         }, 100);
     };
 
@@ -1916,10 +1991,11 @@
             cityLabelRebuildPending = true;
             setTimeout(() => {
                 cityLabelRebuildPending = false;
-                if (SceneManager._scene._spriteset && SceneManager._scene._spriteset._tilemap) {
-                    createCityLabelsContainer();
-                    updateCityLabels();
-                }
+                // The scene can have changed inside the debounce window; the
+                // labels always belong to whichever tilemap is live now.
+                if (!(SceneManager._scene instanceof Scene_Map)) return;
+                createCityLabelsContainer();
+                updateCityLabels();
             }, 100);
         }
     };

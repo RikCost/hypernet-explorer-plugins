@@ -1367,6 +1367,7 @@
     const _Game_Event_moveStraight_p2 = Game_Event.prototype.moveStraight;
     Game_Event.prototype.moveStraight = function (d) {
         if (window.$gameSplitScreen && window.$gameSplitScreen.active && this === window.$gameSplitScreen.p2Event) {
+            if (isPushLocked(this)) return; // holding position behind a moving rock
             const pd = puzzleData();
             const [dx, dy] = MZ_DELTA[d] || [0, 0];
             const nx = this.x + dx, ny = this.y + dy;
@@ -1375,8 +1376,11 @@
             const pushable = $gameMap.events().find(e =>
                 e.x === nx && e.y === ny && pd.pushables[e.eventId()] && !e._erased);
 
-            if (pushable) {
-                tryPush(pushable.eventId(), dx, dy);
+            if (pushable && tryPush(pushable.eventId(), dx, dy)) {
+                beginPushLock(this, pushable.eventId());
+                this.setMovementSuccess(false);
+                this.setDirection(d);
+                return;
             }
 
             moveClones(dx, dy);
@@ -1388,6 +1392,7 @@
     Game_Event.prototype.update = function () {
         _Game_Event_update_p2.call(this);
         if (window.$gameSplitScreen && window.$gameSplitScreen.active && this === window.$gameSplitScreen.p2Event) {
+            updatePushLock(this);
             updatePuzzleCharacter(this, SceneManager._scene instanceof Scene_Map);
         }
     };
@@ -1641,6 +1646,31 @@
     // Push logic (Sokoban)
     // =========================================================================
 
+    // A shove is not a step. The pusher plants their feet, the rock grinds along
+    // on its own (slower than a walk), and only once it has come to rest can the
+    // pusher move again , see beginPushLock/updatePushLock.
+    const PUSH_MOVE_SPEED = 3;         // rock crawls; a walk is 4
+    const PUSH_RECOVER_FRAMES = 8;     // brace after it lands, before walking resumes
+    const PUSH_LOCK_MAX_FRAMES = 240;  // safety valve, never trap the player
+
+    function beginPushLock(character, eventId) {
+        character._puzzlePushLock = { eventId, frames: 0, recover: 0 };
+    }
+
+    function isPushLocked(character) {
+        return !!(character && character._puzzlePushLock);
+    }
+
+    function updatePushLock(character) {
+        const lock = character && character._puzzlePushLock;
+        if (!lock) return;
+        if (++lock.frames > PUSH_LOCK_MAX_FRAMES) { character._puzzlePushLock = null; return; }
+        const ev = getEvent(lock.eventId);
+        // Ice keeps the rock moving over several tiles; the hold lasts the whole slide.
+        if (ev && !ev._erased && ev.isMoving()) { lock.recover = 0; return; }
+        if (++lock.recover >= PUSH_RECOVER_FRAMES) character._puzzlePushLock = null;
+    }
+
     function tryPush(pushedId, dx, dy) {
         const pd = puzzleData();
         const info = pd.pushables[pushedId];
@@ -1648,6 +1678,7 @@
         if (info.maxPushes > 0 && info.pushCount >= info.maxPushes) { puzzleLog(`push ${evLabel(pushedId)}: max pushes reached`); return false; }
         const ev = getEvent(pushedId);
         if (!ev) return false;
+        if (ev.isMoving()) return false; // still travelling from the last shove
 
         const d = mzDir(dx === -1 ? 'left' : dx === 1 ? 'right' : dy === -1 ? 'up' : 'down');
         if (blockedForPushable(ev.x + dx, ev.y + dy, pushedId, dx, dy)) {
@@ -1673,7 +1704,7 @@
 
         ev._lastPushDir = d; // Store direction for ice sliding logic
         if (isIceTile(ev.x + dx, ev.y + dy)) ev.setMoveSpeed(5);
-        else ev.setMoveSpeed(ev._originalMoveSpeed || 4);
+        else ev.setMoveSpeed(PUSH_MOVE_SPEED);
 
         AudioManager.playSe({ name: 'Push', volume: 90, pitch: 100, pan: 0 });
         ev.moveStraight(d);
@@ -2420,6 +2451,8 @@
 
     const _moveByInput = Game_Player.prototype.moveByInput;
     Game_Player.prototype.moveByInput = function () {
+        // Feet planted while the rock we just shoved is still travelling.
+        if (isPushLocked(this)) { this._isPullingBlock = false; return; }
         this._isPullingBlock = Input.isPressed('ok');
         _moveByInput.call(this);
         this._isPullingBlock = false;
@@ -2455,7 +2488,14 @@
             e.x === nx && e.y === ny && pd.pushables[e.eventId()] && !e._erased);
         if (pushable && !pullingEventId) {
             puzzleLog(`move into ${evLabel(pushable.eventId())} at (${nx},${ny})`);
-            tryPush(pushable.eventId(), dx, dy);
+            if (tryPush(pushable.eventId(), dx, dy)) {
+                // The shove costs the step: turn into the rock and stay put until
+                // it has finished moving, so the weight of it reads on screen.
+                beginPushLock(this, pushable.eventId());
+                this.setMovementSuccess(false);
+                this.setDirection(d);
+                return;
+            }
         }
 
         // Apply slow speed for pulling
@@ -2537,6 +2577,7 @@
 
     const _update = Game_Player.prototype.update;
     Game_Player.prototype.update = function (sceneActive) {
+        updatePushLock(this);
         _update.call(this, sceneActive);
         // Non-puzzle maps skip the whole puzzle character/idle pass.
         if (!mapHasPuzzleElements()) return;

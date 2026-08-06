@@ -68,6 +68,7 @@
   "buy": "COMPRA",
   "sell": "VENDI",
   "hoverOrSelectAnItem": "Seleziona un oggetto per esaminarne le proprietà alchemiche...",
+  "max": "Max:",
   "totalCost": "Costo Totale:",
   "sellValue": "Valore vendita:",
   "confirmTransaction": "CONFERMA TRANSAZIONE",

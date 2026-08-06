@@ -200,6 +200,35 @@
     return (v === undefined || v === null) ? 0 : v;
   }
 
+  // How long a pregnancy runs is the species' business, not this plugin's:
+  // every archetype in EnemyArchetypes.json carries a `pregnancyDuration` in
+  // game days and Health_Core resolves it (the median of the two for a hybrid,
+  // always one day for mitosis).
+  var FALLBACK_TERM = 270; // Health_Core absent; the human term.
+
+  function getPregnancyDuration(actor) {
+    var api = window.HealthCore;
+    if (!api || !api.getPregnancyDuration) return FALLBACK_TERM;
+    return api.getPregnancyDuration(actor, getReproductionType(actor));
+  }
+
+  // The fetal biometrics and the hormone curve below are written on the human
+  // scale (millimetres and grams per day of a humanoid term). A species with a
+  // shorter or longer term walks the same ladder, so its gestational age is
+  // mapped onto that scale before those figures are read.
+  function getHumanTerm() {
+    var api = window.HealthCore;
+    var days = api && api.getArchetypePregnancyDuration
+      ? api.getArchetypePregnancyDuration("Humanoid")
+      : 0;
+    return days > 0 ? days : FALLBACK_TERM;
+  }
+
+  function toHumanScaleAge(actor, age) {
+    var term = getPregnancyDuration(actor);
+    return term > 0 ? (age / term) * getHumanTerm() : age;
+  }
+
   const getBrainRegions = () => window.Health ? window.Health.BrainRegions : null;
   const getPersonalityData = () => window.Health ? window.Health.PersonalityData : null;
 
@@ -1258,14 +1287,18 @@
 
       if (isPregnant) {
         const gestationalAge = uterus.gestationalAge || 0;
-        const trimester = gestationalAge < 90 ? 1 : (gestationalAge < 180 ? 2 : 3);
-        const progressPercent = Math.min(100, (gestationalAge / 270) * 100);
+        // The term is the actor's archetype's, so the bands below are read off
+        // how far along the pregnancy is rather than off a fixed day count.
+        const term = getPregnancyDuration(actor);
+        const progress = term > 0 ? gestationalAge / term : 0;
+        const trimester = progress < 1 / 3 ? 1 : (progress < 2 / 3 ? 2 : 3);
+        const progressPercent = Math.min(100, progress * 100);
 
         // One ladder of gestational bands; the prose is Biologic.fetalBand.<id>.
         const fetalBandId =
-          gestationalAge >= 240 ? "term"
-            : gestationalAge >= 180 ? "late"
-              : gestationalAge >= 90 ? "organogenesis"
+          progress >= 8 / 9 ? "term"
+            : progress >= 2 / 3 ? "late"
+              : progress >= 1 / 3 ? "organogenesis"
                 : "embryonic";
         const fetalWeights = { term: "2.8kg", late: "1.2kg", organogenesis: "150g", embryonic: "< 1g" };
         const sizeDesc = T('Biologic.fetalBand.' + fetalBandId + '.size');
@@ -1279,6 +1312,7 @@
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalState')}</span><span class="badge danger">${T('Biologic.pregnant')}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalAge')}</span><span class="metric-value">${gestationalAge} ${T('Biologic.days')} (${(gestationalAge / 7).toFixed(1)} ${T('Biologic.weeks')})</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.currentTrimester')}</span><span class="metric-value">${trimester}° ${T('Biologic.trimester')}</span></div>
+                      <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalTerm')}</span><span class="metric-value">${term} ${T('Biologic.days')}</span></div>
                       <div class="metric-row"><span class="metric-label">${T('Biologic.gestationalProgress')}</span><span class="metric-value">${progressPercent.toFixed(1)}%</span></div>
                       <div class="gauge-container">
                           <div class="gauge-outer"><div class="gauge-inner hp" style="width: ${progressPercent}%;"></div></div>
@@ -3029,10 +3063,12 @@
       var now = convertGameDateToTimestamp(getGameDateFromVariable());
       var elapsed = now - uterus.conceptionDate;  // elapsed is in days
       uterus.gestationalAge = Math.floor(elapsed);
+      // One term for every kind of pregnancy, taken from the actor's archetype.
+      var term = getPregnancyDuration(this._actor);
 
       switch (pregnancyType) {
         case 1: // Uterus
-          if (uterus.gestationalAge >= 270) {
+          if (uterus.gestationalAge >= term) {
             this.giveBirth();
             return;
           }
@@ -3041,7 +3077,7 @@
           break;
 
         case 2: // Oviparous
-          uterus.eggDevelopment = Math.min(100, (elapsed / 270) * 100);
+          uterus.eggDevelopment = Math.min(100, (elapsed / term) * 100);
           if (uterus.eggDevelopment >= 100) {
             this.layEggs();
             return;
@@ -3050,7 +3086,7 @@
           break;
 
         case 3: // Plant seeds
-          uterus.seedDevelopment = Math.min(100, (elapsed / 7) * 100);
+          uterus.seedDevelopment = Math.min(100, (elapsed / term) * 100);
           if (uterus.seedDevelopment >= 100) {
             this.produceSeed();
             return;
@@ -3059,7 +3095,7 @@
           break;
 
         case 4: // Mitosis
-          uterus.mitosisDevelopment = Math.min(100, (elapsed / 1) * 100);
+          uterus.mitosisDevelopment = Math.min(100, (elapsed / term) * 100);
           if (uterus.mitosisDevelopment >= 100) {
             this.completeMitosis();
             return;
@@ -3086,7 +3122,7 @@
   }
 
   Window_BiologicSimulation.prototype.updateFetusData = function () {
-    var age = this._actor._uterusData.gestationalAge;
+    var age = toHumanScaleAge(this._actor, this._actor._uterusData.gestationalAge);
     var fetus = {
       stage: "",
       week: Math.floor(age / 7),
@@ -3137,7 +3173,7 @@
     if (!this._actor._biologicData) return;
 
     var bio = this._actor._biologicData;
-    var age = this._actor._uterusData.gestationalAge;
+    var age = toHumanScaleAge(this._actor, this._actor._uterusData.gestationalAge);
     var trimester = age < 84 ? 1 : age < 196 ? 2 : 3;
 
     // Heart rate increases during pregnancy
@@ -3155,7 +3191,7 @@
 
     // Dramatic hormone changes
     bio.hormones.progesterone = 20 + trimester * 5;
-    bio.hormones.estrogen = 300 + (age / 270) * 300;
+    bio.hormones.estrogen = 300 + (age / getHumanTerm()) * 300;
 
     // Increased caloric needs
     bio.vitalSigns.nutrients.calories -= 5 * trimester;
@@ -3212,7 +3248,7 @@
     bio.vitalSigns.nutrients.carbs -= 8;
   };
   Window_BiologicSimulation.prototype.applyPregnancyStatuses = function () {
-    var age = this._actor._uterusData.gestationalAge;
+    var age = toHumanScaleAge(this._actor, this._actor._uterusData.gestationalAge);
     var trimester = age < 84 ? 1 : age < 196 ? 2 : 3;
 
     // First trimester: 40% chance of nausea
@@ -3260,6 +3296,20 @@
       ovulation.dayInCycle >= 12 && ovulation.dayInCycle <= 16;
   };
 
+  // Whatever a pregnancy produces is a person the party now travels with: it is
+  // registered as a child in the followers menu (PetFollowerSystem.js), with a
+  // face of its own out of the Skab pixel pack and a generated name. Mitosis is
+  // the exception and goes through announceMitosis below.
+  function registerOffspring(actor) {
+    if (!actor || !window.PetSystem || !window.PetSystem.birthChild) return null;
+    var child = window.PetSystem.birthChild(actor);
+    if (!child) return null;
+    window.skipLocalization = true;
+    $gameMessage.add(T('PetFollower.born', { name: child.name }));
+    window.skipLocalization = false;
+    return child;
+  }
+
   Window_BiologicSimulation.prototype.giveBirth = function () {
     var uterus = this._actor._uterusData;
     uterus.isPregnant = false;
@@ -3268,6 +3318,8 @@
     uterus.gestationalAge = 0;
     uterus.fetus = null;
     uterus.birthReady = true;
+
+    registerOffspring(this._actor);
   };
   Window_BiologicSimulation.prototype.layEggs = function () {
     var uterus = this._actor._uterusData;
@@ -3283,6 +3335,11 @@
     window.skipLocalization = true;
     $gameMessage.add(message);
     window.skipLocalization = false;
+
+    // A clutch is a clutch: every egg is one of the family.
+    for (var i = 0; i < uterus.eggsToLay; i++) {
+      registerOffspring(this._actor);
+    }
   };
 
   Window_BiologicSimulation.prototype.produceSeed = function () {
@@ -3291,7 +3348,8 @@
 
     // Don't stop pregnancy, just reset the timer to produce another seed
     uterus.conceptionDate = convertGameDateToTimestamp(getGameDateFromVariable());
-    uterus.dueDate = uterus.conceptionDate + 7; // Next seed in 7 game days
+    // The next seed takes another full term of whatever this actor is.
+    uterus.dueDate = uterus.conceptionDate + getPregnancyDuration(this._actor);
     uterus.gestationalAge = 0;
     uterus.seedDevelopment = 0;
     // Keep isPregnant = true so it continues producing
@@ -3315,7 +3373,25 @@
     window.skipLocalization = true;
     $gameMessage.add(message);
     window.skipLocalization = false;
+
+    // A copy of a traveller is a traveller: it takes a place in the party while
+    // there is one free, and only falls back to walking behind when the party is
+    // full. Either way it is named after the original and numbered.
+    announceMitosis(this._actor);
   };
+
+  function announceMitosis(actor) {
+    if (!actor || !window.PetSystem || !window.PetSystem.mitosisSplit) return null;
+    var split = window.PetSystem.mitosisSplit(actor);
+    if (!split) return null;
+    window.skipLocalization = true;
+    $gameMessage.add(
+      T(split.joined ? 'PetFollower.cloneJoined' : 'PetFollower.cloneFollows',
+        { parent: actor.name(), name: split.name })
+    );
+    window.skipLocalization = false;
+    return split;
+  }
   // 4. ADD the drawing method for the uterus tab
   // i18n-ignore-start: unreachable canvas fallback (opens with `return;`, no caller); the DOM panel renders this section.
   Window_BiologicSimulation.prototype.drawUterus = function (startY) {
@@ -3401,7 +3477,7 @@
       // Display based on type
       switch (pregnancyType) {
         case 1: // Uterus - existing code
-          var daysRemaining = 270 - uterus.gestationalAge;
+          var daysRemaining = getPregnancyDuration(this._actor) - uterus.gestationalAge;
           var totalSeconds = daysRemaining * 24 * 60 * 60;
           var days = Math.floor(totalSeconds / 86400);
           var hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -5971,30 +6047,30 @@
     uterus.gestationalAge = 0;
     uterus.lastStatusCheck = currentGameDate;
 
+    // The term belongs to the actor's archetype, whatever the reproduction is.
+    var term = getPregnancyDuration(actor);
+    uterus.dueDate = currentGameDate + term;
+
     var message = "";
 
     switch (pregnancyType) {
       case 1: // Uterus
-        uterus.dueDate = currentGameDate + 270; // 270 game days
-        message = T('Biologic.pregnancyInitiatedDueIn270Days');
+        message = T.n('Biologic.pregnancyInitiatedDue', term);
         break;
 
       case 2: // Oviparous
-        uterus.dueDate = currentGameDate + 270; // 270 game days (same duration)
         uterus.eggDevelopment = 0;
-        message = T('Biologic.eggDevelopmentInitiated14EggsWillBeReadyIn27');
+        message = T.n('Biologic.eggDevelopmentInitiated', term);
         break;
 
       case 3: // Plant seeds
-        uterus.dueDate = currentGameDate + 7; // 7 game days (1 week)
         uterus.seedDevelopment = 0;
-        message = T('Biologic.seedGenerationInitiatedSeedWillBeReadyIn7Day');
+        message = T.n('Biologic.seedGenerationInitiated', term);
         break;
 
       case 4: // Mitosis
-        uterus.dueDate = currentGameDate + 1; // 1 game day
         uterus.mitosisDevelopment = 0;
-        message = T('Biologic.mitosisInitiatedCellDivisionWillCompleteIn1D');
+        message = T.n('Biologic.mitosisInitiated', term);
         break;
     }
 
@@ -6042,21 +6118,23 @@
 
     var message = "";
     var shouldComplete = false;
+    // Same term the pregnancy itself runs on: the actor's archetype's.
+    var term = getPregnancyDuration(actor);
 
     switch (pregnancyType) {
       case 1: // Uterus
-        if (uterus.gestationalAge >= 270) {
+        if (uterus.gestationalAge >= term) {
           shouldComplete = true;
           message = T('Biologic.pregnancyAcceleratedToCompletionBirthIsImmin');
         } else {
-          var daysRemaining = 270 - uterus.gestationalAge;
+          var daysRemaining = term - uterus.gestationalAge;
           message = T.n('Biologic.pregnancyShortened', daysRemaining);
         }
         break;
 
       case 2: // Oviparous
-        // elapsed is in game-days; mirror updateUterusStatus' 270-day cycle.
-        uterus.eggDevelopment = Math.min(100, (elapsed / 270) * 100);
+        // elapsed is in game-days; mirror updateUterusStatus' term.
+        uterus.eggDevelopment = Math.min(100, (elapsed / term) * 100);
 
         if (uterus.eggDevelopment >= 100) {
           shouldComplete = true;
@@ -6067,21 +6145,21 @@
         break;
 
       case 3: // Plant seeds
-        // elapsed is in game-days; mirror updateUterusStatus' 7-day cycle.
-        uterus.seedDevelopment = Math.min(100, (elapsed / 7) * 100);
+        // elapsed is in game-days; mirror updateUterusStatus' term.
+        uterus.seedDevelopment = Math.min(100, (elapsed / term) * 100);
 
         if (uterus.seedDevelopment >= 100) {
           shouldComplete = true;
           message = T('Biologic.seedGenerationAcceleratedToCompletionSeedIsR');
         } else {
-          var hoursRemaining = Math.ceil(((100 - uterus.seedDevelopment) / 100) * (7 * 24));
+          var hoursRemaining = Math.ceil(((100 - uterus.seedDevelopment) / 100) * (term * 24));
           message = T.n('Biologic.seedGenerationShortened', hoursRemaining);
         }
         break;
 
       case 4: // Mitosis
-        // elapsed is in game-days; mirror updateUterusStatus' 1-day cycle.
-        uterus.mitosisDevelopment = Math.min(100, (elapsed / 1) * 100);
+        // elapsed is in game-days; mirror updateUterusStatus' term.
+        uterus.mitosisDevelopment = Math.min(100, (elapsed / term) * 100);
 
         if (uterus.mitosisDevelopment >= 100) {
           shouldComplete = true;
@@ -6127,6 +6205,10 @@
     window.skipLocalization = true;
     $gameMessage.add(message);
     window.skipLocalization = false;
+
+    // A planted seed is where a plant pregnancy actually produces somebody, so
+    // the sprout joins the family here rather than when the seed was grown.
+    registerOffspring(actor);
 
     // Trigger birth event
     $gameTemp.reserveCommonEvent(139);

@@ -26,6 +26,7 @@
     _extractContacts, _countRecentInteractions, _lastInteractionDay,
     _joinChance, _joinLevelOk, _travellingPartyCount, _hasSelfSwitchAPage,
     _socialLines, _rand, _addNpcOpinion, _personalitySocialMult,
+    _hygienePenalty, _hygieneReadout,
     _emPlaythrough, _isEmActor, _isBubbaNpc, _emContext, _emStanceKey, _emStanceData,
     _bubbaPlaythrough, _isBubbaActor, _bubbaContext, _bubbaDb,
   } = window.NPCEmpathize._helpers;
@@ -508,7 +509,7 @@
     closeBtn.addEventListener('mousedown', e => {
       e.stopPropagation();
       e.preventDefault();
-      this._leave();
+      this._leave(true);
     });
     inner.appendChild(closeBtn);
 
@@ -607,6 +608,20 @@
 
   Scene_NPCEmpathize.prototype._render = function () {
     if (!this._overlay) return;
+    // Talking to somebody uses a different skill depending on what is being
+    // asked of them, so the badge follows the mode the panel is in rather than
+    // sitting there naming all of them. Trade leaves for the shop, which raises
+    // its own badge for Haggling and Appraising.
+    if (window.SpecBadge) {
+      // i18n-ignore-start  Specialization.json ids
+      const spec = this._socialMode ? 'Public Speaking'
+        : (this._pickpocketConfirm || this._stealMode) ? 'Pickpocketing' : null;
+      // i18n-ignore-end
+      // The panel already names who is doing the talking (its own character
+      // switcher), so the chip reports that member's tier.
+      if (spec) window.SpecBadge.show(spec, { actor: this._focusActor() });
+      else window.SpecBadge.hide();
+    }
     try {
       this._renderInner();
     } catch (e) {
@@ -718,8 +733,9 @@
     // standing rather than a party-wide median.
     const opinion         = this._focusOpinion(profile);
 
-    // Advertised odds, computed by the same helper _join() rolls against.
-    const joinChance = _joinChance(opinion);
+    // Advertised odds, computed by the same helper _join() rolls against, for
+    // the same member: the one the switcher has doing the talking.
+    const joinChance = _joinChance(opinion, this._focusActor());
 
     const nowMin            = $gameVariables?.value(114) ?? 0;
     const wasRecentlyAttacked = (profile?.eventLog ?? []).some(
@@ -801,6 +817,15 @@
         const entry = this._chatActions.find(a => a.id === 'romance');
         if (entry && label) entry.label = label;
       }
+    }
+
+    // A harassment complaint from this person against the member doing the
+    // talking: no more courting them until they think well of them again
+    // (see _recordUnwantedCourting). Others in the party are unaffected.
+    if (!actorMode && !remoteMode &&
+        _courtRefused(profile, this._focusActor?.()?.actorId(), opinion)) {
+      this._chatActions = this._chatActions.filter(a => a.id !== 'romance');
+      this._romanceMode = false;
     }
     this._menuItems = this._chatActions;
     if (this._menuIndex >= this._menuItems.length) this._menuIndex = 0;
@@ -2509,6 +2534,71 @@
   // Reproduction type per player slot (ClassSelector); 3 = plant spores.
   const _ROM_REPRO_VAR = { 1: 87, 2: 115, 3: 116 };
 
+  // ==========================================================================
+  // Unwanted courting
+  // ==========================================================================
+  // Being turned down is part of courting, refusing to hear it is not. Every
+  // move made on somebody whose opinion of the suitor is already negative is
+  // counted, and once the count runs out the nEuroPolice hear about it: a
+  // harassment charge with the bounty that carries, and no Court option with
+  // that person for that party member until they think well of them again.
+  // Winning them back round is the only thing that lifts it.
+  const _HARASS_STRIKES  = 3;   // unwanted moves tolerated before a complaint
+  const _HARASS_CRIME    = 'harassment'; // i18n-ignore: PresetCrimes.json key
+  const _HARASS_FALLBACK = 250; // bounty when PresetCrimes.json holds no entry
+
+  function _harassRecord(profile, actorId) {
+    if (!profile || actorId == null) return null;
+    const book = (profile._courtHarassment ??= {});
+    return (book[actorId] ??= { strikes: 0, filed: false, charges: 0 });
+  }
+
+  // Is Court off the table for this member right now? Reading it is also what
+  // clears it, the moment the NPC's opinion of them turns positive again.
+  function _courtRefused(profile, actorId, opinion) {
+    const rec = profile?._courtHarassment?.[actorId];
+    if (!rec?.filed) return false;
+    if ((Number(opinion) || 0) > 0) { rec.filed = false; rec.strikes = 0; return false; }
+    return true;
+  }
+
+  // Counts one unwanted move and files the complaint when the count runs out.
+  // Returns the line to show the player when one was filed, null otherwise.
+  function _recordUnwantedCourting(profile, actorId, npcName, actorName) {
+    const rec = _harassRecord(profile, actorId);
+    if (!rec || rec.filed) return null;
+    rec.strikes = (rec.strikes || 0) + 1;
+    if (rec.strikes < _HARASS_STRIKES) return null;
+
+    rec.strikes = 0;
+    rec.filed   = true;
+    rec.charges = (rec.charges || 0) + 1;
+
+    const CS     = window.CrimeSystem;
+    const preset = CS?.getPresetCrime?.(_HARASS_CRIME);
+    // A second complaint from the same person is taken more seriously.
+    const asked  = Math.round((preset?.bounty || _HARASS_FALLBACK) * Math.min(4, rec.charges));
+    const label  = CS?.presetCrimeName?.(_HARASS_CRIME) || preset?.name || _HARASS_CRIME;
+    // What the charge actually costs is CrimeSystem's to decide (Streetwise
+    // discount, sandbox self-pardon, Eris immunity), so read it rather than
+    // quote the asking figure. Its own toast is a Scene_Map one and will not
+    // show over this panel, which is why the line below says it here.
+    const before = CS?.getTotalBounty?.() ?? 0;
+    CS?.addCrime?.(label, asked, _HARASS_CRIME);
+    const fine = (CS?.getTotalBounty?.() ?? 0) - before;
+
+    (profile.eventLog ??= []).push({
+      tag: 'romance_harassment', desc: `complaint filed (${fine})`, // i18n-ignore: event-log record id
+      timestamp: Date.now(), gameMin: $gameVariables?.value(114) ?? 0,
+    });
+    if ((profile.factionIndex ?? -1) >= 0 && window.$gameFactions?.changeReputation)
+      window.$gameFactions.changeReputation(profile.factionIndex, -5);
+
+    return fine > 0
+      ? T('Empathize.courtHarassmentFiled', { name: npcName, actor: actorName, fine: _euros(fine) })
+      : T('Empathize.courtHarassmentFiledFree', { name: npcName, actor: actorName });
+  }
+
   function _romanceDb()      { return _socialLines().romance || {}; }
   function _romanceActions() { return _romanceDb().actions || []; }
   function _romanceRejection(reason) { return (_romanceDb().rejection || {})[reason] || null; }
@@ -2608,9 +2698,16 @@
     return Math.max(-10, Math.min(14, Math.round((luk - 20) / 5) + Math.floor((actor.level ?? 1) / 8)));
   }
 
-  // Odds the move lands. Disposition dominates (trait compatibility already
-  // rides inside the effective opinion), the boldness tier is the main brake.
+  // Odds the move lands. Disposition dominates (trait compatibility and the
+  // hygiene of both parties already ride inside the effective opinion), the
+  // boldness tier is the main brake.
   const _ROM_TIER_PENALTY = 11;
+  // Courting happens at arm's length or closer, so the hygiene reading that
+  // already dulled the disposition is felt a second time here, at full weight
+  // in percentage points. Traits still rule it: a Feral or Lycanthrope suitor
+  // never notices, a Germaphobe cannot get past it. See _hygienePenalty
+  // (NPCEmpathize.js) for the whole table.
+  const _ROM_HYGIENE_WEIGHT = 1;
   function _romanceChance(profile, npcName, actor, def, opinion) {
     const { sexual, romantic } = _npcRomance(npcName, profile);
     const { style }            = _romanceStanding(npcName, profile);
@@ -2620,6 +2717,7 @@
       + _romanceCharm(actor)
       + Math.round((_personalitySocialMult(profile, 'positive') - 1) * 25)
       + (_ROM_STYLE_MOD[style?.key] || 0)
+      + _hygienePenalty(profile, actor, _ROM_HYGIENE_WEIGHT)
       - (Number(def.tier) || 1) * _ROM_TIER_PENALTY
       - _romanceFatigue(profile, def.id) * 5;
 
@@ -2674,8 +2772,28 @@
     });
   };
 
+  // Says out loud what the odds below have already been docked for, so a run of
+  // suddenly hopeless numbers reads as a bath the party skipped rather than as
+  // the NPC turning cold. Only the side that is actually noticed is mentioned,
+  // and a suitor whose traits ignore the smell is told nothing.
+  const _ROM_HYGIENE_HINT_AT = -4; // opinion points, below which it is worth saying
+  Scene_NPCEmpathize.prototype._buildRomanceHygieneHint = function () {
+    const npcName = _getNPCName(this._eventId) || this._npcName;
+    const profile = _getProfile(npcName);
+    const actor   = this._focusActor();
+    if (!profile || !actor) return '';
+    const { theirs, mine } = _hygieneReadout(profile, actor);
+    const lines = [];
+    if (theirs <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtSelf', { name: npcName }));
+    if (mine   <= _ROM_HYGIENE_HINT_AT) lines.push(T('Empathize.hygieneCourtNpc',  { name: npcName }));
+    if (!lines.length) return '';
+    return `<div style="opacity:0.7;font-style:italic;font-size:0.95em;margin:2px 0 4px;">` +
+      lines.map(l => _escapeHtml(l)).join('<br>') + `</div>`;
+  };
+
   Scene_NPCEmpathize.prototype._buildInlineRomanceActions = function (T) {
-    let html = this._romanceOptions().map(o => {
+    let html = this._buildRomanceHygieneHint();
+    html += this._romanceOptions().map(o => {
       const open = `<div class="npc-chat-action-btn" onmousedown="event.stopPropagation();SceneManager._scene._romanceInteract('${o.id}')">`;
       // Bubba's single row: no odds to weigh, only the damage it will do.
       if (o.id === BUBBA_DECLINE_ID) {
@@ -2748,6 +2866,11 @@
     const actorId = actor && actor.actorId();
     const fill    = s => String(s || '').replace(/\{name\}/g, npcName);
 
+    // A complaint already on file takes Court off the menu, so this is only
+    // reachable through a stale panel: refuse it rather than act on it.
+    const priorOpinion = this._focusOpinion(profile);
+    if (_courtRefused(profile, actorId, priorOpinion)) { SoundManager.playBuzzer(); return; }
+
     const reason = _romanceBlockReason(profile, npcName, actor, def);
     const playerLine = fill(_rand(def.player));
     let npcLine, delta, landed = false;
@@ -2757,7 +2880,7 @@
       npcLine = fill(_rand(pool.lines));
       delta   = Number(pool.delta) || 0;
     } else {
-      const chance = _romanceChance(profile, npcName, actor, def, this._focusOpinion(profile));
+      const chance = _romanceChance(profile, npcName, actor, def, priorOpinion);
       landed  = Math.random() * 100 < chance;
       npcLine = fill(_rand(landed ? def.responseGood : def.responseBad));
       delta   = landed
@@ -2778,16 +2901,22 @@
         window.$gameFactions.changeReputation(profile.factionIndex, Math.round(delta / 8));
     }
 
+    // Pressing a suit on somebody who already dislikes the suitor is pestering
+    // rather than flirting, and the third time it is a matter for the law.
+    const charge = priorOpinion < 0
+      ? _recordUnwantedCourting(profile, actorId, npcName, actor ? actor.name() : '')
+      : null;
+
     if (landed) SoundManager.playOk(); else SoundManager.playBuzzer();
 
     this._romanceMode = false;
     this._activeTab   = 'chat';
     this._chatHistory.push({ role: 'player', text: playerLine });
     this._isTyping    = true;
-    this._joinMessage = {
-      type: delta >= 0 ? 'accept' : 'reject',
-      text: `${delta >= 0 ? '+' : ''}${delta} ♥ (${actor ? actor.name() : ''})`,
-    };
+    const deltaText   = `${delta >= 0 ? '+' : ''}${delta} ♥ (${actor ? actor.name() : ''})`;
+    this._joinMessage = charge
+      ? { type: 'reject', text: `${charge} ${deltaText}` }
+      : { type: delta >= 0 ? 'accept' : 'reject', text: deltaText };
     this._render();
     this._scrollChatToBottom();
     setTimeout(() => {
@@ -3106,7 +3235,7 @@
     if (this._tabBarEl) {
       const backHTML = Scene_NPCEmpathize._returnStack.length
         ? `<div class="npc-tab npc-wiki-back" onmousedown="event.stopPropagation();SceneManager._scene._leave()">← ${_escapeHtml(T.back)}</div>`
-        : `<div class="npc-tab npc-wiki-back" onmousedown="event.stopPropagation();SceneManager._scene._leave()">✕ ${_escapeHtml(T.close)}</div>`;
+        : `<div class="npc-tab npc-wiki-back" onmousedown="event.stopPropagation();SceneManager._scene._leave(true)">✕ ${_escapeHtml(T.close)}</div>`;
       this._tabBarEl.innerHTML = backHTML + tabs.map(tab => `
         <div class="npc-tab${this._activeTab === tab.id ? ' active' : ''}"
              onmousedown="event.stopPropagation();SceneManager._scene._setTab('${tab.id}')">${_escapeHtml(tab.label)}</div>`).join('');

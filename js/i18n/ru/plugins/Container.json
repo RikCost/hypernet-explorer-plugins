@@ -40,6 +40,8 @@
     "unknownEnemy": "Неизвестно",
     "noParts": "",
     "butcher": "",
+    "butcherAll": "",
+    "butcherAllResult": "",
     "leave": "",
     "alreadyCollected": "",
     "partDestroyed": "",

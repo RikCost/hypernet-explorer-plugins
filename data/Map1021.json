@@ -1582,7 +1582,7 @@
     },
     {
       "id": 4,
-      "name": "Policeman",
+      "name": "Officer Ciant",
       "note": "",
       "pages": [
         {
@@ -2662,7 +2662,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$ElvenBarbarian",
             "direction": 2,
             "pattern": 2,
             "characterIndex": 0
@@ -3177,7 +3177,7 @@
     },
     {
       "id": 19,
-      "name": "Policeman",
+      "name": "Officer Iska",
       "note": "",
       "pages": [
         {

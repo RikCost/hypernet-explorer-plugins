@@ -317,6 +317,29 @@
         },
         _clocks: {},
 
+        // One member's level in it, 1..5. A menu that names who is doing the
+        // work (anything carrying the party switcher) reads this rather than
+        // partyLevel: it is that member's hands on the job, not the party's
+        // best pair. Falls back to the party reading when nobody is named.
+        levelOf(actor, spec) {
+            const def = this.resolve(spec);
+            if (!def) return 1;
+            if (!actor || !actor.specializationLevel) return this.partyLevel(def);
+            return actor.specializationLevel(def.id);
+        },
+
+        // multiplier() / discount() for a named member.
+        multiplierFor(actor, spec, perLevel) {
+            const step = perLevel != null ? perLevel : DEFAULT_PER_LEVEL;
+            return 1 + step * (this.levelOf(actor, spec) - 1);
+        },
+
+        discountFor(actor, spec, perLevel, floor) {
+            const step = perLevel != null ? perLevel : DEFAULT_PER_LEVEL;
+            const min = floor != null ? floor : 0.5;
+            return Math.max(min, 1 - step * (this.levelOf(actor, spec) - 1));
+        },
+
         // The best effective level anyone in the party has, 1..5. This is what
         // an activity checks when it wants to know if the party is any good at
         // something ("choosing the highest one").
@@ -405,10 +428,360 @@
                 $gameMessage.add(`${name}: ${label} - ${window.Specializations.levelName(g.level)}`);
             }
             if (window.SoundManager && SoundManager.playLevelUp) SoundManager.playLevelUp();
+            // A tier gained while the menu that taught it is still open should
+            // show on its badge straight away.
+            if (window.SpecBadge) window.SpecBadge.refresh();
         }
     };
     window.SpecializationXP = SpecializationXP;
     window.Specializations.XP = SpecializationXP;
+
+    // =========================================================================
+    // window.SkillSpecs - which specialization a battle skill runs on
+    // -------------------------------------------------------------------------
+    // A skill is a thing somebody practises, so using one trains the discipline
+    // it belongs to and the discipline pays back into it: a boxer's Uppercut
+    // trains Boxing and hits harder the better their Boxing is. The mapping is
+    // data (js/db/Skills/SkillSpecs.json), resolved per skill and cached:
+    // the skill's own name first, then its <category:> note tag, then its skill
+    // type, so a skill added later is covered without touching this file.
+    //
+    //   window.SkillSpecs.forSkill(skill)          -> spec record or null
+    //   window.SkillSpecs.levelFor(actor, skill)   -> 1..5
+    //   window.SkillSpecs.multiplier(actor, skill) -> 1.00 .. 1.24
+    //
+    // Training is silent by design: the only thing the player ever sees is the
+    // toast when a tier is actually gained.
+    // =========================================================================
+    const SKILL_PER_LEVEL = 0.06;   // damage / healing gained per tier above Untrained
+    const SKILL_USE_POINTS = 1;     // ...taught by one use, through the daily cap
+
+    const SkillSpecs = {
+        rules: [],
+        byCategory: {},
+        byStype: {},
+        ready: false,
+        _cache: new Map(),
+
+        async load() {
+            try {
+                const response = await fetch('js/db/Skills/SkillSpecs.json');
+                const json = await response.json();
+                this.rules = (json.byName || []).map(r => ({
+                    rx: this.compile(r.match),
+                    spec: r.spec
+                })).filter(r => r.rx);
+                this.byCategory = json.byCategory || {};
+                this.byStype = json.byStype || {};
+                this._cache.clear();
+                this.ready = true;
+            } catch (e) {
+                console.error('SpecializationMenu: failed to load SkillSpecs.json', e);
+            }
+        },
+
+        // Word boundaries are added here rather than written into the data,
+        // where a backslash would collide with JSON's own escapes. Without them
+        // "Thousand Fists" reads as earth magic (sand) and "Chair Shot" as wind.
+        compile(pattern) {
+            if (!pattern) return null;
+            try {
+                const alts = String(pattern).split('|').filter(Boolean)
+                    .map(a => '\\b' + a);
+                return new RegExp(alts.join('|'), 'i');
+            } catch (e) {
+                console.warn('SpecializationMenu: bad SkillSpecs pattern', pattern);
+                return null;
+            }
+        },
+
+        // Database names are written both ways ("Fire Breath", "FireBreath"),
+        // so the CamelCase ones are split before matching.
+        _words(name) {
+            return String(name || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+        },
+
+        _categoryOf(skill) {
+            const m = skill.note ? skill.note.match(/<category:\s*(.+?)>/i) : null;
+            return m ? m[1].trim() : null;
+        },
+
+        // The specialization record a skill belongs to, or null for the ones
+        // that belong to nothing (Attack, Guard and the other engine basics).
+        forSkill(skill) {
+            if (!skill || !skill.id) return null;
+            if (this._cache.has(skill.id)) return this._cache.get(skill.id);
+            if (!this.ready || !window.Specializations.ready) return null;
+            let name = null;
+            const words = this._words(skill.name);
+            for (const rule of this.rules) {
+                if (rule.rx.test(words)) { name = rule.spec; break; }
+            }
+            if (!name) {
+                const cat = this._categoryOf(skill);
+                if (cat && Object.prototype.hasOwnProperty.call(this.byCategory, cat)) {
+                    name = this.byCategory[cat];
+                }
+            }
+            if (!name) name = this.byStype[String(skill.stypeId)] || null;
+            const def = name ? (window.Specializations.byName.get(name) || null) : null;
+            this._cache.set(skill.id, def);
+            return def;
+        },
+
+        levelFor(actor, skill) {
+            const def = this.forSkill(skill);
+            if (!def || !actor || !actor.specializationLevel) return 1;
+            return actor.specializationLevel(def.id);
+        },
+
+        // What being trained is worth on the numbers: 1.00 at Untrained up to
+        // 1.24 at Master, applied to the skill's damage and its healing alike.
+        multiplier(actor, skill) {
+            return 1 + SKILL_PER_LEVEL * (this.levelFor(actor, skill) - 1);
+        },
+
+        // Using a skill is practising it. Capped per day like every other
+        // activity, so a menu-cast skill cannot be spammed into mastery.
+        train(actor, skill) {
+            const def = this.forSkill(skill);
+            if (!def || !actor) return [];
+            return SpecializationXP.awardCapped(def, SKILL_USE_POINTS, { actor });
+        }
+    };
+    window.SkillSpecs = SkillSpecs;
+    SkillSpecs.load();
+
+    // -------------------------------------------------------------------------
+    // Engine hooks: one call per use in battle (BattleManager) and in the menu
+    // (Scene_ItemBase), and one place where a skill's numbers are settled.
+    // -------------------------------------------------------------------------
+    const _Game_Battler_useItem = Game_Battler.prototype.useItem;
+    Game_Battler.prototype.useItem = function (item) {
+        _Game_Battler_useItem.call(this, item);
+        if (this.isActor && this.isActor() && DataManager.isSkill(item)) {
+            try { SkillSpecs.train(this, item); } catch (e) { /* never break a turn */ }
+        }
+    };
+
+    const _Game_Action_makeDamageValue = Game_Action.prototype.makeDamageValue;
+    Game_Action.prototype.makeDamageValue = function (target, critical) {
+        const value = _Game_Action_makeDamageValue.call(this, target, critical);
+        const item = this.item();
+        const subject = this.subject();
+        if (!item || !subject || !subject.isActor || !subject.isActor()) return value;
+        if (!DataManager.isSkill(item)) return value;
+        const mult = SkillSpecs.multiplier(subject, item);
+        if (mult === 1) return value;
+        // Healing is a negative damage value, so the same multiplication makes
+        // a trained healer heal more rather than less.
+        return Math.round(value * mult);
+    };
+
+    // =========================================================================
+    // window.SpecBadge - the live "what am I training" chip
+    // -------------------------------------------------------------------------
+    // Any menu or minigame whose outcome is decided by a specialization says so
+    // on screen while it is open, so the player can see which skill is being
+    // practised and how far along the party is. One chip per specialization,
+    // hung under the page's party switcher (or, failing one, in the top right
+    // corner of the open page) so it always lands inside the parchment border.
+    //
+    //   window.SpecBadge.show('Lockpicking');
+    //   window.SpecBadge.show(['Cooking', 'Nutrition'], { el: overlayRoot });
+    //   window.SpecBadge.hide();
+    //
+    // It cleans up after itself: the chips disappear when the scene changes, or
+    // when the DOM overlay passed as `opts.el` leaves the document, so a caller
+    // that forgets to hide() never leaves a badge stranded on screen.
+    // =========================================================================
+    const SpecBadge = {
+        _el: null,
+        _specs: [],
+        _scene: null,
+        _host: null,
+        _actor: null,
+        _raf: null,
+        _expireAt: 0,
+
+        show(spec, opts) {
+            opts = opts || {};
+            const list = (Array.isArray(spec) ? spec : [spec])
+                .map(s => SpecializationXP.resolve(s))
+                .filter(Boolean);
+            if (!list.length) {
+                // Specialization.json loads asynchronously; a scene opening on
+                // the first frame of a new game would otherwise show nothing.
+                if (!window.Specializations.ready) {
+                    setTimeout(() => this.show(spec, opts), 120);
+                }
+                return;
+            }
+            this._specs = list;
+            this._scene = (typeof SceneManager !== 'undefined') ? SceneManager._scene : null;
+            this._host = opts.el || null;
+            // `actor` is the member the menu says is doing the work, from its
+            // party switcher. Without one the chip reports the party.
+            this._actor = opts.actor || null;
+            // A badge normally lives as long as the scene that raised it. On the
+            // map nothing is "open", so a caller there (an overlay minigame, a
+            // one-shot result) gets a timed chip instead of a permanent one.
+            const onMap = typeof Scene_Map !== 'undefined' && this._scene instanceof Scene_Map;
+            const ttl = opts.ttl != null ? opts.ttl : (onMap && !this._host ? 12000 : 0);
+            this._expireAt = ttl > 0 ? Date.now() + ttl : 0;
+            this._ensure();
+            this._render();
+            if (this._raf === null) this._raf = requestAnimationFrame(() => this._tick());
+        },
+
+        hide() {
+            this._specs = [];
+            this._scene = null;
+            this._host = null;
+            this._actor = null;
+            this._expireAt = 0;
+            if (this._el && this._el.parentNode) this._el.parentNode.removeChild(this._el);
+            this._el = null;
+            if (this._raf !== null) {
+                cancelAnimationFrame(this._raf);
+                this._raf = null;
+            }
+        },
+
+        // Re-read the levels (called on every level up, so a tier gained while
+        // the menu is open is visible immediately).
+        refresh() {
+            if (this._specs.length) this._render();
+        },
+
+        _ensure() {
+            if (this._el && document.body.contains(this._el)) return;
+            document.querySelectorAll('#spec-badge-stack').forEach(e => e.remove());
+            const el = document.createElement('div');
+            el.id = 'spec-badge-stack';
+            document.body.appendChild(el);
+            this._el = el;
+        },
+
+        _render() {
+            if (!this._el) return;
+            const rows = this._specs.map(def => {
+                // A menu that names who is doing the work reports that member's
+                // own tier; anything else reports the party's best.
+                const doer = this._actor;
+                const level = doer
+                    ? SpecializationXP.levelOf(doer, def)
+                    : SpecializationXP.partyLevel(def);
+                const name = (typeof window.translateText === 'function')
+                    ? window.translateText(def.name) : def.name;
+                const holder = doer || (level > 1 ? SpecializationXP.bestMember(def) : null);
+                const who = (holder && holder.name) ? holder.name() : '';
+                return `<div class="spec-badge spec-badge--t${level}">` +
+                    `<span class="spec-badge-name">${escapeHtml(name)}</span>` +
+                    `<span class="spec-badge-level">${escapeHtml(window.Specializations.levelName(level))}</span>` +
+                    (who ? `<span class="spec-badge-who">${escapeHtml(who)}</span>` : '') +
+                    `</div>`;
+            });
+            // Callers refresh from their own redraw loops, so only touch the DOM
+            // when something actually changed.
+            const html = rows.join('');
+            if (this._el.innerHTML !== html) this._el.innerHTML = html;
+            this._sync();
+        },
+
+        // Where the chip hangs from. A book-spread page is headed by its party
+        // switcher (the page titles were dropped, the tabs took their place), so
+        // the badge hangs directly under those tabs, centred on them: it names
+        // the tier of the member they pick. Failing a switcher it takes the top
+        // right corner of the page. Anchoring on the canvas alone put it outside
+        // the parchment border whenever the canvas is wider than the page drawn
+        // on it, which is what pushed it off frame.
+        _anchor(sx, sy) {
+            const scope = (this._host && document.body.contains(this._host))
+                ? this._host : document;
+            const boxes = sel => Array.from(scope.querySelectorAll(sel))
+                .map(el => ({ el, r: el.getBoundingClientRect() }))
+                .filter(b => b.r.width > 0 && b.r.height > 0);
+
+            const tabs = boxes('.companion-switcher')[0];
+            if (tabs) {
+                // The row is full width however its tabs are aligned, so centre
+                // on what is actually drawn in it rather than on the row.
+                const kids = Array.from(tabs.el.children)
+                    .map(c => c.getBoundingClientRect())
+                    .filter(b => b.width > 0);
+                const left = kids.length ? Math.min(...kids.map(b => b.left)) : tabs.r.left;
+                const right = kids.length ? Math.max(...kids.map(b => b.right)) : tabs.r.right;
+                return {
+                    center: (left + right) / 2,
+                    top: tabs.r.bottom + 6 * sy,
+                    width: Math.max(right - left, 240 * sx)
+                };
+            }
+            const page = boxes('.book-spread')[0];
+            const rect = page ? page.r : (this._host ? this._host.getBoundingClientRect() : null);
+            if (rect && rect.width > 0) {
+                return {
+                    right: rect.right - 18 * sx,
+                    top: rect.top + 14 * sy,
+                    width: rect.width * 0.42
+                };
+            }
+            return null;
+        },
+
+        // Track the canvas the same way the toast stack does, so the chips sit
+        // inside the game frame at any resolution or aspect ratio. Anchored from
+        // the LEFT and pulled back by its own width (right-aligned) or half of
+        // it (centred): a `right` offset measured against the window hangs the
+        // chip off the edge whenever the canvas is letterboxed or wider than the
+        // viewport, which is what clipped the member's name.
+        _sync() {
+            const canvas = document.getElementById('gameCanvas');
+            if (!canvas || !this._el) return;
+            const r = canvas.getBoundingClientRect();
+            const sx = r.width / Graphics.width;
+            const sy = r.height / Graphics.height;
+            const s = this._el.style;
+            s.fontSize = Math.round(15 * sy) + 'px';
+            const a = this._anchor(sx, sy);
+            if (a && a.center != null) {
+                s.transform = 'translateX(-50%)';
+                s.alignItems = 'center';
+                s.left = a.center + 'px';
+                s.top = a.top + 'px';
+                s.maxWidth = Math.max(120, a.width) + 'px';
+                return;
+            }
+            s.transform = 'translateX(-100%)';
+            s.alignItems = 'flex-end';
+            if (a) {
+                s.left = a.right + 'px';
+                s.top = a.top + 'px';
+                s.maxWidth = Math.max(120, Math.min(a.width, a.right - r.left - 24 * sx)) + 'px';
+                return;
+            }
+            s.left = (r.left + r.width - 24 * sx) + 'px';
+            s.top = (r.top + 24 * sy) + 'px';
+            s.maxWidth = Math.max(120, r.width - 48 * sx) + 'px';
+        },
+
+        _tick() {
+            this._raf = null;
+            if (!this._specs.length) return;
+            const sceneGone = typeof SceneManager !== 'undefined'
+                && this._scene && SceneManager._scene !== this._scene;
+            const hostGone = this._host && !document.body.contains(this._host);
+            const expired = this._expireAt && Date.now() >= this._expireAt;
+            if (sceneGone || hostGone || expired) {
+                this.hide();
+                return;
+            }
+            this._sync();
+            this._raf = requestAnimationFrame(() => this._tick());
+        }
+    };
+    window.SpecBadge = SpecBadge;
 
     // =========================================================================
     // Plugin command - Add Specialization EXP

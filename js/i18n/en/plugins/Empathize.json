@@ -118,6 +118,7 @@
   "giftTitle": "Give a Gift",
   "noItemsToGive": "No items to give.",
   "gaveItem": "You gave {item} to {name}.",
+  "giftRefused": "{name} will not take {item} from you.",
   "bribeTitle": "Bribe",
   "briberyCaught": "{name} pockets the gold but warns you off.",
   "bribeRefused": "{name} is too hostile to accept anything.",
@@ -260,12 +261,12 @@
     "Into the bag it goes. Appreciated.",
     "Not much, but it's the thought."
   ],
-  "giftReactionCold": [
-    "Don't think {item} buys you anything.",
-    "I'll take it. It changes nothing.",
-    "You give things away easily. That says more about you than about me.",
-    "Fine. Now leave me alone.",
-    "Charity, is it? Keep it coming and I might listen."
+  "giftRefusalLines": [
+    "Don't think {item} buys you anything. Take it back.",
+    "Keep it. It would change nothing between us.",
+    "I want nothing from your hands.",
+    "No. Now leave me alone.",
+    "You think I can be bought? Not by you."
   ],
   "giftReactionRepeat": [
     "You keep handing me things. What is it you actually want?",
@@ -311,6 +312,10 @@
   "transmitNoneResultNoBounty": "You cough near {name}.",
   "socializeLabel": "Socialize",
   "courtLabel": "Court",
+  "courtHarassmentFiled": "{name} has had enough of {actor}. A harassment complaint goes on the record: {fine}.",
+  "courtHarassmentFiledFree": "{name} has had enough of {actor}. A harassment complaint goes on the record.",
+  "hygieneCourtSelf": "You have not washed in some time, and {name} is trying not to notice.",
+  "hygieneCourtNpc": "{name} has not washed in some time, and there is no way not to notice.",
   "directionsLabel": "Ask Directions",
   "directionsIntro": "\"Where can I find {target}?\"",
   "directionsNone": "\"There's nothing worth pointing you to around here.\"",

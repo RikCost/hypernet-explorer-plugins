@@ -199,6 +199,95 @@
         return true;
     }
 
+    // ------------------------------------------------------------------------
+    // Fabrication - the specialization the workbench runs on
+    // ------------------------------------------------------------------------
+    // The Thinker is the one menu whose contents are gated by a skill. Every
+    // recipe is weighted by how much of a job it is (how many different things
+    // go into it, and how many of them), and that weight sorts it into one of
+    // five tiers. A party can only assemble up to the tier it has trained to,
+    // so the workbench opens up as it is used: bigger recipes, more materials.
+    //
+    // Below Master an assembly can also botch, which is what makes the early
+    // tiers worth training out of rather than a formality. A botch eats half
+    // the reagents and still teaches a point.
+    const FAB_SPEC = 'Fabrication';  // i18n-ignore  Specialization.json id
+    // Upper weight bound of tiers 1-4; anything heavier is tier 5.
+    const TIER_WEIGHTS = [8, 10, 14, 20];
+    // Botch chance at each Fabrication level, 1 (Untrained) to 5 (Master).
+    const FAIL_BY_LEVEL = [0, 0.30, 0.18, 0.10, 0.04, 0];
+    const TIER_RISK = 0.2;    // ...multiplied by this much per tier above the first
+    const FAIL_CAP = 0.6;
+    // What a finished assembly teaches, by tier. A tier-5 build is a lesson.
+    const TIER_POINTS = [0, 1, 2, 3, 5, 8];
+    const BOTCH_POINTS = 1;
+    const SALVAGE_POINTS = 1;
+
+    function isSandbox() {
+        return !!($gameSystem && $gameSystem._isSandboxMode);
+    }
+
+    // 2 x (distinct ingredients) + (total units), cached per entry: notes are
+    // static, so a recipe's tier never changes at runtime.
+    const _tierCache = new Map();
+    function recipeTier(item) {
+        if (_tierCache.has(item)) return _tierCache.get(item);
+        const recipe = parseRecipe(item);
+        let tier = 1;
+        if (recipe) {
+            const ids = Object.keys(recipe);
+            let units = 0;
+            for (const id of ids) units += recipe[id] || 1;
+            const weight = ids.length * 2 + units;
+            tier = TIER_WEIGHTS.findIndex(max => weight <= max) + 1;
+            if (tier === 0) tier = TIER_WEIGHTS.length + 1;
+        }
+        _tierCache.set(item, tier);
+        return tier;
+    }
+
+    // The member the workbench's party switcher has at the bench. Everything
+    // the workbench decides - which tiers are open, how likely a botch is, how
+    // much a teardown gives back - is read off THEM, not off the party's best.
+    function benchActor() {
+        const scene = SceneManager._scene;
+        if (scene && typeof scene.fabActor === 'function') {
+            const actor = scene.fabActor();
+            if (actor) return actor;
+        }
+        return ($gameParty && $gameParty.leader) ? $gameParty.leader() : null;
+    }
+
+    function fabLevel() {
+        if (!window.SpecializationXP) return 1;
+        return window.SpecializationXP.levelOf(benchActor(), FAB_SPEC);
+    }
+
+    // Whether the party is trained enough to attempt this recipe at all.
+    function tierMet(item) {
+        return isSandbox() || fabLevel() >= recipeTier(item);
+    }
+
+    // The name of the tier a recipe wants, for the notice on a locked one.
+    function tierLevelName(item) {
+        const db = window.Specializations;
+        return db && db.levelName ? db.levelName(recipeTier(item)) : String(recipeTier(item));
+    }
+
+    function botchChance(item) {
+        if (isSandbox()) return 0;
+        const base = FAIL_BY_LEVEL[Math.max(1, Math.min(5, fabLevel()))] || 0;
+        if (!base) return 0;
+        return Math.min(FAIL_CAP, base * (1 + TIER_RISK * (recipeTier(item) - 1)));
+    }
+
+    // How many pieces come back off a teardown: a practised hand takes a thing
+    // apart without ruining half of it.
+    function salvageYield() {
+        const level = fabLevel();
+        return 1 + Math.floor(Math.random() * 2) + Math.floor((level - 1) / 2);
+    }
+
     // Safe item rarity helper
     function getItemRarity(item) {
         if (window.ItemSystemUtils && typeof window.ItemSystemUtils.getItemRarity === 'function') {
@@ -230,7 +319,9 @@
             }
 
             categories[category].total++;
-            if (canCraft(parseRecipe(item))) {
+            // "Craftable" means the party has the materials AND the training:
+            // a recipe above its Fabrication tier does not count.
+            if (canCraft(parseRecipe(item)) && tierMet(item)) {
                 categories[category].craftable++;
             }
         }
@@ -317,8 +408,44 @@
             this._lastRenderedCategory = null;
             this._forceListRebuild = true;
 
+            this._fabActorIndex = 0;
+
             this.initUIThinkerLayout();
             this.refreshUIThinker();
+            if (window.CharSwitcher) {
+                window.CharSwitcher.installTabKey(this, (dir) => this.cycleFabActor(dir));
+            }
+        }
+
+        // Who is at the bench. Everything the workbench decides is read off
+        // them, so switching member re-tiers the whole recipe list.
+        fabMembers() {
+            return ($gameParty && $gameParty.members) ? $gameParty.members() : [];
+        }
+
+        fabActor() {
+            const members = this.fabMembers();
+            if (!members.length) return null;
+            const idx = Math.max(0, Math.min(members.length - 1, this._fabActorIndex || 0));
+            return members[idx];
+        }
+
+        selectFabActor(index) {
+            const members = this.fabMembers();
+            if (!members.length) return;
+            const next = ((index % members.length) + members.length) % members.length;
+            if (next === this._fabActorIndex) return;
+            this._fabActorIndex = next;
+            SoundManager.playCursor();
+            // A different pair of hands opens (or closes) whole tiers, so the
+            // category counts and the workbench both have to be rebuilt.
+            this._forceListRebuild = true;
+            this._thinkerItemsDirty = true;
+            this.refreshUIThinker();
+        }
+
+        cycleFabActor(dir) {
+            this.selectFabActor((this._fabActorIndex || 0) + dir);
         }
 
         update() {
@@ -329,6 +456,8 @@
         terminate() {
             const container = document.getElementById("thinker-container");
             if (container) container.remove();
+            if (window.SpecBadge) window.SpecBadge.hide();
+            if (window.CharSwitcher) window.CharSwitcher.removeTabKey(this);
             super.terminate();
         }
 
@@ -372,7 +501,7 @@
                         </div>
                         
                         <div class="right-page">
-                            <h2 class="title">${t.workbench}</h2>
+                            <div id="thinker-companion-row" class="companion-switcher companion-switcher--header"></div>
                             <div class="workbench"></div>
                         </div>
                     </div>
@@ -452,6 +581,25 @@
             }
 
             // 2. Render Tabs (if state changed or first load)
+            // The party switcher heads the right page: whoever it names
+            // is the one working the bench, and their Fabrication is what the
+            // whole menu is measured against.
+            const compRow = spread.querySelector("#thinker-companion-row");
+            if (compRow && window.CharSwitcher) {
+                // The switcher heads the page in place of its old title, so it
+                // is drawn even for a party of one: the single name says whose
+                // hands the skill badge underneath is reporting.
+                const members = this.fabMembers();
+                let tabs = "";
+                members.forEach((m, idx) => {
+                    const sel = idx === (this._fabActorIndex || 0) ? "selected" : "";
+                    tabs += `<div class="companion-tab ${sel}" onclick="SceneManager._scene.selectFabActor(${idx})">${m.name()}</div>`;
+                });
+                compRow.innerHTML = window.CharSwitcher.inner(
+                    `<div class="companion-tabs-row">${tabs}</div>`, members.length);
+            }
+            if (window.SpecBadge) window.SpecBadge.show(FAB_SPEC, { actor: this.fabActor() });
+
             const tabsContainer = spread.querySelector("#tabs-container");
             if (tabsContainer) {
                 tabsContainer.innerHTML = `
@@ -467,7 +615,9 @@
             if (successOverlayContainer) {
                 if (this._successOverlayTimer > 0 && this._successOverlayData) {
                     const isSalvage = this._successOverlayData.mode === 'disassemble';
-                    const successTitle = isSalvage ? t.extractSuccess : t.success;
+                    const isBotch = this._successOverlayData.mode === 'botched';
+                    const successTitle = isBotch ? T('Thinker.botchTitle')
+                        : (isSalvage ? t.extractSuccess : t.success);
                     const itemsList = this._successOverlayData.items;
 
                     let itemsHTML = "";
@@ -490,10 +640,12 @@
                         <div class="success-overlay">
                             <div class="cauldron-animation" style="font-size: 80px;"></div>
                             <h2 class="success-title">${successTitle}</h2>
-                            <span class="success-obtained-label">${t.obtained}</span>
+                            ${isBotch
+                            ? `<span class="success-obtained-label">${T('Thinker.botchNote')}</span>`
+                            : `<span class="success-obtained-label">${t.obtained}</span>
                             <div style="display:flex; flex-direction:column; gap:8px;">
                                 ${itemsHTML}
-                            </div>
+                            </div>`}
                         </div>
                     `;
                 } else {
@@ -836,12 +988,28 @@
                         ? `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828;">${t.needBlacksmith}</div>`
                         : "";
 
+                    // What the workbench itself thinks of the job: which tier it
+                    // is, whether the party is trained to it, and how likely the
+                    // whole thing is to come apart in their hands.
+                    let skillNotice = "";
+                    if (recipe && this._mode === 'assemble') {
+                        const trained = tierMet(item);
+                        const risk = Math.round(botchChance(item) * 100);
+                        skillNotice = `<div class="workbench-skill ${trained ? '' : 'locked'}">
+                            <span>${T('Thinker.tierLabel', { tier: recipeTier(item), level: tierLevelName(item) })}</span>
+                            ${trained && risk > 0 ? `<span class="workbench-risk">${T('Thinker.botchRisk', { pct: risk })}</span>` : ''}
+                        </div>`;
+                        if (!trained) {
+                            skillNotice += `<div class="sandbox-badge" style="background:rgba(160,40,40,0.18); border-color:#a02828; color:#a02828;">${T('Thinker.needFabrication', { level: tierLevelName(item) })}</div>`;
+                        }
+                    }
+
                     let btnText = "";
                     let btnEnabled = false;
 
                     if (this._mode === 'assemble') {
                         btnText = t.transmute;
-                        btnEnabled = satisfiesAll && blacksmithOK;
+                        btnEnabled = satisfiesAll && blacksmithOK && tierMet(item);
                     } else {
                         btnText = t.salvage;
                         btnEnabled = $gameParty.numItems(item) > 0 && blacksmithOK;
@@ -857,6 +1025,7 @@
                             </div>
                             ${descHTML}
                             ${reagentsHTML}
+                            ${skillNotice}
                             ${blacksmithNotice}
                             <div class="${btnClasses}" id="transmute-action">${btnText}</div>
                         </div>
@@ -880,27 +1049,52 @@
             }
 
             if (this._mode === 'assemble') {
-                if (!recipe || !canCraft(recipe)) {
+                if (!recipe || !canCraft(recipe) || !tierMet(item)) {
                     SoundManager.playBuzzer();
                     return;
                 }
 
-                // Consume reagents if not in sandbox
-                if (!($gameSystem && $gameSystem._isSandboxMode)) {
+                // The hands do the work before anyone knows how it went: an
+                // unpractised party ruins the job often enough that the first
+                // tiers of Fabrication are worth training out of.
+                const botched = Math.random() < botchChance(item);
+
+                // Consume reagents if not in sandbox. A botch eats half of them
+                // (rounded up, so a single-unit reagent is always lost) rather
+                // than the lot.
+                if (!isSandbox()) {
                     for (const [ingId, qty] of Object.entries(recipe)) {
-                        $gameParty.loseItem($dataItems[parseInt(ingId)], qty);
+                        const spent = botched ? Math.ceil(qty / 2) : qty;
+                        $gameParty.loseItem($dataItems[parseInt(ingId)], spent);
                     }
                 }
 
-                // Reward item
-                $gameParty.gainItem(item, 1);
-                $gameSystem.addCraftedItem(item.id);
+                if (botched) {
+                    // Nothing to show off, but the workbench still taught
+                    // something: a ruined batch is how anybody learns.
+                    this._successOverlayData = { mode: 'botched', items: [] };
+                    this._successOverlayTimer = 110;
+                    SoundManager.playBuzzer();
+                    if (window.SpecializationXP) window.SpecializationXP.award(FAB_SPEC, BOTCH_POINTS, { actor: benchActor() });
+                    if (window.ParchmentToast) {
+                        window.ParchmentToast.show(T('Thinker.botched', { item: item.name }), { severity: 'warning' });
+                    }
+                } else {
+                    // Reward item
+                    $gameParty.gainItem(item, 1);
+                    $gameSystem.addCraftedItem(item.id);
 
-                // Show Workbench Reaction Flash
-                this._successOverlayData = { mode: 'assemble', items: [item] };
-                this._successOverlayTimer = 110; // ~1.8 seconds overlay
+                    // Show Workbench Reaction Flash
+                    this._successOverlayData = { mode: 'assemble', items: [item] };
+                    this._successOverlayTimer = 110; // ~1.8 seconds overlay
 
-                SoundManager.playUseItem();
+                    SoundManager.playUseItem();
+                    if (window.SpecializationXP) {
+                        window.SpecializationXP.award(FAB_SPEC, TIER_POINTS[recipeTier(item)] || 1,
+                            { actor: benchActor() });
+                    }
+                }
+
                 this._forceListRebuild = true;
                 this._thinkerItemsDirty = true;
                 this.refreshUIThinker();
@@ -914,9 +1108,11 @@
                 // Consume Item
                 $gameParty.loseItem(item, 1);
 
-                // Reclaim random reagents
+                // Reclaim random reagents. How many come back is what training
+                // buys on this side of the workbench: 1-2 pieces untrained, up
+                // to 4 for a party that knows where the seams are.
                 const materials = Object.keys(recipe);
-                const numReturned = Math.floor(Math.random() * 2) + 1; // 1-2 materials
+                const numReturned = salvageYield();
                 const returnedList = [];
 
                 for (let i = 0; i < numReturned && i < materials.length; i++) {
@@ -931,6 +1127,7 @@
                 this._successOverlayTimer = 110;
 
                 SoundManager.playUseItem();
+                if (window.SpecializationXP) window.SpecializationXP.award(FAB_SPEC, SALVAGE_POINTS, { actor: benchActor() });
                 this._forceListRebuild = true;
                 this._thinkerItemsDirty = true;
 
@@ -1002,6 +1199,11 @@
             }
 
             const t = thinkerText();
+
+            // Shoulder buttons hand the bench to another member, wherever the
+            // cursor is (TAB does the same on a keyboard, through CharSwitcher).
+            if (Input.isTriggered('pagedown')) { this.cycleFabActor(1); return; }
+            if (Input.isTriggered('pageup')) { this.cycleFabActor(-1); return; }
 
             // Right-click (TouchInput) counts as cancel just like keyboard cancel
             const cancelTriggered = Input.isTriggered('cancel') || TouchInput.isCancelled();

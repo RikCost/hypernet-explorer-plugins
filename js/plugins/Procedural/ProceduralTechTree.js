@@ -457,9 +457,35 @@
     // materials, so the tech tree feeds the crafting economy instead of being a
     // pure sink. Fringe "science" wastes half its inputs; Nobel-worthy work
     // recovers a bit more.
-    function materialPayout(node) {
+    // Each tree is a discipline, and researching in it is how the party learns
+    // that discipline. The specialization also reads back: a trained party
+    // recovers more of what it put into the bench as refined byproduct.
+    // i18n-ignore-start  Specialization.json ids, matched by name
+    const TREE_SPECS = {
+        Alchemistry: 'Alchemy',
+        Arcane: 'Magic Theory',
+        Astronomy: 'Astronomy',
+        Mathematics: 'Complex Mathematics',
+        Physics: 'Physics',
+        SocialSciences: 'Sociology',
+        Technomagica: 'Technomancy',
+        Theotecnical: 'Theology'
+    };
+    // i18n-ignore-end
+    const RESEARCH_POINTS = 3;
+    const NOBEL_POINTS = 5;
+
+    function treeSpec(treeId) {
+        return TREE_SPECS[treeId] || null;
+    }
+
+    function materialPayout(node, treeId) {
         let mult = node.fringe ? 0.5 : 0.85;
         if (node.nobelWorthy) mult += 0.15;
+        const spec = treeSpec(treeId);
+        if (spec && window.SpecializationXP) {
+            mult *= window.SpecializationXP.multiplier(spec, 0.08);
+        }
         return (node.materials || []).map(m => ({ id: m.id, qty: Math.max(1, Math.round(m.qty * mult)) }));
     }
     function rewardDbEntry(reward) {
@@ -622,7 +648,7 @@
         // Byproduct materials flow back into the crafting economy.
         const materialsGranted = [];
         if (!($gameSystem && $gameSystem._isSandboxMode)) {
-            for (const m of materialPayout(node)) {
+            for (const m of materialPayout(node, treeId)) {
                 const item = $dataItems[m.id];
                 if (item) { $gameParty.gainItem(item, m.qty); materialsGranted.push({ id: m.id, qty: m.qty }); }
             }
@@ -632,6 +658,14 @@
         if (node.reward) {
             rewardEntry = rewardDbEntry(node.reward);
             if (rewardEntry) $gameParty.gainItem(rewardEntry, node.reward.qty || 1);
+        }
+
+        // Working the bench is how the discipline itself is learned. The whole
+        // party is in the room, so the ordinary award weighting applies: the
+        // leader ran the experiment, everyone else watched it.
+        const spec = treeSpec(treeId);
+        if (spec && window.SpecializationXP) {
+            window.SpecializationXP.award(spec, node.nobelWorthy ? NOBEL_POINTS : RESEARCH_POINTS);
         }
 
         // Let other systems (NPC gossip, news) react to the discovery.
@@ -814,6 +848,7 @@
         canResearch,
         nodeRewards,
         materialPayout,
+        treeSpec,
         rewardDbEntry,
         research,
         reconcileBuffs,

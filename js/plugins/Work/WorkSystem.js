@@ -257,9 +257,10 @@
   window.WorkSystem.calculateSuccessChance = function (actor, job) {
     const check = this.meetsRequirements(actor, job);
     // Having done the job before is worth as much as the raw stats for it
-    // (each job names its trade in Jobs.json "spec"). Three points a tier.
+    // (each job names its trade in Jobs.json "spec"). Three points a tier, and
+    // it is the member taking the shift who is judged, not the party's best.
     const trained = (job.spec && window.SpecializationXP)
-      ? (window.SpecializationXP.partyLevel(job.spec) - 1) * 0.03 : 0;
+      ? (window.SpecializationXP.levelOf(actor, job.spec) - 1) * 0.03 : 0;
 
     if (check.meets) {
       return Math.min(0.95, 0.80 + trained); // 80% base success rate if requirements met
@@ -319,7 +320,7 @@
       // Calculate pay. A tradesman is worth more than a warm body, so the
       // shift pays better once the job's specialization is trained.
       const skill = (job.spec && window.SpecializationXP)
-        ? window.SpecializationXP.multiplier(job.spec, 0.08) : 1;
+        ? window.SpecializationXP.multiplierFor(actor, job.spec, 0.08) : 1;
       const pay = Math.floor(job.basePay * outcome.payMultiplier * skill);
 
       // Get damage
@@ -1076,6 +1077,14 @@
       const actors = $gameParty.members();
       const selectedActorIndex = this._dndActorIndex;
       const selectedActor = actors[selectedActorIndex] || actors[0];
+
+      // Every job trains its own specialization, and that specialization is
+      // what decides the shift's pay and its accident odds. Name the one the
+      // highlighted job runs on, so the board reads as a board of skills.
+      if (window.SpecBadge) {
+        if (selectedJob && selectedJob.spec) window.SpecBadge.show(selectedJob.spec);
+        else window.SpecBadge.hide();
+      }
 
       let leftPageHTML = "";
       let rightPageHTML = "";

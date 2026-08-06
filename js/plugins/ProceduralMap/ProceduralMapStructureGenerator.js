@@ -429,8 +429,10 @@
   /**
    * Rewritten dungeon/crypt/sewer generator.
    *   - DungeonFloor  -> room / corridor pavement (only passable variants used)
-   *   - Ceiling       -> the solid roof filling every non-room space and the area
-   *                      above the wall faces
+   *   - Ceiling       -> a thin rock rim hugging the rooms and corridors and the
+   *                      area above the wall faces. The dead mass further out is
+   *                      left as empty tiles (black), so the plan reads as rooms
+   *                      drawn on a void instead of drowning in tiled rubble.
    *   - DungeonWall   -> a single random 3-tall vertical strip drawn on the walls,
    *                      plus a 1-tile impassable ring so the passable Ceiling can
    *                      never be walked onto
@@ -480,7 +482,12 @@
       : paletteOf(0);
 
     const ceilingList = getFeatureTiles("Ceiling", allFeatures);
-    const ceilingTile = ceilingList && ceilingList.length ? ceilingList[0] : floorTiles[0];
+    // A tileset with no Ceiling feature leaves the rock rim EMPTY. It used to
+    // fall back to a floor tile, which paved the whole square in rubble - rooms,
+    // corridors and the dead mass between them all in the same pavement - and
+    // that is what every interior on tileset 300 (Dungeon, Crypt, Sewer,
+    // LootCellar, TempleInside, CaveDen, PatronVault) looked like.
+    const ceilingTile = ceilingList && ceilingList.length ? ceilingList[0] : 0;
     // Cave dens use the (impassable) CaveWall tile as their wall face so they
     // read as natural rock instead of worked masonry.
     let wall;
@@ -780,12 +787,35 @@
     const spawnX = bx, spawnY = height - 2, spawnDir = 8;
     const entranceX = bx, entranceY = height - 1;
 
-    // --- 3. Render layer 0: floor / ceiling ---------------------------------
+    // --- 3. Render layer 0: floor / rock rim / empty space ------------------
+    // The dead mass between the rooms is NOT paved wall to wall with the
+    // Ceiling tile: repeating one rubble tile over five sixths of the map is
+    // pure noise and buries the plan in it. Only a rim of ROCK_RIM tiles around
+    // the carved space keeps the Ceiling, which is exactly what the wall ring
+    // (1 tile), the 3-tall north faces of step 4 and the wall-mounted fixtures
+    // of step 6 ever draw on; everything deeper is left as an empty tile, so
+    // the interior reads as rooms and corridors on an unlit void.
+    const ROCK_RIM = 2;
+    const nearFloor = Array.from({ length: height }, () => new Array(width).fill(false));
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        if (!carved[y][x]) continue;
+        for (let dy = -ROCK_RIM; dy <= ROCK_RIM; dy++) {
+          const ny = y + dy;
+          if (ny < 0 || ny >= height) continue;
+          for (let dx = -ROCK_RIM; dx <= ROCK_RIM; dx++) {
+            const nx = x + dx;
+            if (nx >= 0 && nx < width) nearFloor[ny][nx] = true;
+          }
+        }
+      }
+    }
     const mapData = new Array(width * height * 4).fill(0);
     const rand = (arr) => arr[Math.floor(rng() * arr.length)];
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        mapData[calculateIndex(x, y, 0, width, height)] = carved[y][x] ? rand(floorTiles) : ceilingTile;
+        mapData[calculateIndex(x, y, 0, width, height)] =
+          carved[y][x] ? rand(floorTiles) : (nearFloor[y][x] ? ceilingTile : 0);
       }
     }
 
@@ -915,6 +945,8 @@
           const gx = wx + c, gy = top + r;
           if (gx < 0 || gx >= width || gy < 0 || gy >= height) return false;
           if (carved[gy][gx]) return false;
+          // Must hang on drawn rock, never over the empty space past the rim.
+          if (mapData[calculateIndex(gx, gy, 0, width, height)] === 0) return false;
           if (mapData[calculateIndex(gx, gy, 2, width, height)] !== 0) return false;
         }
       return true;

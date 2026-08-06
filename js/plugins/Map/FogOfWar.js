@@ -418,14 +418,12 @@
             this._isExteriorMap = $dataMap.note.includes("<Exterior>");
         }
 
-        // Always disable fog of war on the world map (map 315)
-        if (mapId === 315) {
-            this._fogOfWarDisabled = true;
-        }
-
-        // Procedural map force clear + disable fog (it is part of the world,
-        // which should have no fog) (#57).
-        if (mapId === 636) {
+        // The world map (315) and the procedural map (636) are the same world
+        // and must never carry fog. Force it off entirely, dividers included:
+        // region 30 means something else on the world map, so the divider-only
+        // fog path below must not claim it either (#57).
+        this._fogOfWarForceOff = (mapId === 315 || mapId === 636);
+        if (this._fogOfWarForceOff) {
             $gameSystem.resetFogOfWarForMap(mapId);
             this._fogOfWarDisabled = true;
         }
@@ -696,12 +694,14 @@
     // True when this map should render fog purely to enforce interior dividers
     // (region 30) — i.e. it has dividers but fog is otherwise inactive.
     Game_Map.prototype.isDividerOnlyFog = function () {
+        if (this._fogOfWarForceOff) return false;
         return !!this._hasVisionDividers &&
             (!ConfigManager.fogOfWar || this._fogOfWarDisabled) &&
             !window.dreamActive;
     };
 
     Game_Map.prototype.detectVisionDividers = function () {
+        if (this._fogOfWarForceOff) return false;
         const w = this.width();
         const h = this.height();
         for (let y = 0; y < h; y++) {

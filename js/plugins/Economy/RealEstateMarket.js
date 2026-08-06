@@ -763,6 +763,8 @@
     class Scene_RealEstate extends Scene_MenuBase {
         create() {
             super.create();
+            // Name the skill this menu runs on while it is open.
+            if (window.SpecBadge) window.SpecBadge.show('Real Estate Appraisal');  // i18n-ignore  Specialization.json id
             this.createHelpWindow();
             this.createGoldWindow();
             this.createPropertyListWindow();

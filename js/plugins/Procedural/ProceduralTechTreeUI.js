@@ -207,6 +207,12 @@
                 `<div class="right-page tt-right">${this._buildRight()}</div>` +
                 `</div>`;
             this._renderTree();
+            // Each tab is a discipline with its own specialization; name the one
+            // the open tree trains, and the party's tier in it.
+            if (window.SpecBadge && this.activeTree) {
+                const spec = PTT.treeSpec ? PTT.treeSpec(this.activeTree.id) : null;
+                if (spec) window.SpecBadge.show(spec);
+            }
         }
 
         _buildTabs() {
@@ -393,7 +399,7 @@
                 `<div class="tt-mat-row"><span class="tt-mat-name">${T('TechTree.exp')}</span><span class="tt-mat-count">${rw.exp}</span></div>` +
                 `<div class="tt-mat-row"><span class="tt-mat-name">${T('TechTree.gold')}</span><span class="tt-mat-count">€${(rw.gold / 100).toFixed(2)}</span></div>`;
             if (state !== 'done') {
-                const payout = PTT.materialPayout(node);
+                const payout = PTT.materialPayout(node, tree.id);
                 const rows = payout.map(m => {
                     const item = $dataItems[m.id];
                     if (!item) return '';
@@ -674,6 +680,7 @@
                 this._wasdListener = this._wasdUp = null;
             }
             UITTInput.deactivate();
+            if (window.SpecBadge) window.SpecBadge.hide();
             if (this._container) {
                 const c = this._container;
                 c.style.transition = 'opacity 0.2s ease-out';

@@ -1522,7 +1522,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 4,
       "y": 6
     },
@@ -1550,7 +1550,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Priest",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -1687,7 +1687,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 3,
       "y": 10
     },
@@ -1715,10 +1715,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor1RMVX",
+            "characterName": "Skab/!$Jeweler",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 4
+            "characterIndex": 0
           },
           "list": [
             {
@@ -1909,7 +1909,7 @@
     },
     {
       "id": 4,
-      "name": "Tall Wizard",
+      "name": "Audrise",
       "note": "AI 0",
       "pages": [
         {
@@ -2068,7 +2068,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 7,
       "y": 7
     },
@@ -2233,7 +2233,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 4,
       "y": 2
     },
@@ -2398,7 +2398,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 7,
       "y": 2
     },
@@ -2563,7 +2563,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 10,
       "y": 8
     },
@@ -2728,7 +2728,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 13,
       "y": 8
     },
@@ -2893,7 +2893,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 6,
       "y": 2
     },
@@ -2921,10 +2921,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor1",
+            "characterName": "Skab/!$DJ",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 2
+            "characterIndex": 0
           },
           "list": [
             {
@@ -3152,7 +3152,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 5,
       "y": 9
     },
@@ -3180,10 +3180,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Gunman",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 5
+            "characterIndex": 0
           },
           "list": [
             {
@@ -3317,7 +3317,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 8,
       "y": 2
     },
@@ -3482,7 +3482,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 4,
       "y": 11
     },
@@ -3510,10 +3510,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor3RMVX",
+            "characterName": "Skab/!$ElvenSwordsman",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 6
+            "characterIndex": 0
           },
           "list": [
             {
@@ -3647,7 +3647,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 10,
       "y": 11
     },
@@ -3812,7 +3812,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 8,
       "y": 10
     },
@@ -3977,7 +3977,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 7,
       "y": 10
     },
@@ -4142,7 +4142,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 6,
       "y": 8
     },
@@ -4307,7 +4307,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 9,
       "y": 9
     },
@@ -4472,7 +4472,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 3,
       "y": 2
     },
@@ -4637,13 +4637,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 5,
       "y": 2
     },
     {
       "id": 20,
-      "name": "Gnome thug",
+      "name": "Thamil",
       "note": "",
       "pages": [
         {
@@ -4802,7 +4802,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 9,
       "y": 7
     },
@@ -5015,7 +5015,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 6,
       "y": 10
     },
@@ -5178,13 +5178,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 9,
       "y": 11
     },
     {
       "id": 23,
-      "name": "Policeman",
+      "name": "Officer Vaelarke",
       "note": "",
       "pages": [
         {
@@ -5367,7 +5367,7 @@
     },
     {
       "id": 24,
-      "name": "Policeman",
+      "name": "Officer Ingorrik",
       "note": "",
       "pages": [
         {
@@ -5711,7 +5711,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 3,
       "y": 3
     },
@@ -7417,10 +7417,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor2",
+            "characterName": "Skab/!$PirateHacker",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 4
+            "characterIndex": 0
           },
           "list": [
             {
@@ -7741,7 +7741,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 7,
       "y": 8
     },
@@ -7897,7 +7897,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 7,
       "y": 9
     },
@@ -8062,7 +8062,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 3,
       "y": 6
     },
@@ -8090,7 +8090,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor3",
+            "characterName": "Skab/!$Botanist",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -8466,7 +8466,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 11,
       "y": 7
     },
@@ -8631,7 +8631,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 9,
       "y": 5
     },
@@ -8796,13 +8796,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 10,
       "y": 4
     },
     {
       "id": 45,
-      "name": "Dog",
+      "name": "Odon",
       "note": "AI 0",
       "pages": [
         {
@@ -9006,7 +9006,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 12,
       "y": 5
     },
@@ -9171,7 +9171,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 8,
       "y": 7
     },
@@ -9415,7 +9415,7 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "School01RM",
+            "characterName": "Skab/!$Priest",
             "direction": 2,
             "pattern": 1,
             "characterIndex": 0
@@ -9552,7 +9552,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 6,
       "y": 5
     },
@@ -9933,7 +9933,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 9,
       "y": 4
     },
@@ -9961,10 +9961,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor1RMVX",
+            "characterName": "Skab/!$Jeweler",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 4
+            "characterIndex": 0
           },
           "list": [
             {
@@ -10314,13 +10314,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 5,
       "y": 5
     },
     {
       "id": 53,
-      "name": "Goblin Girl",
+      "name": "Elrogdal",
       "note": "AI 0",
       "pages": [
         {
@@ -10479,7 +10479,7 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 8,
       "y": 6
     },
@@ -10701,7 +10701,7 @@
     },
     {
       "id": 55,
-      "name": "Street punk",
+      "name": "Duka",
       "note": "AI 0",
       "pages": [
         {
@@ -10723,10 +10723,10 @@
           "directionFix": false,
           "image": {
             "tileId": 0,
-            "characterName": "Actor1",
+            "characterName": "Skab/!$DJ",
             "direction": 2,
             "pattern": 1,
-            "characterIndex": 2
+            "characterIndex": 0
           },
           "list": [
             {
@@ -10860,13 +10860,13 @@
           "trigger": 0,
           "walkAnime": true
         }
-      ],
+      , {"conditions": {"actorId": 1, "actorValid": false, "itemId": 1, "itemValid": false, "selfSwitchCh": "A", "selfSwitchValid": true, "switch1Id": 1, "switch1Valid": false, "switch2Id": 1, "switch2Valid": false, "variableId": 1, "variableValid": false, "variableValue": 0}, "directionFix": false, "image": {"characterIndex": 0, "characterName": "", "direction": 2, "pattern": 0, "tileId": 0}, "list": [{"code": 0, "indent": 0, "parameters": []}], "moveFrequency": 3, "moveRoute": {"list": [{"code": 0, "parameters": []}], "repeat": true, "skippable": false, "wait": false}, "moveSpeed": 3, "moveType": 0, "priorityType": 0, "stepAnime": false, "through": false, "trigger": 0, "walkAnime": true}],
       "x": 8,
       "y": 4
     },
     {
       "id": 56,
-      "name": "Policeman",
+      "name": "Officer Isolm",
       "note": "AI NPC-44 0",
       "pages": [
         {
@@ -11049,7 +11049,7 @@
     },
     {
       "id": 57,
-      "name": "Policeman",
+      "name": "Officer Liriela",
       "note": "AI NPC-44 0",
       "pages": [
         {

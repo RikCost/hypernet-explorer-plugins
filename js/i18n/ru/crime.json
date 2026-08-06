@@ -60,6 +60,9 @@
     "disorderlyconduct": {
       "name": "Хулиганство"
     },
+    "harassment": {
+      "name": "Домогательство"
+    },
     "trespassing": {
       "name": "Нарушение неприкосновенности жилища"
     },

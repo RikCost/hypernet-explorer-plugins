@@ -44,6 +44,130 @@
   _loadStatsI18n();
 
   //=============================================================================
+  // Safety layer
+  //=============================================================================
+  // The shop paints itself as a DOM overlay driven from the scene's update
+  // loop. One bad item, one missing element or one container left behind by a
+  // previous shop used to throw on every frame and take the game down with it,
+  // so everything that touches foreign data or the document goes through these.
+
+  const _warnedOnce = new Set();
+  const warnOnce = (label, e) => {
+    if (_warnedOnce.has(label)) return;
+    _warnedOnce.add(label);
+    console.error("[ItemSystemShop] " + label, e);
+  };
+
+  // Run fn; never let it escape. Returns fallback when it throws.
+  const safe = (label, fn, fallback) => {
+    try {
+      return fn();
+    } catch (e) {
+      warnOnce(label, e);
+      return fallback;
+    }
+  };
+
+  // Item names, categories and procedural lore all end up inside innerHTML.
+  // An unescaped angle bracket does not just look wrong: it can truncate the
+  // markup, after which every querySelector below returns null.
+  const esc = (text) =>
+    String(text === undefined || text === null ? "" : text).replace(
+      /[&<>"']/g,
+      (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+    );
+
+  const rarityColor = (item) => {
+    const tier = safe("getItemRarity", () => utils.getItemRarity(item), null);
+    return (tier && tier.colorCode) || "#FFFFFF";
+  };
+
+  const categoryOf = (item) =>
+    safe("getItemCategoryName", () => utils.getItemCategoryName(item), null) || "";
+
+  const weightOf = (item) => safe("getItemWeight", () => utils.getItemWeight(item), 1);
+
+  const formatWeight = (grams) =>
+    safe("formatWeight", () => utils.formatWeight(grams), String(grams));
+
+  const needRestoresOf = (item) =>
+    safe("getNeedRestores", () => (utils.getNeedRestores ? utils.getNeedRestores(item) : []), []) || [];
+
+  const loreOf = (item) =>
+    safe("loreFor", () => (utils.loreFor ? utils.loreFor(item) : ""), "") || "";
+
+  const translate = (text) =>
+    safe("translateText", () => {
+      if (text && typeof window.translateText === "function") return window.translateText(text);
+      return text;
+    }, text);
+
+  // A data param slot that a malformed or third-party item may simply not have.
+  const paramOf = (item, paramId) => {
+    const raw = item && Array.isArray(item.params) ? item.params[paramId] : 0;
+    return Number.isFinite(raw) ? raw : 0;
+  };
+
+  const modifiedParamOf = (item, paramId) => {
+    const mods = window.ItemSystemModifiers;
+    if (mods && typeof mods.getModifiedParam === "function") {
+      const value = safe("getModifiedParam", () => mods.getModifiedParam(item, paramId), null);
+      if (Number.isFinite(value)) return value;
+    }
+    return paramOf(item, paramId);
+  };
+
+  const money = (value) => (Number.isFinite(value) ? value / 100 : 0).toFixed(2);
+
+  // The database name of an equip slot, or its number when the slot is one this
+  // game's System.json does not declare.
+  const equipTypeName = (etypeId) => {
+    const names = $dataSystem && $dataSystem.equipTypes;
+    const name = names && names[etypeId];
+    return name || (T('Shop.equipType') + etypeId);
+  };
+
+  const partyMembers = () =>
+    safe("partyMembers", () => ($gameParty ? $gameParty.members() : []), []) || [];
+
+  const actorLabel = (actor) =>
+    safe("actorName", () => translate(actor.name()), "") || "";
+
+  // The stock/price record of the shop currently open, or null when this shop
+  // keeps no record (an event with no id, a shop opened straight from a plugin).
+  const currentShopData = (scene) => {
+    const s = scene || SceneManager._scene;
+    if (!(s instanceof Scene_Shop)) return null;
+    if (!s._shopMapId || !s._shopEventId) return null;
+    const stocks = $gameSystem && $gameSystem._shopStocks;
+    if (!stocks) return null;
+    const forMap = stocks[s._shopMapId];
+    return (forMap && forMap[s._shopEventId]) || null;
+  };
+
+  // Categories priced off the SOUL index rather than the oil index.
+  const SOUL_CATEGORIES = ["jungle", "magic", "plants", "monsters"];  // i18n-ignore  <category:> tag values
+
+  const marketFactor = (shopData, item) => {
+    if (!shopData) return 1.0;
+    const cat = categoryOf(item).toLowerCase();
+    const raw = SOUL_CATEGORIES.includes(cat) ? shopData.soulFactor : shopData.oilFactor;
+    const factor = Number(raw);
+    return Number.isFinite(factor) && factor > 0 ? factor : 1.0;
+  };
+
+  // Who the item suits: any class can equip any weapon now, so a member with no
+  // proficiency in it does not count as compatible (see WeaponProficiency).
+  const isProficientWith = (actor, item) =>
+    safe("isProficientWith", () => {
+      if (!actor || !item || typeof actor.canEquip !== "function") return false;
+      if (!actor.canEquip(item)) return false;
+      const prof = window.WeaponProficiency;
+      if (prof && typeof prof.isUntrained === "function" && prof.isUntrained(actor, item)) return false;
+      return true;
+    }, false);
+
+  //=============================================================================
   // MASTER Item Detail Window - SHARED by both Shop and Inventory
   //=============================================================================
 
@@ -68,17 +192,18 @@
   };
 
   Window_ItemDetail.prototype.refresh = function () {
+    if (!this.contents) return;
     this.contents.clear();
     if (this._item) {
-      this.drawItemDetails();
+      safe("drawItemDetails", () => this.drawItemDetails(), null);
     }
   };
 
   Window_ItemDetail.prototype.getWeaponScalingType = function (weapon) {
-    if (!weapon || !DataManager.isWeapon(weapon)) {
+    if (!weapon || !DataManager.isWeapon(weapon) || !Array.isArray(weapon.traits)) {
       return null;
     }
-    const attackSkills = weapon.traits.filter(trait => trait.code === 35);
+    const attackSkills = weapon.traits.filter(trait => trait && trait.code === 35);
     if (attackSkills.length === 0) {
       return 'STR';
     }
@@ -98,16 +223,14 @@
 
   Window_ItemDetail.prototype.drawItemDetails = function () {
     const item = this._item;
+    if (!item) return;
     const lineHeight = this.lineHeight();
     const contentWidth = this.width - this.padding * 2;
     let y = 0;
 
     const isInShop = SceneManager._scene instanceof Scene_Shop;
     if (!isInShop && item.description) {
-      let translatedDescription = item.description;
-      if (window.translateText && typeof window.translateText === "function") {
-        translatedDescription = window.translateText(item.description);
-      }
+      const translatedDescription = translate(item.description);
       const descLines = this.wrapText(translatedDescription, contentWidth - 4);
       for (const line of descLines) {
         this.drawTextEx("\\c[6]" + line, 0, y, contentWidth);
@@ -117,8 +240,8 @@
     }
 
     // Procedural lore (resolves {nation}/{leader}/... tokens) in grey flavor.
-    if (!isInShop && window.ItemSystemUtils && typeof window.ItemSystemUtils.loreFor === "function") {
-      const loreText = window.ItemSystemUtils.loreFor(item);
+    if (!isInShop) {
+      const loreText = loreOf(item);
       if (loreText) {
         for (const line of this.wrapText(loreText, contentWidth - 4)) {
           this.drawTextEx("\\c[8]" + line, 0, y, contentWidth);
@@ -142,11 +265,10 @@
       const iconY = y + (this.lineHeight() - ImageManager.iconHeight) / 2;
       const textMargin = ImageManager.iconWidth + 4;
       const itemWidth = width || this.innerWidth - textMargin;
-      const rarity = window.ItemSystemUtils.getItemRarity(item);
       this.resetTextColor();
-      this.drawIcon(item.iconIndex, x, iconY);
-      this.changeTextColor(rarity.colorCode);
-      this.drawText(item.name, x + textMargin, y, itemWidth);
+      this.drawIcon(item.iconIndex || 0, x, iconY);
+      this.changeTextColor(rarityColor(item));
+      this.drawText(item.name || "", x + textMargin, y, itemWidth);
       this.resetTextColor();
     }
   };
@@ -154,21 +276,21 @@
   Window_ItemDetail.prototype.drawItemStats = function (item, y) {
     const lineHeight = this.lineHeight();
     let currentY = y;
-    const categoryName = utils.getItemCategoryName(item);
+    const categoryName = categoryOf(item);
     if (categoryName) {
       this.drawKeyValue(T('Shop.type'), categoryName, 0, currentY);
       currentY += lineHeight;
     }
     currentY = this.drawMarketPriceInfo(item, currentY);
-    const weight = utils.getItemWeight(item);
-    this.drawKeyValue(T('Shop.weight'), utils.formatWeight(weight), 0, currentY);
+    const weight = weightOf(item);
+    this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
 
-    const isFood = utils.isFoodItem(item);
+    const isFood = safe("isFoodItem", () => utils.isFoodItem(item), false);
     if (isFood) {
-      const calories = utils.getNutritionValue(item, "calories");
-      const protein = utils.getNutritionValue(item, "protein");
-      const fat = utils.getNutritionValue(item, "fat");
+      const calories = safe("nutrition", () => utils.getNutritionValue(item, "calories"), 0);
+      const protein = safe("nutrition", () => utils.getNutritionValue(item, "protein"), 0);
+      const fat = safe("nutrition", () => utils.getNutritionValue(item, "fat"), 0);
 
       if (calories > 0) {
         this.drawKeyValue(T('Shop.calories'), calories.toString(), 0, currentY);
@@ -226,9 +348,9 @@
         }
       }
 
-      if (item.effects && item.effects.length > 0) {
+      if (Array.isArray(item.effects) && item.effects.length > 0) {
         for (const effect of item.effects) {
-          const effectText = this.getEffectDescription(effect);
+          const effectText = safe("getEffectDescription", () => this.getEffectDescription(effect), null);
           if (effectText) {
             const parts = effectText.split(": ");
             if (parts.length > 1) {
@@ -242,7 +364,7 @@
       }
     }
 
-    const needRestores = utils.getNeedRestores ? utils.getNeedRestores(item) : [];
+    const needRestores = needRestoresOf(item);
     for (const r of needRestores) {
       this.drawKeyValue(r.label, "+" + r.amount + "%", 0, currentY);
       currentY += lineHeight;
@@ -253,13 +375,15 @@
     const lineHeight = this.lineHeight();
     let currentY = y;
 
-    const modifier = window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifier(item) : null;
-    if (modifier) {
+    const mods = window.ItemSystemModifiers;
+    const modifier = mods && typeof mods.getModifier === "function"
+      ? safe("getModifier", () => mods.getModifier(item), null) : null;
+    if (modifier && modifier.name) {
       this.drawKeyValue(T('Shop.modifier'), modifier.name, 0, currentY);
       currentY += lineHeight;
     }
 
-    const categoryName = utils.getItemCategoryName(item);
+    const categoryName = categoryOf(item);
     if (categoryName) {
       this.drawKeyValue(T('Shop.type'), categoryName, 0, currentY);
       currentY += lineHeight;
@@ -271,27 +395,27 @@
       currentY += lineHeight;
     }
 
-    const weight = utils.getItemWeight(item);
-    this.drawKeyValue(T('Shop.weight'), utils.formatWeight(weight), 0, currentY);
+    const weight = weightOf(item);
+    this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
 
     currentY = this.drawMarketPriceInfo(item, currentY);
     currentY = this.drawEquipCompatibility(item, currentY);
 
-    const price = window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedPrice(item) : item.price;
+    const price = mods && typeof mods.getModifiedPrice === "function"
+      ? safe("getModifiedPrice", () => mods.getModifiedPrice(item), item.price) : item.price;
     if (price > 0) {
-      const euroPrice = (price / 100).toFixed(2);
-      this.drawKeyValue(T('Shop.price'), euroPrice + " €", 0, currentY);
+      this.drawKeyValue(T('Shop.price'), money(price) + " €", 0, currentY);
       currentY += lineHeight;
     }
 
     const params = [
-      [_si18n("ATT"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 2) : item.params[2]],
-      [_si18n("DEF"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 3) : item.params[3]],
-      [_si18n("M.ATT"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 4) : item.params[4]],
-      [_si18n("M.DEF"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 5) : item.params[5]],
-      [_si18n("AGILITY"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 6) : item.params[6]],
-      [_si18n("LUCK"), window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(item, 7) : item.params[7]]
+      [_si18n("ATT"), modifiedParamOf(item, 2)],
+      [_si18n("DEF"), modifiedParamOf(item, 3)],
+      [_si18n("M.ATT"), modifiedParamOf(item, 4)],
+      [_si18n("M.DEF"), modifiedParamOf(item, 5)],
+      [_si18n("AGILITY"), modifiedParamOf(item, 6)],
+      [_si18n("LUCK"), modifiedParamOf(item, 7)]
     ];
     for (const param of params) {
       if (param[1] !== 0) {
@@ -301,9 +425,9 @@
       }
     }
 
-    if (item.traits && item.traits.length > 0) {
+    if (Array.isArray(item.traits) && item.traits.length > 0) {
       for (const trait of item.traits) {
-        const traitText = this.getTraitDescription(trait);
+        const traitText = safe("getTraitDescription", () => this.getTraitDescription(trait), null);
         if (traitText) {
           const parts = traitText.split(": ");
           if (parts.length > 1) {
@@ -321,39 +445,34 @@
     const lineHeight = this.lineHeight();
     let currentY = y;
 
-    const categoryName = utils.getItemCategoryName(item);
+    const categoryName = categoryOf(item);
     if (categoryName) {
       this.drawKeyValue(T('Shop.type'), categoryName, 0, currentY);
       currentY += lineHeight;
     }
 
-    let equipTypeName = $dataSystem.equipTypes[item.etypeId];
-    if (window.translateText && typeof window.translateText === "function") {
-      equipTypeName = window.translateText(equipTypeName);
-    }
-    this.drawKeyValue(T('Shop.slot'), equipTypeName, 0, currentY);
+    this.drawKeyValue(T('Shop.slot'), translate(equipTypeName(item.etypeId)), 0, currentY);
     currentY += lineHeight;
 
-    const weight = utils.getItemWeight(item);
-    this.drawKeyValue(T('Shop.weight'), utils.formatWeight(weight), 0, currentY);
+    const weight = weightOf(item);
+    this.drawKeyValue(T('Shop.weight'), formatWeight(weight), 0, currentY);
     currentY += lineHeight;
 
     currentY = this.drawMarketPriceInfo(item, currentY);
     currentY = this.drawEquipCompatibility(item, currentY);
 
     if (item.price > 0) {
-      const euroPrice = (item.price / 100).toFixed(2);
-      this.drawKeyValue(T('Shop.price'), euroPrice + " €", 0, currentY);
+      this.drawKeyValue(T('Shop.price'), money(item.price) + " €", 0, currentY);
       currentY += lineHeight;
     }
 
     const params = [
-      [_si18n("ATT"), item.params[2]],
-      [_si18n("DEF"), item.params[3]],
-      [_si18n("M.ATT"), item.params[4]],
-      [_si18n("M.DEF"), item.params[5]],
-      [_si18n("AGILITY"), item.params[6]],
-      [_si18n("LUCK"), item.params[7]]
+      [_si18n("ATT"), paramOf(item, 2)],
+      [_si18n("DEF"), paramOf(item, 3)],
+      [_si18n("M.ATT"), paramOf(item, 4)],
+      [_si18n("M.DEF"), paramOf(item, 5)],
+      [_si18n("AGILITY"), paramOf(item, 6)],
+      [_si18n("LUCK"), paramOf(item, 7)]
     ];
     for (const param of params) {
       if (param[1] !== 0) {
@@ -363,9 +482,9 @@
       }
     }
 
-    if (item.traits && item.traits.length > 0) {
+    if (Array.isArray(item.traits) && item.traits.length > 0) {
       for (const trait of item.traits) {
-        const traitText = this.getTraitDescription(trait);
+        const traitText = safe("getTraitDescription", () => this.getTraitDescription(trait), null);
         if (traitText) {
           const parts = traitText.split(": ");
           if (parts.length > 1) {
@@ -387,17 +506,14 @@
     this.drawText(T('Shop.equipBy'), 0, currentY, this.width - this.padding * 2);
     currentY += lineHeight;
 
-    const party = $gameParty.members();
+    const party = partyMembers();
     let equipInfoShown = false;
 
     for (let i = 0; i < party.length; i++) {
       const actor = party[i];
-      // Lists who the item suits: any class can equip any weapon, so weapons the
-      // member has no proficiency in are left out (see WeaponProficiency).
-      const prof = window.WeaponProficiency;
-      const canEquip = actor.canEquip(item) && !(prof && prof.isUntrained(actor, item));
+      const canEquip = isProficientWith(actor, item);
       this.resetTextColor();
-      const translatedName = window.translateText ? window.translateText(actor.name()) : actor.name();
+      const translatedName = actorLabel(actor);
 
       if (canEquip) {
         this.drawText(translatedName, 20, currentY, this.width - this.padding * 2 - 20);
@@ -416,25 +532,17 @@
   };
 
   Window_ItemDetail.prototype.drawMarketPriceInfo = function (item, y) {
-    const scene = SceneManager._scene;
-    if (scene instanceof Scene_Shop && scene._shopMapId && scene._shopEventId && $gameSystem._shopStocks) {
-      const shopData = ($gameSystem._shopStocks[scene._shopMapId] || {})[scene._shopEventId];
-      if (shopData) {
-        const cat = (utils.getItemCategoryName(item) || "").toLowerCase();
-        const soulCats = ["jungle", "magic", "plants", "monsters"];
-        const factor = soulCats.includes(cat) ? (shopData.soulFactor || 1.0) : (shopData.oilFactor || 1.0);
-        const pct = Math.round(factor * 100);
-        let valueDisplay = pct + "%";
+    const shopData = currentShopData();
+    if (!shopData) return y;
+    const factor = marketFactor(shopData, item);
+    const valueDisplay = Math.round(factor * 100) + "%";
 
-        if (factor > 1.01) this.changeTextColor(ColorManager.textColor(18));
-        else if (factor < 0.99) this.changeTextColor(ColorManager.textColor(3));
+    if (factor > 1.01) this.changeTextColor(ColorManager.textColor(18));
+    else if (factor < 0.99) this.changeTextColor(ColorManager.textColor(3));
 
-        this.drawKeyValue(T('Shop.price'), valueDisplay, 0, y);
-        this.resetTextColor();
-        return y + this.lineHeight();
-      }
-    }
-    return y;
+    this.drawKeyValue(T('Shop.price'), valueDisplay, 0, y);
+    this.resetTextColor();
+    return y + this.lineHeight();
   };
 
   Window_ItemDetail.prototype.drawKeyValue = function (key, value, x, y) {
@@ -699,14 +807,7 @@
   };
 
   Window_ItemDetail.prototype.getEquipTypeName = function (etypeId) {
-    if (!$dataSystem || !$dataSystem.equipTypes || !$dataSystem.equipTypes[etypeId]) {
-      return (T('Shop.equipType')) + etypeId;
-    }
-    let equipTypeName = $dataSystem.equipTypes[etypeId];
-    if (window.translateText && typeof window.translateText === "function") {
-      equipTypeName = window.translateText(equipTypeName);
-    }
-    return equipTypeName;
+    return translate(equipTypeName(etypeId));
   };
 
   //=============================================================================
@@ -732,117 +833,86 @@
   };
 
   Window_ShopStatus.prototype.refresh = function () {
-    this.contents.clear();
+    if (this.contents) this.contents.clear();
     this.hideBackgroundDimmer();
     this.hide();
   };
 
-  const _Scene_Shop_createHelpWindow = Scene_Shop.prototype.createHelpWindow;
-  Scene_Shop.prototype.createHelpWindow = function () {
-    _Scene_Shop_createHelpWindow.call(this);
-    if (this._helpWindow) {
-      this._helpWindow.x = -3000;
-      this._helpWindow.y = -3000;
-      this._helpWindow.opacity = 0;
-      this._helpWindow.contentsOpacity = 0;
-      this._helpWindow.showBackgroundDimmer = function () { };
+  // Every native shop window is replaced by the DOM overlay below, so each one
+  // is parked off-screen and silenced the moment it is built. They are all the
+  // same three lines, so the hooks are installed from one table instead of nine
+  // hand-written copies that could each miss a null check.
+  const HIDDEN_SHOP_WINDOWS = {
+    createHelpWindow: '_helpWindow',
+    createGoldWindow: '_goldWindow',
+    createCommandWindow: '_commandWindow',
+    createDummyWindow: '_dummyWindow',
+    createBuyWindow: '_buyWindow',
+    createCategoryWindow: '_categoryWindow',
+    createSellWindow: '_sellWindow',
+    createNumberWindow: '_numberWindow',
+    createStatusWindow: '_statusWindow'
+  };
+
+  const parkWindow = (win) => {
+    if (!win) return;
+    win.x = -3000;
+    win.y = -3000;
+    win.opacity = 0;
+    win.contentsOpacity = 0;
+    win.showBackgroundDimmer = function () { };
+  };
+
+  for (const [method, field] of Object.entries(HIDDEN_SHOP_WINDOWS)) {
+    const base = Scene_Shop.prototype[method];
+    Scene_Shop.prototype[method] = function () {
+      base.call(this);
+      parkWindow(this[field]);
+    };
+  }
+
+  // The six keys the shop borrows while it is open.
+  const SHOP_KEY_BINDINGS = {
+    87: 'up',        // W
+    65: 'shopBack',  // A → always go back to buy tab
+    83: 'down',      // S
+    68: 'right',     // D
+    81: 'pageup',    // Q → L1 (switch to Buy)
+    69: 'pagedown'   // E → R1 (switch to Sell)
+  };
+
+  // What those keys meant before a shop borrowed them, kept module-wide rather
+  // than per scene. A scene-local copy looked right but a shop that opened while
+  // another was still standing recorded the shop's OWN bindings as the originals
+  // and left WASD stuck in shop mode for the rest of the session.
+  //
+  // Borrowing is idempotent: shops never legitimately nest (the engine
+  // terminates the outgoing scene before creating the incoming one), so a second
+  // borrow keeps the first set of originals and any single release restores
+  // them. Restoring key by key also leaves alone whatever another plugin
+  // remapped in the meantime, which swapping the whole keyMapper back would undo.
+  let _shopKeyOriginals = null;
+
+  const borrowShopKeys = () => {
+    if (!_shopKeyOriginals) {
+      _shopKeyOriginals = {};
+      for (const code of Object.keys(SHOP_KEY_BINDINGS)) {
+        _shopKeyOriginals[code] = Input.keyMapper[code];
+      }
+    }
+    for (const code of Object.keys(SHOP_KEY_BINDINGS)) {
+      Input.keyMapper[code] = SHOP_KEY_BINDINGS[code];
     }
   };
 
-  const _Scene_Shop_createGoldWindow = Scene_Shop.prototype.createGoldWindow;
-  Scene_Shop.prototype.createGoldWindow = function () {
-    _Scene_Shop_createGoldWindow.call(this);
-    if (this._goldWindow) {
-      this._goldWindow.x = -3000;
-      this._goldWindow.y = -3000;
-      this._goldWindow.opacity = 0;
-      this._goldWindow.contentsOpacity = 0;
-      this._goldWindow.showBackgroundDimmer = function () { };
+  const releaseShopKeys = () => {
+    if (!_shopKeyOriginals) return;
+    for (const code of Object.keys(_shopKeyOriginals)) {
+      const previous = _shopKeyOriginals[code];
+      if (previous === undefined) delete Input.keyMapper[code];
+      else Input.keyMapper[code] = previous;
     }
-  };
-
-  const _Scene_Shop_createCommandWindow = Scene_Shop.prototype.createCommandWindow;
-  Scene_Shop.prototype.createCommandWindow = function () {
-    _Scene_Shop_createCommandWindow.call(this);
-    if (this._commandWindow) {
-      this._commandWindow.x = -3000;
-      this._commandWindow.y = -3000;
-      this._commandWindow.opacity = 0;
-      this._commandWindow.contentsOpacity = 0;
-      this._commandWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createDummyWindow = Scene_Shop.prototype.createDummyWindow;
-  Scene_Shop.prototype.createDummyWindow = function () {
-    _Scene_Shop_createDummyWindow.call(this);
-    if (this._dummyWindow) {
-      this._dummyWindow.x = -3000;
-      this._dummyWindow.y = -3000;
-      this._dummyWindow.opacity = 0;
-      this._dummyWindow.contentsOpacity = 0;
-      this._dummyWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createBuyWindow = Scene_Shop.prototype.createBuyWindow;
-  Scene_Shop.prototype.createBuyWindow = function () {
-    _Scene_Shop_createBuyWindow.call(this);
-    if (this._buyWindow) {
-      this._buyWindow.x = -3000;
-      this._buyWindow.y = -3000;
-      this._buyWindow.opacity = 0;
-      this._buyWindow.contentsOpacity = 0;
-      this._buyWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createCategoryWindow = Scene_Shop.prototype.createCategoryWindow;
-  Scene_Shop.prototype.createCategoryWindow = function () {
-    _Scene_Shop_createCategoryWindow.call(this);
-    if (this._categoryWindow) {
-      this._categoryWindow.x = -3000;
-      this._categoryWindow.y = -3000;
-      this._categoryWindow.opacity = 0;
-      this._categoryWindow.contentsOpacity = 0;
-      this._categoryWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createSellWindow = Scene_Shop.prototype.createSellWindow;
-  Scene_Shop.prototype.createSellWindow = function () {
-    _Scene_Shop_createSellWindow.call(this);
-    if (this._sellWindow) {
-      this._sellWindow.x = -3000;
-      this._sellWindow.y = -3000;
-      this._sellWindow.opacity = 0;
-      this._sellWindow.contentsOpacity = 0;
-      this._sellWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createNumberWindow = Scene_Shop.prototype.createNumberWindow;
-  Scene_Shop.prototype.createNumberWindow = function () {
-    _Scene_Shop_createNumberWindow.call(this);
-    if (this._numberWindow) {
-      this._numberWindow.x = -3000;
-      this._numberWindow.y = -3000;
-      this._numberWindow.opacity = 0;
-      this._numberWindow.contentsOpacity = 0;
-      this._numberWindow.showBackgroundDimmer = function () { };
-    }
-  };
-
-  const _Scene_Shop_createStatusWindow = Scene_Shop.prototype.createStatusWindow;
-  Scene_Shop.prototype.createStatusWindow = function () {
-    _Scene_Shop_createStatusWindow.call(this);
-    if (this._statusWindow) {
-      this._statusWindow.x = -3000;
-      this._statusWindow.y = -3000;
-      this._statusWindow.opacity = 0;
-      this._statusWindow.contentsOpacity = 0;
-      this._statusWindow.showBackgroundDimmer = function () { };
-    }
+    _shopKeyOriginals = null;
   };
 
   const _Scene_Shop_create = Scene_Shop.prototype.create;
@@ -852,71 +922,81 @@
     this.initStock();
     this.initUIShopDOM();
 
-    // Map WASD + Q/E keys
-    this._originalKeyMapper = Object.assign({}, Input.keyMapper);
-    Input.keyMapper[87] = 'up';        // W
-    Input.keyMapper[65] = 'shopBack'; // A → always go back to buy tab
-    Input.keyMapper[83] = 'down';     // S
-    Input.keyMapper[68] = 'right';    // D
-    Input.keyMapper[81] = 'pageup';   // Q → L1 (switch to Buy)
-    Input.keyMapper[69] = 'pagedown'; // E → R1 (switch to Sell)
+    // Both sides of the counter are skills: what the party pays and what it
+    // gets paid. Name them while the shop is open.
+    if (window.SpecBadge) safe("SpecBadge", () => window.SpecBadge.show(['Haggling', 'Appraising']), null);  // i18n-ignore  Specialization.json ids
 
-    // Move all native windows off-screen
-    const windowsToMove = [
-      this._goldWindow, this._helpWindow, this._commandWindow, this._dummyWindow,
-      this._buyWindow, this._categoryWindow, this._sellWindow, this._numberWindow,
-      this._statusWindow, this._itemDetailWindow
-    ];
-    for (const win of windowsToMove) {
-      if (win) {
-        win.x = -3000;
-        win.y = -3000;
-        win.opacity = 0;
-        win.contentsOpacity = 0;
-      }
-    }
+    borrowShopKeys();
+    this._shopKeysBorrowed = true;
 
-    // Global keyboard / escape listener
+    // Safety net: a plugin loading after this one may replace a create* hook
+    // without calling ours, and an unparked native window would then be drawn
+    // on top of the overlay.
+    for (const field of Object.values(HIDDEN_SHOP_WINDOWS)) parkWindow(this[field]);
+    parkWindow(this._itemDetailWindow);
+
+    // Global keyboard / escape listener. Both listeners live on window, so they
+    // must check they still belong to the scene on screen: a shop that failed to
+    // tear down would otherwise keep closing whatever scene came after it.
     this._onShopKeyDown = (event) => {
-      if (event.key === "Escape" || event.key === "Esc") {  // i18n-ignore  KeyboardEvent.key values
-        event.preventDefault();
-        if (SceneManager.isSceneChanging()) return; // already closing this frame
-        SoundManager.playCancel();
-        if (this._numberWindow && this._numberWindow.active) {
-          this._numberWindow.processCancel();
-          this.refreshUIShop();
-        } else {
-          this.popScene();
-        }
-      }
+      if (event.key !== "Escape" && event.key !== "Esc") return;  // i18n-ignore  KeyboardEvent.key values
+      if (SceneManager._scene !== this) return;
+      event.preventDefault();
+      this.cancelShopAction();
     };
     window.addEventListener("keydown", this._onShopKeyDown);
 
     // Global right-click / context menu listener to handle cancellations
     this._onShopContextMenu = (event) => {
       event.preventDefault();
-      if (SceneManager.isSceneChanging()) return; // already closing this frame
-      SoundManager.playCancel();
-      if (this._numberWindow && this._numberWindow.active) {
-        this._numberWindow.processCancel();
-        this.refreshUIShop();
-      } else {
-        this.popScene();
-      }
+      if (SceneManager._scene !== this) return;
+      this.cancelShopAction();
     };
     window.addEventListener("contextmenu", this._onShopContextMenu);
+  };
+
+  // Every window this scene drives. Anything reaching into them goes through
+  // isShopReady() first: the DOM overlay is refreshed from the update loop and
+  // from click handlers, either of which can outlive the windows themselves.
+  Scene_Shop.prototype.isShopReady = function () {
+    return !!(this._buyWindow && this._sellWindow && this._categoryWindow &&
+      this._numberWindow && this._commandWindow);
+  };
+
+  // The one way out of the shop. A second popScene in the same frame empties
+  // the scene stack and SceneManager.exit() closes the game, which is what a
+  // stray click, a gamepad B and the Escape listener firing together used to do.
+  // The scene's own flag is checked as well as the engine's: this shop pops
+  // itself exactly once whatever any other plugin has done to isSceneChanging.
+  Scene_Shop.prototype.closeShop = function () {
+    if (this._shopClosing) return;
+    if (SceneManager._scene !== this) return;
+    if (SceneManager.isSceneChanging()) return;
+    this._shopClosing = true;
+    this.popScene();
+  };
+
+  // Back out of the quantity modal if it is open, otherwise leave the shop.
+  Scene_Shop.prototype.cancelShopAction = function () {
+    if (this._shopClosing) return;
+    if (SceneManager._scene !== this || SceneManager.isSceneChanging()) return;
+    SoundManager.playCancel();
+    if (this._numberWindow && this._numberWindow.active) {
+      this._numberWindow.processCancel();
+      this.refreshUIShop();
+    } else {
+      this.closeShop();
+    }
   };
 
   Scene_Shop.prototype.createItemDetailWindow = function () {
     const rect = this.statusWindowRect();
     this._itemDetailWindow = new Window_ItemDetail(rect);
-    this._itemDetailWindow.x = -3000;
-    this._itemDetailWindow.y = -3000;
-    this._itemDetailWindow.opacity = 0;
-    this._itemDetailWindow.contentsOpacity = 0;
-    this._itemDetailWindow.showBackgroundDimmer = function () { };
+    parkWindow(this._itemDetailWindow);
     this.addWindow(this._itemDetailWindow);
-    this._statusWindow.setDetailWindow(this._itemDetailWindow);
+    if (this._statusWindow && this._statusWindow.setDetailWindow) {
+      this._statusWindow.setDetailWindow(this._itemDetailWindow);
+    }
   };
 
   const _Window_ShopBuy_updateHelp = Window_ShopBuy.prototype.updateHelp;
@@ -930,58 +1010,62 @@
   Window_ShopBuy.prototype.makeItemList = function () {
     this._data = [];
     this._price = [];
-    if (this._shopGoods) {
-      const scene = SceneManager._scene;
-      let shopData = null;
-      if (scene instanceof Scene_Shop && scene._shopMapId && scene._shopEventId && $gameSystem._shopStocks) {
-        shopData = ($gameSystem._shopStocks[scene._shopMapId] || {})[scene._shopEventId];
+    if (!Array.isArray(this._shopGoods)) return;
+
+    const shopData = currentShopData();
+    const items = [];
+
+    // One malformed goods entry must not empty the whole shelf, so each is
+    // resolved on its own.
+    for (const goods of this._shopGoods) {
+      const item = safe("goodsToItem", () => this.goodsToItem(goods), null);
+      if (!item) continue;
+      const listed = goods[2] === 0 ? item.price : goods[3];
+      let price = Number.isFinite(listed) ? listed : 0;
+      if (shopData) price = Math.floor(price * marketFactor(shopData, item));
+      items.push({ item: item, price: Math.max(0, price), category: categoryOf(item).toLowerCase() });
+    }
+
+    items.sort((a, b) => {
+      const catA = a.category;
+      const catB = b.category;
+
+      if (catA === "medical" && catB !== "medical") return -1;   // i18n-ignore  <category:> tag values
+      if (catB === "medical" && catA !== "medical") return 1;    // i18n-ignore
+      if (catA === "trash" && catB !== "trash") return 1;        // i18n-ignore
+      if (catB === "trash" && catA !== "trash") return -1;       // i18n-ignore
+
+      if (catA !== catB) {
+        return catA.localeCompare(catB);
       }
+      return a.price - b.price;
+    });
 
-      const items = [];
-      for (const goods of this._shopGoods) {
-        const item = this.goodsToItem(goods);
-        if (item) {
-          let price = goods[2] === 0 ? item.price : goods[3];
-
-          if (shopData) {
-            const cat = (utils.getItemCategoryName(item) || "").toLowerCase();
-            const soulCats = ["jungle", "magic", "plants", "monsters"];
-            const factor = soulCats.includes(cat) ? (shopData.soulFactor || 1.0) : (shopData.oilFactor || 1.0);
-            price = Math.floor(price * factor);
-          }
-          items.push({ item: item, price: price });
-        }
-      }
-
-      items.sort((a, b) => {
-        const catA = (window.ItemSystemUtils.getItemCategoryName(a.item) || "").toLowerCase();
-        const catB = (window.ItemSystemUtils.getItemCategoryName(b.item) || "").toLowerCase();
-
-        if (catA === "medical" && catB !== "medical") return -1;
-        if (catB === "medical" && catA !== "medical") return 1;
-        if (catA === "trash" && catB !== "trash") return 1;
-        if (catB === "trash" && catA !== "trash") return -1;
-
-        if (catA !== catB) {
-          return catA.localeCompare(catB);
-        }
-        return a.price - b.price;
-      });
-
-      for (const obj of items) {
-        this._data.push(obj.item);
-        this._price.push(obj.price);
-      }
+    for (const obj of items) {
+      this._data.push(obj.item);
+      this._price.push(obj.price);
     }
   };
 
-  // Hide standard windows dynamically
+  // Base price() looks the item up by identity in _data. An item the list does
+  // not hold (a stale selection after a refresh) used to return undefined and
+  // poison every total downstream with NaN.
+  Window_ShopBuy.prototype.price = function (item) {
+    const index = this._data ? this._data.indexOf(item) : -1;
+    const price = index >= 0 && this._price ? this._price[index] : 0;
+    return Number.isFinite(price) ? price : 0;
+  };
+
+  // Drives the DOM overlay and carries the input the parked native windows can
+  // no longer receive. Nothing below runs for a scene that is closing, has lost
+  // its windows, or is no longer the one on screen.
   const _Scene_Shop_update = Scene_Shop.prototype.update;
   Scene_Shop.prototype.update = function () {
     _Scene_Shop_update.call(this);
+    if (this._shopClosing || !this.isShopReady() || SceneManager._scene !== this) return;
 
     // Robust native input/controller backup checks
-    if (Input.isTriggered('shopBack') && !(this._numberWindow && this._numberWindow.active)) {
+    if (Input.isTriggered('shopBack') && !this._numberWindow.active) {
       if (this._sellWindow.active || this._categoryWindow.active) {
         SoundManager.playCursor();
         this.switchToBuy();
@@ -994,53 +1078,74 @@
     // 'cancel' symbol is triggered, including Player 2's cancel and gamepad B,
     // which the split-screen input override folds into Input.isRepeated/isTriggered).
     // Without this check a second popScene here empties the scene stack and
-    // SceneManager.exit() closes the game.
+    // SceneManager.exit() closes the game, so cancelShopAction is a no-op once
+    // the scene is already on its way out.
     if (!SceneManager.isSceneChanging() && (Input.isTriggered('cancel') || TouchInput.isCancelled())) {
-      SoundManager.playCancel();
-      if (this._numberWindow && this._numberWindow.active) {
-        this._numberWindow.processCancel();
-        this.refreshUIShop();
-      } else {
-        this.popScene();
-      }
+      this.cancelShopAction();
       return;
     }
 
     this.syncUIShopState();
   };
 
+  const _Scene_Shop_terminate = Scene_Shop.prototype.terminate;
   Scene_Shop.prototype.terminate = function () {
-    const container = document.getElementById("shop-container");
-    if (container) container.remove();
+    this.destroyUIShopDOM();
 
     // Clean up event listeners to avoid memory leaks
     if (this._onShopKeyDown) {
       window.removeEventListener("keydown", this._onShopKeyDown);
+      this._onShopKeyDown = null;
     }
     if (this._onShopContextMenu) {
       window.removeEventListener("contextmenu", this._onShopContextMenu);
+      this._onShopContextMenu = null;
     }
 
-    // Restore original keyMapper
-    if (this._originalKeyMapper) {
-      Input.keyMapper = this._originalKeyMapper;
+    // Hand the borrowed keys back exactly once per shop that took them.
+    if (this._shopKeysBorrowed) {
+      this._shopKeysBorrowed = false;
+      releaseShopKeys();
     }
 
-    Scene_MenuBase.prototype.terminate.call(this);
+    _Scene_Shop_terminate.call(this);
   };
 
 
   // ============================================================================
   // Premium HTML DOM merchant counter systems
   // ============================================================================
+  // The overlay this scene owns, or null once it has gone. Never look the id up
+  // directly: a container left behind by an earlier shop carries that id too,
+  // and its click handlers still point at that dead scene.
+  Scene_Shop.prototype.shopContainer = function () {
+    const container = this._shopContainer;
+    if (!container || !container.isConnected) return null;
+    return container;
+  };
+
+  Scene_Shop.prototype.destroyUIShopDOM = function () {
+    if (this._shopContainer) {
+      this._shopContainer.remove();
+      this._shopContainer = null;
+    }
+    // Anything an earlier shop failed to clear goes with it.
+    const stray = document.getElementById("shop-container");
+    if (stray) stray.remove();
+  };
+
   Scene_Shop.prototype.initUIShopDOM = function () {
-    if (!document.getElementById("shop-container")) {
-      const container = document.createElement("div");
-      container.id = "shop-container";
-      document.body.appendChild(container);
+    // Always start from a clean container bound to THIS scene. Reusing one left
+    // over from a previous shop kept every button wired to a scene that is no
+    // longer on screen, so a click would pop a stack that no longer held it.
+    this.destroyUIShopDOM();
 
+    const container = document.createElement("div");
+    container.id = "shop-container";
+    this._shopContainer = container;
+    document.body.appendChild(container);
 
-      container.innerHTML = `
+    container.innerHTML = `
         <div class="shop-spread" style="display: flex; width: 100%; height: 100%; box-sizing: border-box;">
             <div class="shop-left" style="flex: 3; padding: 10px 20px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
                 <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px;">
@@ -1071,45 +1176,49 @@
         </div>
       `;
 
-      // Back Button click
-      container.querySelector("#shop-close-btn").addEventListener("click", (e) => {
+    // Every handler below runs from the browser, outside the game loop, so each
+    // one first asks whether this scene is still the one on screen and still
+    // holds its windows.
+    const onShopClick = (selector, handler) => {
+      const node = container.querySelector(selector);
+      if (!node) {
+        warnOnce("missing element " + selector, null);
+        return;
+      }
+      node.addEventListener("click", (e) => {
         e.stopPropagation();
-        SoundManager.playCancel();
-        if (this._numberWindow && this._numberWindow.active) {
-          this._numberWindow.processCancel();
-          this.refreshUIShop();
-        } else {
-          this.popScene();
-        }
+        if (SceneManager._scene !== this || !this.isShopReady()) return;
+        safe("click " + selector, () => handler(), null);
       });
+    };
 
-      // Tab clicks
-      container.querySelector("#tab-buy").addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (!this._buyWindow.active) {
-          SoundManager.playOk();
-          this.switchToBuy();
-        }
-      });
+    // Back Button click
+    onShopClick("#shop-close-btn", () => this.cancelShopAction());
 
-      container.querySelector("#tab-sell").addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isSellMode = this._sellWindow.active || this._categoryWindow.active;
-        if (!isSellMode) {
-          SoundManager.playOk();
-          this.switchToSell();
-        }
-      });
+    // Tab clicks
+    onShopClick("#tab-buy", () => {
+      if (!this._buyWindow.active) {
+        SoundManager.playOk();
+        this.switchToBuy();
+      }
+    });
 
-      // Mousewheel Scroll support for catalog viewport
-      container.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const viewport = container.querySelector(".catalog-viewport");
-        if (viewport) {
-          viewport.scrollTop += e.deltaY;
-        }
-      }, { passive: false });
-    }
+    onShopClick("#tab-sell", () => {
+      const isSellMode = this._sellWindow.active || this._categoryWindow.active;
+      if (!isSellMode) {
+        SoundManager.playOk();
+        this.switchToSell();
+      }
+    });
+
+    // Mousewheel Scroll support for catalog viewport
+    container.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const viewport = container.querySelector(".catalog-viewport");
+      if (viewport) {
+        viewport.scrollTop += e.deltaY;
+      }
+    }, { passive: false });
   };
 
   // While the quantity modal is open the buy/sell windows are deactivated, so the
@@ -1129,6 +1238,14 @@
     return this._sellWindow.active || this._categoryWindow.active;
   };
 
+  Scene_Shop.prototype.buyData = function () {
+    return (this._buyWindow && this._buyWindow._data) || [];
+  };
+
+  Scene_Shop.prototype.sellData = function () {
+    return (this._sellWindow && this._sellWindow._data) || [];
+  };
+
   Scene_Shop.prototype.getShopStateHash = function () {
     const isBuyMode = this.isShopBuyMode();
     const isSellMode = this.isShopSellMode();
@@ -1139,19 +1256,47 @@
     const numVal = this._numberWindow.number();
     const numMax = this._numberWindow.max();
     const partyGold = $gameParty.gold();
-    const buyLength = (this._buyWindow._data || []).length;
-    const sellLength = (this._sellWindow._data || []).length;
-    const stockHash = (this._buyWindow._data || []).map(item => this.getStock(item)).join(",");
-    const ownedHash = (this._sellWindow._data || []).map(item => sellableCount(item)).join(",");
+    const buyData = this.buyData();
+    const sellData = this.sellData();
+    const stockHash = buyData.map(item => this.getStock(item)).join(",");
+    // One pass over the party's gear per frame instead of one per listed item.
+    const worn = wornCounts();
+    const ownedHash = sellData.map(item => $gameParty.numItems(item) + (worn.get(item) || 0)).join(",");
 
     const sellCatFocus = this._sellCategoryFocus || false;
-  return `${isBuyMode}_${isSellMode}_${buyIdx}_${sellIdx}_${catIdx}_${numActive}_${numVal}_${numMax}_${partyGold}_${buyLength}_${sellLength}_${stockHash}_${ownedHash}_${sellCatFocus}`;
+    return `${isBuyMode}_${isSellMode}_${buyIdx}_${sellIdx}_${catIdx}_${numActive}_${numVal}_${numMax}_${partyGold}_${buyData.length}_${sellData.length}_${stockHash}_${ownedHash}_${sellCatFocus}`;
   };
 
   Scene_Shop.prototype.syncUIShopState = function () {
-    const container = document.getElementById("shop-container");
+    if (!this.isShopReady()) return;
+    const container = this.shopContainer();
     if (!container) return;
 
+    // This runs once a frame off live game data. An exception used to throw
+    // again on the next frame, and the next, until the game died; here the
+    // overlay is rebuilt once and, if that fails too, the shop closes cleanly
+    // rather than taking the session with it.
+    try {
+      this.renderUIShopState(container);
+      this._shopRenderFailures = 0;
+    } catch (e) {
+      warnOnce("syncUIShopState", e);
+      this._shopRenderFailures = (this._shopRenderFailures || 0) + 1;
+      if (this._shopRenderFailures === 1) {
+        // Rebuild now, draw on the next frame: re-entering the renderer from
+        // inside its own catch would only nest the failure.
+        safe("rebuild overlay", () => {
+          this.initUIShopDOM();
+          this._lastShopStateHash = null;
+        }, null);
+      } else {
+        console.error("[ItemSystemShop] overlay cannot be drawn, closing the shop.", e);
+        this.closeShop();
+      }
+    }
+  };
+
+  Scene_Shop.prototype.renderUIShopState = function (container) {
     const hash = this.getShopStateHash();
     if (this._lastShopStateHash === hash) return;
     this._lastShopStateHash = hash;
@@ -1163,10 +1308,10 @@
 
     // 1. Update Gold/Funds
     const currentGold = $gameParty.gold();
-    if (this._renderedGold !== currentGold) {
+    const fundsNode = container.querySelector("#shop-funds");
+    if (this._renderedGold !== currentGold && fundsNode) {
       this._renderedGold = currentGold;
-      const fundsText =T('Shop.availableFunds');
-      container.querySelector("#shop-funds").innerHTML = `${fundsText}<span style="color: #27ae60;">${(currentGold / 100).toFixed(2)} €</span>`;
+      fundsNode.innerHTML = `${esc(T('Shop.availableFunds'))}<span style="color: #27ae60;">${money(currentGold)} €</span>`;
     }
 
     // 2. Update Tabs active state & Category Buttons
@@ -1177,24 +1322,19 @@
 
       const tabBuy = container.querySelector("#tab-buy");
       const tabSell = container.querySelector("#tab-sell");
-      if (isBuyMode) {
-        tabBuy.classList.add("active");
-        tabSell.classList.remove("active");
-      } else {
-        tabBuy.classList.remove("active");
-        tabSell.classList.add("active");
-      }
+      if (tabBuy) tabBuy.classList.toggle("active", isBuyMode);
+      if (tabSell) tabSell.classList.toggle("active", !isBuyMode);
 
       // Populate or clear categories container
       const catContainer = container.querySelector("#shop-categories-container");
-      if (isSellMode) {
+      if (catContainer && isSellMode) {
         const catIdx = this._categoryWindow.index();
         const labels = T.list('Shop.sellCategories');
 
         let categoriesHTML = `<div class="shop-categories" style="display: flex; gap: 6px; margin-bottom: 12px;">`;
         labels.forEach((lbl, idx) => {
           const activeClass = catIdx === idx ? 'active' : '';
-          categoriesHTML += `<div class="category-btn ${activeClass}" data-idx="${idx}" style="flex: 1; font-family: 'Lora', serif; font-size: 0.85em; padding: 6px 2px; text-align: center; cursor: pointer;">${lbl}</div>`;
+          categoriesHTML += `<div class="category-btn ${activeClass}" data-idx="${idx}" style="flex: 1; font-family: 'Lora', serif; font-size: 0.85em; padding: 6px 2px; text-align: center; cursor: pointer;">${esc(lbl)}</div>`;
         });
         categoriesHTML += `</div>`;
         catContainer.innerHTML = categoriesHTML;
@@ -1203,18 +1343,22 @@
         catContainer.querySelectorAll(".category-btn").forEach(btn => {
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
-            const idx = parseInt(btn.getAttribute("data-idx"));
-            SoundManager.playOk();
-            this._categoryWindow.select(idx);
-            this._categoryWindow.deactivate();
-            this._sellWindow.activate();
-            this._sellWindow.setCategory(this._categoryWindow.currentSymbol());
-            this._sellCategoryFocus = false;
-            this._sellWindow.select(0);
-            this.refreshUIShop();
+            if (SceneManager._scene !== this || !this.isShopReady()) return;
+            safe("category click", () => {
+              const idx = parseInt(btn.getAttribute("data-idx"), 10);
+              if (!Number.isFinite(idx)) return;
+              SoundManager.playOk();
+              this._categoryWindow.select(idx);
+              this._categoryWindow.deactivate();
+              this._sellWindow.activate();
+              this._sellWindow.setCategory(this._categoryWindow.currentSymbol());
+              this._sellCategoryFocus = false;
+              this._sellWindow.select(0);
+              this.refreshUIShop();
+            }, null);
           });
         });
-      } else {
+      } else if (catContainer) {
         catContainer.innerHTML = "";
       }
     }
@@ -1250,9 +1394,10 @@
     }
 
     // 4. Verify if items data changed
-    const listLength = isBuyMode ? (this._buyWindow._data || []).length : (this._sellWindow._data || []).length;
-    const stockHash = (this._buyWindow._data || []).map(item => this.getStock(item)).join(",");
-    const ownedHash = (this._sellWindow._data || []).map(item => sellableCount(item)).join(",");
+    const worn = wornCounts();
+    const listLength = isBuyMode ? this.buyData().length : this.sellData().length;
+    const stockHash = this.buyData().map(item => this.getStock(item)).join(",");
+    const ownedHash = this.sellData().map(item => $gameParty.numItems(item) + (worn.get(item) || 0)).join(",");
 
     if (
       this._renderedListLength !== listLength ||
@@ -1267,74 +1412,71 @@
 
     // 5. Redraw Item Cards List if forced
     const viewport = container.querySelector(".catalog-viewport");
-    if (forceListRedraw) {
+    if (forceListRedraw && viewport) {
       let itemsHTML = "";
       if (isBuyMode) {
-        const buyData = this._buyWindow._data || [];
+        const buyData = this.buyData();
         if (buyData.length === 0) {
-          itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style:italic;">${T('Shop.noProductsOnSale')}</div>`;
+          itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style:italic;">${esc(T('Shop.noProductsOnSale'))}</div>`;
         } else {
           buyData.forEach((item, idx) => {
             if (!item) return;
             const focusedClass = activeIndex === idx ? 'focused' : '';
-            const rarity = utils.getItemRarity(item);
             const price = this._buyWindow.price(item);
             const stock = this.getStock(item);
             const owned = $gameParty.numItems(item);
-            const stockValText = stock === 999 ? "∞" : stock;
+            const stockValText = stock === UNLIMITED_STOCK ? "∞" : stock;
             const stockDisplay = T('Shop.ownedStock', { owned: owned, stock: stockValText });
 
             itemsHTML += `
-              <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="buy" style="border-left: 4px solid ${rarity.colorCode};">
+              <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="buy" style="border-left: 4px solid ${rarityColor(item)};">
                   <div class="item-card-left">
                       <div class="item-card-icon" style="${this.getIconStyle(item.iconIndex)}"></div>
                       <div class="item-card-info">
-                          <span class="item-card-name">${item.name}</span>
-                          <span class="item-card-sub">${utils.getItemCategoryName(item) || T('Shop.asset')}</span>
+                          <span class="item-card-name">${esc(item.name)}</span>
+                          <span class="item-card-sub">${esc(categoryOf(item) || T('Shop.asset'))}</span>
                       </div>
                   </div>
                   <div class="item-card-right">
-                      <span class="item-card-price">${(price / 100).toFixed(2)} €</span>
-                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${stockDisplay}</span>
+                      <span class="item-card-price">${money(price)} €</span>
+                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${esc(stockDisplay)}</span>
                   </div>
               </div>
             `;
           });
         }
       } else {
-        const sellData = this._sellWindow._data || [];
+        const sellData = this.sellData();
         if (sellData.length === 0) {
-          itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style:italic;">${T('Shop.inventoryEmpty')}</div>`;
+          itemsHTML = `<div style="text-align:center; color:#8c7667; margin-top:40px; font-style:italic;">${esc(T('Shop.inventoryEmpty'))}</div>`;
         } else {
           sellData.forEach((item, idx) => {
             if (!item) return;
             const focusedClass = activeIndex === idx && this._sellWindow.active ? 'focused' : '';
-            const rarity = utils.getItemRarity(item);
             // Match the gold the player actually receives (sellingPrice()),
             // including the NPC-trade sell factor, so the card doesn't lie.
-            const sellFactor = $gameTemp._npcTradeSellFactor ?? 1;
-            const price = Math.floor(Math.floor(item.price * 0.1) * sellFactor);
-            const worn = equippedCount(item);
-            const owned = $gameParty.numItems(item) + worn;
+            const price = baseSellPrice(item);
+            const wornHere = worn.get(item) || 0;
+            const owned = $gameParty.numItems(item) + wornHere;
             const stock = this.getStock(item);
-            const stockValText = stock === 999 ? "∞" : stock;
+            const stockValText = stock === UNLIMITED_STOCK ? "∞" : stock;
             let stockDisplay = T('Shop.ownedStock', { owned: owned, stock: stockValText });
             // Gear on someone's back is sellable too, but say so: the sale
             // takes it off them.
-            if (worn > 0) stockDisplay += ` ${T('Shop.wornCount', { count: worn })}`;
+            if (wornHere > 0) stockDisplay += ` ${T('Shop.wornCount', { count: wornHere })}`;
 
             itemsHTML += `
-              <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="sell" style="border-left: 4px solid ${rarity.colorCode};">
+              <div class="item-card ${focusedClass}" data-idx="${idx}" data-mode="sell" style="border-left: 4px solid ${rarityColor(item)};">
                   <div class="item-card-left">
                       <div class="item-card-icon" style="${this.getIconStyle(item.iconIndex)}"></div>
                       <div class="item-card-info">
-                          <span class="item-card-name">${item.name}</span>
-                          <span class="item-card-sub">${utils.formatWeight(utils.getItemWeight(item))}</span>
+                          <span class="item-card-name">${esc(item.name)}</span>
+                          <span class="item-card-sub">${esc(formatWeight(weightOf(item)))}</span>
                       </div>
                   </div>
                   <div class="item-card-right">
-                      <span class="item-card-price">${(price / 100).toFixed(2)} €</span>
-                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${stockDisplay}</span>
+                      <span class="item-card-price">${money(price)} €</span>
+                      <span class="item-card-stock" style="font-size: 12px; opacity: 0.95; margin-top: 2px;">${esc(stockDisplay)}</span>
                   </div>
               </div>
             `;
@@ -1347,31 +1489,26 @@
       viewport.querySelectorAll(".item-card").forEach(card => {
         card.addEventListener("click", (e) => {
           e.stopPropagation();
-          const idx = parseInt(card.getAttribute("data-idx"));
-          const mode = card.getAttribute("data-mode");
-          if (mode === "buy") {
-            if (this._buyWindow.index() !== idx) {
-              this._buyWindow.select(idx);
+          if (SceneManager._scene !== this || !this.isShopReady()) return;
+          safe("card click", () => {
+            const idx = parseInt(card.getAttribute("data-idx"), 10);
+            if (!Number.isFinite(idx)) return;
+            const mode = card.getAttribute("data-mode");
+            const win = mode === "buy" ? this._buyWindow : this._sellWindow;
+            if (win.index() !== idx) {
+              win.select(idx);
               SoundManager.playCursor();
               this.refreshUIShop();
             } else {
-              this._buyWindow.processOk();
+              win.processOk();
             }
-          } else {
-            if (this._sellWindow.index() !== idx) {
-              this._sellWindow.select(idx);
-              SoundManager.playCursor();
-              this.refreshUIShop();
-            } else {
-              this._sellWindow.processOk();
-            }
-          }
+          }, null);
         });
       });
     }
 
     // 6. Update focus class and scroll if index changed
-    if (this._renderedSelectedIndex !== activeIndex || forceListRedraw) {
+    if (viewport && (this._renderedSelectedIndex !== activeIndex || forceListRedraw)) {
       this._renderedSelectedIndex = activeIndex;
 
       viewport.querySelectorAll(".item-card").forEach((card, idx) => {
@@ -1387,24 +1524,23 @@
 
     // 7. Update Item Detail Viewport on Right Page
     const selectedItem = isBuyMode ? this._buyWindow.item() : this._sellWindow.item();
-    if (this._renderedDetailItem !== selectedItem || forceListRedraw) {
+    const detailViewport = container.querySelector("#detail-viewport");
+    if (detailViewport && (this._renderedDetailItem !== selectedItem || forceListRedraw)) {
       this._renderedDetailItem = selectedItem;
-      const detailViewport = container.querySelector("#detail-viewport");
 
       if (selectedItem) {
-        const rarity = utils.getItemRarity(selectedItem);
-        const isFood = utils.isFoodItem(selectedItem);
-        const category = utils.getItemCategoryName(selectedItem) || (T('Shop.item'));
-        const weight = utils.formatWeight(utils.getItemWeight(selectedItem));
+        const isFood = safe("isFoodItem", () => utils.isFoodItem(selectedItem), false);
+        const category = categoryOf(selectedItem) || T('Shop.item');
+        const weight = formatWeight(weightOf(selectedItem));
 
         let scaleBadgeHTML = "";
-        if (DataManager.isWeapon(selectedItem)) {
+        if (DataManager.isWeapon(selectedItem) && this._itemDetailWindow) {
           const scaling = this._itemDetailWindow.getWeaponScalingType(selectedItem);
           if (scaling) {
             scaleBadgeHTML = `
               <div class="detail-spec-badge">
-                  <span class="badge-lbl">${T('Shop.ui.scale')}</span>
-                  <span class="badge-val">${scaling}</span>
+                  <span class="badge-lbl">${esc(T('Shop.ui.scale'))}</span>
+                  <span class="badge-val">${esc(scaling)}</span>
               </div>
             `;
           }
@@ -1412,28 +1548,23 @@
 
         let slotBadgeHTML = "";
         if (DataManager.isWeapon(selectedItem) || DataManager.isArmor(selectedItem)) {
-          let slotName = $dataSystem.equipTypes[selectedItem.etypeId];
-          if (window.translateText && typeof window.translateText === "function") slotName = window.translateText(slotName);
+          const slotName = translate(equipTypeName(selectedItem.etypeId));
           slotBadgeHTML = `
             <div class="detail-spec-badge">
-                <span class="badge-lbl">${T('Shop.slot')}</span>
-                <span class="badge-val">${slotName || T('Shop.equipSlot')}</span>
+                <span class="badge-lbl">${esc(T('Shop.slot'))}</span>
+                <span class="badge-val">${esc(slotName || T('Shop.equipSlot'))}</span>
             </div>
           `;
         }
 
         let descHTML = "";
         if (selectedItem.description) {
-          let translatedDesc = selectedItem.description;
-          if (window.translateText && typeof window.translateText === "function") translatedDesc = window.translateText(selectedItem.description);
-          descHTML = `<div class="detail-desc">${translatedDesc}</div>`;
+          descHTML = `<div class="detail-desc">${esc(translate(selectedItem.description))}</div>`;
         }
 
         // Procedural lore (resolves {nation}/{leader}/... tokens) shown below the description.
-        if (window.ItemSystemUtils && typeof window.ItemSystemUtils.loreFor === "function") {
-          const loreText = window.ItemSystemUtils.loreFor(selectedItem);
-          if (loreText) descHTML += `<div class="detail-lore" style="font-style:italic;opacity:0.75;margin-top:4px;">${loreText}</div>`;
-        }
+        const loreText = loreOf(selectedItem);
+        if (loreText) descHTML += `<div class="detail-lore" style="font-style:italic;opacity:0.75;margin-top:4px;">${esc(loreText)}</div>`;
 
         // Params
         let paramsHTML = "";
@@ -1444,9 +1575,9 @@
         baseParams.forEach((paramId, pIdx) => {
           let val = 0;
           if (DataManager.isWeapon(selectedItem)) {
-            val = window.ItemSystemModifiers ? window.ItemSystemModifiers.getModifiedParam(selectedItem, paramId) : selectedItem.params[paramId];
+            val = modifiedParamOf(selectedItem, paramId);
           } else if (DataManager.isArmor(selectedItem)) {
-            val = selectedItem.params[paramId];
+            val = paramOf(selectedItem, paramId);
           }
 
           if (val !== 0) {
@@ -1457,7 +1588,7 @@
 
             paramsHTML += `
               <div class="gauge-row">
-                  <span style="font-weight:bold; width:50px;">${paramNames[pIdx]}</span>
+                  <span style="font-weight:bold; width:50px;">${esc(paramNames[pIdx])}</span>
                   <div class="gauge-bar-outer">
                       <div class="gauge-bar-inner" style="width:${barPct}%; background:${color};"></div>
                   </div>
@@ -1482,9 +1613,9 @@
         // Food & Nutrition
         let nutritionSectionHTML = "";
         if (isFood) {
-          const calories = utils.getNutritionValue(selectedItem, "calories");
-          const protein = utils.getNutritionValue(selectedItem, "protein");
-          const fat = utils.getNutritionValue(selectedItem, "fat");
+          const calories = safe("nutrition", () => utils.getNutritionValue(selectedItem, "calories"), 0);
+          const protein = safe("nutrition", () => utils.getNutritionValue(selectedItem, "protein"), 0);
+          const fat = safe("nutrition", () => utils.getNutritionValue(selectedItem, "fat"), 0);
 
           let nutGauges = "";
           if (calories > 0) {
@@ -1538,11 +1669,11 @@
 
         // Needs restored (non-food consumables: Sleep / Hygiene / Social / Fun)
         let needsSectionHTML = "";
-        const needRestores = utils.getNeedRestores ? utils.getNeedRestores(selectedItem) : [];
+        const needRestores = needRestoresOf(selectedItem);
         if (needRestores.length) {
           const needGauges = needRestores.map(r => `
               <div class="gauge-row">
-                  <span style="font-weight:500; width:70px;">${r.label}</span>
+                  <span style="font-weight:500; width:70px;">${esc(r.label)}</span>
                   <div class="gauge-bar-outer">
                       <div class="gauge-bar-inner" style="width:${r.amount}%; background:${r.color};"></div>
                   </div>
@@ -1562,22 +1693,23 @@
         let effectsHTML = "";
         let hasEffects = false;
 
-        if (selectedItem.effects && selectedItem.effects.length > 0) {
+        const detail = this._itemDetailWindow;
+        if (detail && Array.isArray(selectedItem.effects)) {
           selectedItem.effects.forEach(eff => {
-            const effStr = this._itemDetailWindow.getEffectDescription(eff);
+            const effStr = safe("getEffectDescription", () => detail.getEffectDescription(eff), null);
             if (effStr) {
               hasEffects = true;
-              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${effStr}</div>`;
+              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${esc(effStr)}</div>`;
             }
           });
         }
 
-        if (selectedItem.traits && selectedItem.traits.length > 0) {
+        if (detail && Array.isArray(selectedItem.traits)) {
           selectedItem.traits.forEach(tr => {
-            const trStr = this._itemDetailWindow.getTraitDescription(tr);
+            const trStr = safe("getTraitDescription", () => detail.getTraitDescription(tr), null);
             if (trStr) {
               hasEffects = true;
-              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${trStr}</div>`;
+              effectsHTML += `<div style="margin-bottom:6px; font-size:13px; color:#5c4033;">✦ ${esc(trStr)}</div>`;
             }
           });
         }
@@ -1599,22 +1731,17 @@
         // Compatibility
         let compatibilityHTML = "";
         if (DataManager.isWeapon(selectedItem) || DataManager.isArmor(selectedItem)) {
-          const party = $gameParty.members();
           let comps = "";
 
-          party.forEach(actor => {
-            // Everyone can equip every weapon now, so highlight the members who
-            // are actually proficient with it (see WeaponProficiency).
-            const prof = window.WeaponProficiency;
-            const canEquip = actor.canEquip(selectedItem) && !(prof && prof.isUntrained(actor, selectedItem));
-            const name = window.translateText ? window.translateText(actor.name()) : actor.name();
+          partyMembers().forEach(actor => {
+            const canEquip = isProficientWith(actor, selectedItem);
             const color = canEquip ? "#27ae60" : "rgba(94,47,23,0.4)";
             const dot = canEquip ? "●" : "○";
 
             comps += `
               <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:${color}; font-weight:${canEquip ? 'bold' : 'normal'};">
                   <span>${dot}</span>
-                  <span>${name}</span>
+                  <span>${esc(actorLabel(actor))}</span>
               </div>
             `;
           });
@@ -1622,7 +1749,7 @@
           compatibilityHTML = `
             <div style="margin-bottom:10px;">
                 <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:12px;">
-                    ${T('Shop.compatibilityLedger')}
+                    ${esc(T('Shop.compatibilityLedger'))}
                 </div>
                 <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; padding-left:4px;">
                     ${comps}
@@ -1636,18 +1763,18 @@
               <div class="detail-header">
                   <div class="item-card-icon" style="${this.getIconStyle(selectedItem.iconIndex)} scale: 1.25;"></div>
                   <div class="detail-info">
-                      <span class="detail-name">${selectedItem.name}</span>
+                      <span class="detail-name">${esc(selectedItem.name)}</span>
                   </div>
               </div>
-              
+
               <div class="detail-spec-grid">
                   <div class="detail-spec-badge">
-                      <span class="badge-lbl">${T('Shop.ui.type')}</span>
-                      <span class="badge-val">${category}</span>
+                      <span class="badge-lbl">${esc(T('Shop.ui.type'))}</span>
+                      <span class="badge-val">${esc(category)}</span>
                   </div>
                   <div class="detail-spec-badge">
-                      <span class="badge-lbl">${T('Shop.ui.weight')}</span>
-                      <span class="badge-val">${weight}</span>
+                      <span class="badge-lbl">${esc(T('Shop.ui.weight'))}</span>
+                      <span class="badge-val">${esc(weight)}</span>
                   </div>
                   ${scaleBadgeHTML}
                   ${slotBadgeHTML}
@@ -1661,7 +1788,7 @@
               ${compatibilityHTML}
               
               <div class="action-btn confirm" id="right-action-btn" style="margin-top: auto; font-size: 16px; padding: 12px 6px; flex-shrink: 0; flex: none;">
-                  ${isBuyMode ? (T('Shop.buy')) : (T('Shop.sell'))}
+                  ${esc(isBuyMode ? T('Shop.buy') : T('Shop.sell'))}
               </div>
           </div>
         `;
@@ -1671,29 +1798,33 @@
         if (actBtn) {
           actBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            if (isBuyMode) {
-              this._buyWindow.processOk();
-            } else {
-              this._sellWindow.processOk();
-            }
+            if (SceneManager._scene !== this || !this.isShopReady()) return;
+            safe("action button", () => {
+              const win = isBuyMode ? this._buyWindow : this._sellWindow;
+              win.processOk();
+            }, null);
           });
         }
       } else {
         detailViewport.innerHTML = `
           <div class="detail-scroll" style="flex: 1; min-height: 0; justify-content:center; align-items:center; text-align:center; color:#8c7667; font-style:italic; display: flex; flex-direction: column;">
               <div style="font-size:36px; margin-bottom:12px; opacity:0.35;"></div>
-              <span>${T('Shop.hoverOrSelectAnItem')}</span>
+              <span>${esc(T('Shop.hoverOrSelectAnItem'))}</span>
           </div>
         `;
       }
     }
 
     // 8. Update Quantity Modal Overlay
-    const modalActive = this._numberWindow.active;
-    const modalNum = modalActive ? this._numberWindow.number() : 0;
-    const modalMax = modalActive ? this._numberWindow.max() : 0;
-
     const modalViewport = container.querySelector("#modal-viewport");
+    if (!modalViewport) return;
+
+    const numberWindow = this._numberWindow;
+    const modalActive = numberWindow.active;
+    const modalNum = modalActive ? numberWindow.number() : 0;
+    const modalMax = modalActive ? numberWindow.max() : 0;
+    const unitPrice = Number.isFinite(numberWindow._price) ? numberWindow._price : 0;
+
     const modalStateChanged = this._renderedQuantityActive !== modalActive || this._renderedQuantityMax !== modalMax;
 
     if (!modalStateChanged && this._renderedQuantityNumber !== modalNum) {
@@ -1701,37 +1832,31 @@
       const qtyDisplay = modalViewport.querySelector(".qty-val-display");
       if (qtyDisplay) qtyDisplay.textContent = modalNum;
       const totalDisplay = modalViewport.querySelector(".card-val");
-      if (totalDisplay && this._numberWindow._price) {
-        totalDisplay.textContent = (modalNum * this._numberWindow._price / 100).toFixed(2) + " €";
-      }
+      if (totalDisplay) totalDisplay.textContent = money(modalNum * unitPrice) + " €";
     } else if (modalStateChanged) {
       this._renderedQuantityActive = modalActive;
       this._renderedQuantityNumber = modalNum;
       this._renderedQuantityMax = modalMax;
 
-      if (modalActive) {
-        const numItem = this._numberWindow._item;
-        const price = this._numberWindow._price;
-        const totalCost = modalNum * price;
+      // A modal with nothing to price is not a modal: the number window can be
+      // active with its item already gone (a stock refresh mid-purchase).
+      if (modalActive && numberWindow._item) {
+        const numItem = numberWindow._item;
+        const totalCost = modalNum * unitPrice;
 
         // When the quantity modal is open, the buy window is deactivated
         // (the number window is active instead), so _buyWindow.active is
         // unreliable here. Use the command window's selection to detect mode.
         const isModalBuyMode = this._commandWindow.currentSymbol() === "buy";
 
-        const promptTitle = isModalBuyMode
-          ? (T('Shop.buy'))
-          : (T('Shop.sell'));
-
-        const subLabel = isModalBuyMode
-          ? (T('Shop.totalCost'))
-          : (T('Shop.sellValue'));
+        const promptTitle = isModalBuyMode ? T('Shop.buy') : T('Shop.sell');
+        const subLabel = isModalBuyMode ? T('Shop.totalCost') : T('Shop.sellValue');
 
         modalViewport.innerHTML = `
           <div class="modal-overlay">
               <div class="quantity-box">
-                  <h3 class="quantity-title">${promptTitle}</h3>
-                  <div style="font-weight:bold; font-size:15px; color:var(--text-success-active); margin-bottom:10px;">${numItem.name}</div>
+                  <h3 class="quantity-title">${esc(promptTitle)}</h3>
+                  <div style="font-weight:bold; font-size:15px; color:var(--text-success-active); margin-bottom:10px;">${esc(numItem.name)}</div>
 
                   <div class="quantity-slider-row">
                       <div class="qty-arrow" id="qty-dec">－</div>
@@ -1739,26 +1864,39 @@
                       <div class="qty-arrow" id="qty-inc">＋</div>
                   </div>
 
-                  <div style="font-size:12px; color:var(--text-info); margin-bottom:14px;">Max: ${modalMax}</div>
+                  <div style="font-size:12px; color:var(--text-info); margin-bottom:14px;">${esc(T('Shop.max'))} ${modalMax}</div>
 
                   <div style="border-top:1px dashed var(--border-subtle-translucent-30); padding-top:12px; margin-top:14px;">
-                      <div class="card-lbl">${subLabel}</div>
-                      <div class="card-val" style="font-size:22px; color:${isModalBuyMode ? 'var(--text-cost-bad)' : 'var(--text-cost-ok)'};">${(totalCost / 100).toFixed(2)} €</div>
+                      <div class="card-lbl">${esc(subLabel)}</div>
+                      <div class="card-val" style="font-size:22px; color:${isModalBuyMode ? 'var(--text-cost-bad)' : 'var(--text-cost-ok)'};">${money(totalCost)} €</div>
                   </div>
 
                   <div class="quantity-actions">
-                      <div class="action-btn confirm" id="qty-confirm">${T('Shop.confirmTransaction')}</div>
-                      <div class="action-btn cancel" id="qty-cancel">${T('Shop.cancel')}</div>
+                      <div class="action-btn confirm" id="qty-confirm">${esc(T('Shop.confirmTransaction'))}</div>
+                      <div class="action-btn cancel" id="qty-cancel">${esc(T('Shop.cancel'))}</div>
                   </div>
               </div>
           </div>
         `;
 
+        const onModalClick = (selector, handler) => {
+          const node = modalViewport.querySelector(selector);
+          if (!node) {
+            warnOnce("missing element " + selector, null);
+            return;
+          }
+          node.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (SceneManager._scene !== this || !this.isShopReady()) return;
+            if (!this._numberWindow.active) return;
+            safe("click " + selector, () => handler(this._numberWindow), null);
+          });
+        };
+
         // Click Arrow inc, partial update only, no full redraw
-        modalViewport.querySelector("#qty-inc").addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (this._numberWindow.number() < this._numberWindow.max()) {
-            this._numberWindow.changeNumber(1);
+        onModalClick("#qty-inc", (w) => {
+          if (w.number() < w.max()) {
+            w.changeNumber(1);
             SoundManager.playCursor();
             this._updateQuantityModalNumber();
           }
@@ -1766,9 +1904,7 @@
 
         // Click Arrow dec, partial update only, no full redraw.
         // Pressing minus at 1 wraps to the maximum available quantity.
-        modalViewport.querySelector("#qty-dec").addEventListener("click", (e) => {
-          e.stopPropagation();
-          const w = this._numberWindow;
+        onModalClick("#qty-dec", (w) => {
           if (w.number() > 1) {
             w.changeNumber(-1);
           } else {
@@ -1778,17 +1914,13 @@
           this._updateQuantityModalNumber();
         });
 
-        // Confirm
-        modalViewport.querySelector("#qty-confirm").addEventListener("click", (e) => {
-          e.stopPropagation();
-          this._numberWindow.processOk();
+        onModalClick("#qty-confirm", (w) => {
+          w.processOk();
           this.refreshUIShop();
         });
 
-        // Cancel
-        modalViewport.querySelector("#qty-cancel").addEventListener("click", (e) => {
-          e.stopPropagation();
-          this._numberWindow.processCancel();
+        onModalClick("#qty-cancel", (w) => {
+          w.processCancel();
           this.refreshUIShop();
         });
       } else {
@@ -1815,24 +1947,25 @@
   };
 
   Scene_Shop.prototype._updateQuantityModalNumber = function () {
-    const container = document.getElementById("shop-container");
-    if (!container) return;
+    const container = this.shopContainer();
+    if (!container || !this._numberWindow) return;
     const modalViewport = container.querySelector("#modal-viewport");
     if (!modalViewport) return;
     const modalNum = this._numberWindow.number();
-    const price = this._numberWindow._price;
+    const price = Number.isFinite(this._numberWindow._price) ? this._numberWindow._price : 0;
     const qtyDisplay = modalViewport.querySelector(".qty-val-display");
     if (qtyDisplay) qtyDisplay.textContent = modalNum;
     const totalDisplay = modalViewport.querySelector(".card-val");
-    if (totalDisplay) totalDisplay.textContent = (modalNum * price / 100).toFixed(2) + " €";
+    if (totalDisplay) totalDisplay.textContent = money(modalNum * price) + " €";
     this._renderedQuantityNumber = modalNum;
   };
 
   Scene_Shop.prototype.getIconStyle = function (iconIndex) {
     const iconSize = 32;
     const cols = 16;
-    const x = (iconIndex % cols) * iconSize;
-    const y = Math.floor(iconIndex / cols) * iconSize;
+    const index = Number.isFinite(iconIndex) && iconIndex >= 0 ? Math.floor(iconIndex) : 0;
+    const x = (index % cols) * iconSize;
+    const y = Math.floor(index / cols) * iconSize;
     return `background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; image-rendering: pixelated; display: inline-block;`;
   };
 
@@ -1847,11 +1980,8 @@
     const priceValue = this.price(item);
     const rect = this.itemLineRect(index);
     const scene = SceneManager._scene;
-    const stock = (scene instanceof Scene_Shop) ? scene.getStock(item) : 999;
-    let stockText = "";
-    if (stock !== 999) {
-      stockText = "x" + stock;
-    }
+    const stock = (scene instanceof Scene_Shop) ? scene.getStock(item) : UNLIMITED_STOCK;
+    const stockText = stock === UNLIMITED_STOCK ? "" : "x" + stock;
 
     const unit = $dataSystem.currencyUnit;
     const priceDisplay = this.formatMoneyValue(priceValue) + unit;
@@ -1861,11 +1991,12 @@
 
     this.changePaintOpacity(this.isEnabled(item));
 
+    // The name is passed in, never written onto the item: assigning to
+    // item.name edits the shared $dataItems/$dataWeapons entry, and any throw
+    // between the two assignments left the truncated name in the database for
+    // the rest of the session.
     const displayName = this.truncateItemName ? this.truncateItemName(item.name) : item.name;
-    const originalName = item.name;
-    item.name = displayName;
-    this.drawItemName(item, rect.x, rect.y, nameWidth);
-    item.name = originalName;
+    this.drawItemName(item, rect.x, rect.y, nameWidth, displayName);
 
     this.drawText(priceDisplay, rect.x + rect.width - priceWidth - stockWidth - 10, rect.y, priceWidth, "right");
 
@@ -1878,17 +2009,16 @@
     this.changePaintOpacity(true);
   };
 
-  Window_ShopBuy.prototype.drawItemName = function (item, x, y, width) {
+  Window_ShopBuy.prototype.drawItemName = function (item, x, y, width, displayName) {
     if (item) {
       const iconY = y + (this.lineHeight() - ImageManager.iconHeight) / 2;
       const textMargin = ImageManager.iconWidth + 4;
       const itemWidth = width || this.innerWidth - textMargin;
-      const rarity = window.ItemSystemUtils.getItemRarity(item);
 
       this.resetTextColor();
-      this.drawIcon(item.iconIndex, x, iconY);
-      this.changeTextColor(rarity.colorCode);
-      this.drawText(item.name, x + textMargin, y, itemWidth);
+      this.drawIcon(item.iconIndex || 0, x, iconY);
+      this.changeTextColor(rarityColor(item));
+      this.drawText(displayName || item.name || "", x + textMargin, y, itemWidth);
       this.resetTextColor();
     }
   };
@@ -1906,36 +2036,29 @@
   };
 
   Window_ShopSell.prototype.drawItem = function (index) {
-    const item = this._data[index];
+    const item = this.itemAt(index);
     if (!item) return;
     const rect = this.itemLineRect(index);
     const x = rect.x + this.itemPadding();
     const y = rect.y;
     const width = rect.width - this.itemPadding() * 2;
-    const priceY = y;
 
     const priceWidth = 120;
-    let priceText = "";
-    if (this._price) {
-      const price = this._price(item);
-      priceText = this.formatMoneyValue(price) + " €";
-    }
+    const priceText = this.formatMoneyValue(baseSellPrice(item)) + " €";
 
     const nameWidth = width - priceWidth - 10;
     this.changePaintOpacity(this.isEnabled(item));
     // The widest item name the price column leaves room for, in characters.
     const maxNameLength = 18;
-    const displayName = utils.truncateTextWithEllipsis(item.name, maxNameLength);
+    const displayName = safe("truncate", () => utils.truncateTextWithEllipsis(item.name || "", maxNameLength), item.name);
     this.drawItemName(item, x, y, nameWidth, displayName);
     this.changePaintOpacity(true);
 
-    if (this._price) {
-      this.drawText(priceText, x + width - priceWidth, priceY, priceWidth, 'right');
-    }
+    this.drawText(priceText, x + width - priceWidth, y, priceWidth, 'right');
 
-    const grams = utils.getItemWeight(item);
+    const grams = weightOf(item);
     if (grams > 1) {
-      const weightStr = utils.formatWeight(grams);
+      const weightStr = formatWeight(grams);
       const weightY = y + this.lineHeight();
       const weightWidth = 100;
       this.drawText(weightStr, x + width - weightWidth, weightY, weightWidth, 'right');
@@ -1950,11 +2073,9 @@
       const textMargin = ImageManager.iconWidth + 4;
       const itemWidth = Math.max(0, width - textMargin);
       this.resetTextColor();
-      this.drawIcon(item.iconIndex, x, iconY);
-
-      const rarity = window.ItemSystemUtils.getItemRarity(item);
-      this.changeTextColor(rarity.colorCode);
-      this.drawText(displayName || item.name, x + textMargin, y, itemWidth);
+      this.drawIcon(item.iconIndex || 0, x, iconY);
+      this.changeTextColor(rarityColor(item));
+      this.drawText(displayName || item.name || "", x + textMargin, y, itemWidth);
       this.resetTextColor();
     }
   };
@@ -1995,6 +2116,9 @@
   const _Scene_Shop_start = Scene_Shop.prototype.start;
   Scene_Shop.prototype.start = function () {
     _Scene_Shop_start.call(this);
+    if (!this.isShopReady()) return;
+    // The command window is the tab bar the overlay draws for itself, so it is
+    // never given focus: the shop opens straight onto the buy list.
     this._commandWindow.deactivate();
     this._commandWindow.select(0);
     this.commandBuy();
@@ -2017,7 +2141,7 @@
 
   Window_ShopSell.prototype.cursorLeft = function (wrap) {
     const scene = SceneManager._scene;
-    if (!(scene instanceof Scene_Shop)) return;
+    if (!(scene instanceof Scene_Shop) || !scene.isShopReady()) return;
     if (scene._sellCategoryFocus) {
       const catIdx = scene._categoryWindow.index();
       if (catIdx > 0) {
@@ -2040,7 +2164,7 @@
 
   Window_ShopSell.prototype.cursorRight = function (wrap) {
     const scene = SceneManager._scene;
-    if (!(scene instanceof Scene_Shop)) return;
+    if (!(scene instanceof Scene_Shop) || !scene.isShopReady()) return;
     if (scene._sellCategoryFocus) {
       const catIdx = scene._categoryWindow.index();
       const maxIdx = scene._categoryWindow.maxItems() - 1;
@@ -2100,6 +2224,7 @@
   };
 
   Scene_Shop.prototype.switchToSell = function () {
+    if (!this.isShopReady()) return;
     this._buyWindow.hide();
     this._buyWindow.deactivate();
     this._commandWindow.select(1);
@@ -2114,6 +2239,7 @@
   };
 
   Scene_Shop.prototype.switchToBuy = function () {
+    if (!this.isShopReady()) return;
     this._categoryWindow.hide();
     this._categoryWindow.deactivate();
     this._sellWindow.hide();
@@ -2124,16 +2250,18 @@
     this.refreshUIShop();
   };
 
+  // Cancelling out of any of the three lists leaves the shop, through the one
+  // guarded exit so a cancel that arrives twice in a frame only pops once.
   Scene_Shop.prototype.onBuyCancel = function () {
-    this.popScene();
+    this.closeShop();
   };
 
   Scene_Shop.prototype.onCategoryCancel = function () {
-    this.popScene();
+    this.closeShop();
   };
 
   Scene_Shop.prototype.onSellCancel = function () {
-    this.popScene();
+    this.closeShop();
   };
 
   //=============================================================================
@@ -2143,11 +2271,17 @@
   const _Scene_Shop_prepare = Scene_Shop.prototype.prepare;
   Scene_Shop.prototype.prepare = function (goods, purchaseOnly) {
     _Scene_Shop_prepare.call(this, goods, purchaseOnly);
-    this._shopMapId = $gameMap.mapId();
-    this._shopEventId = $gameMap._interpreter.eventId();
+    // A shop pushed straight from a plugin (an NPC trade, the daily shop) has no
+    // event behind it, and then it simply keeps no stock record.
+    this._shopMapId = $gameMap ? $gameMap.mapId() : 0;
+    this._shopEventId = ($gameMap && $gameMap._interpreter) ? $gameMap._interpreter.eventId() : 0;
   };
 
+  // A shop that keeps no stock record sells without limit.
+  const UNLIMITED_STOCK = 999;
+
   const getStockKey = (item) => {
+    if (!item) return null;
     if (DataManager.isItem(item)) return "i_" + item.id;
     if (DataManager.isWeapon(item)) return "w_" + item.id;
     if (DataManager.isArmor(item)) return "a_" + item.id;
@@ -2178,27 +2312,36 @@
       stocks[mapId][eventId] = { date: dateKey, oilFactor: 1.0, soulFactor: 1.0 };
       const newShopData = stocks[mapId][eventId];
 
-      if ($gameSystem.stockMarket) {
-        const smParams = PluginManager.parameters("StockMarketSystem");
-        const initOil = Number(smParams["Initial Oil Price"]) || 30000;
-        const initSoul = Number(smParams["Initial SOUL Price"]) || 66666;
+      // The market only moves prices when it is a live StockMarketSystem
+      // instance. A save written without that plugin restores a plain object
+      // with no methods on it, and asking that object for a price threw before
+      // the shop had drawn a single item.
+      const market = $gameSystem.stockMarket;
+      if (market && typeof market.getOilPrice === "function" && typeof market.getSoulsPrice === "function") {
+        safe("market factors", () => {
+          const smParams = PluginManager.parameters("StockMarketSystem");
+          const initOil = Number(smParams["Initial Oil Price"]) || 30000;
+          const initSoul = Number(smParams["Initial SOUL Price"]) || 66666;
 
-        const currentOil = $gameSystem.stockMarket.getOilPrice();
-        const currentSoul = $gameSystem.stockMarket.getSoulsPrice();
+          const currentOil = Number(market.getOilPrice());
+          const currentSoul = Number(market.getSoulsPrice());
+          if (!Number.isFinite(currentOil) || !Number.isFinite(currentSoul)) return;
 
-        const maxOil = 80000;
-        const minOil = 3000;
-        let oilFactor = 1.0;
-        if (currentOil >= initOil) {
-          oilFactor = 1.0 + ((currentOil - initOil) / (maxOil - initOil)) * 2.0;
-        } else {
-          oilFactor = 1.0 - ((initOil - currentOil) / (initOil - minOil)) * 0.5;
-        }
-        newShopData.oilFactor = Math.max(0.5, Math.min(3.0, oilFactor));
-        newShopData.soulFactor = Math.max(0.5, Math.min(3.0, currentSoul / initSoul));
+          const maxOil = 80000;
+          const minOil = 3000;
+          let oilFactor = 1.0;
+          if (currentOil >= initOil) {
+            oilFactor = 1.0 + ((currentOil - initOil) / (maxOil - initOil)) * 2.0;
+          } else {
+            oilFactor = 1.0 - ((initOil - currentOil) / (initOil - minOil)) * 0.5;
+          }
+          newShopData.oilFactor = Math.max(0.5, Math.min(3.0, oilFactor));
+          newShopData.soulFactor = Math.max(0.5, Math.min(3.0, currentSoul / initSoul));
+        }, null);
       }
 
-      for (const goods of this._goods) {
+      for (const goods of (this._goods || [])) {
+        if (!Array.isArray(goods)) continue;
         const type = goods[0];
         const id = goods[1];
         let item = null;
@@ -2206,16 +2349,14 @@
         else if (type === 1) item = $dataWeapons[id];
         else if (type === 2) item = $dataArmors[id];
 
-        if (item) {
-          const key = getStockKey(item);
-          newShopData[key] = this.generateRandomStock(item);
-        }
+        const key = getStockKey(item);
+        if (key) newShopData[key] = this.generateRandomStock(item);
       }
     }
   };
 
   Scene_Shop.prototype.generateRandomStock = function (item) {
-    const price = item.price;
+    const price = (item && Number.isFinite(item.price)) ? item.price : 0;
     let base = 20;
     if (price >= 1000) base = 12;
     if (price >= 5000) base = 8;
@@ -2226,23 +2367,20 @@
   };
 
   Scene_Shop.prototype.getStock = function (item) {
-    if (!this._shopMapId || !this._shopEventId || !$gameSystem._shopStocks) return 999;
-    const mapStocks = $gameSystem._shopStocks[this._shopMapId];
-    if (!mapStocks) return 999;
-    const shopData = mapStocks[this._shopEventId];
-    if (!shopData) return 999;
+    const shopData = currentShopData(this);
+    if (!shopData) return UNLIMITED_STOCK;
     const key = getStockKey(item);
-    return shopData[key] !== undefined ? shopData[key] : 999;
+    if (!key) return UNLIMITED_STOCK;
+    const stock = shopData[key];
+    return Number.isFinite(stock) ? stock : UNLIMITED_STOCK;
   };
 
   Scene_Shop.prototype.reduceStock = function (item, amount) {
-    if (!this._shopMapId || !this._shopEventId || !$gameSystem._shopStocks) return;
-    const shopData = ($gameSystem._shopStocks[this._shopMapId] || {})[this._shopEventId];
+    const shopData = currentShopData(this);
     if (!shopData) return;
     const key = getStockKey(item);
-    if (shopData[key] !== undefined) {
-      shopData[key] = Math.max(0, shopData[key] - amount);
-    }
+    if (!key || !Number.isFinite(shopData[key])) return;
+    shopData[key] = Math.max(0, shopData[key] - amount);
   };
 
   // Trading is a skill like any other. Haggling (127) cuts what the party pays,
@@ -2255,25 +2393,41 @@
   const HAGGLE_FLOOR = 0.75;
   const APPRAISE_PER_LEVEL = 0.10; // up to +40% on the price received
 
+  // A factor that came back missing or nonsensical must not silently scale a
+  // price to zero or NaN.
+  const sanePositive = (value, fallback) =>
+    (Number.isFinite(value) && value > 0) ? value : fallback;
+
   function haggleFactor() {
-    return window.SpecializationXP
-      ? window.SpecializationXP.discount('Haggling', HAGGLE_PER_LEVEL, HAGGLE_FLOOR) : 1;
+    const xp = window.SpecializationXP;
+    if (!xp || typeof xp.discount !== "function") return 1;
+    return sanePositive(safe("haggleFactor", () => xp.discount('Haggling', HAGGLE_PER_LEVEL, HAGGLE_FLOOR), 1), 1);
   }
 
   function appraiseFactor() {
-    return window.SpecializationXP
-      ? window.SpecializationXP.multiplier('Appraising', APPRAISE_PER_LEVEL) : 1;
+    const xp = window.SpecializationXP;
+    if (!xp || typeof xp.multiplier !== "function") return 1;
+    return sanePositive(safe("appraiseFactor", () => xp.multiplier('Appraising', APPRAISE_PER_LEVEL), 1), 1);
   }
 
+  // What a shop pays for an item before the party's Appraising is counted: the
+  // listed tenth, scaled by the NPC-trade factor. The sell cards read from this
+  // too, so a card can never quote a price the till does not honour.
+  const baseSellPrice = (item) => {
+    const price = (item && Number.isFinite(item.price)) ? item.price : 0;
+    const factor = sanePositive($gameTemp && $gameTemp._npcTradeSellFactor, 1);
+    return Math.max(0, Math.floor(Math.floor(price * 0.1) * factor));
+  };
+
   Scene_Shop.prototype.sellingPrice = function () {
-    const base   = Math.floor(this._item.price * 0.1);
-    const factor = $gameTemp._npcTradeSellFactor ?? 1;
-    return Math.max(1, Math.floor(base * factor * appraiseFactor()));
+    if (!this._item) return 0;
+    return Math.max(1, Math.floor(baseSellPrice(this._item) * appraiseFactor()));
   };
 
   const _Scene_Shop_buyingPrice = Scene_Shop.prototype.buyingPrice;
   Scene_Shop.prototype.buyingPrice = function () {
-    const base = _Scene_Shop_buyingPrice.call(this);
+    const base = safe("buyingPrice", () => _Scene_Shop_buyingPrice.call(this), 0);
+    if (!Number.isFinite(base)) return 1;
     return Math.max(1, Math.floor(base * haggleFactor()));
   };
 
@@ -2287,8 +2441,16 @@
   Window_ShopBuy.prototype.isEnabled = function (item) {
     const enabled = _Window_ShopBuy_isEnabled.call(this, item);
     if (!enabled) return false;
-    const stock = SceneManager._scene instanceof Scene_Shop ? SceneManager._scene.getStock(item) : 999;
+    const scene = SceneManager._scene;
+    const stock = scene instanceof Scene_Shop ? scene.getStock(item) : UNLIMITED_STOCK;
     return stock > 0;
+  };
+
+  const awardTradeXp = (spec, value) => {
+    const xp = window.SpecializationXP;
+    if (!xp || typeof xp.awardForValue !== "function") return;
+    if (!Number.isFinite(value) || value <= 0) return;
+    safe("awardForValue " + spec, () => xp.awardForValue(spec, value), null);
   };
 
   const _Scene_Shop_doBuy = Scene_Shop.prototype.doBuy;
@@ -2296,19 +2458,15 @@
     const spent = number * this.buyingPrice();
     _Scene_Shop_doBuy.call(this, number);
     this.reduceStock(this._item, number);
-    this._buyWindow.refresh();
-    if (window.SpecializationXP) {
-      window.SpecializationXP.awardForValue('Haggling', spent);
-    }
+    if (this._buyWindow) this._buyWindow.refresh();
+    awardTradeXp('Haggling', spent);  // i18n-ignore  Specialization.json id
   };
 
   const _Scene_Shop_doSell = Scene_Shop.prototype.doSell;
   Scene_Shop.prototype.doSell = function (number) {
     const earned = number * this.sellingPrice();
     _Scene_Shop_doSell.call(this, number);
-    if (window.SpecializationXP) {
-      window.SpecializationXP.awardForValue('Appraising', earned);
-    }
+    awardTradeXp('Appraising', earned);  // i18n-ignore  Specialization.json id
   };
 
   //=============================================================================
@@ -2321,19 +2479,28 @@
   // many copies as it needs before the items leave the inventory.
 
   const equipHolders = () =>
-    ($gameParty.allMembers ? $gameParty.allMembers() : $gameParty.members());
+    safe("equipHolders", () => ($gameParty.allMembers ? $gameParty.allMembers() : $gameParty.members()), []) || [];
 
-  // How many copies of an item the party is wearing right now.
+  // Every piece of gear the party is wearing, counted in one pass. Callers that
+  // ask about a whole list (the sell cards, the state hash) take this map rather
+  // than walking the party once per item.
   window.ItemSystemShop = window.ItemSystemShop || {};
-  const equippedCount = (item) => {
-    if (!item || DataManager.isItem(item)) return 0;
-    let count = 0;
+  const wornCounts = () => {
+    const counts = new Map();
     for (const actor of equipHolders()) {
-      for (const equip of actor.equips()) {
-        if (equip === item) count++;
+      const equips = safe("actor.equips", () => actor.equips(), []) || [];
+      for (const equip of equips) {
+        if (equip) counts.set(equip, (counts.get(equip) || 0) + 1);
       }
     }
-    return count;
+    return counts;
+  };
+  window.ItemSystemShop.wornCounts = wornCounts;
+
+  // How many copies of an item the party is wearing right now.
+  const equippedCount = (item) => {
+    if (!item || DataManager.isItem(item)) return 0;
+    return wornCounts().get(item) || 0;
   };
   window.ItemSystemShop.equippedCount = equippedCount;
 
@@ -2341,38 +2508,31 @@
   const sellableCount = (item) => $gameParty.numItems(item) + equippedCount(item);
   window.ItemSystemShop.sellableCount = sellableCount;
 
-  // Every distinct piece of gear currently worn by the party.
-  const equippedSellables = () => {
-    const list = [];
-    for (const actor of equipHolders()) {
-      for (const equip of actor.equips()) {
-        if (equip && !list.includes(equip)) list.push(equip);
-      }
-    }
-    return list;
-  };
-
   // Take `count` copies off whoever is wearing them. changeEquip hands the old
   // piece back to the party, so the ordinary loseItem in doSell can take it.
+  // Returns how many actually came off: a locked or sealed slot refuses, and
+  // counting those as sold would pay the party for gear it never handed over.
   const unequipForSale = (item, count) => {
-    if (!item || count <= 0) return;
-    let left = count;
+    if (!item || count <= 0) return 0;
+    let removed = 0;
     for (const actor of equipHolders()) {
-      const equips = actor.equips();
-      for (let slotId = 0; slotId < equips.length && left > 0; slotId++) {
-        if (equips[slotId] === item) {
-          actor.changeEquip(slotId, null);
-          left--;
-        }
+      const equips = safe("actor.equips", () => actor.equips(), []) || [];
+      for (let slotId = 0; slotId < equips.length && removed < count; slotId++) {
+        if (equips[slotId] !== item) continue;
+        safe("changeEquip", () => actor.changeEquip(slotId, null), null);
+        const stillWorn = safe("actor.equips", () => actor.equips()[slotId], item);
+        if (stillWorn !== item) removed++;
       }
-      if (left <= 0) break;
+      if (removed >= count) break;
     }
+    return removed;
   };
 
   const _Window_ShopSell_makeItemList = Window_ShopSell.prototype.makeItemList;
   Window_ShopSell.prototype.makeItemList = function () {
     _Window_ShopSell_makeItemList.call(this);
-    for (const item of equippedSellables()) {
+    if (!Array.isArray(this._data)) this._data = [];
+    for (const item of wornCounts().keys()) {
       if (this.includes(item) && !this._data.includes(item)) {
         this._data.push(item);
       }
@@ -2380,17 +2540,22 @@
   };
 
   Scene_Shop.prototype.maxSell = function () {
-    return $gameParty.numItems(this._item) + equippedCount(this._item);
+    return sellableCount(this._item);
   };
 
   const _Scene_Shop_doSell_equipped = Scene_Shop.prototype.doSell;
   Scene_Shop.prototype.doSell = function (number) {
-    unequipForSale(this._item, number - $gameParty.numItems(this._item));
-    _Scene_Shop_doSell_equipped.call(this, number);
+    const inBag = $gameParty.numItems(this._item);
+    // Sell no more than the party can actually part with: what is in the bag
+    // plus whatever really came off someone's back.
+    const takenOff = unequipForSale(this._item, number - inBag);
+    const sellable = Math.min(number, inBag + takenOff);
+    if (sellable <= 0) return;
+    _Scene_Shop_doSell_equipped.call(this, sellable);
   };
 
   Window_ShopNumber.prototype.max = function () {
-    return this._max || 1;
+    return Math.max(1, this._max || 1);
   };
 
   // Base engine hardcodes 2 digits (max 99); stacks now go up to 9999.
@@ -2407,9 +2572,10 @@
     const scene = SceneManager._scene;
     const isBuying = scene instanceof Scene_Shop &&
       scene._commandWindow && scene._commandWindow.currentSymbol() === "buy";
-    const maxInStock = isBuying ? scene.getStock(item) : 999;
-    const actualMax = Math.min(max, maxInStock);
-    _Window_ShopNumber_setup.call(this, item, actualMax, price);
+    const maxInStock = isBuying ? scene.getStock(item) : UNLIMITED_STOCK;
+    const requested = Number.isFinite(max) ? max : 1;
+    const actualMax = Math.max(1, Math.min(requested, maxInStock));
+    _Window_ShopNumber_setup.call(this, item, actualMax, Number.isFinite(price) ? price : 0);
   };
 
 })();

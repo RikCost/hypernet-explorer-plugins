@@ -273,7 +273,6 @@
         }
 
         // Translation strings
-        const tLibrary =T('HelpMenu.archive');
         const tCodex =T('HelpMenu.archiveEntry');
         const tGeneral =T('HelpMenu.general');
         const tLore =T('HelpMenu.lore');
@@ -400,9 +399,7 @@
             }
 
             rightPage.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;">
-                  <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${tLibrary}</h2>
-                </div>
+                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed #bba16d; padding-bottom: 8px; margin-bottom: 20px; min-height: 40px; width: 100%;"></div>
                 <div class="tabs-bar">
                     ${tabsHTML}
                 </div>

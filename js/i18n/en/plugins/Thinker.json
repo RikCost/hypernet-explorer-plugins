@@ -24,6 +24,12 @@
   "noCategories": "No categories...",
   "noRecipes": "No recipes...",
   "lockedRecipeHint": "Select the required materials and complete the transmutation to catalogue this recipe.",
+  "tierLabel": "Tier {tier} work - Fabrication: {level}",
+  "botchRisk": "{pct}% chance of botching it",
+  "needFabrication": "Too complex for these hands. Requires Fabrication: {level}",
+  "botchTitle": "Botched",
+  "botchNote": "Half the materials are wasted, but the mistake taught you something.",
+  "botched": "The {item} came apart on the bench.",
   "category": {
     "Arctic": "Arctic",
     "Artisan": "Artisan",

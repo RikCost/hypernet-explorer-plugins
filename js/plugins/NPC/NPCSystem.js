@@ -185,6 +185,12 @@
     // in NPCSimulationCore.js). Matches as a standalone word, mirroring
     // hasAITag/hasLocalTag's convention (no angle brackets).
     hasShopTag: (note) => /\bshop\b/i.test(note || ""),
+    // True when the map author drew a face on the event themselves. A Shop
+    // counter that has one is NOT part of the shift rota: the person drawn on
+    // it owns that till and is always found there (see ShopShiftManager
+    // .isShopEvent). Only a character sheet counts, a tile graphic is set
+    // dressing (a stall, a crate) and leaves the counter open to the rota.
+    hasOwnGraphic: (eventData) => (eventData?.pages || []).some(p => !!p?.image?.characterName),
     // "Hidden" NPCs exist fully in the simulation (society, schedule, dialogue)
     // but never show a sprite on the map, see SpawnManager.transplantData and
     // ShopShiftManager._candidates (NPCSimulationCore.js).
@@ -586,8 +592,10 @@
     _cache: undefined, // session memo of the parsed manifest (undefined = not read yet)
     // Manifest format version. v2 added the per-map "__shops" index (Shop-
     // tagged / shop-command events) alongside the per-group template pools.
+    // v3 added "hasGraphic" to each shop entry, the flag that tells a rota
+    // counter apart from a Shop event with its own permanent shopkeeper.
     // Older manifests are discarded so the shop index gets built exactly once.
-    VERSION: 2,
+    VERSION: 3,
 
     _resolve: () => {
       if (NPCPoolStore._filePath !== null) return NPCPoolStore._filePath;
@@ -836,9 +844,10 @@
   // SPAWN & PROCEDURAL MANAGERS
   // ==========================================================================
   const SpawnManager = {
-    // <Shop> events are deliberately excluded, they have no graphic of
-    // their own (see ShopShiftManager) so they can't serve as a template
-    // for a transplanted NPC.
+    // <Shop> events are deliberately excluded: a rota counter has no graphic of
+    // its own (see ShopShiftManager) so it can't serve as a template for a
+    // transplanted NPC, and one that does have a graphic is a named shopkeeper
+    // anchored to that till, who must never be drawn anywhere else.
     buildNPCPool: (mapData) => {
       return (mapData?.events || []).filter(ev =>
         ev && (Utils.hasAITag(ev.note) || Utils.hasLocalTag(ev.note)) &&
@@ -873,6 +882,12 @@
           mapId, eventId: ev.id, x: ev.x, y: ev.y,
           name: ev.name || "",
           shopTagged,
+          // A Shop counter the author gave a face to is manned by that one
+          // person forever, so the world rota must not staff it (see
+          // ShopShiftManager.assignWorldShopPersonas). Read here, off the map
+          // file, because a rota persona is written onto the live event's page
+          // data and would read back as an author graphic later on.
+          hasGraphic: Utils.hasOwnGraphic(ev),
           hasStandardShop,
           dailyShopCommand,
           shopName: Utils.extractShopName(ev),
@@ -3498,8 +3513,10 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
   // spawnAssignedNPCs, see setupNPCControllers), plus the graphic of every
   // counter whose rota is already known, the world-wide ones included.
   //
-  // A <Shop> event carries no graphic of its own, so whoever writes the persona
-  // onto it decides when the counter stops being an empty tile. Doing it from
+  // A rota <Shop> event carries no graphic of its own (one that does is its own
+  // permanent shopkeeper and is skipped entirely, see ShopShiftManager
+  // .isShopEvent), so whoever writes the persona onto it decides when the
+  // counter stops being an empty tile. Doing it from
   // setupNPCControllers alone is too late: that runs after createDisplayObjects
   // has already built (and updated) the spriteset, and a transfer clears the
   // image cache, so the shopkeeper only appeared once the sprite noticed the
@@ -4031,6 +4048,9 @@ randomizeOmegaTowerMap: (mapId, groupName) => {
     getShopSocietyCandidates: SpawnManager.getShopSocietyCandidates,
     generateSeededPersona: SpawnManager.generateSeededPersona,
     hasShopTag: Utils.hasShopTag,
+    // Tells a rota counter (no graphic) apart from a Shop event whose
+    // shopkeeper the author drew and who is therefore always on duty.
+    hasOwnGraphic: Utils.hasOwnGraphic,
     hasHiddenTag: Utils.hasHiddenTag,
     // Residents of a hand-made map, see NPCSociety's local-level sync: their
     // level follows the party's median instead of a one-time roll.
