@@ -2528,8 +2528,7 @@ Game_Player.prototype.refreshSpacialAudio = function(index, type, source) {
 		if (mus.panType == 'Linear Scaling' || mus.panType == 'Origin Expand') {
 			var nom = 0;
 			var den = 0;
-			var test = "";
-			for (i = 0; i < oePans.length; i++) {
+			for (var i = 0; i < oePans.length; i++) {
 				nom += (oePans[i].pan * oePans[i].mv);
 				den += oePans[i].mv;
 			}	

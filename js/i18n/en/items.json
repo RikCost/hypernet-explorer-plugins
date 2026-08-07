@@ -2798,5 +2798,41 @@
   "700": {
     "name": "",
     "description": ""
+  },
+  "701": {
+    "name": "Opium Tincture",
+    "description": "A brown dropper bottle, a spoonful of quiet"
+  },
+  "702": {
+    "name": "Amphetamine Tablets",
+    "description": "Two white tablets, and the night is young again"
+  },
+  "703": {
+    "name": "Withdrawal Suppressant",
+    "description": "Takes the edge off every craving at once"
+  },
+  "704": {
+    "name": "Rolling Tobacco",
+    "description": "A pouch, papers, and patience"
+  },
+  "705": {
+    "name": "Hand-Rolled Cigar",
+    "description": "Twenty slow minutes of somebody else's weather"
+  },
+  "706": {
+    "name": "Nicotine Gum",
+    "description": "The habit without the smoke, and without the pleasure"
+  },
+  "707": {
+    "name": "Pocket Hip Flask",
+    "description": "Steel, dented, never quite empty"
+  },
+  "708": {
+    "name": "Bookmaker's Slip",
+    "description": "A horse, a number, and the rest of the afternoon"
+  },
+  "709": {
+    "name": "Slot Machine Token",
+    "description": "Brass, worthless, and worth one more pull"
   }
 }

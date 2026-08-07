@@ -725,70 +725,7 @@
     // Keyboard listener
     // Removed custom keyboard listeners in favor of Input.keyMapper
 
-    // =========================================================================
-    // Scene_SplitScreen (Styled like MultiplayerSystem.js)
-    // =========================================================================
-    class Scene_SplitScreen extends Scene_MenuBase {
-        create() {
-            super.create();
-            this.createHelpWindow();
-            this.createStatusWindow();
-            this.createCommandWindow();
-        }
 
-        createHelpWindow() {
-            const rect = new Rectangle(0, this.mainAreaTop(), Graphics.boxWidth, this.calcWindowHeight(1, false));
-            this._helpWindow = new Window_Help(rect);
-            this._helpWindow.setText(T('SplitScreen.manageTitle'));
-            this.addWindow(this._helpWindow);
-        }
-
-        createStatusWindow() {
-            const ww = Math.floor(Graphics.boxWidth * 0.4);
-            const wh = this.calcWindowHeight(6, true);
-            const wx = Graphics.boxWidth - ww;
-            const wy = this._helpWindow.y + this._helpWindow.height;
-            this._statusWindow = new Window_SplitScreenStatus(new Rectangle(wx, wy, ww, wh));
-            this.addWindow(this._statusWindow);
-        }
-
-        createCommandWindow() {
-            const ww = Graphics.boxWidth - this._statusWindow.width;
-            const wh = this._statusWindow.height;
-            const wx = 0;
-            const wy = this._statusWindow.y;
-            this._commandWindow = new Window_SplitScreenCommand(new Rectangle(wx, wy, ww, wh));
-            this._commandWindow.setHandler("toggle", this.commandToggle.bind(this));
-            this._commandWindow.setHandler("cancel", this.popScene.bind(this));
-            this.addWindow(this._commandWindow);
-        }
-
-        commandToggle() {
-            if (!SplitScreenManager.active) {
-                // Turning ON - always go to selection to choose P2
-                SceneManager.push(Scene_SplitScreenCharacterSelection);
-            } else {
-                // Turning OFF
-                SplitScreenManager.stopSession();
-                SceneManager.goto(Scene_Map);
-            }
-        }
-
-        update() {
-            super.update();
-            this._statusWindow.refresh();
-        }
-    }
-
-    class Window_SplitScreenCommand extends Window_Command {
-        makeCommandList() {
-            if (SplitScreenManager.active) {
-                this.addCommand(T('SplitScreen.terminate'), "toggle");
-            } else {
-                this.addCommand(T('SplitScreen.enable'), "toggle");
-            }
-        }
-    }
 
     // =========================================================================
     // Scene_SplitScreenCharacterSelection
@@ -1130,36 +1067,6 @@
         }
     }
 
-    class Window_SplitScreenStatus extends Window_Base {
-        refresh() {
-            this.contents.clear();
-            this.changeTextColor(this.systemColor());
-            this.drawText(T('SplitScreen.status'), 0, 0, this.contentsWidth(), "center");
-            this.resetTextColor();
-
-            let y = this.lineHeight();
-            const gpCount = GamepadManager.getConnectedCount();
-            this.drawText(T('SplitScreen.gamepads', { count: gpCount }), 4, y);
-            y += this.lineHeight();
-
-            // Show the actual P1/P2 pad assignment so a missing/duplicate second
-            // controller is visible at a glance (P1 only gets a pad when 2+ exist;
-            // with one pad P1 = keyboard and P2 = that pad).
-            const p1Idx = GamepadManager.getP1GamepadIndex();
-            this.drawText(T('SplitScreen.p1Pad', { pad: p1Idx >= 0 ? p1Idx : T('SplitScreen.keyboardAbbr') }), 4, y);
-            y += this.lineHeight();
-
-            const active = SplitScreenManager.active;
-            this.drawText(T('SplitScreen.activeLine', { state: active ? T('SplitScreen.yes') : T('SplitScreen.no') }), 4, y);
-            y += this.lineHeight();
-
-            if (active) {
-                const gpIdx = GamepadManager.getP2GamepadIndex();
-                const inputMode = gpIdx >= 0 ? T('SplitScreen.gamepadNumbered', { index: gpIdx }) : T('SplitScreen.keyboardWasd');
-                this.drawText(T('SplitScreen.p2Input', { mode: inputMode }), 4, y);
-            }
-        }
-    }
 
     // =========================================================================
     // Core Engine Integration

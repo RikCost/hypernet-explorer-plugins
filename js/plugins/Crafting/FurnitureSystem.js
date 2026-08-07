@@ -330,7 +330,7 @@
     // reused map (id 636) that streams a different biome tile for every world
     // coordinate, so keying by its map id alone would make furniture built at one
     // world coordinate leak into every other. A provider registered on
-    // window.FurnitureSystem.mapKeyProvider (see ProceduralMapTransfer.js) returns
+    // window.FurnitureSystem.mapKeyProvider (see WorldMapReturn.js) returns
     // a composite key — biome + world coordinate — so pieces are remembered and
     // restored only at the world coordinate + biome where they were built. The
     // per-piece x/y (proc-map coordinates) are already stored on each placement.
@@ -2548,19 +2548,6 @@
     // that has an indexed image. Cached on first use since Furniture never
     // changes at runtime; 'all' takes the first 48x48 piece overall.
     let _categoryIconCache = null;
-    function getCategoryIconSrc(symbol) {
-        if (!_categoryIconCache) {
-            _categoryIconCache = {};
-            for (const [id, f] of Object.entries(Furniture)) {
-                if ((f.width || 1) !== 1 || (f.height || 1) !== 1) continue;
-                const src = furnitureImageSrc(id);
-                if (!src) continue;
-                if (!_categoryIconCache.all) _categoryIconCache.all = src;
-                if (f.category && !_categoryIconCache[f.category]) _categoryIconCache[f.category] = src;
-            }
-        }
-        return _categoryIconCache[symbol] || null;
-    }
 
     function drawIconOnCanvasEl(iconIndex, canvas) {
         if (!canvas) return;

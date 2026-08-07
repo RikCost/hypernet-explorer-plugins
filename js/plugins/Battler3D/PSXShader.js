@@ -9,7 +9,7 @@
  *   - Low-resolution rendering upscaled with nearest-neighbor sampling
  *   - Nearest texture filtering (no smoothing / mipmaps)
  *
- * Every three.js viewport opts in: the 3D weapon overlay (WeaponSprites.js /
+ * Every three.js viewport opts in: the 3D weapon overlay (Weapon3DOverlay.js /
  * WeaponSystemProcedural.js), the 3D enemy battlers (3DBattlerSystem.js and the
  * Battler3D_* family plugins), the GalaxySim planet/star renderer and live
  * cosmos scene (GalaxySim_Renderer3D.js / GalaxySim_Scene3D.js), the camper

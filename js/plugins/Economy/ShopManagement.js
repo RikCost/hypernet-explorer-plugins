@@ -236,7 +236,6 @@
   // Gate the economy/producing logs so they don't spam the console every tick.
   const DEBUG = false;
   const debugLog = (...args) => { if (DEBUG) console.log(...args); };
-  const debugWarn = (...args) => { if (DEBUG) console.warn(...args); };
 
   // Category -> item list memo. Item notes are static, so the per-category
   // $dataItems scan (with a fresh RegExp per item) is done once and reused.

@@ -372,7 +372,10 @@
             </div>
           </div>
 
-          <div id="ts-prompt" style="position: absolute; inset: 0; z-index: 1200; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.55);"></div>
+          <!-- The runtime does not honour the "inset" shorthand: it silently
+               collapses the overlay onto the top-left corner of the spread, so
+               the four longhands (plus a size) are spelled out here. -->
+          <div id="ts-prompt" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 1200; display: none; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.55);"></div>
         </div>
       `;
 

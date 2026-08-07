@@ -3633,7 +3633,6 @@
           break;
 
         case 3: // Plant seeds
-        case 3: // Plant
           this.changeTextColor(this.systemColor());
           this.drawText(
             T('Biologic.seedStorage'),
@@ -4241,9 +4240,6 @@
 
   Window_BiologicSimulation.prototype.drawAugments = function (startY) { };
 
-  function getParamNameLocal(paramId) {
-    return T.list('Biologic.paramNames')[paramId] || T('Biologic.statFallback');
-  }
 
   // i18n-ignore-start: unreachable canvas fallback (opens with `return;`, no caller); the DOM panel renders this section.
   Window_BiologicSimulation.prototype.drawBodyPartsGrid = function (startY) {

@@ -2149,8 +2149,7 @@
 
     suggestCreatureName(actor);
     SceneManager.goto(Scene_Name);
-    // NameInsert forces its own 16-character limit; the argument is the engine
-    // default the name input screen would otherwise use.
+    // 16 is the engine default the name input screen uses for the max length.
     SceneManager.prepareNextScene(this._targetActorId, 16);
     stack.push(returnScene);
     return true;

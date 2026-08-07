@@ -190,5 +190,74 @@
       "Le belle cose fanno di una casa un focolare.",
       "Già così sta meglio."
     ]
+  },
+  "craving": {
+    "nicotine": [
+      "Ammazzerei per una sigaretta, adesso.",
+      "Solo una, poi per oggi smetto.",
+      "Qualcuno ha da accendere? Chiunque?",
+      "Le mani hanno ricominciato a fare quella cosa.",
+      "C'era un pacchetto in questo cappotto. C'era di sicuro un pacchetto in questo cappotto."
+    ],
+    "alcohol": [
+      "È quasi abbastanza tardi da chiamarlo un bicchiere.",
+      "Un bicchiere. Per calmarmi. Nient'altro.",
+      "Quel bar è ancora aperto a quest'ora?",
+      "Ho la bocca secca in un modo che l'acqua non sistema.",
+      "Continuo a sentire bottiglie che non ci sono."
+    ],
+    "caffeine": [
+      "Mi serve un caffè prima di essere legalmente una persona.",
+      "Il mal di testa ricomincia dietro gli occhi.",
+      "Dove si trova un espresso decente da queste parti?",
+      "Ho riletto lo stesso cartello quattro volte.",
+      "Va tutto troppo piano ed è colpa mia."
+    ],
+    "narcotic": [
+      "Sta passando. Sento esattamente dove finisce.",
+      "Avevo detto che avrei aspettato stasera. Non è stasera.",
+      "I bordi delle cose sono tornati tutti.",
+      "Solo quel tanto che basta per stare pari. Non per sballare.",
+      "Conosco un posto. Non voglio conoscere un posto."
+    ],
+    "gambling": [
+      "Un'altra schedina. Stavolta le quote sono giuste.",
+      "Mi è dovuta una vincita. Matematicamente mi è dovuta.",
+      "Il ricevitore chiude alle quattro e non ho giocato niente.",
+      "Ieri sentivo che stava girando. Lo sentivo.",
+      "Solo quello che ho in tasca. Niente di più."
+    ]
+  },
+  "withdrawal": {
+    "nicotine": [
+      "Non sento nient'altro oltre alla voglia di fumare.",
+      "A questo punto la raccatterei dal marciapiede.",
+      "Oggi non mi entra in testa niente di quello che mi dicono.",
+      "Ho la testa come un fiammifero acceso senza niente da accendere."
+    ],
+    "alcohol": [
+      "Il tremore è cominciato e da solo non passa.",
+      "Non sto bene. Non sto bene da stamattina.",
+      "Non parlatemi finché non ho bevuto qualcosa.",
+      "La stanza arriva sempre un secondo dopo di me."
+    ],
+    "caffeine": [
+      "Ho un chiodo che entra dietro l'occhio e non si ferma.",
+      "Non servo a nessuno. Proprio a nessuno.",
+      "Sono sveglio da ore e ho dormito per tutto il tempo.",
+      "Qualcuno mi metta un caffè in mano prima che dica qualcosa."
+    ],
+    "narcotic": [
+      "Ogni osso che ho ha un'opinione al riguardo.",
+      "Ho freddo e fuori non fa freddo.",
+      "A questo punto farei quasi qualunque cosa, e lo so.",
+      "L'orologio si è fermato. L'ho controllato quattro volte."
+    ],
+    "gambling": [
+      "Non riesco a stare fermo e non riesco a dire perché ad alta voce.",
+      "Ho contato i soldi che ho in tasca undici volte.",
+      "C'è una corsa che sta partendo proprio adesso senza di me.",
+      "Vado al ricevitore. L'ho già deciso. L'avevo deciso ore fa."
+    ]
   }
 }

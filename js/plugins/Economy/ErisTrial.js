@@ -864,10 +864,6 @@
   };
   window.ErisPlayerBond = ErisPlayerBond;
 
-  // She lets it show before she rules. Drawn once per trial when the bond is
-  // real, so a player who has courted her hears the court soften in her voice
-  // before it softens in the verdict.
-  const ERIS_WARMTH_LINES = () => trialBank('ErisTrial.erisWarmthLines');
 
   // The bond winning outright: the case ends before it starts.
   const ERIS_CLEMENCY_LINES = () => trialBank('ErisTrial.erisClemencyLines');
@@ -2925,7 +2921,7 @@
 
       const choices = T.pool('ErisTrial.bank.dramaticTrial.choices');
 
-      playerChoice = await this._showChoicesDOM(choices);
+      const playerChoice = await this._showChoicesDOM(choices);
       if (playerChoice === 0) this._adjustChaos(-0.1);
       else if (playerChoice === 3) this._adjustChaos(0.4);
 

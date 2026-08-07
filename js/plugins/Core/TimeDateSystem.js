@@ -78,6 +78,13 @@
  * @default 41
  * @parent --- Hunger/Sleep Settings ---
  *
+ * @param withdrawalStateId
+ * @text Withdrawal State ID
+ * @desc The ID of the state applied to an addict whose craving reaches 100.
+ * @type state
+ * @default 50
+ * @parent --- Hunger/Sleep Settings ---
+ *
  * @param overeatDepletionMultiplier
  * @text Overeating Depletion Multiplier
  * @desc Multiplier for hunger decrease rate when hunger > 100%.
@@ -748,6 +755,9 @@
       leader.reduceSleep(sleepDecreaseRate   * 10 * totalMinutes);
     }
 
+    // Simulated time is still time an addict spends without their substance.
+    if (window.AddictionSystem) window.AddictionSystem.advanceMinutes(totalMinutes);
+
     const newTime = advanceGameTimeSimulated(totalMinutes);
     debug(`SimulateTime: advanced ${totalMinutes} min. New time: ${getDateTimeFromMinutes(newTime).fullDate}`);
   });
@@ -1293,6 +1303,12 @@
       // Low warnings for Hygiene / Social / Fun, every member incl. leader
       checkExtendedNeeds(actor);
 
+      // Cravings are personal: they answer to the traits of the member who
+      // carries them, so they climb per member rather than on the leader.
+      if (window.AddictionSystem) {
+        window.AddictionSystem.stepActor(actor, sleepRate, baseMultiplier);
+      }
+
       // Drain HP if hunger is at 0
       if (actor.hunger() <= 0 && actor.hp > 0) {
         const hpDrain = Math.ceil(actor.mhp * 0.01); // 1% of max HP per step
@@ -1814,6 +1830,239 @@
       debug("Game time initialized to 01 JAN 2001 12:00 after load");
     }
     updateGameDateVariable();
+  };
+
+  //=============================================================================
+  // AddictionSystem - the craving meters of the addiction traits
+  //=============================================================================
+  // A craving is a need read backwards: it CLIMBS while it goes unfed, and the
+  // substance that feeds it drops it straight back to zero. 0 is an addict who
+  // has just had their fix, 100 is one in withdrawal. Only a member carrying
+  // the trait keeps a meter, so a party nobody in it is hooked on anything
+  // never shows a single addiction bar.
+  //
+  // Which traits count is decided here, by id, against js/db/Health/Traits.json:
+  // the five dependencies (alcohol, caffeine, nicotine, narcotics, gambling).
+  // A trait like Adrenaline Junkie or Workaholic is an appetite, not a
+  // dependency, and has nothing that can be handed to it, so it stays out.
+  const withdrawalStateId = Number(parameters.withdrawalStateId || 50);
+  // Withdrawal bites at a full meter and does not let go until the craving has
+  // been brought back down well below it, so one puff cannot flick it off.
+  const WITHDRAWAL_ON = 100;
+  const WITHDRAWAL_OFF = 80;
+  // The body still wants it while asleep, just more quietly.
+  const CRAVING_SLEEP_FACTOR = 0.35;
+
+  window.AddictionSystem = {
+    // rate is the craving gained per step as a multiple of the sleep drain, so
+    // a nicotine addict walks into a full craving in about six in-game hours
+    // and a gambler in about sixteen.
+    LIST: [
+      { key: "nicotine", traitId: 102, rate: 0.90 },
+      { key: "caffeine", traitId: 101, rate: 0.70 },
+      { key: "narcotic", traitId: 104, rate: 0.55 },
+      { key: "alcohol",  traitId: 22,  rate: 0.45 },
+      { key: "gambling", traitId: 103, rate: 0.35 },
+    ],
+
+    get LABELS() { return T.obj("TimeDate.addictionLabel"); },
+
+    get KEYS() { return this.LIST.map((a) => a.key); },
+
+    spec(key) {
+      return this.LIST.find((a) => a.key === key) || null;
+    },
+
+    isKey(key) {
+      return !!this.spec(key);
+    },
+
+    label(key) {
+      return this.LABELS[key] || key;
+    },
+
+    // The trait ids an actor carries, straight off TraitSelector's record.
+    _traitIds(actor) {
+      return (actor?._selectedTraits ?? []).map((t) => t?.id).filter((id) => id != null);
+    },
+
+    // Which addictions this member actually has, in LIST order.
+    keysFor(actor) {
+      if (!actor) return [];
+      const ids = this._traitIds(actor);
+      return this.LIST.filter((a) => ids.includes(a.traitId)).map((a) => a.key);
+    },
+
+    has(actor, key) {
+      return this.keysFor(actor).includes(key);
+    },
+
+    isAddict(actor) {
+      return this.keysFor(actor).length > 0;
+    },
+
+    // Current craving 0-100, or null when this member is not hooked on it (the
+    // null is what tells every panel to draw no bar at all).
+    craving(actor, key) {
+      if (!actor || !this.has(actor, key)) return null;
+      const store = actor._cravings;
+      const value = store ? store[key] : undefined;
+      return typeof value === "number" ? Math.max(0, Math.min(100, value)) : 0;
+    },
+
+    setCraving(actor, key, value) {
+      if (!actor || !this.isKey(key)) return;
+      if (!actor._cravings) actor._cravings = {};
+      actor._cravings[key] = Math.max(0, Math.min(100, value));
+    },
+
+    // Feed the addiction. amount defaults to a full fix, which is what an item
+    // handed to an addict does: the craving goes to zero.
+    relieve(actor, key, amount) {
+      const current = this.craving(actor, key);
+      if (current === null) return false;
+      const relief = amount === undefined || amount === null ? 100 : Number(amount);
+      this.setCraving(actor, key, current - relief);
+      this.updateWithdrawal(actor);
+      return true;
+    },
+
+    // Every addiction of this member at once, for a detox drug or a cold spell.
+    relieveAll(actor, amount) {
+      this.keysFor(actor).forEach((key) => this.relieve(actor, key, amount));
+    },
+
+    // The craving that is hurting most, which is the one a single summary bar
+    // has to report. Returns null for a member with no addiction.
+    worst(actor) {
+      let out = null;
+      for (const key of this.keysFor(actor)) {
+        const value = this.craving(actor, key) ?? 0;
+        if (!out || value > out.value) out = { key, value };
+      }
+      return out;
+    },
+
+    // Every craving of a member, as [{ key, label, value }], empty when clean.
+    cravingsFor(actor) {
+      return this.keysFor(actor).map((key) => ({
+        key,
+        label: this.label(key),
+        value: this.craving(actor, key) ?? 0,
+      }));
+    },
+
+    // How many members of the party carry an addiction at all: the (X) in the
+    // party-wide "Addictions (X)" card.
+    partyAddictCount() {
+      if (!$gameParty) return 0;
+      return $gameParty.members().filter((m) => this.isAddict(m)).length;
+    },
+
+    // The worst craving anywhere in the party, which is what that same card
+    // fills its bar with. Null when nobody is addicted.
+    partyWorst() {
+      if (!$gameParty) return null;
+      let out = null;
+      for (const member of $gameParty.members()) {
+        const worst = this.worst(member);
+        if (worst && (!out || worst.value > out.value)) out = worst;
+      }
+      return out;
+    },
+
+    // An NPC keeps no meter: they feed themselves off-screen and nobody is
+    // watching, so their craving is a cycle rather than a store. Each addicted
+    // NPC gets a personal phase seeded from their name, which means that at any
+    // hour some of the town is between cigarettes and some of it badly wants
+    // one, consistently and with nothing written to the save.
+    profileCravings(profile) {
+      const ids = (profile && profile.traitIds) || [];
+      const specs = this.LIST.filter((a) => ids.includes(a.traitId));
+      if (!specs.length) return [];
+      const now = getGameTimeMinutes();
+      const who = (profile && (profile._eventName || profile.name)) || "";
+      return specs.map((spec) => {
+        // The same rate the party runs on, read as "minutes between fixes".
+        const cycle = Math.max(30, Math.round(100 / (sleepDecreaseRate * 10 * spec.rate)));
+        const phase = this._phaseFor(who + ":" + spec.key) % cycle;
+        const position = (((now - phase) % cycle) + cycle) % cycle;
+        return {
+          key: spec.key,
+          label: this.label(spec.key),
+          value: (position / cycle) * 100,
+        };
+      });
+    },
+
+    // The craving biting an NPC hardest right now, or null for a clean one.
+    profileWorst(profile) {
+      let out = null;
+      for (const craving of this.profileCravings(profile)) {
+        if (!out || craving.value > out.value) out = craving;
+      }
+      return out;
+    },
+
+    _phaseFor(seed) {
+      let h = 0;
+      for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+      return Math.abs(h);
+    },
+
+    // Craving climbs with the other meters, one walked step at a time.
+    stepActor(actor, sleepRate, multiplier) {
+      const keys = this.keysFor(actor);
+      if (!keys.length) return;
+      for (const key of keys) {
+        const spec = this.spec(key);
+        const current = this.craving(actor, key) ?? 0;
+        this.setCraving(actor, key, current + sleepRate * spec.rate * multiplier);
+      }
+      this.updateWithdrawal(actor);
+    },
+
+    // Craving climbs over simulated minutes too (passed time, a night's sleep,
+    // a work shift), at the same rate the walked steps use.
+    advanceMinutes(minutes, factor) {
+      if (!$gameParty || !(minutes > 0)) return;
+      const scale = factor === undefined ? 1 : factor;
+      for (const actor of $gameParty.members()) {
+        if (!actor) continue;
+        for (const key of this.keysFor(actor)) {
+          const spec = this.spec(key);
+          const current = this.craving(actor, key) ?? 0;
+          this.setCraving(actor, key, current + sleepDecreaseRate * 10 * minutes * spec.rate * scale);
+        }
+        this.updateWithdrawal(actor);
+      }
+    },
+
+    // The withdrawal state goes on at a full craving and comes off only once
+    // every craving is back under WITHDRAWAL_OFF, and it is announced the same
+    // way a need warning is.
+    updateWithdrawal(actor) {
+      if (!actor || !withdrawalStateId) return;
+      const worst = this.worst(actor);
+      if (!worst) return;
+      const affected = actor.isStateAffected(withdrawalStateId);
+      if (!affected && worst.value >= WITHDRAWAL_ON) {
+        actor.addState(withdrawalStateId);
+        if ($gameTemp && $gameTemp.addHungerSleepNotification) {
+          $gameTemp.addHungerSleepNotification(
+            T("TimeDate.addiction.withdrawal", { name: actor.name(), substance: this.label(worst.key) }),
+            "danger"
+          );
+        }
+      } else if (affected && worst.value < WITHDRAWAL_OFF) {
+        actor.removeState(withdrawalStateId);
+        if ($gameTemp && $gameTemp.addHungerSleepNotification) {
+          $gameTemp.addHungerSleepNotification(
+            T("TimeDate.addiction.relieved", { name: actor.name(), substance: this.label(worst.key) })
+          );
+        }
+      }
+    },
   };
 
   //=============================================================================
@@ -2421,6 +2670,12 @@
       if (leader.reduceLeisure) leader.reduceLeisure((maxSleep * 0.0003) * deltaMin);
       const frac = a.totalMinutes > 0 ? a.doneMinutes / a.totalMinutes : 1;
       leader._sleep = a.sleepStart + (a.sleepTarget - a.sleepStart) * frac;
+    }
+
+    // A craving keeps building through the night, more slowly, which is why an
+    // addict can wake into a withdrawal they went to bed clear of.
+    if (window.AddictionSystem) {
+      window.AddictionSystem.advanceMinutes(deltaMin, CRAVING_SLEEP_FACTOR);
     }
 
     // Push the new state to the bottom-right card immediately this frame.

@@ -2992,9 +2992,9 @@
         _BattleManager_updateBattleEnd_skillTest.call(this);
     };
 
-    // The run drives the leader itself, so the input phase is kept plain: this
-    // bypasses autotarget.js, which would otherwise auto-attack on the spot
-    // (1 actor vs the 1 test enemy) and could kill it before the skill fires.
+    // The run drives the leader itself, so the input phase is kept plain: no
+    // other plugin gets to auto-attack on the spot (1 actor vs the 1 test enemy)
+    // and kill it before the skill fires.
     const _BattleManager_startInput_skillTest = BattleManager.startInput;
     BattleManager.startInput = function () {
         if (isSkillAnimTestRunning()) {

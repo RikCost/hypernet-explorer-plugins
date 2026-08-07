@@ -59,6 +59,7 @@
   "fusedSkillDesc": "A procedural skill fused from {parts} (dominant: {dominant}).",
   "fusedSpellDesc": "A procedural spell fused from {parts} (dominant: {dominant}).",
   "teachActor": "Teach {actor} ({cost} KP)",
+  "teachPupil": "Teach {actor}",
   "selectSkillForDetails": "Select a skill to view details",
   "mpLabel": "MP:",
   "apLabel": "AP:",
@@ -78,5 +79,14 @@
   },
   "forgeBlurb": "Choose a dominant spell and a recessive component (spell or skill) known by {actor} to fuse them into a new ability. Its MP and AP cost is the sum of the components; the forging itself is paid in Knowledge, priced off what teaching those components would cost. If the recessive is a skill, the result is a skill. Components are forgotten. You hold {knowledge} KP.",
   "kpMultiplier3x": "3.0X KP",
-  "kpMultiplier15x": "1.5X KP"
+  "kpMultiplier15x": "1.5X KP",
+  "graph": {
+    "legendLearned": "Learned",
+    "legendOpen": "Open",
+    "legendLocked": "Locked",
+    "locked": "LOCKED",
+    "lockedBy": "Unlocked by: {skills}",
+    "lockedHint": "Nothing you know borders this skill yet.",
+    "lockedToast": "{skill} does not border anything this pupil knows."
+  }
 }

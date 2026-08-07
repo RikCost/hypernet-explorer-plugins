@@ -260,10 +260,6 @@
         a.x * b.y - a.y * b.x
     );
     const vlen = (a) => Math.sqrt(vdot(a, a));
-    const vnorm = (a) => {
-        const l = vlen(a);
-        return l > 1e-9 ? vmul(a, 1 / l) : V(0, 0, 0);
-    };
 
     // Rotate a vector by a quaternion: v + 2w(q x v) + 2(q x (q x v)).
     function qrot(q, v) {

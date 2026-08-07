@@ -398,6 +398,10 @@
     "roguelite": {
       "name": "Roguelite",
       "desc": "If defeated you rewake at the base floor of the dungeon. Fallen allies stay in the party and can be resurrected after battle."
+    },
+    "modeDetailed": {
+      "name": "Detailed",
+      "desc": "Build the character on their own dossier page: every field, from class and traits to hometown, orientation and history, edited by hand."
     }
   },
   "hairStyle": {
@@ -523,13 +527,6 @@
   "musicTrackPlayedDuringCombatPressToPreviewTr": "Music track played during combat. Press ←→ to preview tracks.",
   "uiTheme": "UI Theme",
   "visualThemeAppliedToMenusAndHudPressToSwitch": "Visual theme applied to menus and HUD. Press ←→ to switch. Requires restart to apply.",
-  "skillCategorization": "Skill Categorization",
-  "howSkillsAndMagicAreGroupedInBattleAndMenusR": "How skills and magic are grouped in battle and menus. Role: pick Offensive, Healing or Support, then the skills inside. School: grouped by magic school or discipline. Off: a plain list.",
-  "plainUngroupedSkillList": "Plain ungrouped skill list.",
-  "roleGroupsByPurposeOffensiveHealingSupportSc": "Role groups by purpose (Offensive/Healing/Support); School groups by discipline.",
-  "school": "School",
-  "off": "Off",
-  "role": "Role",
   "toCycleTracksPreviewPlaysAutomatically": "← → to cycle tracks · preview plays automatically",
   "toCycleThemesRequiresRestartToApply": "← → to cycle themes · ⟳ requires restart to apply",
   "settingsPreview": "SETTINGS PREVIEW",
@@ -552,5 +549,70 @@
   },
   "previewOff": "OFF",
   "previewOn": "ON",
-  "unknownVocation": "Unknown"
+  "unknownVocation": "Unknown",
+  "detailed": {
+    "tab": "Create",
+    "title": "Character sheet",
+    "hint": "Every line is a field. Click one to change it, or click the portrait to redraw the character.",
+    "portraitHint": "Change sprite, bust or 3D model",
+    "unavailable": "There is no character to edit here.",
+    "unset": "Not set",
+    "rolled": "Rolled from the world",
+    "none": "None",
+    "random": "Random",
+    "back": "Back",
+    "noOptions": "Nothing to choose from here yet.",
+    "pickCategory": "Choose a field of study",
+    "section": {
+      "identity": "Identity",
+      "origins": "Origins",
+      "talents": "Traits and talents",
+      "society": "Standing",
+      "romance": "Romance",
+      "history": "History",
+      "finish": "Finish"
+    },
+    "row": {
+      "name": "Name",
+      "nameRandom": "Roll a new name",
+      "kind": "Kind",
+      "archetype": "Archetype",
+      "class": "Class",
+      "level": "Level",
+      "portraitStyle": "Portrayed by",
+      "appearance": "Sprite and portrait",
+      "model3d": "3D model",
+      "age": "Age",
+      "birthNation": "Nation of birth",
+      "traitsRandom": "Roll new traits",
+      "personality": "Personality",
+      "ideology": "Ideology",
+      "faction": "Faction",
+      "wealth": "Wealth",
+      "morality": "Morality",
+      "romantic": "Romantic orientation",
+      "sexual": "Sexual orientation",
+      "reproduction": "Reproduction",
+      "rerollBackstory": "Rewrite the backstory",
+      "rerollLife": "Deal a different life",
+      "randomizeAll": "Randomize everything",
+      "done": "Done, this character is ready",
+      "specsRandom": "Roll new specializations"
+    },
+    "kind": {
+      "humanoid": "Humanoid",
+      "humanoidDesc": "A person: any class, a drawn portrait or a 3D model.",
+      "creature": "Creature",
+      "creatureDesc": "Built in the creature workshop from one archetype, or two for a hybrid."
+    },
+    "portrait": {
+      "bust": "Hand-drawn bust",
+      "model": "Procedural 3D model"
+    },
+    "specPoints": "Points left: {left} of {total}",
+    "specCost": "costs {n}",
+    "specRefund": "click to give the points back",
+    "specGranted": "(free to {level})",
+    "specsRandomHint": "Spend the whole budget at random, on top of what the class and traits already grant."
+  }
 }

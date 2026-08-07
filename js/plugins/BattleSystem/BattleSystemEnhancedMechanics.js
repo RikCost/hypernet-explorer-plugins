@@ -58,14 +58,6 @@
         BSE.State._healthProtectionUsed[actorId] = true;
     };
 
-    function showHealthProtectionMessage(actorName) {
-        const protectionMessages = T.pool('Battle.healthProtection.messages');
-        const line = protectionMessages[Math.floor(Math.random() * protectionMessages.length)];
-        const message = line.replace('{actor}', actorName);
-        window.skipLocalization = true;
-        $gameMessage.add(message);
-        window.skipLocalization = false;
-    }
 
     // ========================================================================
     // 2. BATTLE START DANGER WARNING

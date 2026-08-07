@@ -882,6 +882,11 @@
     if (typeof options === "string") options = { suggestedBase: options };
     options = options || {};
     Scene_CC3DModel._returnByPop = !!options.returnByPop;
+    // How many scenes Confirm pops in humanoid mode. The sprite-grid route
+    // needs two (itself plus the grid, landing back on the map so the creation
+    // common event resumes); a caller that pushed this editor straight over its
+    // own scene, such as the Detailed creation editor, passes 1.
+    Scene_CC3DModel._confirmPops = Number(options.confirmPops) > 0 ? Number(options.confirmPops) : 2;
     Scene_CC3DModel._suggestedBase = options.suggestedBase || null;
     Scene_CC3DModel._initArchetypes = options.initArchetypes || null;
     Scene_CC3DModel._creatureMode = !!options.creature;
@@ -1274,8 +1279,8 @@
     // let it resume the flow. Humanoid mode mirrors the bust selector's exit
     // (double pop to the map so the creation common event resumes).
     if (this._creatureMode) { Scene_CC3DModel._creatureResult = "confirm"; SceneManager.pop(); return; }
-    SceneManager.pop();
-    SceneManager.pop();
+    const pops = Scene_CC3DModel._confirmPops || 2;
+    for (let i = 0; i < pops; i++) SceneManager.pop();
   };
 
   Scene_CC3DModel.prototype.onBack = function () {
@@ -1395,7 +1400,9 @@
     if (!el) return;
     const m = this._modal;
     const searchable = m.kind === "part" || m.kind === "body" || m.kind === "structure";
-    el.style.cssText = "position:absolute; inset:0; z-index:1200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.55);";
+    // "inset" is not honoured by the runtime (the overlay collapses onto the
+    // top-left corner), so the longhands and an explicit size are used.
+    el.style.cssText = "position:absolute; left:0; top:0; right:0; bottom:0; width:100%; height:100%; z-index:1200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.55);";
     el.innerHTML = `
       <div style="width:78%; max-width:900px; height:82%; display:flex; flex-direction:column; background:var(--gradient-1); border:2px solid var(--border-primary-hover-translucent-15); border-radius:10px; box-shadow:0 12px 40px rgba(0,0,0,0.5); padding:16px 18px; box-sizing:border-box;">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:12px;">

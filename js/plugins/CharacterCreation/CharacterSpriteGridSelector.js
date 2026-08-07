@@ -145,25 +145,21 @@
   // Restrict the grid to Skab-folder sheets only. These are the curated single
   // ($) portrait sheets; limiting to them keeps the option list small so the
   // scene loads quickly instead of lazy-loading hundreds of npc:true sheets.
+  // Beta sheets (the ones outside the original folder, NPCs.json → beta) come
+  // in whatever folder they sit in: the grid is the one place they are offered,
+  // since nothing deals them automatically unless the world enabled them. The
+  // grid still lazy-loads a page at a time, so the longer list costs nothing to
+  // enter.
   const npcDatabase = window.WorldGen && window.WorldGen.NPCs;
   const isSkabSheet = (name) => name.startsWith("Skab/");
+  const isBetaSheet = (name) => !!(npcDatabase && npcDatabase[name] && npcDatabase[name].beta === true);
   const spriteSheets = (npcDatabase
     ? Object.keys(npcDatabase).filter((k) => npcDatabase[k].npc === true)
     : Object.keys(SPRITE_SHEET_CONFIG)
-  ).filter(isSkabSheet);
+  ).filter((name) => isSkabSheet(name) || isBetaSheet(name));
 
   // Build a comprehensive list of all sprite options (file + index) considering cutoffs
   const spriteOptions = [];
-  const indexToLetter = (index) => {
-    // Convert 0 -> A, 1 -> B, ... 25 -> Z, 26 -> AA, etc.
-    let letters = "";
-    let i = index;
-    do {
-      letters = String.fromCharCode(65 + (i % 26)) + letters;
-      i = Math.floor(i / 26) - 1;
-    } while (i >= 0);
-    return letters;
-  };
 
   const decamelCase = (str) => {
     if (!str) return "";
@@ -1633,8 +1629,15 @@
           // A bust IS the character's portrait: the 3D model editor is the
           // other, mutually exclusive branch (reached from the sprite step) and
           // is never chained after a bust pick.
-          SceneManager.pop();
-          SceneManager.pop();
+          //
+          // Two pops by default: this gallery is opened from the sprite grid,
+          // so confirming leaves both and lands back on the map, where the
+          // creation common event resumes. A caller that pushed the gallery
+          // straight over its own scene (the Detailed creation editor) sets
+          // _confirmPops to 1 and gets its scene back instead.
+          const pops = Scene_BustSelector._confirmPops || 2;
+          Scene_BustSelector._confirmPops = 0;
+          for (let i = 0; i < pops; i++) SceneManager.pop();
         }
       }
     }
@@ -1644,6 +1647,7 @@
 
       if (isInCategoryMode) {
         SoundManager.playCancel();
+        Scene_BustSelector._confirmPops = 0;
         SceneManager.pop();
       } else {
         this._bustListWindow.goBackToCategories();
@@ -2111,6 +2115,11 @@
       _SceneManager_prepareNextScene.apply(this, arguments);
     }
   };
+
+  // Exported so a scene that wants the grid over its own (the Detailed
+  // creation editor) can push it and be returned to by the usual pop.
+  window.Scene_SpriteGridSelector = Scene_SpriteGridSelector;
+  window.Scene_BustSelector = Scene_BustSelector;
 
   // Register plugin commands
   PluginManager.registerCommand(pluginName, "OpenSpriteSelector", () => {

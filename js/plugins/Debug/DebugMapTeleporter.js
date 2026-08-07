@@ -138,8 +138,8 @@
     };
     
     Scene_Map.prototype.updateDebugInput = function() {
-        // Shift+F9 opens the map teleporter. Plain F9 is left to RealtimeDebugWindow
-        // (and the core debug scene) so a single F9 press only opens one popup.
+        // Shift+F9 opens the map teleporter. Plain F9 is left to the core debug
+        // scene so a single F9 press only opens one popup.
         if (Input.isPressed('shift') && Input.isTriggered('debug')) {
             this.openDebugMapMenu();
         }

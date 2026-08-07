@@ -1,7 +1,6 @@
 {
   "title": "Навыки",
   "back": "Назад",
-  "recent": "",
   "unit": {
     "ap": "АП"
   },
@@ -32,26 +31,17 @@
       "description": ""
     }
   },
-  "option": {
-    "skillCategorization": "",
-    "categoryModes": [
-      "",
-      "",
-      ""
-    ]
-  },
   "cmd": {
-    "favourites": "",
     "levelUp": "",
     "use": "Использовать",
-    "favourite": "",
-    "unfavourite": "",
-    "cancel": ""
+    "cancel": "",
+    "carry": "",
+    "bench": ""
   },
   "action": {
     "useSkill": "",
-    "favourite": "",
-    "unfavourite": "",
+    "carry": "",
+    "bench": "",
     "back": ""
   },
   "info": {
@@ -80,5 +70,15 @@
     "hint": "",
     "section": "",
     "category": ""
+  },
+  "loadout": {
+    "skills": "",
+    "magic": "",
+    "count": "{group} {n}/{max}",
+    "carried": "",
+    "benched": "",
+    "always": "",
+    "hint": "",
+    "full": ""
   }
 }

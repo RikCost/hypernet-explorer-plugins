@@ -136,7 +136,16 @@
     const ExcludedSwitches = (params.excludedSwitches || '').split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id));
     const ExcludedVariables = (params.excludedVariables || '').split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id));
     const ShowPlayerNames = params.showPlayerNames === 'true';
-    const NameplateConfig = JSON.parse(params.nameplateConfig || '{}');
+    // A malformed plugin parameter must not take the whole plugin down at load
+    // time: fall back to the defaults and carry on.
+    const NameplateConfig = (() => {
+        try {
+            return JSON.parse(params.nameplateConfig || '{}');
+        } catch (e) {
+            console.error('[Multiplayer] nameplateConfig is not valid JSON, using defaults:', e);
+            return {};
+        }
+    })();
 
     // ============================================================================
     // STEAMWORKS INITIALIZATION

@@ -180,7 +180,8 @@
     "unknownStack": "Sconosciuto x{n}",
     "attributeModifiers": "Modificatori di attributo",
     "blueprints": "Progetti e componenti",
-    "marketValue": "Valore di mercato:"
+    "marketValue": "Valore di mercato:",
+    "cravingsFed": "Voglie Soddisfatte"
   },
   "rarity": {
     "common": "Comune",
@@ -259,6 +260,5 @@
     "discard": "Getta",
     "discardItem": "Getta oggetto",
     "discardBody": "Vuoi togliere {qty} di {item} dallo zaino? (ne hai {owned})"
-  },
-  "weaponArmament": "Armamento: {name}"
+  }
 }

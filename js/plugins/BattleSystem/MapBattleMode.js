@@ -1502,6 +1502,9 @@
             SceneManager._scene.addWindow(MBM._skillWindow);
         }
         MBM._skillWindow.setActor(actor);
+        // A normal skill command clears any lingering Basic view, or the window
+        // would keep showing the basic kit for the rest of the fight.
+        if (MBM._skillWindow.setBasicMode) MBM._skillWindow.setBasicMode(false);
         MBM._skillWindow.setStypeId(MBM._cmdWindow.currentExt());
         MBM._skillWindow.refresh();
         MBM._skillWindow.show();

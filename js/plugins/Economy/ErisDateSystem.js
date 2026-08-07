@@ -299,10 +299,6 @@
 
   const BIOME_BANK = () => dateBank('ErisDate.biomes') || {};
 
-  function biomeEntry(key) {
-    const bank = BIOME_BANK();
-    return bank[key] || bank[BIOME_FALLBACK] || {};
-  }
 
   // A field of the entry, falling back to the fallback biome's so a half-written
   // (or brand new) biome can never leave a phase with nothing to say.

@@ -1,0 +1,1435 @@
+//=============================================================================
+// CharacterCreationFull.js
+//=============================================================================
+
+/*:
+ * @target MZ
+ * @plugindesc [v1.0.0] Detailed creation mode: the whole character sheet is edited inside the Empathize panel
+ * @author Hypernet Explorer
+ *
+ * @param specializationPoints
+ * @text Specialization points
+ * @desc Points each character has to raise specializations with at creation. Levels granted by class or traits are free.
+ * @type number
+ * @min 0
+ * @default 12
+ *
+ * @help
+ * ============================================================================
+ * Detailed creation mode
+ * ============================================================================
+ *
+ * A third answer to the wizard's "creation mode" question, sitting between
+ * Quick and the pre-made dossiers, and offered during the tutorial as well.
+ *
+ * Instead of walking the wizard's per-character steps one screen at a time, it
+ * hands the member over to the Empathize panel (NPC/NPCEmpathizeUI.js) opened
+ * on their own profile, with an extra "Create" tab that makes every field of
+ * that profile editable: humanoid or creature, name, gender, class, level,
+ * portrait, sprite, hometown, age, nation of birth, traits, specializations,
+ * personality, ideology, faction, wealth, morality, romantic and sexual
+ * orientation, reproduction, and a re-roll of the backstory and life history.
+ * Every other tab of the panel (Info, History, Biologics, Health, Romance,
+ * Life, Wiki) stays where it is, so the sheet being edited can be read the way
+ * the player will read it in play.
+ *
+ * The heavier editors are the ones the wizard already uses: the sprite grid,
+ * the bust gallery, the 3D model editor, the class browser, the creature
+ * builder and the trait selector are all pushed over the panel and return to
+ * it.
+ *
+ * Closing the panel resumes CharacterCreation at the add-member prompt, so the
+ * party is built one detailed member at a time.
+ *
+ * Requires: NPC/NPCEmpathize + NPC/NPCEmpathizeUI, CharacterCreation and its
+ * sibling editors. Must load AFTER NPCEmpathizeUI.
+ */
+
+(() => {
+  "use strict";
+
+  const Empathize = window.NPCEmpathize;
+  if (!Empathize || !Empathize.Scene_NPCEmpathize) {
+    console.error("[CharacterCreationFull] NPCEmpathizeUI.js is not loaded, detailed creation mode is unavailable.");
+    return;
+  }
+
+  const Scene_NPCEmpathize = Empathize.Scene_NPCEmpathize;
+  const _getProfile = Empathize._helpers && Empathize._helpers._getProfile;
+
+  // The editor's own tab id. Deliberately outside the panel's built-in set so
+  // the base _render() falls through to _buildMoreHTML, which is where this
+  // plugin hangs the editor page.
+  const CC_TAB = "ccEdit";
+
+  // Reproduction type variable per party member (see CharacterCreationShared).
+  const REPRO_VARS = [87, 115, 116];
+  // Creature switch per party member.
+  const CREATURE_SWITCHES = [77, 78, 79];
+  const CREATURE_CLASS_ID = 65;
+  const DEFAULT_CLASS_ID = 1;
+  const NAME_MAX_LENGTH = 16;
+
+  // Levels offered on the level row. A creation-time character is not meant to
+  // be tuned point by point, only placed on a band.
+  const LEVEL_CHOICES = [1, 3, 5, 10, 15, 20, 30, 50];
+
+  // Points each character has to raise specializations with. Only levels above
+  // what their class and traits already grant are paid for.
+  const SPEC_POINT_BUDGET = (() => {
+    const raw = PluginManager.parameters("CharacterCreationFull").specializationPoints;
+    const value = Number(raw);
+    return Number.isFinite(value) && value >= 0 ? value : 12;
+  })();
+
+  // Age bands, the same ones the wizard's birth-date step deals in.
+  const AGE_BANDS = [
+    { key: "ageYoung", lo: 18, hi: 25 },
+    { key: "ageAdult", lo: 26, hi: 40 },
+    { key: "ageMiddle", lo: 41, hi: 60 },
+    { key: "ageElder", lo: 61, hi: 90 },
+  ];
+
+  //===========================================================================
+  // Localization + small HTML helpers
+  //===========================================================================
+
+  const T = (key, params) => window.T("CharCreate." + key, params);
+  const TE = (key, params) => window.T("Empathize." + key, params);
+
+  function esc(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function iconSpan(iconIndex, size) {
+    if (!iconIndex && iconIndex !== 0) return "";
+    const scale = (size / 32).toFixed(4);
+    const col = iconIndex % 16;
+    const row = Math.floor(iconIndex / 16);
+    return `<span style="display:inline-block;width:${size}px;height:${size}px;` +
+      `background-image:url('img/system/IconSet.png');background-repeat:no-repeat;` +
+      `background-size:${512 * scale}px ${640 * scale}px;` +
+      `background-position:-${col * size}px -${row * size}px;` +
+      `vertical-align:middle;image-rendering:pixelated;"></span>`;
+  }
+
+  //===========================================================================
+  // Editing session
+  //===========================================================================
+
+  // Module-level rather than scene-level: pushing the sprite grid, the class
+  // browser or the creature builder destroys the panel's scene instance, and a
+  // fresh one is built from these when the sub-editor pops back.
+  const Session = {
+    active: false,
+    memberIndex: 0,
+    actorId: 1,
+    tab: CC_TAB,
+    // Wizard step to resume at when the panel finally closes. interruptedStep
+    // + 1 is the landing step, so BIRTHDATE resumes on ADD_MEMBER.
+    resumeStep: -1,
+    // Name the profile is filed under, so a rename can carry the edits over.
+    profileName: "",
+  };
+
+  // The wizard is still underneath the panel on the scene stack. A session that
+  // somehow outlived its wizard (a plugin command tearing the flow down, a
+  // load) must never turn an ordinary Empathize visit into an editor.
+  function wizardOnStack() {
+    const stack = SceneManager._stack;
+    return !!(stack && window.Scene_CharacterCreation && stack.indexOf(window.Scene_CharacterCreation) !== -1);
+  }
+
+  function isEditing(scene) {
+    if (!Session.active || !scene || scene._actorId !== Session.actorId) return false;
+    return wizardOnStack();
+  }
+
+  function editedActor() {
+    return $gameActors ? $gameActors.actor(Session.actorId) : null;
+  }
+
+  function editedProfile() {
+    const actor = editedActor();
+    if (!actor || !_getProfile) return null;
+    const name = actor.name();
+    if (!name) return null;
+    // Minting a profile walks the whole society registry, so only ask for one
+    // when this name does not have one yet: the editor reads it several times
+    // per redraw.
+    const existing = _getProfile(name);
+    if (existing) return existing;
+    if (!window.NPCSocietyRegistry) return null;
+    window.NPCSocietyRegistry.ensureProfile(name, actor.currentClass() ? actor.currentClass().id : null);
+    return _getProfile(name) || null;
+  }
+
+  // A renamed character is the same character: move the edited profile onto the
+  // new key rather than letting a freshly rolled one be generated under it.
+  function carryProfileToNewName(oldName, newName) {
+    if (!oldName || !newName || oldName === newName) return;
+    const society = $gameSystem && $gameSystem._npcSociety;
+    if (!society || !society[oldName]) return;
+    const profile = society[oldName];
+    delete society[oldName];
+    if (!society[newName]) society[newName] = profile;
+  }
+
+  function isCreature() {
+    return !!($gameSwitches && $gameSwitches.value(CREATURE_SWITCHES[Session.memberIndex] || 77));
+  }
+
+  function model3DAvailable() {
+    return !!(window.Scene_CC3DModel && window.CC3DModel && window.CC3DModel.isAvailable());
+  }
+
+  //===========================================================================
+  // Field writers
+  //===========================================================================
+
+  function applyGender(value) {
+    const actor = editedActor();
+    if (!actor) return;
+    if (actor.setGender) actor.setGender(value);
+    const utils = window.CharacterCreationUtils;
+    if (utils && utils.applyGenderAndReproduction) {
+      // Derives the reproduction type from the gender, the way the wizard's own
+      // gender step does; re-applying it here keeps switch 69 in step with it.
+      utils.applyGenderAndReproduction(Session.memberIndex, value);
+      applyReproduction(reproductionValue());
+    }
+    const profile = editedProfile();
+    if (profile) profile.gender = value;
+  }
+
+  function reproductionValue() {
+    const varId = REPRO_VARS[Session.memberIndex] || REPRO_VARS[0];
+    return $gameVariables ? $gameVariables.value(varId) : 0;
+  }
+
+  function applyReproduction(value) {
+    const varId = REPRO_VARS[Session.memberIndex] || REPRO_VARS[0];
+    if ($gameVariables) $gameVariables.setValue(varId, value);
+    // Switch 69 is the party-wide "someone can carry a pregnancy" flag the
+    // biologic simulation reads, and only the first member owns it.
+    if (Session.memberIndex === 0 && $gameSwitches) $gameSwitches.setValue(69, value === 1);
+  }
+
+  function applyKind(creature) {
+    const actor = editedActor();
+    if (!actor) return;
+    const switchId = CREATURE_SWITCHES[Session.memberIndex] || 77;
+    if ($gameSwitches) $gameSwitches.setValue(switchId, creature);
+    if (window.Scene_CharacterCreation) window.Scene_CharacterCreation._isCreatureMode = creature;
+    if (creature) {
+      if (actor.currentClass() && actor.currentClass().id !== CREATURE_CLASS_ID) {
+        actor.changeClass(CREATURE_CLASS_ID, false);
+      }
+    } else if (actor.currentClass() && actor.currentClass().id === CREATURE_CLASS_ID) {
+      actor.changeClass(DEFAULT_CLASS_ID, false);
+    }
+    const profile = editedProfile();
+    if (profile) profile.isCreature = creature;
+  }
+
+  function applyLevel(level) {
+    const actor = editedActor();
+    if (!actor) return;
+    actor.changeLevel(level, false);
+    actor.recoverAll();
+  }
+
+  function applyAge(age) {
+    if (!$gameSystem._ccBirthAge) $gameSystem._ccBirthAge = [];
+    $gameSystem._ccBirthAge[Session.memberIndex] = age;
+    const profile = editedProfile();
+    if (!profile) return;
+    const nowYear = (window.NPCLifeSim && window.NPCLifeSim.currentYear)
+      ? window.NPCLifeSim.currentYear() : 2001;
+    profile._birthYearOverride = nowYear - age;
+    // The life record and the bio were both written against the old age, so
+    // they are re-dealt here rather than left contradicting the sheet.
+    const actor = editedActor();
+    if (actor && window.NPCLifeSim && window.NPCLifeSim.rerollLifeRecord) {
+      window.NPCLifeSim.rerollLifeRecord(actor.name(), profile._homeGroupName || null);
+    }
+    rerollBackstory();
+  }
+
+  function currentAge() {
+    const stored = $gameSystem._ccBirthAge && $gameSystem._ccBirthAge[Session.memberIndex];
+    if (stored) return stored;
+    const actor = editedActor();
+    const name = actor && actor.name();
+    if (name && window.NPCLifeSim && window.NPCLifeSim.ageOf) {
+      const age = window.NPCLifeSim.ageOf(name);
+      if (age != null) return age;
+    }
+    return null;
+  }
+
+  function hometownList() {
+    const destinations = window.WorkSystem && window.WorkSystem.Destinations;
+    if (destinations && typeof destinations === "object") {
+      const names = Object.keys(destinations);
+      if (names.length) {
+        return names.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+      }
+    }
+    return [];
+  }
+
+  function nationList() {
+    const countries = window.HistorySimulator_COUNTRIES;
+    return countries ? Object.keys(countries).sort() : [];
+  }
+
+  // The Romance tab's own copy of this bank is private to NPCEmpathizeUI, so it
+  // is read once here as well and kept for the session.
+  let _orientationBank = null;
+  function orientationBank() {
+    if (_orientationBank) return _orientationBank;
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "js/db/NPC/Orientations.json", false);
+      xhr.send();
+      if (xhr.status === 200 || xhr.status === 0) {
+        _orientationBank = JSON.parse(xhr.responseText);
+        return _orientationBank;
+      }
+    } catch (e) {
+      console.warn("[CharacterCreationFull] could not read Orientations.json", e);
+    }
+    _orientationBank = { sexual: [], romantic: [] };
+    return _orientationBank;
+  }
+
+  function orientationName(entry) {
+    if (!entry) return "";
+    return window.ConfigManager && ConfigManager.language === "it"
+      ? (entry.name_it || entry.name) : entry.name;
+  }
+
+  function currentOrientation(kind) {
+    const profile = editedProfile();
+    const key = profile && profile._orientOverride
+      ? profile._orientOverride[kind === "sexual" ? "sexualKey" : "romanticKey"] : null;
+    if (!key) return null;
+    return (orientationBank()[kind] || []).find((o) => o.key === key) || null;
+  }
+
+  function applyOrientation(kind, key) {
+    const profile = editedProfile();
+    if (!profile) return;
+    if (!profile._orientOverride) profile._orientOverride = {};
+    profile._orientOverride[kind === "sexual" ? "sexualKey" : "romanticKey"] = key;
+  }
+
+  function societyData() {
+    return window._NPCSocietyDataLoader || null;
+  }
+
+  function personalityName(entry) {
+    if (!entry) return "";
+    return window.ConfigManager && ConfigManager.language === "it"
+      ? (entry.name_it || entry.name) : entry.name;
+  }
+
+  function ideologyName(entry) {
+    if (!entry) return "";
+    const translated = window.DataService && window.DataService.t
+      ? window.DataService.t(entry.name) : null;
+    if (translated && translated !== entry.name) return translated;
+    return String(entry.name || "").split(".").pop()
+      .split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+
+  function factionName(entry) {
+    if (!entry) return "";
+    const loader = window._NPCSocietyDataLoader;
+    const localized = loader && loader.getFactionName ? loader.getFactionName(entry) : null;
+    if (localized) return localized;
+    const seg = String(entry.name || "").split(".")[1] || String(entry.name || "?");
+    return seg.charAt(0).toUpperCase() + seg.slice(1);
+  }
+
+  function traitName(trait) {
+    if (!trait) return "?";
+    if (window.CCDbName) {
+      const named = window.CCDbName(trait);
+      if (named && named.indexOf(".") === -1) return named;
+    }
+    const seg = String(trait.name || "").split(".")[1] || String(trait.name || "?");
+    return seg.split(/[_\-]/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+
+  function actorTraits() {
+    const actor = editedActor();
+    return (actor && actor._selectedTraits) || [];
+  }
+
+  // The panel reads traits off the society profile, the game reads them off the
+  // actor. The editor is the one place both are set at once, so the chosen four
+  // are mirrored across after every trait edit.
+  function syncTraitsToProfile() {
+    const profile = editedProfile();
+    if (!profile) return;
+    const ids = actorTraits().map((t) => t && t.id).filter((id) => id != null);
+    if (ids.length) profile.traitIds = ids;
+    delete profile._specCache;
+  }
+
+  function specOverrides() {
+    const profile = editedProfile();
+    if (!profile) return {};
+    if (!profile._specOverrides) profile._specOverrides = {};
+    return profile._specOverrides;
+  }
+
+  // The level this specialization is already at for free, from the class the
+  // character has and the traits they carry (SpecializationMenu's classStart /
+  // traitStart tables). It costs nothing and is a floor: points buy levels
+  // above it, and a character can never be taken below what their class and
+  // traits already grant them.
+  function specFloor(specId) {
+    const actor = editedActor();
+    if (!actor) return 1;
+    const fromClass = actor.specializationClassBonus ? actor.specializationClassBonus(specId) : 1;
+    const fromTraits = actor.specializationTraitBonus ? actor.specializationTraitBonus(specId) : 1;
+    return Math.max(1, fromClass || 1, fromTraits || 1);
+  }
+
+  // Effective level: the floor, or whatever was bought on top of it.
+  function specLevel(specId) {
+    const actor = editedActor();
+    if (actor && actor.specializationLevel) return actor.specializationLevel(specId);
+    return Math.max(specFloor(specId), specOverrides()[specId] || 1);
+  }
+
+  // Leaving a level costs that level's number of points, so the ladder from
+  // Untrained to Master is 1 + 2 + 3 + 4 = 10 and the last steps are the dear
+  // ones. Starting from a class or trait floor, the steps below it are free.
+  function specStepCost(level) {
+    return Math.max(1, level);
+  }
+
+  function specSpanCost(from, to) {
+    let total = 0;
+    for (let level = from; level < to; level++) total += specStepCost(level);
+    return total;
+  }
+
+  function specPointsSpent() {
+    const actor = editedActor();
+    if (!actor || !actor._specLevels) return 0;
+    let spent = 0;
+    Object.keys(actor._specLevels).forEach((key) => {
+      const specId = Number(key);
+      const bought = actor._specLevels[key] || 1;
+      const floor = specFloor(specId);
+      if (bought > floor) spent += specSpanCost(floor, bought);
+    });
+    return spent;
+  }
+
+  function specPointsLeft() {
+    return Math.max(0, SPEC_POINT_BUDGET - specPointsSpent());
+  }
+
+  // Writes the bought level. Anything at or below the free floor is stored as
+  // nothing, so the floor is never paid for and never counted as spent.
+  function applySpecLevel(specId, level) {
+    const actor = editedActor();
+    const floor = specFloor(specId);
+    const target = Math.max(1, Math.min(5, level));
+    if (actor && actor.setSpecializationTrainedLevel) {
+      actor.setSpecializationTrainedLevel(specId, target <= floor ? 1 : target);
+    }
+    const overrides = specOverrides();
+    if (target <= floor) delete overrides[specId];
+    else overrides[specId] = target;
+    const profile = editedProfile();
+    if (profile) delete profile._specCache;
+  }
+
+  // One click raises a specialization by one level if the points are there;
+  // clicking a Master hands every point back and drops it to its free floor.
+  // Answers false when the step could not be paid for.
+  function cycleSpecLevel(specId) {
+    const floor = specFloor(specId);
+    const current = specLevel(specId);
+    if (current >= 5) {
+      applySpecLevel(specId, floor);
+      return true;
+    }
+    if (specStepCost(current) > specPointsLeft()) return false;
+    applySpecLevel(specId, current + 1);
+    return true;
+  }
+
+  // Changing the class or the traits moves the free floors underneath what was
+  // already bought, which can leave a character overspent. Walk the dearest
+  // levels back down until the budget balances again; a floor that rose simply
+  // absorbs the level for free.
+  function reconcileSpecPoints() {
+    const actor = editedActor();
+    if (!actor || !actor._specLevels) return;
+    let guard = 200;
+    while (specPointsSpent() > SPEC_POINT_BUDGET && guard-- > 0) {
+      let dearestId = null;
+      let dearest = 0;
+      Object.keys(actor._specLevels).forEach((key) => {
+        const specId = Number(key);
+        const level = specLevel(specId);
+        if (level > specFloor(specId) && level > dearest) {
+          dearest = level;
+          dearestId = specId;
+        }
+      });
+      if (dearestId == null) break;
+      applySpecLevel(dearestId, dearest - 1);
+    }
+  }
+
+  // Spend the whole budget at random, on top of whatever the class and traits
+  // already grant: floors are never touched, only levels above them are bought.
+  function randomizeSpecializations() {
+    const actor = editedActor();
+    if (!actor || !window.Specializations || !window.Specializations.ready) return;
+    Object.keys(actor._specLevels || {}).forEach((key) => {
+      actor.setSpecializationTrainedLevel(Number(key), 1);
+    });
+    const profile = editedProfile();
+    if (profile) {
+      profile._specOverrides = {};
+      delete profile._specCache;
+    }
+    const pool = window.Specializations.list;
+    if (!pool.length) return;
+    // Each pass buys one level of a random specialization it can still afford.
+    // The guard covers the case where nothing left in the pool fits the change.
+    let guard = pool.length * 8;
+    while (specPointsLeft() > 0 && guard-- > 0) {
+      const spec = pool[Math.floor(Math.random() * pool.length)];
+      const current = specLevel(spec.id);
+      if (current >= 5 || specStepCost(current) > specPointsLeft()) continue;
+      applySpecLevel(spec.id, current + 1);
+    }
+  }
+
+  function randomName() {
+    const actor = editedActor();
+    if (!actor || !window.generateSeededMarkovName) return;
+    const seed = (Date.now() + actor.actorId() * 7919) >>> 0;
+    try {
+      const name = window.generateSeededMarkovName(
+        seed & 0xffff, (seed >>> 16) & 0xffff, actor.actorId(),
+        "names", // i18n-ignore: TextGen database id
+        2, 4, 12
+      );
+      if (!name || name === window.T("Markov.unknownName")) return;
+      const previous = actor.name();
+      actor.setName(name.charAt(0).toUpperCase() + name.slice(1));
+      carryProfileToNewName(previous, actor.name());
+      Session.profileName = actor.name();
+    } catch (e) {
+      // No generator: the character keeps the name it has.
+    }
+  }
+
+  function rerollBackstory() {
+    const actor = editedActor();
+    if (!actor || !window.NPCHistSim || !window.NPCHistSim.rerollBackstory) return;
+    window.NPCHistSim.rerollBackstory(actor.name());
+  }
+
+  function rerollLife() {
+    const actor = editedActor();
+    if (!actor || !window.NPCLifeSim || !window.NPCLifeSim.rerollLifeRecord) return;
+    const profile = editedProfile();
+    window.NPCLifeSim.rerollLifeRecord(actor.name(), profile ? profile._homeGroupName : null);
+  }
+
+  function pick(list) {
+    return list && list.length ? list[Math.floor(Math.random() * list.length)] : null;
+  }
+
+  // "Surprise me": every field the editor owns, rolled at once. The heavier
+  // editors (sprite, class browser, creature builder) are not opened; their
+  // fields are filled with the same randomizers the wizard's own random paths
+  // use, so this is a complete character and not a half-filled sheet.
+  function randomizeEverything() {
+    const actor = editedActor();
+    if (!actor) return;
+    randomName();
+    applyGender(Math.floor(Math.random() * 4));
+    if (!isCreature()) {
+      const classes = ($dataClasses || []).filter((c) => c && c.id > 0 && c.id !== CREATURE_CLASS_ID);
+      const chosen = pick(classes);
+      if (chosen) {
+        actor.changeClass(chosen.id, true);
+        if (window.equipRandomCompatibleWeapon) window.equipRandomCompatibleWeapon(actor, chosen.id);
+      }
+    }
+    if (window.selectRandomSpriteForActor) window.selectRandomSpriteForActor(actor.actorId());
+    if (window.selectRandomBustForActor && actor.portraitMode() !== "model") {
+      window.selectRandomBustForActor(actor.actorId());
+    }
+    if (window.randomizeTraitsForActor) {
+      window.randomizeTraitsForActor(actor.actorId());
+      syncTraitsToProfile();
+    }
+    // After the class and the traits, so the points are spent on top of the
+    // floors those two just settled.
+    randomizeSpecializations();
+    const towns = hometownList();
+    if (towns.length) $gameSystem._ccHometown = pick(towns);
+    const band = pick(AGE_BANDS);
+    applyAge(band.lo + Math.floor(Math.random() * (band.hi - band.lo + 1)));
+
+    const profile = editedProfile();
+    const data = societyData();
+    if (profile && data) {
+      if (data.personalities && data.personalities.length) {
+        profile.personalityIndex = Math.floor(Math.random() * data.personalities.length);
+      }
+      if (data.ideologies && data.ideologies.length) {
+        profile.ideologyIndex = Math.floor(Math.random() * data.ideologies.length);
+      }
+      if (data.factions && data.factions.length) {
+        profile.factionIndex = Math.random() < 0.25
+          ? Math.floor(Math.random() * data.factions.length) : -1;
+      }
+      profile.wealthTierBase = Math.floor(Math.random() * 5);
+      profile.moralityScore = Math.floor(Math.random() * 201) - 100;
+    }
+    const nations = nationList();
+    if (profile && nations.length) profile._birthplaceOverride = pick(nations);
+    const bank = orientationBank();
+    const sexual = pick(bank.sexual || []);
+    const romantic = pick(bank.romantic || []);
+    if (sexual) applyOrientation("sexual", sexual.key);
+    if (romantic) applyOrientation("romantic", romantic.key);
+    rerollBackstory();
+    rerollLife();
+  }
+
+  //===========================================================================
+  // Rows
+  //===========================================================================
+
+  // A row is { id, label, value, kind }. `kind` is only used for the arrow
+  // glyph: "open" leaves the panel for one of the wizard's own editors, "pick"
+  // opens an in-panel list, "run" does something immediately.
+  function buildSections() {
+    const actor = editedActor();
+    if (!actor) return [];
+    const profile = editedProfile();
+    const data = societyData();
+    const creature = isCreature();
+    const sections = [];
+
+    const identity = [
+      { id: "name", label: T("detailed.row.name"), value: actor.name(), kind: "open" },
+      { id: "nameRandom", label: T("detailed.row.nameRandom"), value: "", kind: "run" },
+      {
+        id: "kind", label: T("detailed.row.kind"),
+        value: creature ? T("detailed.kind.creature") : T("detailed.kind.humanoid"), kind: "pick",
+      },
+    ];
+    if (creature) {
+      identity.push({
+        id: "archetype", label: T("detailed.row.archetype"),
+        value: archetypeLabel(actor), kind: "open",
+      });
+    }
+    identity.push(
+      { id: "gender", label: TE("genderLbl"), value: genderLabel(actor.gender()), kind: "pick" },
+      {
+        id: "class", label: T("detailed.row.class"),
+        value: actor.currentClass() ? actor.currentClass().name : "", kind: "open",
+      },
+      { id: "level", label: T("detailed.row.level"), value: String(actor.level), kind: "pick" }
+    );
+    if (model3DAvailable() && !creature) {
+      identity.push({
+        id: "portraitStyle", label: T("detailed.row.portraitStyle"),
+        value: actor.portraitMode() === "model" ? T("detailed.portrait.model") : T("detailed.portrait.bust"),
+        kind: "pick",
+      });
+    }
+    identity.push({ id: "appearance", label: T("detailed.row.appearance"), value: "", kind: "open" });
+    if (model3DAvailable() && actor.portraitMode() === "model") {
+      identity.push({ id: "model3d", label: T("detailed.row.model3d"), value: "", kind: "open" });
+    }
+    sections.push({ title: T("detailed.section.identity"), rows: identity });
+
+    const nationValue = profile && profile._birthplaceOverride ? profile._birthplaceOverride : "";
+    sections.push({
+      title: T("detailed.section.origins"),
+      rows: [
+        {
+          id: "hometown", label: TE("hometownLbl"),
+          value: $gameSystem._ccHometown || T("detailed.unset"), kind: "pick",
+        },
+        {
+          id: "age", label: T("detailed.row.age"),
+          value: currentAge() != null ? `${currentAge()} ${TE("yearsAbbr")}` : T("detailed.unset"),
+          kind: "pick",
+        },
+        {
+          id: "birthNation", label: T("detailed.row.birthNation"),
+          value: nationValue || T("detailed.unset"), kind: "pick",
+        },
+      ],
+    });
+
+    const traitList = actorTraits().map(traitName).join(", ");
+    sections.push({
+      title: T("detailed.section.talents"),
+      rows: [
+        { id: "traits", label: TE("traits"), value: traitList, kind: "open" },
+        { id: "traitsRandom", label: T("detailed.row.traitsRandom"), value: "", kind: "run" },
+        { id: "specializations", label: TE("specializations"), value: specSummary(), kind: "pick" },
+        { id: "specsRandom", label: T("detailed.row.specsRandom"), value: "", kind: "run" },
+      ],
+    });
+
+    const personalities = (data && data.personalities) || [];
+    const ideologies = (data && data.ideologies) || [];
+    const factions = (data && data.factions) || [];
+    const wealthLabels = [TE("destitute"), TE("poor"), TE("workingClass"), TE("middleClass"), TE("wealthy")];
+    sections.push({
+      title: T("detailed.section.society"),
+      rows: [
+        {
+          id: "personality", label: T("detailed.row.personality"),
+          value: personalityName(personalities[profile ? profile.personalityIndex : -1]), kind: "pick",
+        },
+        {
+          id: "ideology", label: T("detailed.row.ideology"),
+          value: ideologyName(ideologies[profile ? profile.ideologyIndex : -1]), kind: "pick",
+        },
+        {
+          id: "faction", label: T("detailed.row.faction"),
+          value: (profile && profile.factionIndex >= 0)
+            ? factionName(factions[profile.factionIndex]) : T("detailed.none"),
+          kind: "pick",
+        },
+        {
+          id: "wealth", label: T("detailed.row.wealth"),
+          value: wealthLabels[(profile && profile.wealthTierBase) || 0] || "", kind: "pick",
+        },
+        {
+          id: "morality", label: T("detailed.row.morality"),
+          value: `${moralityLabel(profile ? profile.moralityScore : 0)} (${(profile && profile.moralityScore) || 0})`,
+          kind: "pick",
+        },
+      ],
+    });
+
+    sections.push({
+      title: T("detailed.section.romance"),
+      rows: [
+        {
+          id: "romantic", label: T("detailed.row.romantic"),
+          value: orientationName(currentOrientation("romantic")) || T("detailed.rolled"), kind: "pick",
+        },
+        {
+          id: "sexual", label: T("detailed.row.sexual"),
+          value: orientationName(currentOrientation("sexual")) || T("detailed.rolled"), kind: "pick",
+        },
+        {
+          id: "reproduction", label: T("detailed.row.reproduction"),
+          value: reproductionLabel(reproductionValue()), kind: "pick",
+        },
+      ],
+    });
+
+    sections.push({
+      title: T("detailed.section.history"),
+      rows: [
+        { id: "rerollBackstory", label: T("detailed.row.rerollBackstory"), value: "", kind: "run" },
+        { id: "rerollLife", label: T("detailed.row.rerollLife"), value: "", kind: "run" },
+      ],
+    });
+
+    sections.push({
+      title: T("detailed.section.finish"),
+      rows: [
+        { id: "randomizeAll", label: T("detailed.row.randomizeAll"), value: "", kind: "run" },
+        { id: "done", label: T("detailed.row.done"), value: "", kind: "run", primary: true },
+      ],
+    });
+
+    return sections;
+  }
+
+  function genderLabel(value) {
+    return [T("male"), T("female"), T("nonBinary"), T("cocoon")][value] || T("male");
+  }
+
+  function reproductionLabel(value) {
+    const key = "genital." + (String(value) === "-1" ? "none" : String(value));
+    return window.T.has("Empathize." + key) ? TE(key) : T("detailed.unset");
+  }
+
+  function moralityLabel(score) {
+    const value = Number(score) || 0;
+    if (value < -60) return TE("evil");
+    if (value < -20) return TE("dishonest");
+    if (value < 20) return TE("neutral");
+    if (value < 60) return TE("honest");
+    return TE("virtuous");
+  }
+
+  function archetypeLabel(actor) {
+    const archetype = actor && actor._currentArchetype;
+    if (!archetype) return T("detailed.unset");
+    if (!window.HealthCore || !window.HealthCore.getArchetypeDisplayName) return String(archetype);
+    return String(archetype).split("/").map((part) => {
+      const key = part.trim();
+      return key ? window.HealthCore.getArchetypeDisplayName(key) : "";
+    }).filter(Boolean).join(" / ") || String(archetype);
+  }
+
+  function specSummary() {
+    const overrides = specOverrides();
+    const ids = Object.keys(overrides);
+    if (!ids.length || !window.Specializations || !window.Specializations.ready) {
+      return T("detailed.unset");
+    }
+    return ids.slice(0, 3).map((id) => {
+      const spec = window.Specializations.byId.get(Number(id));
+      return spec ? spec.name : "";
+    }).filter(Boolean).join(", ") + (ids.length > 3 ? ` +${ids.length - 3}` : "");
+  }
+
+  //===========================================================================
+  // Pickers
+  //===========================================================================
+
+  // Every picker answers with a flat list of { key, label, sub }. The scene
+  // keeps the open picker in _ccPicker and calls back into apply() with the key.
+  function buildPicker(id, arg) {
+    const bank = orientationBank();
+    const data = societyData();
+    switch (id) {
+      case "kind":
+        return {
+          title: T("detailed.row.kind"),
+          options: [
+            { key: "humanoid", label: T("detailed.kind.humanoid"), sub: T("detailed.kind.humanoidDesc") },
+            { key: "creature", label: T("detailed.kind.creature"), sub: T("detailed.kind.creatureDesc") },
+          ],
+        };
+      case "gender":
+        return {
+          title: TE("genderLbl"),
+          options: [0, 1, 2, 3].map((v) => ({ key: String(v), label: genderLabel(v) })),
+        };
+      case "level":
+        return {
+          title: T("detailed.row.level"),
+          options: LEVEL_CHOICES.map((v) => ({ key: String(v), label: `${TE("levelAbbr")}${v}` })),
+        };
+      case "portraitStyle":
+        return {
+          title: T("detailed.row.portraitStyle"),
+          options: [
+            { key: "bust", label: T("detailed.portrait.bust") },
+            { key: "model", label: T("detailed.portrait.model") },
+          ],
+        };
+      case "hometown":
+        return {
+          title: TE("hometownLbl"),
+          options: [{ key: "__random", label: T("detailed.random") }].concat(
+            hometownList().map((town) => ({
+              key: town,
+              label: window.WorkSystem && window.WorkSystem.destinationName
+                ? window.WorkSystem.destinationName(town) : town,
+            }))
+          ),
+        };
+      case "age":
+        return {
+          title: T("detailed.row.age"),
+          options: AGE_BANDS.map((band) => ({
+            key: band.key,
+            label: T("choice." + band.key + ".name"),
+            sub: T("choice." + band.key + ".desc"),
+          })).concat([{ key: "__random", label: T("detailed.random") }]),
+        };
+      case "birthNation":
+        return {
+          title: T("detailed.row.birthNation"),
+          options: [{ key: "__random", label: T("detailed.random") }].concat(
+            nationList().map((nation) => ({ key: nation, label: nation }))
+          ),
+        };
+      case "personality":
+        return {
+          title: T("detailed.row.personality"),
+          options: ((data && data.personalities) || []).map((entry, index) => ({
+            key: String(index), label: personalityName(entry), icon: entry.iconIndex || 4,
+          })),
+        };
+      case "ideology":
+        return {
+          title: T("detailed.row.ideology"),
+          options: ((data && data.ideologies) || []).map((entry, index) => ({
+            key: String(index), label: ideologyName(entry), icon: 186,
+          })),
+        };
+      case "faction":
+        return {
+          title: T("detailed.row.faction"),
+          options: [{ key: "-1", label: T("detailed.none") }].concat(
+            ((data && data.factions) || []).map((entry, index) => ({
+              key: String(index), label: factionName(entry), icon: entry.iconIndex || 187,
+            }))
+          ),
+        };
+      case "wealth":
+        return {
+          title: T("detailed.row.wealth"),
+          options: [TE("destitute"), TE("poor"), TE("workingClass"), TE("middleClass"), TE("wealthy")]
+            .map((label, index) => ({ key: String(index), label: label, icon: 314 })),
+        };
+      case "morality":
+        return {
+          title: T("detailed.row.morality"),
+          options: [
+            { key: "-80", label: TE("evil") },
+            { key: "-40", label: TE("dishonest") },
+            { key: "0", label: TE("neutral") },
+            { key: "40", label: TE("honest") },
+            { key: "80", label: TE("virtuous") },
+          ],
+        };
+      case "romantic":
+      case "sexual": {
+        const list = bank[id === "sexual" ? "sexual" : "romantic"] || [];
+        return {
+          title: id === "sexual" ? T("detailed.row.sexual") : T("detailed.row.romantic"),
+          options: list.map((entry) => ({
+            key: entry.key,
+            label: orientationName(entry),
+            sub: window.ConfigManager && ConfigManager.language === "it"
+              ? (entry.desc_it || entry.desc) : entry.desc,
+          })),
+        };
+      }
+      case "reproduction":
+        return {
+          title: T("detailed.row.reproduction"),
+          options: [-1, 0, 1, 2, 3, 4].map((v) => ({ key: String(v), label: reproductionLabel(v) })),
+        };
+      case "specializations": {
+        // Two levels: the category list, then the specializations inside it.
+        if (!window.Specializations || !window.Specializations.ready) {
+          return { title: TE("specializations"), options: [] };
+        }
+        // The points a character has to spend are only ever shown here, where
+        // they are being spent.
+        const budget = T("detailed.specPoints", { left: specPointsLeft(), total: SPEC_POINT_BUDGET });
+        if (!arg) {
+          const categories = window.Specializations.categories && window.Specializations.categories.length
+            ? window.Specializations.categories
+            : [...new Set(window.Specializations.list.map((s) => s.category).filter(Boolean))];
+          return {
+            title: T("detailed.pickCategory"),
+            note: budget,
+            options: [{ key: "__randomize", label: T("detailed.row.specsRandom"), sub: T("detailed.specsRandomHint") }]
+              .concat(categories.map((category) => ({ key: category, label: category }))),
+          };
+        }
+        return {
+          title: arg,
+          arg: arg,
+          note: budget,
+          options: window.Specializations.list
+            .filter((spec) => spec.category === arg)
+            .map((spec) => {
+              const level = specLevel(spec.id);
+              const floor = specFloor(spec.id);
+              const cost = level >= 5
+                ? T("detailed.specRefund")
+                : T("detailed.specCost", { n: specStepCost(level) });
+              const granted = floor > 1 ? " " + T("detailed.specGranted", { level: window.Specializations.levelName(floor) }) : "";
+              return {
+                key: String(spec.id),
+                label: spec.name,
+                sub: `${window.Specializations.levelName(level)} · ${cost}${granted}`,
+                disabled: level < 5 && specStepCost(level) > specPointsLeft(),
+              };
+            }),
+        };
+      }
+      default:
+        return null;
+    }
+  }
+
+  // Applies a picked option. Answers true when the picker should stay open
+  // (the specialization list, which is cycled level by level).
+  function applyPick(id, key, arg) {
+    const actor = editedActor();
+    const profile = editedProfile();
+    switch (id) {
+      case "kind":
+        applyKind(key === "creature");
+        if (key === "creature") openCreatureBuilder();
+        return false;
+      case "gender":
+        applyGender(Number(key));
+        return false;
+      case "level":
+        applyLevel(Number(key));
+        return false;
+      case "portraitStyle":
+        if (actor && actor.setPortraitMode) actor.setPortraitMode(key);
+        return false;
+      case "hometown": {
+        const towns = hometownList();
+        $gameSystem._ccHometown = key === "__random" ? pick(towns) : key;
+        return false;
+      }
+      case "age": {
+        const band = key === "__random" ? pick(AGE_BANDS) : AGE_BANDS.find((b) => b.key === key);
+        if (band) applyAge(band.lo + Math.floor(Math.random() * (band.hi - band.lo + 1)));
+        return false;
+      }
+      case "birthNation": {
+        if (!profile) return false;
+        const nations = nationList();
+        profile._birthplaceOverride = key === "__random" ? pick(nations) : key;
+        rerollBackstory();
+        return false;
+      }
+      case "personality":
+        if (profile) profile.personalityIndex = Number(key);
+        return false;
+      case "ideology":
+        if (profile) profile.ideologyIndex = Number(key);
+        return false;
+      case "faction":
+        if (profile) profile.factionIndex = Number(key);
+        return false;
+      case "wealth":
+        if (profile) profile.wealthTierBase = Number(key);
+        return false;
+      case "morality":
+        if (profile) profile.moralityScore = Number(key);
+        return false;
+      case "romantic":
+      case "sexual":
+        applyOrientation(id === "sexual" ? "sexual" : "romantic", key);
+        return false;
+      case "reproduction":
+        applyReproduction(Number(key));
+        return false;
+      case "specializations": {
+        if (!arg) {
+          if (key === "__randomize") {
+            randomizeSpecializations();
+            return true; // stay on the category list, points readout refreshes
+          }
+          return { arg: key }; // drilled into a category
+        }
+        if (!cycleSpecLevel(Number(key))) SoundManager.playBuzzer();
+        return true; // stay in the list so several can be raised in a row
+      }
+      default:
+        return false;
+    }
+  }
+
+  //===========================================================================
+  // Sub-editors (the wizard's own screens, pushed over the panel)
+  //===========================================================================
+
+  // The wizard's resume point must stay unset while the panel is open: the
+  // sprite grid, the creature builder and the class browser all read it to
+  // decide whether they are being driven by a paused wizard, and here they are
+  // not, they are being driven by this editor and must simply pop back to it.
+  function clearWizardResume() {
+    if (window.Scene_CharacterCreation) window.Scene_CharacterCreation._interruptedStep = -1;
+  }
+
+  function openNameInput() {
+    const actor = editedActor();
+    if (!actor || typeof Scene_Name === "undefined") return;
+    Session.profileName = actor.name();
+    clearWizardResume();
+    SceneManager.push(Scene_Name);
+    SceneManager.prepareNextScene(actor.actorId(), NAME_MAX_LENGTH);
+  }
+
+  function openSpriteGrid() {
+    if (!window.Scene_SpriteGridSelector) return;
+    clearWizardResume();
+    SceneManager.push(window.Scene_SpriteGridSelector);
+    if (SceneManager._nextScene && SceneManager._nextScene.setActor) {
+      SceneManager._nextScene.setActor(Session.actorId);
+    }
+  }
+
+  function openBustGallery() {
+    if (!window.Scene_BustSelector) return;
+    clearWizardResume();
+    // Opened over this panel rather than over the sprite grid, so confirming
+    // pops once and lands back here.
+    window.Scene_BustSelector._confirmPops = 1;
+    SceneManager.push(window.Scene_BustSelector);
+    if (SceneManager._nextScene && SceneManager._nextScene.setActor) {
+      SceneManager._nextScene.setActor(Session.actorId);
+    }
+  }
+
+  function open3DModel() {
+    if (!model3DAvailable()) return;
+    clearWizardResume();
+    window.Scene_CC3DModel.setup(Session.actorId, null, { returnByPop: true, confirmPops: 1 });
+    SceneManager.push(window.Scene_CC3DModel);
+  }
+
+  function openClassBrowser() {
+    if (!window.Scene_ClassSelection) return;
+    clearWizardResume();
+    // A creature's roster is the one its archetypes support; a humanoid gets
+    // the whole list (the archetype-of-classes shortcut is the quick flow's).
+    if (isCreature() && window.CreatureClasses) {
+      const actor = editedActor();
+      const archetypes = String((actor && actor._currentArchetype) || "").split("/").map((s) => s.trim());
+      window.$ccArchetypeClassFilter =
+        window.CreatureClasses.forArchetypes(archetypes[0] || null, archetypes[1] || null);
+    } else {
+      window.$ccArchetypeClassFilter = null;
+    }
+    window.$ccCreatureClassFlow = null;
+    window.$ccClassReturnByPop = true;
+    SceneManager.push(window.Scene_ClassSelection);
+  }
+
+  function openTraitSelector() {
+    if (!window.Scene_TraitSelector) return;
+    clearWizardResume();
+    window.Scene_TraitSelector.prepare(false, Session.actorId);
+    SceneManager.push(window.Scene_TraitSelector);
+  }
+
+  function openCreatureBuilder() {
+    const builder = window.Scene_CreateCreature;
+    if (!builder) return;
+    // With no paused wizard the builder finishes by popping, which lands back
+    // in this panel instead of routing into the class browser.
+    clearWizardResume();
+    if (builder.setTargetActorId) builder.setTargetActorId(Session.actorId);
+    SceneManager.push(builder);
+  }
+
+  //===========================================================================
+  // Public entry point
+  //===========================================================================
+
+  window.CharacterCreationFull = {
+    // The wizard only offers Detailed mode when everything it leans on is here.
+    isAvailable() {
+      return !!(window.NPCEmpathize && window.NPCEmpathize.Scene_NPCEmpathize && window.NPCSocietyRegistry);
+    },
+
+    isEditing() {
+      return Session.active;
+    },
+
+    // Hand a party member over to the panel. `memberIndex` is 0-based; the
+    // actor id is one more than that, the same convention the wizard uses.
+    open(memberIndex) {
+      const CCSteps = window.CCSteps || {};
+      Session.active = true;
+      Session.memberIndex = memberIndex || 0;
+      Session.actorId = Session.memberIndex + 1;
+      Session.tab = CC_TAB;
+      // interruptedStep + 1 is the landing step: the add-member prompt.
+      Session.resumeStep = CCSteps.BIRTHDATE != null ? CCSteps.BIRTHDATE : -1;
+      const actor = editedActor();
+      Session.profileName = actor ? actor.name() : "";
+      // The creature switch can still be carrying a previous playthrough's
+      // answer, so it is squared with the class this member actually has
+      // before the first row is drawn.
+      if (actor && $gameSwitches) {
+        const isCreatureClass = !!(actor.currentClass() && actor.currentClass().id === CREATURE_CLASS_ID);
+        $gameSwitches.setValue(CREATURE_SWITCHES[Session.memberIndex] || 77, isCreatureClass);
+        if (window.Scene_CharacterCreation) window.Scene_CharacterCreation._isCreatureMode = isCreatureClass;
+      }
+      // A member arriving here has whatever the wizard left them with; make
+      // sure the society profile the panel edits exists before it renders.
+      editedProfile();
+      clearWizardResume();
+      Scene_NPCEmpathize._eventId = null;
+      Scene_NPCEmpathize._actorId = Session.actorId;
+      Scene_NPCEmpathize._entity = null;
+      Scene_NPCEmpathize._initialTab = CC_TAB;
+      Scene_NPCEmpathize._returnStack.length = 0;
+      SceneManager.push(Scene_NPCEmpathize);
+    },
+
+    // The panel is closing: hand the wizard back its resume point so it lands
+    // on the add-member prompt for this member.
+    finish() {
+      if (!Session.active) return;
+      // The four chosen traits live on the actor; the panel reads them off the
+      // society profile, so they are mirrored across one last time. Money and
+      // the starting kit are handed out by the wizard at the end of creation,
+      // so nothing is granted here.
+      syncTraitsToProfile();
+      Session.active = false;
+      if (window.Scene_CharacterCreation && Session.resumeStep >= 0) {
+        window.Scene_CharacterCreation._interruptedStep = Session.resumeStep;
+      }
+    },
+  };
+
+  //===========================================================================
+  // Scene_NPCEmpathize extension
+  //===========================================================================
+
+  const _create = Scene_NPCEmpathize.prototype.create;
+  Scene_NPCEmpathize.prototype.create = function () {
+    if (isEditing(this)) {
+      // The panel is rebuilt from scratch every time a sub-editor pops back:
+      // restore the tab that was open, reconcile a rename, and take the
+      // wizard's resume point back off the table.
+      this._activeTab = Session.tab || CC_TAB;
+      this._ccPicker = null;
+      clearWizardResume();
+      // Spent the moment the class browser hands back; left set it would send
+      // an ordinary class selection popping instead of resuming the wizard.
+      window.$ccClassReturnByPop = false;
+      const actor = editedActor();
+      if (actor && Session.profileName && actor.name() !== Session.profileName) {
+        carryProfileToNewName(Session.profileName, actor.name());
+        Session.profileName = actor.name();
+      }
+      syncTraitsToProfile();
+      // A class change (the class browser) or a new trait set moves the free
+      // specialization floors, so the budget is squared up on the way back in.
+      reconcileSpecPoints();
+    }
+    _create.call(this);
+  };
+
+  // The editor tab replaces the chat (there is nobody to talk to yet) and the
+  // More list (its only entry, Leave, is the editor's own Done row).
+  const _tabOrder = Scene_NPCEmpathize.prototype._tabOrder;
+  Scene_NPCEmpathize.prototype._tabOrder = function () {
+    if (!isEditing(this) || this._entity) return _tabOrder.call(this);
+    return [CC_TAB, "info", "background", "biologics", "health", "romance", "lifeHistory", "wiki"];
+  };
+
+  const _buildTabsHTML = Scene_NPCEmpathize.prototype._buildTabsHTML;
+  Scene_NPCEmpathize.prototype._buildTabsHTML = function (T2) {
+    if (!isEditing(this) || this._entity) return _buildTabsHTML.call(this, T2);
+    const labels = {
+      info: T2.info, background: T2.history, biologics: T2.biologicsTab,
+      health: T2.healthTab, romance: T2.romanceTab, lifeHistory: T2.lifeHistory, wikiTab: T2.wikiTab,
+    };
+    return this._buildBackBtnHTML(T2) + this._tabOrder().map((id) => {
+      const label = id === CC_TAB ? T("detailed.tab") : (id === "wiki" ? labels.wikiTab : labels[id]);
+      return `<div class="npc-tab${this._activeTab === id ? " active" : ""}"
+           onmousedown="event.stopPropagation();SceneManager._scene._setTab('${id}')">${esc(label)}</div>`;
+    }).join("");
+  };
+
+  const _setTab = Scene_NPCEmpathize.prototype._setTab;
+  Scene_NPCEmpathize.prototype._setTab = function (tab) {
+    this._ccPicker = null;
+    if (isEditing(this)) Session.tab = tab;
+    _setTab.call(this, tab);
+  };
+
+  // The editor page hangs off _buildMoreHTML: the base _render() routes every
+  // tab it does not know to it, which is exactly what CC_TAB is.
+  const _buildMoreHTML = Scene_NPCEmpathize.prototype._buildMoreHTML;
+  Scene_NPCEmpathize.prototype._buildMoreHTML = function (T2) {
+    if (!isEditing(this) || this._activeTab !== CC_TAB) return _buildMoreHTML.call(this, T2);
+    return this._ccPicker ? this._buildCCPickerHTML() : this._buildCCEditorHTML();
+  };
+
+  Scene_NPCEmpathize.prototype._buildCCEditorHTML = function () {
+    const actor = editedActor();
+    if (!actor) return `<p style="opacity:0.6;font-style:italic;">${esc(T("detailed.unavailable"))}</p>`;
+
+    let html = `<div class="npc-profile-name">${esc(actor.name())}</div>` +
+      `<div class="npc-profile-sub">${esc(T("detailed.title"))}</div>` +
+      `<div class="npc-cc-hint">${esc(T("detailed.hint"))}</div>`;
+
+    buildSections().forEach((section) => {
+      html += `<hr class="npc-r-sep"><div class="npc-sec-hdr">${esc(section.title)}</div>`;
+      section.rows.forEach((row) => {
+        const arrow = row.kind === "open" ? "›" : row.kind === "pick" ? "▾" : "✦";
+        html += `<div class="npc-cc-row${row.primary ? " npc-cc-row--primary" : ""}"
+             onmousedown="event.stopPropagation();SceneManager._scene._ccActivateRow('${row.id}')">
+          <span class="npc-cc-row-lbl">${esc(row.label)}</span>
+          <span class="npc-cc-row-val">${esc(row.value || "")}</span>
+          <span class="npc-cc-row-arrow">${arrow}</span>
+        </div>`;
+      });
+    });
+    return html;
+  };
+
+  Scene_NPCEmpathize.prototype._buildCCPickerHTML = function () {
+    const picker = this._ccPicker;
+    const data = buildPicker(picker.id, picker.arg);
+    if (!data) return this._buildCCEditorHTML();
+
+    let html = `<div class="npc-back-btn"
+         onmousedown="event.stopPropagation();SceneManager._scene._ccClosePicker()">← ${esc(T("detailed.back"))}</div>` +
+      `<div class="npc-sec-hdr" style="margin-top:6px;">${esc(data.title)}</div>`;
+    // A picker can carry a running total (the specialization point budget),
+    // which is the only place those points are ever shown.
+    if (data.note) html += `<div class="npc-cc-note">${esc(data.note)}</div>`;
+    if (!data.options.length) {
+      return html + `<p style="opacity:0.6;font-style:italic;">${esc(T("detailed.noOptions"))}</p>`;
+    }
+    data.options.forEach((option) => {
+      // Town and nation keys carry spaces and apostrophes, so the key travels
+      // through the inline handler encoded and is decoded on the way back.
+      // encodeURIComponent leaves an apostrophe alone, which would close the
+      // handler's string literal ("Ma'at City"), so that one is forced.
+      const key = encodeURIComponent(String(option.key)).replace(/'/g, "%27");
+      html += `<div class="npc-cc-row${option.disabled ? " npc-cc-row--spent" : ""}"
+           onmousedown="event.stopPropagation();SceneManager._scene._ccPickOption('${key}')">
+        <span class="npc-cc-row-lbl">${option.icon ? iconSpan(option.icon, 16) + " " : ""}${esc(option.label)}</span>
+        ${option.sub ? `<span class="npc-cc-row-sub">${esc(option.sub)}</span>` : ""}
+        <span class="npc-cc-row-arrow">✓</span>
+      </div>`;
+    });
+    return html;
+  };
+
+  //---------------------------------------------------------------------------
+  // Row + picker handling
+  //---------------------------------------------------------------------------
+
+  Scene_NPCEmpathize.prototype._ccActivateRow = function (id) {
+    if (!isEditing(this)) return;
+    SoundManager.playOk();
+    switch (id) {
+      case "name": openNameInput(); return;
+      case "nameRandom": randomName(); break;
+      case "archetype": openCreatureBuilder(); return;
+      case "class": openClassBrowser(); return;
+      case "appearance": openSpriteGrid(); return;
+      case "model3d": open3DModel(); return;
+      case "traits": openTraitSelector(); return;
+      case "traitsRandom":
+        if (window.randomizeTraitsForActor) window.randomizeTraitsForActor(Session.actorId);
+        syncTraitsToProfile();
+        reconcileSpecPoints();
+        break;
+      case "specsRandom": randomizeSpecializations(); break;
+      case "rerollBackstory": rerollBackstory(); break;
+      case "rerollLife": rerollLife(); break;
+      case "randomizeAll": randomizeEverything(); break;
+      case "done": this._leave(true); return;
+      default:
+        if (buildPicker(id, null)) {
+          this._ccPicker = { id: id, arg: null };
+          this._contentIndex = 0;
+        }
+    }
+    this._render();
+  };
+
+  Scene_NPCEmpathize.prototype._ccPickOption = function (encodedKey) {
+    if (!isEditing(this) || !this._ccPicker) return;
+    let key = encodedKey;
+    try { key = decodeURIComponent(encodedKey); } catch (e) { /* raw key */ }
+    SoundManager.playOk();
+    const result = applyPick(this._ccPicker.id, key, this._ccPicker.arg);
+    if (result && result.arg !== undefined) {
+      this._ccPicker = { id: this._ccPicker.id, arg: result.arg };
+      this._contentIndex = 0;
+    } else if (!result) {
+      this._ccPicker = null;
+      this._contentIndex = 0;
+    }
+    // A picker that stays open (specializations) keeps its cursor where it is.
+    this._render();
+  };
+
+  Scene_NPCEmpathize.prototype._ccClosePicker = function () {
+    if (!this._ccPicker) return;
+    SoundManager.playCancel();
+    // Drilled into a specialization category: back up to the category list.
+    this._ccPicker = this._ccPicker.arg ? { id: this._ccPicker.id, arg: null } : null;
+    this._contentIndex = 0;
+    this._render();
+  };
+
+  //---------------------------------------------------------------------------
+  // Keyboard / controller navigation
+  //---------------------------------------------------------------------------
+
+  const _contentNavEnabled = Scene_NPCEmpathize.prototype._contentNavEnabled;
+  Scene_NPCEmpathize.prototype._contentNavEnabled = function () {
+    if (isEditing(this) && this._activeTab === CC_TAB) return true;
+    return _contentNavEnabled.call(this);
+  };
+
+  const _contentItems = Scene_NPCEmpathize.prototype._contentItems;
+  Scene_NPCEmpathize.prototype._contentItems = function () {
+    if (isEditing(this) && this._activeTab === CC_TAB) {
+      if (!this._rightEl) return [];
+      return Array.from(this._rightEl.querySelectorAll(".npc-cc-row, .npc-back-btn"));
+    }
+    return _contentItems.call(this);
+  };
+
+  const _contentBack = Scene_NPCEmpathize.prototype._contentBack;
+  Scene_NPCEmpathize.prototype._contentBack = function () {
+    if (isEditing(this) && this._activeTab === CC_TAB && this._ccPicker) {
+      this._ccClosePicker();
+      return;
+    }
+    _contentBack.call(this);
+  };
+
+  //---------------------------------------------------------------------------
+  // Portrait as a button, and closing the panel
+  //---------------------------------------------------------------------------
+
+  const _render = Scene_NPCEmpathize.prototype._render;
+  Scene_NPCEmpathize.prototype._render = function () {
+    _render.call(this);
+    if (!isEditing(this) || !this._leftEl) return;
+    // Clicking the portrait is the shortest way into the sprite grid, which is
+    // also where the bust gallery and the 3D editor are reached from.
+    const wrap = this._leftEl.querySelector(".npc-portrait-wrap");
+    if (!wrap) return;
+    wrap.classList.add("npc-cc-portrait");
+    wrap.title = T("detailed.portraitHint");
+    wrap.onmousedown = (event) => {
+      event.stopPropagation();
+      SoundManager.playOk();
+      openSpriteGrid();
+    };
+  };
+
+  const _leave = Scene_NPCEmpathize.prototype._leave;
+  Scene_NPCEmpathize.prototype._leave = function (force) {
+    // Walking a wiki hyperlink back is not leaving the editor.
+    if (isEditing(this) && (force || !Scene_NPCEmpathize._returnStack.length)) {
+      window.CharacterCreationFull.finish();
+    }
+    _leave.call(this, force);
+  };
+
+  console.log("[CharacterCreationFull] v1.0.0 loaded.");
+})();

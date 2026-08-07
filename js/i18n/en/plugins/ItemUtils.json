@@ -18,5 +18,10 @@
     "Rare": "Rare",
     "Epic": "Epic",
     "Legendary": "Legendary"
+  },
+  "addiction": {
+    "all": "Every craving",
+    "label": "Craving",
+    "feeds": "Feeds"
   }
 }

@@ -343,10 +343,10 @@
     "message4": ""
   },
   "50": {
-    "name": "",
-    "message1": "",
-    "message2": "",
+    "name": "Withdrawal",
+    "message1": "%1 is in withdrawal!",
+    "message2": "%1 is in withdrawal!",
     "message3": "",
-    "message4": ""
+    "message4": "%1 is no longer in withdrawal!"
   }
 }

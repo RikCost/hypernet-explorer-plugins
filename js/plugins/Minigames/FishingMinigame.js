@@ -241,10 +241,6 @@
         return SR.getCurrentTimeMode();
     }
 
-    function isNightNow() {
-        const SR = window.SkyRenderer;
-        return !!(SR && SR.TIME_MODES && currentTimeMode() === SR.TIME_MODES.NIGHT);
-    }
 
     // Where the rod is being held. A generated cave and a tiled room indoors
     // are both "not outside", but they are not the same place, and a lake full

@@ -834,6 +834,31 @@
                     </div>
                 `;
             });
+
+            // Addiction cravings hang off the same list, read the other way
+            // round: the bar fills as the craving grows, so a full one is this
+            // character in withdrawal. A character with no addiction trait has
+            // no meter and adds no row.
+            const addictions = window.AddictionSystem;
+            if (addictions) {
+                const cravingColor = (p) => p >= 80 ? '#d9433a' : (p >= 50 ? '#e2933a' : '#d4a64e');
+                addictions.cravingsFor(actor).forEach(craving => {
+                    const pct = Math.max(0, Math.min(100, Math.round(craving.value)));
+                    const c = cravingColor(pct);
+                    needsHTML += `
+                    <div class="status-gauge-row">
+                        <div class="status-gauge-meta">
+                            <span class="gauge-label">${craving.label}</span>
+                            <span class="gauge-value" style="color:${c};">${pct}%</span>
+                        </div>
+                        <div class="status-gauge-bar-outer">
+                            <div class="status-gauge-bar-inner" style="width: ${pct}%; background:${c};"></div>
+                        </div>
+                    </div>
+                `;
+                });
+            }
+
             needsEl.innerHTML = needsHTML;
         }
 

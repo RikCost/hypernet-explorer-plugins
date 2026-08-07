@@ -34,6 +34,141 @@
   const statDisplayHeight = 18; // Increased height for stat display
   const DAMAGE_FLASH_DURATION = 20; // frames the actor sprite tints red + shakes on a hit
 
+  // Compact enemy bars. A lone monster keeps the large top-right bar with its
+  // weaknesses and severed parts; the moment a second one joins the fight every
+  // enemy drops to a small party-styled bar drawn under its own feet, so the
+  // troop is read on the field instead of in a tall stack of lists.
+  const miniBarWidth = 200;
+  const miniBarBitmapHeight = 78;
+  const miniBarFootGap = 6; // px between the monster's feet and the top of its bar
+  // A compact bar is placed once and then stays put: the models load, get laid
+  // out and then breathe, lunge and stagger for the rest of the fight, and a bar
+  // that followed all of that would never stand still to be read.
+  const miniBarSettleFrames = 45;
+  const MINI = {
+    padX: 8,
+    ang: 8, // skew of the angled bar, matching the party cards
+    thickness: 8,
+    nameH: 18,
+    hpY: 19,
+  };
+  MINI.mpY = MINI.hpY + MINI.thickness + 3;
+  MINI.chipY = MINI.mpY + MINI.thickness + 5;
+  MINI.stackStep = MINI.mpY + MINI.thickness + 8; // vertical step used to un-stack bars
+
+  function miniBarGeometry(width) {
+    const x = MINI.padX + MINI.ang;
+    return { x, w: Math.max(20, width - x - MINI.padX) };
+  }
+
+  // Compact bars belong to the ordinary battle scene: a tactical map battle
+  // (MapBattleMode) builds its own bar layout on Scene_Map, where the monsters
+  // are map events rather than battler sprites to sit under.
+  function multipleEnemiesInBattle() {
+    if (!$gameTroop || $gameTroop.members().length <= 1) return false;
+    return SceneManager._scene instanceof Scene_Battle;
+  }
+
+  let _footPosScratch = null;
+
+  // Where a battler stands on screen, in scene coordinates. In a 3D battle the
+  // 2D sprite is hidden and keeps its untouched layout slot, so the model itself
+  // is asked for its position (its root sits at the creature's feet); otherwise
+  // the battler sprite answers, offset by the battle field it lives in.
+  function battlerFootPosition(battler) {
+    const scene = SceneManager._scene;
+    const spriteset = scene && scene._spriteset;
+    if (!battler || !spriteset) return null;
+
+    const scene3d = spriteset._battle3DScene;
+    if (
+      scene3d &&
+      scene3d.camera &&
+      typeof THREE !== "undefined" &&
+      typeof spriteset.get3DModel === "function" &&
+      (typeof scene3d.hasModels !== "function" || scene3d.hasModels())
+    ) {
+      const model = spriteset.get3DModel(battler);
+      const root = model && model.model;
+      if (root) {
+        const v = _footPosScratch || (_footPosScratch = new THREE.Vector3());
+        root.getWorldPosition(v);
+        v.project(scene3d.camera);
+        if (isFinite(v.x) && isFinite(v.y) && v.z <= 1) {
+          return {
+            x: (v.x * 0.5 + 0.5) * Graphics.width,
+            y: (-v.y * 0.5 + 0.5) * Graphics.height,
+          };
+        }
+      }
+    }
+
+    const sprites = spriteset._enemySprites || [];
+    const sprite = sprites.find((s) => s && s._battler === battler);
+    if (!sprite) return null;
+    const field = spriteset._battleField;
+    return {
+      x: sprite.x + (field ? field.x : 0),
+      y: sprite.y + (field ? field.y : 0),
+    };
+  }
+
+  // The same reading taken over the creature's head instead of under its feet,
+  // for the target chevron. A 3D model is measured (the top of the box it
+  // actually occupies, projected through the battle camera) rather than assumed,
+  // since a duck and a giant do not wear a marker at the same height; a 2D
+  // battler answers with the top of its own bitmap.
+  let _headBoxScratch = null;
+  let _headPosScratch = null;
+  const HEAD_FALLBACK_H = 120; // when nothing can be measured
+
+  function battlerHeadPosition(battler) {
+    const scene = SceneManager._scene;
+    const spriteset = scene && scene._spriteset;
+    if (!battler || !spriteset) return null;
+
+    const scene3d = spriteset._battle3DScene;
+    if (
+      scene3d &&
+      scene3d.camera &&
+      typeof THREE !== "undefined" &&
+      typeof spriteset.get3DModel === "function" &&
+      (typeof scene3d.hasModels !== "function" || scene3d.hasModels())
+    ) {
+      const model = spriteset.get3DModel(battler);
+      const root = model && model.model;
+      if (root && root.visible) {
+        const box = _headBoxScratch || (_headBoxScratch = new THREE.Box3());
+        box.setFromObject(root);
+        if (!box.isEmpty()) {
+          const v = _headPosScratch || (_headPosScratch = new THREE.Vector3());
+          v.set(
+            (box.min.x + box.max.x) / 2,
+            box.max.y,
+            (box.min.z + box.max.z) / 2
+          );
+          v.project(scene3d.camera);
+          if (isFinite(v.x) && isFinite(v.y) && v.z <= 1) {
+            return {
+              x: (v.x * 0.5 + 0.5) * Graphics.width,
+              y: (-v.y * 0.5 + 0.5) * Graphics.height,
+            };
+          }
+        }
+      }
+    }
+
+    const foot = battlerFootPosition(battler);
+    if (!foot) return null;
+    const sprites = spriteset._enemySprites || [];
+    const sprite = sprites.find((s) => s && s._battler === battler);
+    const height =
+      sprite && sprite.bitmap && sprite.bitmap.height
+        ? sprite.bitmap.height
+        : HEAD_FALLBACK_H;
+    return { x: foot.x, y: foot.y - height };
+  }
+
   Game_Actor.prototype.traitObjectsWithoutStates = function() {
     const objects = [];
     objects.push(this.actor(), this.currentClass());
@@ -1056,7 +1191,12 @@
       this.createDamageFlashOverlay();
     } else {
       // Original initialization for enemies
-      this.bitmap = new Bitmap(this._barBitmapWidth, barHeight * 8); // Increased height for more info
+      this._minimalEnemy = !isPlayer && multipleEnemiesInBattle();
+      if (this._minimalEnemy) this._barBitmapWidth = miniBarWidth;
+      this.bitmap = new Bitmap(
+        this._barBitmapWidth,
+        this._minimalEnemy ? miniBarBitmapHeight : barHeight * 8
+      ); // Increased height for more info
       this._lastHp = battler.hp;
       this._lastMaxHp = battler.mhp;
       this._lastMp = battler.mp;
@@ -1072,13 +1212,16 @@
       this._animationCount = 0;
       this._wavePhase = 0;
 
-      // Create TP Orb first so it appears behind other elements
-      this.createTPOrb();
+      // Create TP Orb first so it appears behind other elements. A compact bar
+      // carries neither the TP orb nor the stat readout: those belong to the
+      // single-enemy bar, and under a monster they would only bury the field.
+      if (!this._minimalEnemy) this.createTPOrb();
       this.refresh();
       this.createDamageOverlay();
 
       // CHANGED: Add stat display for ALL characters (not just actor 1)
-      this.createStatDisplay();
+      if (!this._minimalEnemy) this.createStatDisplay();
+      if (this._minimalEnemy) this.updateMinimalEnemyPosition();
     }
   };
 
@@ -1270,8 +1413,11 @@
   };
   Sprite_BattleBar.prototype.createDamageOverlay = function () {
     this._damageOverlay = new Sprite();
-    this._damageOverlay.bitmap = new Bitmap(this._barBitmapWidth, barHeight);
-    this._damageOverlay.y = 0;
+    this._damageOverlay.bitmap = new Bitmap(
+      this._barBitmapWidth,
+      this._minimalEnemy ? MINI.thickness : barHeight
+    );
+    this._damageOverlay.y = this._minimalEnemy ? MINI.hpY : 0;
     this.addChild(this._damageOverlay);
   };
   Sprite_BattleBar.prototype.createTPOrb = function () {
@@ -1431,50 +1577,48 @@
         // being hidden behind a solid black box (issue #167).
         this._bustSprite.visible = true;
 
-        if (true) {
-          if (isAlive) {
-            this._bustSprite.setColorTone([0, 0, 0, 0]);
-            this._bustSprite.opacity += (255 - this._bustSprite.opacity) * 0.15;
-          } else {
-            // Fully desaturate (4th tone channel = greyscale amount) and dim.
-            this._bustSprite.setColorTone([0, 0, 0, 255]);
-            this._bustSprite.opacity += (130 - this._bustSprite.opacity) * 0.15;
-          }
-
-          if (this._usingWorldSprite) {
-            this.updateWalkAnimation(isActive);
-            // Crisp pixel-art upscaling for the actor walking sprite
-            if (this._bustSprite.texture && this._bustSprite.texture.baseTexture) {
-              this._bustSprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-            }
-            if (this._bustSprite.bitmap && this._bustSprite.bitmap._baseTexture) {
-              this._bustSprite.bitmap._baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-            }
-            const frameH = this._worldFrameH || 48;
-            const targetScale = 72 / frameH; // constant size; active member stands out via gold name
-            this._bustSprite.scale.x = targetScale;
-            this._bustSprite.scale.y = targetScale;
-          } else {
-            // LINEAR smoothing keeps hand-drawn busts / battler images smooth
-            if (this._bustSprite.texture && this._bustSprite.texture.baseTexture) {
-              this._bustSprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            }
-            if (this._bustSprite.bitmap && this._bustSprite.bitmap._baseTexture) {
-              this._bustSprite.bitmap._baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
-            }
-            const baseScale = 104 / this._bustImage.height; // constant size; no zoom on active turn
-            this._bustSprite.scale.x = baseScale;
-            this._bustSprite.scale.y = baseScale;
-          }
-
-          // Sit in the face column to the left of this card's bars. The bust is a
-          // child of the card sprite, so these are local (card-relative) offsets.
-          const bob = isTargeted ? -10 : 0;
-          // Tucked close to the TP/AP orb so the sprite + orb read as one group.
-          // _damageShakeX adds a brief shake when the actor takes a hit.
-          this._bustSprite.x = -playerBarX - 22 + (this._damageShakeX || 0);
-          this._bustSprite.y = -8 + bob;
+        if (isAlive) {
+          this._bustSprite.setColorTone([0, 0, 0, 0]);
+          this._bustSprite.opacity += (255 - this._bustSprite.opacity) * 0.15;
+        } else {
+          // Fully desaturate (4th tone channel = greyscale amount) and dim.
+          this._bustSprite.setColorTone([0, 0, 0, 255]);
+          this._bustSprite.opacity += (130 - this._bustSprite.opacity) * 0.15;
         }
+
+        if (this._usingWorldSprite) {
+          this.updateWalkAnimation(isActive);
+          // Crisp pixel-art upscaling for the actor walking sprite
+          if (this._bustSprite.texture && this._bustSprite.texture.baseTexture) {
+            this._bustSprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+          }
+          if (this._bustSprite.bitmap && this._bustSprite.bitmap._baseTexture) {
+            this._bustSprite.bitmap._baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+          }
+          const frameH = this._worldFrameH || 48;
+          const targetScale = 72 / frameH; // constant size; active member stands out via gold name
+          this._bustSprite.scale.x = targetScale;
+          this._bustSprite.scale.y = targetScale;
+        } else {
+          // LINEAR smoothing keeps hand-drawn busts / battler images smooth
+          if (this._bustSprite.texture && this._bustSprite.texture.baseTexture) {
+            this._bustSprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+          }
+          if (this._bustSprite.bitmap && this._bustSprite.bitmap._baseTexture) {
+            this._bustSprite.bitmap._baseTexture.scaleMode = PIXI.SCALE_MODES.LINEAR;
+          }
+          const baseScale = 104 / this._bustImage.height; // constant size; no zoom on active turn
+          this._bustSprite.scale.x = baseScale;
+          this._bustSprite.scale.y = baseScale;
+        }
+
+        // Sit in the face column to the left of this card's bars. The bust is a
+        // child of the card sprite, so these are local (card-relative) offsets.
+        const bob = isTargeted ? -10 : 0;
+        // Tucked close to the TP/AP orb so the sprite + orb read as one group.
+        // _damageShakeX adds a brief shake when the actor takes a hit.
+        this._bustSprite.x = -playerBarX - 22 + (this._damageShakeX || 0);
+        this._bustSprite.y = -8 + bob;
       }
 
       // Mouse/touch targeting interaction:
@@ -1553,6 +1697,9 @@
     }
 
     const b = this._battler;
+    if (this._minimalEnemy) {
+      this.updateMinimalEnemyPosition();
+    }
     if (b.hp < this._lastHp) {
       this._damageChunkHp = this._displayHp;
       this._displayHp = b.hp;
@@ -1663,6 +1810,22 @@
     const dmgRate = this._damageChunkHp / Math.max(1, b.mhp);
     this._damageOverlay.bitmap.clear();
     const ctx = this._damageOverlay.bitmap.context;
+    if (this._minimalEnemy) {
+      const geo = miniBarGeometry(w);
+      const hpWidth = geo.w * hpRate;
+      const dmgWidth = geo.w * dmgRate;
+      if (dmgWidth > hpWidth) {
+        ctx.fillStyle = damageColor;
+        ctx.beginPath();
+        ctx.moveTo(geo.x + hpWidth, 0);
+        ctx.lineTo(geo.x + dmgWidth, 0);
+        ctx.lineTo(geo.x + dmgWidth - MINI.ang, MINI.thickness);
+        ctx.lineTo(geo.x + hpWidth - MINI.ang, MINI.thickness);
+        ctx.closePath();
+        ctx.fill();
+      }
+      return;
+    }
     if (this._isPlayer) {
       const dmgWidth = (w - borderThickness * 2) * dmgRate;
       const hpWidth = (w - borderThickness * 2) * hpRate;
@@ -1862,31 +2025,34 @@
       if (this._htmlOverlay) this._htmlOverlay.addText(nameStr, 0, y, w, "left", 12, "#ffd700", false, null, 0, "monospace", lineHeight);
       y += lineHeight;
 
-      // Draw HP
-      const hpBars = Math.floor(hpRate * 60);
-      const hpStr = `[${'='.repeat(Math.max(0, hpBars))}${' '.repeat(Math.max(0, 60 - hpBars))}]`;
+      // Draw HP. A compact bar (several enemies on the field) gets a short gauge
+      // so neighbouring monsters' bars do not run into each other.
+      const hpCells = this._minimalEnemy ? 14 : 60;
+      const gaugeCells = this._minimalEnemy ? 14 : 45;
+      const hpBars = Math.floor(hpRate * hpCells);
+      const hpStr = `[${'='.repeat(Math.max(0, hpBars))}${' '.repeat(Math.max(0, hpCells - hpBars))}]`;
       this.bitmap.textColor = "#ff4444"; // Red for HP
       if (this._htmlOverlay) this._htmlOverlay.addText(`HP ${hpStr} ${Math.floor(this._displayHp)}/${b.mhp}`, 0, y, w, "left", 12, "#ff4444", false, null, 0, "monospace", lineHeight);
       y += lineHeight;
 
       // Draw MP
       const mpRate = b.mp / Math.max(1, b.mmp);
-      const mpBars = Math.floor(mpRate * 45);
-      const mpStr = `[${'*'.repeat(Math.max(0, mpBars))}${' '.repeat(Math.max(0, 45 - mpBars))}]`;
+      const mpBars = Math.floor(mpRate * gaugeCells);
+      const mpStr = `[${'*'.repeat(Math.max(0, mpBars))}${' '.repeat(Math.max(0, gaugeCells - mpBars))}]`;
       this.bitmap.textColor = "#00ffff"; // Cyan for MP
       if (this._htmlOverlay) this._htmlOverlay.addText(`MP ${mpStr} ${b.mp}/${b.mmp}`, 0, y, w, "left", 12, "#00ffff", false, null, 0, "monospace", lineHeight);
       y += lineHeight;
 
       // Draw TP
       const tpRate = b.tp / 100;
-      const tpBars = Math.floor(tpRate * 45);
-      const tpStr = `TP [${'^'.repeat(Math.max(0, tpBars))}${' '.repeat(Math.max(0, 45 - tpBars))}] ${Math.floor(b.tp)}/100`;
+      const tpBars = Math.floor(tpRate * gaugeCells);
+      const tpStr = `TP [${'^'.repeat(Math.max(0, tpBars))}${' '.repeat(Math.max(0, gaugeCells - tpBars))}] ${Math.floor(b.tp)}/100`;
       this.bitmap.textColor = "#00ff00"; // Green for TP
-      if (this._htmlOverlay) this._htmlOverlay.addText(tpStr, 0, y, w, "left", 12, "#00ff00", false, null, 0, "monospace", lineHeight);
-      y += lineHeight;
+      if (!this._minimalEnemy && this._htmlOverlay) this._htmlOverlay.addText(tpStr, 0, y, w, "left", 12, "#00ff00", false, null, 0, "monospace", lineHeight);
+      if (!this._minimalEnemy) y += lineHeight;
 
       // For enemies, draw weaknesses, states, and body parts
-      if (!this._isPlayer) {
+      if (!this._isPlayer && !this._minimalEnemy) {
         this.bitmap.fontSize = 10;
 
         // Elements
@@ -1941,6 +2107,11 @@
       }
 
       this.bitmap._baseTexture.update();
+      return;
+    }
+
+    if (this._minimalEnemy) {
+      this.refreshMinimalEnemyBar();
       return;
     }
 
@@ -2372,6 +2543,306 @@
       }
     }
   };
+  // Compact enemy bar: the same angled HP/MP pair the party cards carry, plus
+  // the name, the level and the status chips. No weakness table, no severed
+  // limbs, no TP orb: with a whole troop on screen those lists covered the
+  // monsters they described.
+  Sprite_BattleBar.prototype.refreshMinimalEnemyBar = function () {
+    const b = this._battler;
+    const bitmap = this.bitmap;
+    const ctx = bitmap.context;
+    const W = bitmap.width;
+    const geo = miniBarGeometry(W);
+
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+    const hpRate = clamp01(this._displayHp / Math.max(1, b.mhp));
+    const chunkRate = clamp01(
+      (this._damageChunkHp !== undefined ? this._damageChunkHp : b.hp) /
+        Math.max(1, b.mhp)
+    );
+
+    const drawGauge = (y, rate, color, bright, dark, track) => {
+      const ang = MINI.ang;
+      const h = MINI.thickness;
+      const fillW = Math.round(geo.w * clamp01(rate));
+      ctx.fillStyle = track;
+      ctx.beginPath();
+      ctx.moveTo(geo.x, y);
+      ctx.lineTo(geo.x + geo.w, y);
+      ctx.lineTo(geo.x + geo.w - ang, y + h);
+      ctx.lineTo(geo.x - ang, y + h);
+      ctx.closePath();
+      ctx.fill();
+      if (fillW > 0) {
+        const grad = ctx.createLinearGradient(geo.x, 0, geo.x + geo.w, 0);
+        grad.addColorStop(0, dark);
+        grad.addColorStop(0.3, color);
+        grad.addColorStop(0.65, bright);
+        grad.addColorStop(1, dark);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(geo.x, y);
+        ctx.lineTo(geo.x + fillW, y);
+        ctx.lineTo(geo.x + fillW - ang, y + h);
+        ctx.lineTo(geo.x - ang, y + h);
+        ctx.closePath();
+        ctx.fill();
+        const hiH = Math.max(1, Math.floor(h / 2));
+        const hiAng = Math.floor(ang / 2);
+        ctx.save();
+        ctx.globalAlpha = 0.28;
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.moveTo(geo.x, y);
+        ctx.lineTo(geo.x + fillW, y);
+        ctx.lineTo(geo.x + fillW - hiAng, y + hiH);
+        ctx.lineTo(geo.x - hiAng, y + hiH);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.moveTo(geo.x, y);
+      ctx.lineTo(geo.x + geo.w, y);
+      ctx.lineTo(geo.x + geo.w - ang, y + h);
+      ctx.lineTo(geo.x - ang, y + h);
+      ctx.closePath();
+      ctx.stroke();
+    };
+
+    drawGauge(MINI.hpY, hpRate, "#ff3333", "#ff8888", "#660000", "rgba(100,0,0,0.45)");
+    const hasMp = b.mmp > 0;
+    if (hasMp) {
+      drawGauge(
+        MINI.mpY,
+        b.mp / Math.max(1, b.mmp),
+        "#3399ff",
+        "#88ccff",
+        "#003388",
+        "rgba(0,30,80,0.45)"
+      );
+    }
+    bitmap._baseTexture.update();
+
+    // Depletion chunk rides on the overlay sprite, as it does on the big bar
+    // (absent on the very first draw, which runs before the overlay is created)
+    if (this._damageOverlay && chunkRate > hpRate) this.updateDamageOverlay();
+
+    const isTargeted = !!(
+      SceneManager._scene &&
+      SceneManager._scene._enemyWindow &&
+      SceneManager._scene._enemyWindow.active &&
+      b.isSelected()
+    );
+
+    const level = getEnemyLevel(b);
+    const rawName = window.translateText ? window.translateText(b.name()) : b.name();
+    const nameText = level ? `${rawName} ${level}` : rawName;
+    const liveRate = b.hp / Math.max(1, b.mhp);
+    let hpNumColor = isTargeted ? "#ffd700" : "#ffffff";
+    if (!isTargeted) {
+      if (liveRate <= 0.25) hpNumColor = "#ff4444";
+      else if (liveRate <= 0.5) hpNumColor = "#ffff00";
+    }
+
+    if (this._htmlOverlay) {
+      const nameEl = this._htmlOverlay.addText(
+        nameText,
+        geo.x - MINI.ang,
+        -2,
+        Math.floor(geo.w * 0.68),
+        "left",
+        15,
+        isTargeted ? "#ffd700" : "#ffffff",
+        true,
+        "black",
+        1,
+        "Lora, serif",
+        MINI.nameH
+      );
+      if (nameEl) {
+        nameEl.style.overflow = "hidden";
+        nameEl.style.textOverflow = "ellipsis";
+      }
+      this._htmlOverlay.addText(
+        String(Math.floor(b.hp)),
+        geo.x,
+        -2,
+        geo.w,
+        "right",
+        16,
+        hpNumColor,
+        true,
+        "black",
+        1,
+        "Lora, serif",
+        MINI.nameH
+      );
+
+      // Status chips, styled like the party cards' and wrapped to two rows
+      const activeStates = b.states().filter((s) => s.iconIndex > 0);
+      if (activeStates.length > 0) {
+        const chipFont = 11;
+        const chipPadX = 6;
+        const chipH = 16;
+        const rowStartX = geo.x - MINI.ang;
+        const rowMaxX = geo.x + geo.w;
+        let rowX = rowStartX;
+        const rowY = hasMp ? MINI.chipY : MINI.mpY;
+        bitmap.fontSize = chipFont;
+        bitmap.fontBold = true;
+        for (const state of activeStates) {
+          const sName = window.translateText ? window.translateText(state.name) : state.name;
+          const chipW = Math.ceil(bitmap.measureTextWidth(sName)) + chipPadX * 2;
+          // One row only: the rest of the ailments stay on the Check screen
+          if (rowX > rowStartX && rowX + chipW > rowMaxX) break;
+          const isDebuff = state.restriction && state.restriction > 0;
+          const hex = getStateHexColor(state);
+          const textColor = hex || (isDebuff ? "#ffd0d0" : "#ffe9c2");
+          const edgeColor = hex || (isDebuff ? "rgba(255,150,150,0.6)" : "rgba(255,214,150,0.6)");
+          const el = this._htmlOverlay.addText(
+            sName,
+            rowX,
+            rowY,
+            chipW,
+            "center",
+            chipFont,
+            textColor,
+            true,
+            null,
+            0,
+            "Lora, serif",
+            chipH - 2
+          );
+          if (el) {
+            el.style.boxSizing = "border-box";
+            el.style.height = chipH + "px";
+            el.style.padding = "0 " + chipPadX + "px";
+            el.style.background = isDebuff
+              ? "linear-gradient(180deg, rgba(80,24,24,0.92), rgba(45,12,12,0.92))"
+              : "linear-gradient(180deg, rgba(70,48,20,0.92), rgba(40,26,10,0.92))";
+            el.style.border = "1px solid " + edgeColor;
+            el.style.borderRadius = chipH / 2 + "px";
+            el.style.boxShadow = "0 1px 2px rgba(0,0,0,0.6)";
+          }
+          rowX += chipW + 4;
+        }
+      }
+    }
+  };
+
+  // A compact bar is set under its monster while the field is still settling
+  // (3D models load and are spread apart a moment after the battle opens), then
+  // locked: from there it holds its spot however much the monster moves.
+  Sprite_BattleBar.prototype.updateMinimalEnemyPosition = function () {
+    if (this._minimalPosLocked) return;
+    const anchor = battlerFootPosition(this._battler);
+    if (!anchor) return;
+    const w = this.bitmap ? this.bitmap.width : miniBarWidth;
+    const h = this.bitmap ? this.bitmap.height : miniBarBitmapHeight;
+    const x = Math.round(
+      Math.max(4, Math.min(Graphics.width - w - 4, anchor.x - w / 2))
+    );
+    const y = Math.round(
+      Math.max(4, Math.min(Graphics.height - h - 4, anchor.y + miniBarFootGap))
+    );
+    this.x = x;
+    this.y = y;
+    this._anchorBarY = y;
+
+    // Lock as soon as the field reports its monsters laid out, or after the
+    // settling window when nothing ever reports (a plain 2D battle).
+    this._minimalPosFrames = (this._minimalPosFrames || 0) + 1;
+    const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+    if (
+      (spriteset && spriteset._3dEnemyLayoutSettled) ||
+      this._minimalPosFrames >= miniBarSettleFrames
+    ) {
+      this._minimalPosLocked = true;
+    }
+  };
+
+  // ==========================================================================
+  // Target chevron
+  // ==========================================================================
+  // Which monster an action lands on is shown on the monster: a gold chevron
+  // riding over its head, bobbing so it is never mistaken for scenery. The
+  // engine's own picker was a box of names drawn across the middle of the
+  // field, covering the very creatures it was naming. That window still exists
+  // and still reads the input (every plugin that borrows it - the Check/Aim
+  // menus, the card system - keeps working), but nothing of it is drawn.
+  const CHEVRON_W = 34;
+  const CHEVRON_H = 24;
+  const CHEVRON_GAP = 12; // clear air between the chevron's tip and the head
+  const CHEVRON_BOB = 5; // how far it rides up and down
+  const CHEVRON_PERIOD = 22; // frames per bob
+  const CHEVRON_COLOR = "#ffd700"; // the gold a targeted monster's name takes
+
+  function makeChevronBitmap() {
+    const bmp = new Bitmap(CHEVRON_W, CHEVRON_H + 4);
+    const ctx = bmp.context;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(3, 4);
+    ctx.lineTo(CHEVRON_W - 3, 4);
+    ctx.lineTo(CHEVRON_W / 2, CHEVRON_H);
+    ctx.closePath();
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "rgba(0,0,0,0.85)";
+    ctx.stroke();
+    ctx.fillStyle = CHEVRON_COLOR;
+    ctx.fill();
+    ctx.restore();
+    bmp._baseTexture.update();
+    return bmp;
+  }
+
+  Scene_Battle.prototype.createTargetChevron = function () {
+    this._targetChevron = new Sprite(makeChevronBitmap());
+    this._targetChevron.anchor.x = 0.5;
+    this._targetChevron.anchor.y = 1; // the tip sits on the sprite's own y
+    this._targetChevron.visible = false;
+    this._targetChevronPhase = 0;
+    this.addChild(this._targetChevron);
+  };
+
+  Scene_Battle.prototype.updateTargetChevron = function () {
+    const chevron = this._targetChevron;
+    if (!chevron) return;
+    const win = this._enemyWindow;
+    const picking = win && win.active && win.visible && win.isOpen();
+    const enemy = picking ? win.enemy() : null;
+    if (!enemy || !enemy.isAlive()) {
+      chevron.visible = false;
+      return;
+    }
+    const head = battlerHeadPosition(enemy);
+    if (!head) {
+      chevron.visible = false;
+      return;
+    }
+    this._targetChevronPhase += 1;
+    const bob = Math.sin(this._targetChevronPhase / CHEVRON_PERIOD) * CHEVRON_BOB;
+    chevron.x = Math.round(head.x);
+    chevron.y = Math.round(
+      Math.max(chevron.height + 2, head.y - CHEVRON_GAP + bob)
+    );
+    chevron.visible = true;
+  };
+
+  const _Window_BattleEnemy_initialize = Window_BattleEnemy.prototype.initialize;
+  Window_BattleEnemy.prototype.initialize = function (rect) {
+    _Window_BattleEnemy_initialize.call(this, rect);
+    // Kept alive for input, drawn not at all: frame, background, names and
+    // cursor all go, leaving the chevron to say who is being aimed at.
+    this.opacity = 0;
+    this.contentsOpacity = 0;
+    this.cursorVisible = false;
+  };
+
   const _Window_SkillList_drawSkillCost =
     Window_SkillList.prototype.drawSkillCost;
   Window_SkillList.prototype.drawSkillCost = function (skill, x, y, width) {
@@ -2491,6 +2962,9 @@
   Scene_Battle.prototype.createDisplayObjects = function () {
     _Scene_Battle_createDisplayObjects.call(this);
     this.createBattleHealthBars();
+    // After the window layer, so the marker rides over the field rather than
+    // under whatever window happens to be open.
+    this.createTargetChevron();
   };
   Scene_Battle.prototype.createBattleHealthBars = function () {
     this._battleHealthBarSprites = [];
@@ -2551,16 +3025,25 @@
       this._battleHealthBarSprites.push(sprite);
     }
 
-    // Create Enemy Bars - anchored to the top-right of the screen
-    const enemyBarW = enemyLargeBarWidth || 400;
+    // Enemy bars. A single monster keeps the large bar anchored to the top-right
+    // of the screen; a troop gets one compact bar under each monster instead, so
+    // several enemies never bury the field under stacked lists.
+    const troop = $gameTroop.members();
+    const minimalEnemyBars = troop.length > 1;
+    const enemyBarW = minimalEnemyBars ? miniBarWidth : enemyLargeBarWidth || 400;
     const enemyRightMargin = 40;
     const enemyBarLeftX = Graphics.width - enemyBarW - enemyRightMargin;
-    for (let i = 0; i < $gameTroop.members().length; i += 1) {
-      const enemy = $gameTroop.members()[i];
+    for (let i = 0; i < troop.length; i += 1) {
+      const enemy = troop[i];
       if (enemy.isAlive()) {
         const sprite = new Sprite_BattleBar(enemy, false, enemyBarW);
-        sprite.x = enemyBarLeftX;
-        sprite.y = positions.barsY + i * barSpacing;
+        if (sprite._minimalEnemy) {
+          // Placed by initialize(); update() keeps it on the monster's feet.
+          sprite.updateMinimalEnemyPosition();
+        } else {
+          sprite.x = enemyBarLeftX;
+          sprite.y = positions.barsY + i * barSpacing;
+        }
         this.addChild(sprite);
         this._battleHealthBarSprites.push(sprite);
       }
@@ -2631,6 +3114,7 @@
   Scene_Battle.prototype.update = function () {
     _Scene_Battle_update.call(this);
     this.updateBattleHealthBars();
+    this.updateTargetChevron();
   };
   Scene_Battle.prototype.updateBattleHealthBars = function () {
     // Determine whose turn it is (inputting or executing)
@@ -2647,6 +3131,25 @@
           if (sprite._backgroundOverlay) sprite._backgroundOverlay.visible = false;
         } else {
           sprite.visible = sprite._battler.isAlive();
+        }
+      }
+    }
+
+    // Compact enemy bars sit on their monster's feet, so two monsters standing
+    // close together would print one bar over the other: walk them top to bottom
+    // and push each one clear of the bars already placed above it.
+    const miniBars = this._battleHealthBarSprites.filter(
+      (s) => s && s.visible && s._minimalEnemy
+    );
+    if (miniBars.length > 1) {
+      miniBars.sort((a, b) => a.y - b.y || a.x - b.x);
+      for (let i = 1; i < miniBars.length; i++) {
+        const s = miniBars[i];
+        for (let j = 0; j < i; j++) {
+          const other = miniBars[j];
+          const overlapsX = Math.abs(s.x - other.x) < s.bitmap.width - 12;
+          const overlapsY = Math.abs(s.y - other.y) < MINI.stackStep;
+          if (overlapsX && overlapsY) s.y = other.y + MINI.stackStep;
         }
       }
     }
@@ -2737,6 +3240,13 @@
   Scene_Battle.prototype.terminate = function () {
     _Scene_Battle_terminate.call(this);
     this.removeBattleHealthBars();
+    if (this._targetChevron) {
+      this.removeChild(this._targetChevron);
+      if (typeof this._targetChevron.destroy === "function") {
+        this._targetChevron.destroy({ children: true });
+      }
+      this._targetChevron = null;
+    }
   };
   Scene_Battle.prototype.removeBattleHealthBars = function () {
 

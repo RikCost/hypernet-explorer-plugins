@@ -2232,6 +2232,8 @@
     Spriteset_Battle.prototype.create3DEnemies = function() {
         // Scene may have been disposed/nulled between the setTimeout and now.
         if (!this._battle3DScene || this._battle3DScene._disposed) return;
+        // A 2D field never moves after it is built, so it counts as settled.
+        this._3dEnemyLayoutSettled = false;
         // Only render 3D enemy models when the Enemy Battlers option is set to 3D
         // (1). In 2D (0) or Sprites (2) mode, leave the 2D sprite / char sprite up
         // so procedural archetypes (goblins etc.) are never forced into 2D mode.
@@ -2239,12 +2241,14 @@
             ConfigManager.enemyBattlers !== undefined &&
             ConfigManager.enemyBattlers !== 1) {
             debugLog('Enemy Battlers not in 3D mode; skipping 3D enemies');
+            this._3dEnemyLayoutSettled = true;
             return;
         }
 
         debugLog('Creating 3D enemies');
 
         const enemies = $gameTroop.members();
+        const pending = [];
 
         // Pre-count procedural creatures so we can spread them across the field.
         const procCount = enemies.filter(e => resolveArchetype(e)).length;
@@ -2299,7 +2303,9 @@
                 let posX, posY;
                 if (def) {
                     // Spread multiple procedural creatures evenly around centre.
-                    posX = procCount > 1 ? (procSlot - (procCount - 1) / 2) * 2.4 : 0;
+                    // This is only the opening guess: spreadEnemyModels re-lays
+                    // them out by their measured width once they have loaded.
+                    posX = procCount > 1 ? (procSlot - (procCount - 1) / 2) * ENEMY_SPREAD_GUESS : 0;
                     posY = -1.5;
                     procSlot++;
                 } else {
@@ -2309,13 +2315,74 @@
 
                 debugLog(`Enemy ${i} 3D pos: (${posX}, ${posY}, 0)`);
 
-                this._battle3DScene.addModel(`enemy_${i}`, battlerModel, posX, posY, 0);
+                pending.push(this._battle3DScene.addModel(`enemy_${i}`, battlerModel, posX, posY, 0));
 
                 // Hide 2D sprite
                 sprite.hide();
                 debugLog(`Enemy sprite ${i} hidden`);
             }
         }
+
+        // Models load asynchronously, so the real spacing is settled once they
+        // are all in the scene and can be measured.
+        Promise.all(pending).then(() => this.spreadEnemyModels());
+    };
+
+    // A troop used to stand on a fixed 2.4-unit pitch, which a big creature
+    // (a coyote is some three units across) simply grew through: two monsters
+    // ended up drawn one inside the other. Lay the procedural models out by the
+    // width they actually measure, leaving real air between neighbours, and keep
+    // the row inside what the 45 degree camera sees at the creatures' plane.
+    const ENEMY_SPREAD_GUESS = 3.6; // opening pitch, before anything is measured
+    const ENEMY_SPREAD_GAP = 1.2;   // clear air between two neighbours
+    const ENEMY_SPREAD_HALF_SPAN = 5.6;
+    const ENEMY_SPREAD_FALLBACK_W = 2.2; // for a model that measures as nothing
+
+    Spriteset_Battle.prototype.spreadEnemyModels = function() {
+        const scene3d = this._battle3DScene;
+        if (!scene3d || scene3d._disposed || typeof THREE === 'undefined') return;
+
+        const enemies = $gameTroop.members();
+        const row = [];
+        for (let i = 0; i < enemies.length; i++) {
+            // Enemies placed from their 2D slot (authored GLB models) keep the
+            // troop layout they were given; only the procedural row is spread.
+            if (!resolveArchetype(enemies[i])) continue;
+            const battlerModel = scene3d.getModel(`enemy_${i}`);
+            const root = battlerModel && battlerModel.model;
+            if (!root) continue;
+            const box = new THREE.Box3().setFromObject(root);
+            const measured = box.isEmpty() ? 0 : box.max.x - box.min.x;
+            const width = isFinite(measured) && measured > 0.05 ? measured : ENEMY_SPREAD_FALLBACK_W;
+            // A model whose geometry is not centred on its root would drift when
+            // placed by centre, so carry the offset and take it back out below.
+            const centerOffset = box.isEmpty() ? 0 : (box.max.x + box.min.x) / 2 - root.position.x;
+            row.push({ root, width, centerOffset });
+        }
+
+        if (row.length > 1) {
+            const totalW = row.reduce((sum, e) => sum + e.width, 0);
+            const maxSpan = ENEMY_SPREAD_HALF_SPAN * 2;
+            let gap = ENEMY_SPREAD_GAP;
+            if (totalW + gap * (row.length - 1) > maxSpan) {
+                gap = Math.max(0.15, (maxSpan - totalW) / (row.length - 1));
+            }
+            const span = totalW + gap * (row.length - 1);
+            // A row of giants can still outgrow the view: pull the whole line in
+            // rather than letting the outer creatures walk off the screen.
+            const squeeze = span > maxSpan ? maxSpan / span : 1;
+            let cursor = -span / 2;
+            for (const e of row) {
+                const center = (cursor + e.width / 2) * squeeze;
+                e.root.position.x = center - e.centerOffset;
+                cursor += e.width + gap;
+            }
+            debugLog(`Spread ${row.length} enemy models over ${(span * squeeze).toFixed(2)} units`);
+        }
+
+        // The HUD reads this to know the field has stopped moving and its
+        // compact enemy bars can be locked in place.
+        this._3dEnemyLayoutSettled = true;
     };
 
     const _Spriteset_Battle_createActors = Spriteset_Battle.prototype.createActors;
@@ -2602,6 +2669,14 @@
                     // fade-off explicitly so they vanish on death too (fires for
                     // both HP-loss deaths and lethal body-part kills).
                     if (model.startDeathFade) model.startDeathFade();
+                } else if (this._battler.isHidden()) {
+                    // Taken off the field alive: a monster talked round mid-fight
+                    // (EnemyTalkSystem) is hidden rather than killed, and the rest
+                    // of its pack fights on, so the model has to go the same way
+                    // the 2D sprite's "disappear" effect takes it. Nothing plays
+                    // over it: the creature walked out, it did not fall.
+                    if (model.startDeathFade) model.startDeathFade();
+                    else if (model.model) model.model.visible = false;
                 }
             }
         }

@@ -195,6 +195,13 @@
   // thought, so the same {item} reads differently for a greedy vs. frugal NPC.
   const ITEM_DISPOSITION_THOUGHTS = () => bank('ConvThoughts.itemDisposition');
 
+  // What an addicted NPC says while a craving is on them, keyed by substance:
+  // "craving" while they are merely wanting it, "withdrawal" once the want has
+  // turned into something they cannot talk around. AddictionSystem
+  // (TimeDateSystem.js) answers how badly they want it; the words are here.
+  const CRAVING_THOUGHTS = () => bank('ConvThoughts.craving');
+  const CRAVING_WITHDRAWAL_THOUGHTS = () => bank('ConvThoughts.withdrawal');
+
   // Extra thoughts for NPCs who know the player well (playerOpinion >= 20).
   // Formerly FAMILIAR_THOUGHT_POOL in NPCSimulationCore.js.
   const FAMILIAR_THOUGHTS = () => bank('ConvThoughts.familiar');
@@ -770,11 +777,42 @@
     },
   };
 
+  // A craving speaks up before anything else does: an NPC who wants a cigarette
+  // is not thinking about the weather. It only opens its mouth once the want is
+  // real (CRAVING_SPEAKS_AT) and gets louder from there, so an addict in the
+  // street is quiet most of the day and unmistakable near the end of a cycle.
+  const CRAVING_SPEAKS_AT = 70;
+  const CRAVING_WITHDRAWAL_AT = 95;
+
+  const CravingProvider = {
+    pick(profile) {
+      const system = window.AddictionSystem;
+      if (!system || !system.profileWorst) return null;
+      let worst = null;
+      try { worst = system.profileWorst(profile); } catch (_) { return null; }
+      if (!worst || worst.value < CRAVING_SPEAKS_AT) return null;
+
+      // How close they are to the end of their cycle is how likely they are to
+      // say something about it, up to half the time when it is unbearable.
+      const bite = (worst.value - CRAVING_SPEAKS_AT) / (100 - CRAVING_SPEAKS_AT);
+      if (Math.random() > bite * 0.5) return null;
+
+      const table = worst.value >= CRAVING_WITHDRAWAL_AT
+        ? CRAVING_WITHDRAWAL_THOUGHTS() : CRAVING_THOUGHTS();
+      const pool = table && table[worst.key];
+      if (!pool || !pool.length) return null;
+      return applyVoice(_pickFrom(pool), _personalityNameOf(profile));
+    },
+  };
+
   const ThoughtProvider = {
     get personalityCoreThoughts() { return PERSONALITY_CORE_THOUGHTS(); },
 
     pickThought(profile) {
       if (!profile) return null;
+      // A body that wants something talks over everything else it might say.
+      const craving = CravingProvider.pick(profile);
+      if (craving) return craving;
       // Political life occasionally crowds out everything else, officeholders,
       // hot rumors and looming elections speak up via PoliticsProvider.
       if (Math.random() < 0.12) {
@@ -1098,6 +1136,7 @@
     ConversationLog,
     SituationalThoughts,
     ThoughtProvider,
+    CravingProvider,
     PoliticsProvider,
     WorldProvider,
     ThoughtBubbleManager, // null when running headless (Node test harness)
@@ -1109,6 +1148,7 @@
         NEUTRAL_SCRIPTS: NEUTRAL_SCRIPTS(), DEBATE_SCRIPTS: DEBATE_SCRIPTS(),
         AMBIENT_SCRIPTS: AMBIENT_SCRIPTS(), NEED_THOUGHTS: NEED_THOUGHTS(),
         FAMILIAR_THOUGHTS: FAMILIAR_THOUGHTS(), CAPABILITY_THOUGHTS: CAPABILITY_THOUGHTS(),
+        CRAVING_THOUGHTS: CRAVING_THOUGHTS(), CRAVING_WITHDRAWAL_THOUGHTS: CRAVING_WITHDRAWAL_THOUGHTS(),
         PERSONALITY_CORE_THOUGHTS: PERSONALITY_CORE_THOUGHTS(), WEATHER_THOUGHTS: WEATHER_THOUGHTS(),
         TIME_THOUGHTS: TIME_THOUGHTS(), POLITICAL_THOUGHTS: POLITICAL_THOUGHTS(),
         ELECTION_THOUGHTS: ELECTION_THOUGHTS(), POLITICAL_RUMOR_THOUGHTS: POLITICAL_RUMOR_THOUGHTS(),

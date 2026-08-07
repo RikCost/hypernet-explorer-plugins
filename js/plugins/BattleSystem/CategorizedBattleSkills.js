@@ -4,29 +4,43 @@
 
 /*:
  * @target MZ
- * @plugindesc Categorized skill menus for battle and the menu scene, with fullscreen skill UI and party switching.
+ * @plugindesc Role-tabbed skill menu with a carried battle loadout of 7 skills and 7 magic per character.
  * @author Omni-Lex
- * @version 2.0.0
+ * @version 3.0.0
  *
  * @help CategorizedBattleSkills.js
  *
  * Combines CategorizedBattleSkills and CustomSkillsMenuSwitcher into one plugin.
  *
+ * --- THE LOADOUT ---
+ * A character knows far more than they can hold in their hands. At most 7
+ * skills and 7 magic are carried at once, and only those reach the battle
+ * menus; everything else is known but benched until the player says otherwise.
+ * A newly learned skill is carried straight away while its half of the loadout
+ * still has room. The Basic kit (<category:Basic>: Attack, Guard, Check, ...)
+ * and anything a weapon or a state grants are always carried and spend no slot.
+ *
+ * window.BattleLoadout is the only way to ask what a character carries.
+ *
  * --- BATTLE ---
- * Skills are grouped by category. Select a category first, then choose a skill.
- * Categories grey out when no usable skills exist in them.
+ * One flat list per skill type, holding that type's carried skills by name.
+ * There is no category layer.
  *
  * --- MENU (Skills scene) ---
- * Same categorized layout with icons. Categories are NEVER greyed out.
- * Individual skills grey out if the actor cannot use them.
+ * Three tabs by role, Offensive / Healing / Support, each listing skills AND
+ * magic together by name, plus a "Level Up" tab of what the class still owes.
+ * A skill is carried or benched from its row (Shift, or the pill on the card)
+ * or from the action list on the right page.
  * Left/Right switches party members. The skill info panel replaces the status window.
- * "Level Up" tab shows learnable skills by level.
  *
  * --- HOW TO USE ---
- * Add <category: CategoryName> to a skill's Note field.
- * Skills without a category tag fall into "General".
+ * Add <role: Offensive|Healing|Support> to a skill's Note field. A skill
+ * without one is bucketed from its own mechanics.
  *
  * --- CHANGE LOG ---
+ * v3.0.0 - Carried battle loadout (7 skills + 7 magic). Skill menu tabs are
+ *          roles, not schools. Battle categories, the categorization option
+ *          and favourite skills all removed.
  * v2.0.0 - Merged CustomSkillsMenuSwitcher into CategorizedBattleSkills.
  *          Menu categories never grey out; individual skills grey if unusable.
  *          Category icons shown in menu skill list.
@@ -40,8 +54,6 @@
 
 (() => {
     'use strict';
-
-    const DEFAULT_CATEGORY = "Basic"; // i18n-ignore: matched against the <category:Basic> note tag
 
     // Escape user/DB-provided strings before injecting into innerHTML so that
     // characters like < > & " ' (e.g. in damage formulas or notes) don't
@@ -259,6 +271,9 @@
                     const nameLower = tagName.toLowerCase();
                     if (nameLower === "category") return;
                     if (nameLower === "uncraftable") return;
+                    // Sphere-grid plumbing (SkillMaster's <Node:> / <Link:> tags):
+                    // where a skill sits on its category graph is drawn, not listed.
+                    if (nameLower === "node" || nameLower === "link") return;
                     if (nameLower === "lore" && val && window.ItemSystemUtils && typeof window.ItemSystemUtils.fillLore === "function") {
                         val = window.ItemSystemUtils.fillLore(val, skill.id);
                     }
@@ -471,56 +486,33 @@
     }
 
     const isDummySkill = skill => !skill.name || !skill.name.trim() || skill.name.startsWith('<--');
-    const getSkillCategory = skill => (typeof skill.meta.category === 'string' && skill.meta.category.trim()) || DEFAULT_CATEGORY;
 
     //=============================================================================
-    // Categorization mode ,  Role (default) / School / Off
+    // Roles ,  the one grouping a skill has
     //=============================================================================
-    // 0 = Role (Offensive / Healing / Support), 1 = School (magic schools &
-    // skill disciplines), 2 = Off (no grouping). Off is the default: the flat
-    // skill list is the plainest starting point, the groupings are opt-in.
-    const CAT_MODE_ROLE = 0, CAT_MODE_SCHOOL = 1, CAT_MODE_OFF = 2;
-
-    function getSkillCategoryMode() {
-        const v = ConfigManager.skillCategoryMode;
-        return (v === undefined || v === null) ? CAT_MODE_OFF : v;
-    }
-    function isRoleMode() {
-        return getSkillCategoryMode() === CAT_MODE_ROLE;
-    }
-
-    // Fixed role buckets with fixed icons. Healing reuses the school "Healing"
-    // metadata (see getCatData), so it is intentionally absent here.
-    // i18n-ignore-start: role bucket ids, matched against the <role:> tag and
-    // against Categories.json keys; the visible names come from ROLE_DATA
+    // Schools (<category:>) survive as flavour on the inspect page and nowhere
+    // else: what a skill is FOR is what the menu sorts it by.
+    // i18n-ignore-start: role bucket ids, matched against the <role:> tag; the
+    // visible names come from ROLE_DATA
     const ROLE_KEYS = ['Offensive', 'Healing', 'Support'];
-    // Display order for the role buckets. Basic skills keep their own bucket and
-    // are always shown last (after Support) in Role mode.
-    const ROLE_ORDER = { Offensive: 0, Healing: 1, Support: 2, Basic: 3 };
     // i18n-ignore-end
 
-    // The Basic category only has its own dedicated battle command in Off mode;
-    // in Role/School mode it is merged into the unified Skills menu as a category.
-    function basicHasOwnCommand() {
-        return getSkillCategoryMode() === CAT_MODE_OFF;
-    }
-    // nameKey/descKey are resolved at render time by getCategoryInfo. The
-    // "Role" type is an id, compared against the skill-type group.
+    // nameKey/descKey are resolved at render time by getRoleInfo.
     const ROLE_DATA = {
         Offensive: {
             nameKey: "SkillsMenu.role.offensive.name",
             descKey: "SkillsMenu.role.offensive.description",
-            type: "Role", icon: 97 // i18n-ignore: group id
+            icon: 97
         },
         Healing: {
             nameKey: "SkillsMenu.role.healing.name",
             descKey: "SkillsMenu.role.healing.description",
-            type: "Role", icon: 75 // i18n-ignore: group id
+            icon: 75
         },
         Support: {
             nameKey: "SkillsMenu.role.support.name",
             descKey: "SkillsMenu.role.support.description",
-            type: "Role", icon: 80 // i18n-ignore: group id
+            icon: 80
         }
     };
 
@@ -556,63 +548,173 @@
         return inferSkillRole(skill);
     }
 
-    // The grouping key used to bucket skills: role in Role mode, else school.
-    // Basic-category skills always keep their own "Basic" bucket (shown last in
-    // Role mode), rather than being scattered across the role buckets.
-    function getSkillGroup(skill) {
-        if (getSkillCategory(skill) === DEFAULT_CATEGORY) return DEFAULT_CATEGORY;
-        return isRoleMode() ? getSkillRole(skill) : getSkillCategory(skill);
+    function getRoleInfo(roleKey) {
+        const data = ROLE_DATA[roleKey];
+        if (!data) return { name: String(roleKey || ''), description: '', icon: 160 };
+        return {
+            name: T.has(data.nameKey) ? T(data.nameKey) : roleKey,
+            description: T.has(data.descKey) ? T(data.descKey) : '',
+            icon: data.icon
+        };
     }
+    const getRoleDisplayName = roleKey => getRoleInfo(roleKey).name;
+    const getRoleDescription = roleKey => getRoleInfo(roleKey).description;
 
     //=============================================================================
-    // Recent skills ,  last few skills used in battle, surfaced under the
-    // category list for quick re-casting.
+    // Battle loadout ,  what a character actually carries into a fight
     //=============================================================================
-    const RECENT_SKILLS_MAX = 7;
+    // Knowing a skill and having it to hand are two different things. At most
+    // LOADOUT_MAX skills and LOADOUT_MAX magic are carried at once and only
+    // those reach the battle menus; the rest are known and benched. Two kinds of
+    // skill are always carried and spend no slot: the Basic kit (the engine's
+    // own fallback moves, which have their own battle command) and anything a
+    // weapon or a state grants, which comes and goes with what is worn.
+    // The carried ids live on $gameSystem, so a loadout travels with the save.
+    const LOADOUT_MAX = 7;
+    const GROUP_MAGIC = 'Magic', GROUP_SKILL = 'Skill'; // i18n-ignore: skill-type group ids
 
-    // Recent skills are tracked per actor and stored on $gameSystem, so each
-    // character keeps their own history and it persists across battles/saves.
-    function getRecentSkillIds(actorId) {
-        if (!$gameSystem._recentSkillIds || Array.isArray($gameSystem._recentSkillIds)) {
-            // Initialise (and migrate any legacy single global list away).
-            $gameSystem._recentSkillIds = {};
-        }
-        if (!$gameSystem._recentSkillIds[actorId]) $gameSystem._recentSkillIds[actorId] = [];
-        return $gameSystem._recentSkillIds[actorId];
+    // "Magic" for a skill type whose name reads as magic, "Skill" otherwise.
+    function _getStypeIdCategoryGroup(stypeId) {
+        if (!stypeId) return null;
+        const name = $dataSystem.skillTypes[stypeId] || '';
+        return name.toLowerCase().includes('magic') ? GROUP_MAGIC : GROUP_SKILL;
     }
 
-    function pushRecentSkillId(actorId, skillId) {
-        const list = getRecentSkillIds(actorId);
-        const i = list.indexOf(skillId);
-        if (i >= 0) list.splice(i, 1);
-        list.unshift(skillId);
-        if (list.length > 30) list.length = 30;
+    // The explicit tag, not getSkillCategory's catch-all: an untagged skill is
+    // an ordinary skill, not a member of the engine's basic kit.
+    const isBasicSkill = skill => !!skill && /<category\s*:\s*Basic\s*>/i.test(skill.note || '');
+
+    function loadoutGroupOf(skill) {
+        return _getStypeIdCategoryGroup(skill && skill.stypeId) === GROUP_MAGIC ? GROUP_MAGIC : GROUP_SKILL;
     }
 
-    // Most-recently-used skills the given actor actually knows (newest first),
-    // optionally restricted to a single skill type.
-    function getRecentSkillsForActor(actor, stypeId, max) {
-        if (!actor) return [];
-        const known = new Set(actor.skills().map(s => s.id));
-        const out = [];
-        for (const id of getRecentSkillIds(actor.actorId())) {
-            if (!known.has(id)) continue;
-            const skill = $dataSkills[id];
-            if (!skill || isDummySkill(skill)) continue;
-            if (stypeId && skill.stypeId !== stypeId) continue;
-            out.push(skill);
-            if (out.length >= max) break;
-        }
-        return out;
+    function isAlwaysCarried(actor, skill) {
+        if (!skill) return false;
+        if (isBasicSkill(skill)) return true;
+        if (!actor) return false;
+        return !actor.isLearnedSkill(skill.id) && actor.addedSkills().includes(skill.id);
     }
 
-    // Record skills as they are used (battle or menu), per acting actor.
-    const _Game_Battler_useItem = Game_Battler.prototype.useItem;
-    Game_Battler.prototype.useItem = function (item) {
-        _Game_Battler_useItem.call(this, item);
-        if (item && DataManager.isSkill(item) && this.isActor && this.isActor()) {
-            pushRecentSkillId(this.actorId(), item.id);
+    function loadoutStore() {
+        if (!$gameSystem._activeBattleSkills) $gameSystem._activeBattleSkills = {};
+        return $gameSystem._activeBattleSkills;
+    }
+
+    // The raw carried list, in the order the skills were taken up. A character
+    // who has never had one (an old save, or one built before this ran) is
+    // seeded with the first LOADOUT_MAX of each group they know, so nobody
+    // walks into a fight with empty hands.
+    function loadoutIds(actor) {
+        if (!actor || typeof $gameSystem === 'undefined' || !$gameSystem) return [];
+        const store = loadoutStore();
+        const id = actor.actorId();
+        if (!Array.isArray(store[id])) store[id] = seedLoadout(actor);
+        return store[id];
+    }
+
+    function seedLoadout(actor) {
+        const counts = {};
+        const picked = [];
+        for (const skill of actor.skills()) {
+            if (!skill || isDummySkill(skill) || isAlwaysCarried(actor, skill)) continue;
+            const group = loadoutGroupOf(skill);
+            if ((counts[group] || 0) >= LOADOUT_MAX) continue;
+            counts[group] = (counts[group] || 0) + 1;
+            picked.push(skill.id);
         }
+        return picked;
+    }
+
+    const BattleLoadout = {
+        MAX: LOADOUT_MAX,
+        GROUP_MAGIC: GROUP_MAGIC,
+        GROUP_SKILL: GROUP_SKILL,
+        groupOf: loadoutGroupOf,
+        isAlwaysCarried: isAlwaysCarried,
+        isBasic: isBasicSkill,
+
+        // Carried ids the character still knows, in carry order.
+        ids(actor) {
+            if (!actor) return [];
+            const known = new Set(actor.skills().map(s => s.id));
+            return loadoutIds(actor).filter(id => {
+                const skill = $dataSkills[id];
+                return skill && !isDummySkill(skill) && known.has(id);
+            });
+        },
+
+        isActive(actor, skill) {
+            if (!actor || !skill) return false;
+            if (isAlwaysCarried(actor, skill)) return true;
+            return loadoutIds(actor).includes(skill.id);
+        },
+
+        count(actor, group) {
+            return this.ids(actor).filter(id => loadoutGroupOf($dataSkills[id]) === group).length;
+        },
+
+        hasRoom(actor, group) {
+            return this.count(actor, group) < LOADOUT_MAX;
+        },
+
+        // 'locked' , always carried, there is nothing to decide. 'full' , that
+        // half of the loadout is already at capacity. Otherwise 'on' / 'off'.
+        toggle(actor, skill) {
+            if (!actor || !skill) return 'locked';
+            if (isAlwaysCarried(actor, skill)) return 'locked';
+            const list = loadoutIds(actor);
+            const i = list.indexOf(skill.id);
+            if (i >= 0) {
+                list.splice(i, 1);
+                return 'off';
+            }
+            if (!this.hasRoom(actor, loadoutGroupOf(skill))) return 'full';
+            list.push(skill.id);
+            return 'on';
+        },
+
+        // A freshly learned skill is taken up at once while its half of the
+        // loadout has room; past that it is learned and left on the bench.
+        autoActivate(actor, skillId) {
+            const skill = $dataSkills[skillId];
+            if (!actor || !skill || isDummySkill(skill)) return false;
+            if (isAlwaysCarried(actor, skill)) return false;
+            const list = loadoutIds(actor);
+            if (list.includes(skillId)) return false;
+            if (!this.hasRoom(actor, loadoutGroupOf(skill))) return false;
+            list.push(skillId);
+            return true;
+        },
+
+        drop(actor, skillId) {
+            const list = loadoutIds(actor);
+            const i = list.indexOf(skillId);
+            if (i >= 0) list.splice(i, 1);
+        },
+
+        // What a battle menu shows for one skill type: that type's carried
+        // skills, by name. The Basic kit has its own command and stays out.
+        battleSkills(actor, stypeId) {
+            if (!actor) return [];
+            return actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && !isBasicSkill(skill) &&
+                    (!stypeId || skill.stypeId === stypeId) && this.isActive(actor, skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        }
+    };
+    window.BattleLoadout = BattleLoadout;
+
+    const _Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
+    Game_Actor.prototype.learnSkill = function (skillId) {
+        const knew = this.isLearnedSkill(skillId);
+        _Game_Actor_learnSkill.call(this, skillId);
+        if (!knew && this.isLearnedSkill(skillId)) BattleLoadout.autoActivate(this, skillId);
+    };
+
+    const _Game_Actor_forgetSkill = Game_Actor.prototype.forgetSkill;
+    Game_Actor.prototype.forgetSkill = function (skillId) {
+        _Game_Actor_forgetSkill.call(this, skillId);
+        BattleLoadout.drop(this, skillId);
     };
 
     let _statsI18n = null;
@@ -638,519 +740,10 @@
     _loadStatsI18n();
 
     //=============================================================================
-    // Category Data ,  loaded from js/db/Skills/Categories.json
+    // BattleSkillMixin (used by Window_BattleSkill)
     //=============================================================================
 
-    let CATEGORY_DATA = {};
-
-    const _loadCategoryData = async () => {
-        const url = 'js/db/Skills/Categories.json';
-        try {
-            const response = await fetch(url);
-            CATEGORY_DATA = await response.json();
-        } catch (e) {
-            console.error('CategorizedBattleSkills: Failed to load Categories.json from ' + url, e);
-        }
-    };
-
-    _loadCategoryData();
-
-    //=============================================================================
-    // Game Options Registry & ConfigManager Persistence
-    //=============================================================================
-    // Skill categorization mode: 0 = Role, 1 = School, 2 = Off (default).
-    ConfigManager.skillCategoryMode = CAT_MODE_OFF;
-
-    const _ConfigManager_makeData = ConfigManager.makeData;
-    ConfigManager.makeData = function () {
-        const config = _ConfigManager_makeData.call(this);
-        config.skillCategoryMode = this.skillCategoryMode;
-        return config;
-    };
-
-    const _ConfigManager_applyData = ConfigManager.applyData;
-    ConfigManager.applyData = function (config) {
-        _ConfigManager_applyData.call(this, config);
-        if (config.skillCategoryMode !== undefined) {
-            this.skillCategoryMode = config.skillCategoryMode;
-        } else if (config.categorizeInBattle !== undefined) {
-            // Migrate the old boolean while preserving the player's prior choice:
-            // ON -> School, OFF -> Off. New players default to Off below.
-            this.skillCategoryMode = config.categorizeInBattle ? CAT_MODE_SCHOOL : CAT_MODE_OFF;
-        } else {
-            this.skillCategoryMode = CAT_MODE_OFF;
-        }
-    };
-
-    const _skillCatModeNames = () => T.list('SkillsMenu.option.categoryModes');
-
-    // Register option in GameOptions (3-way select) or fallback to a basic command.
-    if (typeof GameOptions !== 'undefined' && typeof GameOptions.registerOption === 'function') {
-        GameOptions.registerOption('skillCategoryMode', T('SkillsMenu.option.skillCategorization'),
-            () => getSkillCategoryMode(),
-            (value) => { ConfigManager.skillCategoryMode = value; },
-            'gameplay', 'boolean',
-            (value) => _skillCatModeNames()[value] || _skillCatModeNames()[0],
-            function () {
-                const v = (getSkillCategoryMode() + 1) % 3;
-                this.setConfigValue('skillCategoryMode', v);
-            },
-            function () {
-                const v = (getSkillCategoryMode() + 2) % 3;
-                this.setConfigValue('skillCategoryMode', v);
-            }
-        );
-    } else {
-        const _Window_Options_makeCommandList = Window_Options.prototype.makeCommandList;
-        Window_Options.prototype.makeCommandList = function () {
-            _Window_Options_makeCommandList.call(this);
-            this.addCommand(T('SkillsMenu.option.skillCategorization'), "skillCategoryMode");
-        };
-    }
-
-    const FAVOURITES_CATEGORY = "Favourites"; // i18n-ignore: category id, compared in code
-    const FAVOURITE_ICON = 87;
-
-    function getActorFavourites(actorId) {
-        if (!$gameSystem._favouriteSkills) $gameSystem._favouriteSkills = {};
-        if (!$gameSystem._favouriteSkills[actorId]) $gameSystem._favouriteSkills[actorId] = [];
-        return $gameSystem._favouriteSkills[actorId];
-    }
-
-    function isSkillFavourited(actorId, skillId) {
-        return getActorFavourites(actorId).includes(skillId);
-    }
-
-    function toggleFavouriteSkill(actorId, skillId) {
-        const favs = getActorFavourites(actorId);
-        const idx = favs.indexOf(skillId);
-        if (idx >= 0) favs.splice(idx, 1);
-        else favs.push(skillId);
-    }
-
-    // Metadata lookup: school categories take precedence, then the fixed role
-    // buckets (so "Healing" resolves to the existing school entry, while
-    // "Offensive"/"Support" come from ROLE_DATA).
-    function getCatData(categoryName) {
-        return CATEGORY_DATA[categoryName] || ROLE_DATA[categoryName] || null;
-    }
-
-    function getCategoryInfo(categoryName) {
-        const isItalian = ConfigManager.language === 'it';
-        const data = getCatData(categoryName);
-        if (!data) return {
-            name: categoryName, description: '', type: "Skill", // i18n-ignore: skill-type group id
-            icon: 160
-        };
-        // The role buckets carry i18n keys; js/db/Skills/Categories.json still
-        // ships its own en/it pair, which the db overlay phase will take over.
-        if (data.nameKey) {
-            return {
-                name: T.has(data.nameKey) ? T(data.nameKey) : categoryName,
-                description: T.has(data.descKey) ? T(data.descKey) : '',
-                type: data.type,
-                icon: data.icon
-            };
-        }
-        const nameObj = data.name || {};
-        const descObj = data.description || {};
-        return {
-            name: (isItalian ? nameObj.it : nameObj.en) || nameObj.en || nameObj.it || categoryName,
-            description: (isItalian ? descObj.it : descObj.en) || descObj.en || descObj.it || '',
-            type: data.type,
-            icon: data.icon
-        };
-    }
-
-    // Returns "Magic" if the skill type name indicates magic, otherwise "Skill".
-    function _getStypeIdCategoryGroup(stypeId) {
-        if (!stypeId) return null;
-        const name = $dataSystem.skillTypes[stypeId] || '';
-        // Also check its lowercase variant
-        return name.toLowerCase().includes('magic') ? 'Magic' : 'Skill'; // i18n-ignore: skill-type group ids
-    }
-
-    // Returns true if the given category should be visible when the current stypeId is active.
-    // Categories with type "Magic" only appear for magic skill types.
-    // Categories with type "Skill" only appear for non-magic (skill) skill types.
-    // Favourites category always appears.
-    function _isCategoryVisibleForStypeId(categoryName, stypeId) {
-        if (!stypeId) return true;
-        // Role buckets span every skill type, so never hide them by group.
-        if (isRoleMode()) return true;
-        if (categoryName === FAVOURITES_CATEGORY) return true;
-        const group = _getStypeIdCategoryGroup(stypeId);
-        if (!group) return true;
-        const info = getCategoryInfo(categoryName);
-        return info.type === group;
-    }
-
-    function decamelcaseAndCapitalize(str) {
-        if (typeof str !== 'string') return '';
-        if (!str) return '';
-        const decamel = str
-            .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-            .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
-        return decamel.split(/\s+/).map(word => {
-            if (!word) return '';
-            if (word === word.toUpperCase()) return word;
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        }).join(' ');
-    }
-
-    function getCategoryDisplayName(categoryName) {
-        if (typeof categoryName !== 'string') return '';
-        const name = getCategoryInfo(categoryName).name;
-        const isItalian = ConfigManager.language === 'it';
-        const data = getCatData(categoryName);
-        if (isItalian && data) {
-            return name;
-        }
-        return decamelcaseAndCapitalize(name);
-    }
-
-    function getCategoryDescription(categoryName) {
-        return getCategoryInfo(categoryName).description;
-    }
-
-    function getEquippedWeaponType(actor) {
-        if (!actor) return null;
-        const weapons = actor.weapons();
-        if (weapons && weapons.length > 0 && weapons[0]) return weapons[0].wtypeId;
-        return null;
-    }
-
-    function isCategoryCompatibleWithWeapon(categoryName, weaponType) {
-        // i18n-ignore-start: Categories.json keys, compared never displayed
-        if (weaponType === null) {
-            if (categoryName === 'Swordsmanship' || categoryName === 'Firearms') return false;
-            return true;
-        }
-        if (categoryName === 'Swordsmanship') {
-            return ![3, 5, 6, 7, 8, 9, 10, 11].includes(weaponType);
-        }
-        if (categoryName === 'Firearms') {
-            return ![1, 2, 3, 4, 5, 6, 10, 11, 12].includes(weaponType);
-        }
-        // i18n-ignore-end
-        return true;
-    }
-
-    //=============================================================================
-    // CategorizedSkillMixin (used by Window_BattleSkill)
-    //=============================================================================
-
-    const CategorizedSkillMixin = {
-        shouldCategorize: function (actor = this._actor) {
-            if (getSkillCategoryMode() !== CAT_MODE_OFF) return true;
-            // Even with grouping Off, fall back to categories for huge skill lists.
-            if (actor && actor.skills().length > 100) return true;
-            return false;
-        },
-
-        initializeCategorizedMode: function () {
-            this._categoryMode = CategorizedSkillMixin.shouldCategorize.call(this);
-            this._selectedCategory = null;
-            this._lastCategoryIndex = 0;
-            this._categorySkillIndexes = {};
-        },
-
-        resetCategorizedState: function (actor) {
-            if (this._actor !== actor) {
-                this._categoryMode = CategorizedSkillMixin.shouldCategorize.call(this, actor);
-                this._selectedCategory = null;
-                this._lastCategoryIndex = 0;
-                this._categorySkillIndexes = {};
-            }
-        },
-
-        resetToCategoryMode: function () {
-            if (this._basicMode) {
-                // Basic mode is driven by its own battle command; never show categories.
-                this._categoryMode = false;
-                this._selectedCategory = null;
-                return;
-            }
-            this._categoryMode = CategorizedSkillMixin.shouldCategorize.call(this);
-            this._selectedCategory = null;
-        },
-
-        maxColsCategorized: function (originalMaxCols) {
-            if (this._categoryMode) return originalMaxCols.call(this);
-            return 2;
-        },
-
-        makeCategorizedItemList: function () {
-            if (this._basicMode) {
-                this.makeBasicSkillList();
-            } else if (this._categoryMode) {
-                this.makeCategoryList();
-            } else {
-                this.makeFilteredSkillList();
-            }
-        },
-
-        // Basic skills across every skill type (magic and skill), shown via the
-        // dedicated "Basic" battle command instead of the category list.
-        makeBasicSkillList: function () {
-            this._recentStartIndex = null;
-            if (this._actor) {
-                let list = this._actor.skills().filter(skill => {
-                    if (isDummySkill(skill)) return false;
-                    return getSkillCategory(skill) === DEFAULT_CATEGORY;
-                });
-                list.sort((a, b) => {
-                    const costTpA = this._actor.skillTpCost(a);
-                    const costMpA = this._actor.skillMpCost(a);
-                    const costTpB = this._actor.skillTpCost(b);
-                    const costMpB = this._actor.skillMpCost(b);
-                    if (costTpA !== costTpB) return costTpA - costTpB;
-                    return costMpA - costMpB;
-                });
-                this._data = list;
-            } else {
-                this._data = [];
-            }
-        },
-
-        makeCategoryList: function () {
-            if (this._actor) {
-                const actorId = this._actor.actorId();
-                const categoriesSet = new Set();
-                let hasFavourites = false;
-                for (const skill of this._actor.skills()) {
-                    if (isDummySkill(skill)) continue;
-                    if (this._stypeId && skill.stypeId !== this._stypeId) continue;
-                    if (isSkillFavourited(actorId, skill.id)) hasFavourites = true;
-                    // In Off mode the Basic category has its own dedicated battle
-                    // command, so its skills are not listed among the categories.
-                    if (basicHasOwnCommand() && getSkillCategory(skill) === DEFAULT_CATEGORY) continue;
-                    const grp = getSkillGroup(skill);
-                    // Filter out categories whose type (Magic/Skill) does not match
-                    // the current stypeId's group (no-op in Role mode).
-                    if (!_isCategoryVisibleForStypeId(grp, this._stypeId)) continue;
-                    categoriesSet.add(grp);
-                }
-                const categories = Array.from(categoriesSet);
-                if (isRoleMode()) {
-                    categories.sort((a, b) => (ROLE_ORDER[a] ?? 99) - (ROLE_ORDER[b] ?? 99));
-                } else {
-                    categories.sort();
-                }
-                if (hasFavourites) categories.unshift(FAVOURITES_CATEGORY);
-
-                // Append a quick-access list of recently used skills below the
-                // categories (a visual divider is drawn before them). Items at or
-                // after _recentStartIndex are skill objects, not categories.
-                this._recentStartIndex = null;
-                const recents = getRecentSkillsForActor(this._actor, this._stypeId, RECENT_SKILLS_MAX);
-                if (recents.length) {
-                    this._recentStartIndex = categories.length;
-                    this._data = categories.concat(recents);
-                } else {
-                    this._data = categories;
-                }
-            } else {
-                this._data = [];
-                this._recentStartIndex = null;
-            }
-        },
-
-        // True when the item at this index is a recent-skill entry rather than a
-        // category (only meaningful while the category list is showing).
-        isRecentItem: function (index) {
-            return this._categoryMode && this._recentStartIndex != null && index >= this._recentStartIndex;
-        },
-
-        makeFilteredSkillList: function () {
-            this._recentStartIndex = null;
-            if (this._actor) {
-                if (CategorizedSkillMixin.shouldCategorize.call(this)) {
-                    if (this._selectedCategory) {
-                        const actorId = this._actor.actorId();
-                        let list = this._actor.skills().filter(skill => {
-                            if (isDummySkill(skill)) return false;
-                            if (this._stypeId && skill.stypeId !== this._stypeId) return false;
-                            if (this._selectedCategory === FAVOURITES_CATEGORY) {
-                                return isSkillFavourited(actorId, skill.id);
-                            }
-                            // In Off mode, Basic skills live under their own command.
-                            if (basicHasOwnCommand() && getSkillCategory(skill) === DEFAULT_CATEGORY) return false;
-                            return getSkillGroup(skill) === this._selectedCategory;
-                        });
-                        // Sort by cost: cheaper on top, pricier on bottom
-                        list.sort((a, b) => {
-                            const costTpA = this._actor.skillTpCost(a);
-                            const costMpA = this._actor.skillMpCost(a);
-                            const costTpB = this._actor.skillTpCost(b);
-                            const costMpB = this._actor.skillMpCost(b);
-                            if (costTpA !== costTpB) return costTpA - costTpB;
-                            return costMpA - costMpB;
-                        });
-                        this._data = list;
-                    } else {
-                        this._data = [];
-                    }
-                } else {
-                    let list = this._actor.skills().filter(skill => {
-                        if (isDummySkill(skill)) return false;
-                        if (this._stypeId && skill.stypeId !== this._stypeId) return false;
-                        // Basic-category skills live under the dedicated "Basic"
-                        // command, so they are never duplicated in the regular list.
-                        if (getSkillCategory(skill) === DEFAULT_CATEGORY) return false;
-                        return true;
-                    });
-                    // Sort by cost: cheaper on top, pricier on bottom
-                    list.sort((a, b) => {
-                        const costTpA = this._actor.skillTpCost(a);
-                        const costMpA = this._actor.skillMpCost(a);
-                        const costTpB = this._actor.skillTpCost(b);
-                        const costMpB = this._actor.skillMpCost(b);
-                        if (costTpA !== costTpB) return costTpA - costTpB;
-                        return costMpA - costMpB;
-                    });
-                    this._data = list;
-                }
-            } else {
-                this._data = [];
-            }
-        },
-
-        getCategoryIcon: function (categoryName) {
-            return getCategoryInfo(categoryName).icon;
-        },
-
-        drawCategorizedItem: function (index) {
-            const item = this.itemAt(index);
-            if (!item) return;
-            const rect = this.itemLineRect(index);
-            if (this._categoryMode && !this.isRecentItem(index)) {
-                this.changePaintOpacity(this.hasCategoryUsableSkills(item));
-                this.resetTextColor();
-                this.drawIcon(this.getCategoryIcon(item), rect.x + 2, rect.y + 2);
-                this.drawText(getCategoryDisplayName(item), rect.x + ImageManager.iconWidth + 4, rect.y, rect.width - ImageManager.iconWidth - 4);
-            } else {
-                // All skills selectable regardless of usability
-                this.changePaintOpacity(true);
-                const isFav = this._actor && isSkillFavourited(this._actor.actorId(), item.id);
-                const favW = isFav ? ImageManager.iconWidth + 4 : 0;
-                this.drawItemName(item, rect.x, rect.y, rect.width - this.costWidth() - favW);
-                if (isFav) {
-                    this.drawIcon(FAVOURITE_ICON, rect.x + rect.width - this.costWidth() - ImageManager.iconWidth - 2, rect.y + 2);
-                }
-                this.drawSkillCost(item, rect.x, rect.y, rect.width);
-            }
-            this.changePaintOpacity(1);
-        },
-
-        costWidth: function () {
-            return this.textWidth("000");
-        },
-
-        drawSkillCost: function (skill, x, y, width) {
-            if (this._actor.skillTpCost(skill) > 0) {
-                this.changeTextColor(ColorManager.tpCostColor());
-                this.drawText(this._actor.skillTpCost(skill), x, y, width, "right");
-                this.resetTextColor();
-            } else if (this._actor.skillMpCost(skill) > 0) {
-                this.changeTextColor(ColorManager.mpCostColor());
-                this.drawText(this._actor.skillMpCost(skill), x, y, width, "right");
-                this.resetTextColor();
-            }
-        },
-
-        isCategoryEnabled: function (categoryName) {
-            return true;
-        },
-
-        hasCategoryUsableSkills: function (categoryName) {
-            if (!this._actor) return false;
-            const actorId = this._actor.actorId();
-            return this._actor.skills().some(skill => {
-                if (isDummySkill(skill)) return false;
-                if (this._stypeId && skill.stypeId !== this._stypeId) return false;
-                if (categoryName === FAVOURITES_CATEGORY) {
-                    return isSkillFavourited(actorId, skill.id) && this._actor.canUse(skill);
-                }
-                // In Off mode Basic skills live under their own command, not a group.
-                if (basicHasOwnCommand() && getSkillCategory(skill) === DEFAULT_CATEGORY) return false;
-                const grp = getSkillGroup(skill);
-                if (grp !== categoryName) return false;
-                // Hide categories whose type does not match current stypeId group
-                if (!_isCategoryVisibleForStypeId(grp, this._stypeId)) return false;
-                if (categoryName === 'Swordsmanship' || categoryName === 'Firearms') { // i18n-ignore: Categories.json keys
-                    if (!isCategoryCompatibleWithWeapon(categoryName, getEquippedWeaponType(this._actor))) return false;
-                }
-                return this._actor.canUse(skill);
-            });
-        },
-
-        isCategorizedItemEnabled: function (item, originalIsEnabled) {
-            if (this._categoryMode) return this.isCategoryEnabled(item);
-            return true; // All skills selectable; usability shown in action context menu
-        },
-
-        processCategorizedOk: function (originalProcessOk) {
-            // A recent-skill entry shown under the category list confirms the skill
-            // directly, exactly like picking it from a category's skill list.
-            if (this._categoryMode && !this.isRecentItem(this.index())) {
-                if (this.isCurrentItemEnabled()) {
-                    SoundManager.playOk();
-                    this._selectedCategory = this.item();
-                    this._lastCategoryIndex = this.index();
-                    this._categoryMode = false;
-                    this.refresh();
-                    const savedIndex = this._categorySkillIndexes[this._selectedCategory];
-                    if (savedIndex !== undefined && savedIndex < this.maxItems()) {
-                        this.select(savedIndex);
-                    } else {
-                        this.select(0);
-                    }
-                    this.activate();
-                } else {
-                    this.playBuzzerSound();
-                }
-            } else {
-                if (this._selectedCategory) {
-                    this._categorySkillIndexes[this._selectedCategory] = this.index();
-                }
-                // Show skill action menu instead of directly confirming
-                if (this.isHandled('skillaction')) {
-                    SoundManager.playOk();
-                    this.updateInputData();
-                    this.deactivate();
-                    this.callHandler('skillaction');
-                } else {
-                    originalProcessOk.call(this);
-                }
-            }
-        },
-
-        processCategorizedCancel: function (originalProcessCancel) {
-            if (this._basicMode) {
-                // No category layer to back out to; return straight to the command window.
-                originalProcessCancel.call(this);
-                return;
-            }
-            if (!CategorizedSkillMixin.shouldCategorize.call(this)) {
-                originalProcessCancel.call(this);
-                return;
-            }
-            if (!this._categoryMode) {
-                if (this._selectedCategory) {
-                    this._categorySkillIndexes[this._selectedCategory] = this.index();
-                }
-                this._categoryMode = true;
-                this._selectedCategory = null;
-                this.refresh();
-                this.select(Math.min(this._lastCategoryIndex, this.maxItems() - 1));
-                this.activate();
-                SoundManager.playCancel();
-            } else {
-                originalProcessCancel.call(this);
-            }
-        },
-
+    const BattleSkillMixin = {
         handleCursorMove: function () {
             const isP2 = window.$gameSplitScreen && window.$gameSplitScreen.active &&
                 this._actor && this._actor.multiplayerPlayerId && this._actor.multiplayerPlayerId() === 2;
@@ -1178,18 +771,11 @@
                 if (!this.isHandled("pagedown") && input.isRepeated("pagedown")) this.cursorPagedown();
                 if (!this.isHandled("pageup") && input.isRepeated("pageup")) this.cursorPageup();
             }
-        },
-
-        updateCategoryHelp: function () {
-            if (this._categoryMode) {
-                const category = this.item();
-                this.setHelpWindowText(category ? getCategoryDescription(category) : '');
-            }
         }
     };
 
     //=============================================================================
-    // Window_BattleSkill ,  categorized battle skill window
+    // Window_BattleSkill ,  the carried skills of one skill type, by name
     // NOTE: This section must come before Window_SkillList overrides so that
     // prototype captures (maxCols, setActor, processOk, etc.) grab the base
     // RPG Maker versions, not our menu overrides.
@@ -1227,7 +813,7 @@
     const _Window_BattleSkill_initialize = Window_BattleSkill.prototype.initialize;
     Window_BattleSkill.prototype.initialize = function (rect) {
         _Window_BattleSkill_initialize.call(this, rect);
-        CategorizedSkillMixin.initializeCategorizedMode.call(this);
+        this._basicMode = false;
 
         // Remove old overlay if any
         const old = document.getElementById('html-battle-skill-overlay');
@@ -1311,22 +897,11 @@
         if (_Window_BattleSkill_destroy) _Window_BattleSkill_destroy.call(this, options);
     };
 
-    const _Window_BattleSkill_setActor = Window_BattleSkill.prototype.setActor;
-    Window_BattleSkill.prototype.setActor = function (actor) {
-        CategorizedSkillMixin.resetCategorizedState.call(this, actor);
-        _Window_BattleSkill_setActor.call(this, actor);
-    };
-
     const _Window_BattleSkill_show = Window_BattleSkill.prototype.show;
     Window_BattleSkill.prototype.show = function () {
-        CategorizedSkillMixin.resetToCategoryMode.call(this);
         this.refresh();
         _Window_BattleSkill_show.call(this);
-        if (this._categoryMode && this._lastCategoryIndex !== undefined) {
-            this.select(Math.min(this._lastCategoryIndex, this.maxItems() - 1));
-        } else if (!this._categoryMode) {
-            this.select(0);
-        }
+        this.select(0);
         if (this._htmlSkillRoot) {
             this._buildSkillItems();
             setTimeout(() => {
@@ -1351,11 +926,7 @@
 
     const _Window_BattleSkill_refresh = Window_BattleSkill.prototype.refresh;
     Window_BattleSkill.prototype.refresh = function () {
-        if (!this._navigatingCategories) CategorizedSkillMixin.resetToCategoryMode.call(this);
         _Window_BattleSkill_refresh.call(this);
-        if (this._categoryMode && this._lastCategoryIndex !== undefined && !this._navigatingCategories) {
-            this.select(Math.min(this._lastCategoryIndex, this.maxItems() - 1));
-        }
         if (this._htmlSkillRoot) {
             this._buildSkillItems();
         }
@@ -1370,51 +941,60 @@
         // Disable standard touch inputs to prevent conflict with custom HTML overlay events
     };
 
+    // The Basic command shows the engine's own kit across every skill type;
+    // every other command shows that type's carried skills.
     Window_BattleSkill.prototype.makeItemList = function () {
-        CategorizedSkillMixin.makeCategorizedItemList.call(this);
+        if (!this._actor) {
+            this._data = [];
+            return;
+        }
+        if (this._basicMode) {
+            this._data = this._actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && isBasicSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+            this._data = BattleLoadout.battleSkills(this._actor, this._stypeId);
+        }
     };
-
-    Window_BattleSkill.prototype.shouldCategorize = CategorizedSkillMixin.shouldCategorize;
-    Window_BattleSkill.prototype.makeCategoryList = CategorizedSkillMixin.makeCategoryList;
-    Window_BattleSkill.prototype.makeBasicSkillList = CategorizedSkillMixin.makeBasicSkillList;
-    Window_BattleSkill.prototype.makeFilteredSkillList = CategorizedSkillMixin.makeFilteredSkillList;
 
     // Enables/disables the cross-type "Basic" skill view used by the Basic battle command.
     Window_BattleSkill.prototype.setBasicMode = function (flag) {
         this._basicMode = !!flag;
     };
-    Window_BattleSkill.prototype.isCategoryEnabled = CategorizedSkillMixin.isCategoryEnabled;
-    Window_BattleSkill.prototype.hasCategoryUsableSkills = CategorizedSkillMixin.hasCategoryUsableSkills;
-    Window_BattleSkill.prototype.getCategoryIcon = CategorizedSkillMixin.getCategoryIcon;
-    Window_BattleSkill.prototype.isRecentItem = CategorizedSkillMixin.isRecentItem;
 
     Window_BattleSkill.prototype.drawItem = function (index) {
-        CategorizedSkillMixin.drawCategorizedItem.call(this, index);
+        const skill = this.itemAt(index);
+        if (!skill) return;
+        const rect = this.itemLineRect(index);
+        // Every carried skill is selectable; whether it can be paid for is read
+        // off the greyed cost, not off a locked row.
+        this.changePaintOpacity(true);
+        this.drawItemName(skill, rect.x, rect.y, rect.width - this.costWidth());
+        this.drawSkillCost(skill, rect.x, rect.y, rect.width);
+        this.changePaintOpacity(1);
     };
 
+    // These four shadow the Window_SkillList overrides installed further down
+    // (which serve the menu scene): the captures above hold the base RPG Maker
+    // behaviour, which is what a battle wants.
     const _Window_BattleSkill_isEnabled = Window_BattleSkill.prototype.isEnabled;
     Window_BattleSkill.prototype.isEnabled = function (item) {
-        return CategorizedSkillMixin.isCategorizedItemEnabled.call(this, item, _Window_BattleSkill_isEnabled);
+        return true;
     };
 
     const _Window_BattleSkill_processOk = Window_BattleSkill.prototype.processOk;
     Window_BattleSkill.prototype.processOk = function () {
-        this._navigatingCategories = true;
-        CategorizedSkillMixin.processCategorizedOk.call(this, _Window_BattleSkill_processOk);
-        this._navigatingCategories = false;
+        _Window_BattleSkill_processOk.call(this);
     };
 
     const _Window_BattleSkill_processCancel = Window_BattleSkill.prototype.processCancel;
     Window_BattleSkill.prototype.processCancel = function () {
-        this._navigatingCategories = true;
-        CategorizedSkillMixin.processCategorizedCancel.call(this, _Window_BattleSkill_processCancel);
-        this._navigatingCategories = false;
+        _Window_BattleSkill_processCancel.call(this);
     };
 
-    const _Window_BattleSkill_processCursorMove = Window_BattleSkill.prototype.processCursorMove;
     Window_BattleSkill.prototype.processCursorMove = function () {
         if (this.isCursorMovable()) {
-            CategorizedSkillMixin.handleCursorMove.call(this);
+            BattleSkillMixin.handleCursorMove.call(this);
         }
     };
 
@@ -1434,15 +1014,11 @@
 
     const _Window_BattleSkill_updateHelp = Window_BattleSkill.prototype.updateHelp;
     Window_BattleSkill.prototype.updateHelp = function () {
-        if (this._categoryMode && !this.isRecentItem(this.index())) {
-            this.setHelpWindowText('');
+        const skill = this.item();
+        if (skill) {
+            this.setHelpWindowText(buildBattleSkillHelpText(skill, this._actor));
         } else {
-            const skill = this.item();
-            if (skill) {
-                this.setHelpWindowText(buildBattleSkillHelpText(skill, this._actor));
-            } else {
-                _Window_BattleSkill_updateHelp.call(this);
-            }
+            _Window_BattleSkill_updateHelp.call(this);
         }
     };
 
@@ -1485,94 +1061,38 @@
             const leftDiv = document.createElement('div');
             leftDiv.style.cssText = 'display:flex;align-items:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
 
-            if (this._categoryMode && !this.isRecentItem(i)) {
-                const category = item;
-                const isEnabled = this.hasCategoryUsableSkills(category);
+            const skill = item;
+            const isEnabled = this._actor ? this._actor.canUse(skill) : false;
 
-                const iconIndex = this.getCategoryIcon(category);
-                const iconSpan = document.createElement('span');
-                iconSpan.style.cssText = getIconStyle(iconIndex);
-                leftDiv.appendChild(iconSpan);
+            const iconSpan = document.createElement('span');
+            iconSpan.style.cssText = getIconStyle(skill.iconIndex);
+            leftDiv.appendChild(iconSpan);
 
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = getCategoryDisplayName(category);
-                leftDiv.appendChild(nameSpan);
-                el.appendChild(leftDiv);
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = skill.name;
+            leftDiv.appendChild(nameSpan);
+            el.appendChild(leftDiv);
 
-                if (!isEnabled) {
-                    el.style.opacity = '0.4';
-                }
-            } else {
-                const skill = item;
-                const actorId = this._actor ? this._actor.actorId() : 0;
-                const isEnabled = this._actor ? this._actor.canUse(skill) : false;
+            const rightDiv = document.createElement('div');
+            rightDiv.style.cssText = 'display:flex;align-items:center;font-size:85%;';
 
-                const iconIndex = skill.iconIndex;
-                const iconSpan = document.createElement('span');
-                iconSpan.style.cssText = getIconStyle(iconIndex);
-                leftDiv.appendChild(iconSpan);
-
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = skill.name;
-                leftDiv.appendChild(nameSpan);
-                el.appendChild(leftDiv);
-
-                const rightDiv = document.createElement('div');
-                rightDiv.style.cssText = 'display:flex;align-items:center;font-size:85%;';
-
-                const isFav = this._actor && isSkillFavourited(actorId, skill.id);
-                if (isFav) {
-                    const favSpan = document.createElement('span');
-                    favSpan.style.cssText = getIconStyle(FAVOURITE_ICON);
-                    rightDiv.appendChild(favSpan);
-                }
-
-                if (this._actor) {
-                    const tpCost = this._actor.skillTpCost(skill);
-                    const mpCost = this._actor.skillMpCost(skill);
-                    if (tpCost > 0) {
-                        const costSpan = document.createElement('span');
-                        costSpan.style.color = 'var(--text-primary-hover)';
-                        costSpan.style.fontWeight = 'bold';
-                        costSpan.style.marginLeft = '8px';
-                        costSpan.textContent = tpCost + ' AP';
-                        rightDiv.appendChild(costSpan);
-                    } else if (mpCost > 0) {
-                        const costSpan = document.createElement('span');
-                        costSpan.style.color = 'var(--text-primary-hover)';
-                        costSpan.style.fontWeight = 'bold';
-                        costSpan.style.marginLeft = '8px';
-                        costSpan.textContent = mpCost + ' MP';
-                        rightDiv.appendChild(costSpan);
-                    }
-                }
-                el.appendChild(rightDiv);
-
-                if (!isEnabled) {
-                    el.style.opacity = '0.4';
+            if (this._actor) {
+                const tpCost = this._actor.skillTpCost(skill);
+                const mpCost = this._actor.skillMpCost(skill);
+                const costText = tpCost > 0 ? tpCost + ' AP' : (mpCost > 0 ? mpCost + ' MP' : '');
+                if (costText) {
+                    const costSpan = document.createElement('span');
+                    costSpan.style.color = 'var(--text-primary-hover)';
+                    costSpan.style.fontWeight = 'bold';
+                    costSpan.style.marginLeft = '8px';
+                    costSpan.textContent = costText;
+                    rightDiv.appendChild(costSpan);
                 }
             }
+            el.appendChild(rightDiv);
 
-            // Draw a labelled divider just before the first recent-skill entry to
-            // separate it from the category list above.
-            if (this._recentStartIndex != null && i === this._recentStartIndex) {
-                const divider = document.createElement('div');
-                divider.style.cssText =
-                    'display:flex;align-items:center;gap:8px;margin:4px 2px 2px;' +
-                    'font-family:\'Lora\',serif;font-size:0.72em;font-weight:bold;' +
-                    'letter-spacing:1px;text-transform:uppercase;color:var(--text-card-medium);' +
-                    'user-select:none;';
-                const line = () => {
-                    const hr = document.createElement('div');
-                    hr.style.cssText = 'flex:1;height:1px;background:var(--border-gold-amber-30,rgba(255,255,255,0.18));';
-                    return hr;
-                };
-                const lbl = document.createElement('span');
-                lbl.textContent = T('SkillsMenu.recent');
-                divider.appendChild(line());
-                divider.appendChild(lbl);
-                divider.appendChild(line());
-                root.appendChild(divider);
+            if (!isEnabled) {
+                el.style.opacity = '0.4';
             }
 
             // Pointer handling is delegated on the persistent root (see
@@ -1710,12 +1230,11 @@
         // UI UI states
         this._dndActiveSection = "types"; // "types", "skills", "actions", "targets"
         this._dndSelectedTypeIndex = 0;
-        this._dndSelectedIndex = 0; // selected category or skill row
+        this._dndSelectedIndex = 0; // selected skill row
         this._dndSelectedActionIndex = 0;
         this._dndSelectedTargetIndex = 0;
         this._dndTargetingMode = false;
         this._dndTargetingSkill = null;
-        this._collapsedCategories = new Set();
 
         this.createUISkillOverlay();
     };
@@ -1775,9 +1294,9 @@
             this._skillActionWindow.hide();
             this._skillActionWindow.deactivate();
             this.onItemOk();
-        } else if (symbol === 'favourite') {
+        } else if (symbol === 'loadout') {
             const skill = this._itemWindow.item();
-            if (skill) toggleFavouriteSkill(this.actor().actorId(), skill.id);
+            if (skill) BattleLoadout.toggle(this.actor(), skill);
             this._skillActionWindow.hide();
             this._skillActionWindow.deactivate();
             this._itemWindow.refresh();
@@ -1824,14 +1343,13 @@
     };
 
     // Cycle the displayed party member from a keyboard/controller shortcut,
-    // resetting the category/skill selection so the new actor opens cleanly.
+    // resetting the skill selection so the new actor opens cleanly.
     Scene_Skill.prototype.cycleUIActor = function (dir) {
         const allMembers = $gameParty.allMembers();
         if (allMembers.length <= 1) return;
         this._actorIndex = (this._actorIndex + dir + allMembers.length) % allMembers.length;
         this.changeActor();
         this._dndSelectedIndex = 0;
-        this._dndSelectedCategoryIndex = 0;
         this.refreshUISkill();
     };
 
@@ -1891,9 +1409,6 @@
 
     Scene_Skill.prototype.createUISkillOverlay = function () {
         window.SkillDetails.injectStyles();
-        // Initialize the new category selection index
-        this._dndSelectedCategoryIndex = 0;
-        this._collapsedCategories = new Set();
 
         // Dynamic companions and spellbook styles
         let companionStyles = document.getElementById("companion-styles");
@@ -2036,6 +1551,59 @@
                 box-sizing: border-box;
                 min-height: 44px;
             }
+            /* A benched skill is still legible, just visibly not in hand. */
+            .skill-card-slot.benched {
+                opacity: 0.5;
+                border-style: dashed;
+            }
+            .loadout-pill {
+                font-family: 'Lora', serif;
+                font-size: 0.62rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                line-height: 1;
+                padding: 3px 6px;
+                margin-left: 6px;
+                border-radius: 3px;
+                border: 1px solid var(--text-primary-hover);
+                color: var(--text-primary-hover);
+                background: var(--border-primary-hover-translucent-15);
+                cursor: pointer;
+                user-select: none;
+                white-space: nowrap;
+            }
+            .loadout-pill.locked {
+                cursor: default;
+                opacity: 0.7;
+                border-style: dashed;
+            }
+            .loadout-pill.off {
+                border-color: var(--text-card-medium);
+                color: var(--text-card-medium);
+                background: transparent;
+            }
+            .loadout-summary {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                flex-wrap: wrap;
+                font-family: 'Lora', serif;
+                font-size: 0.78rem;
+                font-weight: bold;
+                color: var(--text-primary-hover);
+                margin-bottom: 10px;
+            }
+            .loadout-summary .loadout-count.full {
+                color: var(--text-gold-dark);
+            }
+            .loadout-summary .loadout-hint {
+                font-weight: normal;
+                font-style: italic;
+                color: var(--text-card-medium);
+            }
+
             .discipline-card:hover, .skill-card-slot:hover {
                 background: var(--bg-primary-hover-translucent-35);
                 border-color: var(--text-primary-hover);
@@ -2195,77 +1763,47 @@
         }
     };
 
+    // Three role tabs plus the class's own ledger. A tab is not a skill type:
+    // skills and magic sit side by side inside each role.
     Scene_Skill.prototype.getUISkillTypes = function () {
         const actor = this.actor();
         if (!actor) return [];
 
-        const list = [];
-        const stypeIds = actor.skillTypes();
-        stypeIds.forEach(id => {
-            const name = $dataSystem.skillTypes[id];
-            list.push({ name: name, ext: id, type: "normal" });
-        });
-
-        list.push({ name: T('SkillsMenu.cmd.favourites'), ext: "favourites", type: "favourites" });
+        const list = ROLE_KEYS.map(key => ({ name: getRoleDisplayName(key), ext: key, type: "role" }));
         list.push({ name: T('SkillsMenu.cmd.levelUp'), ext: "levelup", type: "levelup" });
 
         return list;
     };
 
-    Scene_Skill.prototype.getUISkillList = function () {
-        const types = this.getUISkillTypes();
-        const type = types[this._dndSelectedTypeIndex];
-        if (!type) return { data: [], categoryMode: false };
+    Scene_Skill.prototype.isUILevelUpTab = function () {
+        const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
+        return !!type && type.ext === "levelup";
+    };
 
-        this._itemWindow.setActor(this.actor());
-        this._itemWindow.setStypeId(type.ext);
-        this._itemWindow.makeItemList();
-
-        return {
-            data: this._itemWindow._data || [],
-            categoryMode: this._itemWindow._categoryMode && type.ext !== "levelup" && type.ext !== "favourites"
-        };
+    // A Level Up row is a {skill, level, isLearned} record; every other row is
+    // the skill itself.
+    Scene_Skill.prototype.uiSkillOf = function (entry) {
+        if (!entry) return null;
+        return this.isUILevelUpTab() ? entry.skill : entry;
     };
 
     Scene_Skill.prototype.getUISkillsOnlyList = function () {
-        if (!this._collapsedCategories) this._collapsedCategories = new Set();
         const actor = this.actor();
         if (!actor) return [];
-        const types = this.getUISkillTypes();
-        const type = types[this._dndSelectedTypeIndex];
+        const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
         if (!type) return [];
 
-        let list = [];
         if (type.ext === "levelup") {
             const classData = $dataClasses[actor._classId];
             if (!classData || !classData.learnings) return [];
-            list = classData.learnings
+            return classData.learnings
                 .map(l => ({ skill: $dataSkills[l.skillId], level: l.level, isLearned: actor.isLearnedSkill(l.skillId) }))
-                .sort((a, b) => a.level !== b.level ? a.level - b.level : ((a.skill && a.skill.name) || '').localeCompare((b.skill && b.skill.name) || ''))
-                .map(entry => entry.skill);
-        } else if (type.ext === "favourites") {
-            const actorId = actor.actorId();
-            list = actor.skills().filter(skill => isSkillFavourited(actorId, skill.id));
-        } else {
-            list = actor.skills().filter(skill => {
-                return !type.ext || skill.stypeId === type.ext;
-            });
-            const isCatMode = this._itemWindow._categoryMode;
-            if (isCatMode) {
-                list.sort((a, b) => {
-                    const catA = getSkillGroup(a);
-                    const catB = getSkillGroup(b);
-                    if (catA === catB) return a.name.localeCompare(b.name);
-                    if (isRoleMode()) return (ROLE_ORDER[catA] ?? 99) - (ROLE_ORDER[catB] ?? 99);
-                    return catA.localeCompare(catB);
-                });
-                list = list.filter(skill => {
-                    const cat = getSkillGroup(skill);
-                    return !this._collapsedCategories.has(cat);
-                });
-            }
+                .filter(entry => entry.skill && !isDummySkill(entry.skill))
+                .sort((a, b) => a.level !== b.level ? a.level - b.level : a.skill.name.localeCompare(b.skill.name));
         }
-        return list;
+        return actor.skills()
+            .filter(skill => skill && !isDummySkill(skill) && getSkillRole(skill) === type.ext)
+            .sort((a, b) => a.name.localeCompare(b.name));
     };
 
     Scene_Skill.prototype.getUISkillCostText = function (skill) {
@@ -2275,44 +1813,65 @@
         return "";
     };
 
-    Scene_Skill.prototype.getUISkillActions = function () {
-        const skillListInfo = this.getUISkillList();
-        const types = this.getUISkillTypes();
-        const isCatMode = this._itemWindow._categoryMode && types[this._dndSelectedTypeIndex].ext !== "levelup" && types[this._dndSelectedTypeIndex].ext !== "favourites";
+    Scene_Skill.prototype.uiLoadoutGroupLabel = function (group) {
+        return group === BattleLoadout.GROUP_MAGIC
+            ? T('SkillsMenu.loadout.magic')
+            : T('SkillsMenu.loadout.skills');
+    };
 
-        const list = isCatMode ? this.getUISkillsOnlyList() : skillListInfo.data;
-        const skill = list[this._dndSelectedIndex];
+    Scene_Skill.prototype.getUISkillActions = function () {
+        const list = this.getUISkillsOnlyList();
+        const skill = this.uiSkillOf(list[this._dndSelectedIndex]);
         if (!skill) return [];
 
         const actions = [];
         const actor = this.actor();
 
-        if (actor.canUse(skill)) {
-            actions.push("use");
-        }
-        if (types[this._dndSelectedTypeIndex].ext !== "levelup") {
-            actions.push("favorite");
+        if (!this.isUILevelUpTab()) {
+            if (actor.canUse(skill)) actions.push("use");
+            if (!BattleLoadout.isAlwaysCarried(actor, skill)) actions.push("loadout");
         }
         actions.push("back");
         return actions;
     };
 
-    Scene_Skill.prototype.toggleUICategory = function(categoryName) {
-        if (!this._collapsedCategories) this._collapsedCategories = new Set();
-        if (this._collapsedCategories.has(categoryName)) {
-            this._collapsedCategories.delete(categoryName);
-        } else {
-            this._collapsedCategories.add(categoryName);
+    // Take a skill up or put it down. A full half of the loadout refuses, and
+    // says which half and how full, rather than silently doing nothing.
+    Scene_Skill.prototype.toggleUILoadout = function (skill) {
+        const actor = this.actor();
+        if (!skill || !actor) return;
+        const result = BattleLoadout.toggle(actor, skill);
+        if (result === 'locked') {
+            SoundManager.playBuzzer();
+            return;
         }
-        SoundManager.playCursor();
+        if (result === 'full') {
+            SoundManager.playBuzzer();
+            if (window.ParchmentToast) {
+                window.ParchmentToast.show(T('SkillsMenu.loadout.full', {
+                    group: this.uiLoadoutGroupLabel(BattleLoadout.groupOf(skill)),
+                    max: BattleLoadout.MAX
+                }), { severity: "warning" });
+            }
+            return;
+        }
+        SoundManager.playOk();
+        this._itemWindow.refresh();
         this.refreshUISkill();
     };
 
+    Scene_Skill.prototype.clickUILoadout = function (idx) {
+        const list = this.getUISkillsOnlyList();
+        const skill = this.uiSkillOf(list[idx]);
+        if (!skill) return;
+        this._dndActiveSection = "skills";
+        this._dndSelectedIndex = idx;
+        this.toggleUILoadout(skill);
+    };
+
     Scene_Skill.prototype.triggerUISkillAction = function (action) {
-        const types = this.getUISkillTypes();
-        const isCatMode = this._itemWindow._categoryMode && types[this._dndSelectedTypeIndex].ext !== "levelup" && types[this._dndSelectedTypeIndex].ext !== "favourites";
-        const list = isCatMode ? this.getUISkillsOnlyList() : this.getUISkillList().data;
-        const skill = list[this._dndSelectedIndex];
+        const list = this.getUISkillsOnlyList();
+        const skill = this.uiSkillOf(list[this._dndSelectedIndex]);
         if (!skill) return;
 
         const actor = this.actor();
@@ -2332,11 +1891,8 @@
                 this._itemWindow.refresh();
                 this.refreshUISkill();
             }
-        } else if (action === "favorite") {
-            SoundManager.playOk();
-            toggleFavouriteSkill(actor.actorId(), skill.id);
-            this._itemWindow.refresh();
-            this.refreshUISkill();
+        } else if (action === "loadout") {
+            this.toggleUILoadout(skill);
         } else if (action === "back") {
             SoundManager.playCancel();
             this._dndActiveSection = "skills";
@@ -2403,7 +1959,6 @@
 
     Scene_Skill.prototype.refreshUISkill = function () {
         if (!this._dndContainer) return;
-        if (!this._collapsedCategories) this._collapsedCategories = new Set();
 
         const actor = this.actor();
         if (!actor) return;
@@ -2449,162 +2004,98 @@
             </div>
         `;
 
-        // 3. Get lists
-        const skillListInfo = this.getUISkillList();
-        const categories = skillListInfo.data;
-        const skillsOnlyList = this.getUISkillsOnlyList();
+        // 3. Get the list ,  one flat, name-ordered roll of the active tab
+        const list = this.getUISkillsOnlyList();
+        const isLevelUp = this.isUILevelUpTab();
 
-        const isCatMode = this._itemWindow._categoryMode && types[this._dndSelectedTypeIndex].ext !== "levelup" && types[this._dndSelectedTypeIndex].ext !== "favourites";
-
-        // Boundary protections
-        if (this._dndSelectedCategoryIndex >= categories.length) {
-            this._dndSelectedCategoryIndex = Math.max(0, categories.length - 1);
-        }
-        const skillsListLength = isCatMode ? skillsOnlyList.length : categories.length;
-        if (this._dndSelectedIndex >= skillsListLength) {
-            this._dndSelectedIndex = Math.max(0, skillsListLength - 1);
+        // Boundary protection
+        if (this._dndSelectedIndex >= list.length) {
+            this._dndSelectedIndex = Math.max(0, list.length - 1);
         }
 
-        // Let's get the selected item for the inspector (right page)
-        let selectedItem = null;
-        let isSelectedItemCategory = false;
+        const selectedItem = this.uiSkillOf(list[this._dndSelectedIndex]);
 
-        if (isCatMode) {
-            selectedItem = skillsOnlyList[this._dndSelectedIndex] || null;
-            isSelectedItemCategory = false;
-        } else {
-            const rawItem = categories[this._dndSelectedIndex] || null;
-            selectedItem = (types[this._dndSelectedTypeIndex].ext === "levelup" && rawItem) ? rawItem.skill : rawItem;
-            isSelectedItemCategory = false;
-        }
-
-        // Determine left page key to see if left page needs full render
-        const collapsedKey = Array.from(this._collapsedCategories).join('-');
-        const leftPageKey = `${actor.actorId()}_${this._dndSelectedTypeIndex}_${isCatMode}_${this._itemWindow._selectedCategory}_${categories.length}_${skillsOnlyList.length}_${collapsedKey}`;
+        // Determine left page key to see if left page needs full render. The
+        // carried ids are part of it: taking a skill up repaints its pill.
+        const carriedKey = BattleLoadout.ids(actor).join(',');
+        const leftPageKey = `${actor.actorId()}_${this._dndSelectedTypeIndex}_${list.length}_${carriedKey}`;
 
         const skillsTitle = T('SkillsMenu.title');
         const backBtnText = T('SkillsMenu.back');
 
-        let leftPageContentHTML = "";
-
-        if (isCatMode) {
-            let categoriesHTML = "";
-            if (categories.length === 0) {
-                categoriesHTML = `
-                    <div style="grid-column: 1 / -1; font-family:'Lora', serif; font-style:italic; text-align:center; padding: 40px 10px; color:var(--text-card-medium);">
-                        ${T('SkillsMenu.empty.section')}
-                    </div>
-                `;
-            } else {
-                categories.forEach((cat, catIdx) => {
-                    const typeExt = types[this._dndSelectedTypeIndex].ext;
-                    const rawSkills = actor.skills().filter(s => !isDummySkill(s) && (!typeExt || s.stypeId === typeExt));
-                    const skillsInCatFull = rawSkills.filter(skill => getSkillGroup(skill) === cat).sort((a, b) => a.name.localeCompare(b.name));
-
-                    if (skillsInCatFull.length === 0) return;
-
-                    const isCollapsed = this._collapsedCategories.has(cat);
-                    const skillsInCat = isCollapsed ? [] : skillsInCatFull;
-
-                    let skillsGridHTML = "";
-                    skillsInCat.forEach((item) => {
-                        const globalIdx = skillsOnlyList.indexOf(item);
-                        const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === globalIdx) ? "selected" : "";
-                        const isEnabled = actor.canUse(item);
-                        const isFav = isSkillFavourited(actor.actorId(), item.id);
-                        const costText = this.getUISkillCostText(item);
-                        const canvasId = `skill-canvas-${globalIdx}`;
-                        const nameWeight = isEnabled ? "font-weight: bold;" : "";
-                        skillsGridHTML += `
-                            <div class="skill-card-slot ${isFocused}" data-skill-idx="${globalIdx}" onclick="SceneManager._scene.clickUISkill(${globalIdx})">
-                                <div class="card-left-side">
-                                    <div class="faction-icon-frame" style="margin-right: 8px; border-radius: 50%; display: flex; align-items: center;">
-                                        <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
-                                    </div>
-                                    <span class="card-title-text" style="${nameWeight}">${item.name}</span>
-                                    ${isFav ? `<span style="color:#bba16d; margin-left: 5px; font-size:1.1em;">★</span>` : ""}
-                                </div>
-                                <div class="card-right-side">
-                                    <span class="card-cost-label">${costText}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    const catIcon = getCategoryInfo(cat).icon;
-                    const canvasId = `category-icon-canvas-${catIdx}`;
-                    const chevron = isCollapsed ? "▶" : "▼";
-                    categoriesHTML += `
-                        <div class="skill-section-title" style="cursor:pointer;" onclick='SceneManager._scene.toggleUICategory(${JSON.stringify(cat).replace(/'/g, "&#39;")})'>
-                            <span style="display: flex; align-items: center;">
-                                <span style="margin-right: 8px; font-size: 0.75em; color: var(--text-primary-hover);">${chevron}</span>
-                                <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px; margin-right: 8px; vertical-align: middle;"></canvas>
-                                <span style="font-family: 'Lora', serif; font-weight: bold; color: var(--text-primary-hover);">${getCategoryDisplayName(cat)}</span>
-                            </span>
-                            <span class="skill-section-subtitle">${getCategoryDescription(cat)}</span>
-                        </div>
-                        ${isCollapsed ? "" : `<div class="skills-grid-container">${skillsGridHTML}</div>`}
-                    `;
-                });
-            }
-
-            leftPageContentHTML = `
-                <div class="skill-book-content">
-                    ${categoriesHTML}
+        let skillsGridHTML = "";
+        if (list.length === 0) {
+            skillsGridHTML = `
+                <div style="grid-column: 1 / -1; font-family:'Lora', serif; font-style:italic; text-align:center; padding: 40px 10px; color:var(--text-card-medium);">
+                    ${T('SkillsMenu.empty.section')}
                 </div>
             `;
         } else {
-            // Favourites or Level Up View with a Single Large Grid
-            let skillsGridHTML = "";
-            if (categories.length === 0) {
-                skillsGridHTML = `
-                    <div style="grid-column: 1 / -1; font-family:'Lora', serif; font-style:italic; text-align:center; padding: 40px 10px; color:var(--text-card-medium);">
-                        ${T('SkillsMenu.empty.category')}
+            list.forEach((entry, idx) => {
+                const item = isLevelUp ? entry.skill : entry;
+                if (!item) return;
+
+                const isLearned = isLevelUp ? entry.isLearned : true;
+                const levelText = isLevelUp ? `<span style="color:#bba16d; margin-right: 5px; font-family:'Lora', serif; font-size: 0.9em; font-weight: bold;">Lv ${entry.level}:</span>` : "";
+
+                const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === idx) ? "selected" : "";
+                const isEnabled = actor.canUse(item);
+                const costText = this.getUISkillCostText(item);
+                const canvasId = `skill-canvas-${idx}`;
+                let nameWeight = isEnabled ? "font-weight: bold;" : "";
+                if (isLevelUp && !isLearned) nameWeight += " opacity: 0.6;";
+
+                // Whether the skill is in hand, and whether that is the player's
+                // to decide: the basic kit and anything worn are simply carried.
+                let pillHTML = "";
+                let benchedClass = "";
+                if (!isLevelUp) {
+                    const locked = BattleLoadout.isAlwaysCarried(actor, item);
+                    const carried = BattleLoadout.isActive(actor, item);
+                    if (locked) {
+                        pillHTML = `<span class="loadout-pill locked">${T('SkillsMenu.loadout.always')}</span>`;
+                    } else {
+                        pillHTML = `<span class="loadout-pill ${carried ? "" : "off"}" onclick="event.stopPropagation(); SceneManager._scene.clickUILoadout(${idx})">${carried ? T('SkillsMenu.loadout.carried') : T('SkillsMenu.loadout.benched')}</span>`;
+                        if (!carried) benchedClass = " benched";
+                    }
+                }
+
+                skillsGridHTML += `
+                    <div class="skill-card-slot ${isFocused}${benchedClass}" data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})">
+                        <div class="card-left-side">
+                            ${levelText}
+                            <div class="faction-icon-frame" style="margin-right: 8px; border-radius: 50%; display: flex; align-items: center;">
+                                <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
+                            </div>
+                            <span class="card-title-text" style="${nameWeight}">${item.name}</span>
+                        </div>
+                        <div class="card-right-side">
+                            <span class="card-cost-label">${costText}</span>
+                            ${pillHTML}
+                        </div>
                     </div>
                 `;
-            } else {
-                categories.forEach((entry, idx) => {
-                    const isLevelUp = types[this._dndSelectedTypeIndex].ext === "levelup";
-                    const item = isLevelUp ? entry.skill : entry;
-                    if (!item) return;
-
-                    const isLearned = isLevelUp ? entry.isLearned : true;
-                    const levelText = isLevelUp ? `<span style="color:#bba16d; margin-right: 5px; font-family:'Lora', serif; font-size: 0.9em; font-weight: bold;">Lv ${entry.level}:</span>` : "";
-
-                    const isFocused = (this._dndActiveSection === "skills" && this._dndSelectedIndex === idx) ? "selected" : "";
-                    const isEnabled = actor.canUse(item);
-                    const isFav = isSkillFavourited(actor.actorId(), item.id);
-                    const costText = this.getUISkillCostText(item);
-                    const canvasId = `skill-canvas-${idx}`;
-                    let nameWeight = isEnabled ? "font-weight: bold;" : "";
-                    if (isLevelUp && !isLearned) nameWeight += " opacity: 0.6;";
-
-                    skillsGridHTML += `
-                        <div class="skill-card-slot ${isFocused}" data-skill-idx="${idx}" onclick="SceneManager._scene.clickUISkill(${idx})">
-                            <div class="card-left-side">
-                                ${levelText}
-                                <div class="faction-icon-frame" style="margin-right: 8px; border-radius: 50%; display: flex; align-items: center;">
-                                    <canvas id="${canvasId}" width="32" height="32" style="width:24px; height:24px;"></canvas>
-                                </div>
-                                <span class="card-title-text" style="${nameWeight}">${item.name}</span>
-                                ${isFav ? `<span style="color:#bba16d; margin-left: 5px; font-size:1.1em;">★</span>` : ""}
-                            </div>
-                            <div class="card-right-side">
-                                <span class="card-cost-label">${costText}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            leftPageContentHTML = `
-                <div class="skill-book-content">
-                    <div class="skills-grid-container">
-                        ${skillsGridHTML}
-                    </div>
-                </div>
-            `;
+            });
         }
+
+        const leftPageContentHTML = `
+            <div class="skill-book-content">
+                <div class="skills-grid-container">
+                    ${skillsGridHTML}
+                </div>
+            </div>
+        `;
+
+        // How full each half of the loadout is, so the budget is never a guess.
+        const skillCount = BattleLoadout.count(actor, BattleLoadout.GROUP_SKILL);
+        const magicCount = BattleLoadout.count(actor, BattleLoadout.GROUP_MAGIC);
+        const loadoutSummaryHTML = isLevelUp ? "" : `
+            <div class="loadout-summary">
+                <span class="loadout-count ${skillCount >= BattleLoadout.MAX ? "full" : ""}">${T('SkillsMenu.loadout.count', { group: T('SkillsMenu.loadout.skills'), n: skillCount, max: BattleLoadout.MAX })}</span>
+                <span class="loadout-count ${magicCount >= BattleLoadout.MAX ? "full" : ""}">${T('SkillsMenu.loadout.count', { group: T('SkillsMenu.loadout.magic'), n: magicCount, max: BattleLoadout.MAX })}</span>
+                <span class="loadout-hint">${T('SkillsMenu.loadout.hint')}</span>
+            </div>
+        `;
 
         const leftPageHeaderHTML = `
             <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-gold-amber-30); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%;">
@@ -2614,6 +2105,7 @@
               <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${skillsTitle}</h2>
             </div>
             ${skillTypesRowHTML}
+            ${loadoutSummaryHTML}
         `;
 
         const leftPageHTML = `
@@ -2685,9 +2177,9 @@
                 const isFocused = (this._dndActiveSection === "actions" && this._dndSelectedActionIndex === idx) ? "selected" : "";
                 let label = "";
                 if (action === "use") label = T('SkillsMenu.action.useSkill');
-                else if (action === "favorite") {
-                    const isFav = isSkillFavourited(actor.actorId(), skill.id);
-                    label = isFav ? T('SkillsMenu.action.unfavourite') : T('SkillsMenu.action.favourite');
+                else if (action === "loadout") {
+                    label = BattleLoadout.isActive(actor, skill)
+                        ? T('SkillsMenu.action.bench') : T('SkillsMenu.action.carry');
                 } else if (action === "back") {
                     label = T('SkillsMenu.action.back');
                 }
@@ -2752,29 +2244,11 @@
             this._dndLastLeftPageKey = leftPageKey;
             leftPageContainer.innerHTML = leftPageHTML;
 
-            // Render all left page canvases
-            if (isCatMode) {
-                // Render category icons
-                categories.forEach((cat, catIdx) => {
-                    const catIcon = getCategoryInfo(cat).icon;
-                    this.drawUISkillIcon(catIcon, `category-icon-canvas-${catIdx}`);
-                });
-                // Render skills icons
-                if (skillsOnlyList.length > 0) {
-                    skillsOnlyList.forEach((item, idx) => {
-                        this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
-                    });
-                }
-            } else {
-                // Render skills icons in detail view
-                if (categories.length > 0) {
-                    const isLevelUp = types[this._dndSelectedTypeIndex].ext === "levelup";
-                    categories.forEach((entry, idx) => {
-                        const item = isLevelUp ? entry.skill : entry;
-                        if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
-                    });
-                }
-            }
+            // Render every row's icon
+            list.forEach((entry, idx) => {
+                const item = isLevelUp ? entry.skill : entry;
+                if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
+            });
         } else {
             // Left page already drawn! Update only selection classes in-place
             // (companion tabs live on the right page and are rebuilt above).
@@ -2854,7 +2328,6 @@
             this._actorIndex = idx;
             this.changeActor();
             this._dndSelectedIndex = 0;
-            this._dndSelectedCategoryIndex = 0;
             this.refreshUISkill();
         }
     };
@@ -2866,7 +2339,6 @@
             SoundManager.playCursor();
             this._dndSelectedTypeIndex = idx;
             this._dndSelectedIndex = 0;
-            this._dndSelectedCategoryIndex = 0;
             this._itemWindow.setStypeId(type.ext);
             this.refreshUISkill();
         }
@@ -2876,19 +2348,6 @@
         SoundManager.playCursor();
         this._dndSelectedIndex = idx;
         this.refreshUISkill();
-    };
-
-    Scene_Skill.prototype.clickUICategory = function (idx) {
-        const categories = this.getUISkillList().data;
-        const category = categories[idx];
-        if (category) {
-            SoundManager.playOk();
-            this._itemWindow._selectedCategory = category;
-            this._itemWindow._categoryMode = false;
-            this._dndActiveSection = "skills";
-            this._dndSelectedIndex = 0;
-            this.refreshUISkill();
-        }
     };
 
     Scene_Skill.prototype.clickUISkill = function (idx) {
@@ -2946,15 +2405,9 @@
 
         const types = this.getUISkillTypes();
         if (!types.length) return;
-        const isCatMode = this._itemWindow._categoryMode &&
-            types[this._dndSelectedTypeIndex].ext !== "levelup" &&
-            types[this._dndSelectedTypeIndex].ext !== "favourites";
 
-        const skillsOnlyList = this.getUISkillsOnlyList();
-        const categories = this.getUISkillList().data;
-        let selectedItem = isCatMode
-            ? (skillsOnlyList[this._dndSelectedIndex] || null)
-            : (categories[this._dndSelectedIndex] || null);
+        const list = this.getUISkillsOnlyList();
+        const selectedItem = this.uiSkillOf(list[this._dndSelectedIndex]);
 
         let rightPageContentHTML = "";
 
@@ -2983,9 +2436,9 @@
                 const isFocused = (this._dndActiveSection === "actions" && this._dndSelectedActionIndex === idx) ? "selected" : "";
                 let label = "";
                 if (action === "use") label = T('SkillsMenu.action.useSkill');
-                else if (action === "favorite") {
-                    const isFav = isSkillFavourited(actor.actorId(), skill.id);
-                    label = isFav ? T('SkillsMenu.action.unfavourite') : T('SkillsMenu.action.favourite');
+                else if (action === "loadout") {
+                    label = BattleLoadout.isActive(actor, skill)
+                        ? T('SkillsMenu.action.bench') : T('SkillsMenu.action.carry');
                 } else if (action === "back") label = T('SkillsMenu.action.back');
                 actionsHTML += `<div class="inspect-btn ${isFocused}" onclick="SceneManager._scene.triggerUISkillAction('${action}')">${label}</div>`;
             });
@@ -3021,15 +2474,6 @@
         if (selectedItem) this.drawUISkillIcon(selectedItem.iconIndex, "inspect-canvas");
     };
 
-    Scene_Skill.prototype.exitUICategory = function () {
-        SoundManager.playCancel();
-        this._itemWindow._categoryMode = true;
-        this._itemWindow._selectedCategory = null;
-        this._dndActiveSection = "categories";
-        this._dndSelectedCategoryIndex = 0;
-        this.refreshUISkill();
-    };
-
     // Keyboard and Gamepad Interceptor for Skills/Spellbook Screen
     const UISkillInputManager = {
         _scene: null,
@@ -3059,6 +2503,10 @@
                 this.handleMove("right");
             } else if (Input.isTriggered('ok')) {
                 this.handleOk();
+            } else if (Input.isTriggered('shift')) {
+                // Take the highlighted skill up or put it down without leaving
+                // the list: the quick way to rebuild a loadout.
+                this.handleQuickToggle();
             } else if (Input.isTriggered('escape') || Input.isTriggered('cancel') || TouchInput.isCancelled()) {
                 this.handleCancel();
             } else if (Input.isTriggered('pagedown')) {
@@ -3078,32 +2526,36 @@
             scene._actorIndex = (scene._actorIndex + dir + allMembers.length) % allMembers.length;
             scene.changeActor();
             scene._dndSelectedIndex = 0;
-            scene._dndSelectedCategoryIndex = 0;
             scene.refreshUISkill();
+        },
+
+        handleQuickToggle: function () {
+            const scene = this._scene;
+            if (!scene || scene._dndTargetingMode) return;
+            if (scene._dndActiveSection !== "skills" && scene._dndActiveSection !== "actions") return;
+            if (scene.isUILevelUpTab()) return;
+            const list = scene.getUISkillsOnlyList();
+            const skill = scene.uiSkillOf(list[scene._dndSelectedIndex]);
+            if (skill) scene.toggleUILoadout(skill);
         },
 
         handleMove: function (dir) {
             const scene = this._scene;
             const section = scene._dndActiveSection;
             const types = scene.getUISkillTypes();
-            const skillListInfo = scene.getUISkillList();
-            const categories = skillListInfo.data;
             const skillsOnlyList = scene.getUISkillsOnlyList();
-            const isCatMode = scene._itemWindow._categoryMode && types[scene._dndSelectedTypeIndex].ext !== "levelup" && types[scene._dndSelectedTypeIndex].ext !== "favourites";
 
             if (section === "types") {
                 if (dir === "left") {
                     if (scene._dndSelectedTypeIndex > 0) {
                         SoundManager.playCursor();
                         scene._dndSelectedTypeIndex--;
-                        scene._dndSelectedCategoryIndex = 0;
                         scene._dndSelectedIndex = 0;
                         scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
                         scene.refreshUISkill();
                     } else {
                         scene.previousActor();
                         scene._dndSelectedTypeIndex = types.length - 1;
-                        scene._dndSelectedCategoryIndex = 0;
                         scene._dndSelectedIndex = 0;
                         scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
                         scene.refreshUISkill();
@@ -3112,21 +2564,18 @@
                     if (scene._dndSelectedTypeIndex < types.length - 1) {
                         SoundManager.playCursor();
                         scene._dndSelectedTypeIndex++;
-                        scene._dndSelectedCategoryIndex = 0;
                         scene._dndSelectedIndex = 0;
                         scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
                         scene.refreshUISkill();
                     } else {
                         scene.nextActor();
                         scene._dndSelectedTypeIndex = 0;
-                        scene._dndSelectedCategoryIndex = 0;
                         scene._dndSelectedIndex = 0;
                         scene._itemWindow.setStypeId(types[scene._dndSelectedTypeIndex].ext);
                         scene.refreshUISkill();
                     }
                 } else if (dir === "down") {
-                    const listLength = isCatMode ? skillsOnlyList.length : categories.length;
-                    if (listLength > 0) {
+                    if (skillsOnlyList.length > 0) {
                         SoundManager.playCursor();
                         scene._dndActiveSection = "skills";
                         scene._dndSelectedIndex = 0;
@@ -3134,7 +2583,7 @@
                     }
                 }
             } else if (section === "skills") {
-                const list = isCatMode ? skillsOnlyList : categories;
+                const list = skillsOnlyList;
                 if (dir === "left") {
                     if (scene._dndSelectedIndex % 2 === 1) {
                         SoundManager.playCursor();
@@ -3217,20 +2666,16 @@
 
             const scene = this._scene;
             const section = scene._dndActiveSection;
-            const types = scene.getUISkillTypes();
-            const isCatMode = scene._itemWindow._categoryMode && types[scene._dndSelectedTypeIndex].ext !== "levelup" && types[scene._dndSelectedTypeIndex].ext !== "favourites";
 
             if (section === "types") {
-                const listLength = isCatMode ? scene.getUISkillsOnlyList().length : scene.getUISkillList().data.length;
-                if (listLength > 0) {
+                if (scene.getUISkillsOnlyList().length > 0) {
                     SoundManager.playOk();
                     scene._dndActiveSection = "skills";
                     scene._dndSelectedIndex = 0;
                     scene.refreshUISkill();
                 }
             } else if (section === "skills") {
-                const list = isCatMode ? scene.getUISkillsOnlyList() : scene.getUISkillList().data;
-                const item = list[scene._dndSelectedIndex];
+                const item = scene.getUISkillsOnlyList()[scene._dndSelectedIndex];
                 if (!item) return;
 
                 const actions = scene.getUISkillActions();
@@ -3298,13 +2743,12 @@
         }
     };
 
-    const _Window_SkillType_makeCommandList = Window_SkillType.prototype.makeCommandList;
+    // The menu's tabs are roles, not skill types: a character's magic and their
+    // skills belong to the same three purposes, so they are listed together.
     Window_SkillType.prototype.makeCommandList = function () {
-        _Window_SkillType_makeCommandList.call(this);
-        if (this._actor) {
-            this.addCommand(T('SkillsMenu.cmd.favourites'), "skill", true, "favourites");
-            this.addCommand(T('SkillsMenu.cmd.levelUp'), "skill", true, "levelup");
-        }
+        if (!this._actor) return;
+        ROLE_KEYS.forEach(key => this.addCommand(getRoleDisplayName(key), "skill", true, key));
+        this.addCommand(T('SkillsMenu.cmd.levelUp'), "skill", true, "levelup");
     };
 
     const _Window_SkillType_update = Window_SkillType.prototype.update;
@@ -3316,42 +2760,18 @@
     };
 
     //=============================================================================
-    // Window_SkillList ,  categorized display for menu; Basic/LevelUp tabs;
+    // Window_SkillList ,  one flat roll per role tab, plus the Level Up ledger;
     //                    skill info panel connection; left/right blocked for actor switching
     //=============================================================================
-
-    // --- Initialise categorized state ---
 
     const _Window_SkillList_initialize = Window_SkillList.prototype.initialize;
     Window_SkillList.prototype.initialize = function (rect) {
         _Window_SkillList_initialize.call(this, rect);
-        this._categoryMode = true;
-        this._selectedCategory = null;
-        this._lastCategoryIndex = 0;
-        this._categorySkillIndexes = {};
         this._skillInfoWindow = null;
     };
 
-    // Reset categorized state when stypeId changes
-    const _Window_SkillList_setStypeId = Window_SkillList.prototype.setStypeId;
-    Window_SkillList.prototype.setStypeId = function (stypeId) {
-        if (this._stypeId !== stypeId) {
-            this._categoryMode = true;
-            this._selectedCategory = null;
-            this._lastCategoryIndex = 0;
-        }
-        _Window_SkillList_setStypeId.call(this, stypeId);
-    };
-
-    // Reset categorized state when actor changes
     const _Window_SkillList_setActor = Window_SkillList.prototype.setActor;
     Window_SkillList.prototype.setActor = function (actor) {
-        if (this._actor !== actor) {
-            this._categoryMode = true;
-            this._selectedCategory = null;
-            this._lastCategoryIndex = 0;
-            this._categorySkillIndexes = {};
-        }
         _Window_SkillList_setActor.call(this, actor);
         this.updateSkillInfo();
     };
@@ -3364,13 +2784,12 @@
     };
 
     Window_SkillList.prototype._isSpecialStypeId = function () {
-        return this._stypeId === "levelup" || this._stypeId === "favourites";
+        return this._stypeId === "levelup";
     };
 
     Window_SkillList.prototype.updateSkillInfo = function () {
         if (this._skillInfoWindow) {
-            const isCatMode = this._categoryMode && !this._isSpecialStypeId();
-            this._skillInfoWindow.setItem(isCatMode ? null : this.item());
+            this._skillInfoWindow.setItem(this.item());
         }
     };
 
@@ -3399,56 +2818,22 @@
 
     // --- Item list construction ---
 
+    // A role key ("Offensive"...) lists that role whole, skills and magic
+    // together; a numeric skill type lists what is carried of that type.
     Window_SkillList.prototype.makeItemList = function () {
+        if (!this._actor) {
+            this._data = [];
+            return;
+        }
         if (this._stypeId === "levelup") {
             this._data = this._makeLearnableSkillsList();
-        } else if (this._stypeId === "favourites") {
-            this._data = this._makeFavouritesSkillsList();
-        } else if (this._categoryMode) {
-            this._data = this._makeCategoryListForMenu();
+        } else if (ROLE_KEYS.includes(this._stypeId)) {
+            this._data = this._actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && getSkillRole(skill) === this._stypeId)
+                .sort((a, b) => a.name.localeCompare(b.name));
         } else {
-            this._data = this._makeFilteredSkillsForMenu();
+            this._data = BattleLoadout.battleSkills(this._actor, this._stypeId);
         }
-    };
-
-    // Build sorted category list for the menu
-    Window_SkillList.prototype._makeCategoryListForMenu = function () {
-        if (!this._actor) return [];
-        const categoriesSet = new Set();
-        for (const skill of this._actor.skills()) {
-            if (isDummySkill(skill)) continue;
-            if (this._stypeId && skill.stypeId !== this._stypeId) continue;
-            const grp = getSkillGroup(skill);
-            // Filter out categories whose type does not match current stypeId group
-            if (!_isCategoryVisibleForStypeId(grp, this._stypeId)) continue;
-            categoriesSet.add(grp);
-        }
-        const categories = Array.from(categoriesSet);
-        if (isRoleMode()) {
-            categories.sort((a, b) => (ROLE_ORDER[a] ?? 99) - (ROLE_ORDER[b] ?? 99));
-        } else {
-            categories.sort();
-        }
-        return categories;
-    };
-
-    // Build skill list for the selected category in the menu
-    Window_SkillList.prototype._makeFilteredSkillsForMenu = function () {
-        if (!this._actor || !this._selectedCategory) return [];
-        let list = this._actor.skills().filter(skill => {
-            if (isDummySkill(skill)) return false;
-            if (this._stypeId && skill.stypeId !== this._stypeId) return false;
-            return getSkillGroup(skill) === this._selectedCategory;
-        });
-        list.sort((a, b) => {
-            const costTpA = this._actor.skillTpCost(a);
-            const costMpA = this._actor.skillMpCost(a);
-            const costTpB = this._actor.skillTpCost(b);
-            const costMpB = this._actor.skillMpCost(b);
-            if (costTpA !== costTpB) return costTpA - costTpB;
-            return costMpA - costMpB;
-        });
-        return list;
     };
 
     // Skills that can be learned by level up
@@ -3458,25 +2843,8 @@
         if (!classData || !classData.learnings) return [];
         return classData.learnings
             .map(l => ({ skill: $dataSkills[l.skillId], level: l.level, isLearned: this._actor.isLearnedSkill(l.skillId) }))
-            .sort((a, b) => a.level !== b.level ? a.level - b.level : ((a.skill && a.skill.name) || '').localeCompare((b.skill && b.skill.name) || ''));
-    };
-
-
-
-    // All favourited skills for this actor (across all stypeIds)
-    Window_SkillList.prototype._makeFavouritesSkillsList = function () {
-        if (!this._actor) return [];
-        const actorId = this._actor.actorId();
-        let list = this._actor.skills().filter(skill => !isDummySkill(skill) && isSkillFavourited(actorId, skill.id));
-        list.sort((a, b) => {
-            const costTpA = this._actor.skillTpCost(a);
-            const costMpA = this._actor.skillMpCost(a);
-            const costTpB = this._actor.skillTpCost(b);
-            const costMpB = this._actor.skillMpCost(b);
-            if (costTpA !== costTpB) return costTpA - costTpB;
-            return costMpA - costMpB;
-        });
-        return list;
+            .filter(entry => entry.skill && !isDummySkill(entry.skill))
+            .sort((a, b) => a.level !== b.level ? a.level - b.level : a.skill.name.localeCompare(b.skill.name));
     };
 
     // --- item() accessor ---
@@ -3495,8 +2863,7 @@
     const _Window_SkillList_isEnabled = Window_SkillList.prototype.isEnabled;
     Window_SkillList.prototype.isEnabled = function (item) {
         if (this._stypeId === "levelup") return false;
-        if (this._categoryMode) return true; // categories always enabled
-        return true; // All skills selectable; context menu handles usability
+        return true; // All skills selectable; the action popup handles usability
     };
 
     // --- Drawing ---
@@ -3511,23 +2878,11 @@
         if (!item) return;
         const rect = this.itemLineRect(index);
 
-        if (this._categoryMode && !this._isSpecialStypeId()) {
-            // Categories: always full opacity, show icon
-            this.changePaintOpacity(true);
-            this.resetTextColor();
-            this.drawIcon(getCategoryInfo(item).icon, rect.x + 2, rect.y + 2);
-            this.drawText(getCategoryDisplayName(item), rect.x + ImageManager.iconWidth + 4, rect.y, rect.width - ImageManager.iconWidth - 4);
-        } else {
-            // Skills (normal & favourites tabs): always selectable, show favourite icon
-            this.changePaintOpacity(true);
-            const isFav = this._actor && isSkillFavourited(this._actor.actorId(), item.id);
-            const favW = isFav ? ImageManager.iconWidth + 4 : 0;
-            this.drawItemName(item, rect.x, rect.y, rect.width - this.costWidth() - favW);
-            if (isFav) {
-                this.drawIcon(FAVOURITE_ICON, rect.x + rect.width - this.costWidth() - ImageManager.iconWidth - 2, rect.y + 2);
-            }
-            this.drawSkillCost(item, rect.x, rect.y, rect.width);
-        }
+        // Every skill is selectable; a benched one is drawn faded, since it is
+        // known but not in hand.
+        this.changePaintOpacity(BattleLoadout.isActive(this._actor, item));
+        this.drawItemName(item, rect.x, rect.y, rect.width - this.costWidth());
+        this.drawSkillCost(item, rect.x, rect.y, rect.width);
         this.changePaintOpacity(1);
     };
 
@@ -3550,64 +2905,18 @@
         this.changePaintOpacity(true);
     };
 
-    // --- Process OK: enter category or use skill ---
+    // --- Process OK: hand over to the action popup ---
 
     const _Window_SkillList_processOk = Window_SkillList.prototype.processOk;
     Window_SkillList.prototype.processOk = function () {
-        if (this._stypeId === "levelup") {
+        if (this._stypeId === "levelup" || !this.isHandled('skillaction')) {
             _Window_SkillList_processOk.call(this);
             return;
         }
-
-        if (this._stypeId === "favourites") {
-            // Favourites tab: show action menu
-            SoundManager.playOk();
-            this.updateInputData();
-            this.deactivate();
-            this.callHandler('skillaction');
-            return;
-        }
-        if (this._categoryMode) {
-            SoundManager.playOk();
-            this._selectedCategory = this.item();
-            this._lastCategoryIndex = this.index();
-            this._categoryMode = false;
-            this.refresh();
-            const saved = this._categorySkillIndexes[this._selectedCategory];
-            this.select((saved !== undefined && saved < this.maxItems()) ? saved : 0);
-            this.activate();
-        } else {
-            if (this._selectedCategory) {
-                this._categorySkillIndexes[this._selectedCategory] = this.index();
-            }
-            SoundManager.playOk();
-            this.updateInputData();
-            this.deactivate();
-            this.callHandler('skillaction');
-        }
-    };
-
-    // --- Process Cancel: go back to category list, or exit ---
-
-    const _Window_SkillList_processCancel = Window_SkillList.prototype.processCancel;
-    Window_SkillList.prototype.processCancel = function () {
-        if (this._isSpecialStypeId()) {
-            _Window_SkillList_processCancel.call(this);
-            return;
-        }
-        if (!this._categoryMode) {
-            if (this._selectedCategory) {
-                this._categorySkillIndexes[this._selectedCategory] = this.index();
-            }
-            this._categoryMode = true;
-            this._selectedCategory = null;
-            this.refresh();
-            this.select(Math.min(this._lastCategoryIndex, this.maxItems() - 1));
-            this.activate();
-            SoundManager.playCancel();
-        } else {
-            _Window_SkillList_processCancel.call(this);
-        }
+        SoundManager.playOk();
+        this.updateInputData();
+        this.deactivate();
+        this.callHandler('skillaction');
     };
 
     // --- Help window ---
@@ -3615,29 +2924,17 @@
     const _Window_SkillList_updateHelp = Window_SkillList.prototype.updateHelp;
     Window_SkillList.prototype.updateHelp = function () {
         if (this._skillInfoWindow) {
-            const isCatMode = this._categoryMode && !this._isSpecialStypeId();
-            this._skillInfoWindow.setItem(isCatMode ? null : this.item());
+            this._skillInfoWindow.setItem(this.item());
         }
-        if (!this._isSpecialStypeId() && this._categoryMode) {
-            const category = this.item();
-            if (category && typeof category === 'string') {
-                this._setHelpText(getCategoryDescription(category));
-            } else {
-                this._setHelpText('');
-            }
-        } else {
-            _Window_SkillList_updateHelp.call(this);
-        }
+        _Window_SkillList_updateHelp.call(this);
     };
 
     Window_SkillList.prototype._setHelpText = function (text) {
         if (this._helpWindow) this._helpWindow.setText(text);
     };
 
-    Window_SkillList.prototype.hasCategoryUsableSkills = CategorizedSkillMixin.hasCategoryUsableSkills;
-
     //=============================================================================
-    // Window_SkillAction ,  context popup: Use / Favourite / Cancel
+    // Window_SkillAction ,  context popup: Use / Carry-Bench / Cancel
     //=============================================================================
 
     function Window_SkillAction() {
@@ -3660,8 +2957,10 @@
         if (this._actor.canUse(this._skill)) {
             this.addCommand(T('SkillsMenu.cmd.use'), "use", true);
         }
-        const isFav = isSkillFavourited(this._actor.actorId(), this._skill.id);
-        this.addCommand(isFav ? T('SkillsMenu.cmd.unfavourite') : T('SkillsMenu.cmd.favourite'), "favourite", true);
+        if (!BattleLoadout.isAlwaysCarried(this._actor, this._skill)) {
+            const carried = BattleLoadout.isActive(this._actor, this._skill);
+            this.addCommand(carried ? T('SkillsMenu.cmd.bench') : T('SkillsMenu.cmd.carry'), "loadout", true);
+        }
         this.addCommand(T('SkillsMenu.cmd.cancel'), "cancel", true);
     };
 

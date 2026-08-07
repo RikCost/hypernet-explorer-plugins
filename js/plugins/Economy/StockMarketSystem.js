@@ -1145,9 +1145,6 @@
   class Window_StockInfo extends Window_Base {
     refresh() { }
   }
-  class Window_StockGraph extends Window_Base {
-    refresh() { }
-  }
   class Window_StockCommand extends Window_HorzCommand {
     makeCommandList() { }
   }

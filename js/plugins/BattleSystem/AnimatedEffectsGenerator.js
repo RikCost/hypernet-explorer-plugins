@@ -81,43 +81,6 @@
     context.restore();
   }
 
-  function drawGradient() {
-    var w = this._gradientBitmap.width;
-    var h = this._gradientBitmap.height;
-    var context = this._gradientBitmap._context;
-
-    // Clear the bitmap
-    this._gradientBitmap.clear();
-
-    // Create animated hues based on animation count
-    var hue1 =
-      (this._gradientColorHue1 + this._animationCount * this._gradientSpeed) %
-      360;
-    var hue2 =
-      (this._gradientColorHue2 +
-        this._animationCount * this._gradientSpeed * 0.7) %
-      360;
-
-    // Create gradient
-    var gradient;
-    var angle = (this._gradientRotation * Math.PI) / 180;
-    var cos = Math.cos(angle);
-    var sin = Math.sin(angle);
-
-    // Calculate gradient start and end points based on angle
-    var startX = w / 2 - (cos * w) / 2;
-    var startY = h / 2 - (sin * h) / 2;
-    var endX = w / 2 + (cos * w) / 2;
-    var endY = h / 2 + (sin * h) / 2;
-
-    gradient = context.createLinearGradient(startX, startY, endX, endY);
-    gradient.addColorStop(0, this.hueToColor(hue1, 1, 30));
-    gradient.addColorStop(1, this.hueToColor(hue2, 1, 30));
-
-    // Fill the background with the gradient
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, w, h);
-  }
 
   function drawArcaneSeal() {
     var w = this._currentBitmap.width;

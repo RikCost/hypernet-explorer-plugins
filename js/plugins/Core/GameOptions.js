@@ -243,7 +243,7 @@ const GameOptions = {
             // other one reads, so it must stay first.
             symbols: [
                 'language', 'fogOfWar', 'fowEnabled', 'enemySpawnMode', 'enemyDifficulty',
-                'mapBattleMode', 'cpuPartyMembers', 'skillCategoryMode', 'commandRemember',
+                'mapBattleMode', 'cpuPartyMembers', 'commandRemember',
                 'smoothBattleLog'
             ]
         },
@@ -275,7 +275,7 @@ const GameOptions = {
             nameKey: 'experimental',
             categories: ['experimental'],
             symbols: [
-                'weaponSprites3D', 'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
+                'cardCombat', 'asciiModeEnabled', 'asciiHudEnabled'
             ]
         }
     ]
@@ -453,9 +453,6 @@ window.GameOptions = GameOptions;
         this.charBasedSprites = (this.enemyBattlers === 2);
         this.activeTheme = config.activeTheme !== undefined ? config.activeTheme : 0;
         this.showFps = config.showFps !== undefined ? config.showFps : false;
-        // Procedural 3D weapon models (Weapon/WeaponSystemProcedural.js): off by
-        // default, the 2D weapon sprites are the supported look.
-        this.weaponSprites3D = config.weaponSprites3D !== undefined ? config.weaponSprites3D : false;
         // Title screen background style: 0 Random, 1 Cards, 2 Space
         // (planets + stars + black holes + galaxies), 3 Artifacts, 4 Bestiary,
         // 5 Weapons, 6 Enemies 3D, 7 Hyperverse (default), 8 Camper Drive
@@ -532,7 +529,6 @@ window.GameOptions = GameOptions;
         config.charBasedSprites = this.charBasedSprites;
         config.activeTheme = this.activeTheme;
         config.showFps = this.showFps;
-        config.weaponSprites3D = this.weaponSprites3D;
         config.titleBackground = this.titleBackground;
         config.cpuPartyMembers = this.cpuPartyMembers;
         config.cardCombat = this.cardCombat;
@@ -915,9 +911,6 @@ window.GameOptions = GameOptions;
         autoIdle:        { on: 'AutoIdleON',        off: 'AutoIdleOFF' },
         commandRemember: { on: 'CommandRememberON', off: 'CommandRememberOFF' },
         autosaveEnabled: { on: 'AutoSaveON',        off: 'AutoSaveOFF' },
-        categorizeInBattle: { on: 'CategorizeSkillsON', off: 'CategorizeSkillsOFF' },
-        // Skill Categorization 3-way select (0 Role, 1 School, 2 Off).
-        skillCategoryMode: { states: ['SkillCategoryRole', 'SkillCategorySchool', 'SkillCategoryOff'] },
         // Enemy spawn mode has no art on purpose: an abstract chart explained it
         // worse than words did, so it relies on the written explanation below.
         enemyDifficulty: { img: 'EnemyDifficulty' },
@@ -956,7 +949,6 @@ window.GameOptions = GameOptions;
         // 3D
         battler3d:       { on: 'Battler3DON',       off: 'Battler3DOFF' },
         enemyBattlerMode: { on: 'EnemyBattlerON',   off: 'EnemyBattlerOFF' },
-        weaponSprites3D: { on: '3dWeaponsON',       off: '3dWeaponsOFF' },
         ebBackgrounds:   { on: 'AnimatedBGON',      off: 'AnimatedBGOFF' }
     };
 
@@ -1654,11 +1646,6 @@ window.GameOptions = GameOptions;
             this.setConfigValue('activeTheme', v);
         }
     );
-
-    GameOptions.registerOption('weaponSprites3D', T('GameOptions.label.weaponSprites3d'),
-        () => ConfigManager.weaponSprites3D,
-        (value) => ConfigManager.weaponSprites3D = value,
-        'experimental', 'boolean');
 
     // Roguelike deck combat (BattleSystem/RoguelikeCardSystem.js) and tactical
     // map battle (BattleSystem/MapBattleMode.js) are alternate battle layers:

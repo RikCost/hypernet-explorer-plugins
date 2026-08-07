@@ -180,7 +180,8 @@
     "unknownStack": "Unknown x{n}",
     "attributeModifiers": "Attribute Modifiers",
     "blueprints": "Blueprints & Components",
-    "marketValue": "Market Value:"
+    "marketValue": "Market Value:",
+    "cravingsFed": "Cravings Fed"
   },
   "rarity": {
     "common": "Common",
@@ -259,6 +260,5 @@
     "discard": "Discard",
     "discardItem": "Discard Item",
     "discardBody": "Remove {qty} of {item} from the backpack? (have {owned})"
-  },
-  "weaponArmament": "Weapon Armament: {name}"
+  }
 }

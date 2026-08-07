@@ -547,14 +547,17 @@
     return record;
   }
 
-  function ensureLifeRecord(name, homeGroupHint) {
+  // `salt` re-rolls a life that has already been dealt (rerollLifeRecord); the
+  // name alone is otherwise the whole seed, so the same person always gets the
+  // same life back in the same world.
+  function ensureLifeRecord(name, homeGroupHint, salt) {
     const records = getRecords();
     if (!records) return null;
     if (records[name]) return enforceAdultBirth(records[name]);
 
     const nowMinute = $gameVariables ? ($gameVariables.value(114) || 0) : 0;
     const profile = getProfile(name);
-    const rng = new LifeRng(nameHash(name + "_life") ^ worldSeed());
+    const rng = new LifeRng(nameHash(name + "_life" + (salt || "")) ^ worldSeed());
 
     const record = {
       v: 1,
@@ -1137,6 +1140,17 @@
     catchUp,
     ensureLifeRecord,
     getRecord(name) { return getRecords()?.[name] ?? null; },
+    // Throw away the life this person was dealt and deal another one, against
+    // whatever their profile says now (level, morality, home town). Used by the
+    // Detailed character editor, where the player is still deciding who this
+    // character is and asks for a different past.
+    rerollLifeRecord(name, homeGroupHint) {
+      const records = getRecords();
+      if (!records || !name) return null;
+      delete records[name];
+      const salt = "_" + Math.floor(Math.random() * 0x7fffffff);
+      return ensureLifeRecord(name, homeGroupHint, salt);
+    },
     buildBiography,
     // Resolve a { key, params } pocket from a record's lifeEvents.
     lifeEventText,

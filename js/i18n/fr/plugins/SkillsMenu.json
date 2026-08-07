@@ -1,7 +1,6 @@
 {
   "title": "Compétences",
   "back": "Retour",
-  "recent": "",
   "unit": {
     "ap": ""
   },
@@ -32,26 +31,17 @@
       "description": ""
     }
   },
-  "option": {
-    "skillCategorization": "",
-    "categoryModes": [
-      "",
-      "",
-      ""
-    ]
-  },
   "cmd": {
-    "favourites": "",
     "levelUp": "",
     "use": "Utiliser",
-    "favourite": "",
-    "unfavourite": "",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "carry": "",
+    "bench": ""
   },
   "action": {
     "useSkill": "",
-    "favourite": "",
-    "unfavourite": "",
+    "carry": "",
+    "bench": "",
     "back": ""
   },
   "info": {
@@ -80,5 +70,15 @@
     "hint": "",
     "section": "",
     "category": ""
+  },
+  "loadout": {
+    "skills": "",
+    "magic": "",
+    "count": "{group} {n}/{max}",
+    "carried": "",
+    "benched": "",
+    "always": "",
+    "hint": "",
+    "full": ""
   }
 }

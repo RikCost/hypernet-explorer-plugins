@@ -33,6 +33,39 @@
  * @type variable
  * @default 112
  *
+ * @param levelDampGrace
+ * @text Level Gap Grace
+ * @desc Levels an enemy may outrank the attacker before damage damping starts.
+ * @type number
+ * @default 4
+ *
+ * @param levelDampScale
+ * @text Level Gap Scale
+ * @desc Higher = gentler damping. Gap above grace is divided by this.
+ * @type number
+ * @default 9
+ *
+ * @param levelDampCurve
+ * @text Level Gap Curve
+ * @desc Exponent of the damping curve. Above 1 it bites harder as the gap widens.
+ * @type number
+ * @decimals 2
+ * @default 1.6
+ *
+ * @param levelDampFloor
+ * @text Level Gap Floor
+ * @desc Lowest damage multiplier the gap alone can impose (0.10 = 10% damage).
+ * @type number
+ * @decimals 2
+ * @default 0.10
+ *
+ * @param levelDampLeverageCap
+ * @text Tactical Leverage Cap
+ * @desc How much of the damping tactics (crits, weakness, debuffs) can undo.
+ * @type number
+ * @decimals 2
+ * @default 0.80
+ *
  * @command startBattle
  * @text Start Event Battle
  * @desc Start a battle with the event's fixed troop and maintain HP state
@@ -112,6 +145,11 @@
     BSE.Params.respawnXVar          = Number(parameters['respawnXVar'] || 26);
     BSE.Params.respawnYVar          = Number(parameters['respawnYVar'] || 27);
     BSE.Params.respawnCountryIDVar  = Number(parameters['respawnCountryIDVar'] || 112);
+    BSE.Params.levelDampGrace       = Number(parameters['levelDampGrace'] || 4);
+    BSE.Params.levelDampScale       = Number(parameters['levelDampScale'] || 9);
+    BSE.Params.levelDampCurve       = Number(parameters['levelDampCurve'] || 1.6);
+    BSE.Params.levelDampFloor       = Number(parameters['levelDampFloor'] || 0.10);
+    BSE.Params.levelDampLeverageCap = Number(parameters['levelDampLeverageCap'] || 0.80);
 
     // ------------------------------------------------------------------
     // 3. SHARED STATE (module-level closures, exposed via BSE.Data)
@@ -137,6 +175,13 @@
     BSE.State.mapCorpses           = BSE.Data._mapCorpses;
     BSE.State.enemyPartDamage      = BSE.Data._enemyPartDamage;
 
+    // Nearby monsters that joined the current battle (see startPersistentBattle
+    // and section 5b of the encounters module). Read it through
+    // BSE.Helpers.getReinforcement(), never directly: an arena fight, a trial or
+    // any other battle set up outside startPersistentBattle would otherwise see
+    // whatever the previous overworld encounter left behind.
+    BSE.State.reinforcement = null;
+
     // ------------------------------------------------------------------
     // 4. SHARED HELPER FUNCTIONS
     // ------------------------------------------------------------------
@@ -148,6 +193,23 @@
         if (!note) return 0;
         const m = note.match(/<Level:\s*(\d+)>/i);
         return m ? parseInt(m[1], 10) : 0;
+    };
+
+    /**
+     * The reinforcements in the battle being fought right now: which troop slot
+     * they were built into, how many members the troop that started the fight
+     * contributed (they hold indexes 0..baseSize-1), and one entry per joining
+     * map event. Answers a neutral, empty record for every battle that was not
+     * set up by startPersistentBattle against a reinforced troop.
+     */
+    BSE.Helpers.getReinforcement = function() {
+        const r = BSE.State.reinforcement;
+        if (r && $gameTroop && $gameTroop._troopId === r.troopId) return r;
+        return {
+            troopId: 0,
+            baseSize: ($gameTroop && $gameTroop.members().length) || 0,
+            joined: []
+        };
     };
 
     /**
@@ -217,6 +279,124 @@
         }
         if (!$gameMap) return false;
         return $gameMap.regionId(x, y) === 99;
+    };
+
+    // ------------------------------------------------------------------
+    // 4b. LEVEL-GAP DAMAGE DAMPING (party -> enemy only)
+    //
+    //   A low-level party may always kill a much higher-level enemy, but not
+    //   by trading raw hits: the wider the gap between the attacker's level
+    //   and the enemy's <Level:X>, the more of the attack's damage is damped.
+    //   The curve is flat inside a grace band, then accelerates (curve > 1)
+    //   and bottoms out at the floor, so the gap alone never zeroes a hit.
+    //
+    //   Tactics buy the damage back. Critical hits, elemental weakness, the
+    //   debuffs and crippling states the party has landed and its own buffs
+    //   all count as leverage, which undoes up to leverageCap of the damping.
+    //   Slip damage (poison and the like) never passes through here at all,
+    //   so damage-over-time is another way through a big gap.
+    //
+    //   Damage the party TAKES is untouched: this only ever scales an actor's
+    //   outgoing HP damage against an enemy.
+    // ------------------------------------------------------------------
+
+    /**
+     * Level of any battler, 0 when an enemy carries no <Level:X> tag.
+     * Cached on the shared $dataEnemies entry, this runs per damage roll.
+     */
+    BSE.Helpers.getBattlerLevel = function(battler) {
+        if (!battler) return 0;
+        if (battler.isActor && battler.isActor()) return battler.level || 0;
+        if (!battler.isEnemy || !battler.isEnemy()) return 0;
+        const enemyData = battler.enemy();
+        if (!enemyData) return 0;
+        if (enemyData._bseLevel === undefined) {
+            enemyData._bseLevel = BSE.Helpers.getEnemyLevel(enemyData.note);
+        }
+        return enemyData._bseLevel;
+    };
+
+    /**
+     * A state counts as detrimental when it restricts the target, weakens one
+     * of its params or drains its HP. Nothing in the database flags a state as
+     * good or bad, so its traits are what we read.
+     */
+    function isDetrimentalState(state) {
+        if (!state) return false;
+        if (state._bseHarmful !== undefined) return state._bseHarmful;
+        let harmful = state.restriction > 0;
+        if (!harmful && state.traits) {
+            harmful = state.traits.some(t =>
+                (t.code === Game_BattlerBase.TRAIT_PARAM && t.value < 1) ||
+                (t.code === Game_BattlerBase.TRAIT_XPARAM && t.dataId === 7 && t.value < 0)
+            );
+        }
+        state._bseHarmful = harmful;
+        return harmful;
+    }
+
+    /**
+     * How much of the level damping the party has earned back on this hit.
+     * 0 = raw numbers only, 1 = fully offset (capped by leverageCap).
+     */
+    BSE.Helpers.tacticalLeverage = function(subject, target, action, critical) {
+        let leverage = 0;
+        if (critical) leverage += 0.5;
+        if (action && action.calcElementRate) {
+            const rate = action.calcElementRate(target);
+            if (rate > 1) leverage += Math.min(0.5, (rate - 1) * 0.5);
+        }
+        let debuffs = 0;
+        if (target._buffs) {
+            for (const level of target._buffs) if (level < 0) debuffs++;
+        }
+        leverage += Math.min(0.4, debuffs * 0.1);
+        const crippled = target.states().filter(isDetrimentalState).length;
+        leverage += Math.min(0.45, crippled * 0.15);
+        let buffs = 0;
+        if (subject._buffs) {
+            for (const level of subject._buffs) if (level > 0) buffs++;
+        }
+        leverage += Math.min(0.2, buffs * 0.05);
+        return Math.min(1, leverage);
+    };
+
+    /**
+     * Multiplier applied to an actor's outgoing damage against an enemy.
+     * Always 1 when the attacker is the enemy's equal or better, when the
+     * enemy has no declared level, or in the sandbox / playtest character.
+     */
+    BSE.Helpers.levelDampingFactor = function(subject, target, action, critical) {
+        if (!subject || !target) return 1;
+        if (!subject.isActor || !subject.isActor()) return 1;
+        if (!target.isEnemy || !target.isEnemy()) return 1;
+        if ($gameSystem && $gameSystem._isSandboxMode) return 1;
+        const leader = $gameParty.leader();
+        if (leader && leader.name() === "Test") return 1; // i18n-ignore: playtest character name
+        const enemyLevel = BSE.Helpers.getBattlerLevel(target);
+        if (enemyLevel <= 0) return 1;
+        const gap = enemyLevel - BSE.Helpers.getBattlerLevel(subject) - BSE.Params.levelDampGrace;
+        if (gap <= 0) return 1;
+        const scale = Math.max(1, BSE.Params.levelDampScale);
+        const damp = Math.max(
+            BSE.Params.levelDampFloor,
+            1 / (1 + Math.pow(gap / scale, BSE.Params.levelDampCurve))
+        );
+        const leverage = BSE.Helpers.tacticalLeverage(subject, target, action, critical) *
+            BSE.Params.levelDampLeverageCap;
+        return damp + (1 - damp) * leverage;
+    };
+
+    const _Game_Action_makeDamageValue_BSE = Game_Action.prototype.makeDamageValue;
+    Game_Action.prototype.makeDamageValue = function(target, critical) {
+        const value = _Game_Action_makeDamageValue_BSE.call(this, target, critical);
+        // HP damage and HP drain only: healing, MP damage and every recovery
+        // effect keep their full value.
+        if (value <= 0 || !this.checkDamageType([1, 5])) return value;
+        const factor = BSE.Helpers.levelDampingFactor(this.subject(), target, this, critical);
+        if (factor >= 1) return value;
+        // A damped hit still lands: chip damage is the point, zero is not.
+        return Math.max(1, value * factor);
     };
 
     // ------------------------------------------------------------------
@@ -298,7 +478,28 @@
         BSE.State.currentMapId = mapId;
         BSE.State.needsRespawn = false;
 
-        BattleManager.setup(troopId, false, false);
+        // The monsters standing nearby pile in (see section 5b of the encounters
+        // module). The battle is then set up against a combined troop, and the
+        // joiners' map events are remembered so the state module can clear them
+        // on a win and hand their HP back on a flee.
+        let setupTroopId = troopId;
+        BSE.State.reinforcement = null;
+        if (BSE.Functions.getJoiningEnemyEvents && $gameMap.mapId() === mapId) {
+            const joiners = BSE.Functions.getJoiningEnemyEvents(eventId);
+            if (joiners.length) {
+                const built = BSE.Functions.buildReinforcedTroop(troopId, joiners, mapId);
+                if (built.joined.length) {
+                    setupTroopId = built.troopId;
+                    BSE.State.reinforcement = {
+                        troopId: built.troopId,
+                        baseSize: $dataTroops[troopId].members.length,
+                        joined: built.joined
+                    };
+                }
+            }
+        }
+
+        BattleManager.setup(setupTroopId, false, false);
         SceneManager.push(Scene_Battle);
     };
 
@@ -493,6 +694,55 @@
             }
         }
         _Window_PartyCommand_process.call(this);
+    };
+
+    // ------------------------------------------------------------------
+    // 15b. WHICH MONSTER A SINGLE-TARGET ACTION HITS
+    //
+    //   A fight is rarely one on one any more (see section 7: the monsters
+    //   standing nearby pile in), so an attack, a skill or an item aimed at one
+    //   enemy asks the player which one it lands on. A lone monster is the only
+    //   thing on the field that can be hit, so it is targeted without a prompt
+    //   and the turn goes straight through: the player is never made to confirm
+    //   a choice they do not have.
+    // ------------------------------------------------------------------
+    const _Scene_Battle_startEnemySelection_BSE = Scene_Battle.prototype.startEnemySelection;
+    Scene_Battle.prototype.startEnemySelection = function() {
+        const alive = $gameTroop.aliveMembers();
+        if (alive.length === 1) {
+            const action = BattleManager.inputtingAction();
+            // The troop index, not the position in the living: a dead monster
+            // still holds its slot in $gameTroop.members().
+            if (action) action.setTarget(alive[0].index());
+            this.hideSubInputWindows();
+            this.selectNextCommand();
+            return;
+        }
+        _Scene_Battle_startEnemySelection_BSE.call(this);
+    };
+
+    // ------------------------------------------------------------------
+    // 15c. A KILLED MONSTER LEAVES THE FIELD
+    //
+    //   The collapse effect is requested by the battle log as it reads out the
+    //   killing blow, so a death that happens away from an action's result (slip
+    //   damage at the end of a turn, a passive, a wound to a vital organ) never
+    //   asks for one and the body stands there. Nobody saw that while a fight
+    //   ended on its only monster's death; with the rest of the pack still
+    //   swinging (section 7) it is on screen for the rest of the battle.
+    //   Catch those deaths here, once the log has finished with the battler so
+    //   its own collapse is never doubled up.
+    // ------------------------------------------------------------------
+    const _Sprite_Enemy_update_BSE = Sprite_Enemy.prototype.update;
+    Sprite_Enemy.prototype.update = function() {
+        _Sprite_Enemy_update_BSE.call(this);
+        const enemy = this._enemy;
+        // _appeared is still true only while nothing has taken the body away.
+        if (!enemy || !this._appeared || !enemy.isDead() || this.isEffecting()) return;
+        if (enemy.isEffectRequested()) return;
+        const log = SceneManager._scene && SceneManager._scene._logWindow;
+        if (log && log.isBusy && log.isBusy()) return;
+        enemy.performCollapse();
     };
 
     // ------------------------------------------------------------------

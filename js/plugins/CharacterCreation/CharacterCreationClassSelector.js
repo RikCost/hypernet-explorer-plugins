@@ -320,175 +320,11 @@
   // Window_ClassLevelUpSkills - Level-Up Skills List
   //=============================================================================
 
-  class Window_ClassLevelUpSkills extends Window_Selectable {
-    initialize(rect, classData) {
-      super.initialize(rect);
-      this._class = classData;
-      this._data = this.makeSkillList();
-      this.refresh();
-      this.activate();
-      this.select(0);
-    }
-
-    makeSkillList() {
-      if (!this._class || !this._class.learnings) {
-        return [];
-      }
-      return this._class.learnings
-        .map((learning) => ({
-          ...learning,
-          skill: $dataSkills[learning.skillId],
-        }))
-        // Drop learnings whose skillId is missing from $dataSkills; otherwise the
-        // sort's a.skill.name access throws when opening the Level-Up list.
-        .filter((entry) => entry.skill)
-        .sort((a, b) => {
-          if (a.level !== b.level) {
-            return a.level - b.level;
-          }
-          return a.skill.name.localeCompare(b.skill.name);
-        });
-    }
-
-    maxItems() {
-      return this._data.length > 0 ? this._data.length : 1;
-    }
-
-    itemAt(index) {
-      return this._data ? this._data[index] : null;
-    }
-
-    drawItem(index) {
-      const rect = this.itemLineRect(index);
-      if (this._data.length > 0) {
-        const learning = this.itemAt(index);
-        if (learning && learning.skill) {
-          const levelText = `Lv ${learning.level}: `;
-          const levelWidth = this.textWidth(levelText);
-          this.drawText(levelText, rect.x, rect.y, levelWidth);
-          this.drawText(
-            learning.skill.name,
-            rect.x + levelWidth,
-            rect.y,
-            rect.width - levelWidth
-          );
-        }
-      } else {
-        this.drawText(
-          T('ClassSelect.noLevelUpSkills'),
-          rect.x,
-          rect.y,
-          rect.width,
-          "center"
-        );
-      }
-    }
-
-    isCurrentItemEnabled() {
-      return this._data.length > 0;
-    }
-
-    processCancel() {
-      super.processCancel();
-      this.callHandler("cancel");
-    }
-  }
 
   //=============================================================================
   // Window_SkillCategories - Skill Categories from Notetags
   //=============================================================================
 
-  class Window_SkillCategories extends Window_Base {
-    initialize(rect, classData) {
-      super.initialize(rect);
-      this._handlers = {};
-      this._class = classData;
-      this.refresh();
-      this.activate();
-    }
-
-    setHandler(symbol, method) {
-      this._handlers[symbol] = method;
-    }
-
-    isHandled(symbol) {
-      return !!this._handlers[symbol];
-    }
-
-    callHandler(symbol) {
-      if (this.isHandled(symbol)) {
-        this._handlers[symbol]();
-      }
-    }
-
-    close() {
-      this.openness = 0;
-    }
-
-    _splitCamelCase(text) {
-      return text.replace(/([A-Z])/g, " $1").trim();
-    }
-
-    refresh() {
-      this.contents.clear();
-      if (!this._class) {
-        this.drawText(
-          T('ClassSelect.noSkillCategories'),
-          0,
-          0,
-          this.contentsWidth(),
-          "center"
-        );
-        return;
-      }
-
-      let y = 0;
-
-      const { primary, secondary } = getClassSkillCats(this._class.id);
-
-      if (primary.length === 0 && secondary.length === 0) {
-        this.drawText(
-          T('ClassSelect.noSkillCategories'),
-          0,
-          0,
-          this.contentsWidth(),
-          "center"
-        );
-        return;
-      }
-
-      if (primary.length) {
-        this.changeTextColor(ColorManager.systemColor());
-        this.drawText(T('ClassSelect.primary'), 0, y, this.contentsWidth());
-        y += this.lineHeight();
-        this.resetTextColor();
-        const skills = primary.map((s) => this._splitCamelCase(s));
-        this.drawTextEx(skills.join(", "), this.itemPadding(), y);
-        y += this.lineHeight() * 2;
-      }
-
-      if (secondary.length) {
-        this.changeTextColor(ColorManager.systemColor());
-        this.drawText(T('ClassSelect.secondary'), 0, y, this.contentsWidth());
-        y += this.lineHeight();
-        this.resetTextColor();
-        const skills = secondary.map((s) => this._splitCamelCase(s));
-        this.drawTextEx(skills.join(", "), this.itemPadding(), y);
-      }
-    }
-
-    update() {
-      super.update();
-      if (
-        this.active &&
-        (Input.isTriggered("cancel") || TouchInput.isCancelled())
-      ) {
-        if (this.isHandled("cancel")) {
-          this.callHandler("cancel");
-        }
-      }
-    }
-  }
 
   //=============================================================================
   // Window_ClassDetails - Class Information Display
@@ -1414,7 +1250,21 @@
       }
     }
 
+    // A caller that PUSHED this selector over a scene of its own (the Detailed
+    // creation editor) is returned to by popping, so it comes back with its own
+    // state instead of the wizard restarting underneath it. Answers true when
+    // it has taken the exit.
+    _returnToPushingCaller() {
+      if (!window.$ccClassReturnByPop) return false;
+      window.$ccClassReturnByPop = false;
+      window.$ccArchetypeClassFilter = null;
+      window.$ccCreatureClassFlow = null;
+      SceneManager.pop();
+      return true;
+    }
+
     onClassCancel() {
+      if (this._returnToPushingCaller()) return;
       // Creature flow: the roster on screen was derived from the creature's
       // archetypes, so Back returns to the creature builder (where those
       // archetypes can be changed) rather than to the wizard's class step,
@@ -1556,6 +1406,10 @@
       if (markFirstCreationComplete) {
         markFirstCreationComplete();
       }
+
+      // Detailed creation editor: it owns the rest of the character sheet, so
+      // the class change lands back in its panel rather than in the wizard.
+      if (this._returnToPushingCaller()) return;
 
       // Resume character creation at the Traits step after confirming class selection
       if (Scene_CharacterCreation) {

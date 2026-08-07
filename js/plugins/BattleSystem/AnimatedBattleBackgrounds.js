@@ -90,19 +90,7 @@
     // Utility Methods Section
     // =============================================================================
 
-    function parseTime(timeStr) {
-        if (!timeStr || !timeStr.includes(':')) return 6;
-        const [h, m] = timeStr.split(':').map(Number);
-        return h + m / 60;
-    }
 
-    function interpolateColor(color1, color2, factor) {
-        return [
-            Math.round(color1[0] + factor * (color2[0] - color1[0])),
-            Math.round(color1[1] + factor * (color2[1] - color1[1])),
-            Math.round(color1[2] + factor * (color2[2] - color1[2]))
-        ];
-    }
 
     function getGameDate() {
         // Get game date from TimeDateSystem (Variable 114: total minutes elapsed)
@@ -112,15 +100,6 @@
         return new Date(baseDate.getTime() + gameTimeMinutes * 60 * 1000);
     }
 
-    function getSeason() {
-        // Use game date from TimeDateSystem instead of real date
-        const gameDate = getGameDate();
-        const month = gameDate.getMonth();
-        if (month >= 2 && month <= 4) return 'spring';
-        if (month >= 5 && month <= 7) return 'summer';
-        if (month >= 8 && month <= 10) return 'autumn';
-        return 'winter';
-    }
 
     function isFriday() {
         // Use game date from TimeDateSystem instead of real date
@@ -716,12 +695,6 @@
         return CONFIG.TIME_MODES.NIGHT;
     }
 
-    function getCurrentCountry() {
-        if (!$gameVariables) return defaultCountry;
-        const countryId = $gameVariables.value(86);
-        if (!countryId || countryId === 0) return defaultCountry;
-        return Countries.find(c => c.id === countryId) || defaultCountry;
-    }
 
     function getTintDataForTimeMode(timeMode) {
         switch (timeMode) {
@@ -950,41 +923,6 @@
         }
     }
 
-    function createSkyGradient(context, width, height, timeMode) {
-        // This function is kept for compatibility but not used with dithering
-        const gradient = context.createLinearGradient(0, 0, 0, height);
-
-        switch (timeMode) {
-            case CONFIG.TIME_MODES.DAY:
-                gradient.addColorStop(0, '#1E90FF');
-                gradient.addColorStop(0.5, '#87CEEB');
-                gradient.addColorStop(1, '#B0E0E6');
-                break;
-            case CONFIG.TIME_MODES.NIGHT:
-                gradient.addColorStop(0, '#000428');
-                gradient.addColorStop(0.5, '#004e92');
-                gradient.addColorStop(1, '#001a33');
-                break;
-            case CONFIG.TIME_MODES.DUSK:
-                gradient.addColorStop(0, '#FF4500');
-                gradient.addColorStop(0.4, '#FF8C00');
-                gradient.addColorStop(0.7, '#9370DB');
-                gradient.addColorStop(1, '#483D8B');
-                break;
-            case CONFIG.TIME_MODES.DAWN:
-                gradient.addColorStop(0, '#FF6B6B');
-                gradient.addColorStop(0.4, '#FFA07A');
-                gradient.addColorStop(0.7, '#FFD700');
-                gradient.addColorStop(1, '#87CEEB');
-                break;
-            default:
-                gradient.addColorStop(0, '#1E90FF');
-                gradient.addColorStop(0.5, '#87CEEB');
-                gradient.addColorStop(1, '#B0E0E6');
-        }
-
-        return gradient;
-    }
 
     // =============================================================================
     // Game_Map Extensions

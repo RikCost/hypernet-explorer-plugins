@@ -109,10 +109,6 @@
         this._slotIndex         = 0;
         this._inventoryIndex    = 0;
 
-        if (this._show3DPreview === undefined) {
-            this._show3DPreview = typeof THREE !== 'undefined';
-        }
-
         // WASD state
         this._wasdInput      = { up: false, down: false, left: false, right: false };
         this._wasdHeld       = { up: false, down: false, left: false, right: false };
@@ -370,6 +366,9 @@
                 if (!isDragging && model) model.rotation.y += 0.007;
 
                 if (model && window.WeaponSystemProcedural) {
+                    // Gears, drifting shards and pulsing runes declared by the
+                    // model itself, same as in battle.
+                    WeaponSystemProcedural.tickModelParts(model, deltaMs);
                     const ropes = [];
                     if (model.userData._verletRope)  ropes.push(model.userData._verletRope);
                     if (model.userData._verletRopes) model.userData._verletRopes.forEach(r => ropes.push(r));
@@ -589,29 +588,23 @@
         const w1 = tempActor ? tempActor.equips()[1] : actor.equips()[1];
         const hasW0   = w0 && DataManager.isWeapon(w0);
         const hasW1   = w1 && DataManager.isWeapon(w1);
-        const hasThree = typeof THREE !== 'undefined' && this._show3DPreview;
+        const hasThree = typeof THREE !== 'undefined';
 
         let previewBoxHTML = '<div class="weapon-previews-container">';
 
-        if (typeof THREE !== 'undefined' && (hasW0 || hasW1)) {
-            const btnLabel = this._show3DPreview
-                ? T('Equip.preview3D') : T('Equip.preview2D');
-            previewBoxHTML += `<button id="preview-toggle-button" class="weapon-preview-toggle"><span>&#x21c4;</span> ${btnLabel}</button>`;
-        }
-
         const cardClass = (hasW0 && hasW1) ? 'weapon-preview-card--half' : 'weapon-preview-card--single';
 
+        // The preview is the weapon's real 3D model, the same one the battle
+        // overlay holds. Without three.js there is nothing to draw it with, so
+        // the card falls back to the item's icon on its rarity ring.
         const addCardHTML = (weapon, canvasId) => {
             if (hasThree) {
                 return `<div class="weapon-preview-card ${cardClass}"><canvas id="weapon-preview-canvas-${canvasId}" width="140" height="380"></canvas></div>`;
             }
-            const spriteName = weapon.meta && weapon.meta['WeaponSprite'] ? weapon.meta['WeaponSprite'].trim() : null;
             const iconIdx    = weapon.iconIndex;
             const iconStyle  = `background:url('img/system/IconSet.png') -${(iconIdx%16)*32}px -${Math.floor(iconIdx/16)*32}px no-repeat;`;
             const rarity     = window.ItemSystemUtils ? window.ItemSystemUtils.getItemRarity(weapon) : { colorCode: '#bba16d' };
-            const inner = spriteName
-                ? `<div class="weapon-preview-sprite-wrapper"><img class="weapon-preview-img" src="img/pictures/Weapons/${spriteName}.png"></div>`
-                : `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle}"></div></div></div>`;
+            const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle}"></div></div></div>`;
             return `<div class="weapon-preview-card ${cardClass}">${inner}</div>`;
         };
 
@@ -837,7 +830,6 @@
 
         this.cleanup3DWeaponPreview();
         spread.querySelector('.right-content-area').innerHTML = this._buildRightPageHTML();
-        this._bindToggleButton(container);
         this.init3DWeaponPreview();
 
         // ── Mouse / click bindings ─────────────────────────────────────────────
@@ -925,20 +917,8 @@
         this.cleanup3DWeaponPreview();
         const rightArea = container.querySelector('.right-content-area');
         if (rightArea) rightArea.innerHTML = this._buildRightPageHTML();
-        this._bindToggleButton(container);
         this.init3DWeaponPreview();
         SoundManager.playCursor();
-    };
-
-    Scene_Equip.prototype._bindToggleButton = function (container) {
-        const btn = container.querySelector('#preview-toggle-button');
-        if (!btn) return;
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            SoundManager.playOk();
-            this._show3DPreview = !this._show3DPreview;
-            this._refreshDOM();
-        });
     };
 
     // =============================================================================

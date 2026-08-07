@@ -65,5 +65,6 @@
   "filedRestored": "Filed reading restored.",
   "previewOnly": "Preview only, reading {reading}. Nothing has been written to the record.",
   "onlyOneReading": "This declaration has only one reading on file.",
-  "alternativeGenerated": "Alternative reading generated. Not filed."
+  "alternativeGenerated": "Alternative reading generated. Not filed.",
+  "sedates": "Sedates"
 }

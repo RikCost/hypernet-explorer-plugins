@@ -189,7 +189,6 @@
             this._selectedTrade = null;
             this._selectedItem = null;
             this._smithIndex = 0;
-            this._show3D = typeof THREE !== 'undefined';
             this._overlayTimer = 0;
             this._overlayData = null;
             this._listDirty = true;
@@ -577,7 +576,7 @@
             }
             // Anything else the entry declares (Range, Movement, Level, ...) is
             // shown as written, so a note tag added later surfaces by itself.
-            const SKIP = /^(Recipe|Craft|CraftLevel|Category|Lore|Weight|WeaponSprite)$/i;
+            const SKIP = /^(Recipe|Craft|CraftLevel|Category|Lore|Weight)$/i;
             for (const key of Object.keys(item.meta || {})) {
                 if (SKIP.test(key)) continue;
                 const val = item.meta[key];
@@ -600,24 +599,18 @@
                 `<div class="forge-meta">${table}</div>${lore}`;
         }
 
-        // -------------------------------------------------- 2D / 3D preview
-        // The same card and toggle the equip menu uses, for one entry instead
-        // of a wearer's two hands.
+        // -------------------------------------------------- weapon preview
+        // The same card the equip menu uses, for one entry instead of a
+        // wearer's two hands: the weapon's real 3D model. An armor, or a
+        // runtime without three.js, gets the icon on its rarity ring instead.
         previewHTML(item) {
             const canThree = typeof THREE !== 'undefined' && DataManager.isWeapon(item);
             let html = '<div class="weapon-previews-container">';
             if (canThree) {
-                const label = this._show3D ? T('Equip.preview3D') : T('Equip.preview2D');
-                html += `<button id="forge-preview-toggle" class="weapon-preview-toggle"><span>&#x21c4;</span> ${escapeHtml(label)}</button>`;
-            }
-            if (canThree && this._show3D) {
                 html += `<div class="weapon-preview-card weapon-preview-card--single"><canvas id="forge-preview-canvas" width="140" height="240"></canvas></div>`;
             } else {
-                const sprite = item.meta && item.meta.WeaponSprite ? String(item.meta.WeaponSprite).trim() : null;
                 const rarity = rarityOf(item);
-                const inner = sprite
-                    ? `<div class="weapon-preview-sprite-wrapper"><img class="weapon-preview-img" src="img/pictures/Weapons/${escapeHtml(sprite)}.png"></div>`
-                    : `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
+                const inner = `<div class="weapon-preview-icon-wrapper"><div class="weapon-preview-icon-circle" style="border:2.5px solid ${rarity.colorCode};"><div class="item-icon" style="${iconStyle(item.iconIndex, 32)}"></div></div></div>`;
                 html += `<div class="weapon-preview-card weapon-preview-card--single">${inner}</div>`;
             }
             return html + '</div>';
@@ -625,7 +618,7 @@
 
         mount3D(item) {
             this.dispose3D();
-            if (typeof THREE === 'undefined' || !this._show3D || !DataManager.isWeapon(item)) return;
+            if (typeof THREE === 'undefined' || !DataManager.isWeapon(item)) return;
             const canvas = document.getElementById('forge-preview-canvas');
             if (!canvas) return;
 
@@ -692,6 +685,10 @@
             const tick = () => {
                 if (!state.renderer) return;
                 if (state.model && state.spin) state.model.rotation.y += 0.012;
+                // Moving parts the procedural model declares for itself.
+                if (state.model && window.WeaponSystemProcedural) {
+                    WeaponSystemProcedural.tickModelParts(state.model, 16);
+                }
                 state.renderer.render(state.scene, state.camera);
                 state.raf = requestAnimationFrame(tick);
             };
@@ -797,13 +794,6 @@
                 this._itemIndex = idx;
                 this._selectedItem = this.itemsForTrade()[idx] || null;
                 this._activeArea = 'items';
-                SoundManager.playCursor();
-                this.refreshForge();
-                return;
-            }
-
-            if (e.target.closest('#forge-preview-toggle')) {
-                this._show3D = !this._show3D;
                 SoundManager.playCursor();
                 this.refreshForge();
                 return;

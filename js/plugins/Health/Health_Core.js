@@ -761,17 +761,6 @@
       };
     }
   }
-  // Unequip an item from a slot
-  function unequipItemFromSlot(actor, slotName) {
-    if (slotName === "leftHand" || slotName === "rightHand") {
-      var weapons = actor.weapons();
-      if (weapons.length > 0) {
-        // Just remove the first weapon for simplicity
-        // In a full implementation, you would need to track which weapon is in which hand
-        actor.changeEquip(0, null);
-      }
-    }
-  }
 
   // Restore all body parts function - used for respawn
   function restoreAllBodyParts(actor) {

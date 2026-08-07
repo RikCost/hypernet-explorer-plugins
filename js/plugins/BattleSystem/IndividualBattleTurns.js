@@ -50,6 +50,83 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
 
 (() => {
 
+  // ---------------------------------------------------------------------
+  // Manual party turn order
+  // ---------------------------------------------------------------------
+  // Left alone, a round is built from the DEX-derived formula above, so the
+  // fastest member opens every fight. A party that would rather decide for
+  // itself pins an order from the menu (Dynamics -> Turn Order): a list of
+  // actor ids on $gameSystem that replaces the speed sort for the party half
+  // of the round. Anyone missing from the list (a member who joined after it
+  // was pinned) keeps their speed slot, behind everyone pinned.
+  window.BattleTurnOrder = {
+    // Read back sanitised against the party as it stands, so an id that has
+    // since left never holds a slot and a list of ghosts reads as "no order".
+    pinned() {
+      const stored = (typeof $gameSystem !== "undefined" && $gameSystem)
+        ? $gameSystem._partyTurnOrder : null;
+      if (!Array.isArray(stored) || stored.length === 0) return null;
+      const party = (typeof $gameParty !== "undefined" && $gameParty)
+        ? $gameParty.members().map(mem => mem.actorId()) : [];
+      const kept = stored.filter(id => party.includes(id));
+      return kept.length ? kept : null;
+    },
+
+    isPinned() {
+      return !!window.BattleTurnOrder.pinned();
+    },
+
+    // The value a battler is ranked by out of battle: _battleAgi only exists
+    // once a fight has started, and the menu has to rank the party before one
+    // ever does.
+    speedOf(battler) {
+      if (!battler) return 0;
+      return battler._battleAgi !== undefined ? battler._battleAgi : battler.agi;
+    },
+
+    // The party in the order it will act.
+    members() {
+      const list = (typeof $gameParty !== "undefined" && $gameParty)
+        ? $gameParty.members().slice() : [];
+      const speedOf = window.BattleTurnOrder.speedOf;
+      list.sort((a, b) => speedOf(b) - speedOf(a));
+      const order = window.BattleTurnOrder.pinned();
+      if (order) {
+        // Stable sort, so the unpinned tail keeps the speed ranking it just got.
+        const rank = actor => {
+          const at = order.indexOf(actor.actorId());
+          return at < 0 ? Number.MAX_SAFE_INTEGER : at;
+        };
+        list.sort((a, b) => rank(a) - rank(b));
+      }
+      return list;
+    },
+
+    set(actorIds) {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      $gameSystem._partyTurnOrder = Array.isArray(actorIds) ? actorIds.slice() : null;
+    },
+
+    // Back to the speed formula.
+    clear() {
+      if (typeof $gameSystem === "undefined" || !$gameSystem) return;
+      $gameSystem._partyTurnOrder = null;
+    },
+
+    // Nudge a member one place up or down the acting order. The first nudge
+    // pins the whole current order, so what is captured is the speed ranking
+    // the player was just looking at rather than a half-empty list.
+    move(actorId, delta) {
+      const ids = window.BattleTurnOrder.members().map(mem => mem.actorId());
+      const from = ids.indexOf(actorId);
+      const to = from + delta;
+      if (from < 0 || to < 0 || to >= ids.length) return false;
+      ids.splice(to, 0, ids.splice(from, 1)[0]);
+      window.BattleTurnOrder.set(ids);
+      return true;
+    }
+  };
+
   BattleManager.isTpb = function() {
     return true;
   };
@@ -60,12 +137,14 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
     this._battlers = [];
   };
 
-  // Build a fresh round (fastest first per side). With a small party (1-2
-  // members) we keep the classic "whole party, then every enemy" ordering.
-  // With 3+ active members the party would otherwise fire off 3-4 actions
-  // before any enemy responds, so we interleave one enemy turn after each
-  // party member. Rebuilding this each round keeps the cadence stable even if
-  // the queue was disturbed during the previous round.
+  // Build a fresh round: every living battler, party and troop alike, acts
+  // exactly once, ordered by the speed formula alone. A round used to be
+  // interleaved so that an enemy answered each party member in turn, which
+  // meant a lone monster facing three travellers took three turns to their
+  // three and its own AGI never entered into it. Speed is the only thing that
+  // decides now, so a fast monster opens the round and a slow one closes it,
+  // whatever the head count on either side. Rebuilding this each round keeps
+  // the ordering stable even if the queue was disturbed during the previous one.
   BattleManager.makeITBSRound = function() {
     const all = $gameParty.aliveMembers().concat($gameTroop.aliveMembers());
     // Mid-fight reinforcements never ran onBattleStart, so ensure every battler
@@ -73,55 +152,51 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
     // `_battleAgi || 0` fallback would always place them last.
     all.forEach(b => { if (b._battleAgi === undefined) b.updateBattleAgi(); });
     all.sort((a, b) => (b._battleAgi || 0) - (a._battleAgi || 0));
-    const actors = all.filter(b => b.isActor());
-    const enemies = all.filter(b => !b.isActor());
 
-    if (actors.length < 3 || enemies.length === 0) {
-      return actors.concat(enemies);
+    // A pinned order (Dynamics -> Turn Order) overrules speed for the party
+    // alone: the slots the party won in the speed ranking stay exactly where
+    // they are and the members are dealt into them in the pinned order, so the
+    // troop keeps every position its own speed earned. Members left off the
+    // list fall in behind the pinned ones, in speed order.
+    const pinned = window.BattleTurnOrder && window.BattleTurnOrder.pinned();
+    if (pinned) {
+      const rank = battler => {
+        const at = pinned.indexOf(battler.actorId());
+        return at < 0 ? Number.MAX_SAFE_INTEGER : at;
+      };
+      const actors = all.filter(b => b.isActor()).sort((a, b) => rank(a) - rank(b));
+      let next = 0;
+      for (let i = 0; i < all.length; i++) {
+        if (all[i].isActor()) all[i] = actors[next++];
+      }
     }
-
-    // Interleave so that EVERY party member is immediately followed by an enemy
-    // turn. Enemies are cycled, so when there are fewer enemies than party
-    // members an enemy will take more than one turn in the round (that is the
-    // only way to honour "an enemy acts after every member"). The same enemy
-    // can therefore appear multiple times in the queue, which is why the
-    // dequeue in updateTpb removes by position (shift) and not by value, since
-    // RMMZ's Array.remove() would otherwise strip every copy at once.
-    const round = [];
-    for (let ai = 0; ai < actors.length; ai++) {
-      round.push(actors[ai]);
-      round.push(enemies[ai % enemies.length]);
-    }
-    // If there are more enemies than party members, the ones not yet placed
-    // still act once, at the end of the round.
-    for (let k = actors.length; k < enemies.length; k++) {
-      round.push(enemies[k]);
-    }
-    return round;
+    return all;
   };
 
   Fomar.ITBS.BattleManager_startBattle = BattleManager.startBattle;
   BattleManager.startBattle = function() {
     Fomar.ITBS.BattleManager_startBattle.call(this);
-    // First round uses the same ordering rules as every other round.
+    // The first round is built by the same speed rules as every other one...
     this._battlers = this.makeITBSRound();
 
-    // Split-screen adjustment: player who triggered battle goes first
+    // ...except that the opening turn is always the player's, however fast the
+    // monsters are. The battle-start danger warning ("this thing is far above
+    // your level", BattleSystemEnhancedMechanics) is only worth printing if the
+    // party can still act on it, so Player 1 opens the fight and can run before
+    // anything swings at them. Every round after this one is pure speed again.
+    // Split screen: the opener is whoever walked into the monster.
+    let opener = $gameParty.members()[0];
     if (window.$gameSplitScreen && window.$gameSplitScreen.active) {
       const activator = $gameMessage._eventActivator || "p1";
-      let triggeringActor = null;
       if (activator === "p2" && $gameParty.members().length >= 2) {
-        triggeringActor = $gameParty.members()[1]; // Player 2
-      } else {
-        triggeringActor = $gameParty.members()[0]; // Player 1
+        opener = $gameParty.members()[1]; // Player 2
       }
-
-      if (triggeringActor) {
-        const index = this._battlers.indexOf(triggeringActor);
-        if (index >= 0) {
-          this._battlers.splice(index, 1); // Remove from current position
-          this._battlers.unshift(triggeringActor); // Move to front
-        }
+    }
+    if (opener) {
+      const index = this._battlers.indexOf(opener);
+      if (index > 0) {
+        this._battlers.splice(index, 1); // Remove from current position
+        this._battlers.unshift(opener);  // Move to front
       }
     }
   };
@@ -146,8 +221,8 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
 
   BattleManager.updateTpb = function() {
     // Drop anyone who has died since being queued so a corpse never holds a
-    // slot. This also removes every remaining (duplicate) entry of an enemy
-    // that has died, so a cycled enemy never acts again once killed.
+    // slot. Reinforcements that joined mid-round are picked up by the next
+    // rebuild, which re-reads both sides from scratch.
     this._battlers = this._battlers.filter(member => member && member.isAlive());
     // When the round is finished, start a new one. Rebuilding from scratch
     // keeps the per-round ordering (see makeITBSRound) stable, even if the
@@ -174,9 +249,8 @@ Fomar.ITBS.passText = Fomar.ITBS.parameters["Pass Command Name"] || "Pass";
         this._subject.makeActions();
         $gameTroop.increaseTurn();
       }
-      // Remove only THIS entry (by position). The same enemy may appear again
-      // later in the round when cycled, so we must not use Array.remove() here,
-      // which would strip every copy of that enemy from the queue.
+      // Dequeue by position rather than by value: a battler holds exactly one
+      // slot per round, and shifting keeps the rest of the queue intact.
       this._battlers.shift();
     }
   };

@@ -3634,15 +3634,11 @@ Scene_Battle.prototype.onActorCancel = function() {
 };
 
 Scene_Battle.prototype.startEnemySelection = function() {
-    const action = BattleManager.inputtingAction();
-    const enemies = $gameTroop.aliveMembers();
-
-    if (action && enemies.length > 0) {
-        const randomIndex = Math.floor(Math.random() * enemies.length);
-        action.setTarget(randomIndex);
-    }
-
-    this.selectNextCommand();
+    this._enemyWindow.refresh();
+    this._enemyWindow.show();
+    this._enemyWindow.select(0);
+    this._enemyWindow.activate();
+    this._statusWindow.hide();
 };
 
 Scene_Battle.prototype.onEnemyOk = function() {

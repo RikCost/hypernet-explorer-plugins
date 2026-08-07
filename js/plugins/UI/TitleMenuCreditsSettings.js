@@ -108,7 +108,6 @@
                 { name: 'Customized Dynamically Generated Chest Loot', by: 'cocomode', urls: ['cocomode.itch.io/customized-dynamically-generated-chest-loot-for-rpg-maker-mz'] },
                 { name: 'Revealed Area Map for RPG Maker MZ', by: 'cocomode', urls: ['cocomode.itch.io/revealed-area-map-for-rpg-maker-mz'] },
                 { name: 'TurnInPlace.js', by: 'mjshi', urls: ['github.com/mjshi/RPGMakerRepo/blob/master/TurnInPlace.js'] },
-                { name: 'OZZ_DebugPasability.js', by: 'orochii', urls: ['github.com/orochii/RMXPVXA-Scripts/blob/master/MZ/OZZ_DebugPasability.js'] },
                 { name: "SLIM's This and That's", urls: ['forums.rpgmakerweb.com/index.php?threads/slims-this-and-thats-mz-edition.125627/'] },
                 { name: "CandaCi's Resources for MZ", urls: ['forums.rpgmakerweb.com/index.php?threads/candacis-resources-for-mz.126137/'] },
                 { name: "Avery's Experimental XP to MZ Conversions", urls: ['forums.rpgmakerweb.com/index.php?threads/averys-experimental-xp-to-mz-conversions-default-and-original.153808/'] }

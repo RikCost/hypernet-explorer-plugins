@@ -177,16 +177,14 @@ window.Game_PetFollower = Game_PetFollower;
     // Skab pixel pack, the same wardrobe every procedural citizen is drawn from
     // (js/db/WorldGen/NPCs.json, npc entries under Skab/). A mitosis clone is
     // the exception and is handed its parent's sprite by the caller.
-    let _skabPool = null;
+    // Beta sheets are dealt here only in a world created with beta sprites on,
+    // so the pool is asked for fresh each time rather than memoized: activating
+    // another world changes the answer (window.SpriteCatalog does the caching).
     function _randomSkabSprite() {
-        if (!_skabPool) {
-            const npcData = window.WorldGen && window.WorldGen.NPCs;
-            _skabPool = npcData
-                ? Object.keys(npcData).filter(k => npcData[k].npc === true && k.indexOf("Skab/") === 0)
-                : [];
-        }
-        if (!_skabPool.length) return null;
-        const name = _skabPool[Math.floor(Math.random() * _skabPool.length)];
+        const pool = (window.SpriteCatalog?.npcKeys() || [])
+            .filter(k => k.indexOf("Skab/") === 0);
+        if (!pool.length) return null;
+        const name = pool[Math.floor(Math.random() * pool.length)];
         // A "!$" sheet holds one character in a 3x4 grid, so its index is always 0.
         const index = name.includes("!$") ? 0 : Math.floor(Math.random() * 8);
         return { characterName: name, characterIndex: index };

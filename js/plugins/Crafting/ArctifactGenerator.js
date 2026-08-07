@@ -1135,15 +1135,11 @@ function applyNamePattern(kind, prefix, noun, suffix) {
         .replace(/\{n\}/g, String(Math.floor(Math.random() * 5) + 1));
 }
 
-// Weapon name generation components
-const weaponPrefixes = () => T.pool("Artifacts.weapon.prefix");
 
 const weaponNouns = (typeId) => T.pool("Artifacts.weapon.noun." + typeId);
 
 const weaponSuffixes = () => T.pool("Artifacts.weapon.suffix");
 
-// Armor name generation components
-const armorPrefixes = () => T.pool("Artifacts.armor.prefix");
 
 const armorNouns = (typeId) => T.pool("Artifacts.armor.noun." + typeId);
 

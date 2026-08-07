@@ -604,7 +604,9 @@
       let npcArchetype = "Humanoid"; // i18n-ignore: EnemyArchetypes.json id
       let assignedClassId = classId;   // default: keep the class from the event note
       if (worldSeed !== 19002001 && DataLoader.npcData) {
-        const npcKeys = Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
+        const npcKeys = window.SpriteCatalog
+          ? window.SpriteCatalog.npcKeys()
+          : Object.keys(DataLoader.npcData).filter(k => DataLoader.npcData[k].npc === true);
         if (npcKeys.length > 0) {
           const rngV = new SeededRng(nameToSeed(eventName + "_vis" + worldSeed));
           const keyIdx = rngV.nextInt(0, npcKeys.length);
@@ -1106,7 +1108,10 @@
 
   const BackstoryGenerator = {
 
-    generate(eventName, profile) {
+    // `salt` re-rolls a bio that has already been written (rerollBackstory);
+    // without it the name is the whole seed, so the same person always gets the
+    // same formative events back in the same world.
+    generate(eventName, profile, salt) {
       // Read through HistoryManager so backstories see the active-world timeline
       // (WorldManager store) as well as the $gameSystem fallback.
       const events = window.HistoryManager
@@ -1115,7 +1120,7 @@
       if (!events?.length) return null;
 
       const worldSeed = window.NPCShared ? window.NPCShared.worldSeed() : 19002001;
-      const rng = new SeededRng((nameToSeed(eventName) ^ worldSeed) >>> 0);
+      const rng = new SeededRng((nameToSeed(eventName + (salt || '')) ^ worldSeed) >>> 0);
 
       // ── Birth year ──────────────────────────────────────────────────────────
       // A curated preset dossier (CharacterCreationPresets) wins over the
@@ -1345,6 +1350,18 @@
         p.backstory = null;
       }
       if (!p.backstory) p.backstory = BackstoryGenerator.generate(name, p);
+    },
+
+    // Throw the written bio away and write another one, against the profile as
+    // it stands now. The Detailed character editor offers this while the player
+    // is still deciding who the character is.
+    rerollBackstory(name) {
+      const p = SocietyRegistry.getProfile(name);
+      if (!p) return null;
+      const salt = '_' + Math.floor(Math.random() * 0x7fffffff);
+      const bio = BackstoryGenerator.generate(name, p, salt);
+      if (bio) p.backstory = bio;
+      return p.backstory || null;
     },
 
     generateAllBackstories() {

@@ -59,6 +59,7 @@
   "fusedSkillDesc": "Un'abilità procedurale fusa da {parts} (dominante: {dominant}).",
   "fusedSpellDesc": "Un incantesimo procedurale fuso da {parts} (dominante: {dominant}).",
   "teachActor": "Insegna a {actor} ({cost} KC)",
+  "teachPupil": "Insegna a {actor}",
   "selectSkillForDetails": "Seleziona una skill per vederne i dettagli",
   "mpLabel": "PM:",
   "apLabel": "PA:",
@@ -78,5 +79,14 @@
   },
   "forgeBlurb": "Scegli un incantesimo dominante e un componente recessivo (incantesimo o abilità) di {actor} per fonderli in una nuova abilità. Il costo in MP e AP è la somma dei componenti; la fusione stessa si paga in Conoscenza, in base a quanto varrebbe insegnare i componenti. Se il recessivo è un'abilità, il risultato sarà un'abilità. I componenti vengono dimenticati. Hai {knowledge} KP.",
   "kpMultiplier3x": "3.0X KC",
-  "kpMultiplier15x": "1.5X KC"
+  "kpMultiplier15x": "1.5X KC",
+  "graph": {
+    "legendLearned": "Appresa",
+    "legendOpen": "Disponibile",
+    "legendLocked": "Bloccata",
+    "locked": "BLOCCATA",
+    "lockedBy": "Si sblocca da: {skills}",
+    "lockedHint": "Nulla di ciò che conosci confina con questa abilità.",
+    "lockedToast": "{skill} non confina con nulla che questo allievo conosca."
+  }
 }

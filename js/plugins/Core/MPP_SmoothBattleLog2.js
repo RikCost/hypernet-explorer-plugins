@@ -90,7 +90,7 @@
  * @type number
  * @min 0
  * @max 100
- * @default 25
+ * @default 0
  *
  */
 
@@ -111,7 +111,7 @@
         startMessagesOnLog: params['Start Messages On Log?'] === 'true',
         logCommand: params['Log Command'] || '',
         animationSpeed: Number(params['Animation Speed'] || 8),
-        battleLogBgOpacity: Number(params['Battle Log BG Opacity'] || 25),
+        battleLogBgOpacity: Number(params['Battle Log BG Opacity'] ?? 0),
         colors: {
             actor: 1,   // Bright gold for actors
             actor2: 4,  // Bright gold for Actor 2
@@ -1042,7 +1042,7 @@ Window_BattleLog.prototype.resetFontSettings = function() {
             _setStyleIfChanged(root, 'padding', Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px');
 
             // Panel background on the root container (not per-line) - no borders or shadows
-            const bgOpacityRoot = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : 25) / 100;
+            const bgOpacityRoot = (ConfigManager.battleLogBgOpacity !== undefined ? ConfigManager.battleLogBgOpacity : CONFIG.battleLogBgOpacity) / 100;
             _setStyleIfChanged(root, 'border', 'none', true);
             _setStyleIfChanged(root, 'box-shadow', 'none', true);
             _setStyleIfChanged(root, 'outline', 'none', true);

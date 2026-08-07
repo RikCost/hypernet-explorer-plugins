@@ -8004,23 +8004,6 @@
     z-index: 2;
 }
 
-/* 2D sprite fallback */
-.weapon-preview-sprite-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.weapon-preview-img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    image-rendering: pixelated;
-}
-
 .weapon-preview-icon-wrapper {
     flex: 1;
     display: flex;
@@ -8044,34 +8027,6 @@
 .weapon-preview-icon-circle .item-icon {
     transform: scale(2.4);
     transform-origin: center;
-}
-
-/* 3D/2D toggle button */
-.weapon-preview-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
-    font-family: 'Lora', serif;
-    font-size: 0.75rem;
-    color: var(--text-secondary-active);
-    background: var(--text-highlight-active);
-    border: 1.5px solid var(--border-success);
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px var(--shadow-black-translucent-15);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    user-select: none;
-}
-
-.weapon-preview-toggle:hover {
-    background: var(--text-secondary-active);
-    color: var(--text-highlight-active);
 }
 
 /* Remove-item option name color */
@@ -12306,6 +12261,71 @@
       font-size: 0.98rem; color: var(--text-text-alt-4);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
+    /* ── Detailed character creation (CharacterCreationFull.js) ──────────
+       The Create tab turns the profile into an editable sheet: one row per
+       field, label left, current value right, and the same in-panel content
+       focus ring the Wiki grid uses. */
+    .npc-cc-hint {
+      font-size: 1.08rem; font-style: italic; color: var(--text-text-alt-4);
+      margin: 2px 0 6px;
+    }
+    .npc-cc-row {
+      display: flex; align-items: baseline; gap: 8px;
+      padding: 6px 9px;
+      border: 1px solid transparent;
+      border-bottom: 1px solid var(--border-primary-hover-translucent-15);
+      cursor: pointer; user-select: none; -webkit-user-select: none;
+      font-size: 1.24rem; color: var(--text-primary-hover);
+      transition: background 0.1s, border-color 0.1s;
+      min-width: 0;
+    }
+    .npc-cc-row:hover { background: var(--bg-primary-hover-translucent-35); }
+    .npc-cc-row.npc-content-focused {
+      background: var(--bg-primary-hover-translucent-35);
+      border-color: var(--border-focus-hover);
+      box-shadow: inset 0 0 0 2px var(--border-focus-hover);
+      border-radius: 4px;
+    }
+    .npc-cc-row-lbl { flex: 0 0 42%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .npc-cc-row-val {
+      flex: 1 1 auto; min-width: 0; text-align: right;
+      color: var(--text-text-alt-4);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .npc-cc-row-sub {
+      flex: 1 1 auto; min-width: 0; text-align: right;
+      font-size: 1.02rem; font-style: italic; color: var(--text-text-alt-4);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .npc-cc-row-arrow { flex: 0 0 auto; font-size: 1.02rem; color: var(--border-focus-hover); opacity: 0.75; }
+    /* Running total carried by a picker: the specialization point budget, the
+       only place those points are shown. */
+    .npc-cc-note {
+      font-size: 1.15rem; font-weight: bold;
+      color: var(--text-primary-hover);
+      background: var(--bg-primary-hover-translucent-35);
+      border: 1px solid var(--border-primary-hover-translucent-15);
+      border-radius: 4px;
+      padding: 3px 9px; margin: 0 0 6px;
+      display: inline-block;
+    }
+    /* A level the character cannot afford yet: still readable, not clickable. */
+    .npc-cc-row--spent { opacity: 0.42; }
+    .npc-cc-row--spent:hover { background: none; }
+    /* The row that ends creation, marked out from the fields above it. */
+    .npc-cc-row--primary {
+      font-weight: bold;
+      border: 2px solid var(--accent-gold-pure);
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+    /* The portrait is a button in the editor: it opens the sprite grid, and
+       through it the bust gallery and the 3D model editor. */
+    .npc-portrait-wrap.npc-cc-portrait { cursor: pointer; }
+    .npc-portrait-wrap.npc-cc-portrait:hover {
+      outline: 2px solid var(--border-focus-hover);
+      outline-offset: -2px;
+    }
 
 /* ── Mod Manager ─────────────────────────────────────────────────────────── */
 #mod-manager-container {
@@ -14380,16 +14400,20 @@ body, canvas {
 /* ==========================================================================
    BattleSystemEnhanchedCommands, HTML actor command overlay (dark theme)
    ========================================================================== */
+/* Row height, icon size and label size are set inline from
+   BattleSystemEnhanchedCommands.js (ROW_HEIGHT / ICON_PX / LABEL_PX): they have
+   to agree with the invisible canvas window's itemHeight() or clicks land on
+   the wrong command, so the plugin owns them and this file owns the paint.
+   No gap between rows for the same reason, the 3px inset below spaces them. */
 #html-actorcmd-overlay {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0;
 }
 .actorcmd-item {
     position: relative;
     display: flex;
     align-items: center;
-    height: 58px;
     overflow: hidden;
     box-sizing: border-box;
     flex-shrink: 0;
@@ -14437,27 +14461,24 @@ body, canvas {
 }
 .actorcmd-icon {
     position: relative;
-    width: 32px;
-    height: 32px;
     /* Resolved against css/theme.css, so one level up is the game root. Every
        other IconSet sprite in this file uses the same single-dot-dot path. */
     background-image: url('../img/system/IconSet.png');
     background-repeat: no-repeat;
     image-rendering: pixelated;
     flex-shrink: 0;
-    margin-left: 18px;
+    margin-left: 11px;
     z-index: 3;
 }
 .actorcmd-label {
     font-family: 'Lora', serif;
     font-weight: bold;
-    font-size: 22px;
     color: var(--text-pure-white);
     text-shadow: -1px -1px 0 var(--text-pure-black), 1px -1px 0 var(--text-pure-black),
                  -1px  1px 0 var(--text-pure-black), 1px  1px 0 var(--text-pure-black),
                   2px  2px 5px var(--shadow-black-translucent-95);
-    margin-left: 10px;
-    letter-spacing: 1px;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
     z-index: 3;
     position: relative;

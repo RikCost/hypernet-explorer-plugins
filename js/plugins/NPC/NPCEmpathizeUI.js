@@ -103,6 +103,20 @@
       </div>`;
   }
 
+  // A craving is a need read backwards, so its row fills as things get worse
+  // and its warning band is the high end. Same numbers the status screen and
+  // the parchment menu show, so one addict reads the same in all three.
+  function _cravingRow(label, value) {
+    const v     = Math.max(0, Math.min(100, Math.round(value ?? 0)));
+    const color = v >= 80 ? '#d9534f' : v >= 50 ? '#b8860b' : '#7B6A55';
+    return `
+      <div class="npc-vital-row">
+        <span class="npc-vital-lbl">${label}</span>
+        <div class="npc-vital-track"><div class="npc-vital-fill" style="width:${v}%;background:${color};"></div></div>
+        <span class="npc-vital-pct">${v}%</span>
+      </div>`;
+  }
+
   const NEED_ICONS = {
     sleep: 11, hunger: 259, hygiene: 67, work: 4, shopwork: 4, money: 314,
     crime: 174, safety: 128, comfort: 226, social: 246, leisure: 80,
@@ -1086,6 +1100,16 @@
         _vitalRow(need('needHygiene', T.hygieneLabel), profile.hygiene, 30) +
         _vitalRow(need('needSocial',  T.socialLabel),  profile.social,  25) +
         _vitalRow(need('needLeisure', T.leisureLabel), profile.leisure, 25);
+    }
+
+    // An addiction meter belongs to the person, not the profile, so it is only
+    // drawn when this panel is looking at a real party member. It fills as the
+    // craving grows, which is why its warning band is the high end.
+    const cravingActor = this._actorId != null ? $gameActors.actor(this._actorId) : null;
+    if (cravingActor && window.AddictionSystem) {
+      window.AddictionSystem.cravingsFor(cravingActor).forEach(craving => {
+        vitalsHTML += _cravingRow(craving.label, craving.value);
+      });
     }
 
     let needHTML = '';

@@ -106,8 +106,10 @@
     $gameTemp = {};
   }
 
-  // Global variables to track targeting state
+  // Global variables to track targeting state: the aimed part, and the monster
+  // it was aimed at (a battle can hold several).
   $gameTemp.targetedBodyPart = null;
+  $gameTemp.targetedBodyPartEnemy = null;
 
   // ===========================================================================
   // Enemy Archetypes Definition
@@ -226,18 +228,15 @@
   }
 
   // Get a random hit location based on weights for an enemy's archetype
-  // Fix for getRandomHitLocation function
   function getRandomHitLocation(enemy) {
     try {
-      // Ensure we're using enemy1 if targeting system is enabled
-      if (enemy !== $gameTroop.members()[0]) {
-        enemy = $gameTroop.members()[0];
-      }
-
-      // If there's a targeted body part and the hit check succeeds, use that instead
+      // An aimed part belongs to the monster it was aimed at: with several
+      // enemies on the field, a limb picked out on one of them must not steer
+      // the blows that land on the others.
       if (
         $gameTemp &&
         $gameTemp.targetedBodyPart &&
+        $gameTemp.targetedBodyPartEnemy === enemy &&
         enemy._bodyParts[$gameTemp.targetedBodyPart]
       ) {
         var hitChance = calculateHitChance(enemy, $gameTemp.targetedBodyPart);
@@ -472,29 +471,6 @@
     }
   }
 
-  // Replace the commandTarget handler (around line 1150)
-  Scene_Battle.prototype.commandTarget = function () {
-    var enemy = $gameTroop.members()[0];
-
-    if (enemy && enemy._bodyParts) {
-      this._actorCommandWindow.deactivate();
-
-      // Create info window (left side)
-      this._monsterInfoWindow = new Window_MonsterInfo(enemy);
-      this.addWindow(this._monsterInfoWindow);
-
-      // Create targeting body parts list window (right side)
-      this._bodyPartsWindow = new Window_MonsterBodyPartsList(enemy, true);
-      this.addWindow(this._bodyPartsWindow);
-      this._bodyPartsWindow.setHandler("ok", this.onTargetingOk.bind(this));
-      this._bodyPartsWindow.setHandler("cancel", this.onTargetingCancel.bind(this));
-
-      $gameTemp.checkWindowActive = true;
-    } else {
-      this._actorCommandWindow.activate();
-    }
-  };
-
   // Apply stat effect for a destroyed part
   function applyStatEffect(enemy, partKey) {
     var part = enemy._bodyParts[partKey];
@@ -546,43 +522,6 @@
     return translated;
   }
 
-  // Get the appropriate destruction message based on the part and damage type
-  function getDestructionMessage(enemy, partKey, elementalType) {
-    var part = enemy._bodyParts[partKey];
-
-    // For elemental damage, always use the elemental message
-    if (elementalType && elementalType !== 1) {
-      // Skip physical element (ID 1)
-      // Map element IDs to descriptive messages
-      const verbs = T.obj('HealthMonsters.elementVerb') || {};
-      const elementMessage = verbs[elementalType] || T('HealthMonsters.elementVerbDefault');
-      return T('HealthMonsters.partElementalHit', {
-        enemy: enemy.name(), part: part.name, effect: elementMessage,
-      });
-    }
-
-    // For physical attacks or when no element is specified
-    var archetype = getArchetype(enemy._archetypeName);
-    var basePart = archetype ? archetype.parts[partKey] : null;
-    if (!basePart) return "";
-
-    // Use custom message if available (skip when the key can't be translated)
-    var translatedMsg = getPartDamageMsg(basePart);
-    if (translatedMsg) {
-      // If it's a full sentence (ends with punctuation or starts with a capital letter that isn't just the part name), use it as is
-      if (translatedMsg.match(/^[A-Z].*[.!?]$/) || (ConfigManager.language === "it" && translatedMsg.match(/^[A-Z]/))) {
-        return translatedMsg;
-      }
-      return T('HealthMonsters.customPartMessage', { enemy: enemy.name(), message: translatedMsg });
-    }
-
-    // For parts that can be cut off with physical attacks
-    if (basePart.canCutoff) {
-      return T('HealthMonsters.partSevered', { enemy: enemy.name(), part: part.name });
-    }
-    // Default destruction message
-    return T('HealthMonsters.partDestroyed', { enemy: enemy.name(), part: part.name });
-  }
 
   // Handle effects of a destroyed body part
   function handleDestroyedBodyPart(enemy, partKey) {
@@ -749,11 +688,7 @@
   // Apply limb damage to enemy - FIXED VERSION
   function applyLimbDamage(enemy, damage, elementalType) {
     try {
-      // Ensure we're using enemy1
-      if (enemy !== $gameTroop.members()[0]) {
-        console.warn("Warning: enemy is not enemy1, using enemy1 instead");
-        enemy = $gameTroop.members()[0];
-      }
+      if (!enemy) return;
 
       // Make sure enemy has body parts initialized
       if (!enemy._bodyParts) initializeEnemyBodyParts(enemy);
@@ -815,6 +750,7 @@
       // Reset targeted body part after use
       if (isTargeted) {
         $gameTemp.targetedBodyPart = null;
+        $gameTemp.targetedBodyPartEnemy = null;
       }
     } catch (e) {
       console.error(e.stack);
@@ -942,6 +878,7 @@
     $gameTemp.checkTargetSelection = false;
     $gameTemp.checkWindowActive = false;
     $gameTemp.targetedBodyPart = null;
+    $gameTemp.targetedBodyPartEnemy = null;
     $gameTemp.hitLocationMessage = null;
     $gameTemp.limbDamageBattleLog = null;
     $gameTemp.lastElementalType = null;
@@ -1347,6 +1284,9 @@
       var enemyId = this._enemy.enemyId();
       $gameTemp.lastTargetSelections[enemyId] = this.index();
       $gameTemp.targetedBodyPart = this._data[this.index()].key;
+      // Remember WHICH monster the limb was picked out on, so a field with
+      // several of them aims the blow at the one the player was looking at.
+      $gameTemp.targetedBodyPartEnemy = this._enemy;
       SoundManager.playOk();
     }
     this.close();
@@ -1388,52 +1328,91 @@
     }
   };
 
-  // Check command handler
-  // REPLACE THIS METHOD:
-  Scene_Battle.prototype.commandCheck = function () {
-    var enemy = $gameTroop.members()[0];
+  // ---------------------------------------------------------------------------
+  // Check (read a monster's anatomy) and Aim (pick the limb to strike). Both
+  // open on ONE monster, and a battle can hold several since nearby roamers
+  // join a fight (BattleSystemEnhancedEncounters, section 5b). With a single
+  // living enemy there is nothing to choose and the panel opens straight away;
+  // with more, the player picks through the ordinary battle target window
+  // first, whose handlers are put back the moment the choice is made.
+  // ---------------------------------------------------------------------------
 
-    if (enemy && enemy._bodyParts) {
-      this._actorCommandWindow.deactivate();
+  Scene_Battle.prototype.openMonsterBodyParts = function (enemy, isTargeting) {
+    this._actorCommandWindow.deactivate();
 
-      // Create info window (left side)
-      this._monsterInfoWindow = new Window_MonsterInfo(enemy);
-      this.addWindow(this._monsterInfoWindow);
+    // Info window (left side)
+    this._monsterInfoWindow = new Window_MonsterInfo(enemy);
+    this.addWindow(this._monsterInfoWindow);
 
-      // Create body parts list window (right side)
-      this._bodyPartsWindow = new Window_MonsterBodyPartsList(enemy, false);
-      this.addWindow(this._bodyPartsWindow);
+    // Body parts list window (right side)
+    this._bodyPartsWindow = new Window_MonsterBodyPartsList(enemy, isTargeting);
+    this.addWindow(this._bodyPartsWindow);
+    if (isTargeting) {
+      this._bodyPartsWindow.setHandler("ok", this.onTargetingOk.bind(this));
+      this._bodyPartsWindow.setHandler("cancel", this.onTargetingCancel.bind(this));
+    } else {
       this._bodyPartsWindow.setHandler("ok", this.onBodyPartsOk.bind(this));
       this._bodyPartsWindow.setHandler("cancel", this.onBodyPartsCancel.bind(this));
+    }
 
-      $gameTemp.checkWindowActive = true;
+    $gameTemp.checkWindowActive = true;
+  };
+
+  Scene_Battle.prototype.restoreEnemyWindowHandlers = function () {
+    if (!this._enemyWindow) return;
+    this._enemyWindow.setHandler("ok", this.onEnemyOk.bind(this));
+    this._enemyWindow.setHandler("cancel", this.onEnemyCancel.bind(this));
+  };
+
+  Scene_Battle.prototype.selectMonsterForBodyParts = function (isTargeting) {
+    var candidates = $gameTroop.aliveMembers().filter(function (e) {
+      return e && e._bodyParts;
+    });
+    if (candidates.length === 0) {
+      this._actorCommandWindow.activate();
+      return;
+    }
+    if (candidates.length === 1 || !this._enemyWindow) {
+      this.openMonsterBodyParts(candidates[0], isTargeting);
+      return;
+    }
+    this._bodyPartsTargeting = isTargeting;
+    this._actorCommandWindow.deactivate();
+    this._enemyWindow.refresh();
+    this._enemyWindow.show();
+    this._enemyWindow.setHandler("ok", this.onBodyPartsEnemyOk.bind(this));
+    this._enemyWindow.setHandler("cancel", this.onBodyPartsEnemyCancel.bind(this));
+    this._enemyWindow.select(0);
+    this._enemyWindow.activate();
+  };
+
+  Scene_Battle.prototype.onBodyPartsEnemyOk = function () {
+    var enemy = this._enemyWindow.enemy();
+    this._enemyWindow.hide();
+    this._enemyWindow.deactivate();
+    this.restoreEnemyWindowHandlers();
+    if (enemy && enemy._bodyParts) {
+      this.openMonsterBodyParts(enemy, this._bodyPartsTargeting);
     } else {
       this._actorCommandWindow.activate();
     }
   };
 
+  Scene_Battle.prototype.onBodyPartsEnemyCancel = function () {
+    this._enemyWindow.hide();
+    this._enemyWindow.deactivate();
+    this.restoreEnemyWindowHandlers();
+    this._actorCommandWindow.activate();
+  };
+
+  // Check command handler
+  Scene_Battle.prototype.commandCheck = function () {
+    this.selectMonsterForBodyParts(false);
+  };
+
   // Target command handler
-  // REPLACE THIS METHOD:
   Scene_Battle.prototype.commandTarget = function () {
-    var enemy = $gameTroop.members()[0];
-
-    if (enemy && enemy._bodyParts) {
-      this._actorCommandWindow.deactivate();
-
-      // Create info window (left side)
-      this._monsterInfoWindow = new Window_MonsterInfo(enemy);
-      this.addWindow(this._monsterInfoWindow);
-
-      // Create targeting body parts list window (right side)
-      this._bodyPartsWindow = new Window_MonsterBodyPartsList(enemy, true);
-      this.addWindow(this._bodyPartsWindow);
-      this._bodyPartsWindow.setHandler("ok", this.onTargetingOk.bind(this));
-      this._bodyPartsWindow.setHandler("cancel", this.onTargetingCancel.bind(this));
-
-      $gameTemp.checkWindowActive = true;
-    } else {
-      this._actorCommandWindow.activate();
-    }
+    this.selectMonsterForBodyParts(true);
   };
   // Handler for closing check window
   Scene_Battle.prototype.onBodyPartsOk = function () {
@@ -1488,6 +1467,7 @@
     // Clear targeted part if $gameTemp exists
     if ($gameTemp) {
       $gameTemp.targetedBodyPart = null;
+      $gameTemp.targetedBodyPartEnemy = null;
     }
 
     // Clear the last target selection for this enemy

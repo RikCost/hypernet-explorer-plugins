@@ -271,6 +271,10 @@
      * Returns the applied restores.
      */
     applyNeedRestores: function (actor, item) {
+      // Feeding an addiction rides along with the needs: every path that hands
+      // an item to somebody already calls this, so a cigarette works wherever
+      // a meal does.
+      this.applyAddictionRelief(actor, item);
       const restores = this.getNeedRestores(item);
       if (!restores.length || !actor) return [];
       const isLeaderActor = actor.actorId && actor.actorId() === 1;
@@ -286,6 +290,99 @@
         }
       });
       return restores;
+    },
+
+    //=========================================================================
+    // Addiction relief (the craving meters of TimeDateSystem's AddictionSystem)
+    //
+    // A craving is a need read backwards, so it gets its own tag rather than a
+    // negative NeedRestore:  <Addiction: nicotine>  feeds that craving in full,
+    // <Addiction: alcohol 60>  feeds it partly, and  <Addiction: all 50>  is
+    // the detox case, taking the same bite out of every craving the user has.
+    // Coffee needs no tag at all: its <caffeine:> nutrition value already says
+    // how much of the caffeine craving it answers.
+    //=========================================================================
+    ADDICTION_KEYS_FALLBACK: ["nicotine", "caffeine", "narcotic", "alcohol", "gambling"],
+
+    addictionKeys: function () {
+      const sys = window.AddictionSystem;
+      return (sys && sys.KEYS && sys.KEYS.length) ? sys.KEYS : this.ADDICTION_KEYS_FALLBACK;
+    },
+
+    getAddictionLabel: function (key) {
+      const sys = window.AddictionSystem;
+      return sys && sys.label ? sys.label(key) : key;
+    },
+
+    /**
+     * Parse <Addiction: ...> tags (plus the implicit caffeine of a coffee) into
+     * [{ key, amount, label }]. key "all" means every craving the user carries.
+     * Returns an empty array when the item feeds nothing.
+     */
+    getAddictionRelief: function (item) {
+      if (!item || !item.note) return [];
+      const keys = this.addictionKeys();
+      const out = [];
+      const re = /<addiction:\s*([^>]+)>/gi;
+      let m;
+      while ((m = re.exec(item.note)) !== null) {
+        m[1].split(",").forEach((part) => {
+          const t = part.trim().match(/([a-zA-Z]+)\s*[:= ]?\s*(\d+)?/);
+          if (!t) return;
+          const key = t[1].toLowerCase();
+          if (key !== "all" && !keys.includes(key)) return;
+          out.push({
+            key,
+            amount: t[2] === undefined ? 100 : Math.max(1, Math.min(100, parseInt(t[2], 10))),
+            label: key === "all" ? T("ItemUtils.addiction.all") : this.getAddictionLabel(key),
+          });
+        });
+      }
+      // A caffeinated drink answers the caffeine craving by however much it
+      // carries, without every coffee in the database needing a second tag.
+      if (!out.some((r) => r.key === "caffeine" || r.key === "all")) {
+        const caffeine = this.getNutritionValue(item, "caffeine");
+        if (caffeine > 0) {
+          out.push({
+            key: "caffeine",
+            amount: Math.max(1, Math.min(100, caffeine)),
+            label: this.getAddictionLabel("caffeine"),
+          });
+        }
+      }
+      return out;
+    },
+
+    /**
+     * Silently feed whatever this item feeds on a single actor. An actor who
+     * does not carry the matching trait has no meter, so nothing happens.
+     * Returns the relief that actually landed.
+     */
+    applyAddictionRelief: function (actor, item) {
+      const sys = window.AddictionSystem;
+      if (!actor || !sys) return [];
+      const relief = this.getAddictionRelief(item);
+      const applied = [];
+      relief.forEach((r) => {
+        if (r.key === "all") {
+          if (sys.isAddict(actor)) {
+            sys.relieveAll(actor, r.amount);
+            applied.push(r);
+          }
+        } else if (sys.relieve(actor, r.key, r.amount)) {
+          applied.push(r);
+        }
+      });
+      return applied;
+    },
+
+    /**
+     * True when using this item is worthwhile on its own terms, with no HP/MP
+     * or state effect to register a hit: it replenishes a need or feeds a
+     * craving.
+     */
+    satisfiesNeed: function (item) {
+      return this.getNeedRestores(item).length > 0 || this.getAddictionRelief(item).length > 0;
     },
 
     /**

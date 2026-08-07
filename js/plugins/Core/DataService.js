@@ -158,13 +158,27 @@
         console.log("DataService: merged " + added + " alien biomes into WorldGen.Biomes.");
     }
 
-    // ── SpritesAssociation → NPCs.json canonical migration ──────────────────
-    // NPCs.json (window.WorldGen.NPCs) is the single source of truth for sprite↔bust mapping.
-    // All bust plugins use: SpritesAssociation[spriteName][characterIndex] → bustName
-    // NPCs.json stores:    { spriteName: { busts: ["bust0","bust1",...], npc, Archetype, Gender } }
-    // Rebuild window.Sprites.SpritesAssociation from NPCs.json busts arrays so all bust
-    // plugins transparently read from NPCs.json without any code changes in those plugins.
-    if (window.WorldGen && window.WorldGen.NPCs && window.Sprites) {
+    // ── The sprite catalogue: NPCs.json ─────────────────────────────────────
+    // js/db/WorldGen/NPCs.json (window.WorldGen.NPCs) is the one record of every
+    // character sheet the game knows. The old js/db/Sprites/SpritesAssociation.json
+    // was folded into it and deleted; its sheets (the historical dossier sprites
+    // and their skins) live here as npc:false entries.
+    //
+    //   { "Skab/!$Adept": { npc, busts, beta, animations,
+    //                       Archetype, Gender, chars, color, classes, markovDB } }
+    //
+    //   npc        the sheet may be dealt to a procedural inhabitant
+    //   beta       the sheet is not in the original folder (img/characters/Skab/
+    //              Originals). A beta sheet is browsable in the character grid but
+    //              is kept out of every automatic pick unless the world was created
+    //              with beta sprites enabled, see window.SpriteCatalog below.
+    //   animations the sheet is an animation/pose sheet, not a 3x4 walk sheet
+    //
+    // Every bust plugin reads SpritesAssociation[spriteName][characterIndex] →
+    // bustName, so the flat bust map is rebuilt here from the busts arrays and
+    // published as window.Sprites.SpritesAssociation exactly as before.
+    if (window.WorldGen && window.WorldGen.NPCs) {
+        window.Sprites = window.Sprites || {};
         const rebuilt = {};
         for (const [key, val] of Object.entries(window.WorldGen.NPCs)) {
             rebuilt[key] = Array.isArray(val) ? val : (val.busts || []);
@@ -173,6 +187,88 @@
         console.log("DataService: SpritesAssociation rebuilt from NPCs.json (" +
                     Object.keys(rebuilt).length + " entries).");
     }
+
+    // ── window.SpriteCatalog ────────────────────────────────────────────────
+    // The one place that answers "which character sheets may this world use?".
+    //
+    // A beta sheet is one that is not in the original folder: it is drawn, it is
+    // in the game, and the character grid offers it, but nothing picks it on the
+    // player's behalf. A world can opt in at creation time ("beta sprites",
+    // world.json → betaSprites), and only at creation time: the answer decides
+    // which faces the world was populated with, so it cannot be taken back or
+    // granted later without the world's people changing under it. Turning it on
+    // widens the pool for everyone dealt from then on; whoever already has a face
+    // keeps it, since a settlement's pool is stored in the world folder
+    // (npcs.json → poolCache) once it has been dealt.
+    (function () {
+        // Pools are rebuilt only when the beta answer changes, which happens at
+        // most once per world activation.
+        const poolCache = { all: null, stable: null };
+
+        function db() {
+            return (window.WorldGen && window.WorldGen.NPCs) || {};
+        }
+
+        window.SpriteCatalog = {
+            // The full record for a sheet, or null when the sheet is unknown.
+            entry(key) {
+                const e = db()[key];
+                return (e && typeof e === "object" && !Array.isArray(e)) ? e : null;
+            },
+
+            busts(key) {
+                const e = this.entry(key);
+                return (e && e.busts) || [];
+            },
+
+            // Not in the original folder: browsable, never dealt automatically
+            // unless the world enabled beta sprites.
+            isBeta(key) {
+                const e = this.entry(key);
+                return !!(e && e.beta === true);
+            },
+
+            // An animation/pose sheet rather than a walk sheet.
+            isAnimated(key) {
+                const e = this.entry(key);
+                return !!(e && e.animations === true);
+            },
+
+            // Whether the active world was created with beta sprites enabled.
+            betaEnabled() {
+                const WM = window.WorldManager;
+                if (!WM || !WM.hasActiveWorld || !WM.hasActiveWorld()) return false;
+                const info = WM.worldInfo();
+                return !!(info && info.betaSprites === true);
+            },
+
+            // Every sheet that may be dealt to a procedural inhabitant. Beta
+            // sheets follow the world's answer unless includeBeta says otherwise
+            // (the character grid passes true: the player browses everything).
+            npcKeys(options) {
+                const includeBeta = (options && options.includeBeta !== undefined)
+                    ? !!options.includeBeta
+                    : this.betaEnabled();
+                const slot = includeBeta ? "all" : "stable";
+                if (!poolCache[slot]) {
+                    const data = db();
+                    poolCache[slot] = Object.keys(data).filter(k => {
+                        const e = data[k];
+                        if (!e || e.npc !== true) return false;
+                        return includeBeta || e.beta !== true;
+                    });
+                }
+                return poolCache[slot];
+            },
+
+            // May the spawn systems deal this sheet in this world?
+            isSpawnable(key) {
+                const e = this.entry(key);
+                if (!e || e.npc !== true) return false;
+                return e.beta !== true || this.betaEnabled();
+            }
+        };
+    })();
 
     // ── Destinations.json → display names ───────────────────────────────────
     // Every entry in js/db/WorkSystem/Destinations.json carries a "name" field:

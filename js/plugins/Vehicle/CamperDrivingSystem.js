@@ -2972,23 +2972,6 @@
         return true;
     }
 
-    // True when the liminal drive is launched from inside a vehicle's interior
-    // RPG Maker map (tag the map note with <CamperInterior> or <VehicleInterior>,
-    // or name the map with "camper"/"motorhome"/"rv interior"). Used to pick the
-    // opening camera: inside the cabin -> first person; anywhere else -> driving.
-    function startedInsideVehicleInterior() {
-        if (typeof $dataMap !== 'undefined' && $dataMap) {
-            const note = (($dataMap.note) || '').toLowerCase();
-            if (note.includes('<camperinterior>') || note.includes('<vehicleinterior>')) return true;
-        }
-        if (typeof $gameMap !== 'undefined' && typeof $dataMapInfos !== 'undefined') {
-            const info = $dataMapInfos[$gameMap.mapId()];
-            const name = (info && info.name ? info.name : '').toLowerCase();
-            if (name.includes('camper') || name.includes('motorhome') ||
-                (name.includes('interior') && (name.includes('vehicle') || name.includes('rv')))) return true;
-        }
-        return false;
-    }
 
     // Sandbox mode or a party member literally named "Test" unlocks everything.
     function isSandboxOrTest() {

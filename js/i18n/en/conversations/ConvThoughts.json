@@ -190,5 +190,74 @@
       "Nice things make a house a home.",
       "That looks better already."
     ]
+  },
+  "craving": {
+    "nicotine": [
+      "I could murder a cigarette right now.",
+      "Just one, then I'll stop for the day.",
+      "Anyone got a light? Anyone at all?",
+      "My hands have started doing that thing again.",
+      "There was a pack in this coat. There was definitely a pack in this coat."
+    ],
+    "alcohol": [
+      "It is nearly late enough to call it a drink.",
+      "One glass. To settle. That is all.",
+      "Is that bar still open at this hour?",
+      "My mouth has gone dry in a way water will not fix.",
+      "I keep hearing bottles that are not there."
+    ],
+    "caffeine": [
+      "I need a coffee before I am legally a person.",
+      "The headache is starting behind my eyes again.",
+      "Where does a man get a decent espresso around here?",
+      "I have read the same sign four times now.",
+      "Everything is too slow and it is my own fault."
+    ],
+    "narcotic": [
+      "It is wearing off. I can feel exactly where it stops.",
+      "I said I would wait until tonight. It is not tonight.",
+      "The edges of everything have come back.",
+      "Just enough to be level. Not to be high.",
+      "I know a place. I do not want to know a place."
+    ],
+    "gambling": [
+      "One more slip. The odds are finally right.",
+      "I am owed a win. Mathematically, I am owed one.",
+      "The shop closes at four and I have not put anything on.",
+      "I could feel it turning yesterday. I could feel it.",
+      "Only what is in this pocket. Nothing more than that."
+    ]
+  },
+  "withdrawal": {
+    "nicotine": [
+      "I cannot hear anything over wanting a cigarette.",
+      "I would take one off the pavement at this point.",
+      "Nothing anybody says to me today is going in.",
+      "My whole head is a lit match with nothing to light."
+    ],
+    "alcohol": [
+      "The shaking has started and it does not stop on its own.",
+      "I am not right. I have not been right since this morning.",
+      "Do not talk to me until I have had something.",
+      "The room keeps arriving a second after I do."
+    ],
+    "caffeine": [
+      "There is a nail going in behind my eye and it will not stop.",
+      "I am no use to anyone. None at all.",
+      "I have been awake for hours and asleep the whole time.",
+      "Somebody put a coffee in my hand before I say something."
+    ],
+    "narcotic": [
+      "Every bone I own has an opinion about this.",
+      "I am cold and it is not cold out.",
+      "I will do almost anything at this point and I know it.",
+      "The clock has stopped moving. I have checked it four times."
+    ],
+    "gambling": [
+      "I cannot sit still and I cannot say why out loud.",
+      "I have counted the money in my pocket eleven times.",
+      "There is a race running right now without me in it.",
+      "I am going to the shop. I have already decided. I decided hours ago."
+    ]
   }
 }

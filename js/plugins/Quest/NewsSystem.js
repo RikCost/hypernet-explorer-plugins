@@ -94,11 +94,6 @@
         return { day, month, year, hours, minutes };
     }
 
-    // --- Helper Function to Convert Game Date to Milliseconds ---
-    function gameDateToMilliseconds(dateObj) {
-        const jsDate = new Date(dateObj.year, dateObj.month, dateObj.day, dateObj.hours, dateObj.minutes, 0);
-        return jsDate.getTime();
-    }
 
     // --- Helper Function to Get Current Game Date as JavaScript Date ---
     function getGameDateAsJSDate() {
@@ -2072,15 +2067,6 @@
                 'Abu Dhabi, UAE': ['abu dhabi', 'dubai', 'uae', 'emirates', 'emirati'],
 
                 // Balkans (under USSR influence)
-                'Belgrade, USSR': ['belgrade', 'serbia', 'serbian', 'yugoslavia', 'yugoslav'],
-                'Zagreb, USSR': ['zagreb', 'croatia', 'croatian'],
-                'Sarajevo, USSR': ['sarajevo', 'bosnia', 'bosnian', 'herzegovina'],
-                'Skopje, USSR': ['skopje', 'macedonia', 'macedonian', 'north macedonia'],
-                'Pristina, USSR': ['pristina', 'kosovo', 'kosovar'],
-                'Podgorica, USSR': ['podgorica', 'montenegro', 'montenegrin'],
-                'Tirana, USSR': ['tirana', 'albania', 'albanian'],
-                'Sofia, USSR': ['sofia', 'bulgaria', 'bulgarian'],
-                'Bucharest, USSR': ['bucharest', 'romania', 'romanian'],
                 // Additional Middle Eastern countries
                 'Manama, Bahrain': ['manama', 'bahrain', 'bahraini'],
                 'Muscat, Oman': ['muscat', 'oman', 'omani'],
@@ -2255,43 +2241,16 @@
                 'Tallinn, Estonia': ['tallinn', 'estonia', 'estone', 'estonia'],
 
                 // Special locations
-                'Città del Vaticano': ['vaticano', 'città del vaticano', 'santa sede', 'papa', 'papale', 'pontefice', 'vescovo di roma', 'chiesa cattolica'],
-                'New York, USA': ['new york', 'manhattan', 'nyc', 'nazioni unite', 'sede onu', 'onu', 'grande mela'],
 
                 // Major world powers (renamed)
-                'Washington, USA': ['washington', 'usa', 'stati uniti', 'america', 'americano', 'casa bianca', 'pentagono', 'campidoglio'],
-                'Mosca, URSS': ['mosca', 'russia', 'russo', 'urss', 'unione sovietica', 'cremlino', 'piazza rossa'],
-                'Londra, Britannia': ['londra', 'britannia', 'britannico', 'inghilterra', 'regno unito', 'westminster', 'downing street'],
 
                 // Asian powers
-                'Pechino, Cina': ['pechino', 'cina', 'cinese', 'shanghai', 'hong kong', 'tiananmen', 'città proibita'],
-                'Tokyo, Giappone': ['tokyo', 'giappone', 'giapponese', 'osaka', 'kyoto', 'monte fuji', 'nippon'],
 
                 // Middle East
-                'Gerusalemme, Israele': ['gerusalemme', 'israele', 'israeliano', 'tel aviv'],
-                'Gaza, Palestina': ['haifa', 'gaza', 'cisgiordania'],
-                'Teheran, Persia': ['teheran', 'iran', 'iraniano', 'persia', 'persiano', 'isfahan', 'shiraz'],
-                'Baghdad, Iraq': ['baghdad', 'iraq', 'iracheno', 'mesopotamia', 'basra', 'kurdistan'],
-                'Damasco, Siria': ['damasco', 'siria', 'siriano', 'aleppo', 'levante'],
-                'Riyadh, Arabia Saudita': ['riyadh', 'arabia saudita', 'saudita', 'mecca', 'medina', 'jeddah'],
-                'Il Cairo, Egitto': ['cairo', 'egitto', 'egiziano', 'alessandria', 'nilo', 'giza'],
-                'Istanbul, Turchia': ['istanbul', 'turchia', 'turco', 'ankara', 'costantinopoli', 'bosforo'],
-                'Beirut, Libano': ['beirut', 'libano', 'libanese', 'tripoli', 'cedro'],
-                'Amman, Giordania': ['amman', 'giordania', 'giordano', 'petra', 'mar morto'],
                 'Kuwait City, Kuwait': ['kuwait', 'kuwaitiano', 'città del kuwait'],
-                'Doha, Qatar': ['doha', 'qatar', 'qatariota'],
                 'Abu Dhabi, Emirati': ['abu dhabi', 'dubai', 'emirati arabi uniti', 'emirati', 'emiratino'],
 
                 // Balkans (under USSR influence)
-                'Belgrado, URSS': ['belgrado', 'serbia', 'serbo', 'jugoslavia', 'jugoslavo'],
-                'Zagabria, URSS': ['zagabria', 'croazia', 'croato'],
-                'Sarajevo, URSS': ['sarajevo', 'bosnia', 'bosniaco', 'erzegovina'],
-                'Skopje, URSS': ['skopje', 'macedonia', 'macedone', 'macedonia del nord'],
-                'Pristina, URSS': ['pristina', 'kosovo', 'kosovaro'],
-                'Podgorica, URSS': ['podgorica', 'montenegro', 'montenegrino'],
-                'Tirana, URSS': ['tirana', 'albania', 'albanese'],
-                'Sofia, URSS': ['sofia', 'bulgaria', 'bulgaro'],
-                'Bucarest, URSS': ['bucarest', 'romania', 'rumeno'],
                 // Paesi europei aggiuntivi
                 'Riga, Lettonia': ['riga', 'lettonia', 'lettone', 'latvia', 'latvian'],
                 'Vilnius, Lituania': ['vilnius', 'lituania', 'lituano', 'lithuania', 'lithuanian'],

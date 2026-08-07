@@ -130,6 +130,14 @@
     if (typeof Scene_CharacterCreation !== "undefined" && Scene_CharacterCreation._tutorialMode) return true;
     return !!($gameSwitches && $gameSwitches.value(100));
   }
+  // Detailed creation mode lives in CharacterCreationFull.js: the whole
+  // character sheet is edited inside the Empathize panel instead of being
+  // walked step by step. The option only exists while that plugin is loaded,
+  // and unlike the other modes it is offered during the tutorial too.
+  function detailedModeAvailable() {
+    const full = window.CharacterCreationFull;
+    return !!(full && full.isAvailable && full.isAvailable());
+  }
   const _markFirstCreationComplete = (window.CharacterPresets || {}).markFirstCreationComplete;
   // Every creation-finished path calls this; besides the original bookkeeping
   // it schedules the new-playthrough autosave (SaveSystem assigns the next
@@ -279,6 +287,12 @@
     }
     return name;
   };
+
+  // The wizard's own theme. Started once (settings page) and never restarted:
+  // every later request goes through AudioManager.playBgm, which leaves the
+  // track playing when it is already this one.
+  // i18n-ignore-next-line: bgm file name
+  const CREATION_BGM = "KevinMacLeod/Jazz/Cool Vibes";
 
   // Music tracks for the initial settings step (values must match MusicSelectionSystem.js)
   // i18n-ignore-start: bgm file names. Only the first three carry a label of
@@ -1286,6 +1300,14 @@
             getLocalizedChoice(T('CharCreate.choice.modeFull.name'), "mode_full", T('CharCreate.choice.modeFull.desc'))
           );
         }
+        // Detailed mode sits between the quick wizard and the pre-made
+        // dossiers: every field of the character sheet is edited by hand in
+        // the Empathize panel. Offered during the tutorial as well.
+        if (detailedModeAvailable()) {
+          choices.push(
+            getLocalizedChoice(T('CharCreate.choice.modeDetailed.name'), "mode_detailed", T('CharCreate.choice.modeDetailed.desc'), 84)
+          );
+        }
         // Pre-made characters are spent once played, so the option is offered
         // only while this world still has at least one free dossier, and never
         // during the tutorial (which always builds a fresh character).
@@ -1300,6 +1322,15 @@
         if (symbol === "existing_character") {
           // Pre-made character: skip the rest of the wizard and pick a preset.
           this.showPresetSelection();
+          return;
+        }
+        if (symbol === "mode_detailed") {
+          // The wizard keeps running; the character-type step hands over to the
+          // Empathize editor (see setupStep) for this and every later member.
+          Scene_CharacterCreation._creationMode = "detailed";
+          $gameSystem._ccCreationMode = "detailed";
+          markStepCompleted(STEP.CREATION_MODE);
+          this.nextStep();
           return;
         }
         const mode = (symbol === "mode_quick" || !FULL_CREATION_MODE_ENABLED) ? "quick" : "full";
@@ -1396,12 +1427,14 @@
         );
 
         // Only show "Randomize all party" for the first party member.
-        // ("Use Existing Character" lives on the creation-mode step now.)
         if (currentMemberIndex === 0) {
           allChoices.push(
             getLocalizedChoice(T('CharCreate.choice.randomizeAllParty.name'), "randomize_all_party", T('CharCreate.choice.randomizeAllParty.desc'), 136)
           );
         }
+
+        // Pre-made dossiers are NOT offered here: they live on the
+        // creation-mode step alone.
 
         return allChoices;
       },
@@ -1429,6 +1462,7 @@
 
           // Set creature switch OFF for normal character
           $gameSwitches.setValue(creatureSwitchId, false);
+          if (this.startDetailedEditor(currentMemberIndex)) return;
           this.nextStep(); // Continue to gender selection
         } else if (symbol === "create_creature") {
           // Set current actor class to 65 for creature
@@ -1445,6 +1479,7 @@
           $gameSwitches.setValue(creatureSwitchId, true);
           Scene_CharacterCreation._isCreatureMode = true;
 
+          if (this.startDetailedEditor(currentMemberIndex)) return;
           this.nextStep(); // Continue to gender selection
 
         } else if (symbol === "total_random") {
@@ -1894,11 +1929,15 @@
       },
     },
     {
-      // Origin, where the character starts the game. Shown only once, at the
-      // end of creation. Hidden entirely in tutorial mode (the tutorial flow
-      // ends at the add-member step, on the tutorial map).
+      // Origin, where the character starts the game. The last step of every
+      // creation run: it is reached once per run (arriving here ends the
+      // wizard), and a run always belongs to a brand new party, so it is NOT
+      // showOnlyOnce. It used to be, which meant the completion flag written by
+      // the first party silenced the step for every later party built in the
+      // same savegame, ending creation with no starting point chosen. Hidden
+      // entirely in tutorial mode (the tutorial flow ends at the add-member
+      // step, on the tutorial map).
       id: "origin",
-      showOnlyOnce: true,
       get title() {
         return T('CharCreate.chooseYourOrigin');
       },
@@ -2034,6 +2073,19 @@
       return !!($gameSystem && $gameSystem._ccCreationMode === "quick");
     }
 
+    // True when the party being built right now chose Detailed mode: the
+    // wizard's per-character steps are replaced by the Empathize editor
+    // (CharacterCreationFull.js), which every member goes through in turn.
+    //
+    // Deliberately reads the runtime flag only. The persisted mode is seeded
+    // back into it when a creation run starts, and the mode step is
+    // showOnlyOnce: were Detailed read from there too, a savegame that once
+    // used it would be locked into it for every later party, with no way back
+    // to the ordinary board (see the characterCreation plugin command).
+    static isDetailedMode() {
+      return this._creationMode === "detailed";
+    }
+
     // True when the CLASS step should present the two-step archetype picker
     // instead of the legacy "Select a class" / detailed browser flow. Both Quick
     // and Full mode use it; only creature mode (inline base/hybrid picker) and
@@ -2088,7 +2140,18 @@
       // single-character flow, so the wizard goes straight to the humanoid /
       // creature choice. Guarded on the switch as well as the in-scene flag
       // (same as the origin step), since the flag is cleared at add-member.
-      if (step === STEP.CREATION_MODE && isTutorialFlow()) return true;
+      // The exception is Detailed mode, which the tutorial does offer, so the
+      // step stays interactive whenever that plugin is loaded.
+      if (step === STEP.CREATION_MODE && isTutorialFlow() && !detailedModeAvailable()) return true;
+
+      // Detailed mode: the character-type step hands the whole member over to
+      // the Empathize editor, so every step it covers is walked past by
+      // Back/Forward and the editor is the only landing point per member.
+      if (Scene_CharacterCreation.isDetailedMode() && detailedModeAvailable() &&
+          [STEP.PORTRAIT, STEP.GENDER, STEP.CLASS, STEP.TRAITS,
+           STEP.HOMETOWN, STEP.BIRTHDATE].includes(step)) {
+        return true;
+      }
 
       if (Scene_CharacterCreation._stepHiddenForMode(step)) return true; // quick-mode skips
       // Party-level "once" steps are interactive only while building the first
@@ -2134,6 +2197,24 @@
     static getCurrentActorId() {
       return this._currentPartyMemberIndex + 1;
     }
+    // Detailed mode: hand this member over to the Empathize editor
+    // (CharacterCreationFull.js) instead of walking the wizard's own
+    // per-character steps. The editor resumes the wizard at the add-member
+    // prompt when it closes, so the steps it covers (portrait, gender, class,
+    // traits, hometown, birth date) are never reached; _stepAutoAdvances walks
+    // Back past them for the same reason. Answers true when it has taken over.
+    startDetailedEditor(memberIndex) {
+      if (!Scene_CharacterCreation.isDetailedMode() || !detailedModeAvailable()) return false;
+      this._ccDetailedHandover = true;
+      this.hideUI();
+      // The board's DOM overlay is separate from the RMMZ windows and would sit
+      // over the panel until terminate() fades it out, so it is dropped here,
+      // the same thing the tutorial's end-of-flow branch does.
+      if (this._dndContainer) this._dndContainer.style.display = "none";
+      window.CharacterCreationFull.open(memberIndex || 0);
+      return true;
+    }
+
     hideUI() {
       if (this._titleWindow) {
         this._titleWindow.visible = false;
@@ -2499,6 +2580,10 @@
     }
 
     createUIOverlay() {
+      // Detailed mode handed this member over to the Empathize editor from
+      // setupStep(), which runs before this: paint nothing, or the wizard's
+      // board would flash for the frame before the scene change lands.
+      if (this._ccDetailedHandover) return;
       // 1. Mute native windows
       if (this._titleWindow) {
         this._titleWindow.visible = false;
@@ -2666,6 +2751,7 @@
     }
 
     refreshUIOverlayDOM() {
+      if (this._ccDetailedHandover) return; // the Empathize editor is taking over
       if (!this._dndContainer) return;
 
       // Settings step uses its own renderer
@@ -3805,14 +3891,12 @@
     _buildSettingsRows() {
       const scene = this;
       if (ConfigManager.fogOfWar === undefined) ConfigManager.fogOfWar = true;
-      if (ConfigManager.weaponSprites3D === undefined) ConfigManager.weaponSprites3D = false;
       if (ConfigManager.globalLighting === undefined) ConfigManager.globalLighting = true;
       if (ConfigManager.enemyBattlers === undefined) ConfigManager.enemyBattlers = 1;
       if (!ConfigManager.battleMusicName) ConfigManager.battleMusicName = "RandomMind/Battle";
       // ASCII mode is not offered here; it lives in the in-game options menu
       // (GameOptions.js), which owns its own defaults.
       if (ConfigManager.activeTheme === undefined) ConfigManager.activeTheme = 0;
-      if (ConfigManager.skillCategoryMode === undefined) ConfigManager.skillCategoryMode = 0;
       if (ConfigManager.cpuPartyMembers === undefined) ConfigManager.cpuPartyMembers = false;
       return [
         {
@@ -3952,26 +4036,6 @@
           },
           next() { this._changeBy(1); },
           prev() { this._changeBy(-1); },
-        },
-        {
-          key: 'skillCategoryMode',
-          label: T('CharCreate.skillCategorization'),
-          description: T('CharCreate.howSkillsAndMagicAreGroupedInBattleAndMenusR'),
-          captionOff: T('CharCreate.plainUngroupedSkillList'),
-          captionOn: T('CharCreate.roleGroupsByPurposeOffensiveHealingSupportSc'),
-          // 0 = Role (default), 1 = School, 2 = Off
-          _apply(index) { ConfigManager.skillCategoryMode = index; },
-          get currentIndex() {
-            return ConfigManager.skillCategoryMode !== undefined ? ConfigManager.skillCategoryMode : 0;
-          },
-          get currentLabel() {
-            const i = this.currentIndex;
-            return i === 1 ? T('CharCreate.school')
-                 : i === 2 ? T('CharCreate.off')
-                 : T('CharCreate.role');
-          },
-          next() { this._apply((this.currentIndex + 1) % 3); },
-          prev() { this._apply((this.currentIndex + 2) % 3); },
         },
       ];
     }
@@ -4154,10 +4218,12 @@
 
     onSettingsConfirm() {
       SoundManager.playOk();
-      // Any battle-music preview started from the settings is stopped here and
-      // replaced with the creation theme so it does not bleed into later steps.
-      AudioManager.stopBgm();
-      AudioManager.playBgm({ name: "KevinMacLeod/Jazz/Cool Vibes", volume: 90, pitch: 100, pan: 0 });
+      // Any battle-music preview started from the settings is replaced here with
+      // the creation theme so it does not bleed into later steps. Nothing is
+      // stopped first: AudioManager.playBgm leaves an identical track playing
+      // where it is, so leaving this page never restarts music that is already
+      // the creation theme (a preceding stopBgm made every confirm restart it).
+      AudioManager.playBgm({ name: CREATION_BGM, volume: 90, pitch: 100, pan: 0 });
       const stepData = CharacterCreationData[this._step];
       if (stepData && stepData.handler) {
         stepData.handler.call(this);
@@ -4362,8 +4428,9 @@
       // Creation mode: never asked during the tutorial. Quick is applied
       // silently and the wizard moves straight on to the humanoid / creature
       // choice. (Guarded on the switch as well as the in-scene flag, like the
-      // origin step below.)
-      if (this._step === STEP.CREATION_MODE && isTutorialFlow()) {
+      // origin step below.) Detailed mode is the exception, the tutorial offers
+      // it, so the step is shown whenever CharacterCreationFull is loaded.
+      if (this._step === STEP.CREATION_MODE && isTutorialFlow() && !detailedModeAvailable()) {
         Scene_CharacterCreation._creationMode = "quick";
         $gameSystem._ccCreationMode = "quick";
         markStepCompleted(STEP.CREATION_MODE);
@@ -4692,8 +4759,7 @@
       Scene_CharacterCreation._randomizedAllParty = true;
 
       // Jump to the origin step (nextStep increments ADD_MEMBER -> ORIGIN). The
-      // origin handler finalizes creation; if origin was already completed on a
-      // prior playthrough it is skipped and creation ends.
+      // origin handler finalizes creation.
       this._step = STEP.ADD_MEMBER;
       this.nextStep();
     }
@@ -5284,8 +5350,12 @@
     Scene_CharacterCreation._currentPartyMemberIndex = 0;
     // Pick up any previously chosen mode (subsequent creations skip the
     // mode step via showOnlyOnce); null means the mode step will set it.
+    // Detailed is never carried over: the mode step is silenced once a
+    // savegame has built a party, so a carried-over Detailed would lock every
+    // later party into the editor with no board and no way back.
+    const carriedMode = $gameSystem && $gameSystem._ccCreationMode;
     Scene_CharacterCreation._creationMode =
-      ($gameSystem && $gameSystem._ccCreationMode) || null;
+      (carriedMode === "detailed" ? null : carriedMode) || null;
 
     const startStep = Scene_CharacterCreation.getStartingStep();
     Scene_CharacterCreation.prepare(startStep);
@@ -5442,7 +5512,12 @@
   function applyRandomNpcSpriteAndName(actor, memberIndex) {
     const npcData = window.WorldGen && window.WorldGen.NPCs;
     if (!npcData) return null;
-    const keys = Object.keys(npcData).filter((k) => npcData[k] && npcData[k].npc === true);
+    // A rolled face is a face nobody chose, so beta sheets stay out of it unless
+    // the world was created with them enabled. Browsing the sprite grid still
+    // shows them all.
+    const keys = window.SpriteCatalog
+      ? window.SpriteCatalog.npcKeys()
+      : Object.keys(npcData).filter((k) => npcData[k] && npcData[k].npc === true);
     if (keys.length === 0) return null;
 
     const charName = keys[Math.floor(Math.random() * keys.length)];

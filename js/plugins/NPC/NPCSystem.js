@@ -118,13 +118,11 @@
   // Character pool built from NPCs.json (npc:true entries), replaces the old hardcoded
   // CHARACTER_GRAPHICS + SKAB_CHARACTER_GRAPHICS arrays.
   // DataService loads window.WorldGen.NPCs synchronously before any plugin IIFE runs.
-  let _npcCharPool = null;
+  // Beta sheets are in the pool only for a world created with beta sprites on,
+  // so the memo lives in SpriteCatalog (keyed by that answer) rather than here:
+  // activating a different world must not hand it the previous world's pool.
   function buildNPCCharacterPool() {
-    if (_npcCharPool) return _npcCharPool;
-    const npcData = window.WorldGen?.NPCs;
-    if (!npcData) return [];
-    _npcCharPool = Object.keys(npcData).filter(k => npcData[k].npc === true);
-    return _npcCharPool;
+    return window.SpriteCatalog?.npcKeys() || [];
   }
 
   // ==========================================================================

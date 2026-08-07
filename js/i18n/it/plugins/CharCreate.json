@@ -398,6 +398,10 @@
     "roguelite": {
       "name": "Roguelite",
       "desc": "Se sconfitto ti risvegli al piano base del dungeon. Gli alleati caduti restano nel gruppo e possono essere resuscitati dopo la battaglia."
+    },
+    "modeDetailed": {
+      "name": "Dettagliata",
+      "desc": "Costruisci il personaggio sulla sua scheda: ogni campo, dalla classe ai tratti fino a città natale, orientamento e storia, modificato a mano."
     }
   },
   "hairStyle": {
@@ -523,13 +527,6 @@
   "musicTrackPlayedDuringCombatPressToPreviewTr": "Traccia musicale in combattimento. Premi ←→ per ascoltare un'anteprima.",
   "uiTheme": "Tema UI",
   "visualThemeAppliedToMenusAndHudPressToSwitch": "Tema visivo per menu e HUD. Premi ←→ per cambiare. Richiede riavvio per applicare.",
-  "skillCategorization": "Categorizzazione Abilità",
-  "howSkillsAndMagicAreGroupedInBattleAndMenusR": "Come abilità e magie sono raggruppate in battaglia e nei menu. Ruolo: scegli Offensiva, Guarigione o Supporto, poi le abilità dentro. Scuola: raggruppate per scuola magica o disciplina. No: lista semplice.",
-  "plainUngroupedSkillList": "Lista di abilità non raggruppata.",
-  "roleGroupsByPurposeOffensiveHealingSupportSc": "Ruolo raggruppa per scopo (Offensiva/Guarigione/Supporto); Scuola per disciplina.",
-  "school": "Scuola",
-  "off": "No",
-  "role": "Ruolo",
   "toCycleTracksPreviewPlaysAutomatically": "← → per cambiare · anteprima automatica",
   "toCycleThemesRequiresRestartToApply": "← → per cambiare tema · ⟳ richiede riavvio per applicare",
   "settingsPreview": "ANTEPRIMA IMPOSTAZIONI",
@@ -552,5 +549,70 @@
   },
   "previewOff": "SPENTO",
   "previewOn": "ACCESO",
-  "unknownVocation": "Sconosciuta"
+  "unknownVocation": "Sconosciuta",
+  "detailed": {
+    "tab": "Crea",
+    "title": "Scheda del personaggio",
+    "hint": "Ogni riga è un campo. Clicca per cambiarlo, oppure clicca il ritratto per ridisegnare il personaggio.",
+    "portraitHint": "Cambia sprite, mezzobusto o modello 3D",
+    "unavailable": "Non c'è nessun personaggio da modificare qui.",
+    "unset": "Non impostato",
+    "rolled": "Estratto dal mondo",
+    "none": "Nessuna",
+    "random": "Casuale",
+    "back": "Indietro",
+    "noOptions": "Qui non c'è ancora niente da scegliere.",
+    "pickCategory": "Scegli un campo di studio",
+    "section": {
+      "identity": "Identità",
+      "origins": "Origini",
+      "talents": "Tratti e talenti",
+      "society": "Posizione sociale",
+      "romance": "Romanticismo",
+      "history": "Storia",
+      "finish": "Concludi"
+    },
+    "row": {
+      "name": "Nome",
+      "nameRandom": "Estrai un nuovo nome",
+      "kind": "Natura",
+      "archetype": "Archetipo",
+      "class": "Classe",
+      "level": "Livello",
+      "portraitStyle": "Rappresentato da",
+      "appearance": "Sprite e ritratto",
+      "model3d": "Modello 3D",
+      "age": "Età",
+      "birthNation": "Nazione di nascita",
+      "traitsRandom": "Estrai nuovi tratti",
+      "personality": "Personalità",
+      "ideology": "Ideologia",
+      "faction": "Fazione",
+      "wealth": "Ricchezza",
+      "morality": "Moralità",
+      "romantic": "Orientamento romantico",
+      "sexual": "Orientamento sessuale",
+      "reproduction": "Riproduzione",
+      "rerollBackstory": "Riscrivi il passato",
+      "rerollLife": "Distribuisci un'altra vita",
+      "randomizeAll": "Randomizza tutto",
+      "done": "Fatto, questo personaggio è pronto",
+      "specsRandom": "Estrai nuove specializzazioni"
+    },
+    "kind": {
+      "humanoid": "Umanoide",
+      "humanoidDesc": "Una persona: qualsiasi classe, un ritratto disegnato o un modello 3D.",
+      "creature": "Creatura",
+      "creatureDesc": "Costruita nel laboratorio delle creature da un archetipo, o due per un ibrido."
+    },
+    "portrait": {
+      "bust": "Mezzobusto disegnato",
+      "model": "Modello 3D procedurale"
+    },
+    "specPoints": "Punti rimasti: {left} su {total}",
+    "specCost": "costa {n}",
+    "specRefund": "clicca per riavere i punti",
+    "specGranted": "(gratis fino a {level})",
+    "specsRandomHint": "Spendi tutto il budget a caso, sopra a quello che classe e tratti già concedono."
+  }
 }

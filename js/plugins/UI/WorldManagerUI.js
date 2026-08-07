@@ -304,6 +304,8 @@
                     scene._changeStartMonth(dir === "left" ? -1 : 1);
                 } else if ((dir === "left" || dir === "right") && focusedId === "wm-start-year") {
                     scene._changeStartYear(dir === "left" ? -1 : 1);
+                } else if ((dir === "left" || dir === "right") && focusedId === "wm-beta-toggle") {
+                    scene._toggleBetaSprites();
                 } else if (dir === "right" && rightAvailable) {
                     scene._setFocus("tabs", RIGHT_TABS.indexOf(scene._rightTab));
                 }
@@ -391,6 +393,7 @@
             this._seedValue = DEFAULT_WORLD_SEED;
             this._startYear = START_YEAR_MIN;
             this._startMonth = 1;
+            this._betaSprites = false;
             this._wasdInput = { up: false, down: false, left: false, right: false };
             this.createUIDOM();
             WorldManageInputManager.activate(this);
@@ -413,7 +416,8 @@
             switch (section) {
                 case "list":    return [...c.querySelectorAll(".wm-world-row")];
                 case "create":  return ["wm-name-input", "wm-start-month", "wm-start-year",
-                                        "wm-seed-input", "wm-seed-random-btn", "wm-create-btn"]
+                                        "wm-seed-input", "wm-seed-random-btn", "wm-beta-toggle",
+                                        "wm-create-btn"]
                                     .map(id => document.getElementById(id)).filter(Boolean);
                 case "back":    return [document.getElementById("wm-back-btn")].filter(Boolean);
                 case "tabs":    return [...c.querySelectorAll(".wm-tabs .category-tab")];
@@ -499,6 +503,23 @@
             this._seedValue = seed;
             const input = document.getElementById("wm-seed-input");
             if (input) input.value = seed;
+            SoundManager.playCursor();
+        }
+
+        // Beta character sheets: the drawings that are not in the original
+        // folder. A world that takes them is populated from the wider pool; a
+        // world that does not never sees them outside the character grid. The
+        // answer belongs to the world's people, so it is asked once here and is
+        // not offered again on an existing world.
+        _toggleBetaSprites() {
+            this._betaSprites = !this._betaSprites;
+            const el = document.getElementById("wm-beta-toggle");
+            if (el) {
+                el.dataset.on = this._betaSprites ? "1" : "0";
+                el.setAttribute("aria-checked", this._betaSprites ? "true" : "false");
+                const box = el.querySelector(".wm-check-box");
+                if (box) box.textContent = this._betaSprites ? "☑" : "☐";
+            }
             SoundManager.playCursor();
         }
 
@@ -691,6 +712,14 @@
                                         aria-label="${T('WorldManagerUI.randomizeSeed')}">&#9851;</button>
                             </div>
                             <div class="cc-text-desc">${T('WorldManagerUI.worldHistory19002000Is')}</div>
+                            <label>${T('WorldManagerUI.betaSprites')}</label>
+                            <div id="wm-beta-toggle" class="wm-check-row" data-on="${this._betaSprites ? "1" : "0"}"
+                                 role="checkbox" tabindex="0" aria-checked="${this._betaSprites ? "true" : "false"}"
+                                 onclick="SceneManager._scene._toggleBetaSprites()">
+                                <span class="wm-check-box">${this._betaSprites ? "☑" : "☐"}</span>
+                                <span class="wm-check-label">${T('WorldManagerUI.betaSpritesEnable')}</span>
+                            </div>
+                            <div class="cc-text-desc">${T('WorldManagerUI.betaSpritesHelp')}</div>
                             <button id="wm-create-btn" class="cc-btn-treaty confirm" onclick="SceneManager._scene.onCreateWorld()">
                                 ${T('WorldManagerUI.createActivate')}
                             </button>
@@ -792,6 +821,12 @@
                     <div class="cc-dossier-row">
                         <span class="cc-dossier-label">${T('WorldManagerUI.seed')}</span>
                         <span class="cc-dossier-value">${world.seed !== undefined ? world.seed : "?"}</span>
+                    </div>
+                    <div class="cc-dossier-row">
+                        <span class="cc-dossier-label">${T('WorldManagerUI.betaSprites')}</span>
+                        <span class="cc-dossier-value">${world.betaSprites === true
+                            ? T('WorldManagerUI.betaSpritesOn')
+                            : T('WorldManagerUI.betaSpritesOff')}</span>
                     </div>
                 </div>
                 <div class="cc-button-panel">
@@ -996,7 +1031,12 @@
 
             setTimeout(async () => {
                 try {
-                    WM.createWorld(name, { worldTimeMinutes, seed, startYear, startMonth });
+                    // betaSprites is written before initializeWorld() below, so
+                    // the pool the world is populated from already knows about it.
+                    WM.createWorld(name, {
+                        worldTimeMinutes, seed, startYear, startMonth,
+                        betaSprites: this._betaSprites === true
+                    });
                     WM.setActiveWorld(name);
                     if (typeof FactionDataManager !== "undefined" &&
                         FactionDataManager.instance && FactionDataManager.instance._readyPromise) {
@@ -1251,9 +1291,40 @@
         }
         #world-manage-container .wm-create input.kb-focus,
         #world-manage-container .wm-create select.kb-focus,
+        #world-manage-container .wm-check-row.kb-focus,
         #world-manage-container .wm-year-selector.kb-focus {
             border-color: var(--border-focus-hover);
             box-shadow: 0 0 6px var(--border-primary-hover-translucent-15);
+        }
+        /* Creation-only checkbox (beta sprites). */
+        #world-manage-container .wm-check-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-primary-hover-translucent-35);
+            border: 1px solid var(--border-primary-hover-translucent-15);
+            border-radius: 3px;
+            padding: 4px 8px;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+        }
+        #world-manage-container .wm-check-row .wm-check-box {
+            font-size: 1.15rem;
+            line-height: 1;
+            color: var(--text-primary-hover);
+        }
+        #world-manage-container .wm-check-row[data-on="1"] .wm-check-box,
+        #world-manage-container .wm-check-row[data-on="1"] .wm-check-label {
+            color: var(--text-highlight-active);
+        }
+        #world-manage-container .wm-check-row .wm-check-label {
+            font-family: 'Lora', serif;
+            font-size: 0.95rem;
+            color: var(--text-primary-hover);
+        }
+        #world-manage-container .wm-check-row:hover {
+            border-color: var(--border-focus-hover);
         }
         /* Arrow-based starting-date selectors (month + year, side by side). */
         #world-manage-container .wm-date-row {

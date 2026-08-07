@@ -409,6 +409,9 @@
         const actor = $gameParty.menuActor();
         this._selectedActorIndex = members.indexOf(actor);
         if (this._selectedActorIndex < 0) this._selectedActorIndex = 0;
+        // Nobody has been singled out yet, so the addictions card opens on the
+        // party as a whole. Clicking a member card pins it to that member.
+        this._needsActorPinned = false;
         this._isToolsPage = false;
         this._isWorldMapPage = false;
         this._isDynamicsPage = false;
@@ -474,8 +477,11 @@
     };
 
     Scene_Menu.prototype.switchSelectedActor = function (index) {
-        if (index === this._selectedActorIndex) return;
+        // Even re-picking the member already shown is a deliberate pick, so it
+        // opens their own addiction bars in place of the party summary.
+        if (index === this._selectedActorIndex && this._needsActorPinned) return;
         SoundManager.playCursor();
+        this._needsActorPinned = true;
         this._selectedActorIndex = index;
         this.refreshUIMenuDOM(true); // Enable premium smooth transitions!
     };
@@ -928,6 +934,31 @@
         this.refreshUIMenuDOM(false);
     };
 
+    // Turn order is a party-only override of the DEX ranking; the first nudge
+    // pins the ranking the player is looking at, so nothing jumps about.
+    Scene_Menu.prototype.moveUITurnOrder = function (actorId, delta) {
+        if (!window.BattleTurnOrder?.move?.(actorId, delta)) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        SoundManager.playCursor();
+        this.refreshUIMenuDOM(false);
+    };
+
+    Scene_Menu.prototype.resetUITurnOrder = function () {
+        if (!window.BattleTurnOrder?.isPinned?.()) {
+            SoundManager.playBuzzer();
+            return;
+        }
+        window.BattleTurnOrder.clear();
+        SoundManager.playOk();
+        window.ParchmentToast?.show?.(
+            T('MainMenu.dynamics.turnOrderCleared', { stat: TextManager.param(6) }),
+            { severity: 'info', duration: 200 }
+        );
+        this.refreshUIMenuDOM(false);
+    };
+
     // First click arms the row, second one confirms: benching a companion sends
     // them off the roster for the rest of this playthrough.
     Scene_Menu.prototype.askRetireUIMember = function (actorId) {
@@ -1000,10 +1031,15 @@
         const view = this._dynamicsView || 'hub';
         if (view === 'roster') return this.generateUIDynamicsRosterHTML();
         if (view === 'history') return this.generateUIDynamicsHistoryHTML();
+        if (view === 'leader') return this.generateUIDynamicsLeaderHTML();
+        if (view === 'turnorder') return this.generateUIDynamicsTurnOrderHTML();
 
         const partySize = $gameParty.members().length;
         const pastCount = (window.PartyRoster?.history?.() ?? []).filter(e => e.status !== 'active').length;
         const wikiEnabled = !!window.NPCEmpathize?.openWiki;
+        const leaderName = $gameParty.leader() ? $gameParty.leader().name() : '';
+        const turnOrderEnabled = !!window.BattleTurnOrder;
+        const firstToAct = turnOrderEnabled ? (window.BattleTurnOrder.members()[0] ?? null) : null;
 
         // The hint ink is left to CSS (.pockets-hint) so each theme can set a
         // readable colour; a hardcoded brown was unreadable on the dark themes.
@@ -1026,6 +1062,12 @@
                     <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
                         ${tile(T('MainMenu.dynamics.roster'), T('MainMenu.dynamics.rosterSub', { count: partySize }), COMMAND_ICONS.dynamics,
                             "SceneManager._scene?.setDynamicsView?.('roster')", true)}
+                        ${tile(T('MainMenu.dynamics.leader'),
+                            leaderName ? T('MainMenu.dynamics.leaderSub', { name: escapeHtml(leaderName) }) : T('MainMenu.dynamics.leaderHint'),
+                            145, "SceneManager._scene?.setDynamicsView?.('leader')", partySize > 0)}
+                        ${tile(T('MainMenu.dynamics.turnOrder'),
+                            firstToAct ? T('MainMenu.dynamics.turnOrderSub', { name: escapeHtml(firstToAct.name()) }) : T('MainMenu.dynamics.turnOrderHint'),
+                            220, "SceneManager._scene?.setDynamicsView?.('turnorder')", turnOrderEnabled && partySize > 0)}
                         ${tile(T('MainMenu.dynamics.wiki'), T('MainMenu.dynamics.wikiHint'), 191,
                             "SceneManager._scene?.openDynamicsWiki?.()", wikiEnabled)}
                         ${tile(T('MainMenu.dynamics.history'), pastCount ? T.n('MainMenu.dynamics.historySub', pastCount) : T('MainMenu.dynamics.historyHint'), 187,
@@ -1146,6 +1188,111 @@
                     <h2 class="tools-title" style="margin-top:18px;">${T('MainMenu.dynamics.inactiveTitle')}</h2>
                     ${rows}
                     ${benchNote ? `<div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${benchNote}</div>` : ''}`;
+    };
+
+    // Set party leader: the same promotion the roster offers, on a page of its
+    // own, because who holds the party is what the map, the menus and every
+    // leader() reader follow.
+    Scene_Menu.prototype.generateUIDynamicsLeaderHTML = function () {
+        const members = $gameParty.members();
+        let memberRows = '';
+
+        members.forEach((mem, idx) => {
+            const actorId  = mem.actorId();
+            const isLeader = (idx === 0);
+            const button = isLeader
+                ? `<div class="command-item" style="flex:1;opacity:0.6;pointer-events:none;">${T('MainMenu.roster.leader')}</div>`
+                : `<div class="command-item focusable" style="flex:1;" onclick="SceneManager._scene?.promoteUIPartyLeader?.(${actorId})">${T('MainMenu.roster.makeLeader')}</div>`;
+
+            memberRows += `
+                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
+                        <div class="portrait-frame" style="flex-shrink:0;">
+                            <canvas id="roster-canvas-${actorId}" width="48" height="48"></canvas>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
+                                ${escapeHtml(mem.name())}
+                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${escapeHtml(mem.currentClass() ? mem.currentClass().name : '')} ${T('MainMenu.roster.levelAbbr')}${mem.level}</span>
+                            </div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                ${button}
+                            </div>
+                        </div>
+                    </div>`;
+        });
+
+        if (!members.length) {
+            memberRows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
+        }
+
+        return `
+                <div class="tools-pockets">
+                    <div class="page-header-bar">
+                        <div class="back-button" onclick="SceneManager._scene?.setDynamicsView?.('hub')">${T('MainMenu.dynamics.back')}</div>
+                        <h2 class="tools-title">${T('MainMenu.dynamics.leaderTitle')}</h2>
+                    </div>
+                    ${memberRows}
+                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:4px;">${T('MainMenu.dynamics.leaderNote')}</div>
+                </div>`;
+    };
+
+    // Turn order: a fight is normally opened by whoever has the most DEX, and
+    // this page overrules that for the party (window.BattleTurnOrder, in
+    // BattleSystem/IndividualBattleTurns.js). The troop is still ranked by the
+    // speed formula, so this decides the order among members, not against them.
+    Scene_Menu.prototype.generateUIDynamicsTurnOrderHTML = function () {
+        const order = window.BattleTurnOrder?.members?.() ?? [];
+        const pinned = !!window.BattleTurnOrder?.isPinned?.();
+        // $dataSystem.terms is localised in place (Core/Hendrix_Localization.js),
+        // so the param term is already the label the rest of the sheet prints.
+        const dexLabel = escapeHtml(TextManager.param(6));
+        let rows = '';
+
+        order.forEach((mem, idx) => {
+            const actorId = mem.actorId();
+            const first = (idx === 0);
+            const last = (idx === order.length - 1);
+            const step = (delta, label, disabled) => (disabled
+                ? `<div class="command-item" style="flex:0 0 auto;opacity:0.35;pointer-events:none;">${label}</div>`
+                : `<div class="command-item focusable" style="flex:0 0 auto;" onclick="SceneManager._scene?.moveUITurnOrder?.(${actorId}, ${delta})">${label}</div>`);
+
+            rows += `
+                    <div class="npc-dynamics-member" style="margin-bottom:16px;border-bottom:1px dashed rgba(74,39,17,0.25);padding-bottom:12px;display:flex;gap:12px;align-items:center;">
+                        <div style="flex:0 0 auto;font-family:'Lora',serif;font-size:1.3em;color:#58180D;font-weight:bold;width:24px;text-align:center;">${idx + 1}</div>
+                        <div class="portrait-frame" style="flex-shrink:0;">
+                            <canvas id="roster-canvas-${actorId}" width="48" height="48"></canvas>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-family:'Lora',serif;font-size:1.05em;color:#58180D;font-weight:bold;margin-bottom:6px;">
+                                ${escapeHtml(mem.name())}
+                                <span style="font-size:0.78em;font-weight:normal;color:#7a5c3a;margin-left:6px;">${dexLabel} ${mem.agi}${first ? ' · ' + T('MainMenu.dynamics.actsFirst') : ''}</span>
+                            </div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                ${step(-1, T('MainMenu.dynamics.moveUp'), first)}
+                                ${step(1, T('MainMenu.dynamics.moveDown'), last)}
+                            </div>
+                        </div>
+                    </div>`;
+        });
+
+        if (!rows) {
+            rows = `<div style="opacity:0.6;font-style:italic;margin-top:24px;font-family:'Lora',serif;">${T('MainMenu.dynamics.noMembers')}</div>`;
+        }
+
+        const resetBtn = pinned
+            ? `<div class="command-item focusable" style="width:100%;margin-top:8px;" onclick="SceneManager._scene?.resetUITurnOrder?.()">${T('MainMenu.dynamics.turnOrderReset')}</div>`
+            : '';
+
+        return `
+                <div class="tools-pockets">
+                    <div class="page-header-bar">
+                        <div class="back-button" onclick="SceneManager._scene?.setDynamicsView?.('hub')">${T('MainMenu.dynamics.back')}</div>
+                        <h2 class="tools-title">${T('MainMenu.dynamics.turnOrderTitle')}</h2>
+                    </div>
+                    ${rows}
+                    ${resetBtn}
+                    <div style="font-size:0.78em;color:#7a5c3a;font-style:italic;margin-top:8px;">${pinned ? T('MainMenu.dynamics.turnOrderPinned', { stat: dexLabel }) : T('MainMenu.dynamics.turnOrderBySpeed', { stat: dexLabel })}</div>
+                </div>`;
     };
 
     Scene_Menu.prototype.generateUIDynamicsHistoryHTML = function () {
@@ -1378,6 +1525,39 @@
                         </div>
                     </div>`;
         });
+
+        // Addictions read the other way round: the bar fills with the craving,
+        // so a full one is somebody in withdrawal, not somebody content. Until
+        // a member has been clicked the panel is the party's, so the card is
+        // one summary line, "Addictions (X)" over the worst craving anyone is
+        // carrying; picking a member opens their own substances one by one.
+        const addictions = window.AddictionSystem;
+        if (addictions) {
+            const cravingColor = (p) => p >= 80 ? '#d9433a' : (p >= 50 ? '#e2933a' : '#d4a64e');
+            const cravingCard = (label, val) => `
+                    <div class="survival-card">
+                        <span class="survival-lbl">${label}</span>
+                        <span class="survival-val" style="color:${cravingColor(val)};">${val}%</span>
+                        <div class="survival-bar">
+                            <div class="survival-bar-fill" style="width:${val}%; background:${cravingColor(val)};"></div>
+                        </div>
+                    </div>`;
+
+            if (this._needsActorPinned) {
+                addictions.cravingsFor(members[this._selectedActorIndex]).forEach(c => {
+                    needsCardsHTML += cravingCard(escapeHtml(c.label), Math.round(c.value));
+                });
+            } else {
+                const count = addictions.partyAddictCount();
+                if (count > 0) {
+                    const worst = addictions.partyWorst();
+                    needsCardsHTML += cravingCard(
+                        T('TimeDate.addiction.partyCard', { count }),
+                        Math.round(worst ? worst.value : 0)
+                    );
+                }
+            }
+        }
 
         // Left Page: Commands Pockets, Tools Pockets, or Travel Pockets
         let leftPageHTML = "";
@@ -1838,7 +2018,10 @@
                 this._dynamicsView || 'hub',
                 this._dynamicsPendingRetireId || 0,
                 $gameParty.members().map(mem => mem.actorId()).join('-'),
-                (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-')
+                (window.CharacterPresets?.getAvailableRetiredPresets?.() ?? []).map(p => p.id).join('-'),
+                // Reordering the turn order leaves the party itself untouched,
+                // so the pinned order has to be part of the key of its own.
+                (window.BattleTurnOrder?.pinned?.() ?? []).join('-')
             ].join(':')
             : '';
         // Abandoning a pet, handing the leash to another one, renaming one or
@@ -1996,10 +2179,14 @@
     // Dynamics -> Roster renders its own portraits on the left page, keyed by
     // actor id so a leader swap doesn't shuffle the sprites.
     Scene_Menu.prototype.drawAllRosterPortraits = function () {
-        if (!this._isDynamicsPage || this._dynamicsView !== 'roster') return;
+        // Leader and Turn Order draw the same member rows, under the same canvas
+        // ids; only Roster carries the bench underneath them.
+        const PORTRAIT_VIEWS = ['roster', 'leader', 'turnorder'];
+        if (!this._isDynamicsPage || !PORTRAIT_VIEWS.includes(this._dynamicsView)) return;
         $gameParty.members().forEach(mem => {
             this.drawUIActorPortrait(mem, `roster-canvas-${mem.actorId()}`);
         });
+        if (this._dynamicsView !== 'roster') return;
         // The bench has dossiers, not actors: drawUIActorPortrait only ever asks
         // for the sprite sheet and the index, so hand it those two.
         const bench = window.CharacterPresets?.getAvailableRetiredPresets?.() ?? [];

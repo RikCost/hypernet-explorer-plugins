@@ -93,6 +93,11 @@
   const needRestoresOf = (item) =>
     safe("getNeedRestores", () => (utils.getNeedRestores ? utils.getNeedRestores(item) : []), []) || [];
 
+  // What the item takes off an addiction craving, so a buyer can tell a bottle
+  // that only feeds a habit from one that feeds a body.
+  const addictionReliefOf = (item) =>
+    safe("getAddictionRelief", () => (utils.getAddictionRelief ? utils.getAddictionRelief(item) : []), []) || [];
+
   const loreOf = (item) =>
     safe("loreFor", () => (utils.loreFor ? utils.loreFor(item) : ""), "") || "";
 
@@ -367,6 +372,12 @@
     const needRestores = needRestoresOf(item);
     for (const r of needRestores) {
       this.drawKeyValue(r.label, "+" + r.amount + "%", 0, currentY);
+      currentY += lineHeight;
+    }
+
+    // Cravings read the other way round: this is what comes OFF the meter.
+    for (const r of addictionReliefOf(item)) {
+      this.drawKeyValue(r.label, "-" + r.amount + "%", 0, currentY);
       currentY += lineHeight;
     }
   };
@@ -1685,6 +1696,27 @@
                       ${T('Shop.needsRestored')}
                   </div>
                   ${needGauges}
+              </div>
+            `;
+        }
+
+        // Cravings fed (nicotine, drink, caffeine, narcotics, a bet)
+        const cravingRelief = addictionReliefOf(selectedItem);
+        if (cravingRelief.length) {
+          const cravingGauges = cravingRelief.map(r => `
+              <div class="gauge-row">
+                  <span style="font-weight:500; width:70px;">${esc(r.label)}</span>
+                  <div class="gauge-bar-outer">
+                      <div class="gauge-bar-inner" style="width:${r.amount}%; background:#7B6A55;"></div>
+                  </div>
+                  <span style="font-weight:bold; width:60px; text-align:right; color:#7B6A55;">-${r.amount}%</span>
+              </div>`).join("");
+          needsSectionHTML += `
+              <div class="gauges-section">
+                  <div class="card-lbl" style="border-bottom: 1px dashed rgba(94,47,23,0.15); padding-bottom:4px; margin-bottom:10px; font-weight:bold; font-size:12px;">
+                      ${T('Shop.cravingsFed')}
+                  </div>
+                  ${cravingGauges}
               </div>
             `;
         }

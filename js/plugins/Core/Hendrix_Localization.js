@@ -407,14 +407,6 @@ Imported.Hendrix_Localization = true;
         return { yepName, remainingText };
     }
 
-    function generateGibberish(length) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return result;
-    }
 
     // Hook into the game loading process
     const _Scene_Boot_start = Scene_Boot.prototype.start;

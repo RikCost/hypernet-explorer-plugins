@@ -901,7 +901,7 @@
       }
 
       // Eating always consumes one of the item, regardless of the database
-      // "Consume" flag, matching EatingMenu.js (issue #144).
+      // "Consume" flag (issue #144).
       $gameParty.loseItem(item, 1);
       utils.applyNeedRestores(actor, item);
       this.handleFoodItem(actor, item);
@@ -921,9 +921,10 @@
     action.setItemObject(item);
     action.apply(actor);
 
-    // Items whose only purpose is replenishing a need (no HP/MP/state effect)
-    // won't register a "hit", so honor the need tag as a valid use on its own.
-    const hasNeedRestore = utils.getNeedRestores(item).length > 0;
+    // Items whose only purpose is replenishing a need or feeding a craving (no
+    // HP/MP/state effect) won't register a "hit", so honor those tags as a
+    // valid use on their own.
+    const hasNeedRestore = utils.satisfiesNeed(item);
 
     if (actor.result().isHit() || hasNeedRestore) {
       this.playItemSound(item);

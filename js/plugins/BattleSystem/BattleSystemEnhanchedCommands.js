@@ -24,6 +24,20 @@
   "use strict";
 
   //=============================================================================
+  // Row geometry
+  //=============================================================================
+  // One source of truth for the size of a command row. itemHeight() is the row
+  // the invisible canvas window hit-tests against, so the HTML rows have to be
+  // drawn at exactly the same height or a click lands on the wrong command:
+  // both come from ROW_HEIGHT, and theme.css owns the colours only.
+  const ROW_HEIGHT = 40;
+  const ICON_PX    = 22;   // IconSet cells are 32px, scaled down to this
+  const LABEL_PX   = 16;
+  const MENU_WIDTH = 176;
+
+  const ICON_SHEET_COLS = 16;   // IconSet.png is 16 cells across
+
+  //=============================================================================
   // Command color palette
   //=============================================================================
 
@@ -142,25 +156,23 @@
       this.addCommandWithIcon("", "defense", canDefend, null, defenseIcon);
     }
 
-    // Skill categorization mode (CategorizedBattleSkills.js): 0 Role, 1 School, 2 Off.
-    // One command per skill type (Magic, Skills, ...): Magic and Skills always stay
-    // separate, and Role/School categorization applies inside each per-type menu.
-    const catMode = (ConfigManager.skillCategoryMode == null) ? 0 : ConfigManager.skillCategoryMode;
+    // One command per skill type (Magic, Skills, ...), each opening that type's
+    // carried loadout (CategorizedBattleSkills.js). A type with nothing carried
+    // greys out rather than opening an empty list.
     const skillTypes = this._actor.skillTypes();
     for (let i = skillTypes.length - 1; i >= 0; i--) {
       const stypeId = skillTypes[i];
       const iconIndex = stypeId === 2 ? 76 : 101;
-      const hasSkills = this._actor.skills().some(skill => skill && skill.stypeId === stypeId && isUsableSkill(skill));
-      this.addCommandWithIcon("", "skill", hasSkills, stypeId, iconIndex);
+      const carried = window.BattleLoadout
+        ? window.BattleLoadout.battleSkills(this._actor, stypeId)
+        : this._actor.skills().filter(skill => skill && skill.stypeId === stypeId);
+      this.addCommandWithIcon("", "skill", carried.some(isUsableSkill), stypeId, iconIndex);
     }
 
-    // In Off mode the Basic category is surfaced as its own top-level command
-    // (instead of nesting it in the category list). In Role/School the Basic
-    // skills stay nested as a category inside each per-type menu.
-    if (catMode === 2) {
-      const hasBasic = this._actor.skills().some(skill => isUsableSkill(skill) && getSkillCategory(skill) === "Basic"); // i18n-ignore: <category:Basic> note tag
-      this.addCommandWithIcon("", "basic", hasBasic, null, 248);
-    }
+    // The Basic kit is its own top-level command: those are the engine's
+    // fallback moves and are always carried, so they never crowd a loadout.
+    const hasBasic = this._actor.skills().some(skill => isUsableSkill(skill) && getSkillCategory(skill) === "Basic"); // i18n-ignore: <category:Basic> note tag
+    this.addCommandWithIcon("", "basic", hasBasic, null, 248);
 
     // Backpack/Item: disabled (greyed + buzzer) when the party holds no
     // battle-usable item. Mirrors Window_BattleItem.includes ($gameParty.canUse).
@@ -202,7 +214,7 @@
   // Window_ActorCommand - Layout (canvas window is invisible, just for input)
   //=============================================================================
 
-  Window_ActorCommand.prototype.itemHeight    = function () { return 58; };
+  Window_ActorCommand.prototype.itemHeight    = function () { return ROW_HEIGHT; };
   // Visible rows / hit-test bound must track the EXACT command count. Padding to a
   // fixed minimum (e.g. max(6, n)) inflates the window height; because the window is
   // bottom-pinned and the HTML items render from its top, that padding pushes the
@@ -288,7 +300,9 @@
     const root = this._cmdHtmlRoot;
     root.innerHTML = '';
 
-    const windowW = this.width || 220;
+    // The rows are laid over the window's INNER rect (see _updateCmdHtmlPos),
+    // which is the rect the canvas window hit-tests commands in.
+    const rowW = this.innerWidth || (this.width - this.padding * 2);
 
     for (let i = 0; i < this._list.length; i++) {
       const cmd       = this._list[i];
@@ -298,7 +312,8 @@
       // Outer item container
       const item = document.createElement('div');
       item.className = 'actorcmd-item';
-      item.style.width = windowW + 'px';
+      item.style.width  = rowW + 'px';
+      item.style.height = ROW_HEIGHT + 'px';
 
       // Dark base layer
       const darkBase = document.createElement('div');
@@ -339,11 +354,17 @@
       // plugins without an explicit iconIndex)
       const iconIdx = cmd.iconIndex || FALLBACK_ICONS[cmd.symbol] || 0;
       if (iconIdx > 0) {
-        const col   = iconIdx % 16;
-        const row   = Math.floor(iconIdx / 16);
+        const col   = iconIdx % ICON_SHEET_COLS;
+        const row   = Math.floor(iconIdx / ICON_SHEET_COLS);
         const icon  = document.createElement('div');
         icon.className = 'actorcmd-icon' + (cmd.enabled ? '' : ' dim');
-        icon.style.backgroundPosition = `${-col * 32}px ${-row * 32}px`;
+        icon.style.width  = ICON_PX + 'px';
+        icon.style.height = ICON_PX + 'px';
+        // The whole sheet is scaled down with the cell, so the cell offsets
+        // shrink by the same factor.
+        icon.style.backgroundSize = `${ICON_SHEET_COLS * ICON_PX}px auto`;
+        icon.style.backgroundPosition =
+          `${-col * ICON_PX}px ${-row * ICON_PX}px`;
         item.appendChild(icon);
       }
 
@@ -352,6 +373,7 @@
       const name  = this.getCommandName(cmd.symbol, cmd.ext) || cmd.name || "";
       const label = document.createElement('div');
       label.className = 'actorcmd-label' + (cmd.enabled ? '' : ' dim');
+      label.style.fontSize = LABEL_PX + 'px';
       label.textContent = (typeof translateText === 'function') ? translateText(name) : name;
       item.appendChild(label);
 
@@ -404,10 +426,15 @@
       while (node) { pt.x += node.x || 0; pt.y += node.y || 0; node = node.parent; }
     }
 
+    // The rows are laid over the window's inner rect, not its frame: that is
+    // where the canvas window puts item 0, so the HTML the player clicks and
+    // the row the click resolves to are the same rectangle.
+    const pad = this.padding || 0;
+
     // Dirty-check each property: only touch the DOM when a value actually
     // changed, instead of rewriting all five style props every frame.
-    const left       = (sc.ox + pt.x * sc.sx) + 'px';
-    const top        = (sc.oy + pt.y * sc.sy) + 'px';
+    const left       = (sc.ox + (pt.x + pad) * sc.sx) + 'px';
+    const top        = (sc.oy + (pt.y + pad) * sc.sy) + 'px';
     const transform  = `scale(${sc.sx}, ${sc.sy})`;
     const opacityStr = String(opacity);
 
@@ -469,7 +496,7 @@
   };
 
   Scene_Battle.prototype.actorCommandWindowRect = function () {
-    const cmdWidth = 220;
+    const cmdWidth = MENU_WIDTH;
     // Pin the command menu to the bottom edge of the screen. refresh() bottom-aligns
     // the window to _bseCommandBottomY, so the last command always sits just above the
     // bottom margin and the list grows upward as more commands are exposed.

@@ -455,7 +455,13 @@
                 historyYears: options.historyYears !== undefined ? options.historyYears : null,
                 worldTimeMinutes: options.worldTimeMinutes || 0,
                 startYear: options.startYear !== undefined ? options.startYear : DEFAULT_START_YEAR,
-                startMonth: options.startMonth !== undefined ? options.startMonth : DEFAULT_START_MONTH
+                startMonth: options.startMonth !== undefined ? options.startMonth : DEFAULT_START_MONTH,
+                // Whether this world draws its people from the beta character
+                // sheets too (the ones outside the original folder, NPCs.json →
+                // beta). Answered once, here: the world is populated from the
+                // pool this decides, so it is written at creation and never
+                // again. Read through window.SpriteCatalog.betaEnabled().
+                betaSprites: options.betaSprites === true
             };
             Backend.writeFile(name, "world", JSON.stringify(info, null, 2));
             return info;

@@ -39,7 +39,6 @@
     const Y_PROFILES = {
         flowerpixie:       { variant: 'flowerpixie',       scale: 1.7, texturePool: 'pale',    bodyColor: 0xffd0e0, accent: 0xffee66, hue: [0.92, 0.06], sat: [0.35, 0.10], lit: [0.75, 0.08] },
         mischievoussprite: { variant: 'mischievoussprite', scale: 1.6, texturePool: 'foliage', bodyColor: 0x9ad06a, accent: 0xffff88, hue: [0.28, 0.06], sat: [0.45, 0.12], lit: [0.60, 0.10] },
-        dreamweaver:       { variant: 'dreamweaver',       scale: 2.0, texturePool: 'void',    bodyColor: 0xb0a0e0, accent: 0xaaeeff, hue: [0.72, 0.08], sat: [0.35, 0.12], lit: [0.62, 0.08] },
         dreamweaver:       { variant: 'dreamweaver',       scale: 2.0, texturePool: 'void',    bodyColor: 0xe0a0db, accent: 0xadaaff, hue: [0.72, 0.08], sat: [0.35, 0.12], lit: [0.62, 0.08] },
     };
 

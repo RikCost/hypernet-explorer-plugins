@@ -65,5 +65,6 @@
   "filedRestored": "Lettura d'archivio ripristinata.",
   "previewOnly": "Solo anteprima, lettura {reading}. Non è stato scritto nulla nel registro.",
   "onlyOneReading": "Questa dichiarazione ha una sola lettura in archivio.",
-  "alternativeGenerated": "Lettura alternativa generata. Non archiviata."
+  "alternativeGenerated": "Lettura alternativa generata. Non archiviata.",
+  "sedates": "Seda"
 }

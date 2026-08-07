@@ -1,7 +1,6 @@
 {
   "title": "Abilità",
   "back": "Indietro",
-  "recent": "Recenti",
   "unit": {
     "ap": "AP"
   },
@@ -33,26 +32,17 @@
       "description": "Potenziamenti, indebolimenti e utilità.\nCambia le sorti della battaglia."
     }
   },
-  "option": {
-    "skillCategorization": "Categorizzazione Abilità",
-    "categoryModes": [
-      "Ruolo",
-      "Scuola",
-      "No"
-    ]
-  },
   "cmd": {
-    "favourites": "Preferiti",
     "levelUp": "Avanzamento",
     "use": "Usa",
-    "favourite": "Preferita",
-    "unfavourite": "Rimuovi preferita",
-    "cancel": "Annulla"
+    "cancel": "Annulla",
+    "carry": "Equipaggia",
+    "bench": "Ritira"
   },
   "action": {
     "useSkill": "[ Usa abilità ]",
-    "favourite": "[ Preferita ]",
-    "unfavourite": "[ Rimuovi preferita ]",
+    "carry": "[ Equipaggia ]",
+    "bench": "[ Ritira ]",
     "back": "[ Indietro ]"
   },
   "info": {
@@ -85,5 +75,15 @@
   "spec": {
     "trains": "Allena",
     "bonus": "Bonus abilità"
+  },
+  "loadout": {
+    "skills": "Abilità",
+    "magic": "Magia",
+    "count": "{group} {n}/{max}",
+    "carried": "In uso",
+    "benched": "A riposo",
+    "always": "Sempre",
+    "hint": "Shift equipaggia o ritira l’abilità selezionata",
+    "full": "Le {group} equipaggiate sono al completo ({max}). Ritirane una prima."
   }
 }

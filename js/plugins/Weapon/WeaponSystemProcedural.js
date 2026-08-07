@@ -3,16 +3,100 @@
  * @plugindesc Procedural 3D models for Weapon System
  * @author AntiGravity
  * @help
- * Generates procedural 3D models for weapons that do not have custom <3DModel> tags.
+ * Generates procedural 3D models for weapons that do not have custom <3DModel>
+ * tags.
+ *
+ * ============================================================================
+ * Where the models live
+ * ============================================================================
+ * This file is the engine only: seeding, caching, mesh merging, the animation
+ * tick and the Sprite_3DWeapon patches. The model builders live in the
+ * Weapon3D_* files beside it and are injected at runtime from the
+ * WEAPON3D_FAMILIES list at the bottom, the same arrangement 3DBattlerSystem
+ * uses for its 3DBattler_* families. None of them belongs in plugins.js.
+ *
+ * A family registers itself with:
+ *
+ *   WeaponSystemProcedural.registerFamily({
+ *     name:   'Weapon3D_Swords',
+ *     unique: { 57: 'createLongSwordModel' },   // per database id, optional
+ *     models: { createLongSwordModel(weapon, rand) { ... } }
+ *   });
+ *
+ * Dispatch order for a weapon with no <3DModel>: its bespoke model (by
+ * database id) -> a note tag in NOTE_MODELS -> whip/flail -> its weapon type.
+ * A family that fails to load costs only the models it carried.
+ *
+ * ============================================================================
+ * Seeding
+ * ============================================================================
+ * A weapon's appearance is world-persistent procedural content, so every
+ * colour, proportion and trinket is drawn from HistorySimulator's world seed
+ * mixed with the weapon id (seedFor / worldSeed). The same sword looks the
+ * same in every savegame of a world and different in the next one.
+ *
+ * ============================================================================
+ * Cost
+ * ============================================================================
+ * The overlay can be drawing at the same time as the 3D battler scene, so:
+ *   - a built weapon is cached and handed out as a clone (shared geometry and
+ *     textures, per-instance materials), which is ~30x cheaper than rebuilding
+ *   - meshes that never move relative to the model are merged into one buffer
+ *     per material, taking a decorated weapon from ~60 draw calls to a handful
+ *   - while 3D battlers are on (switch 70), every radial geometry drops a tier
+ *     and decorative trim is skipped: about 40% fewer triangles, same
+ *     silhouettes
+ *
+ * ============================================================================
+ * Moving parts
+ * ============================================================================
+ * Attack animations are whole-model keyframes from
+ * js/db/Sprites/MovementKeyFrame3d.json. A model can additionally declare
+ * moving parts of its own, as plain data on userData so a cached model can
+ * still be cloned: spin, sway, bob, orbit and pulse. See tickModelParts.
  */
 
 var WeaponSystemProcedural = {
+  // mulberry32: cheap, well distributed, and (unlike the old abs(sin) chain)
+  // it does not fall into short cycles for neighbouring seeds, which is what
+  // made whole runs of consecutive weapon ids come out looking alike.
   createSeededRandom(seed) {
-    let h = Math.abs(Math.sin(seed || 1) * 10000);
-    return () => {
-      h = Math.abs(Math.sin(h * 10000));
-      return h;
+    let a = (seed >>> 0) || 1;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
+  },
+
+  // ============================================================
+  // World seeding
+  // ============================================================
+  // A weapon's appearance is world-persistent procedural content, so it hangs
+  // off the canonical world-RNG root (HistorySimulator's seed) rather than the
+  // database id alone: the same Kukri looks the same in every savegame of a
+  // world and different in the next world.
+  WEAPON_SEED_SALT: 0x5745_4150, // "WEAP"
+
+  worldSeed() {
+    try {
+      if (window.HistoryManager && typeof window.HistoryManager.getSeed === 'function') {
+        const s = Number(window.HistoryManager.getSeed());
+        if (Number.isFinite(s)) return s >>> 0;
+      }
+    } catch (e) { /* history not booted yet (title screen previews) */ }
+    return 19002001;
+  },
+
+  /** Deterministic per-weapon seed derived from the world seed. */
+  seedFor(weapon) {
+    const id = (weapon && weapon.id) || 0;
+    let h = (this.worldSeed() ^ this.WEAPON_SEED_SALT) >>> 0;
+    h = Math.imul(h ^ (id + 0x9E3779B9), 0x85EBCA6B) >>> 0;
+    h = Math.imul(h ^ (h >>> 13), 0xC2B2AE35) >>> 0;
+    return (h ^ (h >>> 16)) >>> 0;
   },
 
   _textureCache: {},
@@ -125,10 +209,435 @@ var WeaponSystemProcedural = {
     }
   },
 
+  // ============================================================
+  // Render budget
+  // ============================================================
+  // The weapon overlay can be on screen at the same time as the 3D battler
+  // scene, which is by far the heavier of the two: when it is, every radial
+  // geometry drops a tier and the optional trinkets (extra rivets, spare
+  // gems, grip rings) are skipped. Nothing about the silhouette changes, so a
+  // weapon is still recognisably itself at either budget.
+  _lowDetail: false,
+  _lowDetailCheckedAt: 0,
+
+  isLowDetail() {
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    // Re-asking every build would be free, but this is also read from inside
+    // geometry loops; a second of staleness costs nothing.
+    if (now - this._lowDetailCheckedAt < 1000) return this._lowDetail;
+    this._lowDetailCheckedAt = now;
+    let low = false;
+    try {
+      if (window.$gameSwitches && window.$gameSwitches.value(70)) low = true;
+      if (window.ConfigManager && ConfigManager.battler3D) low = true;
+    } catch (e) { /* outside a running game */ }
+    this._lowDetail = low;
+    return low;
+  },
+
+  /** Radial/height segment count for the current budget, floored at `min`. */
+  seg(n, min) {
+    const floor = min || 3;
+    if (!this.isLowDetail()) return Math.max(floor, n);
+    return Math.max(floor, Math.round(n * 0.6));
+  },
+
+  /** True when a purely decorative part is worth building. */
+  wantsTrim() {
+    return !this.isLowDetail();
+  },
+
+  // Which constructor arguments of a THREE primitive are segment counts, and
+  // how far each may be cut. Used to put the whole back catalogue of models on
+  // the same budget as the ones that call seg() by hand.
+  GEOMETRY_SEGMENT_ARGS: {
+    CylinderGeometry: [[3, 5], [4, 1]],
+    ConeGeometry: [[2, 4], [3, 1]],
+    SphereGeometry: [[1, 5], [2, 4]],
+    TorusGeometry: [[2, 3], [3, 6]],
+    TorusKnotGeometry: [[2, 8], [3, 4]],
+    RingGeometry: [[1, 6], [2, 1]],
+    CircleGeometry: [[1, 6]],
+    LatheGeometry: [[1, 5]],
+    TubeGeometry: [[1, 3], [3, 3]],
+    PlaneGeometry: [[2, 1], [3, 1]],
+    BoxGeometry: [[3, 1], [4, 1], [5, 1]],
+    DodecahedronGeometry: [[1, 0]],
+    IcosahedronGeometry: [[1, 0]],
+    OctahedronGeometry: [[1, 0]],
+    TetrahedronGeometry: [[1, 0]],
+    SphereBufferGeometry: [[1, 5], [2, 4]]
+  },
+
+  /**
+   * Temporarily thins every radial geometry THREE hands out. Returns the undo
+   * function. This is what makes the low-detail budget apply to the models
+   * that were written before it existed, not only to the ones calling seg().
+   */
+  _patchGeometryBudget() {
+    if (!this.isLowDetail() || typeof THREE === 'undefined') return function () {};
+    const saved = [];
+    for (const name of Object.keys(this.GEOMETRY_SEGMENT_ARGS)) {
+      const Original = THREE[name];
+      if (typeof Original !== 'function') continue;
+      const spec = this.GEOMETRY_SEGMENT_ARGS[name];
+      saved.push([name, Original]);
+      const Budgeted = function (...args) {
+        for (const [index, floor] of spec) {
+          const v = args[index];
+          if (typeof v === 'number' && v > floor) args[index] = Math.max(floor, Math.round(v * 0.6));
+        }
+        return new Original(...args);
+      };
+      Budgeted.prototype = Original.prototype;
+      THREE[name] = Budgeted;
+    }
+    return function () {
+      for (const [name, Original] of saved) THREE[name] = Original;
+    };
+  },
+
+  // ============================================================
+  // Built-model cache
+  // ============================================================
+  // Building a weapon costs 2-5ms of geometry generation plus a fresh GPU
+  // upload for every one of its (up to 60) meshes, and the equip screen, the
+  // forge preview and a battle re-equip all rebuild the same handful of
+  // weapons over and over. A built weapon is therefore kept as a prototype and
+  // handed out as a clone: THREE's clone shares geometry and material by
+  // reference, so a repeat costs one small object tree and zero uploads.
+  //
+  // Clone copies userData through JSON, which is exactly why every per-part
+  // animation below is stored as plain data rather than a closure.
+  _modelCache: new Map(),
+  MODEL_CACHE_MAX: 24,
+
+  /** Neutralises dispose() on a prototype's shared resources. */
+  _protectResources(root) {
+    const seen = new Set();
+    const protect = (res) => {
+      if (!res || seen.has(res)) return;
+      seen.add(res);
+      if (res._weaponProtected) return;
+      res._weaponProtected = true;
+      if (typeof res.dispose === 'function') {
+        res._realDispose = res.dispose;
+        res.dispose = function () { /* owned by the weapon model cache */ };
+      }
+    };
+    root.traverse((obj) => {
+      if (obj.geometry) protect(obj.geometry);
+      if (obj.material) {
+        if (Array.isArray(obj.material)) obj.material.forEach(protect);
+        else protect(obj.material);
+      }
+    });
+  },
+
+  /** Gives a prototype's resources their dispose() back, without freeing. */
+  _freePrototypeProtection(root) {
+    if (!root) return;
+    const restore = (res) => {
+      if (!res || !res._realDispose) return;
+      res.dispose = res._realDispose;
+      res._realDispose = null;
+      res._weaponProtected = false;
+    };
+    root.traverse((obj) => {
+      if (obj.geometry) restore(obj.geometry);
+      if (obj.material) {
+        if (Array.isArray(obj.material)) obj.material.forEach(restore);
+        else restore(obj.material);
+      }
+    });
+  },
+
+  _freePrototype(root) {
+    if (!root) return;
+    const seen = new Set();
+    const free = (res) => {
+      if (!res || seen.has(res)) return;
+      seen.add(res);
+      if (res._realDispose) {
+        res.dispose = res._realDispose;
+        res._realDispose = null;
+        res._weaponProtected = false;
+      }
+      // Textures from getTexture() are shared by every model and never freed.
+      if (typeof res.dispose === 'function' && !res._weaponSharedCache) res.dispose();
+    };
+    root.traverse((obj) => {
+      if (obj.geometry) free(obj.geometry);
+      if (obj.material) {
+        if (Array.isArray(obj.material)) obj.material.forEach(free);
+        else free(obj.material);
+      }
+    });
+  },
+
+  clearModelCache() {
+    for (const entry of this._modelCache.values()) this._freePrototype(entry);
+    this._modelCache.clear();
+  },
+
+  /**
+   * Hands out a usable copy of a cached prototype.
+   *
+   * Geometry (the expensive half: it owns the GPU buffers) is shared with the
+   * prototype. Materials are NOT: callers legitimately reshade what they were
+   * given, and the title screen in particular brightens every material of the
+   * artifact it is showing, which would otherwise repaint the same weapon
+   * everywhere else in the game. Cloning them costs a few uniform objects and
+   * no upload, since the texture reference goes across untouched.
+   */
+  _instance(prototype) {
+    const copy = prototype.clone(true);
+    const seen = new Map();
+    copy.traverse((obj) => {
+      if (!obj.isMesh || !obj.material || Array.isArray(obj.material)) return;
+      let mat = seen.get(obj.material);
+      if (!mat) {
+        mat = obj.material.clone();
+        seen.set(obj.material, mat);
+      }
+      obj.material = mat;
+    });
+    return copy;
+  },
+
   createModel(weapon) {
+    if (!window.THREE || !weapon) return null;
+
+    const key = this.worldSeed() + ':' + (weapon.id || 0) + ':' + (this.isLowDetail() ? 'lo' : 'hi');
+    const cached = this._modelCache.get(key);
+    if (cached) {
+      // Map preserves insertion order, so re-inserting is the whole LRU touch.
+      this._modelCache.delete(key);
+      this._modelCache.set(key, cached);
+      return this._instance(cached);
+    }
+
+    const root = this._buildModel(weapon);
+    if (!root) return null;
+
+    // A rope weapon carries live simulation state (point masses holding mesh
+    // references) in userData, which clone() would flatten into dead JSON.
+    if (root.userData._verletRope || root.userData._verletRopes) return root;
+
+    try {
+      this.mergeStaticParts(root);
+      this._protectResources(root);
+      this._modelCache.set(key, root);
+      while (this._modelCache.size > this.MODEL_CACHE_MAX) {
+        const oldest = this._modelCache.keys().next().value;
+        const victim = this._modelCache.get(oldest);
+        this._modelCache.delete(oldest);
+        // Instances handed out earlier still point at this geometry. Freeing
+        // it releases the GPU copy only; THREE re-uploads from the attribute
+        // arrays the next time one of them is drawn, so the worst an evicted
+        // weapon still on screen can cost is a single re-upload. The cache is
+        // small enough that the two weapons in a battle are never the victims.
+        this._freePrototype(victim);
+      }
+      return this._instance(root);
+    } catch (e) {
+      console.warn('[WeaponSystemProcedural] model caching failed, using one-off model', e);
+      this._modelCache.delete(key);
+      this._freePrototypeProtection(root);
+      return root;
+    }
+  },
+
+  // ============================================================
+  // Static mesh merging
+  // ============================================================
+  // A procedural weapon is built out of dozens of small primitives, and every
+  // one of them was a draw call with its own uniform upload. Meshes that never
+  // move relative to the model are baked into one buffer per material, which
+  // takes a heavily decorated weapon from ~60 draw calls to a handful. Parts
+  // that DO move (rope links, anything carrying an animation descriptor, and
+  // everything under a group marked dynamic) are left alone.
+  mergeStaticParts(root) {
+    if (!root || typeof THREE === 'undefined' || !THREE.BufferGeometry) return root;
+
+    const isMoving = (obj) => {
+      const ud = obj.userData;
+      return !!(ud && (ud.dynamic || ud.spin || ud.bob || ud.pulse || ud.orbit || ud.sway || ud._chainAlternate !== undefined));
+    };
+
+    root.updateMatrixWorld(true);
+
+    // A moving part is its own merge root: the gears of a clockwork weapon
+    // still collapse to one buffer each, they just do not collapse into the
+    // weapon around them.
+    const anchors = [root];
+    root.traverse((obj) => { if (obj !== root && isMoving(obj)) anchors.push(obj); });
+
+    // Nearest moving ancestor decides which anchor a mesh belongs to.
+    const anchorOf = (obj) => {
+      let node = obj;
+      while (node) {
+        if (node === root || isMoving(node)) return node;
+        node = node.parent;
+      }
+      return root;
+    };
+
+    const removals = [];
+    const inverse = new THREE.Matrix4();
+    const local = new THREE.Matrix4();
+
+    for (const anchor of anchors) {
+      const buckets = new Map();
+      anchor.traverse((obj) => {
+        if (!obj.isMesh || !obj.geometry || !obj.material) return;
+        if (Array.isArray(obj.material)) return;   // multi-material, left as-is
+        if (obj.geometry.morphAttributes && Object.keys(obj.geometry.morphAttributes).length) return;
+        if (isMoving(obj)) return;                 // an anchor never merges itself away
+        if (anchorOf(obj.parent) !== anchor) return;
+        const key = obj.material.uuid;
+        if (!buckets.has(key)) buckets.set(key, { material: obj.material, meshes: [] });
+        buckets.get(key).meshes.push(obj);
+      });
+
+      inverse.copy(anchor.matrixWorld).invert();
+      for (const bucket of buckets.values()) {
+        if (bucket.meshes.length < 2) continue;
+        const parts = [];
+        for (const mesh of bucket.meshes) {
+          const geo = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
+          local.multiplyMatrices(inverse, mesh.matrixWorld);
+          geo.applyMatrix4(local);
+          parts.push(geo);
+          removals.push(mesh);
+        }
+        const merged = this._concatGeometries(parts);
+        for (const g of parts) g.dispose();
+        if (!merged) continue;
+        const mesh = new THREE.Mesh(merged, bucket.material);
+        mesh.userData._merged = true;
+        anchor.add(mesh);
+      }
+    }
+
+    for (const mesh of removals) {
+      if (mesh.parent) mesh.parent.remove(mesh);
+      if (mesh.geometry && typeof mesh.geometry.dispose === 'function') mesh.geometry.dispose();
+    }
+
+    return root;
+  },
+
+  /**
+   * Concatenates non-indexed geometries that all carry position (and, where
+   * present in every part, normal/uv). Written out here because the three
+   * build the game ships does not include BufferGeometryUtils.
+   */
+  _concatGeometries(geometries) {
+    if (!geometries.length) return null;
+    const wantNormal = geometries.every(g => g.attributes.normal);
+    const wantUv = geometries.every(g => g.attributes.uv);
+
+    let total = 0;
+    for (const g of geometries) {
+      if (!g.attributes.position) return null;
+      total += g.attributes.position.count;
+    }
+
+    const position = new Float32Array(total * 3);
+    const normal = wantNormal ? new Float32Array(total * 3) : null;
+    const uv = wantUv ? new Float32Array(total * 2) : null;
+
+    let v = 0;
+    for (const g of geometries) {
+      const p = g.attributes.position;
+      position.set(p.array.subarray(0, p.count * 3), v * 3);
+      if (normal) normal.set(g.attributes.normal.array.subarray(0, p.count * 3), v * 3);
+      if (uv) uv.set(g.attributes.uv.array.subarray(0, p.count * 2), v * 2);
+      v += p.count;
+    }
+
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(position, 3));
+    if (normal) out.setAttribute('normal', new THREE.BufferAttribute(normal, 3));
+    if (uv) out.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    return out;
+  },
+
+  // ============================================================
+  // Per-part animation
+  // ============================================================
+  // Unique weapons carry moving parts (spinning gears, drifting memory shards,
+  // pulsing runes). They are declared as plain data on the part's userData so
+  // that a cached model can still be cloned, and driven from one traversal:
+  //
+  //   spin  { axis:'x'|'y'|'z', speed }            radians per second
+  //   bob   { axis, amp, freq, phase }             offset from its rest position
+  //   sway  { axis, amp, freq, phase }             rotation wobble, radians
+  //   orbit { radius, speed, phase, plane:'xz' }   circles its rest position
+  //   pulse { min, max, freq, phase }              material emissive intensity
+  tickModelParts(model, deltaMs) {
+    if (!model) return;
+    let parts = model._weaponAnimParts;
+    if (!parts) {
+      parts = [];
+      model.traverse((obj) => {
+        const ud = obj.userData;
+        if (!ud) return;
+        if (ud.spin || ud.bob || ud.sway || ud.orbit || ud.pulse) {
+          ud._rest = { x: obj.position.x, y: obj.position.y, z: obj.position.z };
+          ud._restRot = { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z };
+          parts.push(obj);
+        }
+      });
+      model._weaponAnimParts = parts;
+    }
+    if (parts.length === 0) return;
+
+    model._weaponAnimTime = (model._weaponAnimTime || 0) + deltaMs / 1000;
+    const t = model._weaponAnimTime;
+
+    for (let i = 0; i < parts.length; i++) {
+      const obj = parts[i];
+      const ud = obj.userData;
+      if (ud.spin) {
+        const ax = ud.spin.axis || 'y';
+        obj.rotation[ax] = ud._restRot[ax] + t * (ud.spin.speed || 1);
+      }
+      if (ud.sway) {
+        const ax = ud.sway.axis || 'z';
+        obj.rotation[ax] = ud._restRot[ax] + Math.sin(t * (ud.sway.freq || 1) + (ud.sway.phase || 0)) * (ud.sway.amp || 0.1);
+      }
+      if (ud.bob) {
+        const ax = ud.bob.axis || 'y';
+        obj.position[ax] = ud._rest[ax] + Math.sin(t * (ud.bob.freq || 1) + (ud.bob.phase || 0)) * (ud.bob.amp || 0.01);
+      }
+      if (ud.orbit) {
+        const a = t * (ud.orbit.speed || 1) + (ud.orbit.phase || 0);
+        const r = ud.orbit.radius || 0.02;
+        if (ud.orbit.plane === 'xy') {
+          obj.position.x = ud._rest.x + Math.cos(a) * r;
+          obj.position.y = ud._rest.y + Math.sin(a) * r;
+        } else if (ud.orbit.plane === 'yz') {
+          obj.position.y = ud._rest.y + Math.cos(a) * r;
+          obj.position.z = ud._rest.z + Math.sin(a) * r;
+        } else {
+          obj.position.x = ud._rest.x + Math.cos(a) * r;
+          obj.position.z = ud._rest.z + Math.sin(a) * r;
+        }
+      }
+      if (ud.pulse && obj.material && obj.material.emissive) {
+        const p = ud.pulse;
+        const k = (Math.sin(t * (p.freq || 1) + (p.phase || 0)) + 1) / 2;
+        obj.material.emissiveIntensity = (p.min || 0) + ((p.max !== undefined ? p.max : 1) - (p.min || 0)) * k;
+      }
+    }
+  },
+
+  _buildModel(weapon) {
     if (!window.THREE) return null;
 
-    const rand = this.createSeededRandom(weapon.id);
+    const rand = this.createSeededRandom(this.seedFor(weapon));
     const wtypeId = weapon.wtypeId || 1;
     const note = weapon.note || '';
 
@@ -161,61 +670,717 @@ var WeaponSystemProcedural = {
       return new OriginalMeshStandardMaterial(params);
     };
     THREE.MeshStandardMaterial.prototype = OriginalMeshStandardMaterial.prototype;
+    const restoreGeometry = this._patchGeometryBudget();
 
     try {
-      // Unique named model overrides (checked before generic type routing)
-      if (note.match(/<Mjolnir>/i))         return this.createMjolnirModel(weapon, rand);
-      if (note.match(/<FlySwatter>/i))      return this.createFlySwatterModel(weapon, rand);
-      if (note.match(/<WarFan>/i))          return this.createWarFanModel(weapon, rand);
-      if (note.match(/<Excalibur>/i))       return this.createExcaliburModel(weapon, rand);
-      if (note.match(/<DragonBlade>/i))     return this.createDragonBladeModel(weapon, rand);
-      if (note.match(/<MagicOrb>/i))        return this.createMagicOrbModel(weapon, rand);
-      if (note.match(/<FoamFinger>/i))      return this.createFoamFingerModel(weapon, rand);
-      if (note.match(/<Spatula>/i))         return this.createSpatulaModel(weapon, rand);
-      if (note.match(/<CelestialHammer>/i)) return this.createCelestialHammerModel(weapon, rand);
-      if (note.match(/<ChronosHammer>/i))   return this.createChronosHammerModel(weapon, rand);
-      // Gun subtype overrides
-      if (note.match(/<RocketLauncher>/i))  return this.createRocketLauncherModel(weapon, rand);
-      if (note.match(/<Minigun>/i))         return this.createMinigunModel(weapon, rand);
-      if (note.match(/<Flamethrower>/i))    return this.createFlamethrowerModel(weapon, rand);
-      if (note.match(/<Shotgun>/i))         return this.createShotgunModel(weapon, rand);
-      if (note.match(/<SniperRifle>/i))     return this.createSniperRifleModel(weapon, rand);
-      if (note.match(/<SMG>/i))             return this.createSMGModel(weapon, rand);
-      // Polearm / melee subtypes
-      if (note.match(/<Halberd>/i))         return this.createHalberdModel(weapon, rand);
-      if (note.match(/<Trident>/i))         return this.createTridentModel(weapon, rand);
-      if (note.match(/<Nunchaku>/i))        return this.createNunchakuModel(weapon, rand);
-      // Ranged / thrown subtypes
-      if (note.match(/<Railgun>/i))         return this.createRailgunModel(weapon, rand);
-      if (note.match(/<ArmCannon>/i))       return this.createArmCannonModel(weapon, rand);
-      if (note.match(/<Crossbow>/i))        return this.createCrossbowModel(weapon, rand);
-      if (note.match(/<Boomerang>/i))       return this.createBoomerangModel(weapon, rand);
-      if (note.match(/<Chakram>/i))         return this.createChakramModel(weapon, rand);
-      if (note.match(/<DroneLauncher>/i))   return this.createDroneLauncherModel(weapon, rand);
-      // Unique named overrides
-      if (note.match(/<Crown>/i))           return this.createCrownModel(weapon, rand);
+      // An empty hand: the fist is chosen by the character's archetype, not
+      // by any database entry.
+      if (weapon.unarmedArchetype) return this.finish(this.buildUnarmed(weapon, rand), weapon);
 
-      if (weapon.isWhip) return this.createWhipModel(weapon, rand);
-      if (weapon.isFlail) return this.createFlailModel(weapon, rand);
+      // Bespoke per-weapon models, keyed by database id exactly like the i18n
+      // name/description tables are. A weapon that has one never falls back to
+      // the generic silhouette for its type.
+      const bespoke = this.UNIQUE_MODELS[weapon.id];
+      if (bespoke && typeof this[bespoke] === 'function') return this.finish(this[bespoke](weapon, rand), weapon);
 
-      switch (wtypeId) {
-        case 1: return this.createLightModel(weapon, rand);
-        case 2: return this.createSwordModel(weapon, rand);
-        case 3: return this.createHeavyModel(weapon, rand);
-        case 4: return this.createAxeModel(weapon, rand);
-        case 5: return this.createWhipModel(weapon, rand);
-        case 6: return this.createStaffModel(weapon, rand);
-        case 7: return this.createBowModel(weapon, rand);
-        case 8: return this.createProjectileModel(weapon, rand);
-        case 9: return this.createGunModel(weapon, rand);
-        case 10: return this.createClawModel(weapon, rand);
-        case 11: return this.createGloveModel(weapon, rand);
-        case 12: return this.createSpearModel(weapon, rand);
-        default: return this.createLightModel(weapon, rand);
+      for (const [tag, builder] of this.NOTE_MODELS) {
+        if (tag.test(note)) return this.finish(this.build(builder, weapon, rand), weapon);
       }
+
+      if (weapon.isWhip) return this.finish(this.build('createWhipModel', weapon, rand), weapon);
+      if (weapon.isFlail) return this.finish(this.build('createFlailModel', weapon, rand), weapon);
+
+      return this.finish(this.build(this.TYPE_MODELS[wtypeId] || 'createLightModel', weapon, rand), weapon);
     } finally {
       THREE.MeshStandardMaterial = OriginalMeshStandardMaterial;
+      restoreGeometry();
     }
+  },
+
+  // ============================================================
+  // House finishes
+  // ============================================================
+  // Some makers are recognisable across every weapon they ever made, whatever
+  // shape it is. A finish is applied after the builder returns, so it covers
+  // bespoke models and generic ones alike and no builder has to know about it.
+  //
+  // Varlenia works only in gold: all ten of its weapons, from the twinblades
+  // to the beam rifle, come out of the same workshop looking like it.
+  VARLENIA_IDS: [30, 109, 183, 225, 260, 320, 367, 526, 605, 651],
+
+  // ============================================================
+  // Welding
+  // ============================================================
+  // A model is a few dozen primitives placed by hand, and a part written at a
+  // height or a depth that does not match what it is fixed to hangs in the air:
+  // a slingshot fork floating over its handle, a staff's head over its shaft, a
+  // grip under a barrel it never reaches. Rather than chase every one of them
+  // through 532 builders, the last step of every build pulls parts that are not
+  // attached back onto the weapon by the least amount that makes them touch.
+  //
+  // What is deliberately off on its own is left alone: anything a builder
+  // declared as a moving part (spin / orbit / bob / sway / pulse / dynamic, the
+  // tags tickModelParts animates), a pair's other half, and anything so far out
+  // that it must be there on purpose.
+
+  // A part within this share of the model's diagonal counts as attached: the
+  // primitives abut rather than interpenetrate.
+  WELD_TOUCH: 0.012,
+  // The furthest a part is ever pulled in one pass. Beyond it, it is a design.
+  WELD_MAX: 0.16,
+  // Passes, so a part welded to a part welded to the body still comes home.
+  WELD_PASSES: 4,
+  WELD_SAMPLES: 24,
+  MOVING_PART_KEYS: ['spin', 'orbit', 'bob', 'sway', 'pulse', 'dynamic'],
+
+  /** What welding needs of one mesh: its oriented box and a few of its points. */
+  _weldPart(mesh) {
+    if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+    const pos = mesh.geometry.attributes.position;
+    const step = Math.max(1, Math.floor(pos.count / this.WELD_SAMPLES));
+    const pts = [];
+    const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i += step) {
+      pts.push(v.fromBufferAttribute(pos, i).applyMatrix4(mesh.matrixWorld).clone());
+    }
+    const world = new THREE.Box3().setFromObject(mesh);
+    const size = world.getSize(new THREE.Vector3());
+    let moving = false;
+    for (let p = mesh; p; p = p.parent) {
+      const ud = p.userData;
+      if (ud && this.MOVING_PART_KEYS.some(k => ud[k] !== undefined)) { moving = true; break; }
+    }
+    return {
+      mesh, world, pts, moving,
+      local: mesh.geometry.boundingBox,
+      inv: new THREE.Matrix4().copy(mesh.matrixWorld).invert(),
+      volume: Math.max(size.x, 1e-4) * Math.max(size.y, 1e-4) * Math.max(size.z, 1e-4)
+    };
+  },
+
+  /** Distance from a world point to a part's oriented box (0 inside it). */
+  _weldPointGap(part, p) {
+    const q = p.clone().applyMatrix4(part.inv);
+    const b = part.local;
+    return Math.hypot(
+      Math.max(b.min.x - q.x, 0, q.x - b.max.x),
+      Math.max(b.min.y - q.y, 0, q.y - b.max.y),
+      Math.max(b.min.z - q.z, 0, q.z - b.max.z));
+  },
+
+  /** Per-axis separation of two world boxes (0 where they already overlap). */
+  _weldAxisGaps(a, b) {
+    return [
+      Math.max(0, a.min.x - b.max.x, b.min.x - a.max.x),
+      Math.max(0, a.min.y - b.max.y, b.min.y - a.max.y),
+      Math.max(0, a.min.z - b.max.z, b.min.z - a.max.z)
+    ];
+  },
+
+  /**
+   * How far apart two parts really are. Axis-aligned boxes alone call a rotated
+   * grip "touching" a barrel it is nowhere near, so the boxes only decide
+   * whether it is worth measuring surface to surface.
+   */
+  _weldGap(a, b) {
+    const axis = this._weldAxisGaps(a.world, b.world);
+    const rough = Math.hypot(axis[0], axis[1], axis[2]);
+    let best = Infinity;
+    for (const p of a.pts) { const d = this._weldPointGap(b, p); if (d < best) best = d; }
+    for (const p of b.pts) { const d = this._weldPointGap(a, p); if (d < best) best = d; }
+    return Math.max(best, rough);
+  },
+
+  weldLooseParts(model) {
+    if (!model || typeof THREE === 'undefined') return model;
+    for (let pass = 0; pass < this.WELD_PASSES; pass++) {
+      if (!this._weldPass(model)) break;
+    }
+    return model;
+  },
+
+  /** One welding pass. Returns true when something moved. */
+  _weldPass(model) {
+    model.updateMatrixWorld(true);
+    const parts = [];
+    model.traverse((o) => {
+      if (o.isMesh && o.geometry && o.geometry.attributes && o.geometry.attributes.position) {
+        parts.push(this._weldPart(o));
+      }
+    });
+    if (parts.length < 3) return false;
+
+    const whole = new THREE.Box3();
+    for (const p of parts) whole.union(p.world);
+    const diag = whole.getSize(new THREE.Vector3()).length();
+    if (!(diag > 0)) return false;
+    const eps = diag * this.WELD_TOUCH;
+
+    // Group the parts that touch.
+    const owner = parts.map((_, i) => i);
+    const find = (i) => { while (owner[i] !== i) { owner[i] = owner[owner[i]]; i = owner[i]; } return i; };
+    for (let i = 0; i < parts.length; i++) {
+      for (let j = i + 1; j < parts.length; j++) {
+        if (find(i) === find(j)) continue;
+        const axis = this._weldAxisGaps(parts[i].world, parts[j].world);
+        if (Math.hypot(axis[0], axis[1], axis[2]) > eps) continue;   // certainly apart
+        if (this._weldGap(parts[i], parts[j]) <= eps) owner[find(i)] = find(j);
+      }
+    }
+    const groups = new Map();
+    parts.forEach((p, i) => {
+      const r = find(i);
+      if (!groups.has(r)) groups.set(r, []);
+      groups.get(r).push(p);
+    });
+    if (groups.size < 2) return false;
+
+    // The weapon is the component carrying the most substance.
+    const comps = [...groups.values()]
+      .map(members => ({ members, volume: members.reduce((s, m) => s + m.volume, 0) }))
+      .sort((a, b) => b.volume - a.volume);
+    const body = comps[0];
+    const boxOf = (members) => {
+      const b = new THREE.Box3();
+      for (const m of members) b.union(m.world);
+      return b;
+    };
+    const bodyCentre = boxOf(body.members).getCenter(new THREE.Vector3());
+
+    let moved = false;
+    for (const comp of comps.slice(1)) {
+      if (comp.members.every(m => m.moving)) continue;
+      // A pair of fists, claws or bracers is two halves, not a loose part.
+      const centre = boxOf(comp.members).getCenter(new THREE.Vector3());
+      if (Math.abs(centre.x) > diag * 0.02 &&
+          Math.abs(centre.x + bodyCentre.x) < diag * 0.06 &&
+          Math.abs(centre.y - bodyCentre.y) < diag * 0.06 &&
+          Math.abs(centre.z - bodyCentre.z) < diag * 0.06) continue;
+
+      const move = this._weldOffset(comp.members, body.members, diag);
+      if (!move) continue;
+      for (const m of comp.members) this._translateWorld(m.mesh, move);
+      moved = true;
+    }
+    if (moved) model.updateMatrixWorld(true);
+    return moved;
+  },
+
+  /**
+   * The smallest translation that puts a component back in contact with the
+   * body. A part that already lines up with something on two axes only has to
+   * close the third, which is what nearly every one of these is: a head at the
+   * wrong height, a grip at the wrong depth. Anything else is carried straight
+   * to its nearest neighbour.
+   */
+  _weldOffset(members, body, diag) {
+    // How far this piece may be carried. Never more than WELD_MAX of the
+    // weapon, and never much further than the piece is big: a whole head that
+    // sits an inch too high is an error, a bead carried across the model to the
+    // far end is a design being demolished.
+    const own = new THREE.Box3();
+    for (const m of members) own.union(m.world);
+    const limit = Math.min(
+      diag * this.WELD_MAX,
+      Math.max(diag * 0.04, own.getSize(new THREE.Vector3()).length() * 1.2));
+    let best = null;
+    let bestCost = Infinity;
+    let nearest = null;
+    let nearestCost = Infinity;
+
+    for (const m of members) {
+      for (const b of body) {
+        const a = m.world, o = b.world;
+        const gaps = this._weldAxisGaps(a, o);
+        const dir = [
+          a.min.x > o.max.x ? -1 : 1,
+          a.min.y > o.max.y ? -1 : 1,
+          a.min.z > o.max.z ? -1 : 1
+        ];
+        // Straight move: close the one axis that keeps them apart.
+        for (let k = 0; k < 3; k++) {
+          if (gaps[k] <= 0) continue;
+          if (gaps[(k + 1) % 3] > 0 || gaps[(k + 2) % 3] > 0) continue;
+          if (gaps[k] < bestCost) {
+            bestCost = gaps[k];
+            best = new THREE.Vector3(
+              k === 0 ? dir[0] * gaps[0] : 0,
+              k === 1 ? dir[1] * gaps[1] : 0,
+              k === 2 ? dir[2] * gaps[2] : 0);
+          }
+        }
+        const diagCost = Math.hypot(gaps[0], gaps[1], gaps[2]);
+        if (diagCost > 0 && diagCost < nearestCost) {
+          nearestCost = diagCost;
+          nearest = new THREE.Vector3(dir[0] * gaps[0], dir[1] * gaps[1], dir[2] * gaps[2]);
+        }
+      }
+    }
+    let move = best && bestCost <= limit ? best
+      : (nearest && nearestCost <= limit ? nearest : null);
+
+    // Boxes that overlap are not surfaces that touch: a rotated part's box
+    // swallows the space around it, so a fork can sit inside the box of the
+    // handle it is nowhere near. When that is what happened, carry the part
+    // along the line between the two nearest points instead.
+    if (!move) {
+      let gap = Infinity;
+      let from = null;
+      let to = null;
+      for (const m of members) {
+        for (const b of body) {
+          for (const p of m.pts) {
+            const d = this._weldPointGap(b, p);
+            if (d < gap) { gap = d; from = p; to = b; }
+          }
+        }
+      }
+      if (!from || gap > limit || gap <= diag * this.WELD_TOUCH) return null;
+      // The nearest point of the body's box, back in world space.
+      const q = from.clone().applyMatrix4(to.inv).clamp(to.local.min, to.local.max)
+        .applyMatrix4(to.mesh.matrixWorld);
+      move = q.sub(from);
+      if (move.lengthSq() === 0) return null;
+    }
+    if (!move) return null;
+    // Overlap very slightly so the join reads as one solid thing.
+    return move.multiplyScalar(1 + diag * 0.004 / (move.length() || 1));
+  },
+
+  /** Moves a mesh by a world-space offset, whatever it is parented to. */
+  _translateWorld(mesh, offset) {
+    const parent = mesh.parent;
+    if (!parent) { mesh.position.add(offset); return; }
+    const local = offset.clone().applyMatrix4(
+      new THREE.Matrix4().extractRotation(parent.matrixWorld).transpose());
+    mesh.position.add(local);
+    mesh.updateMatrixWorld(true);
+  },
+
+  finish(model, weapon) {
+    if (!model || !weapon) return model;
+    // Pull anything that came out floating back onto the weapon, before the
+    // gun parts are tagged (prepareGun measures the muzzle off the geometry).
+    this.weldLooseParts(model);
+    // Weapon type 9 is the firearm rack, but a thing that fires is not always
+    // filed as one: the crowd-control devices (663-665) declare no weapon type
+    // at all. A model that tagged its own trigger and muzzle is asking to be
+    // treated as a gun, so take it at its word. Note the asymmetry: an
+    // untagged type-9 weapon still gets a synthesised muzzle from its
+    // geometry, while an untagged non-gun is left alone.
+    if (weapon.wtypeId === 9 || this.declaresGunParts(model)) this.prepareGun(model, weapon);
+    if (this.VARLENIA_IDS.indexOf(weapon.id) !== -1) this.applyGoldFinish(model);
+    return model;
+  },
+
+  /** Whether any part of the model carries a userData.gun tag. */
+  declaresGunParts(model) {
+    if (!model) return false;
+    let found = false;
+    model.traverse((obj) => {
+      if (!found && obj.userData && obj.userData.gun) found = true;
+    });
+    return found;
+  },
+
+  // ============================================================
+  // Firearms
+  // ============================================================
+  // A gun is the one weapon whose model has to DO something when it is used:
+  // the trigger goes back, the action cycles, a case comes out and the muzzle
+  // lights up. Builders declare which part is which by tagging it:
+  //
+  //   userData.gun = 'trigger' | 'hammer' | 'slide' | 'bolt' | 'cylinder'
+  //                | 'charging' | 'magazine' | 'muzzle' | 'shell'
+  //
+  // Anything tagged is automatically kept out of the static mesh merge and
+  // resolved per instance, so a cached model still animates. The muzzle is
+  // found from the geometry when no part claims it, which is what gives every
+  // gun in the database a flash without touching its builder.
+
+  // Recoil and cycling profile per class of firearm. `rise` is muzzle climb in
+  // degrees, `push` how far back it travels as a share of screen height,
+  // `shots` how many rounds one attack puts out, `cycle` how the action moves.
+  GUN_CLASSES: {
+    pistol: { rise: 1.0, push: 1.0, shots: 1, rate: 0, cycle: 'slide', flash: 0.9, dur: 1.0 },
+    revolver: { rise: 1.25, push: 1.1, shots: 1, rate: 0, cycle: 'cylinder', flash: 1.15, dur: 1.05 },
+    smg: { rise: 0.7, push: 0.65, shots: 4, rate: 70, cycle: 'bolt', flash: 0.75, dur: 1.2 },
+    rifle: { rise: 1.15, push: 1.25, shots: 1, rate: 0, cycle: 'bolt', flash: 1.1, dur: 1.1 },
+    sniper: { rise: 1.5, push: 1.7, shots: 1, rate: 0, cycle: 'bolt', flash: 1.35, dur: 1.5 },
+    shotgun: { rise: 1.9, push: 1.6, shots: 1, rate: 0, cycle: 'pump', flash: 1.6, dur: 1.35 },
+    minigun: { rise: 0.5, push: 0.5, shots: 8, rate: 45, cycle: 'rotary', flash: 0.8, dur: 1.4 },
+    launcher: { rise: 2.1, push: 1.9, shots: 1, rate: 0, cycle: 'none', flash: 2.0, dur: 1.6 },
+    flamer: { rise: 0.35, push: 0.3, shots: 1, rate: 0, cycle: 'none', flash: 1.4, dur: 1.8 },
+    energy: { rise: 0.55, push: 0.6, shots: 1, rate: 0, cycle: 'none', flash: 1.2, dur: 1.1 }
+  },
+
+  /** Which class of firearm a weapon is, from its subtype tag then its heft. */
+  gunClassOf(weapon) {
+    const note = weapon.note || '';
+    if (/<RocketLauncher>/i.test(note)) return 'launcher';
+    if (/<Minigun>/i.test(note)) return 'minigun';
+    if (/<Flamethrower>/i.test(note)) return 'flamer';
+    if (/<Shotgun>/i.test(note)) return 'shotgun';
+    if (/<SniperRifle>/i.test(note)) return 'sniper';
+    if (/<SMG>/i.test(note)) return 'smg';
+    if (/<Railgun>|<ArmCannon>/i.test(note)) return 'energy';
+    // Untagged: the weight tag separates a sidearm from a shoulder weapon.
+    const g = this.weightOf(weapon);
+    if (g <= 1800) return 'pistol';
+    if (g <= 2600) return 'revolver';
+    if (g >= 4800) return 'rifle';
+    return 'pistol';
+  },
+
+  gunProfileFor(weapon) {
+    return this.GUN_CLASSES[this.gunClassOf(weapon)] || this.GUN_CLASSES.pistol;
+  },
+
+  /**
+   * Fits a gun model out for firing: finds the muzzle, hangs a flash rig off
+   * it, and marks every declared moving part so the mesh merge leaves it
+   * alone. Runs once per build, before the merge.
+   */
+  prepareGun(model, weapon) {
+    if (!model || typeof THREE === 'undefined') return model;
+
+    // Declared parts must survive the static merge.
+    let muzzleAnchor = null;
+    model.traverse((obj) => {
+      const tag = obj.userData && obj.userData.gun;
+      if (!tag) return;
+      obj.userData.dynamic = true;
+      if (tag === 'muzzle') muzzleAnchor = obj;
+    });
+
+    // No part claimed the muzzle: take it off the geometry, but only for a
+    // real firearm. A crossbow declares a trigger and a nut because those turn
+    // when it looses, not because it has a barrel, and inventing one would
+    // light a muzzle flash on a weapon that has no powder in it. Anything else
+    // that genuinely fires says so by tagging its own muzzle.
+    if (!muzzleAnchor && weapon && weapon.wtypeId !== 9) return model;
+
+    // A gun is modelled barrel-forward along +Z, so the muzzle is the front
+    // face of whichever mesh reaches furthest that way.
+    if (!muzzleAnchor) {
+      model.updateMatrixWorld(true);
+      let best = null, bestZ = -Infinity;
+      const box = new THREE.Box3();
+      model.traverse((obj) => {
+        if (!obj.isMesh || !obj.geometry) return;
+        box.setFromObject(obj);
+        if (box.max.z > bestZ) { bestZ = box.max.z; best = box.clone(); }
+      });
+      if (!best) return model;
+      const c = best.getCenter(new THREE.Vector3());
+      muzzleAnchor = new THREE.Group();
+      muzzleAnchor.position.set(c.x, c.y, best.max.z);
+      muzzleAnchor.userData.gun = 'muzzle';
+      muzzleAnchor.userData.dynamic = true;
+      model.add(muzzleAnchor);
+    }
+
+    muzzleAnchor.add(this.buildMuzzleFlash(this.gunClassOf(weapon)));
+    this.synthesiseTrigger(model);
+    return model;
+  },
+
+  /**
+   * Gives a gun whose builder declared no trigger one anyway, so every firearm
+   * in the database has a finger-operated part. The grip is the lowest thing
+   * hanging off the receiver (the barrel and stock run fore and aft of it), so
+   * the trigger goes just above and ahead of whatever that is.
+   */
+  synthesiseTrigger(model) {
+    let hasTrigger = false;
+    model.traverse(o => { if (o.userData && o.userData.gun === 'trigger') hasTrigger = true; });
+    if (hasTrigger) return;
+
+    model.updateMatrixWorld(true);
+    const box = new THREE.Box3();
+    const centre = new THREE.Vector3();
+    let grip = null, gripY = Infinity, gripBox = null;
+    model.traverse((obj) => {
+      if (!obj.isMesh || !obj.geometry) return;
+      box.setFromObject(obj);
+      box.getCenter(centre);
+      if (Math.abs(centre.z) > 0.12) return;        // out at the muzzle or the butt
+      if (centre.y < gripY) { gripY = centre.y; grip = obj; gripBox = box.clone(); }
+    });
+    if (!grip) return;
+
+    const mat = Array.isArray(grip.material) ? grip.material[0] : grip.material;
+    const metal = mat ? mat.clone() : new THREE.MeshStandardMaterial({ color: 0x8A8F95, roughness: 0.35, metalness: 0.9 });
+    const c = gripBox.getCenter(new THREE.Vector3());
+
+    const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.02, 0.006), metal);
+    trigger.position.set(c.x, gripBox.max.y - 0.014, gripBox.max.z + 0.012);
+    trigger.userData.gun = 'trigger';
+    trigger.userData.dynamic = true;
+    model.add(trigger);
+
+    const guard = new THREE.Mesh(
+      new THREE.TorusGeometry(0.019, 0.004, this.seg(5, 4), this.seg(12, 7), Math.PI * 1.1), metal);
+    guard.position.set(c.x, gripBox.max.y - 0.018, gripBox.max.z + 0.01);
+    guard.rotation.set(0, Math.PI / 2, -0.35);
+    model.add(guard);
+    return model;
+  },
+
+  /**
+   * The flash itself: a hot core, a four-point star and a cone of burning gas,
+   * all emissive and all hidden until a shot is fired.
+   */
+  buildMuzzleFlash(gunClass) {
+    const flash = new THREE.Group();
+    flash.userData.gun = 'flash';
+    flash.userData.dynamic = true;
+    flash.visible = false;
+
+    const hot = new THREE.Color(gunClass === 'energy' ? 0x9CE4FF : (gunClass === 'flamer' ? 0xFF8A1A : 0xFFF2C0));
+    const rim = new THREE.Color(gunClass === 'energy' ? 0x3BA7FF : (gunClass === 'flamer' ? 0xFF3D00 : 0xFFA327));
+    const hotMat = new THREE.MeshBasicMaterial({ color: hot, transparent: true, opacity: 0.95, depthWrite: false });
+    const rimMat = new THREE.MeshBasicMaterial({ color: rim, transparent: true, opacity: 0.75, depthWrite: false });
+
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.016, this.seg(8, 5), this.seg(6, 4)), hotMat);
+    core.userData.flashPart = 'core';
+    flash.add(core);
+
+    // The star: two crossed quads, so it reads from any angle without a
+    // billboard and without a texture.
+    for (let i = 0; i < 2; i++) {
+      const petal = new THREE.Mesh(new THREE.PlaneGeometry(0.09, 0.012), rimMat);
+      petal.rotation.z = i * Math.PI / 2;
+      petal.userData.flashPart = 'star';
+      flash.add(petal);
+    }
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.07, this.seg(7, 5), 1, true), rimMat);
+    cone.rotation.x = Math.PI / 2;
+    cone.position.z = 0.035;
+    cone.userData.flashPart = 'cone';
+    flash.add(cone);
+
+    return flash;
+  },
+
+  /** Resolves the tagged parts of this instance (clone-safe: not in userData). */
+  gunPartsOf(model) {
+    if (model._gunParts) return model._gunParts;
+    const parts = { flash: null, flashBits: [] };
+    model.traverse((obj) => {
+      const tag = obj.userData && obj.userData.gun;
+      if (!tag) return;
+      if (tag === 'flash') {
+        parts.flash = obj;
+        obj.traverse(b => { if (b.userData && b.userData.flashPart) parts.flashBits.push(b); });
+      } else if (!parts[tag]) {
+        parts[tag] = obj;
+        obj.userData._gunRest = {
+          x: obj.position.x, y: obj.position.y, z: obj.position.z,
+          rx: obj.rotation.x, ry: obj.rotation.y, rz: obj.rotation.z
+        };
+      }
+    });
+    model._gunParts = parts;
+    return parts;
+  },
+
+  /** Starts a firing sequence. Called when a firing animation is played. */
+  beginGunFire(model, weapon) {
+    if (!model) return;
+    const profile = this.gunProfileFor(weapon);
+    const m = this.weaponMetrics(weapon, model);
+    const shots = [];
+    for (let i = 0; i < profile.shots; i++) shots.push(i * (profile.rate || 0));
+    model._gunFire = {
+      elapsed: 0,
+      shots: shots,
+      next: 0,
+      profile: profile,
+      // A heavy action takes longer to cycle than a light one.
+      cycleMs: 90 + m.heft * 130,
+      flashUntil: -1,
+      seed: Math.random() * 6.28
+    };
+  },
+
+  /**
+   * Drives the moving parts of a firing gun. Cheap when nothing is firing: a
+   * single property check.
+   */
+  tickGun(model, dtMs) {
+    const fire = model && model._gunFire;
+    if (!fire) return;
+    const parts = this.gunPartsOf(model);
+    fire.elapsed += dtMs;
+
+    // Fire each round of the burst as its moment comes round.
+    while (fire.next < fire.shots.length && fire.elapsed >= fire.shots[fire.next]) {
+      fire.next++;
+      fire.flashUntil = fire.elapsed + 55;
+      fire.cycleFrom = fire.elapsed;
+      if (parts.cylinder) fire.cylinderTo = (fire.cylinderTo || 0) + Math.PI / 3;
+    }
+
+    // ── Muzzle flash ────────────────────────────────────────────────────────
+    if (parts.flash) {
+      const lit = fire.elapsed < fire.flashUntil;
+      parts.flash.visible = lit;
+      if (lit) {
+        const k = Math.max(0, (fire.flashUntil - fire.elapsed) / 55);
+        const s = (0.55 + k * 0.75) * fire.profile.flash;
+        parts.flash.scale.set(s, s, s);
+        parts.flash.rotation.z = fire.seed + fire.next * 1.7;
+        for (const bit of parts.flashBits) {
+          if (bit.material) bit.material.opacity = Math.min(1, k * 1.2);
+          if (bit.userData.flashPart === 'star') bit.scale.set(0.6 + k * 0.9, 1, 1);
+        }
+      }
+    }
+
+    // ── Trigger, hammer, action ─────────────────────────────────────────────
+    const sinceShot = fire.cycleFrom === undefined ? Infinity : fire.elapsed - fire.cycleFrom;
+    const cyc = Math.max(0, Math.min(1, sinceShot / fire.cycleMs));   // 0 at the shot, 1 when back in battery
+    const back = cyc < 0.45 ? cyc / 0.45 : 1 - (cyc - 0.45) / 0.55;   // out and back
+
+    if (parts.trigger) {
+      const r = parts.trigger.userData._gunRest;
+      // Squeezed just before the shot, released as the action cycles.
+      const squeeze = sinceShot === Infinity ? Math.min(1, fire.elapsed / 60) : 1 - cyc;
+      parts.trigger.rotation.x = r.rx + squeeze * 0.5;
+      parts.trigger.position.z = r.z + squeeze * 0.006;
+    }
+    if (parts.hammer) {
+      // Cocked back with the action, dropped on the round.
+      const r = parts.hammer.userData._gunRest;
+      parts.hammer.rotation.x = r.rx - back * 1.1;
+    }
+    const slider = parts.slide || parts.bolt || parts.charging;
+    if (slider) {
+      const r = slider.userData._gunRest;
+      slider.position.z = r.z - back * (parts.slide ? 0.055 : 0.045);
+    }
+    if (parts.cylinder && fire.cylinderTo !== undefined) {
+      const r = parts.cylinder.userData._gunRest;
+      const from = fire.cylinderTo - Math.PI / 3;
+      parts.cylinder.rotation.z = r.rz + from + (Math.PI / 3) * Math.min(1, cyc * 1.4);
+    }
+    if (parts.shell) {
+      // The case leaves as the action opens and is gone by the time it shuts.
+      const out = Math.max(0, Math.min(1, sinceShot / (fire.cycleMs * 1.6)));
+      parts.shell.visible = out > 0.02 && out < 0.98;
+      const r = parts.shell.userData._gunRest;
+      parts.shell.position.set(r.x + out * 0.14, r.y + Math.sin(out * Math.PI) * 0.09 - out * out * 0.12, r.z - out * 0.05);
+      parts.shell.rotation.z = out * 9;
+    }
+
+    // Done: put everything back and stop.
+    const last = fire.shots[fire.shots.length - 1] || 0;
+    if (fire.elapsed > last + fire.cycleMs * 1.8) {
+      if (parts.flash) parts.flash.visible = false;
+      if (parts.shell) parts.shell.visible = false;
+      for (const key of ['trigger', 'hammer', 'slide', 'bolt', 'charging']) {
+        const p = parts[key];
+        if (!p) continue;
+        const r = p.userData._gunRest;
+        p.position.set(r.x, r.y, r.z);
+        p.rotation.x = r.rx;
+      }
+      model._gunFire = null;
+    }
+  },
+
+  /**
+   * Re-tints every material into gold while keeping the model's own light and
+   * shade: the hue and saturation are replaced, the lightness the builder chose
+   * is kept, so engraving, grooves and shadowed parts all still read. Emissive
+   * parts keep their own colour, pulled halfway toward warm gold so a glow
+   * still looks like a glow rather than a hole in the gilding.
+   */
+  applyGoldFinish(model) {
+    if (typeof THREE === 'undefined') return model;
+    const hsl = { h: 0, s: 0, l: 0 };
+    const seen = new Set();
+    model.traverse((obj) => {
+      if (!obj.material) return;
+      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+      for (const mat of mats) {
+        if (!mat || seen.has(mat) || !mat.color) continue;
+        seen.add(mat);
+        mat.color.getHSL(hsl);
+        mat.color.setHSL(0.118, 0.62, Math.min(0.86, Math.max(0.2, hsl.l * 0.9 + 0.14)));
+        if (mat.metalness !== undefined) mat.metalness = Math.max(mat.metalness, 0.85);
+        if (mat.roughness !== undefined) mat.roughness = Math.min(mat.roughness, 0.34);
+        if (mat.emissive && mat.emissiveIntensity > 0) {
+          mat.emissive.lerp(new THREE.Color(0xFFD166), 0.5);
+        }
+      }
+    });
+    return model;
+  },
+
+  /**
+   * Calls a builder by name. A family that failed to load costs only the
+   * models it carried: the weapon falls back to its type's silhouette, and to
+   * nothing at all if that is missing too, rather than throwing into the
+   * battle scene.
+   */
+  build(name, weapon, rand) {
+    if (typeof this[name] === 'function') return this[name](weapon, rand);
+    if (!this._missingBuilders) this._missingBuilders = {};
+    if (!this._missingBuilders[name]) {
+      this._missingBuilders[name] = true;
+      console.warn('[WeaponSystemProcedural] builder not loaded: ' + name);
+    }
+    const fallback = this.TYPE_MODELS[weapon.wtypeId || 1];
+    if (fallback && fallback !== name && typeof this[fallback] === 'function') {
+      return this[fallback](weapon, rand);
+    }
+    return null;
+  },
+
+  // Note tag -> builder, in priority order (a weapon carrying two tags gets
+  // the first one listed). Kept as an array so the order is explicit.
+  NOTE_MODELS: [
+    [/<Mjolnir>/i, 'createMjolnirModel'],
+    [/<FlySwatter>/i, 'createFlySwatterModel'],
+    [/<WarFan>/i, 'createWarFanModel'],
+    [/<Excalibur>/i, 'createExcaliburModel'],
+    [/<DragonBlade>/i, 'createDragonBladeModel'],
+    [/<MagicOrb>/i, 'createMagicOrbModel'],
+    [/<FoamFinger>/i, 'createFoamFingerModel'],
+    [/<Spatula>/i, 'createSpatulaModel'],
+    [/<CelestialHammer>/i, 'createCelestialHammerModel'],
+    [/<ChronosHammer>/i, 'createChronosHammerModel'],
+    // Gun subtypes
+    [/<RocketLauncher>/i, 'createRocketLauncherModel'],
+    [/<Minigun>/i, 'createMinigunModel'],
+    [/<Flamethrower>/i, 'createFlamethrowerModel'],
+    [/<Shotgun>/i, 'createShotgunModel'],
+    [/<SniperRifle>/i, 'createSniperRifleModel'],
+    [/<SMG>/i, 'createSMGModel'],
+    // Polearm / melee subtypes
+    [/<Halberd>/i, 'createHalberdModel'],
+    [/<Trident>/i, 'createTridentModel'],
+    [/<Nunchaku>/i, 'createNunchakuModel'],
+    // Ranged / thrown subtypes
+    [/<Railgun>/i, 'createRailgunModel'],
+    [/<ArmCannon>/i, 'createArmCannonModel'],
+    [/<Crossbow>/i, 'createCrossbowModel'],
+    [/<Boomerang>/i, 'createBoomerangModel'],
+    [/<Chakram>/i, 'createChakramModel'],
+    [/<DroneLauncher>/i, 'createDroneLauncherModel'],
+    [/<Crown>/i, 'createCrownModel']
+  ],
+
+  // $dataSystem.weaponTypes id -> builder.
+  TYPE_MODELS: {
+    1: 'createLightModel',      2: 'createSwordModel',
+    3: 'createHeavyModel',      4: 'createAxeModel',
+    5: 'createWhipModel',       6: 'createStaffModel',
+    7: 'createBowModel',        8: 'createProjectileModel',
+    9: 'createGunModel',        10: 'createClawModel',
+    11: 'createGloveModel',     12: 'createSpearModel'
   },
 
   getRandomColor(rand, palette) {
@@ -249,13 +1414,770 @@ var WeaponSystemProcedural = {
       case 4:  return 0.70; // Axe
       case 5:  return 0.74; // Whip
       case 6:  return 0.84; // Staff
-      case 7:  return 0.72; // Bow
+      case 7:  return 0.62; // Bow (drawn face-on: this is the whole limb span)
       case 8:  return 0.34; // Projectile
       case 9:  return 0.58; // Gun (first-person)
       case 10: return 0.42; // Claw
       case 11: return 0.40; // Glove
       case 12: return 0.84; // Spear
       default: return 0.60;
+    }
+  },
+
+  // ============================================================
+  // First-person pose
+  // ============================================================
+  // How a weapon sits in the battle view: its resting rotation, its nudge from
+  // the shared weapon anchor, and the idle breathing sway. Sprite_3DWeapon
+  // delegates to these rather than owning them, so anything that needs to
+  // reproduce the battle pose outside a battle (the 3D Weapon Viewer in
+  // tools/) gets the same numbers instead of a drifting copy.
+
+  /** Resting rotation in degrees, or the authored <3DRotation> if there is one. */
+  baseRotationFor(weapon) {
+    if (weapon.model3dRotation) return weapon.model3dRotation;
+    if (weapon.isWhip) return { x: 0, y: 0, z: -15 };
+    if (weapon.isFlail) return { x: 0, y: 0, z: -10 };
+    switch (weapon.wtypeId || 1) {
+      case 1: return { x: 0, y: 0, z: -20 };   // Light (dagger)
+      case 2: return { x: 0, y: 0, z: -15 };   // Sword
+      case 3: return { x: 0, y: 0, z: -25 };   // Heavy
+      case 4: return { x: 0, y: 0, z: -20 };   // Axe
+      case 5: return { x: 0, y: 0, z: -15 };   // Whip
+      case 6: return { x: 0, y: 0, z: -10 };   // Staff
+      // Thrown weapons point along +Z (kunai, dart) or lie in the X-Y plane
+      // (shuriken); a partial tilt reads for both. A launcher in the same slot
+      // (sling, blowgun, crossbow) is aimed instead, like every other weapon
+      // that shoots something rather than being thrown itself.
+      case 8: return this.isLauncher(weapon)
+        ? this.aimRotationFor(-0.86, -0.5)
+        : { x: 55, y: 0, z: -20 };
+      // Bows and firearms alike are modelled shooting down +Z, so both rest
+      // already levelled across the battlefield, up and to the left, and swing
+      // from there onto whatever they are actually shooting at. A bow turned
+      // any other way looses its arrow across the screen instead of into it.
+      case 7:                                  // Bow
+      case 9: return this.aimRotationFor(-0.86, -0.5);
+      case 10: return { x: 0, y: 0, z: -15 };  // Claw
+      case 11: return { x: 0, y: 0, z: 0 };    // Glove
+      case 12: return { x: 0, y: 0, z: -15 };  // Spear
+      default: return { x: 0, y: 0, z: -15 };
+    }
+  },
+
+  // ============================================================
+  // Aiming
+  // ============================================================
+  // How much of a gun's length stays on the screen when it is aimed. The
+  // overlay camera is orthographic, so a barrel pointed dead at the enemy would
+  // spend its whole length in depth and read as a black lump: keeping this
+  // share of it across the screen is what makes the weapon legible as a gun
+  // pointing away from the player.
+  AIM_SCREEN_SHARE: 0.62,
+  // Kept off the vertical so the weapon does not read as a flat cutout. Roll
+  // turns the gun about its own barrel, so it never moves the muzzle.
+  AIM_ROLL: -8,
+
+  /**
+   * The rotation that puts a weapon's muzzle on a point of the screen. dx/dy
+   * are the offset from the weapon to that point in game pixels (y grows
+   * downward, as everywhere else on screen); only their direction is used.
+   *
+   * Every gun is modelled with its barrel along +Z, and THREE's default XYZ
+   * Euler order sends that axis to (sin y, -sin x cos y, cos x cos y). The two
+   * angles below are that mapping inverted for a barrel whose screen-space
+   * direction is fixed and whose remaining length is spent going away from the
+   * camera, which is the half of the direction the enemy is standing in.
+   */
+  aimRotationFor(dx, dy) {
+    const len = Math.hypot(dx, dy);
+    const share = this.AIM_SCREEN_SHARE;
+    const sx = len ? (dx / len) * share : -share;
+    const sy = len ? (-dy / len) * share : 0;   // world Y grows upward
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    // Math.PI - asin() rather than asin(): both give the wanted sin, but this
+    // branch is the one whose cosine is negative, i.e. the barrel pointing into
+    // the screen rather than back at the player.
+    const yRad = Math.PI - Math.asin(clamp(sx));
+    const cosY = Math.cos(yRad);
+    const xRad = Math.asin(clamp(-sy / cosY));
+    const deg = 180 / Math.PI;
+    return { x: xRad * deg, y: yRad * deg, z: this.AIM_ROLL };
+  },
+
+  /**
+   * True when the weapon shoots ammunition rather than being the thing thrown.
+   * The projectile slot holds both: a sling or a blowgun stays in the hand and
+   * is reloaded (`<Bullets:>`), a chakram or a grenade leaves it.
+   */
+  isLauncher(weapon) {
+    if (!weapon) return false;
+    if (weapon.maxBullets) return true;
+    return /<Bullets:\s*\d+>/i.test(weapon.note || '');
+  },
+
+  /** Weapons that turn to follow what they are being fired at. */
+  aimsAtTarget(weapon) {
+    // An authored GLB is posed by its own <3DRotation> and need not shoot down
+    // +Z, so only the procedural models are turned. Every procedural gun, bow,
+    // crossbow and sling does: barrel/arrow/pouch all point +Z.
+    if (!weapon || weapon.model3d) return false;
+    if (weapon.wtypeId === 9 || weapon.wtypeId === 7) return true;
+    return weapon.wtypeId === 8 && this.isLauncher(weapon);
+  },
+
+  /**
+   * Screen-space nudge from the shared weapon anchor, in game pixels. Guns sit
+   * low and to the right like a first-person viewmodel; melee weapons hang off
+   * the anchor by their grip. A procedural model grows around its own centre,
+   * so the taller it is drawn the further its grip reaches below the anchor:
+   * lift it by a share of its drawn height to keep the pommel in view.
+   */
+  anchorOffsetFor(weapon, screenHeight) {
+    const screenH = screenHeight || ((typeof Graphics !== 'undefined' && Graphics.height) ? Graphics.height : 624);
+    // A weapon that is aimed is carried up toward the line of sight rather than
+    // resting low like a blade, but it still hangs off the bottom right corner
+    // by a share of the height it is drawn at, so a long bow does not float in
+    // the middle of the frame the way a pistol would.
+    if (this.aimsAtTarget(weapon)) {
+      return { x: 40, y: 20 - screenH * this.screenFractionFor(weapon) * 0.16 };
+    }
+    if (weapon.model3d) return { x: 0, y: 0 };
+    // A melee weapon is carried, not floated: its grip runs off the bottom edge
+    // and only the working end rises into the lower frame. A procedural model
+    // grows about its own centre, so how far down it is pushed is a share of
+    // the height it is actually drawn at.
+    return { x: 20, y: 30 - screenH * this.screenFractionFor(weapon) * 0.26 };
+  },
+
+  /**
+   * Idle breathing, tuned per weapon type: a tight FPS sway for guns, a heavy
+   * hanging swing for mauls and axes, a floating drift for staves, a natural
+   * figure-eight for everything else.
+   * @returns {{dx:number, dy:number, drx:number, drz:number}} pixel offsets and
+   *   radian offsets to add to the resting pose.
+   */
+  idleSway(weapon, idleMs) {
+    const freq = idleMs * 0.0025;
+    const t = weapon ? (weapon.wtypeId || 1) : 1;
+    if (t === 9) {
+      return {
+        dx: Math.cos(freq * 0.4) * 2.2, dy: Math.sin(freq * 0.8) * 3.0,
+        drz: Math.sin(freq * 0.4) * 0.009, drx: Math.cos(freq * 0.8) * 0.007
+      };
+    }
+    if (t === 3 || t === 4) {
+      return {
+        dx: Math.cos(freq * 0.35) * 5.5,
+        dy: Math.sin(freq * 0.7) * 6.5 + Math.sin(freq * 0.3) * 1.5,
+        drz: Math.sin(freq * 0.35) * 0.024, drx: Math.cos(freq * 0.7) * 0.016
+      };
+    }
+    if (t === 6) {
+      return {
+        dx: Math.cos(freq * 0.55) * 5.0 + Math.sin(freq * 1.1) * 1.8,
+        dy: Math.sin(freq * 0.45) * 7.5 + Math.cos(freq * 1.3) * 2.2,
+        drz: Math.sin(freq * 0.55) * 0.022, drx: Math.cos(freq * 0.45) * 0.016
+      };
+    }
+    if (t === 12) {
+      return {
+        dx: Math.cos(freq * 0.5) * 3.0, dy: Math.sin(freq * 0.9) * 5.0,
+        drz: Math.sin(freq * 0.5) * 0.014, drx: Math.cos(freq * 0.9) * 0.010
+      };
+    }
+    return {
+      dx: Math.cos(freq * 0.5) * 4.2, dy: Math.sin(freq) * 5.8,
+      drz: Math.sin(freq * 0.5) * 0.019, drx: Math.cos(freq) * 0.013
+    };
+  },
+
+  // Segment easings. A keyframe's `ease` governs the segment that STARTS at
+  // it. Linear interpolation between poses is most of why the old fixed clips
+  // read as weak: a swing that covers its distance at a constant rate has no
+  // acceleration in it, and acceleration is the whole sensation of a blow.
+  EASINGS: {
+    linear: t => t,
+    in: t => t * t,
+    out: t => 1 - (1 - t) * (1 - t),
+    inOut: t => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2),
+    expoIn: t => (t <= 0 ? 0 : Math.pow(2, 10 * t - 10)),
+    expoOut: t => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+    snap: t => 1 - Math.pow(1 - t, 5),
+    backOut: t => 1 + 2.2 * Math.pow(t - 1, 3) + 1.6 * Math.pow(t - 1, 2)
+  },
+
+  // ============================================================
+  // Striking what is actually there
+  // ============================================================
+  // A clip is authored as a blow across the view, which is where every one of
+  // them used to end up: sailing off the left edge with the enemy standing
+  // somewhere else entirely. The whole choreography is instead turned so its
+  // furthest reach lands on the target, and shortened so it stops there rather
+  // than carrying on past. A blow at something close by therefore becomes a
+  // short movement in place, and one at something across the field opens out.
+
+  // How far a strike may be stretched or squeezed to land where it is aimed.
+  // It never travels further than it was authored to, and never shrinks below
+  // the point where it stops reading as a blow at all.
+  STRIKE_MIN: 0.45,
+  STRIKE_MAX: 1.0,
+
+  /**
+   * The clip's furthest reach from the resting pose in the plane of the screen,
+   * i.e. the frame where the blow lands. Cached on the clip.
+   */
+  clipPeak(clip) {
+    if (clip._peak !== undefined) return clip._peak;
+    let peak = null;
+    let len = 0;
+    for (const f of clip.frames || []) {
+      const d = Math.hypot(f.x || 0, f.y || 0);
+      if (d > len) { len = d; peak = f; }
+    }
+    return (clip._peak = (peak && len > 1) ? { x: peak.x || 0, y: peak.y || 0, len: len } : null);
+  },
+
+  /**
+   * The rotation and scale that carry `clip` onto `aimPoint` (game pixels).
+   * Null when there is nothing to aim at or the clip does not travel, in which
+   * case it plays exactly as it was authored.
+   */
+  strikeTransformFor(clip, weapon, screenX, screenY, aimPoint) {
+    // A weapon that already turns to face its target does not also swing at it.
+    if (!clip || !aimPoint || this.aimsAtTarget(weapon)) return null;
+    const peak = this.clipPeak(clip);
+    if (!peak) return null;
+    const off = this.anchorOffsetFor(weapon);
+    const dx = aimPoint.x - (screenX + off.x);
+    const dy = -(aimPoint.y - (screenY - off.y));   // world Y grows upward
+    const reach = Math.hypot(dx, dy);
+    if (reach < 1) return null;
+    const angle = Math.atan2(dy, dx) - Math.atan2(peak.y, peak.x);
+    return {
+      cos: Math.cos(angle),
+      sin: Math.sin(angle),
+      scale: Math.max(this.STRIKE_MIN, Math.min(this.STRIKE_MAX, reach / peak.len)),
+      roll: angle * 180 / Math.PI,
+      peak: peak.len
+    };
+  },
+
+  /**
+   * Carries one sampled keyframe through a strike transform, in place. The
+   * weapon's roll follows the direction of travel so the edge leads the blow,
+   * scaled by how far into the swing the frame is: at rest it adds nothing, so
+   * the clip still starts and ends exactly on the idle pose.
+   */
+  applyStrikeTransform(k, xf) {
+    if (!xf) return k;
+    const lead = Math.min(1, Math.hypot(k.x, k.y) / xf.peak);
+    const x = k.x * xf.scale;
+    const y = k.y * xf.scale;
+    k.x = x * xf.cos - y * xf.sin;
+    k.y = x * xf.sin + y * xf.cos;
+    k.rz += xf.roll * lead;
+    return k;
+  },
+
+  /**
+   * Interpolates a keyframe clip at normalised time `t` (0..1).
+   * @returns {{x,y,z,rx,ry,rz,scale}} offsets from the resting pose.
+   */
+  sampleKeyframes(frames, t) {
+    const rest = { x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 };
+    if (!frames || frames.length === 0) return rest;
+    let prev = frames[0];
+    let next = frames[frames.length - 1];
+    for (let i = 0; i < frames.length - 1; i++) {
+      if (t >= frames[i].t && t <= frames[i + 1].t) {
+        prev = frames[i];
+        next = frames[i + 1];
+        break;
+      }
+    }
+    const span = next.t - prev.t;
+    let lt = span > 0 ? (t - prev.t) / span : 0;
+    const ease = prev.ease && this.EASINGS[prev.ease];
+    if (ease) lt = ease(lt);
+    const lerp = (a, b, f) => a + (b - a) * f;
+    return {
+      x: lerp(prev.x || 0, next.x || 0, lt),
+      y: lerp(prev.y || 0, next.y || 0, lt),
+      z: lerp(prev.z || 0, next.z || 0, lt),
+      rx: lerp(prev.rx || 0, next.rx || 0, lt),
+      ry: lerp(prev.ry || 0, next.ry || 0, lt),
+      rz: lerp(prev.rz || 0, next.rz || 0, lt),
+      scale: lerp(prev.scale !== undefined ? prev.scale : 1, next.scale !== undefined ? next.scale : 1, lt)
+    };
+  },
+
+  // ============================================================
+  // Procedural attack motion
+  // ============================================================
+  // Attacks are generated per weapon rather than read from a fixed table. Two
+  // measured properties drive everything:
+  //
+  //   reach  how long the weapon actually is, measured off the built model
+  //          (the same extent the screen fit uses), 0 for a knife, 1 for a
+  //          two-handed polearm. Governs how far the strike travels and how
+  //          far it rotates.
+  //   heft   how heavy it is, from its <Weight:> tag on a log scale between
+  //          40g and 8kg. Governs how long the wind-up takes, how hard the
+  //          impact lands, and how slowly it recovers.
+  //
+  // So a kitchen knife flicks out in a quarter of a second and a Zweihander
+  // takes most of a second to come round, and neither is a scaled copy of a
+  // single authored clip.
+
+  // Authored lengths in model units, per weapon type, for the case where the
+  // model has not been measured yet.
+  DEFAULT_EXTENT: {
+    1: 0.32, 2: 0.7, 3: 0.95, 4: 0.85, 5: 0.6, 6: 1.1,
+    7: 0.8, 8: 0.2, 9: 0.45, 10: 0.3, 11: 0.25, 12: 1.2
+  },
+  DEFAULT_WEIGHT: {
+    1: 300, 2: 1300, 3: 4000, 4: 1800, 5: 600, 6: 1500,
+    7: 900, 8: 400, 9: 3500, 10: 100, 11: 250, 12: 2200
+  },
+
+  /** Grams, from the weapon's <Weight:> tag. */
+  weightOf(weapon) {
+    const m = (weapon.note || '').match(/<Weight:\s*([\d.]+)>/i);
+    if (m) {
+      const g = parseFloat(m[1]);
+      if (Number.isFinite(g) && g > 0) return g;
+    }
+    return this.DEFAULT_WEIGHT[weapon.wtypeId] || 1000;
+  },
+
+  /**
+   * Measured physique of a weapon, cached on the model.
+   * @returns {{extent:number, grams:number, reach:number, heft:number}}
+   */
+  weaponMetrics(weapon, model) {
+    if (model && model.userData._metrics) return model.userData._metrics;
+
+    let extent = model && model.userData._fitExtent;
+    if (!extent && model && typeof THREE !== 'undefined') {
+      const prev = model.scale.clone();
+      model.scale.set(1, 1, 1);
+      model.updateMatrixWorld(true);
+      const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+      extent = Math.max(size.x, size.y) || 0;
+      model.scale.copy(prev);
+      model.updateMatrixWorld(true);
+      model.userData._fitExtent = extent;
+    }
+    if (!extent) extent = this.DEFAULT_EXTENT[weapon.wtypeId] || 0.6;
+
+    const grams = this.weightOf(weapon);
+    const metrics = {
+      extent: extent,
+      grams: grams,
+      // 0.18m (a shiv) to 1.25m (a pike) covers everything in the database.
+      reach: Math.max(0, Math.min(1, (extent - 0.18) / (1.25 - 0.18))),
+      // Log scale: the difference between 40g and 300g matters as much as the
+      // difference between 1kg and 8kg.
+      heft: Math.max(0, Math.min(1, (Math.log(grams) - Math.log(40)) / (Math.log(8000) - Math.log(40))))
+    };
+    if (model) model.userData._metrics = metrics;
+    return metrics;
+  },
+
+  // Animation name -> motion archetype and its direction. `dir` +1 sweeps
+  // right-to-left across the view, -1 the other way; `tilt` +1 travels upward
+  // through the arc, -1 downward.
+  ATTACK_MOTIONS: {
+    Swing: { kind: 'arc', dir: 1 },
+    SwingLeft: { kind: 'arc', dir: -1 },
+    Slash: { kind: 'arc', dir: 1, tilt: 0.4 },
+    Cleave: { kind: 'arc', dir: 1, tilt: -0.6, power: 1.2 },
+    CrossSlash: { kind: 'arc', dir: -1, tilt: 0.5, repeat: 2 },
+    SwingDiagonalDown: { kind: 'arc', dir: 1, tilt: -0.8 },
+    SwingDiagonalUp: { kind: 'arc', dir: -1, tilt: 0.8 },
+    SwingDown: { kind: 'overhead' },
+    Overhead: { kind: 'overhead', power: 1.15 },
+    Execute: { kind: 'overhead', power: 1.4 },
+    SwingUp: { kind: 'rising' },
+    Uppercut: { kind: 'rising', power: 1.15 },
+    Thrust: { kind: 'thrust' },
+    Impale: { kind: 'thrust', power: 1.3 },
+    Backstab: { kind: 'thrust', dir: -1, power: 1.1 },
+    Spin: { kind: 'spin' },
+    Whirlwind: { kind: 'spin', turns: 2 },
+    Cyclone: { kind: 'spin', turns: 2, tilt: 0.5 },
+    Flourish: { kind: 'spin', dir: -1 },
+    Block: { kind: 'guard' },
+    Parry: { kind: 'guard', dir: -1 },
+    Riposte: { kind: 'guard', riposte: true },
+    Recoil: { kind: 'recoil' },
+    RevolverRecoil: { kind: 'recoil', power: 1.25 },
+    RifleRecoil: { kind: 'recoil', power: 1.5 },
+    Shoot: { kind: 'recoil' },
+    Reload: { kind: 'reload' },
+    BowDrawAndRelease: { kind: 'draw' }
+  },
+
+  // The motion a weapon falls back to when the caller asks for a name nothing
+  // knows (a skill's own animation tag, most often).
+  TYPE_MOTIONS: {
+    1: 'thrust', 2: 'arc', 3: 'overhead', 4: 'arc', 5: 'lash', 6: 'cast',
+    7: 'draw', 8: 'hurl', 9: 'recoil', 10: 'arc', 11: 'thrust', 12: 'thrust'
+  },
+
+  motionForWeapon(weapon) {
+    if (weapon.isWhip) return 'lash';
+    if (weapon.isFlail) return 'arc';
+    const ranged = this.rangedMotionFor(weapon);
+    if (ranged) return ranged;
+    return this.TYPE_MOTIONS[weapon.wtypeId] || 'arc';
+  },
+
+  /**
+   * The motion a weapon that shoots is REQUIRED to use, or null for one that is
+   * swung. A gun fires, a bow and a sling loose, a thrown weapon leaves the
+   * hand; none of them is ever a club, whatever a skill or a <Movement:> tag
+   * asks for.
+   */
+  rangedMotionFor(weapon) {
+    if (!weapon) return null;
+    if (weapon.wtypeId === 9) return 'recoil';
+    if (weapon.wtypeId === 7) return 'draw';
+    if (weapon.wtypeId === 8) return this.isLauncher(weapon) ? 'draw' : 'hurl';
+    return null;
+  },
+
+  // Motions a ranged weapon is still allowed to play: reloading it, and
+  // bracing behind it. Anything else is replaced by its own firing motion.
+  RANGED_KEEP: { reload: true, guard: true },
+
+  /**
+   * Generates the attack clip for a weapon and an animation name.
+   * @returns {{duration:number, frames:Array}} in the same shape the fixed
+   *   MovementKeyFrame3d clips use, so nothing downstream changes.
+   */
+  buildAttack(weapon, name, model) {
+    let motion = this.ATTACK_MOTIONS[name] || { kind: this.motionForWeapon(weapon) };
+    // What a weapon that shoots does is decided by the weapon, never by the
+    // name the skill asked for: most firearms and every sling in the database
+    // carry a <Movement:> tag written for a blade, or none at all (which used
+    // to mean 'Swing'), and were bashing the enemy with the stock.
+    const ranged = this.rangedMotionFor(weapon);
+    if (ranged && motion.kind !== ranged && !this.RANGED_KEEP[motion.kind]) {
+      motion = Object.assign({}, motion, { kind: ranged });
+    }
+    const build = this.MOTIONS[motion.kind] || this.MOTIONS.arc;
+    const m = this.weaponMetrics(weapon, model);
+    const H = (typeof Graphics !== 'undefined' && Graphics.height) ? Graphics.height : 624;
+    if (motion.kind === 'recoil') {
+      // The class profile decides the shape of the kick and how many rounds
+      // go out; the model's own parts are told to cycle in step with it.
+      motion = Object.assign({}, motion, { profile: this.gunProfileFor(weapon) });
+      if (model) this.beginGunFire(model, weapon);
+    }
+    return build.call(this, m, motion, H);
+  },
+
+  MOTIONS: {
+    // A blow travelling across the view. Wind up against the direction of
+    // travel, cross the whole frame, overshoot the contact point by a little,
+    // stop dead, then drift back.
+    arc(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const tilt = o.tilt || 0;
+      const power = o.power || 1;
+      const wind = (0.15 + m.heft * 0.13) * H;
+      const travel = (0.40 + m.reach * 0.46) * H * power;
+      const lift = (0.10 + m.reach * 0.16) * H;
+      const turn = (95 + m.reach * 75 + m.heft * 34) * power;
+      const punch = 1.13 + m.heft * 0.30 * power;
+      // Heavy weapons spend the time in the wind-up, light ones in the strike.
+      const windEnd = 0.22 + m.heft * 0.14;
+      const hit = windEnd + 0.20;
+      return {
+        duration: 290 + m.heft * 440 + m.reach * 180,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          {
+            t: windEnd, x: dir * wind, y: -wind * (0.62 - tilt * 0.5), z: -0.06 * H,
+            rx: -8 - m.heft * 16, ry: dir * 24, rz: dir * (32 + m.heft * 20),
+            scale: 0.90, ease: 'expoOut'
+          },
+          {
+            t: hit, x: -dir * travel, y: lift * (tilt >= 0 ? 1 : -1) + tilt * lift * 0.6, z: 0.16 * H,
+            rx: 10 + tilt * 18, ry: -dir * 30, rz: -dir * turn,
+            scale: punch, ease: 'out'
+          },
+          {
+            t: hit + 0.07, x: -dir * travel * 1.1, y: lift * (tilt >= 0 ? 1.15 : -1.15), z: 0.1 * H,
+            rx: 6, ry: -dir * 24, rz: -dir * turn * 1.08,
+            scale: punch * 0.94, ease: 'inOut'
+          },
+          {
+            t: 0.82, x: -dir * travel * 0.55, y: lift * 0.5 * (tilt >= 0 ? 1 : -1), z: 0.03 * H,
+            rx: 2, ry: -dir * 10, rz: -dir * turn * 0.5,
+            scale: 1.02, ease: 'out'
+          },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Raised over the head and brought straight down through the middle. The
+    // heaviest-feeling motion in the set: the wind-up leaves the frame.
+    overhead(m, o, H) {
+      const power = o.power || 1;
+      const raise = (0.26 + m.heft * 0.22) * H;
+      const drop = (0.34 + m.reach * 0.30) * H * power;
+      const punch = 1.20 + m.heft * 0.38 * power;
+      const windEnd = 0.26 + m.heft * 0.14;
+      const hit = windEnd + 0.19;
+      return {
+        duration: 380 + m.heft * 520 + m.reach * 150,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          {
+            t: windEnd, x: 0, y: -raise, z: -0.14 * H,
+            rx: -(48 + m.heft * 34), ry: 0, rz: 0, scale: 0.86, ease: 'expoOut'
+          },
+          {
+            t: hit, x: 0, y: drop, z: 0.24 * H,
+            rx: 62 + m.reach * 26, ry: 0, rz: 0, scale: punch, ease: 'out'
+          },
+          {
+            t: hit + 0.06, x: 0, y: drop * 1.08, z: 0.16 * H,
+            rx: 70 + m.reach * 26, ry: 0, rz: 0, scale: punch * 0.9, ease: 'inOut'
+          },
+          {
+            t: 0.84, x: 0, y: drop * 0.42, z: 0.05 * H,
+            rx: 26, ry: 0, rz: 0, scale: 1.03, ease: 'out'
+          },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // The mirror of overhead: dropped low, then torn upward.
+    rising(m, o, H) {
+      const power = o.power || 1;
+      const dip = (0.20 + m.heft * 0.16) * H;
+      const rise = (0.36 + m.reach * 0.32) * H * power;
+      const punch = 1.16 + m.heft * 0.32 * power;
+      const windEnd = 0.22 + m.heft * 0.12;
+      const hit = windEnd + 0.20;
+      return {
+        duration: 340 + m.heft * 460 + m.reach * 140,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: windEnd, x: 0.04 * H, y: dip, z: -0.1 * H, rx: 40 + m.heft * 22, ry: 10, rz: 12, scale: 0.88, ease: 'expoOut' },
+          { t: hit, x: -0.05 * H, y: -rise, z: 0.22 * H, rx: -(52 + m.reach * 24), ry: -14, rz: -18, scale: punch, ease: 'out' },
+          { t: hit + 0.07, x: -0.06 * H, y: -rise * 1.1, z: 0.14 * H, rx: -(60 + m.reach * 24), ry: -10, rz: -14, scale: punch * 0.92, ease: 'inOut' },
+          { t: 0.84, x: -0.02 * H, y: -rise * 0.4, z: 0.04 * H, rx: -22, ry: -4, rz: -6, scale: 1.02, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Straight down the barrel of the view.
+    //
+    // The overlay camera is ORTHOGRAPHIC, so travelling on Z changes nothing
+    // on screen: depth has to be spoken as scale. The lunge is therefore a
+    // zoom, with reach deciding how far the point gets and heft deciding how
+    // long it takes to get there. (Z still moves, only for draw order.)
+    thrust(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const power = o.power || 1;
+      const pull = (0.10 + m.heft * 0.10) * H;
+      const zoom = 1 + (0.34 + m.reach * 0.38) * power;
+      const drift = (0.05 + m.reach * 0.06) * H;
+      const windEnd = 0.20 + m.heft * 0.14;
+      const hit = windEnd + 0.16;
+      return {
+        duration: 250 + m.heft * 380 + m.reach * 130,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: windEnd, x: dir * pull, y: -pull * 0.4, z: -60, rx: -10, ry: dir * 16, rz: dir * 10, scale: 0.86, ease: 'expoOut' },
+          { t: hit, x: -dir * drift, y: drift * 0.5, z: 220, rx: 14, ry: -dir * 6, rz: -dir * 4, scale: zoom, ease: 'snap' },
+          { t: hit + 0.06, x: -dir * drift * 1.2, y: drift * 0.7, z: 240, rx: 16, ry: -dir * 4, rz: -dir * 2, scale: zoom * 1.03, ease: 'inOut' },
+          { t: 0.8, x: -dir * drift * 0.4, y: drift * 0.2, z: 90, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Full revolutions. A light weapon gets round more times than a heavy one
+    // in the same beat, so the turn count is cut by heft rather than fixed.
+    spin(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const turns = Math.max(1, Math.round((o.turns || 1) + (1 - m.heft) * 0.9));
+      const sweep = (0.20 + m.reach * 0.26) * H;
+      const tilt = o.tilt || 0;
+      const total = 360 * turns * dir;
+      const punch = 1.14 + m.heft * 0.26;
+      return {
+        duration: 420 + m.heft * 520 + turns * 140,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: 0.18, x: dir * sweep * 0.5, y: -sweep * 0.35, z: -0.05 * H, rx: -12, ry: dir * 40, rz: dir * 40, scale: 0.92, ease: 'out' },
+          { t: 0.44, x: -dir * sweep, y: sweep * 0.4 * (1 + tilt), z: 0.18 * H, rx: 12 + tilt * 24, ry: total * 0.45, rz: total * 0.45, scale: punch, ease: 'linear' },
+          { t: 0.66, x: dir * sweep * 0.8, y: -sweep * 0.3, z: 0.1 * H, rx: -6, ry: total * 0.7, rz: total * 0.7, scale: punch * 0.96, ease: 'linear' },
+          { t: 0.86, x: -dir * sweep * 0.4, y: sweep * 0.2, z: 0.04 * H, rx: 4, ry: total * 0.92, rz: total * 0.92, scale: 1.04, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: total, rz: total, scale: 1 }
+        ]
+      };
+    },
+
+    // Braced, not swung. Snap into the guard, absorb (a heavy weapon barely
+    // moves, a light one is driven back), hold, recover.
+    guard(m, o, H) {
+      const dir = o.dir === undefined ? 1 : o.dir;
+      const set = (0.10 + m.reach * 0.10) * H;
+      const shove = (0.10 - m.heft * 0.07) * H;
+      const frames = [
+        { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'snap' },
+        { t: 0.2, x: -dir * set, y: -set * 0.4, z: 0.1 * H, rx: -6, ry: -dir * 40, rz: -dir * (30 + m.reach * 20), scale: 1.08, ease: 'out' },
+        { t: 0.34, x: -dir * set - shove, y: -set * 0.35, z: 0.06 * H, rx: -2, ry: -dir * 34, rz: -dir * (26 + m.reach * 18), scale: 1.05, ease: 'inOut' },
+        { t: 0.62, x: -dir * set, y: -set * 0.4, z: 0.09 * H, rx: -5, ry: -dir * 38, rz: -dir * (29 + m.reach * 20), scale: 1.06, ease: 'out' }
+      ];
+      if (o.riposte) {
+        // The counter that a parry buys: straight back down the line. Depth is
+        // scale, not Z, under the orthographic overlay camera.
+        const zoom = 1 + 0.3 + m.reach * 0.3;
+        frames.push({ t: 0.76, x: 0, y: 0, z: 200, rx: 12, ry: 0, rz: 0, scale: zoom, ease: 'snap' });
+        frames.push({ t: 0.88, x: 0, y: 0.01 * H, z: 80, rx: 6, ry: 0, rz: 0, scale: 1 + (zoom - 1) * 0.3, ease: 'out' });
+      }
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return { duration: (o.riposte ? 620 : 420) + m.heft * 220, frames: frames };
+    },
+
+    // Muzzle rise and a shove back into the shoulder.
+    //
+    // Recoil is the one motion where the weapon's CLASS matters as much as its
+    // weight: a snub revolver and a submachine gun of the same mass do not
+    // behave alike. The class profile sets how hard it climbs, how far it is
+    // driven back and how many times, and heft scales all of it. An automatic
+    // therefore stutters through several small kicks where a shotgun makes one
+    // enormous one.
+    recoil(m, o, H) {
+      const power = o.power || 1;
+      const p = o.profile || { rise: 1, push: 1, shots: 1, rate: 0, dur: 1 };
+      const kick = (0.045 + m.heft * 0.105) * H * power * p.push;
+      const rise = (20 + m.heft * 28) * power * p.rise;
+      const shots = Math.max(1, p.shots);
+      const dur = (230 + m.heft * 240 * power) * p.dur * (shots > 1 ? 1 + shots * 0.18 : 1);
+
+      const frames = [{ t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'snap' }];
+      // Recoil is the one motion built for guns alone, and a gun is aimed away
+      // from the camera: its barrel is turned through a negative cosine, so it
+      // is POSITIVE rx that throws the muzzle up. Every other motion is played
+      // by weapons held across the view, where the sign is the other way round.
+      // Each round in the burst gets its own kick, and the muzzle climbs a
+      // little further with every one instead of returning to where it began.
+      for (let i = 0; i < shots; i++) {
+        const base = (i + 0.55) / shots;
+        const climb = 1 + i * 0.35;
+        const jitter = (i % 2 ? 1 : -1) * 0.004 * H;
+        frames.push({
+          t: Math.min(0.93, base - 0.4 / shots), x: jitter + 0.008 * H * power, y: kick * climb,
+          z: -kick * 1.7, rx: rise * climb, ry: 2 * power, rz: 3 * power * (i % 2 ? -1 : 1),
+          scale: 1 + 0.035 * p.flash, ease: 'out'
+        });
+        frames.push({
+          t: Math.min(0.96, base), x: jitter * 0.4, y: kick * climb * 0.45,
+          z: -kick * 0.7, rx: rise * climb * 0.5, ry: -1, rz: 1.5 * (i % 2 ? -1 : 1),
+          scale: 1.01, ease: shots > 1 ? 'linear' : 'inOut'
+        });
+      }
+      frames.push({ t: 0.98, x: 0, y: kick * 0.14, z: -kick * 0.2, rx: rise * 0.16, ry: 0, rz: 0.3, scale: 1, ease: 'out' });
+      frames.push({ t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 });
+      return { duration: dur, frames: frames };
+    },
+
+    // Out of the frame, work, back up. Heft decides how long the work takes.
+    reload(m, o, H) {
+      const drop = (0.16 + m.heft * 0.10) * H;
+      return {
+        duration: 900 + m.heft * 700,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.22, x: -0.03 * H, y: -drop, z: -0.05 * H, rx: 18, ry: -14, rz: -26, scale: 0.94, ease: 'inOut' },
+          { t: 0.48, x: -0.04 * H, y: -drop * 1.5, z: -0.07 * H, rx: 26, ry: -20, rz: -32, scale: 0.9, ease: 'inOut' },
+          { t: 0.7, x: -0.02 * H, y: -drop * 0.7, z: -0.03 * H, rx: 12, ry: -8, rz: -16, scale: 0.97, ease: 'out' },
+          { t: 0.88, x: 0.01 * H, y: 0.02 * H, z: 0.01 * H, rx: -6, ry: 4, rz: 5, scale: 1.02, ease: 'inOut' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Draw, hold at full tension, loose. The hold is what sells the power, so
+    // it gets longer the heavier the bow is.
+    draw(m, o, H) {
+      const pull = (0.14 + m.heft * 0.12) * H;
+      const hold = 0.5 + m.heft * 0.12;
+      return {
+        duration: 520 + m.heft * 420,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'out' },
+          { t: 0.34, x: -pull * 0.7, y: 0.02 * H, z: -60, rx: 2, ry: -20, rz: 4, scale: 0.95, ease: 'inOut' },
+          { t: hold, x: -pull, y: 0.01 * H, z: -90, rx: 0, ry: -26, rz: 6, scale: 0.9, ease: 'linear' },
+          { t: hold + 0.06, x: -pull * 0.98, y: 0.01 * H, z: -88, rx: 0, ry: -25, rz: 6, scale: 0.9, ease: 'expoOut' },
+          { t: hold + 0.16, x: 0.06 * H, y: -0.03 * H, z: 180, rx: -12, ry: 14, rz: -10, scale: 1.22, ease: 'out' },
+          { t: 0.9, x: 0.015 * H, y: 0, z: 50, rx: -3, ry: 4, rz: -2, scale: 1.03, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // A whip has no mass at the far end to speak of: the hand movement is
+    // small and sharp, and the rope simulation does the rest.
+    lash(m, o, H) {
+      const crack = (0.14 + m.reach * 0.12) * H;
+      return {
+        duration: 380 + m.heft * 180,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: 0.26, x: crack, y: -crack * 1.2, z: -50, rx: -30, ry: 12, rz: 26, scale: 0.92, ease: 'expoOut' },
+          { t: 0.42, x: -crack * 1.6, y: crack * 0.5, z: 210, rx: 22, ry: -14, rz: -34, scale: 1.3, ease: 'out' },
+          { t: 0.6, x: -crack * 0.6, y: crack * 0.2, z: 80, rx: 8, ry: -6, rz: -14, scale: 1.08, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Raise, gather, punch the working end forward. Reach matters (a long
+    // staff sweeps), heft barely does.
+    cast(m, o, H) {
+      const lift = (0.14 + m.reach * 0.16) * H;
+      const zoom = 1 + 0.28 + m.reach * 0.26;
+      return {
+        duration: 480 + m.heft * 260 + m.reach * 160,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'inOut' },
+          { t: 0.3, x: -lift * 0.6, y: -lift, z: -50, rx: -16, ry: -22, rz: -18, scale: 0.9, ease: 'expoOut' },
+          { t: 0.48, x: lift * 0.3, y: lift * 0.5, z: 200, rx: 20, ry: 14, rz: 12, scale: zoom, ease: 'out' },
+          { t: 0.58, x: lift * 0.35, y: lift * 0.55, z: 210, rx: 22, ry: 16, rz: 14, scale: zoom * 1.04, ease: 'inOut' },
+          { t: 0.82, x: lift * 0.12, y: lift * 0.2, z: 70, rx: 8, ry: 6, rz: 5, scale: 1 + (zoom - 1) * 0.25, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
+    },
+
+    // Thrown: it leaves the hand, so it shrinks away into the distance rather
+    // than coming back.
+    hurl(m, o, H) {
+      const wind = (0.12 + m.heft * 0.12) * H;
+      return {
+        duration: 340 + m.heft * 200,
+        frames: [
+          { t: 0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1, ease: 'expoIn' },
+          { t: 0.2, x: wind * 1.4, y: -wind * 1.8, z: -wind * 1.2, rx: -28, ry: 20, rz: 24, scale: 0.95, ease: 'expoOut' },
+          { t: 0.44, x: -wind * 2.2, y: wind, z: 0.5 * H, rx: 16, ry: -26, rz: -40, scale: 0.6, ease: 'linear' },
+          { t: 0.68, x: -wind * 3.0, y: wind * 0.6, z: 1.1 * H, rx: 8, ry: -34, rz: -56, scale: 0.22, ease: 'linear' },
+          { t: 0.8, x: -wind * 3.2, y: wind * 0.4, z: 1.4 * H, rx: 4, ry: -38, rz: -62, scale: 0.05, ease: 'out' },
+          { t: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1 }
+        ]
+      };
     }
   },
 
@@ -337,6 +2259,81 @@ var WeaponSystemProcedural = {
       endMass: opts.endMass || 1.0,
       headMeshGroup: null
     };
+  },
+
+  /**
+   * Hangs a physics chain off a point on a model and returns the empty group
+   * at its far end, for the caller to fill with whatever the chain carries.
+   * Every flail, meteor hammer and swinging head in the game is this call plus
+   * a head, so the rope wiring lives here rather than in each builder.
+   * @param {THREE.Group} group - the weapon; the rope is registered on it
+   * @param {object} opts - { links, length, x, y, z, linkMat, linkRadius,
+   *   linkTube, gravity, endMass }
+   * @returns {THREE.Group} the head mount, already positioned at the tip
+   */
+  chainRig(group, opts) {
+    const o = opts || {};
+    const links = o.links || 7;
+    const length = o.length || 0.26;
+    const segLen = length / links;
+    const anchor = new THREE.Vector3(o.x || 0, o.y || 0, o.z || 0);
+
+    const rope = this.createVerletRope(links + 1, segLen, anchor, {
+      gravity: o.gravity === undefined ? -0.0008 : o.gravity,
+      damping: o.damping === undefined ? 0.93 : o.damping,
+      iterations: 8,
+      stiffness: 1.0,
+      endMass: o.endMass === undefined ? 4.0 : o.endMass
+    });
+
+    const r = o.linkRadius === undefined ? 0.014 : o.linkRadius;
+    const tube = o.linkTube === undefined ? 0.004 : o.linkTube;
+    for (let i = 0; i < links; i++) {
+      const link = o.rope
+        ? new THREE.Mesh(new THREE.CylinderGeometry(tube * 1.6, tube * 1.6, segLen * 1.05, this.seg(6, 4)), o.linkMat)
+        : new THREE.Mesh(new THREE.TorusGeometry(r, tube, this.seg(4, 3), this.seg(8, 5)), o.linkMat);
+      if (!o.rope) link.userData._chainAlternate = (i % 2 === 0);
+      link.position.set(anchor.x, anchor.y + segLen * i + segLen / 2, anchor.z);
+      group.add(link);
+      rope.segmentMeshes.push(link);
+    }
+
+    const head = new THREE.Group();
+    head.position.set(anchor.x, anchor.y + length, anchor.z);
+    group.add(head);
+    rope.headMeshGroup = head;
+
+    if (!group.userData._verletRopes) group.userData._verletRopes = [];
+    group.userData._verletRopes.push(rope);
+    return head;
+  },
+
+  /**
+   * A ball bristling with spikes, distributed evenly over the sphere rather
+   * than in rings (the Fibonacci placement is what stops them lining up into
+   * visible bands).
+   */
+  spikeBall(radius, mat, opts) {
+    const o = opts || {};
+    const g = new THREE.Group();
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(radius, this.seg(o.detail || 12, 7), this.seg(o.detail || 10, 6)), mat);
+    g.add(ball);
+    const count = this.isLowDetail() ? Math.round((o.spikes || 10) * 0.6) : (o.spikes || 10);
+    const len = o.spikeLength === undefined ? radius * 0.55 : o.spikeLength;
+    const geo = new THREE.ConeGeometry(radius * 0.19, len, o.spikeSides || 4);
+    const up = new THREE.Vector3(0, 1, 0);
+    for (let i = 0; i < count; i++) {
+      const spike = new THREE.Mesh(geo, o.spikeMat || mat);
+      const phi = Math.acos(1 - 2 * (i + 0.5) / count);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      const n = new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta));
+      spike.position.copy(n).multiplyScalar(radius + len * 0.4);
+      spike.quaternion.setFromUnitVectors(up, n);
+      g.add(spike);
+    }
+    return g;
   },
 
   /**
@@ -595,2840 +2592,250 @@ var WeaponSystemProcedural = {
     return guardGroup;
   },
 
-  // Type 1: Light (Dagger)
-  createLightModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const guardColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.85 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.9, metalness: 0.1 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.25, metalness: 0.85 });
-    const guardMat = new THREE.MeshStandardMaterial({ color: guardColor, roughness: 0.35, metalness: 0.8 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, metalness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-
-    const hHeight = 0.14 + rand() * 0.06;
-    const hRadiusTop = 0.018 + rand() * 0.005;
-    const hRadiusBottom = 0.014 + rand() * 0.005;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(hRadiusTop, hRadiusBottom, hHeight, 6), woodMat);
-    h.position.y = -hHeight / 2;
-    group.add(h);
-
-    // Grip wraps
-    this.addGripWrap(h, rand, hHeight, hRadiusTop, hRadiusBottom, wrapMat);
-
-    // Pommel
-    const pommel = this.createProceduralPommel(rand, hHeight, guardMat, gemMat);
-    group.add(pommel);
-
-    // Guard
-    const guard = this.createProceduralGuard(rand, guardMat, gemMat, 0.6);
-    guard.position.y = 0;
-    group.add(guard);
-
-    // Procedural blade shapes (e.g. standard cone, wavy kris, or leaf-shape)
-    const bladeStyle = Math.floor(rand() * 3);
-    const bHeight = 0.2 + rand() * 0.12;
-    
-    if (bladeStyle === 0) {
-      // Wavy Kris dagger blade
-      const points = [];
-      const segments = 12;
-      const krisWidth = 0.02 + rand() * 0.01;
-      for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
-        const wave = Math.sin(t * Math.PI * 4) * 0.015 * (1.0 - t);
-        points.push(new THREE.Vector3(wave, t * bHeight, 0));
-      }
-      const krisCurve = new THREE.CatmullRomCurve3(points);
-      const krisMesh = new THREE.Mesh(new THREE.TubeGeometry(krisCurve, segments, krisWidth, 4, false), metalMat);
-      krisMesh.scale.z = 0.25;
-      group.add(krisMesh);
-    } else if (bladeStyle === 1) {
-      // Leaf-shaped blade
-      const leafGeo = new THREE.SphereGeometry(bHeight * 0.55, 8, 8);
-      const leafMesh = new THREE.Mesh(leafGeo, metalMat);
-      leafMesh.scale.set(0.12 + rand() * 0.04, 2.0, 0.02);
-      leafMesh.position.y = bHeight / 2;
-      group.add(leafMesh);
-    } else {
-      // Standard tapering double-edged blade
-      const b = new THREE.Mesh(new THREE.ConeGeometry(0.025 + rand() * 0.01, bHeight, 4), metalMat);
-      b.scale.z = 0.15 + rand() * 0.1;
-      b.position.y = bHeight / 2;
-      group.add(b);
-    }
-
-    return group;
-  },
-
-  // Type 2: Sword
-  createSwordModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const guardColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-    const emissionColor = this.getRandomColor(rand, this.emissionColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.85 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.9 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.25, metalness: 0.85 });
-    const guardMat = new THREE.MeshStandardMaterial({ color: guardColor, roughness: 0.35, metalness: 0.8 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, metalness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-    const runicMat = new THREE.MeshStandardMaterial({ color: emissionColor, emissive: emissionColor, emissiveIntensity: 0.8 });
-
-    const hHeight = 0.16 + rand() * 0.08;
-    const hRadiusTop = 0.02 + rand() * 0.005;
-    const hRadiusBottom = 0.016 + rand() * 0.005;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(hRadiusTop, hRadiusBottom, hHeight, 6), woodMat);
-    h.position.y = -hHeight / 2;
-    group.add(h);
-
-    // Grip wraps
-    this.addGripWrap(h, rand, hHeight, hRadiusTop, hRadiusBottom, wrapMat);
-
-    // Pommel
-    const pommel = this.createProceduralPommel(rand, hHeight, guardMat, gemMat);
-    group.add(pommel);
-
-    // Guard
-    const guard = this.createProceduralGuard(rand, guardMat, gemMat, 1.0);
-    guard.position.y = 0;
-    group.add(guard);
-
-    // Blade
-    const bHeight = 0.45 + rand() * 0.25;
-    const bWidth = 0.035 + rand() * 0.015;
-    const bThickness = 0.008 + rand() * 0.005;
-    const mainBlade = new THREE.Mesh(new THREE.BoxGeometry(bWidth, bHeight, bThickness), metalMat);
-    mainBlade.position.y = bHeight / 2;
-    group.add(mainBlade);
-
-    // Recessed glowing fuller (runic groove)
-    if (rand() > 0.3) {
-      const fullerHeight = bHeight * 0.75;
-      const fuller = new THREE.Mesh(new THREE.BoxGeometry(bWidth * 0.2, fullerHeight, bThickness * 1.2), runicMat);
-      fuller.position.y = bHeight / 2;
-      group.add(fuller);
-    }
-
-    // Blade tip (cone)
-    const tipHeight = bWidth * 1.5;
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(bWidth * 0.7, tipHeight, 4), metalMat);
-    tip.scale.z = bThickness / bWidth;
-    tip.rotation.y = Math.PI / 4; // Align flat face with box
-    tip.position.y = bHeight + tipHeight / 2;
-    group.add(tip);
-
-    return group;
-  },
-
-  // Type 3: Heavy (Hammer)
-  createHeavyModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const metalColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.95 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.35, metalness: 0.75 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, metalness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-
-    const hHeight = 0.6 + rand() * 0.3;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.016, hHeight, 8), woodMat);
-    h.position.y = -hHeight / 2 + 0.1; 
-    group.add(h);
-
-    // Handle wrapping near the grip area
-    const wrapGroup = new THREE.Group();
-    this.addGripWrap(wrapGroup, rand, hHeight * 0.4, 0.02, 0.018, wrapMat);
-    wrapGroup.position.y = -hHeight * 0.1;
-    group.add(wrapGroup);
-
-    // Decorative metal ring bands along shaft
-    const numBands = 3 + Math.floor(rand() * 3);
-    for (let i = 0; i < numBands; i++) {
-      const band = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.004, 4, 8), metalMat);
-      band.position.y = -hHeight / 2 + 0.1 + (hHeight * 0.8 * (i / (numBands - 1)));
-      band.rotation.x = Math.PI / 2;
-      group.add(band);
-    }
-
-    // Heavy Spiked Pommel counter-weight
-    const bottomSpike = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.06, 4), metalMat);
-    bottomSpike.rotation.x = Math.PI;
-    bottomSpike.position.y = -hHeight / 2 + 0.1 - hHeight / 2;
-    group.add(bottomSpike);
-
-    // Random Head type: Warhammer, Spiked Mace, or Flanged Mace
-    const headType = Math.floor(rand() * 3);
-    const headPos = hHeight / 2 + 0.1;
-
-    if (headType === 0) {
-      // Warhammer: Central hub with hammer block and rear curved pick
-      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.08, 8), metalMat);
-      hub.rotation.x = Math.PI / 2;
-      hub.position.y = headPos;
-      group.add(hub);
-
-      // Hammer block
-      const ham = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.06), metalMat);
-      ham.position.set(0.04, headPos, 0);
-      group.add(ham);
-
-      // Gem embedded in side of hammer
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.015, 0), gemMat);
-      gem.position.set(0.081, headPos, 0);
-      group.add(gem);
-
-      // Rear pick spike
-      const pickGeo = new THREE.ConeGeometry(0.02, 0.08, 4);
-      const pick = new THREE.Mesh(pickGeo, metalMat);
-      pick.rotation.z = Math.PI / 2;
-      pick.position.set(-0.06, headPos, 0);
-      group.add(pick);
-    } else if (headType === 1) {
-      // Flanged Mace
-      const flangedCore = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.14, 8), metalMat);
-      flangedCore.position.y = headPos;
-      group.add(flangedCore);
-
-      const numFlanges = 6;
-      for (let i = 0; i < numFlanges; i++) {
-        const angle = (i / numFlanges) * Math.PI * 2;
-        const flange = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.1, 0.008), metalMat);
-        flange.position.set(Math.cos(angle) * 0.025, headPos, Math.sin(angle) * 0.025);
-        flange.rotation.y = -angle;
-        group.add(flange);
-      }
-
-      // Top spike gem
-      const topSpike = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.05, 4), metalMat);
-      topSpike.position.y = headPos + 0.09;
-      group.add(topSpike);
-    } else {
-      // Spiked Morningstar
-      const ballRadius = 0.06 + rand() * 0.02;
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(ballRadius, 16, 16), metalMat);
-      ball.position.y = headPos;
-      group.add(ball);
-
-      // Spikes
-      const spikeRadius = 0.01 + rand() * 0.005;
-      const spikeHeight = 0.03 + rand() * 0.02;
-      const spikeGeo = new THREE.ConeGeometry(spikeRadius, spikeHeight, 4);
-      const numSpikes = 12 + Math.floor(rand() * 10);
-      
-      for (let i = 0; i < numSpikes; i++) {
-        const spike = new THREE.Mesh(spikeGeo, metalMat);
-        const phi = Math.acos(-1 + (2 * i) / numSpikes);
-        const theta = Math.sqrt(numSpikes * Math.PI) * phi;
-        
-        spike.position.set(
-          ballRadius * Math.sin(phi) * Math.cos(theta),
-          ballRadius * Math.sin(phi) * Math.sin(theta),
-          ballRadius * Math.cos(phi)
-        );
-        
-        const normal = spike.position.clone().normalize();
-        spike.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
-        ball.add(spike);
-      }
-
-      // Floating crystal on top
-      const floatingGem = new THREE.Mesh(new THREE.OctahedronGeometry(0.02, 0), gemMat);
-      floatingGem.position.y = headPos + ballRadius + 0.035;
-      group.add(floatingGem);
-    }
-
-    return group;
-  },
-
-  // Type 4: Axe
-  createAxeModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const accentColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.95 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.3, metalness: 0.8 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.3, metalness: 0.85 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, metalness: 0.1, emissive: gemColor, emissiveIntensity: 0.7 });
-
-    const hHeight = 0.55 + rand() * 0.25;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.015, hHeight, 8), woodMat);
-    h.position.y = 0.05;
-    group.add(h);
-
-    // Grip wraps
-    const wrapGroup = new THREE.Group();
-    this.addGripWrap(wrapGroup, rand, hHeight * 0.35, 0.019, 0.017, wrapMat);
-    wrapGroup.position.y = 0.05 - hHeight * 0.5;
-    group.add(wrapGroup);
-
-    // Metal caps/bands at top under the axe head
-    const topPos = hHeight / 2 + 0.05;
-    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.08, 8), accentMat);
-    collar.position.y = topPos;
-    group.add(collar);
-
-    // Spike at the bottom
-    const bottomSpike = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.05, 4), accentMat);
-    bottomSpike.rotation.x = Math.PI;
-    bottomSpike.position.y = 0.05 - hHeight / 2;
-    group.add(bottomSpike);
-
-    // Halberd / Axe variants
-    const isDouble = rand() > 0.5;
-    const isBearded = rand() > 0.5;
-
-    // Elegant crescent / bearded blade geometry
-    let bladeGeo;
-    if (isBearded) {
-      // Bearded blade: Box angled downwards with a beveled metal trim
-      bladeGeo = new THREE.BoxGeometry(0.12, 0.16, 0.01);
-    } else {
-      // Large crescent curve
-      bladeGeo = new THREE.CylinderGeometry(0, 0.14 + rand() * 0.06, 0.015, 3);
-    }
-
-    const bMesh1 = new THREE.Mesh(bladeGeo, metalMat);
-    if (isBearded) {
-      bMesh1.position.set(0.07, topPos - 0.04, 0);
-      bMesh1.rotation.y = 0.05; // slight angle
-    } else {
-      bMesh1.rotation.x = Math.PI / 2;
-      bMesh1.position.set(0.08, topPos, 0);
-    }
-    group.add(bMesh1);
-
-    // Accent line/socket on blade
-    const socket = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.08, 0.03), accentMat);
-    socket.position.set(0.015, topPos, 0);
-    group.add(socket);
-
-    // Gem in the socket
-    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.012, 0), gemMat);
-    gem.position.set(0.015, topPos, 0.016);
-    group.add(gem);
-
-    if (isDouble) {
-      const bMesh2 = bMesh1.clone();
-      if (isBearded) {
-        bMesh2.position.set(-0.07, topPos - 0.04, 0);
-        bMesh2.rotation.y = -0.05;
-      } else {
-        bMesh2.rotation.z = Math.PI;
-        bMesh2.position.set(-0.08, topPos, 0);
-      }
-      group.add(bMesh2);
-    } else {
-      // Small spike hook on the back if single-headed
-      const backHook = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.06, 4), accentMat);
-      backHook.rotation.z = Math.PI / 2;
-      backHook.position.set(-0.045, topPos, 0);
-      group.add(backHook);
-    }
-
-    // Spear/spike tip at the very top (makes it look halberd-like)
-    const spearTip = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.12, 4), metalMat);
-    spearTip.scale.z = 0.25;
-    spearTip.position.y = topPos + 0.08;
-    group.add(spearTip);
-
-    return group;
-  },
-
-  // Type 5: Whip (linked segments with physics)
-  createWhipModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const whipColor = this.getRandomColor(rand, this.whipColors);
-    const guardColor = this.getRandomColor(rand, this.guardColors);
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.95 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: guardColor, roughness: 0.3, metalness: 0.85 });
-    const darkMat = new THREE.MeshStandardMaterial({ color: whipColor, roughness: 0.75, metalness: 0.1 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.8 });
-
-    const hHeight = 0.14 + rand() * 0.06;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.016, hHeight, 6), woodMat);
-    h.position.y = -hHeight / 2;
-    group.add(h);
-
-    // Decorative handle wrapping
-    this.addGripWrap(h, rand, hHeight, 0.018, 0.016, metalMat);
-
-    // Lanyard ring pommel
-    const ringPommel = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.004, 4, 8), metalMat);
-    ringPommel.position.y = -hHeight;
-    ringPommel.rotation.x = Math.PI / 2;
-    group.add(ringPommel);
-
-    // Knuckle guard on handle
-    const guard = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.005, 4, 12, Math.PI), metalMat);
-    guard.position.set(0.02, -hHeight / 2, 0);
-    guard.rotation.z = Math.PI / 2;
-    group.add(guard);
-
-    // ---- Linked-segment whip with Verlet physics ----
-    const whipType = Math.floor(rand() * 3);
-    const numSegments = 14 + Math.floor(rand() * 6); // 14-19 linked segments
-    const totalLength = 0.35 + rand() * 0.25;
-    const segLen = totalLength / numSegments;
-
-    // Whip tapers from thick base to thin tip
-    const baseRadius = whipType === 1 ? 0.012 : (whipType === 2 ? 0.008 : 0.010);
-    const tipRadius = whipType === 1 ? 0.005 : (whipType === 2 ? 0.003 : 0.004);
-
-    // Choose segment material based on whip type
-    const segMat = whipType === 0 ? darkMat : (whipType === 1 ? gemMat : metalMat);
-
-    // Create Verlet rope anchored at handle tip (y=0)
-    const anchorPos = new THREE.Vector3(0, 0, 0);
-    const rope = this.createVerletRope(numSegments + 1, segLen, anchorPos, {
-      gravity: -0.0006,
-      damping: 0.94,
-      iterations: 8,
-      stiffness: 0.85,
-      endMass: 0.6
-    });
-
-    // Create per-segment cylinder meshes
-    for (let i = 0; i < numSegments; i++) {
-      const t = i / numSegments;
-      const radius = baseRadius + (tipRadius - baseRadius) * t;
-      const nextRadius = baseRadius + (tipRadius - baseRadius) * ((i + 1) / numSegments);
-
-      const segGeo = new THREE.CylinderGeometry(nextRadius, radius, segLen, 6);
-      const segMesh = new THREE.Mesh(segGeo, segMat);
-
-      // Initial position along Y axis
-      segMesh.position.set(0, i * segLen + segLen / 2, 0);
-      group.add(segMesh);
-      rope.segmentMeshes.push(segMesh);
-
-      // Type 2 (blade whip): add barb spikes to every 2nd-3rd segment
-      if (whipType === 2 && i > 2 && i % 2 === 0) {
-        const barbSize = 0.008 + rand() * 0.006;
-        const barb = new THREE.Mesh(new THREE.ConeGeometry(barbSize, barbSize * 2.5, 4), metalMat);
-        barb.position.set(radius * 1.5, 0, 0);
-        barb.rotation.z = -Math.PI / 2;
-        segMesh.add(barb);
-
-        // Opposing barb
-        if (rand() > 0.4) {
-          const barb2 = new THREE.Mesh(new THREE.ConeGeometry(barbSize * 0.8, barbSize * 2, 4), metalMat);
-          barb2.position.set(-radius * 1.5, 0, 0);
-          barb2.rotation.z = Math.PI / 2;
-          segMesh.add(barb2);
-        }
-      }
-
-      // Type 1 (energy whip): add tiny glow nodes at joints
-      if (whipType === 1 && i > 0 && i % 3 === 0) {
-        const node = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.8, 4, 4), gemMat);
-        node.position.set(0, -segLen / 2, 0);
-        segMesh.add(node);
-      }
-
-      // Type 0 (leather): add occasional braided knots
-      if (whipType === 0 && i > 3 && i % 4 === 0) {
-        const knot = new THREE.Mesh(new THREE.TorusGeometry(radius * 1.5, radius * 0.6, 4, 6), darkMat);
-        knot.rotation.x = Math.PI / 2;
-        knot.position.set(0, -segLen / 2, 0);
-        segMesh.add(knot);
-      }
-    }
-
-    // Whip tip (cracker / spike / energy orb)
-    const tipGroup = new THREE.Group();
-    if (whipType === 0) {
-      // Leather cracker, thin tapered cone
-      const cracker = new THREE.Mesh(new THREE.ConeGeometry(tipRadius * 0.6, segLen * 1.5, 4), darkMat);
-      cracker.position.y = segLen * 0.75;
-      tipGroup.add(cracker);
-    } else if (whipType === 1) {
-      // Energy orb at the tip
-      const orb = new THREE.Mesh(new THREE.IcosahedronGeometry(0.015, 0), gemMat);
-      tipGroup.add(orb);
-    } else {
-      // Blade spike tip
-      const spike = new THREE.Mesh(new THREE.ConeGeometry(0.012, 0.035, 4), metalMat);
-      spike.position.y = 0.017;
-      tipGroup.add(spike);
-      // Small gem embedded
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.006, 0), gemMat);
-      gem.position.y = -0.005;
-      tipGroup.add(gem);
-    }
-    tipGroup.position.set(0, totalLength, 0);
-    group.add(tipGroup);
-    rope.headMeshGroup = tipGroup;
-
-    // Store rope on the group for physics ticking
-    group.userData._verletRope = rope;
-
-    return group;
-  },
-
-  // Type 6: Staff
-  createStaffModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const accentColor = this.getRandomColor(rand, this.guardColors);
-    const orbColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.35, metalness: 0.85 });
-    const crystalMat = new THREE.MeshStandardMaterial({ 
-      color: orbColor, 
-      roughness: 0.1, 
-      metalness: 0.1, 
-      emissive: orbColor, 
-      emissiveIntensity: 0.7 
-    });
-
-    const hHeight = 0.85 + rand() * 0.35;
-    // Sleek segmented/spiraled staff shaft
-    const shaftSegments = 4;
-    const h = new THREE.Group();
-    const segHeight = hHeight / shaftSegments;
-    for (let i = 0; i < shaftSegments; i++) {
-      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.016 - i * 0.001, 0.015 - i * 0.001, segHeight, 8), woodMat);
-      seg.position.y = -hHeight / 2 + 0.3 + (i * segHeight) + segHeight / 2;
-      seg.rotation.y = (i * Math.PI) / 8; // slight twist
-      h.add(seg);
-
-      // Gold bands at segment junctions
-      if (i > 0) {
-        const band = new THREE.Mesh(new THREE.TorusGeometry(0.018 - i * 0.001, 0.004, 4, 8), metalMat);
-        band.position.y = -hHeight / 2 + 0.3 + (i * segHeight);
-        band.rotation.x = Math.PI / 2;
-        h.add(band);
-      }
-    }
-    group.add(h);
-
-    const topPos = hHeight / 2 + 0.3;
-
-    // Ornate gold metal claw / crown socket holding the gem
-    const socket = new THREE.Group();
-    socket.position.y = topPos;
-    const baseCylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.018, 0.05, 8), metalMat);
-    socket.add(baseCylinder);
-
-    const numProngs = 3 + Math.floor(rand() * 2);
-    for (let i = 0; i < numProngs; i++) {
-      const angle = (i / numProngs) * Math.PI * 2;
-      const clawCurve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(Math.cos(angle) * 0.018, 0.025, Math.sin(angle) * 0.018),
-        new THREE.Vector3(Math.cos(angle) * 0.05, 0.06, Math.sin(angle) * 0.05),
-        new THREE.Vector3(Math.cos(angle) * 0.025, 0.10, Math.sin(angle) * 0.025)
-      );
-      const prong = new THREE.Mesh(new THREE.TubeGeometry(clawCurve, 6, 0.008, 4, false), metalMat);
-      socket.add(prong);
-    }
-    group.add(socket);
-
-    // Large faceted crystal (Faceted Gem using Octahedron or Icosahedron)
-    const gemType = rand() > 0.5;
-    const orbR = 0.045 + rand() * 0.025;
-    const crystalGeo = gemType ? new THREE.OctahedronGeometry(orbR, 0) : new THREE.IcosahedronGeometry(orbR, 0);
-    const orb = new THREE.Mesh(crystalGeo, crystalMat);
-    orb.position.y = topPos + 0.06;
-    group.add(orb);
-
-    // Ultimate Wow Factor: Floating orbital structures!
-    // A horizontal golden ring floating around the crystal, and tiny floating gem shards
-    if (rand() > 0.4) {
-      const floatRing = new THREE.Mesh(new THREE.TorusGeometry(orbR * 1.5, 0.004, 4, 16), metalMat);
-      floatRing.position.y = topPos + 0.06;
-      floatRing.rotation.x = Math.PI / 2 + (rand() * 0.2 - 0.1);
-      group.add(floatRing);
-
-      // 3 tiny floating shard gems orbiting
-      for (let i = 0; i < 3; i++) {
-        const fAngle = (i / 3) * Math.PI * 2;
-        const shard = new THREE.Mesh(new THREE.OctahedronGeometry(0.008, 0), crystalMat);
-        shard.position.set(
-          Math.cos(fAngle) * orbR * 1.6,
-          topPos + 0.06 + (rand() * 0.02 - 0.01),
-          Math.sin(fAngle) * orbR * 1.6
-        );
-        group.add(shard);
-      }
-    }
-
-    return group;
-  },
-
-  // Type 7: Bow
-  createBowModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bowColor = this.getRandomColor(rand, this.handleColors);
-    const accentColor = this.getRandomColor(rand, this.guardColors);
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: bowColor, roughness: 0.9 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.35, metalness: 0.85 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-    const stringMat = new THREE.LineBasicMaterial({ color: 0xFFFFFF });
-
-    // Bow variations: Longbow, Recurve Bow, Compound Bow!
-    const bowStyle = Math.floor(rand() * 3);
-    const height = 0.32 + rand() * 0.08;
-
-    if (bowStyle === 0) {
-      // 1. Classic Longbow - simple elegant D-curve
-      const curve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(0, height, -0.1),
-        new THREE.Vector3(0, 0, 0.12),
-        new THREE.Vector3(0, -height, -0.1)
-      );
-      const bow = new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.016, 6, false), woodMat);
-      group.add(bow);
-
-      // Leather grip wrap in center
-      const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.08, 6), accentMat);
-      group.add(grip);
-
-      // Single bowstring
-      const stringPoints = [new THREE.Vector3(0, height, -0.1), new THREE.Vector3(0, -height, -0.1)];
-      const stringGeo = new THREE.BufferGeometry().setFromPoints(stringPoints);
-      const stringLine = new THREE.Line(stringGeo, stringMat);
-      group.add(stringLine);
-
-    } else if (bowStyle === 1) {
-      // 2. Elegant Recurve Bow - double curved limb tips (S-like sweep at ends)
-      const curvePointsUpper = [
-        new THREE.Vector3(0, 0, 0.08),
-        new THREE.Vector3(0, height * 0.5, 0.05),
-        new THREE.Vector3(0, height * 0.85, -0.05),
-        new THREE.Vector3(0, height, -0.12)
-      ];
-      const curvePointsLower = [
-        new THREE.Vector3(0, 0, 0.08),
-        new THREE.Vector3(0, -height * 0.5, 0.05),
-        new THREE.Vector3(0, -height * 0.85, -0.05),
-        new THREE.Vector3(0, -height, -0.12)
-      ];
-
-      const upperCurve = new THREE.CatmullRomCurve3(curvePointsUpper);
-      const lowerCurve = new THREE.CatmullRomCurve3(curvePointsLower);
-
-      const upperLimb = new THREE.Mesh(new THREE.TubeGeometry(upperCurve, 12, 0.015, 6, false), woodMat);
-      const lowerLimb = new THREE.Mesh(new THREE.TubeGeometry(lowerCurve, 12, 0.015, 6, false), woodMat);
-      group.add(upperLimb);
-      group.add(lowerLimb);
-
-      // Ornate central riser block with a gem sight
-      const riser = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.09, 0.035), accentMat);
-      riser.position.set(0, 0, 0.05);
-      group.add(riser);
-
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.009, 0), gemMat);
-      gem.position.set(0, 0.02, 0.07);
-      group.add(gem);
-
-      // String
-      const stringPoints = [new THREE.Vector3(0, height, -0.12), new THREE.Vector3(0, -height, -0.12)];
-      const stringGeo = new THREE.BufferGeometry().setFromPoints(stringPoints);
-      const stringLine = new THREE.Line(stringGeo, stringMat);
-      group.add(stringLine);
-
-    } else {
-      // 3. Futuristic Compound Bow - angled carbon limbs, round pulleys/cams at tips, multi-string
-      const limbUpper = new THREE.Mesh(new THREE.BoxGeometry(0.014, height * 0.9, 0.03), woodMat);
-      limbUpper.position.set(0, height * 0.45, 0.05);
-      limbUpper.rotation.x = -Math.PI / 10;
-      group.add(limbUpper);
-
-      const limbLower = new THREE.Mesh(new THREE.BoxGeometry(0.014, height * 0.9, 0.03), woodMat);
-      limbLower.position.set(0, -height * 0.45, 0.05);
-      limbLower.rotation.x = Math.PI / 10;
-      group.add(limbLower);
-
-      // Pulleys (Cams) at the limb tips
-      const camGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 8);
-      const camU = new THREE.Mesh(camGeo, accentMat);
-      camU.rotation.z = Math.PI / 2;
-      const camYPos = height * 0.88;
-      const camZPos = -0.05;
-      camU.position.set(0, camYPos, camZPos);
-      group.add(camU);
-
-      const camL = camU.clone();
-      camL.position.set(0, -camYPos, camZPos);
-      group.add(camL);
-
-      // Compound multi-string (double strings intersecting)
-      const sPoints1 = [new THREE.Vector3(0, camYPos, camZPos), new THREE.Vector3(0, -camYPos, camZPos)];
-      const sPoints2 = [new THREE.Vector3(0, camYPos, camZPos - 0.01), new THREE.Vector3(0, 0, camZPos + 0.06)];
-      const sPoints3 = [new THREE.Vector3(0, -camYPos, camZPos - 0.01), new THREE.Vector3(0, 0, camZPos + 0.06)];
-
-      const string1 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints1), stringMat);
-      const string2 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints2), stringMat);
-      const string3 = new THREE.Line(new THREE.BufferGeometry().setFromPoints(sPoints3), stringMat);
-      group.add(string1);
-      group.add(string2);
-      group.add(string3);
-
-      // Tech grip riser
-      const riser = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.12, 0.04), accentMat);
-      riser.position.set(0, 0, 0.07);
-      group.add(riser);
-    }
-
-    return group;
-  },
-
-  // Type 8: Projectile (Kunai/Dart)
-  createProjectileModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors);
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.25, metalness: 0.85 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.9 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-
-    // Projectile sub-types: Kunai, Spiked Shuriken (Star), or Throwing Dart
-    const projType = Math.floor(rand() * 3);
-
-    if (projType === 0) {
-      // 1. Kunai: Leaf flat blade, wrapped hilt, ring pommel
-      const blade = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.14, 4), metalMat);
-      blade.scale.z = 0.2;
-      blade.rotation.x = Math.PI / 2; // Point forward
-      blade.position.z = 0.07;
-      group.add(blade);
-
-      const hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.08, 6), wrapMat);
-      hilt.rotation.x = Math.PI / 2;
-      hilt.position.z = -0.04;
-      group.add(hilt);
-
-      // Grip wrap
-      this.addGripWrap(hilt, rand, 0.08, 0.009, 0.009, wrapMat);
-
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.004, 4, 8), metalMat);
-      ring.position.z = -0.09;
-      group.add(ring);
-
-    } else if (projType === 1) {
-      // 2. Shuriken: Spiked throwing star (radial symmetry)
-      const centerRing = new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.006, 4, 12), metalMat);
-      group.add(centerRing);
-
-      const numPoints = 4 + Math.floor(rand() * 2); // 4 or 5 point star
-      for (let i = 0; i < numPoints; i++) {
-        const angle = (i / numPoints) * Math.PI * 2;
-        const blade = new THREE.Mesh(new THREE.ConeGeometry(0.014, 0.08, 4), metalMat);
-        blade.scale.z = 0.2;
-        blade.position.set(Math.cos(angle) * 0.04, Math.sin(angle) * 0.04, 0);
-        blade.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0));
-        group.add(blade);
-      }
-
-      // Small center glowing gem
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.01, 0), gemMat);
-      group.add(gem);
-
-    } else {
-      // 3. Throwing Dart: Ribbed grip, heavy iron tip, and feather fletching fins
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.006, 0.12, 6), metalMat);
-      body.rotation.x = Math.PI / 2;
-      group.add(body);
-
-      // Grip wraps
-      this.addGripWrap(body, rand, 0.12, 0.012, 0.006, wrapMat);
-
-      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.06, 4), metalMat);
-      tip.rotation.x = Math.PI / 2;
-      tip.position.z = 0.09;
-      group.add(tip);
-
-      // 3 flat feather fins at the back
-      for (let i = 0; i < 3; i++) {
-        const angle = (i / 3) * Math.PI * 2;
-        const fin = new THREE.Mesh(new THREE.BoxGeometry(0.002, 0.03, 0.03), gemMat);
-        fin.position.set(Math.cos(angle) * 0.012, Math.sin(angle) * 0.012, -0.06);
-        fin.rotation.z = angle;
-        fin.rotation.y = Math.PI / 12; // angled fin for spin
-        group.add(fin);
-      }
-    }
-
-    return group;
-  },
-
-  // Type 9: Gun
-  createGunModel(weapon, rand) {
-    const group = new THREE.Group();
-    const gunColor = this.getRandomColor(rand, [0x222222, 0x444444, 0xAAAAAA, 0x334455]);
-    const gripColor = this.getRandomColor(rand, this.handleColors);
-    const energColor = this.getRandomColor(rand, this.crystalColors);
-
-    const metalMat = new THREE.MeshStandardMaterial({ color: gunColor, roughness: 0.45, metalness: 0.85 });
-    const gripMat = new THREE.MeshStandardMaterial({ color: gripColor, roughness: 0.9 });
-    const energMat = new THREE.MeshStandardMaterial({ color: energColor, roughness: 0.1, emissive: energColor, emissiveIntensity: 0.75 });
-
-    // Gun sub-types: Revolver, Shotgun, Plasma Rifle, Tactical Rifle, Heavy Drum SMG, Retro Ray-gun
-    const gunStyle = Math.floor(rand() * 6);
-
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.09, 0.035), gripMat);
-    grip.position.set(0, -0.045, -0.025);
-    grip.rotation.x = Math.PI / 7;
-    group.add(grip);
-
-    // Trigger guard
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.004, 4, 8, Math.PI), metalMat);
-    trig.position.set(0, -0.015, 0.01);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    if (gunStyle === 0) {
-      // 1. Classic Six-Shooter Revolver
-      // Revolving drum (cylinder)
-      const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.05, 6), metalMat);
-      drum.rotation.x = Math.PI / 2;
-      drum.position.set(0, 0.01, 0.01);
-      group.add(drum);
-
-      // Indented grooves along cylinder drum
-      for (let i = 0; i < 6; i++) {
-        const angle = (i / 6) * Math.PI * 2;
-        const groove = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.052, 4), gripMat);
-        groove.rotation.x = Math.PI / 2;
-        groove.position.set(Math.cos(angle) * 0.018, 0.01 + Math.sin(angle) * 0.018, 0.01);
-        group.add(groove);
-      }
-
-      // Gun frame and long barrel
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.04, 0.06), metalMat);
-      frame.position.set(0, 0.01, -0.035);
-      group.add(frame);
-
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.011, 0.16, 8), metalMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.018, 0.11);
-      group.add(barrel);
-
-      // Front sight post
-      const sight = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.012, 0.012), metalMat);
-      sight.position.set(0, 0.028, 0.17);
-      group.add(sight);
-
-    } else if (gunStyle === 1) {
-      // 2. Double-Barrel Rifle/Shotgun
-      const stock = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.05, 0.12), gripMat);
-      stock.position.set(0, -0.02, -0.09);
-      stock.rotation.x = Math.PI / 18;
-      group.add(stock);
-
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.038, 0.07), metalMat);
-      frame.position.set(0, 0.015, -0.015);
-      group.add(frame);
-
-      // Twin parallel barrels
-      const b1 = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.22, 6), metalMat);
-      b1.rotation.x = Math.PI / 2;
-      b1.position.set(0.01, 0.022, 0.12);
-      group.add(b1);
-
-      const b2 = b1.clone();
-      b2.position.x = -0.01;
-      group.add(b2);
-
-    } else if (gunStyle === 2) {
-      // 3. Futuristic Plasma / Sci-fi Laser Rifle
-      // Tech frame block
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 0.12), metalMat);
-      frame.position.set(0, 0.015, -0.01);
-      group.add(frame);
-
-      // Glowing plasma battery cell
-      const battery = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.06, 6), energMat);
-      battery.rotation.x = Math.PI / 2;
-      battery.position.set(0, 0.015, -0.01);
-      group.add(battery);
-
-      // Glowing plasma barrel coils
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.18, 8), metalMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.02, 0.13);
-      group.add(barrel);
-
-      const numCoils = 4;
-      for (let i = 0; i < numCoils; i++) {
-        const coil = new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.005, 4, 8), energMat);
-        coil.position.set(0, 0.02, 0.07 + i * 0.035);
-        coil.rotation.x = Math.PI / 2;
-        group.add(coil);
-      }
-
-    } else if (gunStyle === 3) {
-      // 4. Tactical Assault Rifle
-      // Stock
-      const stock = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.035, 0.14), gripMat);
-      stock.position.set(0, -0.01, -0.095);
-      stock.rotation.x = -Math.PI / 30;
-      group.add(stock);
-
-      // Receiver
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.045, 0.12), metalMat);
-      frame.position.set(0, 0.015, -0.01);
-      group.add(frame);
-
-      // Barrel + Silencer
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.18, 6), metalMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.022, 0.13);
-      group.add(barrel);
-
-      const silencer = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.07, 8), metalMat);
-      silencer.rotation.x = Math.PI / 2;
-      silencer.position.set(0, 0.022, 0.23);
-      group.add(silencer);
-
-      // Curved Extended Magazine
-      const mag = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.08, 0.028), metalMat);
-      mag.position.set(0, -0.04, 0.035);
-      mag.rotation.x = -Math.PI / 10;
-      group.add(mag);
-
-      // Under-barrel Foregrip
-      const foregrip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.05, 0.018), gripMat);
-      foregrip.position.set(0, -0.03, 0.095);
-      foregrip.rotation.x = -Math.PI / 15;
-      group.add(foregrip);
-
-      // Holographic Red-Dot Scope
-      const scopeRail = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.008, 0.06), metalMat);
-      scopeRail.position.set(0, 0.04, -0.01);
-      group.add(scopeRail);
-
-      const scopeBody = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.045, 8), metalMat);
-      scopeBody.rotation.x = Math.PI / 2;
-      scopeBody.position.set(0, 0.052, -0.01);
-      group.add(scopeBody);
-
-      const lens = new THREE.Mesh(new THREE.CircleGeometry(0.009, 8), energMat);
-      lens.position.set(0, 0.052, 0.023);
-      group.add(lens);
-
-    } else if (gunStyle === 4) {
-      // 5. Heavy Drum-Mag SMG
-      // Frame / Receiver
-      const frame = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.05, 0.11), metalMat);
-      frame.position.set(0, 0.012, -0.01);
-      group.add(frame);
-
-      // Large Circular Drum Magazine
-      const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.026, 12), metalMat);
-      drum.rotation.z = Math.PI / 2;
-      drum.position.set(0, -0.035, 0.02);
-      group.add(drum);
-
-      // Shrouded Cooling Barrel
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.12, 8), metalMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.018, 0.09);
-      group.add(barrel);
-
-      // Carry Handle / Top Rail
-      const carryHandle = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.02, 0.09), metalMat);
-      carryHandle.position.set(0, 0.045, -0.015);
-      group.add(carryHandle);
-
-      // Short Stock
-      const stock = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.04, 0.08), gripMat);
-      stock.position.set(0, -0.01, -0.08);
-      group.add(stock);
-
-    } else {
-      // 6. Retro Emitter Ray-Gun
-      // Rounded receiver
-      const rec = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), metalMat);
-      rec.scale.set(0.9, 1.1, 1.4);
-      rec.position.set(0, 0.015, -0.01);
-      group.add(rec);
-
-      // Concentric copper cooling rings along the barrel
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.012, 0.16, 8), energMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.018, 0.09);
-      group.add(barrel);
-
-      const numRings = 4;
-      for (let i = 0; i < numRings; i++) {
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.005, 4, 10), metalMat);
-        ring.position.set(0, 0.018, 0.05 + i * 0.03);
-        ring.rotation.x = Math.PI / 2;
-        group.add(ring);
-      }
-
-      // Flared Funnel-shaped Muzzle
-      const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.011, 0.03, 8), metalMat);
-      muzzle.rotation.x = Math.PI / 2;
-      muzzle.position.set(0, 0.018, 0.18);
-      group.add(muzzle);
-
-      // Small glowing vacuum tubes on top
-      for (let i = -1; i <= 1; i += 2) {
-        const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.02, 6), energMat);
-        tube.position.set(i * 0.014, 0.045, -0.01);
-        group.add(tube);
-      }
-    }
-
-    return group;
-  },
-
-  // Type 10: Claw
-  createClawModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const plateColor = this.getRandomColor(rand, this.guardColors);
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.25, metalness: 0.85 });
-    const plateMat = new THREE.MeshStandardMaterial({ color: plateColor, roughness: 0.35, metalness: 0.8 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.6 });
-
-    // Armored gauntlet wrist plate base
-    const base = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.03, 0.08), plateMat);
-    base.position.y = -0.02;
-    group.add(base);
-
-    // Ornate gold trim / knuckles
-    const trim = new THREE.Mesh(new THREE.BoxGeometry(0.122, 0.01, 0.02), plateMat);
-    trim.position.set(0, 0, 0.03);
-    group.add(trim);
-
-    // Three long, curved crescent-shaped wolverine claws
-    for (let i = -1; i <= 1; i++) {
-      const xOffset = i * 0.04;
-      
-      const clawCurve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(xOffset, 0, 0.03),
-        new THREE.Vector3(xOffset, 0.06, 0.10),
-        new THREE.Vector3(xOffset, 0.15, 0.22)
-      );
-      
-      const claw = new THREE.Mesh(new THREE.TubeGeometry(clawCurve, 8, 0.009, 4, false), metalMat);
-      claw.scale.x = 0.4; // flatten sideways
-      group.add(claw);
-
-      // Embedded glowing gems on the knuckles
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.009, 0), gemMat);
-      gem.position.set(xOffset, 0.01, 0.03);
-      group.add(gem);
-    }
-
-    return group;
-  },
-
-  // Type 11: Glove
-  createGloveModel(weapon, rand) {
-    const group = new THREE.Group();
-    const gloveColor = this.getRandomColor(rand, this.handleColors);
-    const plateColor = this.getRandomColor(rand, this.guardColors);
-    const gemColors = this.crystalColors; // use all gem colors for ultimate gauntlet!
-
-    const mat = new THREE.MeshStandardMaterial({ color: gloveColor, roughness: 0.85 });
-    const plateMat = new THREE.MeshStandardMaterial({ color: plateColor, roughness: 0.35, metalness: 0.8 });
-
-    // Detailed Armored Gauntlet
-    const glove = new THREE.Mesh(new THREE.SphereGeometry(0.065, 12, 12), mat);
-    group.add(glove);
-
-    // Wrist cuff
-    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.07, 12), plateMat);
-    cuff.position.y = -0.06;
-    group.add(cuff);
-
-    // Armored plate on back of the hand
-    const handPlate = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.08), plateMat);
-    handPlate.position.set(0, 0.02, 0.01);
-    group.add(handPlate);
-
-    // Knuckle studs / Infinity stone sockets on the knuckles!
-    // Places 5 distinct glowing colored gems
-    const xOffsets = [-0.03, -0.015, 0, 0.015, 0.03];
-    for (let i = 0; i < 5; i++) {
-      const gColor = gemColors[i % gemColors.length];
-      const gemMat = new THREE.MeshStandardMaterial({ color: gColor, roughness: 0.1, emissive: gColor, emissiveIntensity: 0.8 });
-      const gem = new THREE.Mesh(new THREE.SphereGeometry(0.008, 6, 6), gemMat);
-      gem.position.set(xOffsets[i], 0.03, 0.045);
-      group.add(gem);
-
-      // Socket bezel
-      const bezel = new THREE.Mesh(new THREE.TorusGeometry(0.009, 0.002, 4, 8), plateMat);
-      bezel.position.set(xOffsets[i], 0.03, 0.045);
-      bezel.rotation.x = Math.PI / 2;
-      group.add(bezel);
-    }
-
-    return group;
-  },
-
-  // Type 12: Spear
-  createSpearModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const bladeColor = this.getRandomColor(rand, this.bladeColors);
-    const accentColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const ribbonColor = this.getRandomColor(rand, this.ribbonColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.95 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: bladeColor, roughness: 0.25, metalness: 0.85 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.35, metalness: 0.85 });
-    const ribbonMat = new THREE.MeshStandardMaterial({ color: ribbonColor, roughness: 0.9, metalness: 0.05 });
-
-    const hHeight = 0.85 + rand() * 0.35;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, hHeight, 8), woodMat);
-    h.position.y = -hHeight / 2 + 0.2;
-    group.add(h);
-
-    // Grip wrapping
-    const wrapGroup = new THREE.Group();
-    this.addGripWrap(wrapGroup, rand, hHeight * 0.3, 0.017, 0.017, wrapMat);
-    wrapGroup.position.y = -hHeight * 0.2;
-    group.add(wrapGroup);
-
-    // Spear head socket connector
-    const topPos = 0.2;
-    const socket = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.016, 0.08, 8), accentMat);
-    socket.position.y = topPos;
-    group.add(socket);
-
-    // Hanging battle tassels / ribbons under the spear tip
-    const tassel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.035, 0.04, 8), ribbonMat);
-    tassel.position.y = topPos - 0.02;
-    group.add(tassel);
-
-    // Spear point bottom counter-weight spike
-    const bottomSpike = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.06, 4), accentMat);
-    bottomSpike.rotation.x = Math.PI;
-    bottomSpike.position.y = -hHeight / 2 + 0.2 - hHeight / 2;
-    group.add(bottomSpike);
-
-    // Spear head variants: Trident (3-pronged), Partisan (winged leaf), or elegant Glaive/Naginata
-    const spearStyle = Math.floor(rand() * 3);
-    const bHeight = 0.22 + rand() * 0.12;
-
-    if (spearStyle === 0) {
-      // 1. Trident (3 prongs)
-      const centerProng = new THREE.Mesh(new THREE.ConeGeometry(0.012, bHeight, 4), metalMat);
-      centerProng.scale.z = 0.25;
-      centerProng.position.y = topPos + bHeight / 2 + 0.04;
-      group.add(centerProng);
-
-      const prongGeo = new THREE.ConeGeometry(0.009, bHeight * 0.85, 4);
-      
-      const leftProng = new THREE.Mesh(prongGeo, metalMat);
-      leftProng.scale.z = 0.25;
-      leftProng.rotation.z = Math.PI / 16;
-      leftProng.position.set(-0.04, topPos + bHeight * 0.45, 0);
-      group.add(leftProng);
-
-      const rightProng = new THREE.Mesh(prongGeo, metalMat);
-      rightProng.scale.z = 0.25;
-      rightProng.rotation.z = -Math.PI / 16;
-      rightProng.position.set(0.04, topPos + bHeight * 0.45, 0);
-      group.add(rightProng);
-
-      // Cross connecting bracket
-      const crossbar = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.012, 0.012), accentMat);
-      crossbar.position.y = topPos + 0.04;
-      group.add(crossbar);
-
-    } else if (spearStyle === 1) {
-      // 2. Partisan (winged leaf-shape spearhead)
-      const bladeGeo = new THREE.SphereGeometry(bHeight * 0.55, 8, 8);
-      const mainBlade = new THREE.Mesh(bladeGeo, metalMat);
-      mainBlade.scale.set(0.09 + rand() * 0.03, 1.8, 0.015);
-      mainBlade.position.y = topPos + bHeight / 2 + 0.03;
-      group.add(mainBlade);
-
-      // Two side winged lugs/axes
-      const wingGeo = new THREE.BoxGeometry(0.03, 0.03, 0.008);
-      const wingL = new THREE.Mesh(wingGeo, accentMat);
-      wingL.position.set(-0.035, topPos + 0.06, 0);
-      wingL.rotation.z = Math.PI / 4;
-      group.add(wingL);
-
-      const wingR = wingL.clone();
-      wingR.position.x = 0.035;
-      wingR.rotation.z = -Math.PI / 4;
-      group.add(wingR);
-
-    } else {
-      // 3. Naginata / Glaive curved blade
-      const naginataCurve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(0, topPos + 0.04, 0),
-        new THREE.Vector3(0.02, topPos + bHeight * 0.5, 0),
-        new THREE.Vector3(0.05, topPos + bHeight + 0.04, 0)
-      );
-      const blade = new THREE.Mesh(new THREE.TubeGeometry(naginataCurve, 10, 0.014, 4, false), metalMat);
-      blade.scale.x = 0.35; // flatten blade
-      group.add(blade);
-    }
-
-    return group;
-  },
-
-  // Special <Flail> support (linked chain segments with physics)
-  createFlailModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColor = this.getRandomColor(rand, this.handleColors);
-    const metalColor = this.getRandomColor(rand, this.guardColors);
-    const wrapColor = this.getRandomColor(rand, this.handleColors.filter(c => c !== handleColor));
-    const gemColor = this.getRandomColor(rand, this.crystalColors);
-
-    const woodMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9 });
-    const wrapMat = new THREE.MeshStandardMaterial({ color: wrapColor, roughness: 0.95 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.35, metalness: 0.75 });
-    const gemMat = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.1, emissive: gemColor, emissiveIntensity: 0.7 });
-
-    // Handle
-    const hHeight = 0.2 + rand() * 0.1;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.016, hHeight, 8), woodMat);
-    h.position.y = -hHeight / 2;
-    group.add(h);
-
-    // Grip wraps
-    this.addGripWrap(h, rand, hHeight, 0.02, 0.016, wrapMat);
-
-    // Lanyard ring pommel
-    const lanyard = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.004, 4, 8), metalMat);
-    lanyard.position.y = -hHeight;
-    lanyard.rotation.x = Math.PI / 2;
-    group.add(lanyard);
-
-    // ---- Linked-chain physics for all flail variants ----
-    const flailStyle = Math.floor(rand() * 3);
-    const numSegments = weapon.segments || 8;
-    const chainLength = 0.2 + rand() * 0.15;
-    const linkSpacing = chainLength / numSegments;
-
-    // Helper: build a physics-driven chain and return its rope
-    const buildPhysicsChain = (parentGroup, segCount, anchorOffset, scaleFactor = 1.0, endMassVal = 3.0) => {
-      const anchor = new THREE.Vector3(anchorOffset.x, anchorOffset.y, anchorOffset.z);
-      const sLen = linkSpacing * scaleFactor;
-
-      const rope = this.createVerletRope(segCount + 1, sLen, anchor, {
-        gravity: -0.0008,
-        damping: 0.93,
-        iterations: 8,
-        stiffness: 1.0,
-        endMass: endMassVal
-      });
-
-      const linkRadius = 0.015 * scaleFactor;
-      const linkTube = 0.004 * scaleFactor;
-
-      for (let i = 0; i < segCount; i++) {
-        const linkGeo = new THREE.TorusGeometry(linkRadius, linkTube, 4, 8);
-        const link = new THREE.Mesh(linkGeo, metalMat);
-        // Alternate link rotation for interlocking chain look
-        link.userData._chainAlternate = (i % 2 === 0);
-        link.position.set(anchor.x, anchor.y + sLen * i + sLen / 2, anchor.z);
-        parentGroup.add(link);
-        rope.segmentMeshes.push(link);
-      }
-
-      return rope;
-    };
-
-    // Helper: create spiky ball head group
-    const buildSpikyBallGroup = (radius, spikeSize = 1.0) => {
-      const headGroup = new THREE.Group();
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(radius, 12, 12), metalMat);
-      headGroup.add(ball);
-
-      const spikeRadius = 0.008 * spikeSize;
-      const spikeHeight = 0.018 * spikeSize;
-      const spikeGeo = new THREE.ConeGeometry(spikeRadius, spikeHeight, 4);
-      const numSpikes = 8 + Math.floor(rand() * 6);
-
-      for (let i = 0; i < numSpikes; i++) {
-        const spike = new THREE.Mesh(spikeGeo, metalMat);
-        const phi = Math.acos(-1 + (2 * i) / numSpikes);
-        const theta = Math.sqrt(numSpikes * Math.PI) * phi;
-
-        spike.position.set(
-          radius * Math.sin(phi) * Math.cos(theta),
-          radius * Math.sin(phi) * Math.sin(theta),
-          radius * Math.cos(phi)
-        );
-
-        const normal = spike.position.clone().normalize();
-        spike.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
-        ball.add(spike);
-      }
-      return headGroup;
-    };
-
-    // Store all ropes for this flail (multi-headed has 3)
-    const ropes = [];
-
-    if (flailStyle === 0) {
-      // 1. Classic Spiky morningstar flail, single heavy chain
-      const rope = buildPhysicsChain(group, numSegments, new THREE.Vector3(0, 0, 0), 1.0, 4.0);
-      const ballRadius = 0.045 + rand() * 0.015;
-      const headGroup = buildSpikyBallGroup(ballRadius, 1.0);
-      headGroup.position.set(0, linkSpacing * numSegments, 0);
-      group.add(headGroup);
-      rope.headMeshGroup = headGroup;
-      ropes.push(rope);
-
-    } else if (flailStyle === 1) {
-      // 2. Multi-headed flail (3 independent physics chains branching off hilt)
-      const angles = [0, (Math.PI * 2) / 3, (Math.PI * 4) / 3];
-      for (let i = 0; i < 3; i++) {
-        const spreadX = Math.cos(angles[i]) * 0.015;
-        const spreadZ = Math.sin(angles[i]) * 0.015;
-        const anchorOff = new THREE.Vector3(spreadX, 0, spreadZ);
-
-        const rope = buildPhysicsChain(group, 5, anchorOff, 0.7, 2.5);
-        const headGroup = buildSpikyBallGroup(0.025, 0.6);
-        headGroup.position.set(spreadX, linkSpacing * 5 * 0.7, spreadZ);
-        group.add(headGroup);
-        rope.headMeshGroup = headGroup;
-        ropes.push(rope);
-      }
-
-    } else {
-      // 3. Meteor Hammer, heavy glowing runic urn weight
-      const rope = buildPhysicsChain(group, numSegments, new THREE.Vector3(0, 0, 0), 1.0, 5.0);
-
-      const headGroup = new THREE.Group();
-      // Polyhedron urn block
-      const urnGeo = new THREE.IcosahedronGeometry(0.042, 0);
-      const urn = new THREE.Mesh(urnGeo, metalMat);
-      headGroup.add(urn);
-
-      // Embedded core magical gem glowing
-      const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.024, 0), gemMat);
-      headGroup.add(gem);
-
-      headGroup.position.set(0, linkSpacing * numSegments, 0);
-      group.add(headGroup);
-      rope.headMeshGroup = headGroup;
-      ropes.push(rope);
-    }
-
-    // Store ropes on the group for physics ticking
-    group.userData._verletRopes = ropes;
-
-    return group;
-  },
-
   // ============================================================
   // DEDICATED CUSTOM MODEL METHODS
   // ============================================================
 
-  // <Mjolnir>, Thor's iconic short-handled square-head hammer
-  createMjolnirModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalMat  = new THREE.MeshStandardMaterial({ color: 0xBBBBCC, roughness: 0.3,  metalness: 0.9  });
-    const goldMat   = new THREE.MeshStandardMaterial({ color: 0xDDAA00, roughness: 0.2,  metalness: 0.95 });
-    const wrapMat   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9  });
-    const lightMat  = new THREE.MeshStandardMaterial({ color: 0x4488FF, emissive: 0x4488FF, emissiveIntensity: 0.85 });
+  // ============================================================
+  // Bespoke weapon models
+  // ============================================================
+  // Shared construction helpers. Every model in this file follows the same
+  // convention: the weapon runs along +Y with the grip below the origin, the
+  // width runs along X and the thickness along Z.
 
-    const hH = 0.20;
-    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.022, hH, 8), goldMat);
-    handle.position.y = -hH / 2;
-    group.add(handle);
-    this.addGripWrap(handle, rand, hH, 0.022, 0.02, wrapMat);
-
-    const strap = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.005, 4, 8), goldMat);
-    strap.position.y = -hH;
-    strap.rotation.x = Math.PI / 2;
-    group.add(strap);
-
-    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.022, 0.04, 8), metalMat);
-    neck.position.y = 0.02;
-    group.add(neck);
-
-    const headW = 0.14, headH = 0.10, headD = 0.09;
-    const head = new THREE.Mesh(new THREE.BoxGeometry(headW, headH, headD), metalMat);
-    head.position.y = 0.09;
-    group.add(head);
-
-    // Gold band at neck
-    const band = new THREE.Mesh(new THREE.BoxGeometry(headW + 0.01, 0.015, headD + 0.01), goldMat);
-    band.position.y = 0.044;
-    group.add(band);
-
-    // Top cap
-    const cap = new THREE.Mesh(new THREE.BoxGeometry(headW - 0.01, 0.01, headD - 0.01), goldMat);
-    cap.position.y = 0.09 + headH / 2;
-    group.add(cap);
-
-    // Engraved rune lines on front face
-    for (let i = 0; i < 3; i++) {
-      const rune = new THREE.Mesh(new THREE.BoxGeometry(headW * 0.55, 0.005, 0.002), lightMat);
-      rune.position.set(0, 0.045 + i * 0.028, headD / 2 + 0.001);
-      group.add(rune);
-    }
-
-    // Floating lightning bolt fragments around head
-    for (let i = 0; i < 4; i++) {
-      const angle = (i / 4) * Math.PI * 2;
-      const bolt = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.05, 0.025), lightMat);
-      bolt.position.set(Math.cos(angle) * 0.11, 0.09, Math.sin(angle) * 0.06);
-      bolt.rotation.y = angle;
-      group.add(bolt);
-    }
-
-    return group;
+  _mat(color, opts) {
+    return new THREE.MeshStandardMaterial(Object.assign({ color: color, roughness: 0.5, metalness: 0.2 }, opts || {}));
   },
-
-  // <FlySwatter>, Lightweight plastic swatter paddle
-  createFlySwatterModel(weapon, rand) {
-    const group = new THREE.Group();
-    const colors = [0xFF3333, 0x3366FF, 0x33CC33, 0xFF9900];
-    const plasticColor = colors[Math.floor(rand() * colors.length)];
-    const plasticMat = new THREE.MeshStandardMaterial({ color: plasticColor, roughness: 0.7 });
-    const wireMat    = new THREE.MeshStandardMaterial({ color: 0x222222,    roughness: 0.8 });
-
-    const hH = 0.35;
-    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.007, hH, 6), plasticMat);
-    handle.position.y = -hH / 2;
-    group.add(handle);
-
-    const neck = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.02, 0.015), plasticMat);
-    neck.position.y = 0;
-    group.add(neck);
-
-    // Frame border of the paddle
-    const pW = 0.12, pH = 0.09;
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(pW, pH, 0.006), plasticMat);
-    frame.position.y = pH / 2 + 0.01;
-    group.add(frame);
-
-    // Interior wire mesh (horizontal + vertical bars)
-    const gridN = 5;
-    for (let r = 0; r < gridN; r++) {
-      const ty = -pH * 0.35 + (r / (gridN - 1)) * pH * 0.7;
-      const hBar = new THREE.Mesh(new THREE.BoxGeometry(pW * 0.8, 0.003, 0.005), wireMat);
-      hBar.position.set(0, pH / 2 + 0.01 + ty, 0);
-      group.add(hBar);
-    }
-    for (let c = 0; c < gridN; c++) {
-      const tx = -pW * 0.35 + (c / (gridN - 1)) * pW * 0.7;
-      const vBar = new THREE.Mesh(new THREE.BoxGeometry(0.003, pH * 0.8, 0.005), wireMat);
-      vBar.position.set(tx, pH / 2 + 0.01, 0);
-      group.add(vBar);
-    }
-
-    return group;
+  _steel(color, rough) {
+    return this._mat(color, { roughness: rough === undefined ? 0.25 : rough, metalness: 0.9 });
   },
-
-  // <WarFan>, Folding metal war fan (open position)
-  createWarFanModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bladeColor  = this.getRandomColor(rand, this.bladeColors);
-    const handleColor = this.getRandomColor(rand, this.guardColors);
-    const gemColor    = this.getRandomColor(rand, this.crystalColors);
-    const bladeMat  = new THREE.MeshStandardMaterial({ color: bladeColor,  roughness: 0.2, metalness: 0.9 });
-    const handleMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.3, metalness: 0.85 });
-    const panelMat  = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.9, metalness: 0.0, transparent: true, opacity: 0.75 });
-    const gemMat    = new THREE.MeshStandardMaterial({ color: gemColor, emissive: gemColor, emissiveIntensity: 0.6 });
-
-    // Pivot pin + gem
-    const pivot = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.04, 8), handleMat);
-    pivot.rotation.x = Math.PI / 2;
-    group.add(pivot);
-    const pivotGem = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 6), gemMat);
-    group.add(pivotGem);
-
-    // Fan ribs radiating outward
-    const numRibs  = 7;
-    const fanSpread = Math.PI * 0.65;
-    const ribLen   = 0.18;
-
-    for (let i = 0; i < numRibs; i++) {
-      const angle = -fanSpread / 2 + (i / (numRibs - 1)) * fanSpread;
-      const dir   = new THREE.Vector3(Math.sin(angle) * ribLen, Math.cos(angle) * ribLen, 0);
-      const rib   = new THREE.Mesh(
-        new THREE.TubeGeometry(new THREE.LineCurve3(new THREE.Vector3(0, 0, 0), dir), 4, 0.006, 4, false),
-        bladeMat
-      );
-      group.add(rib);
-      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.008, 4, 4), bladeMat);
-      tip.position.copy(dir);
-      group.add(tip);
-
-      if (i < numRibs - 1) {
-        const midAngle = angle + fanSpread / (numRibs - 1) / 2;
-        const panel = new THREE.Mesh(new THREE.BoxGeometry(0.04, ribLen * 0.85, 0.002), panelMat);
-        panel.position.set(Math.sin(midAngle) * ribLen * 0.5, Math.cos(midAngle) * ribLen * 0.5, 0);
-        panel.rotation.z = -midAngle;
-        group.add(panel);
-      }
-    }
-    return group;
+  _cast(color) {
+    return this._mat(color, { roughness: 0.5, metalness: 0.75 });
   },
-
-  // <Excalibur>, Holy sword with cruciform guard and divine glow
-  createExcaliburModel(weapon, rand) {
-    const group = new THREE.Group();
-    const goldMat  = new THREE.MeshStandardMaterial({ color: 0xDDAA00, roughness: 0.15, metalness: 0.95 });
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xEEEEFF, roughness: 0.08, metalness: 0.98, emissive: 0xFFFFAA, emissiveIntensity: 0.25 });
-    const holyMat  = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, emissive: 0xFFFFFF, emissiveIntensity: 1.0, transparent: true, opacity: 0.75 });
-    const gemMat   = new THREE.MeshStandardMaterial({ color: 0x00AAFF, emissive: 0x00AAFF, emissiveIntensity: 1.0 });
-    const wrapMat  = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.9 });
-
-    const hH = 0.22;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.015, hH, 8), goldMat);
-    h.position.y = -hH / 2;
-    group.add(h);
-    this.addGripWrap(h, rand, hH, 0.018, 0.015, wrapMat);
-
-    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.026, 8, 8), goldMat);
-    pommel.position.y = -hH;
-    group.add(pommel);
-
-    // Cross guard (wide horizontal + short vertical)
-    const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.018, 0.022), goldMat);
-    group.add(crossH);
-    const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.055, 0.022), goldMat);
-    group.add(crossV);
-    const crossGem = new THREE.Mesh(new THREE.OctahedronGeometry(0.014, 0), gemMat);
-    crossGem.position.set(0, 0, 0.012);
-    group.add(crossGem);
-
-    const bH = 0.72, bW = 0.032, bT = 0.007;
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(bW, bH, bT), bladeMat);
-    blade.position.y = bH / 2;
-    group.add(blade);
-
-    // Glowing fuller
-    const fuller = new THREE.Mesh(new THREE.BoxGeometry(bW * 0.15, bH * 0.78, bT * 1.4), holyMat);
-    fuller.position.y = bH / 2;
-    group.add(fuller);
-
-    const tipH = bW * 1.2;
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(bW * 0.65, tipH, 4), bladeMat);
-    tip.scale.z = bT / bW;
-    tip.rotation.y = Math.PI / 4;
-    tip.position.y = bH + tipH / 2;
-    group.add(tip);
-
-    // Floating divine sigils (cross shapes along blade)
-    for (let i = 0; i < 3; i++) {
-      const sx = bW * 0.9, sy = bH * (0.28 + i * 0.24);
-      const sigH = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.005, 0.002), holyMat);
-      sigH.position.set(sx, sy, 0);
-      group.add(sigH);
-      const sigV = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.025, 0.002), holyMat);
-      sigV.position.set(sx, sy, 0);
-      group.add(sigV);
-    }
-    return group;
+  _wood(color) {
+    return this._mat(color, { roughness: 0.9, metalness: 0.0 });
   },
-
-  // <DragonBlade>, Draconic serrated sword with fire glow
-  createDragonBladeModel(weapon, rand) {
-    const group = new THREE.Group();
-    const darkRedMat = new THREE.MeshStandardMaterial({ color: 0x8B0000, roughness: 0.3,  metalness: 0.8  });
-    const fireMat    = new THREE.MeshStandardMaterial({ color: 0xFF4400, emissive: 0xFF2200, emissiveIntensity: 0.95 });
-    const blackMat   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7   });
-    const wrapMat    = new THREE.MeshStandardMaterial({ color: 0x3A0000, roughness: 0.9   });
-
-    const hH = 0.18;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.015, hH, 6), blackMat);
-    h.position.y = -hH / 2;
-    group.add(h);
-    this.addGripWrap(h, rand, hH, 0.02, 0.015, wrapMat);
-
-    // Dragon claw guard
-    for (let i = -1; i <= 1; i++) {
-      const clawCurve = new THREE.QuadraticBezierCurve3(
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(i * 0.05, 0.04, 0),
-        new THREE.Vector3(i * 0.09, -0.01, 0)
-      );
-      const claw = new THREE.Mesh(new THREE.TubeGeometry(clawCurve, 5, 0.008, 4, false), darkRedMat);
-      group.add(claw);
-    }
-
-    // Dragon head pommel
-    const pGroup = new THREE.Group();
-    pGroup.position.y = -hH;
-    pGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), darkRedMat));
-    const horn = new THREE.Mesh(new THREE.ConeGeometry(0.008, 0.024, 4), darkRedMat);
-    horn.position.y = 0.022;
-    pGroup.add(horn);
-    group.add(pGroup);
-
-    const bH = 0.56, bW = 0.038, bT = 0.009;
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(bW, bH, bT), darkRedMat);
-    blade.position.y = bH / 2;
-    group.add(blade);
-
-    // Fire fuller
-    const fuller = new THREE.Mesh(new THREE.BoxGeometry(bW * 0.18, bH * 0.7, bT * 1.3), fireMat);
-    fuller.position.y = bH / 2;
-    group.add(fuller);
-
-    // Serrated fang edge
-    for (let i = 0; i < 5; i++) {
-      const fang = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.025, 3), darkRedMat);
-      fang.rotation.z = Math.PI / 2;
-      fang.position.set(bW / 2 + 0.01, 0.07 + i * 0.09, 0);
-      group.add(fang);
-    }
-
-    const tipH = 0.06;
-    const tip = new THREE.Mesh(new THREE.ConeGeometry(bW * 0.6, tipH, 4), darkRedMat);
-    tip.scale.z = bT / bW;
-    tip.rotation.y = Math.PI / 4;
-    tip.position.y = bH + tipH / 2;
-    group.add(tip);
-
-    // Floating embers
-    for (let i = 0; i < 5; i++) {
-      const ember = new THREE.Mesh(new THREE.SphereGeometry(0.005 + rand() * 0.004, 4, 4), fireMat);
-      ember.position.set((rand() - 0.5) * 0.06, 0.1 + rand() * bH, (rand() - 0.5) * 0.04);
-      group.add(ember);
-    }
-    return group;
-  },
-
-  // <MagicOrb>, Floating faceted orb with orbiting rings
-  createMagicOrbModel(weapon, rand) {
-    const group = new THREE.Group();
-    const orbColor    = this.getRandomColor(rand, this.crystalColors);
-    const accentColor = this.getRandomColor(rand, this.crystalColors.filter(c => c !== orbColor));
-    const metalColor  = this.getRandomColor(rand, this.guardColors);
-    const orbMat    = new THREE.MeshStandardMaterial({ color: orbColor, emissive: orbColor, emissiveIntensity: 0.65, roughness: 0.05, transparent: true, opacity: 0.9 });
-    const innerMat  = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, emissive: 0xFFFFFF, emissiveIntensity: 1.0, transparent: true, opacity: 0.45 });
-    const ringMat   = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.3, metalness: 0.9 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: accentColor, emissive: accentColor, emissiveIntensity: 0.5 });
-
-    const orbR = 0.07;
-    group.add(new THREE.Mesh(new THREE.IcosahedronGeometry(orbR, 1), orbMat));
-    group.add(new THREE.Mesh(new THREE.SphereGeometry(orbR * 0.4, 8, 8), innerMat));
-
-    [[Math.PI / 2, 0, 0], [0, 0, Math.PI / 3], [Math.PI / 4, Math.PI / 4, 0]].forEach((angles, i) => {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(orbR * (1.38 + i * 0.01), 0.005, 4, 20), ringMat);
-      ring.rotation.set(...angles);
-      group.add(ring);
+  _glow(color, intensity) {
+    return this._mat(color, {
+      roughness: 0.15, metalness: 0.1,
+      emissive: color, emissiveIntensity: intensity === undefined ? 0.7 : intensity
     });
-
-    for (let i = 0; i < 4; i++) {
-      const angle = (i / 4) * Math.PI * 2;
-      const shard = new THREE.Mesh(new THREE.OctahedronGeometry(0.015, 0), accentMat);
-      shard.position.set(Math.cos(angle) * orbR * 1.8, Math.sin(angle * 1.3) * orbR * 0.5, Math.sin(angle) * orbR * 1.8);
-      group.add(shard);
-    }
-
-    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.01, 0.06, 6), ringMat);
-    handle.position.y = -orbR - 0.03;
-    group.add(handle);
-    return group;
   },
 
-  // <FoamFinger>, Giant foam "#1" fan finger
-  createFoamFingerModel(weapon, rand) {
-    const group = new THREE.Group();
-    const teamColors = [0xFF6600, 0xFF0000, 0x0000DD, 0xFFCC00, 0x00BB00];
-    const teamColor = teamColors[Math.floor(rand() * teamColors.length)];
-    const foamMat = new THREE.MeshStandardMaterial({ color: teamColor, roughness: 0.9 });
-    const textMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.9 });
-
-    // Base glove body
-    const base = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.07, 0.06), foamMat);
-    base.position.y = -0.05;
-    group.add(base);
-    const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.045, 0.04, 10), foamMat);
-    wrist.position.y = -0.09;
-    group.add(wrist);
-
-    // Index finger pointing up
-    const fBot = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.025, 0.12, 8), foamMat);
-    fBot.position.set(0.015, 0.08, 0);
-    fBot.rotation.z = -0.05;
-    group.add(fBot);
-    const fMid = new THREE.Mesh(new THREE.CylinderGeometry(0.020, 0.022, 0.10, 8), foamMat);
-    fMid.position.set(0.012, 0.19, 0);
-    fMid.rotation.z = -0.03;
-    group.add(fMid);
-    const fTip = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), foamMat);
-    fTip.position.set(0.009, 0.26, 0);
-    group.add(fTip);
-
-    // Curled other fingers
-    for (let i = 0; i < 3; i++) {
-      const stub = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 6), foamMat);
-      stub.scale.y = 0.6;
-      stub.position.set(-0.02 + i * 0.028, 0.01, 0.028);
-      group.add(stub);
-    }
-
-    // "#1" band
-    const band = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.014, 0.005), textMat);
-    band.position.set(0, -0.035, 0.032);
-    group.add(band);
-    return group;
-  },
-
-  // <Spatula>, Cooking spatula (flipping weapon)
-  createSpatulaModel(weapon, rand) {
-    const group = new THREE.Group();
-    const handleColors = [0xAA3311, 0x333333, 0x111111, 0x2255AA, 0x228833];
-    const handleColor = handleColors[Math.floor(rand() * handleColors.length)];
-    const metalMat  = new THREE.MeshStandardMaterial({ color: 0xCCCCCC, roughness: 0.22, metalness: 0.9 });
-    const handleMat = new THREE.MeshStandardMaterial({ color: handleColor, roughness: 0.7 });
-    const bandMat   = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.5, metalness: 0.5 });
-    const holeMat   = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-    const hH = 0.28;
-    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.01, hH, 6), handleMat);
-    handle.position.y = -hH / 2;
-    group.add(handle);
-    this.addGripWrap(handle, rand, hH, 0.012, 0.01, bandMat);
-
-    // Neck (slight tilt)
-    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.012, 0.04, 6), metalMat);
-    neck.position.y = 0.02;
-    neck.rotation.z = 0.15;
-    group.add(neck);
-
-    // Wide flat blade
-    const bladeW = 0.09, bladeH = 0.07;
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(bladeW, bladeH, 0.003), metalMat);
-    blade.position.set(0.01, 0.08, 0);
-    blade.rotation.z = 0.1;
-    group.add(blade);
-
-    // Drainage holes
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 3; c++) {
-        const hole = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.006), holeMat);
-        hole.position.set(0.01 + (c - 1) * 0.025, 0.07 + (r - 0.5) * 0.025, 0);
-        hole.rotation.z = 0.1;
-        group.add(hole);
-      }
-    }
-
-    // Edge rim
-    const rim = new THREE.Mesh(new THREE.BoxGeometry(bladeW + 0.004, 0.005, 0.005), metalMat);
-    rim.position.set(0.01, 0.116, 0);
-    rim.rotation.z = 0.1;
-    group.add(rim);
-    return group;
-  },
-
-  // <CelestialHammer>, Meteoric hammer with star fragments orbiting
-  createCelestialHammerModel(weapon, rand) {
-    const group = new THREE.Group();
-    const rockMat   = new THREE.MeshStandardMaterial({ color: 0x3A3A5A, roughness: 0.85, metalness: 0.1  });
-    const glowMat   = new THREE.MeshStandardMaterial({ color: 0x8888FF, emissive: 0x8888FF, emissiveIntensity: 0.8 });
-    const starMat   = new THREE.MeshStandardMaterial({ color: 0xFFFFDD, emissive: 0xFFFFDD, emissiveIntensity: 1.0 });
-    const handleMat = new THREE.MeshStandardMaterial({ color: 0x1A1A2A, roughness: 0.7 });
-
-    const hH = 0.55;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.012, hH, 8), handleMat);
-    h.position.y = -hH / 2 + 0.08;
-    group.add(h);
-
-    // Constellation dots on handle
-    for (let i = 0; i < 6; i++) {
-      const angle = (i / 6) * Math.PI * 2;
-      const dot = new THREE.Mesh(new THREE.SphereGeometry(0.004, 4, 4), starMat);
-      dot.position.set(Math.cos(angle) * 0.016, -hH * 0.28 + (i / 6) * hH * 0.5, Math.sin(angle) * 0.016);
-      group.add(dot);
-    }
-
-    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.012, 0.05, 4), rockMat);
-    spike.rotation.x = Math.PI;
-    spike.position.y = -hH / 2 + 0.08 - hH / 2;
-    group.add(spike);
-
-    // Irregular meteoric head
-    const headPos = 0.08;
-    const head = new THREE.Mesh(new THREE.IcosahedronGeometry(0.065, 0), rockMat);
-    head.position.y = headPos;
-    group.add(head);
-
-    // Glowing cracks
-    const c1 = new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(-0.04, headPos, 0.04),
-      new THREE.Vector3(0, headPos + 0.02, 0),
-      new THREE.Vector3(0.04, headPos, -0.04)
-    );
-    group.add(new THREE.Mesh(new THREE.TubeGeometry(c1, 6, 0.003, 4, false), glowMat));
-    const c2 = new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(0, headPos + 0.065, 0),
-      new THREE.Vector3(0.03, headPos + 0.03, 0),
-      new THREE.Vector3(0.04, headPos - 0.04, 0.03)
-    );
-    group.add(new THREE.Mesh(new THREE.TubeGeometry(c2, 6, 0.003, 4, false), glowMat));
-
-    // Orbiting star shards
-    for (let i = 0; i < 5; i++) {
-      const angle = (i / 5) * Math.PI * 2;
-      const shard = new THREE.Mesh(new THREE.OctahedronGeometry(0.01, 0), starMat);
-      shard.position.set(Math.cos(angle) * 0.1, headPos + (rand() * 0.04 - 0.02), Math.sin(angle) * 0.1);
-      group.add(shard);
-    }
-    return group;
-  },
-
-  // <ChronosHammer>, Hourglass-shaped hammer with clock markings
-  createChronosHammerModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bronzeMat    = new THREE.MeshStandardMaterial({ color: 0xCD7F32, roughness: 0.4,  metalness: 0.8  });
-    const goldMat      = new THREE.MeshStandardMaterial({ color: 0xDDAA00, roughness: 0.25, metalness: 0.95 });
-    const glassMat     = new THREE.MeshStandardMaterial({ color: 0xAA8833, roughness: 0.1,  metalness: 0.0, transparent: true, opacity: 0.82 });
-    const glowMat      = new THREE.MeshStandardMaterial({ color: 0xFFCC00, emissive: 0xCC9900, emissiveIntensity: 0.7 });
-    const sandMat      = new THREE.MeshStandardMaterial({ color: 0xEECC88, emissive: 0xAAAA44, emissiveIntensity: 0.2 });
-
-    const hH = 0.50;
-    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.014, hH, 8), bronzeMat);
-    h.position.y = -hH / 2 + 0.08;
-    group.add(h);
-
-    // Gear rings along handle
-    for (let i = 0; i < 4; i++) {
-      const y = -hH * 0.38 + (i / 3) * hH * 0.65;
-      const gear = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.005, 4, 8), goldMat);
-      gear.position.y = y;
-      gear.rotation.x = Math.PI / 2;
-      group.add(gear);
-    }
-
-    const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), goldMat);
-    pommel.position.y = -hH / 2 + 0.08 - hH / 2;
-    group.add(pommel);
-
-    // Hourglass head (two cones meeting at waist)
-    const headPos = 0.08, coneH = 0.07, coneR = 0.065;
-    const upperCone = new THREE.Mesh(new THREE.ConeGeometry(coneR, coneH, 8), bronzeMat);
-    upperCone.position.y = headPos + coneH / 2;
-    group.add(upperCone);
-    const lowerCone = new THREE.Mesh(new THREE.ConeGeometry(coneR, coneH, 8), bronzeMat);
-    lowerCone.rotation.x = Math.PI;
-    lowerCone.position.y = headPos - coneH / 2;
-    group.add(lowerCone);
-
-    // Glass waist + sand
-    const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.025, 8), glassMat);
-    waist.position.y = headPos;
-    group.add(waist);
-    const sand = new THREE.Mesh(new THREE.SphereGeometry(0.015, 6, 6), sandMat);
-    sand.position.y = headPos - 0.015;
-    sand.scale.y = 0.4;
-    group.add(sand);
-
-    // Clock tick marks on one face
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * Math.PI * 2;
-      const mark = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.012, 0.003), glowMat);
-      mark.position.set(Math.sin(angle) * 0.055, headPos, Math.cos(angle) * 0.055 + 0.062);
-      mark.rotation.y = angle;
-      group.add(mark);
-    }
-
-    // Orbiting distortion rings
-    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.004, 4, 16), glowMat);
-    ring1.position.y = headPos;
-    ring1.rotation.x = Math.PI / 4;
-    group.add(ring1);
-    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.003, 4, 16), glowMat);
-    ring2.position.y = headPos;
-    ring2.rotation.set(-Math.PI / 4, 0, Math.PI / 4);
-    group.add(ring2);
-    return group;
-  },
-
-  // <RocketLauncher>, Shoulder-mounted tube launcher with exhaust
-  createRocketLauncherModel(weapon, rand) {
-    const group = new THREE.Group();
-    const tubeMat    = new THREE.MeshStandardMaterial({ color: 0x2A3A2A, roughness: 0.6, metalness: 0.5 });
-    const metalMat   = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.4, metalness: 0.75 });
-    const gripMat    = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.9 });
-    const warheadMat = new THREE.MeshStandardMaterial({ color: 0x886633, roughness: 0.5, metalness: 0.3 });
-
-    const tubeR = 0.025, tubeL = 0.28;
-    const tube = new THREE.Mesh(new THREE.CylinderGeometry(tubeR, tubeR, tubeL, 10), tubeMat);
-    tube.rotation.x = Math.PI / 2;
-    tube.position.set(0, 0.02, 0);
-    group.add(tube);
-
-    // Muzzle rim
-    const muzzleRim = new THREE.Mesh(new THREE.TorusGeometry(tubeR * 1.05, 0.005, 6, 12), metalMat);
-    muzzleRim.rotation.x = Math.PI / 2;
-    muzzleRim.position.set(0, 0.02, tubeL / 2);
-    group.add(muzzleRim);
-
-    // Back exhaust cone
-    const exhaust = new THREE.Mesh(new THREE.CylinderGeometry(tubeR * 1.4, tubeR, 0.05, 10), tubeMat);
-    exhaust.rotation.x = -Math.PI / 2;
-    exhaust.position.set(0, 0.02, -tubeL / 2 - 0.025);
-    group.add(exhaust);
-
-    // Pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.08, 0.03), gripMat);
-    grip.position.set(0, -0.055, 0.02);
-    grip.rotation.x = Math.PI / 10;
-    group.add(grip);
-
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.004, 4, 8, Math.PI), metalMat);
-    trig.position.set(0, -0.01, 0.02);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Shoulder rest
-    const shoulderPad = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.035, 0.012), gripMat);
-    shoulderPad.position.set(0, 0.015, -tubeL / 2 - 0.045);
-    group.add(shoulderPad);
-
-    // Top carry handle
-    const topHandle = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.025, 0.055), tubeMat);
-    topHandle.position.set(0, 0.06, 0.04);
-    group.add(topHandle);
-
-    // Rocket tip visible at muzzle
-    const rocketTip = new THREE.Mesh(new THREE.ConeGeometry(tubeR * 0.8, 0.04, 8), warheadMat);
-    rocketTip.rotation.x = Math.PI / 2;
-    rocketTip.position.set(0, 0.02, tubeL / 2 + 0.02);
-    group.add(rocketTip);
-
-    // Sight rail
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.006, 0.12), metalMat);
-    rail.position.set(0, 0.055, 0.04);
-    group.add(rail);
-    return group;
-  },
-
-  // <Minigun>, Six-barrel rotating gatling cannon
-  createMinigunModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalMat  = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.4, metalness: 0.80 });
-    const darkMat   = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.5, metalness: 0.60 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.90 });
-    const gripMat   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9  });
-
-    // Central housing
-    const housing = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.15, 12), darkMat);
-    housing.rotation.x = Math.PI / 2;
-    housing.position.set(0, 0.02, 0);
-    group.add(housing);
-
-    // Six barrels
-    const numBarrels = 6, barrelOffset = 0.03, barrelL = 0.22;
-    for (let i = 0; i < numBarrels; i++) {
-      const angle = (i / numBarrels) * Math.PI * 2;
-      const bx = Math.cos(angle) * barrelOffset;
-      const by = Math.sin(angle) * barrelOffset;
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, barrelL, 6), accentMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(bx, 0.02 + by, barrelL / 2 + 0.075);
-      group.add(barrel);
-      const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.007, 0.014, 6), metalMat);
-      muzzle.rotation.x = Math.PI / 2;
-      muzzle.position.set(bx, 0.02 + by, barrelL + 0.075 + 0.007);
-      group.add(muzzle);
-    }
-
-    // Front barrel cage
-    const frontRing = new THREE.Mesh(new THREE.TorusGeometry(0.045, 0.008, 6, 12), metalMat);
-    frontRing.rotation.x = Math.PI / 2;
-    frontRing.position.set(0, 0.02, 0.075);
-    group.add(frontRing);
-
-    // Rear motor housing
-    const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 10), darkMat);
-    motor.rotation.x = Math.PI / 2;
-    motor.position.set(0, 0.02, -0.12);
-    group.add(motor);
-
-    // Dual grips
-    const handleL = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.07, 0.025), gripMat);
-    handleL.position.set(-0.05, -0.035, 0);
-    handleL.rotation.x = Math.PI / 12;
-    group.add(handleL);
-    const handleR = handleL.clone();
-    handleR.position.x = 0.05;
-    group.add(handleR);
-
-    // Ammo feed
-    const feed = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.09, 6), darkMat);
-    feed.rotation.z = Math.PI / 4;
-    feed.position.set(0.07, -0.02, -0.05);
-    group.add(feed);
-    return group;
-  },
-
-  // <Flamethrower>, Tank body + hose + barrel + flame cone
-  createFlamethrowerModel(weapon, rand) {
-    const group = new THREE.Group();
-    const tankMat   = new THREE.MeshStandardMaterial({ color: 0x556655, roughness: 0.5, metalness: 0.60 });
-    const hoseMat   = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8, metalness: 0.10 });
-    const nozzleMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.35, metalness: 0.85 });
-    const gripMat   = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.9  });
-    const fireMat   = new THREE.MeshStandardMaterial({ color: 0xFF4400, emissive: 0xFF2200, emissiveIntensity: 0.9, transparent: true, opacity: 0.85 });
-    const outerFire = new THREE.MeshStandardMaterial({ color: 0xFF8800, emissive: 0xFF4400, emissiveIntensity: 0.6, transparent: true, opacity: 0.5  });
-
-    // Fuel tank
-    const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.16, 10), tankMat);
-    tank.rotation.x = Math.PI / 2;
-    tank.position.set(0, 0.01, -0.10);
-    group.add(tank);
-    // Pressure gauge
-    const gauge = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.012, 6), nozzleMat);
-    gauge.position.set(0.04, 0.03, -0.10);
-    group.add(gauge);
-
-    // Hose (curved)
-    const hoseCurve = new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(0, 0.01, -0.02),
-      new THREE.Vector3(0, -0.04, 0.03),
-      new THREE.Vector3(0, 0.01, 0.07)
-    );
-    group.add(new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 8, 0.008, 6, false), hoseMat));
-
-    // Barrel
-    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.15, 8), nozzleMat);
-    barrel.rotation.x = Math.PI / 2;
-    barrel.position.set(0, 0.01, 0.16);
-    group.add(barrel);
-
-    // Nozzle
-    const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.04, 8), nozzleMat);
-    nozzle.rotation.x = -Math.PI / 2;
-    nozzle.position.set(0, 0.01, 0.265);
-    group.add(nozzle);
-
-    // Grip + trigger guard
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.075, 0.03), gripMat);
-    grip.position.set(0, -0.048, 0.06);
-    grip.rotation.x = Math.PI / 10;
-    group.add(grip);
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.017, 0.004, 4, 8, Math.PI), nozzleMat);
-    trig.position.set(0, -0.006, 0.06);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Flame cones
-    const flameCore = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.065, 8), fireMat);
-    flameCore.rotation.x = -Math.PI / 2;
-    flameCore.position.set(0, 0.01, 0.325);
-    group.add(flameCore);
-    const flameOuter = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.10, 8), outerFire);
-    flameOuter.rotation.x = -Math.PI / 2;
-    flameOuter.position.set(0, 0.01, 0.345);
-    group.add(flameOuter);
-    return group;
-  },
-
-  // <Shotgun>, Pump-action or double-barrel shotgun
-  createShotgunModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalColor = this.getRandomColor(rand, [0x222222, 0x444444, 0x666666]);
-    const woodColor  = this.getRandomColor(rand, this.handleColors);
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.4, metalness: 0.8 });
-    const woodMat  = new THREE.MeshStandardMaterial({ color: woodColor,  roughness: 0.85 });
-    const gripMat  = new THREE.MeshStandardMaterial({ color: 0x1A1A1A,   roughness: 0.9  });
-
-    const isDouble = rand() > 0.45;
-    const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.045, 0.09), metalMat);
-    receiver.position.set(0, 0.012, -0.02);
-    group.add(receiver);
-
-    if (isDouble) {
-      const b1 = new THREE.Mesh(new THREE.CylinderGeometry(0.0085, 0.009, 0.22, 8), metalMat);
-      b1.rotation.x = Math.PI / 2;
-      b1.position.set(0.009, 0.012, 0.135);
-      group.add(b1);
-      const b2 = b1.clone();
-      b2.position.x = -0.009;
-      group.add(b2);
-      const rib = new THREE.Mesh(new THREE.BoxGeometry(0.003, 0.004, 0.22), metalMat);
-      rib.position.set(0, 0.017, 0.135);
-      group.add(rib);
-    } else {
-      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.012, 0.24, 8), metalMat);
-      barrel.rotation.x = Math.PI / 2;
-      barrel.position.set(0, 0.012, 0.155);
-      group.add(barrel);
-      // Pump slide
-      const slide = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.018, 0.06), woodMat);
-      slide.position.set(0, 0.004, 0.12);
-      group.add(slide);
-    }
-
-    // Wood stock
-    const stock = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.042, 0.16), woodMat);
-    stock.position.set(0, 0.01, -0.16);
-    stock.rotation.x = -Math.PI / 28;
-    group.add(stock);
-    const cheek = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.015, 0.06), woodMat);
-    cheek.position.set(0, 0.035, -0.17);
-    group.add(cheek);
-
-    // Pistol grip + trigger guard
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.07, 0.03), woodMat);
-    grip.position.set(0, -0.04, -0.04);
-    grip.rotation.x = Math.PI / 8;
-    group.add(grip);
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.004, 4, 8, Math.PI), metalMat);
-    trig.position.set(0, -0.008, 0);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Front bead sight
-    const sight = new THREE.Mesh(new THREE.SphereGeometry(0.004, 4, 4), metalMat);
-    sight.position.set(0, 0.024, isDouble ? 0.24 : 0.27);
-    group.add(sight);
-    return group;
-  },
-
-  // <SniperRifle>, Long-barrel precision rifle with scope + bipod
-  createSniperRifleModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalMat  = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.4, metalness: 0.80 });
-    const darkMat   = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.5, metalness: 0.60 });
-    const gripMat   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9  });
-    const scopeMat  = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3, metalness: 0.85 });
-    const lensMat   = new THREE.MeshStandardMaterial({ color: 0x113355, roughness: 0.05, emissive: 0x001133, emissiveIntensity: 0.3 });
-
-    // Very long barrel
-    const barrelL = 0.35;
-    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.009, barrelL, 8), metalMat);
-    barrel.rotation.x = Math.PI / 2;
-    barrel.position.set(0, 0.015, barrelL / 2 + 0.04);
-    group.add(barrel);
-
-    // Muzzle brake with slots
-    const muzzleBrake = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.012, 0.025, 8), metalMat);
-    muzzleBrake.rotation.x = Math.PI / 2;
-    muzzleBrake.position.set(0, 0.015, barrelL + 0.055);
-    group.add(muzzleBrake);
-    for (let i = 0; i < 3; i++) {
-      const slot = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.005, 0.006), darkMat);
-      slot.position.set(0, 0.029, barrelL + 0.04 + i * 0.007);
-      group.add(slot);
-    }
-
-    // Receiver
-    const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.04, 0.10), metalMat);
-    receiver.position.set(0, 0.012, 0.01);
-    group.add(receiver);
-
-    // Bolt handle
-    const boltBody = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.035, 6), metalMat);
-    boltBody.rotation.z = Math.PI / 2;
-    boltBody.position.set(0.035, 0.015, 0.025);
-    group.add(boltBody);
-    const boltKnob = new THREE.Mesh(new THREE.SphereGeometry(0.009, 6, 6), metalMat);
-    boltKnob.position.set(0.05, 0.015, 0.025);
-    group.add(boltKnob);
-
-    // Long stock
-    const stock = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.035, 0.20), gripMat);
-    stock.position.set(0, 0.01, -0.155);
-    stock.rotation.x = -Math.PI / 30;
-    group.add(stock);
-    const cheek = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.018, 0.07), gripMat);
-    cheek.position.set(0, 0.036, -0.14);
-    group.add(cheek);
-
-    // Pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.065, 0.028), gripMat);
-    grip.position.set(0, -0.038, -0.04);
-    grip.rotation.x = Math.PI / 9;
-    group.add(grip);
-
-    // Scope tube
-    const scopeL = 0.14;
-    const scope = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, scopeL, 10), scopeMat);
-    scope.rotation.x = Math.PI / 2;
-    scope.position.set(0, 0.054, 0);
-    group.add(scope);
-    // Lenses
-    const frontLens = new THREE.Mesh(new THREE.CircleGeometry(0.014, 12), lensMat);
-    frontLens.position.set(0, 0.054, scopeL / 2);
-    group.add(frontLens);
-    const rearLens = frontLens.clone();
-    rearLens.rotation.y = Math.PI;
-    rearLens.position.set(0, 0.054, -scopeL / 2);
-    group.add(rearLens);
-    // Turret dials
-    const turretT = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.014, 6), scopeMat);
-    turretT.position.set(0, 0.072, 0.005);
-    group.add(turretT);
-    const turretS = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.014, 6), scopeMat);
-    turretS.rotation.z = Math.PI / 2;
-    turretS.position.set(0.03, 0.054, 0.005);
-    group.add(turretS);
-
-    // Bipod legs
-    for (let side = -1; side <= 1; side += 2) {
-      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.04, 0.004), metalMat);
-      leg.position.set(side * 0.012, -0.01, 0.22);
-      leg.rotation.z = side * Math.PI / 12;
-      group.add(leg);
-    }
-
-    // Magazine
-    const mag = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.055, 0.018), darkMat);
-    mag.position.set(0, -0.04, 0.01);
-    group.add(mag);
-    return group;
-  },
-
-  // <SMG>, Compact submachine gun with foregrip and folded stock
-  createSMGModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bodyColor   = this.getRandomColor(rand, [0x222222, 0x333333, 0x1A1A2A, 0x2D3A2A]);
-    const accentColor = this.getRandomColor(rand, [0x444444, 0x555555, 0xAAAAAA]);
-    const bodyMat   = new THREE.MeshStandardMaterial({ color: bodyColor,   roughness: 0.5, metalness: 0.75 });
-    const metalMat  = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.35, metalness: 0.85 });
-    const gripMat   = new THREE.MeshStandardMaterial({ color: 0x1A1A1A,    roughness: 0.9  });
-
-    // Compact receiver
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.055, 0.12), bodyMat);
-    body.position.set(0, 0.01, -0.01);
-    group.add(body);
-
-    // Short barrel + muzzle
-    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.008, 0.08, 8), metalMat);
-    barrel.rotation.x = Math.PI / 2;
-    barrel.position.set(0, 0.015, 0.10);
-    group.add(barrel);
-    const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.009, 0.012, 8), metalMat);
-    muzzle.rotation.x = Math.PI / 2;
-    muzzle.position.set(0, 0.015, 0.15);
-    group.add(muzzle);
-
-    // Angled pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.075, 0.032), gripMat);
-    grip.position.set(0, -0.047, -0.01);
-    grip.rotation.x = Math.PI / 10;
-    group.add(grip);
-
-    // Trigger guard
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.017, 0.004, 4, 8, Math.PI), metalMat);
-    trig.position.set(0, -0.008, 0.02);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Vertical foregrip
-    const foregrip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.055, 0.018), gripMat);
-    foregrip.position.set(0, -0.038, 0.07);
-    foregrip.rotation.x = -Math.PI / 14;
-    group.add(foregrip);
-
-    // Tall box magazine
-    const mag = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.085, 0.02), bodyMat);
-    mag.position.set(0, -0.05, -0.025);
-    group.add(mag);
-
-    // Folded wire stock
-    const stockH = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.008, 0.065), metalMat);
-    stockH.position.set(0, 0.01, -0.10);
-    group.add(stockH);
-    const stockV = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.035, 0.008), metalMat);
-    stockV.position.set(0, -0.008, -0.13);
-    group.add(stockV);
-
-    // Iron sight post
-    const frontSight = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.01, 0.006), metalMat);
-    frontSight.position.set(0, 0.04, 0.14);
-    group.add(frontSight);
-    return group;
-  },
-
-  // <Crown>, Wearable crown used as a weapon
-  createCrownModel(weapon, rand) {
-    const group = new THREE.Group();
-    const goldMat  = new THREE.MeshStandardMaterial({ color: 0xFFD700, roughness: 0.2, metalness: 0.95 });
-    const gemColors = [0xFF2244, 0x2255FF, 0x22CC44, 0xAA22FF, 0xFF8800];
-    const gemColor  = gemColors[Math.floor(rand() * gemColors.length)];
-    const gemMat   = new THREE.MeshStandardMaterial({ color: gemColor, roughness: 0.0, metalness: 0.1, emissive: gemColor, emissiveIntensity: 0.3 });
-
-    // Ring base
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.014, 8, 32), goldMat);
-    ring.rotation.x = Math.PI / 2;
-    group.add(ring);
-
-    // Decorative lower band
-    const band = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.007, 5, 32), goldMat);
-    band.rotation.x = Math.PI / 2;
-    band.position.y = -0.01;
-    group.add(band);
-
-    // 5 prongs, alternating tall and short
-    const numProngs = 5;
-    for (let i = 0; i < numProngs; i++) {
-      const angle = (i / numProngs) * Math.PI * 2;
-      const px = Math.cos(angle) * 0.078;
-      const pz = Math.sin(angle) * 0.078;
-      const isTall = i % 2 === 0;
-      const height = isTall ? 0.085 : 0.055;
-
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.011, 0.04, 6), goldMat);
-      base.position.set(px, 0.028, pz);
-      group.add(base);
-
-      const spike = new THREE.Mesh(new THREE.ConeGeometry(0.009, height, 6), goldMat);
-      spike.position.set(px, 0.048 + height / 2, pz);
-      group.add(spike);
-
-      if (isTall) {
-        const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.012, 0), gemMat);
-        gem.position.set(px, 0.046, pz);
-        group.add(gem);
-      }
-    }
-
-    group.scale.setScalar(1.1);
-    return group;
-  },
-
-  // <Nunchaku>, Two handles connected by physics chain
-  createNunchakuModel(weapon, rand) {
-    const group = new THREE.Group();
-    const woodColors = [0x8B4513, 0x5C3317, 0x7A5230, 0x2E2E2E];
-    const stickColor = woodColors[Math.floor(rand() * woodColors.length)];
-    const isSteel = stickColor === 0x2E2E2E;
-    const stickMat = new THREE.MeshStandardMaterial({ color: stickColor, roughness: isSteel ? 0.35 : 0.7, metalness: isSteel ? 0.85 : 0 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.3, metalness: 0.9 });
-    const chainMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.25, metalness: 0.95 });
-
-    const sH  = 0.18;
-    const gap = 0.07;
-
-    // Stick A: held in hand, fixed position
-    const stickA = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.011, sH, 8), stickMat);
-    stickA.position.set(-0.024, -sH / 2, 0);
-    stickA.rotation.z = 0.14;
-    group.add(stickA);
-
-    const capA = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.01, 8), metalMat);
-    capA.position.set(-0.024, -sH - 0.004, 0);
-    group.add(capA);
-
-    const collarA = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.01, 8), metalMat);
-    collarA.position.set(-0.024, 0, 0);
-    group.add(collarA);
-
-    // Stick B: free end that follows the chain tip
-    const stickBGroup = new THREE.Group();
-    stickBGroup.position.set(0.024, -gap, 0);
-
-    const stickB = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.011, sH, 8), stickMat);
-    stickB.position.y = -sH / 2;
-    stickB.rotation.z = -0.14;
-    stickBGroup.add(stickB);
-
-    const capB = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.01, 8), metalMat);
-    capB.position.y = -sH - 0.004;
-    stickBGroup.add(capB);
-
-    const collarB = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.01, 8), metalMat);
-    collarB.position.y = 0;
-    stickBGroup.add(collarB);
-
-    group.add(stickBGroup);
-
-    // Verlet rope physics for the chain
-    const numLinks = 6;
-    const anchorPos = new THREE.Vector3(-0.024, 0, 0);
-    const segLen = gap / numLinks;
-
-    const rope = this.createVerletRope(numLinks + 1, segLen, anchorPos, {
-      gravity: -0.0008,
-      damping: 0.88,
-      iterations: 10,
-      stiffness: 0.92,
-      endMass: 1.8
+  /**
+   * Flat plate cut to a 2D outline and extruded along Z. This is what gives
+   * each bespoke blade its own silhouette for the price of a couple of dozen
+   * triangles: a kukri, a cleaver and a khopesh are the same call with
+   * different points.
+   * @param {Array<[number,number]>} points - outline in the X/Y plane
+   */
+  _plate(points, thickness, material) {
+    const shape = new THREE.Shape();
+    shape.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length; i++) shape.lineTo(points[i][0], points[i][1]);
+    shape.closePath();
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: thickness, bevelEnabled: false, steps: 1, curveSegments: 1
     });
-
-    // Torus chain link meshes with alternating orientation
-    for (let i = 0; i < numLinks; i++) {
-      const t = (i + 0.5) / numLinks;
-      const lx = -0.024 + t * 0.048;
-      const ly = -Math.sin(t * Math.PI) * 0.02 - t * gap;
-      const link = new THREE.Mesh(new THREE.TorusGeometry(0.007, 0.002, 4, 8), chainMat);
-      link.position.set(lx, ly, 0);
-      link.userData._chainAlternate = (i % 2 === 0);
-      group.add(link);
-      rope.segmentMeshes.push(link);
-    }
-
-    rope.headMeshGroup = stickBGroup;
-    group.userData._verletRope = rope;
-
-    return group;
+    geo.translate(0, 0, -thickness / 2);
+    return new THREE.Mesh(geo, material);
   },
 
-  // <Railgun>, Electromagnetic accelerator with coil rings
-  createRailgunModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bodyMat  = new THREE.MeshStandardMaterial({ color: 0x222233, roughness: 0.45, metalness: 0.85 });
-    const railMat  = new THREE.MeshStandardMaterial({ color: 0xAAAAAA, roughness: 0.2,  metalness: 0.95 });
-    const coilMat  = new THREE.MeshStandardMaterial({ color: 0x00AAFF, roughness: 0.3,  metalness: 0.6, emissive: 0x0033FF, emissiveIntensity: 0.4 });
-    const capMat   = new THREE.MeshStandardMaterial({ color: 0x333344, roughness: 0.4,  metalness: 0.8 });
-    const gripMat  = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
-
-    // Barrel housing
-    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.014, 0.38, 8), bodyMat);
-    barrel.rotation.x = Math.PI / 2;
-    barrel.position.set(0, 0.02, 0.06);
-    group.add(barrel);
-
-    // Parallel rail bars
-    for (const side of [-1, 1]) {
-      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.006, 0.38), railMat);
-      rail.position.set(side * 0.018, 0.02 + side * 0.012, 0.06);
-      group.add(rail);
+  /**
+   * Outline of a blade whose spine bends by `curve` (positive bends toward +X,
+   * i.e. forward) and narrows toward the tip.
+   * @param {number} backBias - how much narrower the back edge is than the
+   *   cutting edge; 1 is symmetric, 0.2 is a single-edged blade.
+   */
+  _bladeOutline(length, width, curve, segments, backBias, opts) {
+    const o = opts || {};
+    const seg = this.seg(segments || 6, 4);
+    const bias = backBias === undefined ? 1 : backBias;
+    const belly = o.belly === undefined ? 0 : o.belly;
+    const front = [], back = [];
+    for (let i = 0; i <= seg; i++) {
+      const t = i / seg;
+      const cx = curve * length * t * t;
+      const y = t * length;
+      // Sharpen toward the tip, with an optional belly that widens the middle.
+      const taper = 1 - Math.pow(t, o.taperPow === undefined ? 2.4 : o.taperPow);
+      const half = Math.max(width * 0.03, (width / 2) * (taper + belly * Math.sin(t * Math.PI)));
+      front.push([cx + half, y]);
+      back.push([cx - half * bias, y]);
     }
-
-    // Electromagnetic coil rings (6 spaced along barrel)
-    for (let i = 0; i < 6; i++) {
-      const coil = new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.005, 6, 16), coilMat);
-      coil.rotation.y = Math.PI / 2;
-      coil.position.set(0, 0.02, -0.12 + i * 0.065);
-      group.add(coil);
-    }
-
-    // Power capacitor bank on top
-    const cap = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.02, 0.09), capMat);
-    cap.position.set(0, 0.044, 0.02);
-    group.add(cap);
-
-    // Receiver body
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.038, 0.1), bodyMat);
-    body.position.set(0, 0.02, -0.07);
-    group.add(body);
-
-    // Pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.07, 0.03), gripMat);
-    grip.position.set(0, -0.028, -0.06);
-    grip.rotation.x = Math.PI / 12;
-    group.add(grip);
-
-    // Trigger guard
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.003, 4, 8, Math.PI), railMat);
-    trig.position.set(0, -0.006, -0.04);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Bipod legs at front
-    for (const side of [-1, 1]) {
-      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.003, 0.06, 5), railMat);
-      leg.position.set(side * 0.022, -0.012, 0.16);
-      leg.rotation.z = side * 0.55;
-      group.add(leg);
-    }
-
-    // Muzzle brake
-    const muzzle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.016, 0.022, 8), railMat);
-    muzzle.rotation.x = Math.PI / 2;
-    muzzle.position.set(0, 0.02, 0.26);
-    group.add(muzzle);
-
-    // Scope
-    const scopeBody = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.07, 8), bodyMat);
-    scopeBody.rotation.x = Math.PI / 2;
-    scopeBody.position.set(0, 0.057, 0.01);
-    group.add(scopeBody);
-    const scopeLens = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.01, 0.005, 8), coilMat);
-    scopeLens.rotation.x = Math.PI / 2;
-    scopeLens.position.set(0, 0.057, 0.048);
-    group.add(scopeLens);
-
-    return group;
+    back.reverse();
+    return front.concat(back);
   },
 
-  // <ArmCannon>, Cybernetic forearm-mounted weapon platform
-  createArmCannonModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bodyColor = this.getRandomColor(rand, [0x223344, 0x332233, 0x223322, 0x443322]);
-    const bodyMat   = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.4,  metalness: 0.85 });
-    const accentMat = new THREE.MeshStandardMaterial({ color: 0x8899AA,  roughness: 0.2,  metalness: 0.95 });
-    const energyMat = new THREE.MeshStandardMaterial({ color: 0x00EEFF,  roughness: 0.1,  metalness: 0.3, emissive: 0x00AACC, emissiveIntensity: 0.6 });
-    const darkMat   = new THREE.MeshStandardMaterial({ color: 0x111111,  roughness: 0.9 });
-
-    // Forearm cuff (wide flat body)
-    const cuff = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.065, 0.22), bodyMat);
-    group.add(cuff);
-
-    // Rounded edge cylinders
-    for (const side of [-1, 1]) {
-      const edge = new THREE.Mesh(new THREE.CylinderGeometry(0.0325, 0.0325, 0.22, 8), bodyMat);
-      edge.rotation.x = Math.PI / 2;
-      edge.position.set(side * 0.055, 0, 0);
-      group.add(edge);
+  /** Handle, optional wrap and optional pommel. Returns the handle length. */
+  _hilt(group, rand, opts) {
+    const o = opts || {};
+    const h = o.height || 0.16;
+    const rTop = o.rTop || 0.018;
+    const rBot = o.rBot === undefined ? rTop * 0.85 : o.rBot;
+    const y0 = o.offset || 0;
+    const handle = new THREE.Mesh(
+      new THREE.CylinderGeometry(rTop, rBot, h, this.seg(o.sides || 8, 5)),
+      o.mat
+    );
+    handle.position.y = y0 - h / 2;
+    if (o.flat) handle.scale.z = o.flat;
+    group.add(handle);
+    if (o.wrapMat && this.wantsTrim()) {
+      this.addGripWrap(handle, rand, h, rTop, rBot, o.wrapMat);
     }
-
-    // Main barrel
-    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.1, 10), accentMat);
-    barrel.rotation.x = Math.PI / 2;
-    barrel.position.set(0, 0.01, 0.155);
-    group.add(barrel);
-
-    // Barrel energy ring
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.026, 0.005, 6, 16), energyMat);
-    ring.rotation.y = Math.PI / 2;
-    ring.position.set(0, 0.01, 0.195);
-    group.add(ring);
-
-    // Energy cell on back
-    const cell = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.022, 0.06, 8), energyMat);
-    cell.rotation.x = Math.PI / 2;
-    cell.position.set(0, 0.01, -0.13);
-    group.add(cell);
-
-    // Vent slats on top
-    for (let i = 0; i < 4; i++) {
-      const vent = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.005, 0.012), darkMat);
-      vent.position.set(0, 0.035, -0.04 + i * 0.022);
-      group.add(vent);
+    if (o.pommelMat) {
+      let geo;
+      if (o.pommel === 'disc') geo = new THREE.CylinderGeometry(rTop * 1.6, rTop * 1.6, rTop * 0.7, this.seg(10, 6));
+      else if (o.pommel === 'wheel') geo = new THREE.CylinderGeometry(rTop * 2.0, rTop * 2.0, rTop * 0.8, this.seg(12, 6));
+      else if (o.pommel === 'nut') geo = new THREE.CylinderGeometry(rTop * 1.2, rTop * 1.4, rTop * 1.1, 6);
+      else geo = new THREE.SphereGeometry(rTop * 1.4, this.seg(8, 5), this.seg(6, 4));
+      const p = new THREE.Mesh(geo, o.pommelMat);
+      p.position.y = y0 - h;
+      if (o.pommel === 'disc' || o.pommel === 'wheel') p.rotation.x = Math.PI / 2;
+      group.add(p);
     }
-
-    // Side panel accents
-    for (const side of [-1, 1]) {
-      const panel = new THREE.Mesh(new THREE.BoxGeometry(0.005, 0.045, 0.14), accentMat);
-      panel.position.set(side * 0.052, 0.005, 0.02);
-      group.add(panel);
-    }
-
-    return group;
+    return h;
   },
 
-  // <Boomerang>, Curved aerodynamic returning weapon
-  createBoomerangModel(weapon, rand) {
-    const group = new THREE.Group();
-    const woodColors = [0x8B6914, 0x6B4B0A, 0xA07030, 0x4A3010];
-    const woodColor  = woodColors[Math.floor(rand() * woodColors.length)];
-    const woodMat = new THREE.MeshStandardMaterial({ color: woodColor, roughness: 0.75 });
-    const bandMat = new THREE.MeshStandardMaterial({ color: 0xCC2211,  roughness: 0.6  });
-
-    // Arm A
-    const armA = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.008, 0.18), woodMat);
-    armA.position.set(0.06, 0, -0.04);
-    armA.rotation.y = -0.45;
-    group.add(armA);
-
-    // Arm B
-    const armB = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.008, 0.18), woodMat);
-    armB.position.set(-0.06, 0, -0.04);
-    armB.rotation.y = 0.45;
-    group.add(armB);
-
-    // Center join
-    const center = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.012, 0.055), woodMat);
-    group.add(center);
-
-    // Decorative painted bands
-    for (const side of [-1, 1]) {
-      const band = new THREE.Mesh(new THREE.BoxGeometry(0.027, 0.010, 0.014), bandMat);
-      band.position.set(side * 0.09, 0, -0.06);
-      band.rotation.y = -side * 0.45;
-      group.add(band);
+  /** Straight bar crossguard with optional swept tips. */
+  _crossguard(group, mat, width, thickness, depth, sweep) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(width, thickness, depth), mat);
+    group.add(bar);
+    if (sweep && this.wantsTrim()) {
+      for (const s of [-1, 1]) {
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(thickness * 0.75, thickness * 2.2, this.seg(6, 4)), mat);
+        tip.position.set(s * width / 2, thickness * 0.9, 0);
+        tip.rotation.z = -s * sweep;
+        group.add(tip);
+      }
     }
-
-    group.rotation.x = -Math.PI / 2.5;
-    return group;
+    return bar;
   },
 
-  // <Chakram>, Circular throwing ring with spokes and gem center
-  createChakramModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalColors = [0xCCCCCC, 0xE8C850, 0x88AACC, 0xCC8844];
-    const metalColor  = metalColors[Math.floor(rand() * metalColors.length)];
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.15, metalness: 0.95 });
-    const edgeMat  = new THREE.MeshStandardMaterial({ color: 0xEEEEEE,  roughness: 0.05, metalness: 1.0  });
-    const gemMat   = new THREE.MeshStandardMaterial({ color: 0xFF2244,  roughness: 0.0,  metalness: 0.1, emissive: 0x880011, emissiveIntensity: 0.3 });
-
-    // Main ring body
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.016, 8, 40), metalMat);
-    group.add(ring);
-
-    // Sharp outer edge
-    const edge = new THREE.Mesh(new THREE.TorusGeometry(0.106, 0.004, 5, 40), edgeMat);
-    group.add(edge);
-
-    // Inner hub
-    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.008, 12), metalMat);
-    hub.rotation.x = Math.PI / 2;
-    group.add(hub);
-
-    // 4 spokes
-    for (let i = 0; i < 4; i++) {
-      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.008, 0.13), metalMat);
-      spoke.rotation.z = (i / 4) * Math.PI;
-      group.add(spoke);
+  /** A row of rivet heads down a handle scale. */
+  _rivets(group, mat, count, yStart, yStep, radius, z) {
+    if (!this.wantsTrim()) return;
+    for (let i = 0; i < count; i++) {
+      const r = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, radius * 0.8, this.seg(6, 4)), mat);
+      r.rotation.x = Math.PI / 2;
+      r.position.set(0, yStart + i * yStep, z);
+      group.add(r);
+      const back = r.clone();
+      back.position.z = -z;
+      group.add(back);
     }
-
-    // Center gem
-    const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.013, 0), gemMat);
-    gem.position.z = 0.006;
-    group.add(gem);
-
-    group.rotation.x = Math.PI / 2;
-    return group;
   },
 
-  // <Trident>, Three-pronged weapon with cross guard
-  createTridentModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalColors = [0x8899AA, 0x778888, 0xAABBCC, 0x558899];
-    const metalColor  = metalColors[Math.floor(rand() * metalColors.length)];
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.3, metalness: 0.9 });
-    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x6B4B0A,  roughness: 0.7 });
-    const bandMat  = new THREE.MeshStandardMaterial({ color: 0x888888,  roughness: 0.4, metalness: 0.85 });
+  // ============================================================
+  // Model families
+  // ============================================================
+  // The models themselves live in the Weapon3D_* files beside this one and are
+  // injected at runtime (see the loader at the bottom), exactly as the 3D
+  // enemy battlers load their 3DBattler_* families. None of them is listed in
+  // plugins.js; adding a family means adding its name to WEAPON3D_FAMILIES.
+  //
+  // A family calls registerFamily() with:
+  //   models  { methodName: fn }   builders, bound onto this object
+  //   unique  { weaponId: name }   bespoke model per database id (optional)
+  UNIQUE_MODELS: {},
 
-    // Shaft
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.009, 0.42, 8), shaftMat);
-    shaft.position.y = -0.08;
-    group.add(shaft);
-    this.addGripWrap(shaft, rand, 0.42, 0.011, 0.009, bandMat);
+  _familyOwners: {},
 
-    // Cross guard
-    const guard = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.1, 6), metalMat);
-    guard.rotation.z = Math.PI / 2;
-    guard.position.y = 0.1;
-    group.add(guard);
-    for (const side of [-1, 1]) {
-      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.006, 0.016, 6), metalMat);
-      tip.rotation.z = -side * Math.PI / 2;
-      tip.position.set(side * 0.056, 0.1, 0);
-      group.add(tip);
-    }
+  // ============================================================
+  // Unarmed
+  // ============================================================
+  // A character with nothing in their hand still has a hand, and what it
+  // looks like depends on what they are: a Humanoid's fist, a Dragon's claw
+  // and a Slime's pseudopod are not the same weapon. Builders are registered
+  // per EnemyArchetypes.json key rather than per weapon id, since there is no
+  // database weapon to key on.
+  UNARMED_MODELS: {},
+  DEFAULT_ARCHETYPE: 'Humanoid',
 
-    // Center prong
-    const centerShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.09, 7), metalMat);
-    centerShaft.position.y = 0.175;
-    group.add(centerShaft);
-    const centerTip = new THREE.Mesh(new THREE.ConeGeometry(0.007, 0.07, 7), metalMat);
-    centerTip.position.y = 0.255;
-    group.add(centerTip);
-
-    // Side prongs (angled outward)
-    for (const side of [-1, 1]) {
-      const prongShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.07, 6), metalMat);
-      prongShaft.position.set(side * 0.024, 0.17, 0);
-      prongShaft.rotation.z = side * 0.22;
-      group.add(prongShaft);
-      const prongTip = new THREE.Mesh(new THREE.ConeGeometry(0.005, 0.052, 6), metalMat);
-      prongTip.position.set(side * 0.034, 0.222, 0);
-      prongTip.rotation.z = side * 0.22;
-      group.add(prongTip);
-    }
-
-    // Butt spike
-    const butt = new THREE.Mesh(new THREE.ConeGeometry(0.009, 0.038, 6), metalMat);
-    butt.rotation.x = Math.PI;
-    butt.position.y = -0.31;
-    group.add(butt);
-
-    return group;
+  /**
+   * The archetype whose fist a character shows. A hybrid ("Dragon / Elven")
+   * uses the FIRST of its archetypes, so a mixed character always reads as
+   * one thing rather than something in between.
+   */
+  archetypeOf(actor) {
+    try {
+      if (actor && window.HealthCore && typeof window.HealthCore.getActorArchetypeKeys === 'function') {
+        const keys = window.HealthCore.getActorArchetypeKeys(actor);
+        if (keys && keys.length && this.UNARMED_MODELS[keys[0]]) return keys[0];
+        if (keys && keys.length) return keys[0];
+      }
+      const raw = actor && actor._currentArchetype;
+      if (raw) return String(raw).split('/')[0].trim();
+    } catch (e) { /* no health system loaded */ }
+    return this.DEFAULT_ARCHETYPE;
   },
 
-  // <Crossbow>, Mechanical crossbow with prod, rail, stock, and string
-  createCrossbowModel(weapon, rand) {
-    const group = new THREE.Group();
-    const woodColors = [0x7A4020, 0x5C3010, 0x8B5020, 0x333333];
-    const woodColor  = woodColors[Math.floor(rand() * woodColors.length)];
-    const woodMat  = new THREE.MeshStandardMaterial({ color: woodColor, roughness: 0.75 });
-    const metalMat = new THREE.MeshStandardMaterial({ color: 0xAAAAAA,  roughness: 0.25, metalness: 0.9 });
-    const strMat   = new THREE.MeshStandardMaterial({ color: 0xCCBB88,  roughness: 0.9  });
+  /**
+   * A stand-in weapon for an empty hand, so the whole rest of the pipeline
+   * (cache, merge, pose, procedural attack) works unchanged. It is typed as a
+   * Glove, which is what an unarmed strike is: id is derived from the
+   * archetype name so the model cache keys on it.
+   */
+  unarmedWeaponFor(actor) {
+    const archetype = this.archetypeOf(actor);
+    if (!this._unarmedWeapons) this._unarmedWeapons = {};
+    if (this._unarmedWeapons[archetype]) return this._unarmedWeapons[archetype];
 
-    // Stock (tiller)
-    const stock = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.038, 0.22), woodMat);
-    stock.position.set(0, 0, -0.06);
-    group.add(stock);
-
-    // Pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.072, 0.026), woodMat);
-    grip.position.set(0, -0.048, -0.04);
-    grip.rotation.x = Math.PI / 10;
-    group.add(grip);
-
-    // Rail on top
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.012, 0.18), metalMat);
-    rail.position.set(0, 0.026, 0.025);
-    group.add(rail);
-
-    // Prod center mount
-    const prodCenter = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.018, 0.02), metalMat);
-    prodCenter.position.set(0, 0, 0.122);
-    group.add(prodCenter);
-
-    // Limbs
-    for (const side of [-1, 1]) {
-      const limb = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.014, 0.11), metalMat);
-      limb.position.set(side * 0.065, 0.001, 0.115);
-      limb.rotation.z = side * 0.18;
-      group.add(limb);
-      const limbTip = new THREE.Mesh(new THREE.BoxGeometry(0.013, 0.013, 0.02), metalMat);
-      limbTip.position.set(side * 0.114, 0.002, 0.118);
-      limbTip.rotation.z = side * 0.18;
-      group.add(limbTip);
-    }
-
-    // Bowstring
-    const str = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.24, 4), strMat);
-    str.rotation.z = Math.PI / 2;
-    str.position.set(0, 0.002, 0.118);
-    group.add(str);
-
-    // Trigger
-    const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.024, 0.014), metalMat);
-    trigger.position.set(0, -0.016, -0.008);
-    group.add(trigger);
-
-    // Stirrup at front
-    const stirrup = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.004, 5, 10, Math.PI), metalMat);
-    stirrup.position.set(0, -0.006, 0.14);
-    stirrup.rotation.x = -Math.PI / 2;
-    group.add(stirrup);
-
-    return group;
+    // Negative ids can never collide with a real database weapon.
+    let h = 0;
+    for (let i = 0; i < archetype.length; i++) h = (Math.imul(h, 31) + archetype.charCodeAt(i)) | 0;
+    const weapon = {
+      id: -1000 - (Math.abs(h) % 100000),
+      name: archetype,
+      wtypeId: 11,                       // Glove: the punch pose and motion
+      note: '<Weight: 900>',
+      unarmedArchetype: archetype,
+      weaponAnimations: []
+    };
+    this._unarmedWeapons[archetype] = weapon;
+    return weapon;
   },
 
-  // <Halberd>, Poleaxe with spike, broad axe blade, and back hook
-  createHalberdModel(weapon, rand) {
-    const group = new THREE.Group();
-    const metalColors = [0x999999, 0xAAAAAA, 0x778899, 0x886644];
-    const metalColor  = metalColors[Math.floor(rand() * metalColors.length)];
-    const metalMat = new THREE.MeshStandardMaterial({ color: metalColor, roughness: 0.35, metalness: 0.88 });
-    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x6B3A0A,  roughness: 0.72 });
-    const bandMat  = new THREE.MeshStandardMaterial({ color: 0x777777,  roughness: 0.45, metalness: 0.8 });
-
-    // Pole
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.010, 0.50, 7), shaftMat);
-    shaft.position.y = -0.10;
-    group.add(shaft);
-    this.addGripWrap(shaft, rand, 0.50, 0.011, 0.010, bandMat);
-
-    // Butt spike
-    const butt = new THREE.Mesh(new THREE.ConeGeometry(0.010, 0.038, 6), metalMat);
-    butt.rotation.x = Math.PI;
-    butt.position.y = -0.365;
-    group.add(butt);
-
-    // Socket
-    const socket = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.065, 7), metalMat);
-    socket.position.y = 0.14;
-    group.add(socket);
-
-    // Axe blade (flat wide wedge)
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.12, 0.105), metalMat);
-    blade.position.set(0.04, 0.16, 0);
-    group.add(blade);
-    const bevel = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.12, 0.004), metalMat);
-    bevel.position.set(0.092, 0.16, 0);
-    group.add(bevel);
-
-    // Top spike
-    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.011, 0.1, 7), metalMat);
-    spike.position.y = 0.222;
-    group.add(spike);
-
-    // Back hook
-    const hook = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.005, 5, 8, Math.PI * 0.7), metalMat);
-    hook.position.set(-0.028, 0.16, 0);
-    hook.rotation.z = Math.PI / 2.5;
-    group.add(hook);
-
-    return group;
+  /** Builds the fist for an archetype, falling back to the default one. */
+  buildUnarmed(weapon, rand) {
+    const key = weapon.unarmedArchetype;
+    const name = this.UNARMED_MODELS[key] || this.UNARMED_MODELS[this.DEFAULT_ARCHETYPE];
+    if (name && typeof this[name] === 'function') return this[name](weapon, rand);
+    if (!this._missingBuilders) this._missingBuilders = {};
+    if (!this._missingBuilders['unarmed:' + key]) {
+      this._missingBuilders['unarmed:' + key] = true;
+      console.warn('[WeaponSystemProcedural] no unarmed model for archetype ' + key);
+    }
+    return null;
   },
 
-  // <DroneLauncher>, Multi-tube launcher with hexagonal drone bays
-  createDroneLauncherModel(weapon, rand) {
-    const group = new THREE.Group();
-    const bodyMat   = new THREE.MeshStandardMaterial({ color: 0x2A2A3A, roughness: 0.5,  metalness: 0.8  });
-    const tubeMat   = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.4,  metalness: 0.9  });
-    const accentMat = new THREE.MeshStandardMaterial({ color: 0x444455, roughness: 0.35, metalness: 0.85 });
-    const sensorMat = new THREE.MeshStandardMaterial({ color: 0x00EEBB, roughness: 0.1,  metalness: 0.4, emissive: 0x009966, emissiveIntensity: 0.5 });
-    const gripMat   = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
-
-    // Main body
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.08, 0.22), bodyMat);
-    body.position.set(0, 0.01, -0.01);
-    group.add(body);
-
-    // Hex tube cluster at front (7 tubes: center + 6 around)
-    const hexOffsets = [
-      [0, 0], [0.028, 0], [-0.028, 0],
-      [0.014, 0.024], [-0.014, 0.024],
-      [0.014, -0.024], [-0.014, -0.024]
-    ];
-    for (const [tx, ty] of hexOffsets) {
-      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.011, 0.011, 0.08, 6), tubeMat);
-      tube.rotation.x = Math.PI / 2;
-      tube.position.set(tx, ty + 0.01, 0.14);
-      group.add(tube);
+  registerFamily(family) {
+    if (!family) return;
+    const owner = family.name || 'anonymous';
+    if (family.models) {
+      for (const key of Object.keys(family.models)) {
+        const previous = this._familyOwners[key];
+        if (previous && previous !== owner) {
+          console.warn('[WeaponSystemProcedural] ' + owner + ' overrides ' + key + ' from ' + previous);
+        }
+        this._familyOwners[key] = owner;
+        this[key] = family.models[key];
+      }
     }
-
-    // Front face plate
-    const face = new THREE.Mesh(new THREE.BoxGeometry(0.088, 0.078, 0.008), accentMat);
-    face.position.set(0, 0.01, 0.102);
-    group.add(face);
-
-    // Targeting sensor on top
-    const sensor = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.018, 0.06), sensorMat);
-    sensor.position.set(0, 0.055, 0.03);
-    group.add(sensor);
-    const lens = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 8), sensorMat);
-    lens.position.set(0, 0.055, 0.06);
-    group.add(lens);
-
-    // Pistol grip
-    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.075, 0.032), gripMat);
-    grip.position.set(0, -0.052, -0.04);
-    grip.rotation.x = Math.PI / 10;
-    group.add(grip);
-
-    // Trigger guard
-    const trig = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.004, 4, 8, Math.PI), accentMat);
-    trig.position.set(0, -0.01, -0.01);
-    trig.rotation.y = Math.PI / 2;
-    group.add(trig);
-
-    // Side handles
-    for (const side of [-1, 1]) {
-      const sideH = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.035, 0.055), accentMat);
-      sideH.position.set(side * 0.05, -0.02, 0.02);
-      group.add(sideH);
+    if (family.unarmed) {
+      for (const key of Object.keys(family.unarmed)) {
+        this.UNARMED_MODELS[key] = family.unarmed[key];
+      }
     }
-
-    // Status LEDs
-    for (let i = 0; i < 3; i++) {
-      const led = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.006, 0.006), sensorMat);
-      led.position.set(0, 0.046, -0.05 + i * 0.04);
-      group.add(led);
+    if (family.unique) {
+      for (const id of Object.keys(family.unique)) {
+        this.UNIQUE_MODELS[id] = family.unique[id];
+      }
     }
-
-    return group;
+    // A family arriving after something was already drawn (a hot reload, a
+    // late-injected script) must not leave stale prototypes behind.
+    if (this._modelCache.size) this.clearModelCache();
   },
 
   // Patching Sprite_3DWeapon dynamically
@@ -3458,26 +2865,58 @@ var WeaponSystemProcedural = {
       return this._fitScale;
     };
 
-    // Screen-space nudge from the shared weapon anchor, in game pixels.
-    // Guns sit low and to the right like a first-person viewmodel; melee
-    // weapons hang off the anchor by their grip.
+    // Screen-space nudge from the shared weapon anchor, in game pixels. Both
+    // come from WeaponSystemProcedural.anchorOffsetFor so the tools viewer can
+    // reproduce the exact battle pose.
     Sprite_3DWeapon.prototype._anchorOffsetX = function() {
-      return this._weapon.wtypeId === 9 ? 40 : (this._weapon.model3d ? 0 : 20);
+      return WeaponSystemProcedural.anchorOffsetFor(this._weapon).x;
     };
-    // A procedural model grows around its own centre, so the taller the weapon
-    // is drawn the further its grip end reaches below the anchor: lift it by a
-    // share of its drawn height to keep the pommel inside the battle view.
     Sprite_3DWeapon.prototype._anchorOffsetY = function() {
-      const w = this._weapon;
-      if (w.wtypeId === 9) return -70;
-      if (w.model3d) return 0;
-      const screenH = (typeof Graphics !== 'undefined' && Graphics.height) ? Graphics.height : 624;
-      return screenH * WeaponSystemProcedural.screenFractionFor(w) * 0.16 - 20;
+      return WeaponSystemProcedural.anchorOffsetFor(this._weapon).y;
+    };
+
+    // How quickly a gun swings onto a new target, as the time constant of an
+    // exponential ease in milliseconds. Short enough to have arrived before the
+    // shot goes off, long enough to read as the character turning the muzzle.
+    const AIM_EASE_MS = 110;
+
+    /**
+     * Turns a gun to face what it is shooting at. The aim point in game pixels
+     * is handed to the sprite once a frame by Spriteset_Battle
+     * (weaponAimPoint); with none, the weapon settles back to its resting pose
+     * across the battlefield. Writes _baseRotation, which every pose below
+     * (idle sway, recoil keyframes) is built on top of, so the kick of a shot
+     * still reads as a kick from wherever the gun is pointing.
+     */
+    Sprite_3DWeapon.prototype._updateAim = function(deltaMs) {
+      if (!WeaponSystemProcedural.aimsAtTarget(this._weapon)) return;
+
+      const rest = WeaponSystemProcedural.baseRotationFor(this._weapon);
+      let want = rest;
+      if (this._aimPoint) {
+        const off = WeaponSystemProcedural.anchorOffsetFor(this._weapon);
+        // Where the weapon itself sits on screen: world Y grows upward, so the
+        // anchor's Y nudge counts backwards against screen coordinates.
+        want = WeaponSystemProcedural.aimRotationFor(
+          this._aimPoint.x - (this._screenX + off.x),
+          this._aimPoint.y - (this._screenY - off.y)
+        );
+      }
+
+      if (!this._aimRot) this._aimRot = { x: rest.x, y: rest.y, z: rest.z };
+      const cur = this._aimRot;
+      const k = 1 - Math.exp(-deltaMs / AIM_EASE_MS);
+      cur.x += (want.x - cur.x) * k;
+      cur.y += (want.y - cur.y) * k;
+      cur.z += (want.z - cur.z) * k;
+      this._baseRotation = cur;
     };
 
     // Reset 3D weapon back to idle first-person pose
     Sprite_3DWeapon.prototype._resetToIdle = function() {
       if (!this._model) return;
+      // A weapon fading out at the end of a battle is never raised again.
+      if (this._exiting) return;
       this._model.visible = true;
       this._visible = true;
 
@@ -3500,38 +2939,7 @@ var WeaponSystemProcedural = {
 
     // Override _loadModel to support both procedural and GLB models with always-visible behavior
     Sprite_3DWeapon.prototype._loadModel = function() {
-      // Set base rotation for weapons if not defined
-      if (!this._weapon.model3dRotation) {
-        const wtypeId = this._weapon.wtypeId || 1;
-        if (this._weapon.isWhip) {
-          this._baseRotation = { x: 0, y: 0, z: -15 };
-        } else if (this._weapon.isFlail) {
-          this._baseRotation = { x: 0, y: 0, z: -10 };
-        } else {
-          switch (wtypeId) {
-            case 1: this._baseRotation = { x: 0, y: 0, z: -20 }; break; // Light (Dagger)
-            case 2: this._baseRotation = { x: 0, y: 0, z: -15 }; break; // Sword
-            case 3: this._baseRotation = { x: 0, y: 0, z: -25 }; break; // Heavy
-            case 4: this._baseRotation = { x: 0, y: 0, z: -20 }; break; // Axe
-            case 5: this._baseRotation = { x: 0, y: 0, z: -15 }; break; // Whip
-            case 6: this._baseRotation = { x: 0, y: 0, z: -10 }; break; // Staff
-            // Bows are modelled flat in the Y-Z plane, so the default pose
-            // showed them edge-on as a vertical sliver: turn the belly of the
-            // bow toward the camera.
-            case 7: this._baseRotation = { x: 0, y: 90, z: -8 }; break;  // Bow
-            // Thrown weapons point along +Z (kunai, dart) or lie in the X-Y
-            // plane (shuriken); a partial tilt reads for both.
-            case 8: this._baseRotation = { x: 55, y: 0, z: -20 }; break; // Projectile
-            case 9: this._baseRotation = { x: -10, y: 195, z: -10 }; break;   // Gun FPS rotation
-            case 10: this._baseRotation = { x: 0, y: 0, z: -15 }; break; // Claw
-            case 11: this._baseRotation = { x: 0, y: 0, z: 0 }; break;  // Glove
-            case 12: this._baseRotation = { x: 0, y: 0, z: -15 }; break; // Spear
-            default: this._baseRotation = { x: 0, y: 0, z: -15 }; break;
-          }
-        }
-      } else {
-        this._baseRotation = this._weapon.model3dRotation;
-      }
+      this._baseRotation = WeaponSystemProcedural.baseRotationFor(this._weapon);
 
       if (!this._weapon.model3d) {
         if (!window.THREE) return;
@@ -3559,7 +2967,7 @@ var WeaponSystemProcedural = {
           this._visible = true;       // ALWAYS VISIBLE!
           window.WeaponThreeScene.scene.add(this._model);
 
-          if (this._pendingAnimation) {
+          if (this._pendingAnimation != null) {
             const pending = this._pendingAnimation;
             this._pendingAnimation = null;
             this.playAnimation(pending);
@@ -3601,7 +3009,7 @@ var WeaponSystemProcedural = {
             });
           }
 
-          if (this._pendingAnimation) {
+          if (this._pendingAnimation != null) {
             const pending = this._pendingAnimation;
             this._pendingAnimation = null;
             this.playAnimation(pending);
@@ -3620,45 +3028,24 @@ var WeaponSystemProcedural = {
       const frames = this._animData.frames;
       if (!frames || frames.length === 0) return;
 
-      let prev = frames[0];
-      let next = frames[frames.length - 1];
-      for (let i = 0; i < frames.length - 1; i++) {
-        if (t >= frames[i].t && t <= frames[i + 1].t) {
-          prev = frames[i];
-          next = frames[i + 1];
-          break;
-        }
-      }
-
-      const span = next.t - prev.t;
-      const lt = span > 0 ? (t - prev.t) / span : 0;
-      const lerp = (a, b, f) => a + (b - a) * f;
-
-      const px = lerp(prev.x || 0, next.x || 0, lt);
-      const py = lerp(prev.y || 0, next.y || 0, lt);
-      const pz = lerp(prev.z || 0, next.z || 0, lt);
-      const rx = lerp(prev.rx || 0, next.rx || 0, lt);
-      const ry = lerp(prev.ry || 0, next.ry || 0, lt);
-      const rz = lerp(prev.rz || 0, next.rz || 0, lt);
-      const sc = lerp(
-        prev.scale !== undefined ? prev.scale : 1,
-        next.scale !== undefined ? next.scale : 1,
-        lt
-      );
+      const k = WeaponSystemProcedural.sampleKeyframes(frames, t);
+      // Turned and shortened so the blow lands on what is being hit.
+      WeaponSystemProcedural.applyStrikeTransform(k, this._strikeXf);
+      const off = WeaponSystemProcedural.anchorOffsetFor(this._weapon);
 
       this._model.position.set(
-        this._worldX(this._screenX) + this._anchorOffsetX() + px,
-        this._worldY(this._screenY) + this._anchorOffsetY() + py,
-        pz
+        this._worldX(this._screenX) + off.x + k.x,
+        this._worldY(this._screenY) + off.y + k.y,
+        k.z
       );
       const r = this._baseRotation;
       this._model.rotation.set(
-        THREE.MathUtils.degToRad(r.x + rx),
-        THREE.MathUtils.degToRad(r.y + ry),
-        THREE.MathUtils.degToRad(r.z + rz)
+        THREE.MathUtils.degToRad(r.x + k.rx),
+        THREE.MathUtils.degToRad(r.y + k.ry),
+        THREE.MathUtils.degToRad(r.z + k.rz)
       );
 
-      const s = this._baseScale() * sc;
+      const s = this._baseScale() * k.scale;
       this._model.scale.set(s, s, s);
 
       if (t >= 1.0) {
@@ -3668,20 +3055,38 @@ var WeaponSystemProcedural = {
     };
 
     // Override playAnimation to correctly display/hide procedural/GLB models and trigger custom animations
+    // Attack motion is GENERATED for this weapon, not looked up. See
+    // WeaponSystemProcedural.buildAttack: the clip's amplitude, timing and
+    // impact come from the model's measured length and the weapon's <Weight:>,
+    // so a paring knife and a Zweihander swinging the same skill do not play
+    // the same animation scaled up.
+    /**
+     * Locks the swing onto wherever the target was standing when the blow
+     * started, so a blow does not wander after an enemy that moves or dies
+     * halfway through it.
+     */
+    Sprite_3DWeapon.prototype._prepareStrike = function() {
+      this._strikeXf = WeaponSystemProcedural.strikeTransformFor(
+        this._animData, this._weapon, this._screenX, this._screenY, this._aimPoint);
+    };
+
     Sprite_3DWeapon.prototype.playAnimation = function(name) {
       this._animElapsed = 0;
       this._animData = null;
+      this._strikeXf = null;
       this._clipPlaying = false; // Reset clip status when starting any animation
 
       if (!this._model) {
-        this._pendingAnimation = name;
+        // '' rather than null: no name means "this weapon's own motion",
+        // which is a real request and must survive the wait for the model.
+        this._pendingAnimation = name || '';
         return;
       }
 
       this._model.visible = true;
       this._visible = true;
 
-      // Fallback check for GLTF clips
+      // An authored GLB clip always wins: it was made for that model.
       if (this._clips && this._clips[name]) {
         this.playClip(name);
         return;
@@ -3691,191 +3096,21 @@ var WeaponSystemProcedural = {
         return;
       }
 
-      const kf = window._weaponKeyframes3d;
-      if (kf && kf[name]) {
-        this._animData = kf[name];
-        return;
-      }
-
-      // Per-type procedural attack animations for all 12 weapon types plus physics weapons
+      // Procedural motion for procedural models.
       if (!this._weapon.model3d) {
-        if (this._weapon.isWhip) {
-          this._animData = {
-            duration: 500,
-            frames: [
-              { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-              { t: 0.3, x: 22, y: -22, z: -22, rx: -22, ry: 0, rz: 16, scale: 1.0 },
-              { t: 0.55, x: -32, y: 12, z: 58, rx: 12, ry: 0, rz: -24, scale: 1.0 },
-              { t: 0.72, x: -16, y: 6, z: 24, rx: 6, ry: 0, rz: -11, scale: 1.0 },
-              { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-            ]
-          };
-          return;
-        }
-        if (this._weapon.isFlail) {
-          this._animData = {
-            duration: 700,
-            frames: [
-              { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-              { t: 0.35, x: 42, y: -32, z: -22, rx: -16, ry: 16, rz: 27, scale: 1.0 },
-              { t: 0.65, x: -55, y: 28, z: 38, rx: 16, ry: -11, rz: -38, scale: 1.06 },
-              { t: 0.85, x: -22, y: 11, z: 16, rx: 6, ry: -5, rz: -16, scale: 1.0 },
-              { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-            ]
-          };
-          return;
-        }
-        switch (this._weapon.wtypeId) {
-          case 1: // Dagger - fast stab
-            this._animData = {
-              duration: 340,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.18, x: 16, y: -28, z: -16, rx: -16, ry: 0, rz: 13, scale: 1.0 },
-                { t: 0.5, x: -11, y: 11, z: 75, rx: 20, ry: 0, rz: -7, scale: 1.0 },
-                { t: 0.7, x: -5, y: 5, z: 38, rx: 9, ry: 0, rz: -3, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 2: // Sword - diagonal slash
-            this._animData = {
-              duration: 540,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.25, x: 68, y: -58, z: -16, rx: -19, ry: 23, rz: 34, scale: 1.0 },
-                { t: 0.58, x: -88, y: 68, z: 27, rx: 24, ry: -13, rz: -62, scale: 1.06 },
-                { t: 0.78, x: -52, y: 42, z: 13, rx: 13, ry: -7, rz: -41, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 3: // Heavy - overhead slam
-            this._animData = {
-              duration: 760,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.3, x: 0, y: -95, z: -38, rx: -48, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.57, x: 0, y: 95, z: 75, rx: 58, ry: 0, rz: 0, scale: 1.09 },
-                { t: 0.75, x: 0, y: 48, z: 27, rx: 24, ry: 0, rz: 0, scale: 1.02 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 4: // Axe - side chop
-            this._animData = {
-              duration: 600,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.25, x: 58, y: -38, z: -24, rx: -13, ry: 32, rz: 29, scale: 1.0 },
-                { t: 0.57, x: -68, y: 24, z: 38, rx: 13, ry: -19, rz: -52, scale: 1.07 },
-                { t: 0.77, x: -40, y: 13, z: 16, rx: 7, ry: -11, rz: -33, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 5: // Whip (generic type 5) - crack forward
-            this._animData = {
-              duration: 500,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.3, x: 22, y: -22, z: -22, rx: -22, ry: 0, rz: 16, scale: 1.0 },
-                { t: 0.55, x: -32, y: 12, z: 58, rx: 12, ry: 0, rz: -24, scale: 1.0 },
-                { t: 0.72, x: -16, y: 6, z: 24, rx: 6, ry: 0, rz: -11, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 6: // Staff - thrust and spin
-            this._animData = {
-              duration: 500,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.2, x: -20, y: -11, z: -38, rx: -13, ry: -11, rz: -11, scale: 1.0 },
-                { t: 0.5, x: 11, y: 22, z: 85, rx: 20, ry: 11, rz: 11, scale: 1.0 },
-                { t: 0.7, x: 5, y: 11, z: 38, rx: 9, ry: 5, rz: 5, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 7: // Bow - draw and release
-            this._animData = {
-              duration: 600,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.6, x: -30, y: 0, z: -80, rx: 0, ry: -15, rz: 0, scale: 1.0 },
-                { t: 0.7, x: 20, y: 0, z: 10, rx: 0, ry: 5, rz: 0, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 8: // Projectile - throw/fling
-            this._animData = {
-              duration: 400,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.2, x: 37, y: -48, z: -27, rx: -24, ry: 16, rz: 19, scale: 1.0 },
-                { t: 0.5, x: -68, y: 27, z: 38, rx: 13, ry: -22, rz: -34, scale: 0.62 },
-                { t: 0.72, x: -95, y: 19, z: 65, rx: 7, ry: -30, rz: -47, scale: 0.32 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 9: // Gun - recoil
-            this._animData = {
-              duration: 300,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.1, x: 0, y: 16, z: -38, rx: -22, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.3, x: 0, y: 9, z: -16, rx: -11, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.6, x: 0, y: 2, z: -4, rx: -3, ry: 0, rz: 0, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 10: // Claw - fast slash
-            this._animData = {
-              duration: 390,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.15, x: 34, y: -24, z: 0, rx: -13, ry: 24, rz: 24, scale: 1.0 },
-                { t: 0.44, x: -78, y: 34, z: 30, rx: 19, ry: -19, rz: -47, scale: 1.06 },
-                { t: 0.68, x: -44, y: 17, z: 13, rx: 7, ry: -7, rz: -24, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 11: // Glove - straight punch
-            this._animData = {
-              duration: 340,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.15, x: 19, y: -13, z: -24, rx: -13, ry: 13, rz: 7, scale: 1.0 },
-                { t: 0.42, x: -24, y: 0, z: 95, rx: 13, ry: -7, rz: -13, scale: 1.0 },
-                { t: 0.62, x: -13, y: 0, z: 48, rx: 7, ry: -4, rz: -7, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-          case 12: // Spear - long thrust
-            this._animData = {
-              duration: 500,
-              frames: [
-                { t: 0.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 },
-                { t: 0.2, x: 13, y: 0, z: -48, rx: -7, ry: 0, rz: -7, scale: 1.0 },
-                { t: 0.5, x: -13, y: 13, z: 105, rx: 13, ry: 0, rz: 7, scale: 1.0 },
-                { t: 0.65, x: -7, y: 7, z: 68, rx: 7, ry: 0, rz: 3, scale: 1.0 },
-                { t: 1.0, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0, scale: 1.0 }
-              ]
-            };
-            return;
-        }
+        this._animData = WeaponSystemProcedural.buildAttack(this._weapon, name, this._model);
+        if (this._animData) { this._prepareStrike(); return; }
       }
 
+      // GLB models with no clip of their own fall back to the shared table.
+      const kf = window._weaponKeyframes3d;
       if (kf) {
         this._animData = kf[name] || kf['Swing'] || null;
+        this._prepareStrike();
       } else {
-        this._pendingAnimation = name;
+        // '' rather than null: no name means "this weapon's own motion",
+        // which is a real request and must survive the wait for the model.
+        this._pendingAnimation = name || '';
       }
     };
 
@@ -3896,69 +3131,49 @@ var WeaponSystemProcedural = {
 
       if (!this._model) return;
 
+      // Entry slide / exit fade first: it only moves the shared anchor
+      // (_worldX), so every pose below is placed with it already folded in.
+      if (this._updateTransition) this._updateTransition(deltaMs);
+      // Same for the aim: it only writes _baseRotation.
+      this._updateAim(deltaMs);
+
       if (this._mixer) this._mixer.update(deltaMs / 1000);
 
       if (this._animData) {
         this._idleTime = 0;
         this._applyKeyframe(deltaMs);
       } else if (!this._clipPlaying) {
-        // First-person idle animation, tuned per weapon type
+        // First-person idle breathing, tuned per weapon type.
         this._idleTime = (this._idleTime || 0) + deltaMs;
-        const freq = this._idleTime * 0.0025;
-        const _wtId = this._weapon ? (this._weapon.wtypeId || 1) : 1;
-        const _isGun = _wtId === 9;
-        const _isHeavy = _wtId === 3 || _wtId === 4;
-        const _isMagic = _wtId === 6;
-        const _isSpear = _wtId === 12;
-
-        let dx, dy, drz, drx;
-        if (_isGun) {
-          // FPS breathing: tight, minimal sway
-          dx = Math.cos(freq * 0.4) * 2.2;
-          dy = Math.sin(freq * 0.8) * 3.0;
-          drz = Math.sin(freq * 0.4) * 0.009;
-          drx = Math.cos(freq * 0.8) * 0.007;
-        } else if (_isHeavy) {
-          // Heavy weapons hang and sway more
-          dx = Math.cos(freq * 0.35) * 5.5;
-          dy = Math.sin(freq * 0.7) * 6.5 + Math.sin(freq * 0.3) * 1.5;
-          drz = Math.sin(freq * 0.35) * 0.024;
-          drx = Math.cos(freq * 0.7) * 0.016;
-        } else if (_isMagic) {
-          // Staff/magic: floating, double-oscillation drift
-          dx = Math.cos(freq * 0.55) * 5.0 + Math.sin(freq * 1.1) * 1.8;
-          dy = Math.sin(freq * 0.45) * 7.5 + Math.cos(freq * 1.3) * 2.2;
-          drz = Math.sin(freq * 0.55) * 0.022;
-          drx = Math.cos(freq * 0.45) * 0.016;
-        } else if (_isSpear) {
-          // Spear: long weapon, slight vertical drift
-          dx = Math.cos(freq * 0.5) * 3.0;
-          dy = Math.sin(freq * 0.9) * 5.0;
-          drz = Math.sin(freq * 0.5) * 0.014;
-          drx = Math.cos(freq * 0.9) * 0.010;
-        } else {
-          // Default melee: natural breathing figure-eight
-          dx = Math.cos(freq * 0.5) * 4.2;
-          dy = Math.sin(freq) * 5.8;
-          drz = Math.sin(freq * 0.5) * 0.019;
-          drx = Math.cos(freq) * 0.013;
-        }
+        const sway = WeaponSystemProcedural.idleSway(this._weapon, this._idleTime);
+        const off = WeaponSystemProcedural.anchorOffsetFor(this._weapon);
 
         this._model.position.set(
-          this._worldX(this._screenX) + this._anchorOffsetX() + dx,
-          this._worldY(this._screenY) + this._anchorOffsetY() + dy,
+          this._worldX(this._screenX) + off.x + sway.dx,
+          this._worldY(this._screenY) + off.y + sway.dy,
           0
         );
 
         const r = this._baseRotation;
         this._model.rotation.set(
-          THREE.MathUtils.degToRad(r.x) + drx,
+          THREE.MathUtils.degToRad(r.x) + sway.drx,
           THREE.MathUtils.degToRad(r.y),
-          THREE.MathUtils.degToRad(r.z) + drz
+          THREE.MathUtils.degToRad(r.z) + sway.drz
         );
 
         const baseScale = this._baseScale();
         this._model.scale.set(baseScale, baseScale, baseScale);
+      }
+
+      // ---- Moving parts declared by the model itself ----
+      // Gears, drifting shards, pulsing runes. Costs one traversal the first
+      // frame and a short loop afterwards; a model with no moving parts is a
+      // single array-length check.
+      if (!this._weapon.model3d) {
+        WeaponSystemProcedural.tickModelParts(this._model, deltaMs);
+        // Trigger, action, ejected case and muzzle flash, while a shot is
+        // still working through the gun.
+        WeaponSystemProcedural.tickGun(this._model, deltaMs);
       }
 
       // ---- Tick Verlet rope physics for whips and flails ----
@@ -4012,3 +3227,51 @@ var WeaponSystemProcedural = {
     };
   }
 };
+
+window.WeaponSystemProcedural = WeaponSystemProcedural;
+
+//=============================================================================
+// Model family auto-loader
+//=============================================================================
+// The builders are kept out of this file and out of plugins.js: they are
+// injected here at load time, the same arrangement 3DBattlerSystem.js uses for
+// its 3DBattler_* families. Scripts are appended with async=false so they run
+// in list order, and a family that fails to arrive costs only the models it
+// carried, never the rest of the system.
+// One family per weapon type. Each owns the generic silhouette its type falls
+// back to, the note-tagged one-offs of that type, and every bespoke per-weapon
+// model in it.
+const WEAPON3D_FAMILIES = [
+  'Weapon3D_Light',       // wtypeId 1  knives, daggers, punch weapons
+  'Weapon3D_Swords',      // wtypeId 2
+  'Weapon3D_Heavy',       // wtypeId 3  hammers, maces, clubs
+  'Weapon3D_Axes',        // wtypeId 4
+  'Weapon3D_Whips',       // wtypeId 5
+  'Weapon3D_Flails',      // the <Flail> rope subtype
+  'Weapon3D_Staves',      // wtypeId 6
+  'Weapon3D_Bows',        // wtypeId 7  bows and crossbows
+  'Weapon3D_Projectiles', // wtypeId 8  thrown
+  'Weapon3D_Guns',        // wtypeId 9
+  'Weapon3D_Claws',       // wtypeId 10
+  'Weapon3D_Gloves',      // wtypeId 11
+  'Weapon3D_Spears',      // wtypeId 12 spears and polearms
+  'Weapon3D_Types',       // the entries that declare no weapon type
+  'Weapon3D_Unarmed'      // one fist per EnemyArchetypes.json archetype
+];
+
+(function loadWeapon3DFamilies() {
+  const host = document.body || document.head || document.documentElement;
+  if (!host) return;
+  const dir = 'js/plugins/Weapon/';
+  for (const name of WEAPON3D_FAMILIES) {
+    const src = dir + name + '.js';
+    if (document.querySelector('script[src="' + src + '"]')) continue; // already loaded
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = src;
+    s.async = false; // preserve insertion order so dependencies load first
+    s.defer = false;
+    s.onerror = () => console.error('[WeaponSystemProcedural] Failed to load family: ' + src);
+    host.appendChild(s);
+  }
+})();

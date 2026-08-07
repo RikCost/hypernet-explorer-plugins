@@ -107,8 +107,10 @@
         this._actor3Died = false;
         this._actor2Name = "";
         this._actor3Name = "";
-        this._eventToDelete = null;
-        this._eventToLock = null;
+        // Queues, not single slots: a battle can settle several map events at
+        // once now that nearby monsters join a fight.
+        this._eventsToDelete = [];
+        this._eventsToLock = [];
         this._deathData = null;
         this._battleCooldownTimer = 0;
     };
@@ -130,12 +132,38 @@
     Game_System.prototype.setActor3Died = function(value, name) { this._actor3Died = value; this._actor3Name = name || ""; };
     Game_System.prototype.isActor3Died = function() { return this._actor3Died; };
     Game_System.prototype.getActor3Name = function() { return this._actor3Name; };
-    Game_System.prototype.setEventToDelete = function(mapId, eventId) { this._eventToDelete = { mapId, eventId }; };
-    Game_System.prototype.getEventToDelete = function() { return this._eventToDelete; };
-    Game_System.prototype.clearEventToDelete = function() { this._eventToDelete = null; };
-    Game_System.prototype.setEventToLock = function(mapId, eventId) { this._eventToLock = { mapId, eventId }; };
-    Game_System.prototype.getEventToLock = function() { return this._eventToLock; };
-    Game_System.prototype.clearEventToLock = function() { this._eventToLock = null; };
+    // A battle can end owing the map more than one event: the monster that
+    // started it plus every roamer that joined in. Both lists are queues, and
+    // the map drains the entries that belong to it once the fight is over.
+    const queueEvent = (list, mapId, eventId) => {
+        if (!list.some(e => e.mapId === mapId && e.eventId === eventId)) {
+            list.push({ mapId, eventId });
+        }
+    };
+    // A save written before the queues existed carries a single pending entry
+    // in the old slot; fold it in the first time the queue is read.
+    Game_System.prototype.getEventsToDelete = function() {
+        if (!this._eventsToDelete) {
+            this._eventsToDelete = this._eventToDelete ? [this._eventToDelete] : [];
+            this._eventToDelete = null;
+        }
+        return this._eventsToDelete;
+    };
+    Game_System.prototype.getEventsToLock = function() {
+        if (!this._eventsToLock) {
+            this._eventsToLock = this._eventToLock ? [this._eventToLock] : [];
+            this._eventToLock = null;
+        }
+        return this._eventsToLock;
+    };
+    Game_System.prototype.setEventToDelete = function(mapId, eventId) {
+        queueEvent(this.getEventsToDelete(), mapId, eventId);
+    };
+    Game_System.prototype.clearEventsToDelete = function() { this._eventsToDelete = []; };
+    Game_System.prototype.setEventToLock = function(mapId, eventId) {
+        queueEvent(this.getEventsToLock(), mapId, eventId);
+    };
+    Game_System.prototype.clearEventsToLock = function() { this._eventsToLock = []; };
     Game_System.prototype.setDeathData = function(data) { this._deathData = data; };
     Game_System.prototype.getDeathData = function() { return this._deathData; };
     Game_System.prototype.clearDeathData = function() { this._deathData = null; };
@@ -147,11 +175,6 @@
     const _BattleManager_setup = BattleManager.setup;
     BattleManager.setup = function(troopId, canEscape, canLose) {
         _BattleManager_setup.call(this, troopId, canEscape, canLose);
-
-        // EnemyTalkSystem raises this when the monster leaves the fight with the
-        // party (recruited as an ally or as a pet). Cleared here so a stale flag
-        // from an interrupted battle can never erase the next fight's event.
-        this._enemyRecruited = false;
 
         // Apply wet status if battle starts on water tile. A title-launched arena
         // (or a save loaded straight into battle) can have $gameMap._mapId set while
@@ -356,13 +379,44 @@
         const eId = BSE.State.currentEventId;
         const mId = BSE.State.currentMapId;
 
-        if (result === 1 && this._enemyRecruited) {
-            // Recruited, not fled: the monster walked off the map with the party
-            // (ally or pet), so its event has to go the way a defeated one does,
-            // minus the corpse. Without this the flee path only locked it and the
-            // map kept a second copy of the creature standing where it was.
-            if (bId) delete pData[bId];
-            if (mId && eId) {
+        // Monsters that piled in from nearby (see startPersistentBattle). Their
+        // map events are settled exactly the way the triggering one is: wiped on
+        // a win or a recruit, locked with their HP kept on a flee.
+        const reinforcement = BSE.Helpers.getReinforcement();
+        const joined = reinforcement.joined;
+        const baseSize = reinforcement.baseSize;
+
+        // Mark a joined monster's event the way a defeated trigger event is
+        // marked: deleted from the map, and remembered as defeated on the
+        // procedural map so it does not come back with the next spawn pass.
+        const clearJoinedEvent = j => {
+            delete pData[j.persistentId];
+            $gameSystem.setEventToDelete(j.mapId, j.eventId);
+            if ($gameMap.mapId() === 636) {
+                if (!$gameSystem._procGenDefeatedEnemies) $gameSystem._procGenDefeatedEnemies = [];
+                if (!$gameSystem._procGenDefeatedEnemies.includes(j.eventId)) {
+                    $gameSystem._procGenDefeatedEnemies.push(j.eventId);
+                }
+            }
+        };
+
+        // An event whose monsters are all off the field is settled the way a
+        // defeated one is, whatever ended the battle: they are dead, or they
+        // walked away with the party (recruited as allies or pets, hidden by
+        // EnemyTalkSystem). Anything of it still standing and the event is
+        // locked instead, with its wounds written back. Read per event rather
+        // than per battle, since one monster of a pack can be talked round
+        // while the rest keep fighting.
+        const eventCleared = indexes => indexes.every(i => {
+            const enemy = $gameTroop.members()[i];
+            return !enemy || !enemy.isAlive();
+        });
+
+        if (result === 1 && bId) { // Fled, or a recruit that emptied the field
+            const baseIndexes = [];
+            for (let i = 0; i < baseSize; i++) baseIndexes.push(i);
+            if (eventCleared(baseIndexes)) {
+                delete pData[bId];
                 $gameSystem.setEventToDelete(mId, eId);
                 if ($gameMap.mapId() === 636) {
                     if (!$gameSystem._procGenDefeatedEnemies) $gameSystem._procGenDefeatedEnemies = [];
@@ -370,44 +424,61 @@
                         $gameSystem._procGenDefeatedEnemies.push(eId);
                     }
                 }
+            } else {
+                const persistentData = pData[bId] || { enemyHp: {} };
+                // Only the troop that started the fight belongs to this event's
+                // record; the members past it came from the joining events and are
+                // written back to their own records below.
+                $gameTroop.members().forEach((enemy, index) => {
+                    if (index < baseSize) persistentData.enemyHp[index] = enemy.hp;
+                });
+                pData[bId] = persistentData;
+                $gameSystem.setEventToLock(mId, eId);
             }
-            // Clear rewards: nothing was killed.
-            const r = BSE.State.battleRewards;
-            r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
-        } else if (result === 1 && bId) { // Flee
-            const persistentData = pData[bId] || { enemyHp: {} };
-            $gameTroop.members().forEach((enemy, index) => {
-                persistentData.enemyHp[index] = enemy.hp;
+            joined.forEach(j => {
+                if (eventCleared(j.memberIndexes)) {
+                    clearJoinedEvent(j);
+                    return;
+                }
+                const jData = pData[j.persistentId] || { enemyHp: {} };
+                j.memberIndexes.forEach((troopIndex, i) => {
+                    const enemy = $gameTroop.members()[troopIndex];
+                    if (enemy) jData.enemyHp[i] = enemy.hp;
+                });
+                pData[j.persistentId] = jData;
+                $gameSystem.setEventToLock(j.mapId, j.eventId);
             });
-            pData[bId] = persistentData;
-            $gameSystem.setEventToLock(mId, eId);
-            // Clear rewards when fleeing
+            // Clear rewards: the party did not win this fight.
             const r = BSE.State.battleRewards;
             r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
         } else if (result === 0 && bId) { // Win
-            // Capture corpse data
-            if (eId && mId) {
-                const deadEvent = $gameMap.event(eId);
-                if (deadEvent && deadEvent._characterName) {
-                    const deadTroop = deadEvent._fixedTroopId ? $dataTroops[deadEvent._fixedTroopId] : null;
-                    const deadEnemy = (deadTroop && deadTroop.members.length > 0)
-                        ? $dataEnemies[deadTroop.members[0].enemyId] : null;
-                    const firstTroopMember = $gameTroop && $gameTroop.members()[0];
-                    const enemyEscaped = firstTroopMember && firstTroopMember.hp > 0;
-                    if (!enemyEscaped) {
-                        BSE.State.mapCorpses.push({
-                            mapId: mId,
-                            x: deadEvent.x,
-                            y: deadEvent.y,
-                            spriteName: deadEvent._characterName,
-                            spriteIndex: deadEvent._characterIndex,
-                            hue: deadEvent._characterHue || 0,
-                            bloodColor: getCorpseBloodColor(deadEnemy),
-                            enemyId: (deadTroop && deadTroop.members[0]) ? deadTroop.members[0].enemyId : 0
-                        });
-                    }
-                }
-            }
+            // Capture corpse data. `troopIndex` is where in the battle troop
+            // that event's own lead monster stood, so a joined event leaves a
+            // corpse for the creature that actually fell there.
+            const dropCorpse = (evMapId, evId, troopIndex) => {
+                if (!evId || !evMapId) return;
+                const deadEvent = $gameMap.event(evId);
+                if (!deadEvent || !deadEvent._characterName) return;
+                const deadTroop = deadEvent._fixedTroopId ? $dataTroops[deadEvent._fixedTroopId] : null;
+                const deadEnemy = (deadTroop && deadTroop.members.length > 0)
+                    ? $dataEnemies[deadTroop.members[0].enemyId] : null;
+                const troopMember = $gameTroop && $gameTroop.members()[troopIndex];
+                const enemyEscaped = troopMember && troopMember.hp > 0;
+                if (enemyEscaped) return;
+                BSE.State.mapCorpses.push({
+                    mapId: evMapId,
+                    x: deadEvent.x,
+                    y: deadEvent.y,
+                    spriteName: deadEvent._characterName,
+                    spriteIndex: deadEvent._characterIndex,
+                    hue: deadEvent._characterHue || 0,
+                    bloodColor: getCorpseBloodColor(deadEnemy),
+                    enemyId: (deadTroop && deadTroop.members[0]) ? deadTroop.members[0].enemyId : 0
+                });
+            };
+            dropCorpse(mId, eId, 0);
+            joined.forEach(j => dropCorpse(j.mapId, j.eventId, j.memberIndexes[0]));
+
             if (pData[bId]) delete pData[bId];
             $gameSystem.setEventToDelete(mId, eId);
             if ($gameMap.mapId() === 636) {
@@ -416,12 +487,13 @@
                     $gameSystem._procGenDefeatedEnemies.push(eId);
                 }
             }
+            joined.forEach(clearJoinedEvent);
         }
 
         saveEnemyPartDamage();
         $gameSystem.setBattleEnded(true);
         BSE.State.currentBattleEventId = null;
-        this._enemyRecruited = false;
+        BSE.State.reinforcement = null;
 
         _BattleManager_endBattle.call(this, result);
     };
@@ -457,6 +529,21 @@
                 if (storedHp[index] !== undefined) enemy.setHp(storedHp[index]);
             });
         }
+
+        // Monsters that joined from nearby (see startPersistentBattle) carry the
+        // wounds their own map event was left with, read from that event's own
+        // persistent record rather than the one the battle is keyed on.
+        const reinforcement = BSE.Helpers.getReinforcement();
+        if (reinforcement.troopId === troopId) {
+            reinforcement.joined.forEach(j => {
+                const jHp = pData[j.persistentId] && pData[j.persistentId].enemyHp;
+                if (!jHp) return;
+                j.memberIndexes.forEach((troopIndex, i) => {
+                    const enemy = this.members()[troopIndex];
+                    if (enemy && jHp[i] !== undefined) enemy.setHp(jHp[i]);
+                });
+            });
+        }
     };
 
     const _Game_Enemy_die = Game_Enemy.prototype.die;
@@ -466,7 +553,10 @@
         const pData = BSE.State.persistentEnemyData;
         if (bId && pData[bId]) {
             const index = $gameTroop.members().indexOf(this);
-            if (index >= 0) pData[bId].enemyHp[index] = 0;
+            // Indexes past the base troop belong to the monsters that joined the
+            // fight, not to this event's own record.
+            const baseSize = BSE.Helpers.getReinforcement().baseSize;
+            if (index >= 0 && index < baseSize) pData[bId].enemyHp[index] = 0;
         }
     };
 
@@ -778,19 +868,24 @@
                 hasRespawned = true;
             }
 
-            // Handle event deletion/locking
-            const eventToDelete = $gameSystem.getEventToDelete();
-            if (eventToDelete && eventToDelete.mapId === $gameMap.mapId()) {
-                const event = $gameMap.event(eventToDelete.eventId);
-                if (event) $gameMap.eraseEvent(eventToDelete.eventId);
-                $gameSystem.clearEventToDelete();
-            }
-            const eventToLock = $gameSystem.getEventToLock();
-            if (eventToLock) {
-                const event = $gameMap.event(eventToLock.eventId);
+            // Handle event deletion/locking. Both queues can hold the monster
+            // that started the fight and every one that joined it, so drain
+            // every entry that belongs to the map the party came back to and
+            // leave the rest for the map they were left on.
+            const mapNow = $gameMap.mapId();
+            const keptDeletes = $gameSystem.getEventsToDelete().filter(entry => {
+                if (entry.mapId !== mapNow) return true;
+                if ($gameMap.event(entry.eventId)) $gameMap.eraseEvent(entry.eventId);
+                return false;
+            });
+            $gameSystem.clearEventsToDelete();
+            keptDeletes.forEach(e => $gameSystem.setEventToDelete(e.mapId, e.eventId));
+
+            $gameSystem.getEventsToLock().forEach(entry => {
+                const event = $gameMap.event(entry.eventId);
                 if (event) event.lockMovement(160);
-                $gameSystem.clearEventToLock();
-            }
+            });
+            $gameSystem.clearEventsToLock();
 
             if (!hasRespawned) {
                 if ($gameSystem._p1PreBattlePos && $gameSystem._p1PreBattlePos.mapId === $gameMap.mapId()) {

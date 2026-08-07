@@ -1,7 +1,6 @@
 {
   "title": "Skills",
   "back": "Back",
-  "recent": "Recent",
   "unit": {
     "ap": "AP"
   },
@@ -33,26 +32,17 @@
       "description": "Buffs, debuffs and utility.\nShift the tide of battle."
     }
   },
-  "option": {
-    "skillCategorization": "Skill Categorization",
-    "categoryModes": [
-      "Role",
-      "School",
-      "Off"
-    ]
-  },
   "cmd": {
-    "favourites": "Favourites",
     "levelUp": "Level Up",
     "use": "Use",
-    "favourite": "Favourite",
-    "unfavourite": "Unfavourite",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "carry": "Carry",
+    "bench": "Bench"
   },
   "action": {
     "useSkill": "[ Use Skill ]",
-    "favourite": "[ Favourite ]",
-    "unfavourite": "[ Unfavourite ]",
+    "carry": "[ Carry ]",
+    "bench": "[ Bench ]",
     "back": "[ Back ]"
   },
   "info": {
@@ -85,5 +75,15 @@
   "spec": {
     "trains": "Trains",
     "bonus": "Skill bonus"
+  },
+  "loadout": {
+    "skills": "Skills",
+    "magic": "Magic",
+    "count": "{group} {n}/{max}",
+    "carried": "Carried",
+    "benched": "Benched",
+    "always": "Always",
+    "hint": "Shift carries or benches the selected skill",
+    "full": "{group} loadout is full ({max} carried). Bench one first."
   }
 }

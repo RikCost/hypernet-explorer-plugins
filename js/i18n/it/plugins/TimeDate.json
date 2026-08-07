@@ -52,5 +52,18 @@
     "hygiene": "Igiene",
     "social": "Socialita",
     "leisure": "Svago"
+  },
+  "addictionLabel": {
+    "nicotine": "Nicotina",
+    "caffeine": "Caffeina",
+    "narcotic": "Narcotici",
+    "alcohol": "Alcol",
+    "gambling": "Gioco d'azzardo"
+  },
+  "addiction": {
+    "withdrawal": "{name} è in astinenza da {substance}!",
+    "relieved": "{name} ha superato il peggio della voglia di {substance}",
+    "partyCard": "Dipendenze ({count})",
+    "none": "Pulito"
   }
 }

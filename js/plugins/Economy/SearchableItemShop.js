@@ -406,7 +406,6 @@
         // <category:> note tag); only the label is translated.
         const key = 'Stockbusters.category.' + String(categoryName || '');
         return T.has(key) ? T(key) : categoryName;
-        return translations[categoryName] || categoryName;
     };
 
     // --- Dynamic Tax Calculation ---

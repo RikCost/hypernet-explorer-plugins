@@ -750,7 +750,6 @@
     const MZ_DELTA = { 2: [0, 1], 4: [-1, 0], 6: [1, 0], 8: [0, -1] };
 
     function mzDir(s) { return (typeof s === 'string') ? DIR_MAP[s] : s; }
-    function strDir(d) { return (typeof d === 'string') ? d : DIR_STR[d]; }
     function delta(d) {
         return (typeof d === 'string') ? (DIR_D[d] || [0, 0]) : (MZ_DELTA[d] || [0, 0]);
     }

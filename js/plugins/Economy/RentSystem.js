@@ -736,23 +736,6 @@
         return rooms;
     }
 
-    // (kept for potential external calls)
-    function showRoomListWindow() {
-        const rooms = getRoomsOnCurrentMap();
-        if (rooms.length === 0) {
-            $gameMessage.add(T('Rent.noRooms'));
-            return;
-        }
-        $gameSystem._roomListClosed = false;
-        const scene = SceneManager._scene;
-        if (scene && scene.showRoomListOverlay) {
-            scene.showRoomListOverlay();
-        }
-        const interpreter = $gameMap._interpreter;
-        if (interpreter) {
-            interpreter.setWaitMode('roomList');
-        }
-    }
 
     // Debug commands
     window.checkRentals = function () {

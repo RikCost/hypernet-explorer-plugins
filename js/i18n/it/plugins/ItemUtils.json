@@ -18,5 +18,10 @@
     "Rare": "Raro",
     "Epic": "Epico",
     "Legendary": "Leggendario"
+  },
+  "addiction": {
+    "all": "Ogni voglia",
+    "label": "Voglia",
+    "feeds": "Soddisfa"
   }
 }

@@ -242,16 +242,6 @@ window.StrudelUtils = (() => {
             });
         }
 
-        withValue(f) {
-            const originalQuery = this.query;
-            return new Pattern((s, e, prng) => originalQuery(s, e, prng).map(ev => {
-                const val = ev.params && ev.params.length ? [ev.value, ...ev.params] : ev.value;
-                const result = f(val);
-                if (typeof result === 'object' && result !== null && !(result instanceof Pattern)) return { ...ev, ...result };
-                return { ...ev, value: result };
-            }));
-        }
-
         fmap(f) {
             return this.withValue(f);
         }
@@ -409,11 +399,8 @@ window.StrudelUtils = (() => {
             });
         }
 
-        voicing() { return this; } // Stub
         anchor(a) { return this.setParam('anchor', a); }
         rootNotes(n) { return this.setParam('rootNotes', n); }
-        split() { return this; } // Stub
-        patt() { return this; } // Stub
 
         filterValues(f) {
             const originalQuery = this.query;
@@ -511,7 +498,6 @@ window.StrudelUtils = (() => {
         gain(v) { return this.setParam('gain', v); }
         pan(v) { return this.setParam('pan', v); }
         room(v) { return this.setParam('room', v); }
-        velocity(v) { return this.setParam('velocity', v); }
         att(v) { return this.setParam('att', v); }
         rel(v) { return this.setParam('rel', v); }
         clip(v) { return this.setParam('clip', v); }
@@ -756,7 +742,6 @@ window.StrudelUtils = (() => {
         'sn': { bank: 0, program: 116, channel: 9 },
         'hc': { bank: 0, program: 116, channel: 9 },
         'hh': { bank: 0, program: 116, channel: 9 },
-        'bass': { bank: 0, program: 39, channel: 1 },
         'pad': { bank: 0, program: 90, channel: 0 },
         'lead': { bank: 0, program: 81, channel: 2 },
         'perc': { bank: 0, program: 116, channel: 9 },

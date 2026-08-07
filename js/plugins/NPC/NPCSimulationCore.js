@@ -1164,21 +1164,6 @@
     },
   };
 
-  // findRegionTiles: passable tiles in a given region within radius of (cx, cy).
-  function findRegionTiles(regionId, cx, cy, radius) {
-    if (!$gameMap) return [];
-    const result = [];
-    for (let dy = -radius; dy <= radius; dy++) {
-      for (let dx = -radius; dx <= radius; dx++) {
-        const x = cx + dx, y = cy + dy;
-        if ($gameMap.isValid(x, y) && $gameMap.regionId(x, y) === regionId &&
-            $gameMap.isPassable(x, y, 2)) {
-          result.push({ x, y });
-        }
-      }
-    }
-    return result;
-  }
 
   // All passable REST_REGION (102) tiles on the current map, scanned once and
   // cached per mapId (same pattern as MapManager.getMapZones' zone cache).

@@ -2798,5 +2798,41 @@
   "700": {
     "name": "",
     "description": ""
+  },
+  "701": {
+    "name": "Tintura d'Oppio",
+    "description": "Un flacone bruno col contagocce, un cucchiaio di quiete"
+  },
+  "702": {
+    "name": "Compresse di Anfetamina",
+    "description": "Due compresse bianche, e la notte è di nuovo giovane"
+  },
+  "703": {
+    "name": "Soppressore d'Astinenza",
+    "description": "Smorza ogni voglia in una volta sola"
+  },
+  "704": {
+    "name": "Tabacco Trinciato",
+    "description": "Un pacchetto, le cartine e la pazienza"
+  },
+  "705": {
+    "name": "Sigaro Fatto a Mano",
+    "description": "Venti lenti minuti del clima di qualcun altro"
+  },
+  "706": {
+    "name": "Gomma alla Nicotina",
+    "description": "Il vizio senza il fumo, e senza il piacere"
+  },
+  "707": {
+    "name": "Fiaschetta da Tasca",
+    "description": "Acciaio, ammaccata, mai del tutto vuota"
+  },
+  "708": {
+    "name": "Schedina del Bookmaker",
+    "description": "Un cavallo, un numero e il resto del pomeriggio"
+  },
+  "709": {
+    "name": "Gettone da Slot Machine",
+    "description": "Ottone, senza valore, e vale un'altra giocata"
   }
 }

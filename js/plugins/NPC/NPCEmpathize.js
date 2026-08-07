@@ -399,6 +399,30 @@
     return 'img/busts/7.png';
   }
 
+  // Everything a battle needs to wear this NPC's face: the bust the panel was
+  // showing and the walking sprite they were standing there in. Both are read
+  // here, while the event is still on the current map, because the fight starts
+  // one scene later (SECTION 5c draws whichever the battler option calls for).
+  function _buildBattleFace(npcName, event) {
+    const bustPath  = _resolveBustPath(npcName, event) || 'img/busts/7.png';
+    let charName    = (event?.characterName?.() || '');
+    let charIndex   = (event?.characterIndex?.() ?? 0);
+    // Remote NPC (no event on this map): fall back to their pool template, the
+    // same way the portrait does.
+    if (!charName && npcName && window.NPCSystem?.findTemplateSprite) {
+      const tpl = window.NPCSystem.findTemplateSprite(npcName);
+      if (tpl) { charName = tpl.characterName; charIndex = tpl.characterIndex ?? 0; }
+    }
+    return {
+      name: npcName || '',
+      // Stored as a bare file name: the battle loads it through ImageManager,
+      // not as an <img> src.
+      bust: bustPath.replace(/^img\/busts\//, '').replace(/\.png$/i, ''),
+      charName,
+      charIndex,
+    };
+  }
+
   function _extractContacts(profile, limit = 9) {
     if (!profile) return [];
     const counts = {};
@@ -979,12 +1003,16 @@
     if ($gameTemp._NPCEmpathizeStartBattle != null) {
       const troopId = $gameTemp._NPCEmpathizeStartBattle;
       const victim  = $gameTemp._NPCEmpathizeAttackTarget;
+      const face    = $gameTemp._NPCEmpathizeAttackFace;
       $gameTemp._NPCEmpathizeStartBattle  = null;
       $gameTemp._NPCEmpathizeAttackTarget = null;
+      $gameTemp._NPCEmpathizeAttackFace   = null;
       BattleManager.setup(troopId, true, false);
-      // Armed after setup on purpose: the setup hook in SECTION 5b clears the
-      // marker, so a battle begun any other way can never inherit this victim.
+      // Armed after setup on purpose: the setup hook in SECTION 5b clears both
+      // markers, so a battle begun any other way can never inherit this victim
+      // or wear their face.
       $gameTemp._NPCEmpathizeBattleTarget = victim ?? null;
+      $gameTemp._NPCEmpathizeBattleFace   = face ?? null;
       SceneManager.push(Scene_Battle);
     }
   };
@@ -1000,7 +1028,10 @@
 
   const _BattleManager_setup_npcAttack = BattleManager.setup;
   BattleManager.setup = function (troopId, canEscape, canLose) {
-    if ($gameTemp) $gameTemp._NPCEmpathizeBattleTarget = null;
+    if ($gameTemp) {
+      $gameTemp._NPCEmpathizeBattleTarget = null;
+      $gameTemp._NPCEmpathizeBattleFace   = null;
+    }
     _BattleManager_setup_npcAttack.call(this, troopId, canEscape, canLose);
   };
 
@@ -1020,6 +1051,195 @@
       }
     }
     _BattleManager_processVictory_npcAttack.call(this);
+  };
+
+  // ============================================================================
+  // SECTION 5c, THE NPC'S OWN FACE IN THE FIGHT
+  // ============================================================================
+  // A fight picked from the panel is against somebody the player was just
+  // looking at, not against the generic battler the troop happens to hold, so
+  // the enemy's own graphic is stood down and the NPC is drawn in its place,
+  // standing ON the bottom edge of the screen with nothing under them:
+  //   3D battlers (and plain 2D)  ->  the bust the panel was showing.
+  //   Sprite battlers             ->  their walking sprite off the map.
+  // The portrait is a sibling of the battler sprites inside the battle field,
+  // the same place damage popups and battle animations live, and those are
+  // positioned from the (hidden) enemy sprite, so they still land on the NPC.
+
+  const FACE_MAX_W    = 0.55; // a bust may take this much of the screen width
+  const FACE_MAX_H    = 0.95; // ...and this much of its height
+  const FACE_SPRITE_H = 0.60; // a walking sprite is blown up to this much of it
+  const FACE_FADE     = 12;   // opacity step of the fade in / death fade
+  const FACE_PATTERNS = [0, 1, 2, 1];
+  const FACE_PAT_WAIT = 15;   // frames per walking-sprite pattern
+
+  // Sprites mode (enemyBattlers === 2), with the legacy flag honoured for
+  // configs written before the option became a three-way.
+  function _isSpriteBattlerMode() {
+    if (typeof ConfigManager === 'undefined') return false;
+    return ConfigManager.enemyBattlers === 2 || !!ConfigManager.charBasedSprites;
+  }
+
+  // Clickable, because the enemy sprite it stands in for is hidden and mouse
+  // targeting goes through the sprite the pointer is over.
+  class Sprite_NPCBattleFace extends Sprite_Clickable {
+    constructor(face, battler, enemySprite) {
+      super();
+      this._face        = face;
+      this._battler     = battler;
+      this._enemySprite = enemySprite || null;
+      this._charMode    = _isSpriteBattlerMode() && !!face.charName;
+      this._laidOut     = false;
+      this._pattern     = 0;
+      this._patternWait = 0;
+      this._selectCount = 0;
+      this._fellBack    = false;
+      this.anchor.x = 0.5;
+      this.anchor.y = 1;   // the image hangs off its own bottom edge
+      this.opacity  = 0;
+      this.bitmap   = this._charMode
+        ? ImageManager.loadCharacter(this._face.charName)
+        : ImageManager.loadBitmap('img/busts/', this._face.bust);
+    }
+
+    // Size once the bitmap is in: a bust is fitted to the screen, a walking
+    // sprite is blown up by a whole number so its pixels stay square.
+    _layout() {
+      const bmp = this.bitmap;
+      if (!bmp || !bmp.isReady() || !bmp.width || !bmp.height) return false;
+      if (this._charMode) {
+        const big = ImageManager.isBigCharacter(this._face.charName);
+        this._pw  = bmp.width  / (big ? 3 : 12);
+        this._ph  = bmp.height / (big ? 4 : 8);
+        this._blockX = big ? 0 : (this._face.charIndex % 4) * 3;
+        this._blockY = big ? 0 : Math.floor(this._face.charIndex / 4) * 4;
+        const k = Math.max(2, Math.floor((Graphics.height * FACE_SPRITE_H) / this._ph));
+        this.scale.x = this.scale.y = k;
+        this._drawW  = this._pw * k;
+        this._setPatternFrame();
+      } else {
+        const k = Math.min((Graphics.width  * FACE_MAX_W) / bmp.width,
+                           (Graphics.height * FACE_MAX_H) / bmp.height);
+        this.scale.x = this.scale.y = k;
+        this._drawW  = bmp.width * k;
+        this.setFrame(0, 0, bmp.width, bmp.height);
+      }
+      return true;
+    }
+
+    // Facing down, the way the player was looking at them a moment ago.
+    _setPatternFrame() {
+      this.setFrame((this._blockX + FACE_PATTERNS[this._pattern]) * this._pw,
+                    this._blockY * this._ph, this._pw, this._ph);
+    }
+
+    _updatePattern() {
+      if (++this._patternWait < FACE_PAT_WAIT) return;
+      this._patternWait = 0;
+      this._pattern = (this._pattern + 1) % FACE_PATTERNS.length;
+      this._setPatternFrame();
+    }
+
+    // Bottom edge flush with the bottom of the screen, held over the enemy
+    // sprite's column so popups and animations keep meeting the portrait, and
+    // clamped so no part of it runs off the side.
+    _place() {
+      const field = this.parent;
+      const fx    = field ? field.x : 0;
+      const fy    = field ? field.y : 0;
+      const half  = (this._drawW || 0) / 2;
+      const x     = this._enemySprite ? this._enemySprite.x : (Graphics.width / 2 - fx);
+      const min   = half - fx;
+      const max   = Graphics.width - half - fx;
+      this.x = max > min ? Math.min(Math.max(x, min), max) : x;
+      this.y = Graphics.height - fy;
+    }
+
+    _updateOpacity() {
+      const gone = !this._battler || this._battler.isDead() || !this._battler.isAppeared();
+      this.opacity = gone
+        ? Math.max(0,   this.opacity - FACE_FADE)
+        : Math.min(255, this.opacity + FACE_FADE);
+    }
+
+    // The drawn frame, in the sprite's own unscaled coordinates. The inherited
+    // test reads this.width, which PIXI reports already multiplied by the scale
+    // the portrait is blown up by, and would answer for a rectangle several
+    // times too big.
+    hitTest(x, y) {
+      const w = this._charMode ? (this._pw || 0) : (this.bitmap?.width  || 0);
+      const h = this._charMode ? (this._ph || 0) : (this.bitmap?.height || 0);
+      return x >= -w / 2 && x < w / 2 && y >= -h && y < 0;
+    }
+
+    onMouseEnter() { $gameTemp.setTouchState(this._battler, 'select'); }
+    onPress()      { $gameTemp.setTouchState(this._battler, 'select'); }
+
+    // The blink the enemy sprite would have shown while it is the chosen target.
+    _updateSelection() {
+      if (this._battler?.isSelected?.()) {
+        this._selectCount++;
+        this.setBlendColor(this._selectCount % 30 < 15 ? [255, 255, 255, 64] : [0, 0, 0, 0]);
+      } else if (this._selectCount > 0) {
+        this._selectCount = 0;
+        this.setBlendColor([0, 0, 0, 0]);
+      }
+    }
+
+    update() {
+      super.update();
+      // A dossier can name a bust that was never drawn; fall back to the
+      // house portrait rather than leaving an empty rectangle standing there.
+      if (!this._fellBack && !this._charMode && this.bitmap?.isError?.()) {
+        this._fellBack = true;
+        this.bitmap = ImageManager.loadBitmap('img/busts/', '7');
+        return;
+      }
+      if (!this._laidOut) {
+        if (!this._layout()) return;
+        this._laidOut = true;
+      } else if (this._charMode) {
+        this._updatePattern();
+      }
+      this._place();
+      this._updateOpacity();
+      this._updateSelection();
+    }
+  }
+
+  const _Spriteset_Battle_createEnemies_face = Spriteset_Battle.prototype.createEnemies;
+  Spriteset_Battle.prototype.createEnemies = function () {
+    _Spriteset_Battle_createEnemies_face.call(this);
+    this._npcFaceSprite  = null;
+    this._npcFaceBattler = null;
+    const face = $gameTemp?._NPCEmpathizeBattleFace;
+    if (!face) return;
+    // The panel fights one person, the first member of the troop it set up.
+    const battler = $gameTroop.members()[0];
+    if (!battler) return;
+    const src = (this._enemySprites || []).find(s => s && (s._battler || s._enemy) === battler);
+    const sprite = new Sprite_NPCBattleFace(face, battler, src);
+    this._battleField.addChild(sprite);
+    this._npcFaceSprite  = sprite;
+    this._npcFaceBattler = battler;
+  };
+
+  const _Spriteset_Battle_update_face = Spriteset_Battle.prototype.update;
+  Spriteset_Battle.prototype.update = function () {
+    _Spriteset_Battle_update_face.call(this);
+    if (!this._npcFaceSprite) return;
+    // Kept down rather than hidden once: the battler graphic reloads itself
+    // whenever the enemy's image changes, and 3D mode can hand a sprite back.
+    const src = this._npcFaceSprite._enemySprite;
+    if (src && !src._hidden) src.hide();
+    // 3D mode builds its model a tenth of a second into the battle. The NPC
+    // wears their own face instead, so the model comes straight back off the
+    // field the frame it appears.
+    const sc3d = this._battle3DScene;
+    if (sc3d && !sc3d._disposed && sc3d.getModel) {
+      const idx = $gameTroop.members().indexOf(this._npcFaceBattler);
+      if (idx >= 0 && sc3d.getModel(`enemy_${idx}`)) sc3d.removeModel(`enemy_${idx}`);
+    }
   };
 
   // ============================================================================
@@ -2251,6 +2471,8 @@
       // the one it ends up acting for (wiki navigation), so `evId` rules.
       if (evId != null && $gameMap)
         $gameTemp._NPCEmpathizeAttackTarget = { mapId: $gameMap.mapId(), eventId: evId };
+      // The face the fight is fought against, taken here for the same reason.
+      $gameTemp._NPCEmpathizeAttackFace = _buildBattleFace(npcName, $gameMap?.event(evId));
       $gameTemp._NPCEmpathizeStartBattle = 2;
     }
 

@@ -152,13 +152,6 @@
   /**
    * Get directional symbol for road type
    */
-  function getRoadDirectionSymbol(biomeName) {
-    const roadConfig = parseRoadConfig(biomeName);
-    if (roadConfig) {
-      return DIRECTION_SYMBOLS[roadConfig.direction] || '•';
-    }
-    return '';
-  }
 
   // ===== RIVER PARSING FUNCTION =====
   /**
@@ -179,13 +172,6 @@
   /**
    * Get directional symbol for river type
    */
-  function getRiverDirectionSymbol(biomeName) {
-    const riverConfig = parseRiverConfig(biomeName);
-    if (riverConfig) {
-      return DIRECTION_SYMBOLS[riverConfig.direction] || '•';
-    }
-    return '';
-  }
 
   // ===== PERFORMANCE CACHE FOR DEBUG =====
   const DebugCache = {
@@ -260,34 +246,6 @@
   /**
    * Get human-readable sheet/position from progressive ID
    */
-  function getProgressiveIdLabel(progressiveId) {
-    // A5 autotiles - special negative range (-1 to -128)
-    if (progressiveId <= -1 && progressiveId >= -128) {
-      const a5Index = Math.abs(progressiveId) - 1;
-      return `A5 ${a5Index}`;
-    }
-    // Standard progressive IDs
-    else if (progressiveId >= 0 && progressiveId < 16) {
-      return `A1[${progressiveId}]`;
-    } else if (progressiveId >= 16 && progressiveId < 32) {
-      return `A2[${progressiveId - 16}]`;
-    } else if (progressiveId >= 32 && progressiveId < 48) {
-      return `A3[${progressiveId - 32}]`;
-    } else if (progressiveId >= 48 && progressiveId < 64) {
-      return `A4[${progressiveId - 48}]`;
-    } else if (progressiveId >= 64 && progressiveId < 80) {
-      return `A5[${progressiveId - 64}]`;
-    } else if (progressiveId >= 80 && progressiveId < 336) {
-      return `B[${progressiveId - 80}]`;
-    } else if (progressiveId >= 336 && progressiveId < 592) {
-      return `C[${progressiveId - 336}]`;
-    } else if (progressiveId >= 592 && progressiveId < 848) {
-      return `D[${progressiveId - 592}]`;
-    } else if (progressiveId >= 848 && progressiveId < 1104) {
-      return `E[${progressiveId - 848}]`;
-    }
-    return `Invalid(${progressiveId})`;
-  }
 
   /**
    * Get sheet letter and index for tile ID (for debug map 1410)

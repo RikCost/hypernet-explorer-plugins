@@ -124,13 +124,7 @@
     const fadeOutDuration = 12;
     const SpritesAssociation = (window.Sprites && window.Sprites.SpritesAssociation) || {};
 
-    function getNameWindowX() {
-        return nameWindowX_16_9;
-    }
 
-    function getNameWindowY() {
-        return nameWindowY_16_9;
-    }
 
     function getBustWidth() {
         return bustWidth_16_9;

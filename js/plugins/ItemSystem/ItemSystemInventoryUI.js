@@ -488,7 +488,7 @@
         }).join(', ');
       };
 
-      const noteTags = []; const nutritionSpecs = []; let weaponSpriteName = '';
+      const noteTags = []; const nutritionSpecs = [];
       if (selectedItem.note) {
         const matches = selectedItem.note.match(/<([^>]+)>/g);
         if (matches) {
@@ -500,7 +500,6 @@
             const nl = name.toLowerCase();
             if (nl === 'movement' || nl === 'weight' || nl === 'category' || nl === 'uncraftable') return;
             if (nl === 'needrestore') return; // rendered as its own "Needs Restored" section below
-            if (nl === 'weaponsprite') { weaponSpriteName = val; return; }
             if (nl === 'calories' || nl === 'fat' || nl === 'protein') { nutritionSpecs.push({ label: nl.charAt(0).toUpperCase()+nl.slice(1), val }); return; }
             if (nl === 'recipe') noteTags.push({ name: T('Inventory.section.craftingRecipe'), value: parseRecipeToNames(val) });
             else noteTags.push({ name: name.charAt(0).toUpperCase()+name.slice(1), value: val || T('Inventory.spec.yes') });
@@ -525,14 +524,6 @@
         detailedInfoHTML += `<div class="inspect-flavour">${loreText}</div>`;
       }
 
-      if (weaponSpriteName) {
-        detailedInfoHTML += `
-          <div class="inspect-weapon-sprite-container" style="text-align:center;margin:10px 0;padding:6px 0;">
-            <img src="img/pictures/Weapons/${weaponSpriteName}.png" alt="${weaponSpriteName}" style="max-height:80px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));" onerror="this.style.display='none';"/>
-            <div style="font-family:'Lora',serif;font-size:0.72rem;color:var(--border-focus-hover);margin-top:5px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">${T('Inventory.weaponArmament', { name: weaponSpriteName })}</div>
-          </div>`;
-      }
-
       if (generalSpecs.length)    { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.specifications')}</div>`         + buildSpecRows(generalSpecs); }
       if (paramSpecs.length)      { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.attributeModifiers')}</div>`   + paramSpecs.map(s => `<div class="inspect-spec-row"><span class="inspect-spec-label">${s.label}:</span><span class="inspect-spec-value" style="color:${s.val.startsWith('+')?'#2e7d32':'#c62828'};">${s.val}</span></div>`).join(''); }
       if (invocationSpecs.length) { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.invocationStats')}</div>`      + buildSpecRows(invocationSpecs); }
@@ -552,6 +543,14 @@
           <div class="inspect-spec-row">
             <span class="inspect-spec-label">${r.label}:</span>
             <span class="inspect-spec-value" style="color:${r.color};font-weight:bold;">+${r.amount}%</span>
+          </div>`).join('');
+      }
+      const cravingsFed = window.ItemSystemUtils && window.ItemSystemUtils.getAddictionRelief ? window.ItemSystemUtils.getAddictionRelief(selectedItem) : [];
+      if (cravingsFed.length) {
+        detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.cravingsFed')}</div>` + cravingsFed.map(r => `
+          <div class="inspect-spec-row">
+            <span class="inspect-spec-label">${r.label}:</span>
+            <span class="inspect-spec-value" style="color:#7B6A55;font-weight:bold;">-${r.amount}%</span>
           </div>`).join('');
       }
       if (noteTags.length)        { detailedInfoHTML += `<div class="inspect-section-title">${T('Inventory.section.blueprints')}</div>` + noteTags.map(tag => `<div class="inspect-spec-row"><span class="inspect-spec-label">${tag.name}:</span><span class="inspect-spec-value" style="font-size:0.78rem;font-style:italic;max-width:60%;text-align:right;word-wrap:break-word;">${tag.value}</span></div>`).join(''); }

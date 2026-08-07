@@ -1,7 +1,6 @@
 {
   "title": "기술",
   "back": "뒤로",
-  "recent": "",
   "unit": {
     "ap": ""
   },
@@ -32,26 +31,17 @@
       "description": ""
     }
   },
-  "option": {
-    "skillCategorization": "",
-    "categoryModes": [
-      "",
-      "",
-      ""
-    ]
-  },
   "cmd": {
-    "favourites": "",
     "levelUp": "",
     "use": "사용",
-    "favourite": "",
-    "unfavourite": "",
-    "cancel": "취소"
+    "cancel": "취소",
+    "carry": "",
+    "bench": ""
   },
   "action": {
     "useSkill": "",
-    "favourite": "",
-    "unfavourite": "",
+    "carry": "",
+    "bench": "",
     "back": ""
   },
   "info": {
@@ -80,5 +70,15 @@
     "hint": "",
     "section": "",
     "category": ""
+  },
+  "loadout": {
+    "skills": "",
+    "magic": "",
+    "count": "{group} {n}/{max}",
+    "carried": "",
+    "benched": "",
+    "always": "",
+    "hint": "",
+    "full": ""
   }
 }

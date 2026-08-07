@@ -671,10 +671,6 @@
         }
     }
 
-    function getFuelPrice() {
-        if (window.VehicleSystemRefuel) return window.VehicleSystemRefuel.getFuelPrice();
-        return $gameVariables.value(53) || 10;
-    }
 
     // Fuel liters this vehicle currently holds, picked by transport type.
     function currentFuelForTransport(transportType) {
@@ -702,36 +698,6 @@
         return Math.max(travelTime, 3);
     }
 
-    function parseTransportOverrides(event) {
-        const overrides = {};
-        if (!event.pages || !event.pages[0] || !event.pages[0].list) return overrides;
-
-        for (const command of event.pages[0].list) {
-            if (command.code === 108 || command.code === 408) {
-                const comment = command.parameters[0];
-                if (!comment) continue;
-
-                const lines = comment.split(',');
-                for (const line of lines) {
-                    const parts = line.trim().split(/\s+/);
-                    if (parts.length === 4) {
-                        const [transport, mapId, x, y] = parts;
-                        const parsedMapId = parseInt(mapId);
-                        const parsedX = parseInt(x);
-                        const parsedY = parseInt(y);
-                        if (!isNaN(parsedMapId) && !isNaN(parsedX) && !isNaN(parsedY)) {
-                            overrides[transport.toLowerCase()] = {
-                                mapId: parsedMapId,
-                                x: parsedX,
-                                y: parsedY
-                            };
-                        }
-                    }
-                }
-            }
-        }
-        return overrides;
-    }
 
     function initializeDestinationCache() {
         if (cacheInitialized && destinationCache !== null) {

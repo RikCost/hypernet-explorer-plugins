@@ -343,10 +343,10 @@
     "message4": ""
   },
   "50": {
-    "name": "",
-    "message1": "",
-    "message2": "",
+    "name": "Astinenza",
+    "message1": "%1 è in astinenza!",
+    "message2": "%1 è in astinenza!",
     "message3": "",
-    "message4": ""
+    "message4": "%1 non è più in astinenza!"
   }
 }

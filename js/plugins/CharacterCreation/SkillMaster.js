@@ -73,6 +73,45 @@
  * - Primary categories get a 3x multiplier on progression points.
  * - Secondary categories get a 1.5x multiplier on progression points.
  *
+ * A class studies only what it studies: the Training encyclopedia lists ONLY
+ * the pupil's primary and secondary categories, so a Knight is never offered
+ * Necromancy. "All" means the pupil's whole curriculum, not the whole book.
+ * A class with no entry in classSkillCategories falls back to every category.
+ *
+ * ============================================================================
+ * The sphere grid
+ * ============================================================================
+ *
+ * A category is not a list, it is a map: a non-linear graph running from its
+ * weakest skills to its strongest, several branches wide, with alternative
+ * routes and sideways steps between branches. A pupil may only buy a skill
+ * they are standing next to. ONE known neighbour is enough - links are
+ * alternative ways in, never joint requirements - and the tier-0 skills are
+ * always open, so a pupil who knows nothing still has a way in.
+ *
+ * The graph is data, authored into each skill's notebox by
+ * tools/skills/gen_skill_graph.py (re-runnable; it strips and rewrites its own
+ * tags, so hand-tuning survives until the next run):
+ *
+ *   <Node: tier,branch>   its cell on the grid; tier 0 is an entry point
+ *   <Link: 12,45,78>      the skills it borders, inside the same category
+ *
+ * Links are read as symmetric, so a hand-written notebox naming only one side
+ * still works. A skill with no <Node:> at all is never blocked by the grid.
+ *
+ * ============================================================================
+ * Knowledge cost
+ * ============================================================================
+ *
+ * What a skill costs to teach is what it is worth in a fight, not a flat fee:
+ * skillPower() scores its resource cost, damage scaling, flat damage, repeats,
+ * target breadth, applied effects and its <Forbidden> / <Esoteric> tags, and
+ * the price rises as a power of that score. A basic move is ~5 KP, an average
+ * skill ~20, a strong one a few hundred, and an eldritch ultimate close to a
+ * thousand: each band is roughly an order of magnitude above the last. A
+ * PRIMARY school then halves the price (a secondary school is full price), and
+ * every skill carries a flat +10 KP on top.
+ *
  * ============================================================================
  * Skill Categorization
  * ============================================================================
@@ -294,6 +333,7 @@
         _secondary: [],
         _initialized: false,
         _actorId: 1,
+        _classId: 0,
 
         // Switch the manager to a specific pupil so the KP discounts and the
         // "3.0X / 1.5X KP" badges reflect that actor's class. Recomputes on next use.
@@ -311,10 +351,14 @@
         },
 
         initialize: function () {
-            if (this._initialized || typeof $dataActors === 'undefined' || !$dataActors) return;
+            if (typeof $dataActors === 'undefined' || !$dataActors) return;
 
             const classId = this._classIdFor(this._actorId);
             if (!classId) return;
+            // Re-read whenever the pupil's class changes under us (a class swap,
+            // or the manager still holding a stale table for the same actor id).
+            if (this._initialized && this._classId === classId) return;
+            this._classId = classId;
 
             // Primary/secondary skill categories are sourced from
             // js/db/Skills/Categories.json (classSkillCategories), the single
@@ -328,18 +372,31 @@
             this._initialized = true;
         },
 
+        // initialize() is a no-op once the pupil's table is current, so every
+        // reader calls it rather than trusting a flag that predates a class swap.
         isPrimary: function (category) {
-            if (!this._initialized) this.initialize();
+            this.initialize();
             return this._primary.includes(category);
         },
 
         isSecondary: function (category) {
-            if (!this._initialized) this.initialize();
+            this.initialize();
             return this._secondary.includes(category);
         },
 
+        // The categories the pupil's class actually studies (primary first, then
+        // secondary). The training menu shows nothing outside this list, so a
+        // Knight is never offered Necromancy. Returns null when the class has no
+        // table at all (or Categories.json has not loaded yet), which means "no
+        // restriction" rather than "nothing to learn".
+        allowedCategories: function () {
+            this.initialize();
+            const list = this._primary.concat(this._secondary);
+            return list.length ? list : null;
+        },
+
         getMultiplier: function (skillId) {
-            if (!this._initialized) this.initialize();
+            this.initialize();
 
             const category = getSkillCategory(skillId);
             if (!category) return 1;
@@ -389,17 +446,123 @@
         this._knowledgePoints = Math.max(0, this._knowledgePoints - amount);
     };
 
-    // Base cost derived from skill MP/TP cost; Primary = 50% off, Secondary = 25% off
+    //=============================================================================
+    // Skill power -> Knowledge cost
+    //
+    // A skill is priced by what it does, not by a flat fee, so the gap between a
+    // jab and a world-ending word is a gap in orders of magnitude rather than a
+    // few points. skillPower() scores everything the database actually knows
+    // about a skill and kpTeachCost() raises that score to a power, which is what
+    // turns a linear reading of a skill into an exponential price.
+    //
+    //   power ~1  -> 5 KP      (a basic move)
+    //   power ~3  -> 20 KP     (an ordinary skill)
+    //   power ~6  -> 90 KP     (a strong one)
+    //   power ~9  -> 230 KP
+    //   power ~14 -> 600 KP    (a Forbidden esoteric ultimate)
+    //=============================================================================
+
+    const KP_TEACH_UNIT = 1.6;    // price of a power-1 skill
+    const KP_TEACH_EXP = 2.25;    // how hard power is punished
+    const KP_TEACH_MIN = 5;       // nothing is free to learn
+    const KP_TEACH_MAX = 4000;    // ceiling, so a broken formula can't price itself out
+
+    // Stats a damage formula can scale off, biggest multiplier wins. Compiled
+    // once: a grid prices every node it draws.
+    const KP_FORMULA_STATS = ['a.mhp', 'a.mmp', 'a.atk', 'a.def', 'a.mat', 'a.mdf',
+        'a.agi', 'a.luk', 'a.level', 'a.hp', 'a.mp', 'a.tp'].map(stat => ({
+            stat: stat,
+            re: new RegExp(stat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\*\\s*([\\d.]+)')
+        }));
+
+    // How much of a threat the target set is, by RMMZ scope id.
+    const KP_SCOPE_WEIGHT = {
+        0: 0, 1: 0, 2: 0.8, 3: 0.3, 4: 0.45, 5: 0.55, 6: 1.0, 7: 0.15,
+        8: 0.6, 9: 0.15, 10: 0.6, 11: 0, 12: 0.6, 13: 0.8, 14: 1.0
+    };
+
+    // Reads the damage formula for its steepest stat multiplier and its largest
+    // flat term (the 3000 in "3000 + a.mdf * 8" is most of that skill's worth).
+    function kpFormulaWeight(formula) {
+        if (!formula) return { multiplier: 0, flat: 0 };
+        let multiplier = 0;
+        for (const entry of KP_FORMULA_STATS) {
+            const m = formula.match(entry.re);
+            if (m) multiplier = Math.max(multiplier, parseFloat(m[1]) || 0);
+            else if (formula.includes(entry.stat)) multiplier = Math.max(multiplier, 1);
+        }
+        let flat = 0;
+        const flatRe = /(?:^|[^.\w])(\d{2,5})(?![.\w])/g;
+        let f;
+        while ((f = flatRe.exec(formula)) !== null) flat = Math.max(flat, parseInt(f[1], 10));
+        return { multiplier: multiplier, flat: flat };
+    }
+
+    function skillPower(skill) {
+        if (!skill) return 1;
+        const note = skill.note || '';
+        const resource = (skill.mpCost || 0) + (skill.tpCost || 0);
+        // Resource cost is the designer's own verdict on a skill, but it spans
+        // 0-9999, so it is read logarithmically instead of raw.
+        let power = Math.log2(1 + resource / 10) * 0.9;
+
+        const dmg = skill.damage || {};
+        if (dmg.type > 0) {
+            const w = kpFormulaWeight(dmg.formula || '');
+            power += Math.min(w.multiplier, 20) * 0.35;
+            power += Math.min(w.flat / 300, 6);
+        }
+        power += Math.max(0, (skill.repeats || 1) - 1) * 0.6;
+        power += KP_SCOPE_WEIGHT[skill.scope] !== undefined ? KP_SCOPE_WEIGHT[skill.scope] : 0.3;
+
+        for (const eff of (skill.effects || [])) {
+            if (!eff) continue;
+            switch (eff.code) {
+                case Game_Action.EFFECT_ADD_STATE:
+                case Game_Action.EFFECT_REMOVE_STATE:
+                    power += 0.3 * Math.min(1, Math.max(0.2, eff.value1 || 1)); break;
+                case Game_Action.EFFECT_ADD_BUFF:
+                case Game_Action.EFFECT_ADD_DEBUFF:
+                    power += 0.2; break;
+                case Game_Action.EFFECT_RECOVER_HP:
+                case Game_Action.EFFECT_RECOVER_MP:
+                    power += 0.25; break;
+                case Game_Action.EFFECT_GAIN_TP: power += 0.15; break;
+                case Game_Action.EFFECT_GROW: power += 0.8; break;     // permanent stat growth
+                case Game_Action.EFFECT_LEARN_SKILL: power += 0.5; break;
+                case Game_Action.EFFECT_SPECIAL: power += 0.3; break;
+                case Game_Action.EFFECT_COMMON_EVENT: power += 0.2; break;
+            }
+        }
+
+        if (/<Esoteric>/i.test(note)) power += 0.5;
+        if (/<Forbidden>/i.test(note)) power *= 1.45;   // the tag is on the game-breakers
+        return Math.max(0.35, power);
+    }
+
+    function kpTeachCost(skill) {
+        const raw = KP_TEACH_UNIT * Math.pow(skillPower(skill), KP_TEACH_EXP);
+        return Math.max(KP_TEACH_MIN, Math.min(KP_TEACH_MAX, Math.round(raw)));
+    }
+
+    // Cost scales with the skill's power; only a PRIMARY school then discounts it
+    // (a secondary school is taught at full price). Every price then carries the
+    // same flat surcharge, so nothing is ever pocket change.
+    const KP_TEACH_SURCHARGE = 10;    // paid on every skill, whatever its power
+
     Game_System.prototype.getSkillKnowledgeCost = function (skillId, actorId) {
         const skill = $dataSkills[skillId];
-        if (!skill) return 10;
-        const base = Math.max(10, Math.floor((skill.mpCost + skill.tpCost) / 2));
+        if (!skill) return 10 + KP_TEACH_SURCHARGE;
+        // The badges, the discounts and this price all have to be reading the same
+        // pupil; every caller names one, so honour it rather than whichever actor
+        // the manager happens to be holding.
+        if (actorId) actorCategoryManager.setActor(actorId);
+        let cost = kpTeachCost(skill);
         const category = getSkillCategory(skillId);
-        if (category && actorId) {
-            if (actorCategoryManager.isPrimary(category)) return Math.max(1, Math.floor(base * 0.5));
-            if (actorCategoryManager.isSecondary(category)) return Math.max(1, Math.floor(base * 0.75));
+        if (category && actorId && actorCategoryManager.isPrimary(category)) {
+            cost = Math.max(1, Math.floor(cost * 0.5));
         }
-        return base;
+        return cost + KP_TEACH_SURCHARGE;
     };
 
     //=============================================================================
@@ -413,9 +576,10 @@
     //   value = KP_BASE * ratio ^ KP_CURVE, clamped to [KP_MIN, KP_MAX]
     //
     // At parity that is 3 KP; half again the party's level pays ~5.5; double
-    // pays ~8.5; quadruple hits the 25 KP ceiling. Teaching a skill costs
-    // 10-50 KP (getSkillKnowledgeCost, median 15), so an average skill is about
-    // five even fights, or one good bounty, away.
+    // pays ~8.5; quadruple hits the 25 KP ceiling. Teaching a skill costs 5 KP
+    // to a few hundred by its power (getSkillKnowledgeCost, median ~20 before
+    // the school discount), so an ordinary skill is a handful of even fights or
+    // one good bounty away, while an ultimate is a campaign's worth of them.
     //=============================================================================
 
     const KP_BASE = 3;            // value of an exactly level-matched enemy
@@ -792,7 +956,11 @@
     // Utility Functions
     //=============================================================================
 
+    // Only the categories the pupil's class studies (its primary and secondary
+    // schools) are browsable; a class with no table in Categories.json sees the
+    // whole book, so the menu is never empty.
     function getAllSkillCategories() {
+        const allowed = actorCategoryManager.allowedCategories();
         const categories = new Set();
         categories.add("All");   // i18n-ignore: category id
 
@@ -800,6 +968,7 @@
             if (!skill) continue;
             const categoryMatch = skill.note.match(/<category:(.+?)>/i);
             if (categoryMatch) {
+                if (allowed && !allowed.includes(categoryMatch[1].trim())) continue;
                 categories.add(categoryMatch[1]);
             }
         }
@@ -838,18 +1007,158 @@
         const skills = [];
         // Build the category regex once per query instead of once per skill.
         const catRegex = category === "All" ? null : new RegExp(`<category:${category}>`, 'i');
+        // "All" is the pupil's whole curriculum, not the whole book: it holds the
+        // skills of every school their class studies and nothing outside them.
+        const allowed = catRegex ? null : actorCategoryManager.allowedCategories();
 
         for (const skill of $dataSkills) {
             if (!skill || !skill.name || skill.name.startsWith('<--')) continue;
             if (skill._customSpell) continue; // fused spells never appear in the browse list
 
-            if (category === "All" || catRegex.test(skill.note)) {
-                skills.push(skill);
+            if (catRegex) {
+                if (catRegex.test(skill.note)) skills.push(skill);
+                continue;
             }
+            if (allowed) {
+                const match = skill.note.match(/<category:(.+?)>/i);
+                if (!match || !allowed.includes(match[1].trim())) continue;
+            }
+            skills.push(skill);
         }
 
         return skills;
     }
+
+    //=============================================================================
+    // Skill graph - the sphere grid
+    //
+    // A category is not a list, it is a map. Where each skill sits and what it
+    // borders is authored into the noteboxes by tools/skills/gen_skill_graph.py:
+    //
+    //     <Node: tier,branch>    its cell; tier 0 is an entry point
+    //     <Link: 12,45,78>       the skills it is adjacent to (same category)
+    //
+    // A pupil may only buy what they are standing next to. ONE known neighbour
+    // is enough: links are alternative ways in, never joint requirements, which
+    // is the whole rule of the grid. Tier 0 is always open, so a pupil who knows
+    // nothing at all still has a way in, and a skill outside the grid entirely
+    // (a fused spell, an uncategorised leftover) is never blocked by it.
+    //
+    // Links are stored on both endpoints and read as symmetric anyway, so a
+    // hand-edited notebox that names only one side still works.
+    //=============================================================================
+
+    const NODE_RE = /<Node:\s*(\d+)\s*,\s*(\d+)\s*>/i;
+    const LINK_RE = /<Link:\s*([\d,\s]*)>/i;
+
+    const SkillGraph = {
+        _nodes: null,        // skillId -> { tier, branch, category }
+        _links: null,        // skillId -> [skillId, ...] (symmetric)
+        _graphs: null,       // category -> laid-out graph, built on demand
+
+        // One pass over $dataSkills; the tags never change at runtime.
+        _build: function () {
+            if (this._nodes) return;
+            this._nodes = {};
+            this._links = {};
+            this._graphs = {};
+            for (const skill of $dataSkills) {
+                if (!skill || !skill.note) continue;
+                const node = skill.note.match(NODE_RE);
+                if (!node) continue;
+                this._nodes[skill.id] = {
+                    tier: parseInt(node[1], 10),
+                    branch: parseInt(node[2], 10),
+                    category: getSkillCategory(skill.id)
+                };
+                const link = skill.note.match(LINK_RE);
+                if (!link) continue;
+                for (const part of link[1].split(',')) {
+                    const other = parseInt(part.trim(), 10);
+                    if (!other || other === skill.id) continue;
+                    (this._links[skill.id] = this._links[skill.id] || []).push(other);
+                    (this._links[other] = this._links[other] || []).push(skill.id);
+                }
+            }
+            for (const id of Object.keys(this._links)) {
+                this._links[id] = Array.from(new Set(this._links[id]));
+            }
+        },
+
+        node: function (skillId) {
+            this._build();
+            return this._nodes[skillId] || null;
+        },
+
+        links: function (skillId) {
+            this._build();
+            return this._links[skillId] || [];
+        },
+
+        // A skill nobody has to walk to: the grid's entrance, or a skill that was
+        // never put on a grid in the first place.
+        isEntry: function (skillId) {
+            const node = this.node(skillId);
+            return !node || node.tier === 0;
+        },
+
+        // Can this pupil buy it right now? Known skills are not "open" (there is
+        // nothing left to buy), which is what the UI colours them by.
+        isOpen: function (actor, skillId) {
+            if (!actor || actor.isLearnedSkill(skillId)) return false;
+            if (this.isEntry(skillId)) return true;
+            return this.links(skillId).some(id => actor.isLearnedSkill(id));
+        },
+
+        // The skills that would open this one, for the "you are not next to it
+        // yet" line on the right page.
+        openers: function (skillId) {
+            return this.links(skillId)
+                .map(id => $dataSkills[id])
+                .filter(s => s && s.name);
+        },
+
+        // Nodes and edges of one category, laid out on the (tier, branch) grid.
+        // Cached: the shape is static, only the pupil's colours change.
+        graph: function (category) {
+            this._build();
+            if (this._graphs[category]) return this._graphs[category];
+
+            const nodes = [];
+            for (const skill of getSkillsByCategory(category)) {
+                const node = this._nodes[skill.id];
+                if (!node) continue;
+                nodes.push({ id: skill.id, skill: skill, tier: node.tier, branch: node.branch });
+            }
+            nodes.sort((a, b) => (a.tier - b.tier) || (a.branch - b.branch) || (a.id - b.id));
+
+            const placed = {};
+            for (const n of nodes) placed[n.id] = n;
+
+            // Every edge once, and only between two nodes actually on this grid.
+            const seen = {};
+            const edges = [];
+            for (const n of nodes) {
+                for (const other of this.links(n.id)) {
+                    if (!placed[other]) continue;
+                    const key = n.id < other ? `${n.id}:${other}` : `${other}:${n.id}`;
+                    if (seen[key]) continue;
+                    seen[key] = true;
+                    edges.push([n, placed[other]]);
+                }
+            }
+
+            let tiers = 0, branches = 0;
+            for (const n of nodes) {
+                tiers = Math.max(tiers, n.tier + 1);
+                branches = Math.max(branches, n.branch + 1);
+            }
+            this._graphs[category] = { nodes: nodes, edges: edges, tiers: tiers, branches: branches };
+            return this._graphs[category];
+        }
+    };
+
+    window.SkillGraph = SkillGraph;
 
     //=============================================================================
     // Window_SkillCategory - Grid Layout
@@ -1534,6 +1843,20 @@
     // Number of columns used by the per-category skill grid (left page of the split spread).
     const SKILL_GRID_COLS = 2;
 
+    // Sphere-grid geometry, in page pixels. A tier is a column and a branch is a
+    // row, so the grid always reads left (weakest, the way in) to right.
+    // The lattice now owns the whole spread, so its spacing is not fixed: it is
+    // stretched to fill the page it was given, between these bounds, and a grid
+    // smaller than the page is centred on it rather than pinned to the corner.
+    const GRID_NODE = 42;      // node diameter (floor)
+    const GRID_NODE_MAX = 62;
+    const GRID_COL_W = 92;     // distance between tiers (floor)
+    const GRID_COL_W_MAX = 220;
+    const GRID_ROW_H = 68;     // distance between branches (floor)
+    const GRID_ROW_H_MAX = 150;
+    const GRID_PAD = 26;       // margin around the whole grid
+    const GRID_LEGEND_H = 96;  // header bar + legend row above the lattice
+
     // Pupils offered by the companion switcher. Matches the Skills scene, which
     // lists every party member (reserves included) rather than the battle party.
     function getSwitchableMembers() {
@@ -1566,6 +1889,9 @@
         // The chosen pupil: every skill taught from this scene goes to this actor.
         const leader = $gameParty.leader();
         this._teachActorId = leader ? leader.actorId() : 1;
+        // The browsable category lists are the pupil's, so the manager has to know
+        // who the pupil is before anything reads them.
+        actorCategoryManager.setActor(this._teachActorId);
 
         if (this._preselectedSkillId > 0) {
             const skillId = this._preselectedSkillId;
@@ -1710,6 +2036,7 @@
         this._lastRightMode = null;
         this._lastRightSkillId = null;
         this._lastRightKnowledge = null;
+        this._lastPopupKey = null;
 
         this.refreshUISkillDOM();
 
@@ -1724,6 +2051,444 @@
     // no-op so any stray external caller still gets a string.
     Scene_SkillEncyclopedia.prototype.getCategoryEmoji = function (catName) {
         return '';
+    };
+
+    //=========================================================================
+    // The sphere grid, drawn
+    //
+    // The left page of a category is the graph itself: edges as one SVG under
+    // the nodes, nodes as absolutely positioned cards on the (tier, branch)
+    // lattice. Learned skills are lit, the skills bordering them are open to
+    // buy, everything else is dimmed but still readable, so a pupil can see
+    // where a branch goes before committing to it.
+    //=========================================================================
+
+    // "All" is a flat browse list (a graph of every school at once would be
+    // soup); a real category is drawn as its grid, unless it has no grid data
+    // at all, in which case the old list is still a working fallback.
+    Scene_SkillEncyclopedia.prototype.usesGraphView = function () {
+        if (!this._selectedCategory || this._selectedCategory === 'All') return false;   // i18n-ignore: category id
+        const graph = SkillGraph.graph(this._selectedCategory);
+        return graph && graph.nodes.length > 0;
+    };
+
+    Scene_SkillEncyclopedia.prototype.focusedSkill = function () {
+        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
+        return skills[this._selectedSkillIndex] || null;
+    };
+
+    // Focus a skill by id, keeping _selectedSkillIndex (which the detail page,
+    // the teach button and the preview all read) as the one source of truth.
+    Scene_SkillEncyclopedia.prototype.focusSkillId = function (skillId) {
+        const skills = this.getSkillsByCategoryCached(this._selectedCategory);
+        const idx = skills.findIndex(s => s.id === skillId);
+        if (idx >= 0) this._selectedSkillIndex = idx;
+        return idx >= 0;
+    };
+
+    // Where the cursor lands when a grid is opened: on something the pupil
+    // already knows if they know anything here, otherwise on the way in.
+    Scene_SkillEncyclopedia.prototype.defaultGraphFocus = function () {
+        const graph = SkillGraph.graph(this._selectedCategory);
+        if (!graph || !graph.nodes.length) return;
+        const actor = this.getTeachActor();
+        const known = actor ? graph.nodes.find(n => actor.isLearnedSkill(n.id)) : null;
+        const entry = graph.nodes.find(n => n.tier === 0) || graph.nodes[0];
+        this.focusSkillId((known || entry).id);
+    };
+
+    // Everything that changes a node's COLOUR (never its position, and never the
+    // cursor): the school, the pupil, and how much of it they have learned.
+    Scene_SkillEncyclopedia.prototype.graphStateKey = function () {
+        const actor = this.getTeachActor();
+        const graph = SkillGraph.graph(this._selectedCategory);
+        let learned = 0;
+        if (actor && graph) {
+            for (const node of graph.nodes) if (actor.isLearnedSkill(node.id)) learned++;
+        }
+        return `${this._selectedCategory}|${actor ? actor.actorId() : 0}|${learned}`;
+    };
+
+    // How wide a tier and how tall a branch are on THIS page: a four-node school
+    // spreads over the spread instead of huddling in one corner, a 193-node one
+    // keeps its compact spacing and scrolls. Whatever is left over becomes an
+    // origin offset, so a small lattice sits in the middle of the page.
+    Scene_SkillEncyclopedia.prototype.computeGridMetrics = function (graph) {
+        const box = document.getElementById('left-page-content');
+        const availW = Math.max(420, (box ? box.clientWidth : 900) - 20);
+        const availH = Math.max(300, (box ? box.clientHeight : 640) - GRID_LEGEND_H);
+        const tiers = Math.max(1, graph.tiers);
+        const branches = Math.max(1, graph.branches);
+        const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+        const colW = Math.round(clamp((availW - GRID_PAD * 2) / tiers, GRID_COL_W, GRID_COL_W_MAX));
+        const rowH = Math.round(clamp((availH - GRID_PAD * 2) / branches, GRID_ROW_H, GRID_ROW_H_MAX));
+        const node = Math.round(clamp(Math.min(colW * 0.42, rowH * 0.62), GRID_NODE, GRID_NODE_MAX));
+
+        const contentW = GRID_PAD * 2 + (tiers - 1) * colW + node;
+        const contentH = GRID_PAD * 2 + (branches - 1) * rowH + node + 16;
+        // Centred by an origin offset rather than by flexbox: a flex-centred
+        // child that outgrows its scroll box can no longer be scrolled back to
+        // its top-left corner.
+        const originX = Math.round(Math.max(0, (availW - contentW) / 2));
+        const originY = Math.round(Math.max(0, (availH - contentH) / 2));
+        // Roomier cells carry bigger lettering, up to a comfortable ceiling.
+        const spread = (colW - GRID_COL_W) / (GRID_COL_W_MAX - GRID_COL_W);
+        const font = 0.78 + clamp(spread, 0, 1) * 0.2;
+
+        this._grid = {
+            colW: colW, rowH: rowH, node: node, originX: originX, originY: originY,
+            width: contentW + originX * 2, height: contentH + originY * 2,
+            font: font
+        };
+        return this._grid;
+    };
+
+    Scene_SkillEncyclopedia.prototype.gridMetrics = function () {
+        return this._grid || {
+            colW: GRID_COL_W, rowH: GRID_ROW_H, node: GRID_NODE,
+            originX: 0, originY: 0, width: 0, height: 0, font: 0.78
+        };
+    };
+
+    Scene_SkillEncyclopedia.prototype.graphNodeCenter = function (node) {
+        const g = this.gridMetrics();
+        return {
+            x: g.originX + GRID_PAD + node.tier * g.colW + g.node / 2,
+            y: g.originY + GRID_PAD + node.branch * g.rowH + g.node / 2
+        };
+    };
+
+    Scene_SkillEncyclopedia.prototype.renderSkillGraphHTML = function () {
+        const graph = SkillGraph.graph(this._selectedCategory);
+        const actor = this.getTeachActor();
+        const focusedId = this.focusedSkill() ? this.focusedSkill().id : 0;
+
+        const g = this.computeGridMetrics(graph);
+        const width = g.width;
+        const height = g.height;
+
+        let edgesHTML = "";
+        for (const [a, b] of graph.edges) {
+            const pa = this.graphNodeCenter(a);
+            const pb = this.graphNodeCenter(b);
+            const knownA = actor ? actor.isLearnedSkill(a.id) : false;
+            const knownB = actor ? actor.isLearnedSkill(b.id) : false;
+            let stroke = 'var(--border-secondary-hover-translucent-15)';
+            let opacity = 0.55;
+            let dash = '3 5';
+            if (knownA && knownB) { stroke = 'var(--text-forest-complete)'; opacity = 0.95; dash = ''; }
+            else if (knownA || knownB) { stroke = 'var(--text-secondary-active)'; opacity = 0.9; dash = ''; }
+            edgesHTML += `<line x1="${pa.x}" y1="${pa.y}" x2="${pb.x}" y2="${pb.y}" stroke="${stroke}" stroke-width="${knownA && knownB ? 3 : 2}" stroke-opacity="${opacity}" ${dash ? `stroke-dasharray="${dash}"` : ''} stroke-linecap="round" />`;
+        }
+
+        let nodesHTML = "";
+        for (const node of graph.nodes) {
+            const learned = actor ? actor.isLearnedSkill(node.id) : false;
+            const open = SkillGraph.isOpen(actor, node.id);
+            const focused = node.id === focusedId;
+            const p = this.graphNodeCenter(node);
+
+            // The ring carries the state (learned / open / locked); the name is
+            // white in every state so the lattice stays readable at a glance.
+            let border = 'var(--border-secondary-hover-translucent-15)';
+            let background = 'var(--bg-card-translucent-5)';
+            const nameColor = 'var(--text-pure-white)';
+            let alpha = 0.72;
+            if (learned) {
+                border = 'var(--border-forest-green)';
+                background = 'var(--bg-success-green-15)';
+                alpha = 1;
+            } else if (open) {
+                border = 'var(--text-secondary-active)';
+                background = 'var(--bg-tertiary-focus-translucent-45)';
+                alpha = 1;
+            }
+            const ring = focused
+                ? `box-shadow:0 0 0 3px var(--text-secondary-active), 0 0 12px var(--shadow-primary-hover-translucent-5);`
+                : '';
+            // Only a node you could actually buy prices itself on the grid.
+            const cost = (actor && open)
+                ? $gameSystem.getSkillKnowledgeCost(node.id, actor.actorId()) : 0;
+
+            nodesHTML += `
+                <div class="sg-node ${focused ? 'sg-focus' : ''}" data-id="${node.id}" onclick="SceneManager._scene.selectGraphNode(${node.id})"
+                     style="position:absolute; left:${p.x - g.colW / 2}px; top:${p.y - g.node / 2}px; width:${g.colW}px; display:flex; flex-direction:column; align-items:center; cursor:pointer; opacity:${alpha}; font-family:'Lora', serif;">
+                    <div style="width:${g.node}px; height:${g.node}px; border-radius:50%; border:2px solid ${border}; background:${background}; display:flex; align-items:center; justify-content:center; ${ring} transition:all 0.15s ease;">
+                        <div style="${getSkillIconStyle(node.skill.iconIndex)} transform:scale(${(g.node / GRID_NODE * 0.8).toFixed(2)}); image-rendering:pixelated;"></div>
+                    </div>
+                    <div style="margin-top:4px; max-width:${g.colW - 6}px; font-size:${g.font.toFixed(2)}rem; line-height:1.15; text-align:center; color:${nameColor}; font-weight:${focused || learned ? 'bold' : 'normal'}; text-shadow:0 1px 2px var(--shadow-black-translucent-75); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${node.skill.name}</div>
+                    ${open && cost ? `<div style="font-size:${(g.font - 0.06).toFixed(2)}rem; color:var(--text-text-alt-3); letter-spacing:0.3px;">${cost} KP</div>` : ''}
+                </div>
+            `;
+        }
+
+        const legend = (color, label) =>
+            `<span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:9px; height:9px; border-radius:50%; border:2px solid ${color}; display:inline-block;"></span>${label}</span>`;
+
+        return `
+            <div style="display:flex; gap:18px; justify-content:center; font-family:'Lora', serif; font-size:0.85rem; color:var(--text-pure-white); padding:4px 0 8px 0;">
+                ${legend('var(--border-forest-green)', T('SkillMaster.graph.legendLearned'))}
+                ${legend('var(--text-secondary-active)', T('SkillMaster.graph.legendOpen'))}
+                ${legend('var(--border-secondary-hover-translucent-15)', T('SkillMaster.graph.legendLocked'))}
+            </div>
+            <div id="skill-graph-box" class="skill-scroll-box" style="flex:1; overflow:auto; box-sizing:border-box;">
+                <div style="position:relative; width:${width}px; height:${height}px;">
+                    <svg width="${width}" height="${height}" style="position:absolute; left:0px; top:0px; pointer-events:none;">${edgesHTML}</svg>
+                    ${nodesHTML}
+                </div>
+            </div>
+        `;
+    };
+
+    // The flat list, kept for "All" and for any category with no grid authored.
+    Scene_SkillEncyclopedia.prototype.renderSkillListHTML = function () {
+        const skills = getSkillsByCategory(this._selectedCategory);
+        const teachActor = this.getTeachActor();
+        let skillsListHTML = "";
+
+        skills.forEach((skill, idx) => {
+            const isFocused = (this._selectedSkillIndex === idx);
+            const isLearned = teachActor ? teachActor.isLearnedSkill(skill.id) : false;
+            const isOpen = SkillGraph.isOpen(teachActor, skill.id);
+            const badge = isLearned
+                ? `<span style="font-family:'Lora', serif; font-size:0.7rem; text-transform:uppercase; color:var(--text-forest-complete); border:1px solid var(--border-forest-green); border-radius:3px; padding:1px 5px; font-weight:bold; background:var(--bg-success-green-15); letter-spacing:0.5px;">${T('SkillMaster.mastered')}</span>`
+                : (!isOpen ? `<span style="font-family:'Lora', serif; font-size:0.7rem; text-transform:uppercase; color:var(--text-card-medium); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:3px; padding:1px 5px; letter-spacing:0.5px;">${T('SkillMaster.graph.locked')}</span>` : '');
+
+            skillsListHTML += `
+                <div class="skill-card ${isFocused ? 'focused' : ''}" onclick="SceneManager._scene.selectSkill(${idx})" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--accent-gray-2-translucent-0); border:1px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; opacity:${isLearned || isOpen ? 1 : 0.6}; transition:all 0.15s ease;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(0.8); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px;"></div>
+                        <div style="font-weight:bold; color:${isFocused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}; font-size:0.95rem;">${skill.name}</div>
+                    </div>
+                    ${badge}
+                </div>
+            `;
+        });
+
+        return `
+            <div id="skills-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${SKILL_GRID_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box;">
+                ${skillsListHTML}
+            </div>
+        `;
+    };
+
+    // Click on a node: focus it. Clicking the node already focused opens its
+    // actions, so the mouse can teach without touching the keyboard.
+    Scene_SkillEncyclopedia.prototype.selectGraphNode = function (skillId) {
+        const current = this.focusedSkill();
+        if (current && current.id === skillId) {
+            this.selectSkill(this._selectedSkillIndex);
+            return;
+        }
+        if (!this.focusSkillId(skillId)) return;
+        SoundManager.playCursor();
+        this.refreshUISkillDOM();
+        this.scrollGraphToFocus();
+    };
+
+    // Directional movement across a sparse lattice: take the nearest node that
+    // actually lies the way the stick was pushed, measuring along that axis
+    // first so a step right never jumps a whole branch away.
+    Scene_SkillEncyclopedia.prototype.moveGraphFocus = function (dx, dy) {
+        const graph = SkillGraph.graph(this._selectedCategory);
+        const current = this.focusedSkill();
+        if (!graph || !current) return false;
+        const from = graph.nodes.find(n => n.id === current.id);
+        if (!from) return false;
+
+        let best = null;
+        let bestScore = Infinity;
+        for (const node of graph.nodes) {
+            if (node.id === from.id) continue;
+            const ddx = (node.tier - from.tier) * dx + (node.branch - from.branch) * dy;
+            if (ddx <= 0) continue;   // not in the direction asked for
+            const off = Math.abs(dx ? node.branch - from.branch : node.tier - from.tier);
+            const score = ddx * 10 + off * 3;
+            if (score < bestScore) { bestScore = score; best = node; }
+        }
+        if (!best) return false;
+        this.focusSkillId(best.id);
+        return true;
+    };
+
+    Scene_SkillEncyclopedia.prototype.scrollGraphToFocus = function () {
+        const box = document.getElementById('skill-graph-box');
+        const node = box ? box.querySelector('.sg-node.sg-focus') : null;   // i18n-ignore: CSS selector
+        if (!box || !node) return;
+        const boxRect = box.getBoundingClientRect();
+        const nodeRect = node.getBoundingClientRect();
+        if (nodeRect.right > boxRect.right) box.scrollLeft += nodeRect.right - boxRect.right + 24;
+        else if (nodeRect.left < boxRect.left) box.scrollLeft -= boxRect.left - nodeRect.left + 24;
+        if (nodeRect.bottom > boxRect.bottom) box.scrollTop += nodeRect.bottom - boxRect.bottom + 20;
+        else if (nodeRect.top < boxRect.top) box.scrollTop -= boxRect.top - nodeRect.top + 20;
+    };
+
+    //=========================================================================
+    // The skill sheet
+    //
+    // One renderer for both places it can appear: the right page (a flat list
+    // category, where the sheet is the facing page) and the popup that opens
+    // over a sphere grid, where the lattice owns the whole spread.
+    //=========================================================================
+    Scene_SkillEncyclopedia.prototype.renderSkillDetailHTML = function (skill, knowledge, opts) {
+        opts = opts || {};
+        // In 'list' mode focus lives on the left skill grid, so the teach
+        // buttons render unfocused (preview only); 'detail' mode lets them focus.
+        const allowActionFocus = (this._viewMode === 'detail');
+
+        // Teaching always targets the pupil chosen when the scene opened.
+        let actionsListHTML = "";
+        const actor = this.getTeachActor();
+        if (actor) {
+            const hasSkill = actor.isLearnedSkill(skill.id);
+            const cost = $gameSystem.getSkillKnowledgeCost(skill.id, actor.actorId());
+            const canAfford = knowledge >= cost;
+            const isActionFocused = allowActionFocus && (this._selectedActionIndex === 0);
+
+            // The grid rule: a skill is only for sale when the pupil is
+            // standing next to it. The neighbours that would open it are
+            // named, so a locked node reads as a route, not a wall.
+            const isOpen = SkillGraph.isOpen(actor, skill.id);
+
+            if (hasSkill) {
+                actionsListHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-success-green-15); border:1px solid var(--border-forest-green); border-radius:6px; color:var(--text-forest-complete); font-weight:bold; font-size:0.95rem;">
+                        <span>${actor.name()}</span>
+                        <span style="font-family:'Lora', serif; font-size:0.8rem; text-transform:uppercase;">✓ ${T('SkillMaster.learned')}</span>
+                    </div>
+                `;
+            } else if (!isOpen) {
+                const openers = SkillGraph.openers(skill.id).map(s => s.name);
+                actionsListHTML += `
+                    <div style="padding:10px 14px; background:var(--bg-card-translucent-5); border:1px dashed var(--border-secondary-hover-translucent-15); border-radius:6px; font-family:'Lora', serif;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:bold; font-size:0.9rem; color:var(--text-card-medium);">
+                            <span>${T('SkillMaster.graph.locked')}</span>
+                            <span style="color:var(--shadow-shadow-alt-5-translucent-40);">${cost} KP</span>
+                        </div>
+                        <div style="margin-top:5px; font-size:0.76rem; line-height:1.35; color:var(--text-card-medium);">
+                            ${openers.length ? T('SkillMaster.graph.lockedBy', { skills: openers.join(', ') }) : T('SkillMaster.graph.lockedHint')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                actionsListHTML += `
+                    <div class="action-button ${isActionFocused ? 'focused' : ''} ${!canAfford ? 'disabled' : ''}" onclick="SceneManager._scene.teachSkill(${actor.actorId()}, ${cost})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${isActionFocused ? 'var(--text-secondary-active)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${isActionFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${canAfford ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${canAfford ? 1 : 0.6}; transition:all 0.15s ease;">
+                        <span style="font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : 'var(--text-card-medium)'};">${T('SkillMaster.teachPupil', { actor: actor.name() })}</span>
+                        <span style="font-family:'Lora', serif; font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : canAfford ? 'var(--text-text-alt-3)' : 'var(--shadow-shadow-alt-5-translucent-40)'};">${cost} KP</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Full inspect block (Combat Application + Damage side by side, Skill
+        // Effects, Classifications) built by the same service the Skills menu uses.
+        const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill, actor) : '';
+
+        let descriptionText = skill.description || (T('SkillMaster.noDescriptionAvailable'));
+        if (window.translateText) {
+            descriptionText = window.translateText(descriptionText);
+        }
+
+        // Preview button (index 1): opens a zoomable / draggable 3D Effekseer
+        // preview of the skill's animation over an empty target.
+        const isPreviewFocused = allowActionFocus && (this._selectedActionIndex === 1);
+        const previewBtnHTML = `
+            <div class="action-button preview-button ${isPreviewFocused ? 'focused' : ''}" onclick="SceneManager._scene.openSpellPreview(${skill.id})" style="flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; padding:10px 16px; background:${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--bg-card-translucent-5)'}; border:1px solid ${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease;">
+                <span style="font-size:1.15rem; line-height:1;">◈</span>
+                <span style="font-weight:bold; text-transform:uppercase; font-size:0.78rem; color:${isPreviewFocused ? 'var(--text-pure-black)' : 'var(--text-secondary-active)'};">${T('SkillMaster.preview')}</span>
+            </div>`;
+
+        // A popup card is already a sized flex column, so the sheet grows into
+        // it instead of claiming a height of its own.
+        const rootSizing = opts.popup ? 'flex:1 1 auto; min-height:0;' : 'height:100%;';
+        const closeBtnHTML = opts.popup
+            ? `<div class="focusable" onclick="SceneManager._scene.dismissSkillDetail()" title="${T('SkillMaster.close')}" style="flex:0 0 auto; margin-left:auto; align-self:flex-start; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-secondary-hover-translucent-15); border-radius:50%; color:var(--text-secondary-active); cursor:pointer; font-size:0.9rem; line-height:1;">✕</div>`
+            : '';
+
+        return `
+            <div style="display:flex; flex-direction:column; gap:12px; ${rootSizing} box-sizing:border-box;">
+                <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-secondary-hover-translucent-15); padding-bottom:8px;">
+                    <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(1.2); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px;"></div>
+                    <div>
+                        <h3 class="cc-header-gothic" style="font-size:1.55rem; color:var(--text-secondary-active); margin:0; line-height:1.2;">
+                            ${skill.name}
+                        </h3>
+                        <div style="font-size:0.8rem; color:var(--text-inverse); text-transform:uppercase; font-family:'Lora', serif; letter-spacing:0.5px;">
+                            ${getCategoryDisplayName(this._selectedCategory)}
+                        </div>
+                    </div>
+                    ${closeBtnHTML}
+                </div>
+
+                <div style="font-style:italic; font-size:0.9rem; line-height:1.5; color:var(--text-highlight-active); background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:6px; padding:10px 14px;">
+                    "${descriptionText}"
+                </div>
+
+                <div class="skill-scroll-box" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px; font-family:'Lora', serif; font-size:0.95rem; color:var(--text-card-medium);">
+                    ${detailedInfoHTML}
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto; border-top:1px dashed var(--scroll-thumb-hover-translucent-60); padding-top:12px;">
+                    <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-secondary-active); font-size:1.15rem; text-align:center;">
+                        ${T('SkillMaster.teach')}
+                    </h4>
+                    <div style="display:flex; gap:8px; align-items:stretch;">
+                        <div style="flex:1; display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; padding-right:4px;">
+                            ${actionsListHTML}
+                        </div>
+                        ${previewBtnHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    // Everything the popup draws: the skill, who is learning it, what they can
+    // afford and which action the cursor is on.
+    Scene_SkillEncyclopedia.prototype.skillPopupKey = function (skill, knowledge) {
+        const actor = this.getTeachActor();
+        return `${skill.id}|${actor ? actor.actorId() : 0}|${knowledge}|${this._selectedActionIndex}|${actor && actor.isLearnedSkill(skill.id) ? 1 : 0}`;
+    };
+
+    Scene_SkillEncyclopedia.prototype.closeSkillDetailPopup = function () {
+        const el = document.getElementById('skill-detail-popup');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+        this._lastPopupKey = null;
+    };
+
+    // Dismiss from the popup itself (its ✕ or the backdrop), which is the same
+    // step Cancel takes: back to the lattice with nothing chosen.
+    Scene_SkillEncyclopedia.prototype.dismissSkillDetail = function () {
+        if (this._viewMode !== 'detail') return;
+        this._viewMode = 'list';
+        SoundManager.playCancel();
+        this.refreshUISkillDOM();
+    };
+
+    Scene_SkillEncyclopedia.prototype.updateSkillDetailPopup = function (skill, knowledge) {
+        if (!this._dndContainer) return;
+        const key = this.skillPopupKey(skill, knowledge);
+        let overlay = document.getElementById('skill-detail-popup');
+        if (overlay && this._lastPopupKey === key) return;
+
+        const cardHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: true });
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'skill-detail-popup';
+            // Explicit edges rather than the `inset` shorthand: the game's
+            // Chromium collapses full-screen overlays written with it.
+            // A light scrim, not a blackout: the lattice the node sits on stays
+            // readable behind its own sheet.
+            overlay.style.cssText = "position:absolute; top:0; left:0; right:0; bottom:0; z-index:1500; display:flex; align-items:center; justify-content:center; background:var(--shadow-black-translucent-45); font-family:'Lora', serif;";
+            overlay.onclick = () => this.dismissSkillDetail();
+            this._dndContainer.appendChild(overlay);
+        }
+        overlay.innerHTML = `
+            <div onclick="event.stopPropagation()" style="width:56%; max-width:640px; max-height:88%; display:flex; flex-direction:column; padding:20px; box-sizing:border-box; background:var(--bg-dark-warm-translucent-96); border:1.5px solid var(--border-focus-hover); border-radius:12px; box-shadow:0 10px 30px var(--shadow-black-translucent-75);">
+                ${cardHTML}
+            </div>`;
+        this._lastPopupKey = key;
     };
 
     Scene_SkillEncyclopedia.prototype.refreshUISkillDOM = function () {
@@ -1757,6 +2522,46 @@
                 );
             }
         }
+
+        // 0. Layout: the category browser puts Skills on the left page and Magic
+        //    on the right, and a flat-list category keeps its sheet on the facing
+        //    page. A sphere grid is not a list, though: the lattice takes BOTH
+        //    pages and the skill's sheet becomes a popup opened on a chosen node.
+        const graphSpread = (this._viewMode === 'list' || this._viewMode === 'detail' ||
+            this._viewMode === 'preview') && this.usesGraphView();
+        const fullPageList = graphSpread;
+        const spreadEl = this._dndContainer.querySelector('.book-spread');
+        const leftPageEl = this._dndContainer.querySelector('.left-page');
+        const rightPageEl = this._dndContainer.querySelector('.right-page');
+        const spineEl = this._dndContainer.querySelector('.spine-divider');
+        if (spreadEl) spreadEl.classList.toggle('skill-fullpage', fullPageList);
+        if (leftPageEl) leftPageEl.style.width = fullPageList ? '100%' : '';
+        if (rightPageEl) rightPageEl.style.display = fullPageList ? 'none' : '';
+        if (spineEl) spineEl.style.display = fullPageList ? 'none' : '';
+
+        // The pupil tabs live on the right page, which the grid takes over, so
+        // they move to the top-right corner of the page that is actually there.
+        // They sit OUTSIDE #left-page-content, which is rebuilt by innerHTML.
+        if (compRow && compRow.style.display !== 'none') {
+            if (fullPageList && leftPageEl && compRow.parentNode !== leftPageEl) {
+                leftPageEl.appendChild(compRow);
+                compRow.style.position = 'absolute';
+                compRow.style.top = '10px';
+                compRow.style.right = '45px';
+                compRow.style.zIndex = '12';
+                compRow.style.marginBottom = '0';
+            } else if (!fullPageList && rightPageEl && compRow.parentNode !== rightPageEl) {
+                rightPageEl.insertBefore(compRow, rightPageEl.firstChild);
+                compRow.style.position = '';
+                compRow.style.top = '';
+                compRow.style.right = '';
+                compRow.style.zIndex = '';
+                compRow.style.marginBottom = '10px';
+            }
+        }
+
+        // The sheet popup belongs to the grid alone; any other view takes it down.
+        if (!graphSpread) this.closeSkillDetailPopup();
 
         // The Spell Forge editor owns a self-contained renderer (both pages are
         // rebuilt every refresh), so bail out of the shared category/detail pipeline.
@@ -1793,27 +2598,23 @@
             return html;
         };
 
-        // 0. Layout: every view now uses the split book spread. The category browser
-        //    puts Skills on the left page and Magic on the right; the member-select,
-        //    skill grid, detail and fusion views all use the same split layout.
-        const fullPageList = false;
-        const spreadEl = this._dndContainer.querySelector('.book-spread');
-        const leftPageEl = this._dndContainer.querySelector('.left-page');
-        const rightPageEl = this._dndContainer.querySelector('.right-page');
-        const spineEl = this._dndContainer.querySelector('.spine-divider');
-        if (spreadEl) spreadEl.classList.toggle('skill-fullpage', fullPageList);
-        if (leftPageEl) leftPageEl.style.width = fullPageList ? '100%' : '';
-        if (rightPageEl) rightPageEl.style.display = fullPageList ? 'none' : '';
-        if (spineEl) spineEl.style.display = fullPageList ? 'none' : '';
-
         // 1. Determine if Left Page needs full rebuild
         const leftPageBox = document.getElementById('left-page-content');
         if (!leftPageBox) return;
 
-        const needsLeftRebuild = (this._lastLeftMode !== this._viewMode) ||
-            (this._viewMode !== 'category' && this._lastLeftCategory !== this._selectedCategory);
+        // The grid is redrawn when its colours could have changed (a skill was
+        // learned, the pupil changed); moving the cursor around it only repaints
+        // the focus ring, so walking a 193-node school stays cheap. The lattice
+        // is the same page whether or not a sheet is open over it, so opening
+        // and closing the popup is not a rebuild either.
+        const graphKey = this.usesGraphView() ? this.graphStateKey() : null;
+        const leftMode = graphSpread ? 'graph' : this._viewMode;   // i18n-ignore: cache key
+        const needsLeftRebuild = (this._lastLeftMode !== leftMode) ||
+            (this._viewMode !== 'category' && this._lastLeftCategory !== this._selectedCategory) ||
+            (graphKey !== null && graphKey !== this._lastGraphKey);
 
         if (needsLeftRebuild) {
+            this._lastGraphKey = graphKey;
             let leftPageHTML = "";
             if (this._viewMode === 'category') {
                 const split = getSplitSkillCategories();
@@ -1832,39 +2633,21 @@
                     </div>
                 `;
             } else {
-                const skills = getSkillsByCategory(this._selectedCategory);
-                let skillsListHTML = "";
-
-                const teachActor = this.getTeachActor();
-                skills.forEach((skill, idx) => {
-                    const isFocused = (this._selectedSkillIndex === idx);
-                    const isLearned = teachActor ? teachActor.isLearnedSkill(skill.id) : false;
-
-                    skillsListHTML += `
-                        <div class="skill-card ${isFocused ? 'focused' : ''}" onclick="SceneManager._scene.selectSkill(${idx})" style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--accent-gray-2-translucent-0); border:1px solid ${isFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease;">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(0.8); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px;"></div>
-                                <div style="font-weight:bold; color:${isFocused ? 'var(--text-secondary-active)' : 'var(--text-card-medium)'}; font-size:0.95rem;">${skill.name}</div>
-                            </div>
-                            ${isLearned ? `<span style="font-family:'Lora', serif; font-size:0.7rem; text-transform:uppercase; color:var(--text-forest-complete); border:1px solid var(--border-forest-green); border-radius:3px; padding:1px 5px; font-weight:bold; background:var(--bg-success-green-15); letter-spacing:0.5px;">${T('SkillMaster.mastered')}</span>` : ''}
-                        </div>
-                    `;
-                });
-
                 const returnBtnText = T('SkillMaster.back');
+                const bodyHTML = this.usesGraphView()
+                    ? this.renderSkillGraphHTML()
+                    : this.renderSkillListHTML();
                 leftPageHTML = `
                     <div class="page-header-bar" style="width: 100%;">
                       <div class="back-button focusable" onclick="SceneManager._scene.goBack()">${returnBtnText}</div>
                       <h2 class="cc-header-gothic" style="border: none; margin: 0; padding: 0; text-align: center; font-size: 1.55rem;">${getCategoryDisplayName(this._selectedCategory)}</h2>
                     </div>
-                    <div id="skills-scroll-box" class="skill-scroll-box" style="flex:1; overflow-y:auto; padding-right:10px; display:grid; grid-template-columns:repeat(${SKILL_GRID_COLS}, 1fr); gap:10px; align-content:start; box-sizing:border-box;">
-                        ${skillsListHTML}
-                    </div>
+                    ${bodyHTML}
                 `;
             }
 
             leftPageBox.innerHTML = leftPageHTML;
-            this._lastLeftMode = this._viewMode;
+            this._lastLeftMode = leftMode;
             this._lastLeftCategory = this._selectedCategory;
         }
 
@@ -1894,6 +2677,24 @@
                 fuseEl.style.color = on ? 'var(--text-pure-black)' : 'var(--text-secondary-active)';
                 if (on && fuseEl.scrollIntoView) fuseEl.scrollIntoView({ block: 'nearest' });
             }
+        } else if (this.usesGraphView()) {
+            // Only the ring moves: repaint it in place instead of rebuilding the
+            // whole lattice for a cursor step.
+            const focusedSkill = this.focusedSkill();
+            const focusedId = focusedSkill ? focusedSkill.id : 0;
+            leftPageBox.querySelectorAll('.sg-node').forEach((el) => {
+                const on = parseInt(el.dataset.id, 10) === focusedId;
+                el.classList.toggle('sg-focus', on);
+                const circle = el.firstElementChild;
+                if (circle) {
+                    circle.style.boxShadow = on
+                        ? '0 0 0 3px var(--text-secondary-active), 0 0 12px var(--shadow-primary-hover-translucent-5)'
+                        : '';
+                }
+            });
+            // A rebuilt lattice starts scrolled to its corner, so put the pupil
+            // back where they were standing (after teaching, after a redraw).
+            if (needsLeftRebuild) this.scrollGraphToFocus();
         } else {
             const cards = leftPageBox.querySelectorAll('.skill-card');
             cards.forEach((card, idx) => {
@@ -1918,6 +2719,23 @@
         const skills = getSkillsByCategory(this._selectedCategory);
         const skill = skills[this._selectedSkillIndex];
         const skillId = skill ? skill.id : null;
+
+        // On a grid there is no facing page to read: the sheet is a popup, and
+        // only for a node the player actually chose. Walking the lattice shows
+        // nothing but the lattice.
+        if (graphSpread) {
+            if (this._viewMode === 'detail' && skill) {
+                this.updateSkillDetailPopup(skill, knowledge);
+            } else if (this._viewMode !== 'preview') {
+                this.closeSkillDetailPopup();
+            }
+            // The right page is out of sight, so whatever it holds is stale:
+            // force a clean rebuild the next time it is shown.
+            this._lastRightMode = null;
+            this._lastRightSkillId = null;
+            this._lastRightKnowledge = null;
+            return;
+        }
 
         const needsRightRebuild = (this._lastRightMode !== this._viewMode) ||
             ((this._viewMode === 'detail' || this._viewMode === 'list') && this._lastRightSkillId !== skillId) ||
@@ -1964,90 +2782,7 @@
                         </div>
                     `;
                 } else {
-                    // Full inspect block (Combat Application + Damage side by
-                    // side, Skill Effects, Classifications) built by the same
-                    // service the Skills menu uses.
-                    const detailedInfoHTML = window.SkillDetails ? window.SkillDetails.build(skill, this.getTeachActor()) : '';
-
-                    // In 'list' mode focus lives on the left skill grid, so the teach
-                    // buttons render unfocused (preview only); 'detail' mode lets them focus.
-                    const allowActionFocus = (this._viewMode === 'detail');
-
-                    // Teaching always targets the pupil chosen when the scene opened.
-                    let actionsListHTML = "";
-                    const actor = this.getTeachActor();
-                    if (actor) {
-                        const hasSkill = actor.isLearnedSkill(skill.id);
-                        const cost = $gameSystem.getSkillKnowledgeCost(skill.id, actor.actorId());
-                        const canAfford = knowledge >= cost;
-                        const isActionFocused = allowActionFocus && (this._selectedActionIndex === 0);
-
-                        if (hasSkill) {
-                            actionsListHTML += `
-                                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg-success-green-15); border:1px solid var(--border-forest-green); border-radius:6px; color:var(--text-forest-complete); font-weight:bold; font-size:0.95rem;">
-                                    <span>${actor.name()}</span>
-                                    <span style="font-family:'Lora', serif; font-size:0.8rem; text-transform:uppercase;">✓ ${T('SkillMaster.learned')}</span>
-                                </div>
-                            `;
-                        } else {
-                            actionsListHTML += `
-                                <div class="action-button ${isActionFocused ? 'focused' : ''} ${!canAfford ? 'disabled' : ''}" onclick="SceneManager._scene.teachSkill(${actor.actorId()}, ${cost})" style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${isActionFocused ? 'var(--text-secondary-active)' : 'var(--accent-gray-2-translucent-0)'}; border:1px solid ${isActionFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:${canAfford ? 'pointer' : 'not-allowed'}; font-family:'Lora', serif; opacity:${canAfford ? 1 : 0.6}; transition:all 0.15s ease;">
-                                    <span style="font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : 'var(--text-card-medium)'};">${useItalian ? `Insegna a ${actor.name()}` : `Teach ${actor.name()}`}</span>
-                                    <span style="font-family:'Lora', serif; font-weight:bold; color:${isActionFocused ? 'var(--text-pure-black)' : canAfford ? 'var(--text-text-alt-3)' : 'var(--shadow-shadow-alt-5-translucent-40)'};">${cost} KP</span>
-                                </div>
-                            `;
-                        }
-                    }
-
-                    let descriptionText = skill.description || (T('SkillMaster.noDescriptionAvailable'));
-                    if (window.translateText) {
-                        descriptionText = window.translateText(descriptionText);
-                    }
-
-                    // Preview button (index 1): opens a zoomable/draggable 3D
-                    // Effekseer preview of the skill's animation over an empty target.
-                    const isPreviewFocused = allowActionFocus && (this._selectedActionIndex === 1);
-                    const previewBtnHTML = `
-                        <div class="action-button preview-button ${isPreviewFocused ? 'focused' : ''}" onclick="SceneManager._scene.openSpellPreview(${skill.id})" style="flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px; padding:10px 16px; background:${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--bg-card-translucent-5)'}; border:1px solid ${isPreviewFocused ? 'var(--text-secondary-active)' : 'var(--border-secondary-hover-translucent-15)'}; border-radius:6px; cursor:pointer; font-family:'Lora', serif; transition:all 0.15s ease;">
-                            <span style="font-size:1.15rem; line-height:1;">◈</span>
-                            <span style="font-weight:bold; text-transform:uppercase; font-size:0.78rem; color:${isPreviewFocused ? 'var(--text-pure-black)' : 'var(--text-secondary-active)'};">${T('SkillMaster.preview')}</span>
-                        </div>`;
-
-                    rightPageHTML = `
-                        <div style="display:flex; flex-direction:column; gap:12px; height:100%; box-sizing:border-box;">
-                            <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-secondary-hover-translucent-15); padding-bottom:8px;">
-                                <div style="${getSkillIconStyle(skill.iconIndex)} transform: scale(1.2); flex-shrink: 0; image-rendering: pixelated; margin-right: 2px;"></div>
-                                <div>
-                                    <h3 class="cc-header-gothic" style="font-size:1.55rem; color:var(--text-secondary-active); margin:0; line-height:1.2;">
-                                        ${skill.name}
-                                    </h3>
-                                    <div style="font-size:0.8rem; color:var(--text-inverse); text-transform:uppercase; font-family:'Lora', serif; letter-spacing:0.5px;">
-                                        ${getCategoryDisplayName(this._selectedCategory)}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="font-style:italic; font-size:0.9rem; line-height:1.5; color:var(--text-highlight-active); background:var(--bg-card-translucent-5); border:1px solid var(--border-secondary-hover-translucent-15); border-radius:6px; padding:10px 14px;">
-                                "${descriptionText}"
-                            </div>
-
-                            <div class="skill-scroll-box" style="flex:1; min-height:0; overflow-y:auto; padding-right:6px; font-family:'Lora', serif; font-size:0.95rem; color:var(--text-card-medium);">
-                                ${detailedInfoHTML}
-                            </div>
-
-                            <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto; border-top:1px dashed var(--scroll-thumb-hover-translucent-60); padding-top:12px;">
-                                <h4 style="margin:0 0 4px 0; font-family:'Lora', serif; color:var(--text-secondary-active); font-size:1.15rem; text-align:center;">
-                                    ${T('SkillMaster.teach')}
-                                </h4>
-                                <div style="display:flex; gap:8px; align-items:stretch;">
-                                    <div style="flex:1; display:flex; flex-direction:column; gap:8px; max-height:150px; overflow-y:auto; padding-right:4px;">
-                                        ${actionsListHTML}
-                                    </div>
-                                    ${previewBtnHTML}
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    rightPageHTML = this.renderSkillDetailHTML(skill, knowledge, { popup: false });
                 }
             }
 
@@ -2070,7 +2805,30 @@
         const actor = members[index];
         if (!actor || actor.actorId() === this._teachActorId) return;
         this._teachActorId = actor.actorId();
+        actorCategoryManager.setActor(this._teachActorId);
         SoundManager.playCursor();
+        // The browsable categories are the new pupil's schools, so the old cursor
+        // means nothing: drop the cached lists and start at the first card.
+        this._splitCategoriesCache = null;
+        this._skillsByCategoryKey = null;
+        this._categoryPane = 0;
+        this._selectedCategoryIndex = 0;
+        this._categoryFuseFocused = false;
+        // "All" is a different list for a different pupil, so the old skill cursor
+        // is meaningless either way.
+        this._selectedSkillIndex = 0;
+        // A school the new pupil does not study is not theirs to be taught from,
+        // so browsing one when the pupil changes drops back to the shelf.
+        const allowed = actorCategoryManager.allowedCategories();
+        const stillOpen = !this._selectedCategory || this._selectedCategory === 'All' ||   // i18n-ignore: category id
+            !allowed || allowed.includes(this._selectedCategory);
+        if (!stillOpen && (this._viewMode === 'list' || this._viewMode === 'detail')) {
+            this._viewMode = 'category';
+            this._selectedCategory = null;
+        } else if (this.usesGraphView()) {
+            // Same grid, different pupil: stand them where they already are on it.
+            this.defaultGraphFocus();
+        }
         // Learned badges, KP costs and available fusions are pupil-specific, so
         // force a clean redraw of both pages.
         this._lastLeftMode = null;
@@ -2098,8 +2856,11 @@
         this._skillListWindow.setCategory(this._selectedCategory);
         this._viewMode = 'list';
         this._selectedSkillIndex = 0;
+        // A grid opens where the pupil already stands, not at its top-left corner.
+        if (this.usesGraphView()) this.defaultGraphFocus();
         SoundManager.playOk();
         this.refreshUISkillDOM();
+        this.scrollGraphToFocus();
     };
 
     Scene_SkillEncyclopedia.prototype.selectCategoryClick = function (pane, index) {
@@ -2136,6 +2897,14 @@
         const skill = skills[this._selectedSkillIndex];
         if (!actor || !skill || $gameSystem.getKnowledge() < cost) {
             SoundManager.playBuzzer();
+            return;
+        }
+        // The adjacency rule is enforced here, not just drawn: the flat "All"
+        // list and the mouse both come through this door.
+        if (!SkillGraph.isOpen(actor, skill.id)) {
+            SoundManager.playBuzzer();
+            this._skillDetailWindow.showMessage(T('SkillMaster.graph.lockedToast', { skill: skill.name }));
+            this.refreshUISkillDOM();
             return;
         }
         $gameSystem.spendKnowledge(cost);
@@ -2286,14 +3055,22 @@
     };
 
     Scene_SkillEncyclopedia.prototype.getSplitCategoriesCached = function () {
-        // Categories derive only from $dataSkills (static for the scene lifetime).
-        if (!this._splitCategoriesCache) this._splitCategoriesCache = getSplitSkillCategories();
+        // Categories derive from $dataSkills (static for the scene lifetime) and
+        // from the pupil's class, which the top switcher can change.
+        if (!this._splitCategoriesCache || this._splitCategoriesActorId !== this._teachActorId) {
+            actorCategoryManager.setActor(this._teachActorId);
+            this._splitCategoriesActorId = this._teachActorId;
+            this._splitCategoriesCache = getSplitSkillCategories();
+        }
         return this._splitCategoriesCache;
     };
 
     Scene_SkillEncyclopedia.prototype.getSkillsByCategoryCached = function (category) {
-        if (this._skillsByCategoryKey !== category) {
-            this._skillsByCategoryKey = category;
+        // "All" is scoped to the pupil's schools, so the key carries them both.
+        const key = `${this._teachActorId}:${category}`;
+        if (this._skillsByCategoryKey !== key) {
+            actorCategoryManager.setActor(this._teachActorId);
+            this._skillsByCategoryKey = key;
             this._skillsByCategoryCache = getSkillsByCategory(category);
         }
         return this._skillsByCategoryCache;
@@ -2945,6 +3722,30 @@
                     this._viewMode = 'category';
                     SoundManager.playCancel();
                     this.refreshUISkillDOM();
+                }
+                return;
+            }
+            // On a grid the cursor walks the lattice rather than a wrapping list.
+            if (this.usesGraphView()) {
+                if (Input.isTriggered('ok')) {
+                    this.selectSkill(this._selectedSkillIndex);
+                    return;
+                }
+                if (Input.isTriggered('cancel') || Input.isTriggered('escape') || TouchInput.isCancelled()) {
+                    this._viewMode = 'category';
+                    SoundManager.playCancel();
+                    this.refreshUISkillDOM();
+                    return;
+                }
+                let moved = false;
+                if (Input.isTriggered('right') || Input.isRepeated('right')) moved = this.moveGraphFocus(1, 0);
+                else if (Input.isTriggered('left') || Input.isRepeated('left')) moved = this.moveGraphFocus(-1, 0);
+                else if (Input.isTriggered('down') || Input.isRepeated('down')) moved = this.moveGraphFocus(0, 1);
+                else if (Input.isTriggered('up') || Input.isRepeated('up')) moved = this.moveGraphFocus(0, -1);
+                if (moved) {
+                    SoundManager.playCursor();
+                    this.refreshUISkillDOM();
+                    this.scrollGraphToFocus();
                 }
                 return;
             }

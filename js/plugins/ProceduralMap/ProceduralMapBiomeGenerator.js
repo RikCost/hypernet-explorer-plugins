@@ -676,19 +676,6 @@
    * Uses world coordinates to ensure adjacent caves connect properly
    * Returns object with open borders: { north, south, east, west }
    */
-  function getOpenCaveBorders(worldCoords) {
-    // Create deterministic seed from world coordinates and direction, mixed with
-    // the world seed so cave layouts differ per world.
-    const baseSeed = hashCoords(getWorldSeed(), worldCoords.x, worldCoords.y);
-
-    // Determine if each border is open (1-2 borders per cave)
-    const northSeed = createSeededRandom(baseSeed ^ 1);
-    const southSeed = createSeededRandom(baseSeed ^ 2);
-    const eastSeed = createSeededRandom(baseSeed ^ 3);
-    const westSeed = createSeededRandom(baseSeed ^ 4);
-
-    return {};
-  }
 
   /**
    * Check if biome is a mountain surface biome
@@ -4193,22 +4180,10 @@
   /**
    * Check if car events should be deleted for this biome
    */
-  function shouldDeleteCarsForBiome(biomeName) {
-    if (!biomeName) return true; // No biome = delete cars
-    const lowerBiome = biomeName.toLowerCase();
-    const allowedKeywords = ["road", "bridge", "city", "burg", "tunnel"];
-    return !allowedKeywords.some(keyword => lowerBiome.includes(keyword));
-  }
 
   /**
    * Check if NPC events should be deleted for this biome
    */
-  function shouldDeleteNPCsForBiome(biomeName) {
-    if (!biomeName) return true; // No biome = delete NPCs
-    const lowerBiome = biomeName.toLowerCase();
-    const allowedKeywords = ["city", "burg", "village"];
-    return !allowedKeywords.some(keyword => lowerBiome.includes(keyword));
-  }
 
   // ===== EDGE DETECTION & AUTO-RETURN =====
   // NOTE: Border arrow visualization, Game_Player overrides, and Scene_Map hooks have been moved to WorldMapReturn.js

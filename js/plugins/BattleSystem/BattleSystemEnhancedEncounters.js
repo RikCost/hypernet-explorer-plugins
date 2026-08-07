@@ -49,6 +49,19 @@
  * Omega Tower, and appear alongside the normally levelled fauna. The sandbox
  * lifts the cap at any year, and scales enemy stats instead (SandboxMode.js).
  *
+ * ----------------------------------------------------------------------------
+ * Reinforcements (Scene_Battle fights only)
+ * ----------------------------------------------------------------------------
+ * A fight started against a map "Enemy" event drags in every other roaming
+ * monster standing less than JOIN_RANGE (6) tiles from the party, up to
+ * JOIN_MAX (3) of them, nearest first. Their troops are appended to the one the
+ * battle was started with and the combined troop is written into a single
+ * scratch $dataTroops slot, reused for every reinforced battle. Each joiner's
+ * map event is settled the way the triggering one is: deleted on a win or a
+ * recruit, locked with its wounds kept on a flee. A tactical map battle
+ * (MapBattleMode.js) already fights everyone where they stand and is never
+ * reinforced this way.
+ *
  * Loading order:
  *   1. BattleSystemEnhanced.js (Core)
  *   2. BattleSystemEnhancedEncounters.js (THIS PLUGIN)
@@ -410,6 +423,8 @@
     BSE.Helpers.getTroopSpawnWeight = function(troopId) {
         const troop = $dataTroops[troopId];
         if (!troop || !troop.members.length) return 0;
+        // The reinforced-battle scratch slot (section 5b) is not a fauna entry.
+        if (troop._bseReinforced) return 0;
         if (!BSE.Helpers.troopWithinLevelCap(troopId)) return 0;
         return BSE.Helpers.getNationEnemyWeight(troop.members[0].enemyId);
     };
@@ -509,7 +524,7 @@
         const bossTroops = [];
         for (let i = 1; i < $dataTroops.length; i++) {
             const troop = $dataTroops[i];
-            if (!troop || !troop.members.length) continue;
+            if (!troop || !troop.members.length || troop._bseReinforced) continue;
             const hasHighLevel = troop.members.some(member => {
                 const enemyData = $dataEnemies[member.enemyId];
                 if (!enemyData) return false;
@@ -563,7 +578,7 @@
         const anyFauna = [];
         for (let i = 1; i < $dataTroops.length; i++) {
             const troop = $dataTroops[i];
-            if (!troop || !troop.members.length) continue;
+            if (!troop || !troop.members.length || troop._bseReinforced) continue;
             const lvl = BSE.Helpers.getTroopMaxLevel(i);
             if (lvl < era.eliteMin || lvl > era.eliteMax) continue;
             const lead = $dataEnemies[troop.members[0].enemyId];
@@ -660,7 +675,7 @@
             const out = [];
             for (let i = 1; i < $dataTroops.length; i++) {
                 const troop = $dataTroops[i];
-                if (!troop || !troop.members.length) continue;
+                if (!troop || !troop.members.length || troop._bseReinforced) continue;
                 const lvl = BSE.Helpers.getTroopMaxLevel(i);
                 if (lvl < minLvl || lvl > HARD_CAP) continue;
                 if (requireBiome && targetBiome &&
@@ -1024,7 +1039,7 @@
                 const nonBiomeTroops = [];
                 for (let i = 1; i < $dataTroops.length; i++) {
                     const troop = $dataTroops[i];
-                    if (!troop || !troop.members.length) continue;
+                    if (!BSE.Helpers.isSpawnableTroopData(troop)) continue;
                     if (mapBiome && BSE.Helpers.troopMatchesBiome(i, mapBiome)) {
                         biomeTroops.push(i);
                     } else {
@@ -1303,6 +1318,133 @@
                 ev.erase();
             }
         }
+    };
+
+    // ========================================================================
+    // 5b. REINFORCEMENTS - the monsters standing nearby pile into the fight
+    // ========================================================================
+    // A fight on the overworld is not fought in a bubble: every other roaming
+    // monster within JOIN_RANGE tiles of the party joins the troop the battle
+    // is set up with, up to JOIN_MAX of them, nearest first. Their map events
+    // are held in BSE.State.joinedEnemyEvents for the whole battle so the state
+    // module can delete them on a win and hand their HP back on a flee.
+    //
+    // This applies to Scene_Battle fights only. A tactical map battle
+    // (MapBattleMode.js) already fights on the live map with everyone standing
+    // where they stand, and startPersistentBattle redirects to it before ever
+    // reaching this code.
+
+    BSE.Data.JOIN_RANGE = 12; // tiles; a monster closer than this joins in
+    BSE.Data.JOIN_MAX   = 3; // at most this many extra troops per battle
+
+    // The scratch $dataTroops slot the combined troop is written into. One slot
+    // is reserved per session and rewritten for every reinforced battle rather
+    // than growing the database a troop at a time. $dataTroops is rebuilt from
+    // disk on every load, so the marker doubles as a "is my slot still mine".
+    let _reinforcedSlot = 0;
+    function reinforcedTroopSlot() {
+        const held = $dataTroops[_reinforcedSlot];
+        if (_reinforcedSlot > 0 && held && held._bseReinforced) return _reinforcedSlot;
+        _reinforcedSlot = $dataTroops.length;
+        $dataTroops.push({
+            id: _reinforcedSlot, name: '', members: [], pages: [], _bseReinforced: true
+        });
+        return _reinforcedSlot;
+    }
+
+    // The scratch slot is a battle fixture, never a spawnable troop: it must be
+    // skipped by every candidate scan that walks $dataTroops.
+    BSE.Helpers.isSpawnableTroopData = function(troop) {
+        return !!(troop && troop.members && troop.members.length && !troop._bseReinforced);
+    };
+
+    // The enemy events that join a battle started against `triggerEventId`.
+    // Nearest first, live enemies only, capped at JOIN_MAX.
+    BSE.Functions.getJoiningEnemyEvents = function(triggerEventId) {
+        if (!$gameMap || !$gamePlayer) return [];
+        const range = BSE.Data.JOIN_RANGE;
+        const near = [];
+        for (const ev of $gameMap.events()) {
+            if (!ev || ev.eventId() === triggerEventId) continue;
+            if (!isLiveEnemyEvent(ev)) continue;
+            const troop = $dataTroops[ev._fixedTroopId];
+            if (!troop || !troop.members.length) continue;
+            const dx = ev.x - $gamePlayer.x, dy = ev.y - $gamePlayer.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist >= range) continue;
+            near.push({ event: ev, dist: dist });
+        }
+        near.sort((a, b) => a.dist - b.dist);
+        return near.slice(0, BSE.Data.JOIN_MAX).map(n => n.event);
+    };
+
+    // Where a joining monster stands on the battlefield. The base troop keeps
+    // the positions its database entry gave it; the newcomers are dealt out to
+    // either side of it, staggered in depth so three of them never line up.
+    function joinerPosition(baseMembers, slot) {
+        const w = Graphics.boxWidth || 816;
+        const h = Graphics.boxHeight || 624;
+        let cx = w / 2, cy = h * 0.55;
+        if (baseMembers.length) {
+            cx = baseMembers.reduce((s, m) => s + m.x, 0) / baseMembers.length;
+            cy = baseMembers.reduce((s, m) => s + m.y, 0) / baseMembers.length;
+        }
+        const side = (slot % 2 === 0) ? 1 : -1;          // right, left, right...
+        const step = Math.floor(slot / 2) + 1;
+        const x = cx + side * step * 168;
+        const y = cy + ((slot % 2 === 0) ? -34 : 34);
+        return {
+            x: Math.max(64, Math.min(w - 64, Math.round(x))),
+            y: Math.max(120, Math.min(h - 80, Math.round(y)))
+        };
+    }
+
+    // Build the troop the battle actually runs on: the triggering troop plus
+    // every joining event's troop, and the bookkeeping the state module needs
+    // to put each joiner's map event back the way the battle left it.
+    // Returns { troopId, joined: [{ eventId, mapId, persistentId, memberIndexes }] }.
+    BSE.Functions.buildReinforcedTroop = function(baseTroopId, joinEvents, mapId) {
+        const base = $dataTroops[baseTroopId];
+        if (!base || !joinEvents || !joinEvents.length) {
+            return { troopId: baseTroopId, joined: [] };
+        }
+        const members = base.members.map(m => Object.assign({}, m));
+        // Species keys ride along per member: a reinforced troop can mix two
+        // procedural alien species, which one key on the troop cannot express.
+        const speciesKeys = members.map(() => base._alienSpeciesKey || null);
+        const joined = [];
+        let slot = 0;
+
+        for (const ev of joinEvents) {
+            const troop = $dataTroops[ev._fixedTroopId];
+            if (!troop || !troop.members.length) continue;
+            const memberIndexes = [];
+            for (const m of troop.members) {
+                if (!$dataEnemies[m.enemyId]) continue;
+                const pos = joinerPosition(base.members, slot++);
+                memberIndexes.push(members.length);
+                members.push({ enemyId: m.enemyId, x: pos.x, y: pos.y, hidden: false });
+                speciesKeys.push(troop._alienSpeciesKey || null);
+            }
+            if (!memberIndexes.length) continue;
+            joined.push({
+                eventId: ev.eventId(),
+                mapId: mapId,
+                persistentId: `${mapId}_${ev.eventId()}`,
+                memberIndexes: memberIndexes
+            });
+        }
+        if (!joined.length) return { troopId: baseTroopId, joined: [] };
+
+        const slotId = reinforcedTroopSlot();
+        const scratch = $dataTroops[slotId];
+        scratch.name = base.name;
+        scratch.members = members;
+        // The battle event pages belong to the troop that started the fight; a
+        // page addressing "enemy #2" would otherwise land on a newcomer.
+        scratch.pages = base.pages;
+        scratch._alienSpeciesKeys = speciesKeys.some(k => k) ? speciesKeys : null;
+        return { troopId: slotId, joined: joined };
     };
 
     // ========================================================================
@@ -1907,8 +2049,7 @@
     function randomAlienEncounterList(count) {
         const ids = [];
         for (let i = 1; i < $dataTroops.length; i++) {
-            const t = $dataTroops[i];
-            if (t && t.members && t.members.length) ids.push(i);
+            if (BSE.Helpers.isSpawnableTroopData($dataTroops[i])) ids.push(i);
         }
         if (!ids.length) return [];
         const pool = ids.slice();
@@ -1958,20 +2099,24 @@
     };
 
     // On battle setup, tag every enemy of a species troop with its procedural
-    // name (so it shows in battle) and record the species as discovered.
+    // name (so it shows in battle) and record the species as discovered. A
+    // reinforced troop (section 5b) can mix two species, so it carries one key
+    // per member instead of one for the whole troop.
     const _BSE_Game_Troop_setup = Game_Troop.prototype.setup;
     Game_Troop.prototype.setup = function (troopId) {
         _BSE_Game_Troop_setup.call(this, troopId);
         const troop = $dataTroops[troopId];
-        const key = troop && troop._alienSpeciesKey;
         const GS = window.GalaxySim;
-        if (key && GS && GS.findAlienSpecies) {
-            const sp = GS.findAlienSpecies(key);
-            if (sp) {
-                if (GS.discoverAlienSpecies) GS.discoverAlienSpecies(sp);
-                this.members().forEach((e) => { e._alienSpeciesName = sp.name; });
-            }
-        }
+        if (!troop || !GS || !GS.findAlienSpecies) return;
+        const keys = troop._alienSpeciesKeys ||
+            (troop._alienSpeciesKey ? this.members().map(() => troop._alienSpeciesKey) : null);
+        if (!keys) return;
+        this.members().forEach((e, i) => {
+            const sp = keys[i] ? GS.findAlienSpecies(keys[i]) : null;
+            if (!sp) return;
+            if (GS.discoverAlienSpecies) GS.discoverAlienSpecies(sp);
+            e._alienSpeciesName = sp.name;
+        });
     };
 
     // A tagged enemy reports the species name in battle. originalName (not the

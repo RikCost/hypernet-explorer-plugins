@@ -8,11 +8,17 @@
  *
  * @help
  * This plugin manages starting equipment for characters:
- * - Weapon type to weapon ID mapping (weapon pools)
+ * - Starter weapon pool per weapon type, derived from shop price
  * - Weapon type icon mapping
  * - Compatible weapon detection for classes
  * - Random weapon selection and equipment
+ * - Thematic starting items per class, held to a price budget
  * - Global starter skills
+ *
+ * Starting gear is chosen by PRICE, never by stats: the weapon pool is the
+ * cheapest weapons of each type in the database, and a class item loadout must
+ * fit CLASS_ITEM_BUDGET. Items granted by traits are not covered by either and
+ * stay exactly as the trait defines them.
  *
  * Dependencies:
  * - CharacterCreationShared.js
@@ -21,6 +27,8 @@
  * - window.StartingEquipment.equipRandomCompatibleWeapon(actor, classId)
  * - window.StartingEquipment.getCompatibleWeapons(compatibleTypes)
  * - window.StartingEquipment.getCompatibleWeaponTypes(classId)
+ * - window.StartingEquipment.getStarterWeaponPool()
+ * - window.StartingEquipment.auditClassStartingItems()
  * - window.StartingEquipment.GLOBAL_STARTER_SKILLS
  * - window.StartingEquipment.weaponTypeIcons
  */
@@ -55,25 +63,77 @@
   };
 
   //=============================================================================
-  // Constants - Weapon Pools by Type
+  // Starter Weapon Pool (derived from price, not from stats)
   //=============================================================================
 
-  // Weapon pool for each weapon type - limited selection of weapon IDs
-  // Maps weapon type ID to array of available weapon IDs for that type
-  const weaponsForType = {
-    1: [43, 44, 173],      // Dagger
-    2: [1, 2],             // Sword
-    3: [13, 172],          // Heavy
-    4: [171, 19],          // Axe
-    5: [211],              // Whip
-    6: [7],                // Staff
-    7: [37],               // Bow
-    8: [39, 64],           // Projectile
-    9: [58, 59, 62],       // Gun
-    10: [12],              // Claw
-    11: [31],              // Glove
-    12: [25, 26]           // Spear
-  };
+  // A starting character carries the cheapest junk its class can hold: the pool
+  // is the low end of the shop price list for each weapon type, which is also
+  // the low end of the level curve, so no stat scoring is involved.
+  //
+  // This used to be a hardcoded table of weapon ids, and it went stale the
+  // moment Weapons.json was re-indexed: the ids no longer pointed at the type
+  // they were filed under, and the pool was handing out end-game artifacts
+  // (Glove resolved to weapon 31, the level 95 / 112000g Timeflow Manipulator;
+  // Spear to the Dragon Daggar and Memory Thief) and, worse, the nameless
+  // "<-- Light -->" divider rows. Deriving the pool from the database means it
+  // cannot drift out of sync again.
+  const STARTER_PRICE_CAP = 2000;  // gold; above this it is not starting gear
+  const STARTER_POOL_MAX = 8;      // never offer more than the N cheapest
+  const STARTER_POOL_MIN = 3;      // ... but always offer this many if they exist
+
+  let starterPoolCache = null;
+
+  /**
+   * Real weapon entry test: skips the blank padding rows and the
+   * "<-- Category -->" dividers that separate the weapon type blocks.
+   * @param {object} weapon - $dataWeapons entry
+   * @returns {boolean}
+   */
+  function isRealWeapon(weapon) {
+    if (!weapon || !weapon.name) return false;
+    const name = weapon.name.trim();
+    return name.length > 0 && !name.startsWith("<--");
+  }
+
+  /**
+   * Build the {wtypeId: [weaponId, ...]} starter pool from $dataWeapons.
+   * @returns {object}
+   */
+  function buildStarterWeaponPool() {
+    const pool = {};
+    if (typeof $dataWeapons === "undefined" || !Array.isArray($dataWeapons)) {
+      return pool;
+    }
+
+    const byType = {};
+    $dataWeapons.forEach((weapon) => {
+      if (!isRealWeapon(weapon) || !weapon.wtypeId || !(weapon.price > 0)) return;
+      (byType[weapon.wtypeId] = byType[weapon.wtypeId] || []).push(weapon);
+    });
+
+    Object.keys(byType).forEach((typeId) => {
+      const sorted = byType[typeId].sort((a, b) => a.price - b.price);
+      const cheap = sorted.filter((w) => w.price <= STARTER_PRICE_CAP);
+      // A type with nothing under the cap still has to arm its classes, so fall
+      // back to the cheapest few it does have.
+      const picked = cheap.length >= STARTER_POOL_MIN ? cheap : sorted.slice(0, STARTER_POOL_MIN);
+      pool[typeId] = picked.slice(0, STARTER_POOL_MAX).map((w) => w.id);
+    });
+
+    return pool;
+  }
+
+  /**
+   * Memoized starter pool. Built on first use (the database is not loaded when
+   * this plugin's body runs).
+   * @returns {object} {wtypeId: [weaponId, ...]}
+   */
+  function getStarterWeaponPool() {
+    if (!starterPoolCache || Object.keys(starterPoolCache).length === 0) {
+      starterPoolCache = buildStarterWeaponPool();
+    }
+    return starterPoolCache;
+  }
 
   //=============================================================================
   // Weapon Functions
@@ -108,26 +168,41 @@
   }
 
   /**
+   * Weapon types a class can be armed with at creation. Same as the declared
+   * equip types, except that a class declaring none (Archmage, Beast) falls
+   * back to every type rather than starting bare-handed: class weapon locks
+   * were converted into the Weapons specializations, so any class can hold
+   * anything, it is only worse at it.
+   * @param {number} classId - Class ID
+   * @returns {array} Array of weapon type IDs
+   */
+  function getStarterWeaponTypes(classId) {
+    const declared = getCompatibleWeaponTypes(classId);
+    if (declared.length > 0) return declared;
+    return Object.keys(getStarterWeaponPool()).map(Number);
+  }
+
+  /**
    * Get weapons for compatible types from the limited pool
-   * @param {array} compatibleTypes - Array of weapon type IDs
+   * @param {array} compatibleTypes - Array of weapon type IDs (empty means all)
    * @returns {array} Array of weapon objects
    */
   function getCompatibleWeapons(compatibleTypes) {
-    if (!compatibleTypes || compatibleTypes.length === 0) {
-      console.warn('No compatible weapon types provided');
-      return [];
-    }
-
     const compatibleWeapons = [];
+    const pool = getStarterWeaponPool();
+    const types =
+      compatibleTypes && compatibleTypes.length > 0
+        ? compatibleTypes
+        : Object.keys(pool).map(Number);
 
     // For each compatible weapon type, get weapons from the pool
-    compatibleTypes.forEach((typeId) => {
-      const weaponsOfType = weaponsForType[typeId];
+    types.forEach((typeId) => {
+      const weaponsOfType = pool[typeId];
       if (weaponsOfType && Array.isArray(weaponsOfType)) {
         // Add valid weapons from this type's pool to the compatible list
         weaponsOfType.forEach((weaponId) => {
           const weapon = $dataWeapons[weaponId];
-          if (weapon) {
+          if (isRealWeapon(weapon)) {
             compatibleWeapons.push(weapon);
           }
         });
@@ -150,11 +225,7 @@
     }
 
     // Get compatible weapon types from the class
-    const compatibleTypes = getCompatibleWeaponTypes(classId);
-    if (compatibleTypes.length === 0) {
-      console.warn(`No compatible weapon types found for class ${classId}`);
-      return false;
-    }
+    const compatibleTypes = getStarterWeaponTypes(classId);
 
     // Get weapons from the limited pool that match compatible types
     const compatibleWeapons = getCompatibleWeapons(compatibleTypes);
@@ -211,74 +282,80 @@
   // Thematic starting-item loadout per class, keyed by class name (matched
   // against $dataClasses like getQuickArchetypes() in CharacterCreation.js).
   // Every entry is { id, qty } into $dataItems.
+  //
+  // A loadout is judged by PRICE, not by what its items do: the whole kit must
+  // stay under CLASS_ITEM_BUDGET (checked by auditClassStartingItems below),
+  // which keeps a new character in cheap, mundane gear. Traits are the other
+  // half of the starting kit and are deliberately not bound by this: whatever a
+  // trait hands out is the trait's business.
   // i18n-ignore-start: keys are $dataClasses names, matched not shown
   const CLASS_STARTING_ITEMS = {
-    "Freelancer": [{ id: 814, qty: 1 }, { id: 1441, qty: 1 }],           // Multi-tool, Vocation Skill Book
-    "Witch": [{ id: 262, qty: 1 }, { id: 1402, qty: 1 }],                // Empty Spellbook, Void Magic Grimoire
-    "Nun": [{ id: 1401, qty: 1 }, { id: 604, qty: 2 }],                  // Holy Magic Grimoire, Minimum Vitality Tincture
-    "Knight": [{ id: 1422, qty: 1 }, { id: 811, qty: 1 }],               // Swordsmanship Skill Book, Whetstone
-    "Wrestler": [{ id: 319, qty: 1 }, { id: 315, qty: 2 }],              // Corner Cutman Kit, Grip Powder
-    "CEO": [{ id: 191, qty: 1 }, { id: 379, qty: 1 }],                   // Career Package, Negotiator's Manual
-    "Vampire": [{ id: 652, qty: 1 }, { id: 682, qty: 1 }],               // Vial of Miasma, Cloak of Shadows
-    "Cultist": [{ id: 1404, qty: 1 }, { id: 359, qty: 1 }],              // Forbidden Magic Grimoire, Empty Demon Container
-    "Combat Medic": [{ id: 19, qty: 2 }, { id: 33, qty: 1 }],            // Medical Spray, Endurance Injection
-    "Elementalist": [{ id: 1400, qty: 1 }, { id: 649, qty: 1 }],         // Elemental Grimoire, Thunder Crystal
-    "Martial Artist": [{ id: 1421, qty: 1 }, { id: 81, qty: 1 }],        // Martial Arts Skill Book, Karate Combo EP:
-    "Enchanter": [{ id: 1406, qty: 1 }, { id: 672, qty: 1 }],            // Arcanism Grimoire, Scribe's Prismatic Ink
-    "Berserker": [{ id: 87, qty: 1 }, { id: 88, qty: 1 }],               // Berserker Amulet, Guard Breaker
-    "Acrobat": [{ id: 91, qty: 1 }],                                     // Crystal Running Shoes
-    "Monk": [{ id: 90, qty: 1 }, { id: 722, qty: 1 }],                   // Perfect Block EP:, Mental Focus Training
-    "Brawler": [{ id: 723, qty: 1 }, { id: 832, qty: 1 }],               // Fighter's Focus, Used Hand Wraps
-    "Boxer": [{ id: 833, qty: 1 }, { id: 834, qty: 1 }],                 // Cracked Mouthguard, Torn Gloves
-    "Pro Wrestler": [{ id: 328, qty: 1 }, { id: 323, qty: 1 }],          // Championship Belt, Tournament Trophy
-    "Fire Mage": [{ id: 1400, qty: 1 }, { id: 658, qty: 1 }],            // Elemental Grimoire, Fireball Scroll
-    "Ice Mage": [{ id: 1400, qty: 1 }, { id: 655, qty: 1 }],             // Elemental Grimoire, Frost Bomb
-    "Rogue": [{ id: 1431, qty: 1 }, { id: 374, qty: 1 }],                // Roguery Skill Book, Lockpick
-    "Paladin": [{ id: 1401, qty: 1 }, { id: 662, qty: 1 }],              // Holy Magic Grimoire, Shield Scroll
-    "Warlock": [{ id: 1404, qty: 1 }, { id: 666, qty: 1 }],              // Forbidden Magic Grimoire, Scroll of Destruction
-    "Ranger": [{ id: 1424, qty: 1 }, { id: 810, qty: 1 }],               // Natural Skill Book, Elven Rope
-    "Cleric": [{ id: 1419, qty: 1 }, { id: 648, qty: 2 }],               // Healing Grimoire, Health Potion
-    "Samurai": [{ id: 1422, qty: 1 }, { id: 97, qty: 1 }],               // Swordsmanship Skill Book, Ancient Scroll
-    "Archmage": [{ id: 1406, qty: 1 }, { id: 685, qty: 1 }],             // Arcanism Grimoire, Mage's Crystal
-    "Scout": [{ id: 1430, qty: 1 }, { id: 137, qty: 1 }],                // Tactical Skill Book, Portable GPS Navigator
-    "Oracle": [{ id: 1412, qty: 1 }, { id: 676, qty: 1 }],               // Augury Grimoire, Seer's Thimble
-    "Gladiator": [{ id: 314, qty: 1 }, { id: 324, qty: 1 }],             // Champion's Tooth, Ancient Fighting Coin
-    "Necromancer": [{ id: 1403, qty: 1 }, { id: 724, qty: 1 }],          // Necromancy Grimoire, Floating skull
-    "Commander": [{ id: 1429, qty: 1 }, { id: 234, qty: 1 }],            // Leadership Skill Book, Navigator's Compass
-    "Guardian": [{ id: 662, qty: 1 }, { id: 656, qty: 1 }],              // Shield Scroll, Dragon Scale Barrier
-    "Spellblade": [{ id: 1400, qty: 1 }, { id: 1422, qty: 1 }],          // Elemental Grimoire, Swordsmanship Skill Book
-    "Bard": [{ id: 1428, qty: 1 }, { id: 236, qty: 1 }],                 // Performance Skill Book, Magician's Flute
-    "Illusionist": [{ id: 1415, qty: 1 }, { id: 663, qty: 1 }],          // Illusion Grimoire, Invisibility Scroll
-    "Battlemage": [{ id: 1418, qty: 1 }, { id: 661, qty: 1 }],           // Tempest Grimoire, Lightning Bolt Scroll
-    "Mercenary": [{ id: 385, qty: 1 }, { id: 73, qty: 1 }],              // Secure Transport Case, Molotov Cocktail
-    "Sage": [{ id: 1407, qty: 1 }, { id: 34, qty: 1 }],                  // Meta Magic Grimoire, Wisdom Elixir
-    "Barbarian": [{ id: 79, qty: 1 }, { id: 653, qty: 1 }],              // Throwing Axe, Giant's Potion
-    "Doctor": [{ id: 244, qty: 1 }, { id: 48, qty: 1 }],                 // Surgical Tools, Ultimate Booster
-    "Scientist": [{ id: 962, qty: 1 }, { id: 390, qty: 1 }],             // Horseshoe Crab Blood, Field Analysis Kit
-    "Firefighter": [{ id: 808, qty: 1 }, { id: 813, qty: 1 }],           // Escape kit, Climbing Rope
-    "Police Officer": [{ id: 381, qty: 1 }, { id: 388, qty: 1 }],        // Trace Removal Powder, Covert Recorder
-    "Chef": [{ id: 1427, qty: 1 }, { id: 232, qty: 1 }],                 // Cooking Skill Book, Chef's Spice Blend
-    "Journalist": [{ id: 386, qty: 1 }, { id: 144, qty: 1 }],            // Journalist's Endless Notepad, Digital Camera
-    "Construction Worker": [{ id: 138, qty: 1 }, { id: 156, qty: 1 }],   // Shovel, Toolmaker's Multi-tool
-    "Academic": [{ id: 299, qty: 1 }, { id: 127, qty: 1 }],              // Scholar's Legal Tome, Pocket Notebook
-    "Psychologist": [{ id: 722, qty: 1 }, { id: 378, qty: 1 }],          // Mental Focus Training, Truth-Revealing Solution
-    "Archaeologist": [{ id: 354, qty: 1 }, { id: 249, qty: 1 }],         // Fake Treasure Map, Astronomer's Astrolabe
-    "Nurse": [{ id: 19, qty: 1 }, { id: 17, qty: 2 }],                   // Medical Spray, Electrolyte Powder
-    "Hunter-Gatherer": [{ id: 1423, qty: 1 }, { id: 806, qty: 1 }],      // Bestial Skill Book, Walking Stick
-    "Physicist": [{ id: 139, qty: 1 }, { id: 140, qty: 1 }],             // Resonance Scanner, Raman probe
-    "Mechanic": [{ id: 146, qty: 1 }, { id: 814, qty: 1 }],              // Fuel tank, Multi-tool
-    "Shopkeeper": [{ id: 1437, qty: 1 }, { id: 387, qty: 1 }],           // Economy Skill Book, Precision Digital Scale
-    "Farmer": [{ id: 1433, qty: 1 }, { id: 240, qty: 1 }],               // Pastoral Skill Book, Botanist's Seed Collection
-    "Lumberjack": [{ id: 151, qty: 1 }, { id: 814, qty: 1 }],            // Craftsman's Backpack, Multi-tool
-    "Meteorologist": [{ id: 216, qty: 1 }, { id: 150, qty: 1 }],         // Aurora Essence, Telescope
-    "Priest": [{ id: 1401, qty: 1 }, { id: 264, qty: 1 }],               // Holy Magic Grimoire, 92 Days of Solomon
-    "Entertainer": [{ id: 1428, qty: 1 }, { id: 186, qty: 1 }],          // Performance Skill Book, Pocket Sound System
-    "Demigod": [{ id: 697, qty: 1 }, { id: 692, qty: 1 }],               // Wish-Granting Orb, Ambrosia
-    "Wretch": [{ id: 836, qty: 1 }, { id: 828, qty: 1 }],                // Rubbish, Expired Cheese
-    "Beast": [{ id: 27, qty: 1 }, { id: 627, qty: 1 }],                  // Beast Tongue Elixir, Jaguar Musk Gland
-    "Mimic": [{ id: 709, qty: 2 }, { id: 347, qty: 1 }],                 // Unidentified Item, Not-So-Magic Bean
-    "Monster": [{ id: 725, qty: 1 }, { id: 89, qty: 1 }],                // Spirit Parasite, Broken Cryocell
-    "Mana Cyborg": [{ id: 731, qty: 1 }, { id: 732, qty: 1 }],           // Neuro-Quantum Amplifier, Overdrive Implant
+    "Freelancer": [{ id: 814, qty: 1 }, { id: 1441, qty: 1 }],          // Multi-tool, Vocation Skill Book
+    "Witch": [{ id: 262, qty: 1 }, { id: 1402, qty: 1 }],               // Empty Spellbook, Void Magic Grimoire
+    "Nun": [{ id: 1401, qty: 1 }, { id: 604, qty: 2 }],                 // Holy Magic Grimoire, Minimum Vitality Tincture
+    "Knight": [{ id: 1422, qty: 1 }, { id: 811, qty: 1 }],              // Swordsmanship Skill Book, Whetstone
+    "Wrestler": [{ id: 319, qty: 1 }, { id: 315, qty: 2 }],             // Corner Cutman Kit, Grip Powder
+    "CEO": [{ id: 191, qty: 1 }, { id: 379, qty: 1 }],                  // Career Package, Negotiator's Manual
+    "Vampire": [{ id: 652, qty: 1 }, { id: 751, qty: 1 }],              // Vial of Miasma, Zombie Hand
+    "Cultist": [{ id: 1404, qty: 1 }, { id: 359, qty: 1 }],             // Forbidden Magic Grimoire, Empty Demon Container
+    "Combat Medic": [{ id: 19, qty: 2 }, { id: 33, qty: 1 }],           // Medical Spray, Endurance Injection
+    "Elementalist": [{ id: 1400, qty: 1 }, { id: 649, qty: 1 }],        // Elemental Grimoire, Thunder Crystal
+    "Martial Artist": [{ id: 1421, qty: 1 }, { id: 81, qty: 1 }],       // Martial Arts Skill Book, Karate Combo EP:
+    "Enchanter": [{ id: 1406, qty: 1 }, { id: 647, qty: 1 }],           // Arcanism Grimoire, Enchanted Quill
+    "Berserker": [{ id: 87, qty: 1 }, { id: 88, qty: 1 }],              // Berserker Amulet, Guard Breaker
+    "Acrobat": [{ id: 654, qty: 1 }, { id: 810, qty: 1 }],              // Swift Wind Elixir, Elven Rope
+    "Monk": [{ id: 90, qty: 1 }, { id: 722, qty: 1 }],                  // Perfect Block EP:, Mental Focus Training
+    "Brawler": [{ id: 723, qty: 1 }, { id: 832, qty: 1 }],              // Fighter's Focus, Used Hand Wraps
+    "Boxer": [{ id: 833, qty: 1 }, { id: 834, qty: 1 }],                // Cracked Mouthguard, Torn Gloves
+    "Pro Wrestler": [{ id: 320, qty: 1 }, { id: 313, qty: 1 }],         // Wooden Chair, Vintage Fight Poster
+    "Fire Mage": [{ id: 1400, qty: 1 }, { id: 658, qty: 1 }],           // Elemental Grimoire, Fireball Scroll
+    "Ice Mage": [{ id: 1400, qty: 1 }, { id: 655, qty: 1 }],            // Elemental Grimoire, Frost Bomb
+    "Rogue": [{ id: 1431, qty: 1 }, { id: 374, qty: 1 }],               // Roguery Skill Book, Lockpick
+    "Paladin": [{ id: 1401, qty: 1 }, { id: 662, qty: 1 }],             // Holy Magic Grimoire, Shield Scroll
+    "Warlock": [{ id: 1404, qty: 1 }, { id: 666, qty: 1 }],             // Forbidden Magic Grimoire, Scroll of Destruction
+    "Ranger": [{ id: 1424, qty: 1 }, { id: 810, qty: 1 }],              // Natural Skill Book, Elven Rope
+    "Cleric": [{ id: 1419, qty: 1 }, { id: 648, qty: 2 }],              // Healing Grimoire, Health Potion
+    "Samurai": [{ id: 1422, qty: 1 }, { id: 277, qty: 1 }],             // Swordsmanship Skill Book, Etiquette
+    "Archmage": [{ id: 1406, qty: 1 }, { id: 657, qty: 1 }],            // Arcanism Grimoire, Archmage's Elixir
+    "Scout": [{ id: 1430, qty: 1 }, { id: 137, qty: 1 }],               // Tactical Skill Book, Portable GPS Navigator
+    "Oracle": [{ id: 1412, qty: 1 }, { id: 650, qty: 1 }],              // Augury Grimoire, Dream Dust
+    "Gladiator": [{ id: 314, qty: 1 }, { id: 324, qty: 1 }],            // Champion's Tooth, Ancient Fighting Coin
+    "Necromancer": [{ id: 1403, qty: 1 }, { id: 724, qty: 1 }],         // Necromancy Grimoire, Floating skull
+    "Commander": [{ id: 1429, qty: 1 }, { id: 234, qty: 1 }],           // Leadership Skill Book, Navigator's Compass
+    "Guardian": [{ id: 662, qty: 1 }, { id: 656, qty: 1 }],             // Shield Scroll, Dragon Scale Barrier
+    "Spellblade": [{ id: 1400, qty: 1 }, { id: 1422, qty: 1 }],         // Elemental Grimoire, Swordsmanship Skill Book
+    "Bard": [{ id: 1428, qty: 1 }, { id: 236, qty: 1 }],                // Performance Skill Book, Magician's Flute
+    "Illusionist": [{ id: 1415, qty: 1 }, { id: 663, qty: 1 }],         // Illusion Grimoire, Invisibility Scroll
+    "Battlemage": [{ id: 1418, qty: 1 }, { id: 661, qty: 1 }],          // Tempest Grimoire, Lightning Bolt Scroll
+    "Mercenary": [{ id: 385, qty: 1 }, { id: 73, qty: 1 }],             // Secure Transport Case, Molotov Cocktail
+    "Sage": [{ id: 1407, qty: 1 }, { id: 34, qty: 1 }],                 // Meta Magic Grimoire, Wisdom Elixir
+    "Barbarian": [{ id: 79, qty: 1 }, { id: 653, qty: 1 }],             // Throwing Axe, Giant's Potion
+    "Doctor": [{ id: 244, qty: 1 }, { id: 19, qty: 1 }],                // Surgical Tools, Medical Spray
+    "Scientist": [{ id: 1425, qty: 1 }, { id: 944, qty: 1 }],           // Chemical Arts Skill Book, Silver Nitrate
+    "Firefighter": [{ id: 808, qty: 1 }, { id: 813, qty: 1 }],          // Escape kit, Climbing Rope
+    "Police Officer": [{ id: 143, qty: 1 }, { id: 76, qty: 1 }],        // Pocket Video Recorder, Caltrops
+    "Chef": [{ id: 1427, qty: 1 }, { id: 232, qty: 1 }],                // Cooking Skill Book, Chef's Spice Blend
+    "Journalist": [{ id: 144, qty: 1 }, { id: 711, qty: 1 }],           // Digital Camera, Newspaper
+    "Construction Worker": [{ id: 138, qty: 1 }, { id: 863, qty: 2 }],  // Shovel, Steel ore
+    "Academic": [{ id: 299, qty: 1 }, { id: 127, qty: 1 }],             // Scholar's Legal Tome, Pocket Notebook
+    "Psychologist": [{ id: 722, qty: 1 }, { id: 378, qty: 1 }],         // Mental Focus Training, Truth-Revealing Solution
+    "Archaeologist": [{ id: 354, qty: 1 }, { id: 121, qty: 1 }],        // Fake Treasure Map, Lantern
+    "Nurse": [{ id: 19, qty: 1 }, { id: 17, qty: 2 }],                  // Medical Spray, Electrolyte Powder
+    "Hunter-Gatherer": [{ id: 1423, qty: 1 }, { id: 806, qty: 1 }],     // Bestial Skill Book, Walking Stick
+    "Physicist": [{ id: 139, qty: 1 }, { id: 140, qty: 1 }],            // Resonance Scanner, Raman probe
+    "Mechanic": [{ id: 146, qty: 1 }, { id: 814, qty: 1 }],             // Fuel tank, Multi-tool
+    "Shopkeeper": [{ id: 1437, qty: 1 }, { id: 721, qty: 1 }],          // Economy Skill Book, Massive Storage Drive
+    "Farmer": [{ id: 1433, qty: 1 }, { id: 240, qty: 1 }],              // Pastoral Skill Book, Botanist's Seed Collection
+    "Lumberjack": [{ id: 151, qty: 1 }, { id: 814, qty: 1 }],           // Craftsman's Backpack, Multi-tool
+    "Meteorologist": [{ id: 150, qty: 1 }, { id: 117, qty: 1 }],        // Telescope, Umbrella
+    "Priest": [{ id: 1401, qty: 1 }, { id: 264, qty: 1 }],              // Holy Magic Grimoire, 92 Days of Solomon
+    "Entertainer": [{ id: 1428, qty: 1 }, { id: 186, qty: 1 }],         // Performance Skill Book, Pocket Sound System
+    "Demigod": [{ id: 1405, qty: 1 }, { id: 646, qty: 1 }],             // Astral Magic Grimoire, Elven Waybread
+    "Wretch": [{ id: 836, qty: 1 }, { id: 828, qty: 1 }],               // Rubbish, Expired Cheese
+    "Beast": [{ id: 27, qty: 1 }, { id: 627, qty: 1 }],                 // Beast Tongue Elixir, Jaguar Musk Gland
+    "Mimic": [{ id: 709, qty: 2 }, { id: 347, qty: 1 }],                // Unidentified Item, Not-So-Magic Bean
+    "Monster": [{ id: 725, qty: 1 }, { id: 89, qty: 1 }],               // Spirit Parasite, Broken Cryocell
+    "Mana Cyborg": [{ id: 1420, qty: 1 }, { id: 122, qty: 1 }],         // Technomagical Grimoire, Portable Charger
   };
   // i18n-ignore-end
 
@@ -312,6 +389,53 @@
   }
 
   /**
+   * Total shop value of a class loadout, in gold.
+   * @param {number} classId - Class ID
+   * @returns {number}
+   */
+  function getClassStartingItemsValue(classId) {
+    return getClassStartingItems(classId).reduce((sum, entry) => {
+      const item = $dataItems[entry.id];
+      return sum + (item ? (item.price || 0) * (entry.qty || 1) : 0);
+    }, 0);
+  }
+
+  // Ceiling for a whole class loadout, in gold (100 gold = 1 EUR), i.e. 100 EUR
+  // of goods on top of the party's 100 EUR purse. Anything dearer than this is
+  // not starting gear, it is treasure.
+  const CLASS_ITEM_BUDGET = 10000;
+
+  /**
+   * Check every class loadout against CLASS_ITEM_BUDGET and report the ones
+   * that break it, together with any entry pointing at a missing or blank item.
+   * Run from the console after editing the table.
+   * @returns {array} Offending { class, total, items } rows
+   */
+  function auditClassStartingItems() {
+    const offenders = [];
+    Object.keys(CLASS_STARTING_ITEMS).forEach((className) => {
+      const entries = CLASS_STARTING_ITEMS[className];
+      const broken = entries.filter((entry) => {
+        const item = $dataItems[entry.id];
+        return !item || !item.name || !item.name.trim();
+      });
+      const total = entries.reduce((sum, entry) => {
+        const item = $dataItems[entry.id];
+        return sum + (item ? (item.price || 0) * (entry.qty || 1) : 0);
+      }, 0);
+      if (total > CLASS_ITEM_BUDGET || broken.length > 0) {
+        offenders.push({ class: className, total, items: entries });
+        console.warn(
+          `StartingEquipment: ${className} loadout is ${total}g` +
+            (broken.length ? ` and has ${broken.length} missing item(s)` : "") +
+            ` (budget ${CLASS_ITEM_BUDGET}g).`
+        );
+      }
+    });
+    return offenders;
+  }
+
+  /**
    * Apply starting gear to an actor (weapon + skills)
    * @param {Game_Actor} actor - Actor to equip
    * @param {number} classId - Class ID
@@ -339,16 +463,26 @@
     // Constants
     GLOBAL_STARTER_SKILLS,
     weaponTypeIcons,
-    weaponsForType,
+    STARTER_PRICE_CAP,
+    CLASS_ITEM_BUDGET,
+
+    // The derived starter pool, kept under its old name for outside readers.
+    get weaponsForType() {
+      return getStarterWeaponPool();
+    },
 
     // Functions
+    getStarterWeaponPool,
+    getStarterWeaponTypes,
     getCompatibleWeaponTypes,
     getCompatibleWeapons,
     equipRandomCompatibleWeapon,
     learnStarterSkills,
     applyStartingGear,
     getClassStartingItems,
-    giveClassStartingItems
+    getClassStartingItemsValue,
+    giveClassStartingItems,
+    auditClassStartingItems
   };
 
   console.log(`${pluginName} loaded successfully.`);

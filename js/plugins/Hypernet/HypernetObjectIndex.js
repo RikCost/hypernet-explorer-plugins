@@ -169,6 +169,17 @@
         return restores.map(r => [r.label || r.key, '+' + r.amount]);
     }
 
+    // getAddictionRelief returns [{ key, amount, label }]: what this object
+    // takes OFF a craving, which is why the figures read negative.
+    function cravingRows(item) {
+        const u = utils();
+        if (!u || typeof u.getAddictionRelief !== 'function') return [];
+        let relief = null;
+        try { relief = u.getAddictionRelief(item); } catch (e) { return []; }
+        if (!relief || !relief.length) return [];
+        return relief.map(r => [r.label || r.key, '-' + r.amount]);
+    }
+
     function recipeText(item) {
         const raw = metaOf(item).Recipe;
         if (!raw) return '';
@@ -201,7 +212,7 @@
     // whatever is left, so a newly added tag still shows up without a code change.
     // i18n-ignore-start  note-tag names, matched against the item's meta
     const HANDLED_TAGS = ['Lore', 'category', 'Weight', 'Recipe',
-                          'calories', 'protein', 'fat', 'caffeine', 'NeedRestore'];
+                          'calories', 'protein', 'fat', 'caffeine', 'NeedRestore', 'Addiction'];
     // i18n-ignore-end
 
     // --- Styling ------------------------------------------------------------
@@ -511,6 +522,7 @@
             // Provisioning
             html.push(card(T('ObjectIndex.provisioningValue'), nutritionRows(item)));
             html.push(card(T('ObjectIndex.restores'), needRows(item)));
+            html.push(card(T('ObjectIndex.sedates'), cravingRows(item)));
 
             // Composition
             const recipe = recipeText(item);

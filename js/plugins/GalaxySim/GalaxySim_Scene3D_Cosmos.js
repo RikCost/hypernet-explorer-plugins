@@ -2893,12 +2893,6 @@
     return tex;
   }
 
-  // css "#rrggbb" from an int or passthrough string.
-  function cssHex(c, fallback) {
-    if (typeof c === "string") return c;
-    if (typeof c === "number") return "#" + (c >>> 0).toString(16).padStart(6, "0");
-    return fallback || "#ffffff";
-  }
 
   // Core body sphere + optional back-side corona + optional glow sprite.
   function exoticBody(ctx, opt) {

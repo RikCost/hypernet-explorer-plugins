@@ -194,25 +194,6 @@
 
   const parameters = PluginManager.parameters(pluginName);
 
-  const parseMapList = (paramString) => {
-    if (!paramString) return [];
-    // Wrap the string in brackets to make it a valid JSON array string.
-    // This handles both old "1,2,3" and new "1,[2,3],4" formats.
-    const jsonString = "[" + paramString.trim() + "]";
-    try {
-      const parsed = JSON.parse(jsonString);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      console.error("DungeonFloorSystem: Error parsing map list parameter.", e);
-      console.error("Parameter string was:", paramString);
-      // Fallback for simple comma-separated lists that might fail JSON.parse (e.g., trailing comma).
-      const sanitizedString = paramString.trim().replace(/,$/, "");
-      return sanitizedString
-        .split(",")
-        .map((id) => parseInt(id.trim()))
-        .filter((id) => !isNaN(id));
-    }
-  };
 
   function createSeededRandom(seed) {
     let hash = 0;

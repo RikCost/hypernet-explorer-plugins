@@ -836,14 +836,64 @@
                 if (members.length > 0) action.setTarget(members[0].index());
             } else {
                 const aliveEnemies = $gameTroop.aliveMembers();
-                if (aliveEnemies.length > 0) action.setTarget(aliveEnemies[0].index());
+                if (aliveEnemies.length === 0) { SoundManager.playBuzzer(); return; }
+                // More than one monster on the field (nearby roamers join a
+                // fight now): a single-target card asks which one it is played
+                // on instead of always landing on whoever stands first.
+                if (aliveEnemies.length > 1 && action.isForOne() && this._enemyWindow) {
+                    this.startCardEnemySelection(card, action, actor);
+                    return;
+                }
+                action.setTarget(aliveEnemies[0].index());
             }
         }
+        this.commitCard(card, action, actor);
+    };
+
+    // Hand the chosen card to the actor as this turn's action and play it.
+    Scene_Battle.prototype.commitCard = function(card, action, actor) {
         actor.setAction(0, action);
         actor.setLastBattleSkill($dataSkills[card.id]);
 
         this._pendingCard = card;
         this.executeCard();
+    };
+
+    // Card mode has no target step of its own, so it borrows the ordinary
+    // battle target window and puts its handlers back the moment the choice is
+    // made. Nothing has been spent yet, so cancelling simply returns the hand.
+    Scene_Battle.prototype.startCardEnemySelection = function(card, action, actor) {
+        this._cardTargetPending = { card: card, action: action, actor: actor };
+        this._actorCommandWindow.deactivate();
+        this._enemyWindow.refresh();
+        this._enemyWindow.show();
+        this._enemyWindow.setHandler('ok', this.onCardEnemyOk.bind(this));
+        this._enemyWindow.setHandler('cancel', this.onCardEnemyCancel.bind(this));
+        this._enemyWindow.select(0);
+        this._enemyWindow.activate();
+    };
+
+    Scene_Battle.prototype.closeCardEnemySelection = function() {
+        this._enemyWindow.hide();
+        this._enemyWindow.deactivate();
+        this._enemyWindow.setHandler('ok', this.onEnemyOk.bind(this));
+        this._enemyWindow.setHandler('cancel', this.onEnemyCancel.bind(this));
+    };
+
+    Scene_Battle.prototype.onCardEnemyOk = function() {
+        const pending = this._cardTargetPending;
+        const enemy = this._enemyWindow.enemy();
+        this.closeCardEnemySelection();
+        this._cardTargetPending = null;
+        if (!pending) { this._actorCommandWindow.activate(); return; }
+        if (enemy) pending.action.setTarget(enemy.index());
+        this.commitCard(pending.card, pending.action, pending.actor);
+    };
+
+    Scene_Battle.prototype.onCardEnemyCancel = function() {
+        this.closeCardEnemySelection();
+        this._cardTargetPending = null;
+        this._actorCommandWindow.activate();
     };
 
     Scene_Battle.prototype.executeCard = function() {
