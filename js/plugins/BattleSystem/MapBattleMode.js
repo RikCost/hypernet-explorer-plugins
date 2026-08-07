@@ -1080,6 +1080,10 @@
         // victory paths' replayBgmAndBgs() would fall through to stopBgm() and
         // silence the map for a fight that never changed the music.
         BattleManager.saveBgmAndBgs();
+        // Switch from the map ambient track to the battle BGM, exactly as the
+        // normal Scene_Battle start does. The saved BGM above is what gets
+        // restored when the fight ends.
+        BattleManager.playBattleBgm();
 
         const spriteset = currentSpriteset();
         MBM._logWindow = new Window_BattleLog(new Rectangle(0, 0, Graphics.boxWidth, 168));
@@ -1141,6 +1145,16 @@
         // BattleSystemEnhancedState turns into no-ops here, so stopping it would
         // cut the fanfare one frame in. Letting it finish resumes the map BGM by
         // itself.
+        //
+        // For escape and can-lose defeat, no ME ever plays, so the battle BGM
+        // would keep playing on the map forever. Restore the map audio explicitly
+        // on those paths by checking whether a ME is currently active. When a ME
+        // IS playing (victory fanfare path), AudioManager restores the saved BGM
+        // automatically when the ME ends - so we must not call replayBgmAndBgs()
+        // here or it would cut the fanfare.
+        if (!AudioManager._currentMe || !AudioManager._currentMe.url) {
+            BattleManager.replayBgmAndBgs();
+        }
 
         MBM._clearWorldSteps();
         MBM._releaseCombatEvents();
@@ -1493,7 +1507,20 @@
         BattleManager.selectNextCommand();
     };
 
+    // The greyed-out skill/magic/basic rows already buzz at the input layer; this
+    // only catches input routed past isCurrentItemEnabled, and keeps an empty
+    // list from being opened.
+    MBM._commandIsLive = function () {
+        const win = MBM._cmdWindow;
+        if (!win || !win.isCurrentCommandEnabled) return true;
+        if (win.isCurrentCommandEnabled()) return true;
+        SoundManager.playBuzzer();
+        win.activate();
+        return false;
+    };
+
     MBM._commandSkill = function () {
+        if (!MBM._commandIsLive()) return;
         const actor = BattleManager.actor();
         if (!MBM._skillWindow) {
             MBM._skillWindow = new Window_BattleSkill(subWindowRect());
@@ -1513,6 +1540,7 @@
     };
 
     MBM._commandSkillBasic = function () {
+        if (!MBM._commandIsLive()) return;
         MBM._commandSkill();
         if (MBM._skillWindow.setBasicMode) MBM._skillWindow.setBasicMode(true);
         MBM._skillWindow.setStypeId(0);
@@ -1536,6 +1564,7 @@
     };
 
     MBM._commandItem = function () {
+        if (!MBM._commandIsLive()) return;
         if (!MBM._itemWindow) {
             MBM._itemWindow = new Window_BattleItem(subWindowRect());
             MBM._itemWindow.setHandler("ok", MBM._onItemOk);

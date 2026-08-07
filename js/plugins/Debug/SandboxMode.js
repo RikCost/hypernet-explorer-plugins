@@ -123,100 +123,16 @@
     Scene_Menu.prototype.createCommandWindow = function () {
         if ($gameParty && $gameParty.leader() && $gameParty.leader().name().toLowerCase() === "test") {
             $gameSystem._isSandboxMode = true;
+            // Build a random party from the arena party generator at a random level 1-99.
+            // Only runs once per session (the guard prevents re-randomizing on every menu open).
+            if (!$gameSystem._sandboxPartyGenerated && window.ArenaBattleHandler) {
+                const randomLevel = Math.floor(Math.random() * 99) + 1;
+                ArenaBattleHandler.buildRandomParty(randomLevel, randomLevel);
+                $gameSystem._sandboxPartyGenerated = true;
+            }
         }
         if ($gameSystem && $gameSystem._isSandboxMode) grantSandboxWishOrbs();
         _Scene_Menu_createCommandWindow.call(this);
-    };
-
-    // =========================================================================
-    //  Sandbox enemy scaling
-    // =========================================================================
-    // The sandbox is played as Eris, a level 92 goddess who one-shots anything
-    // the world normally fields, so the fauna is scaled up to her instead of the
-    // spawning being rewritten: the selected Enemy Spawn mode (party median or
-    // Omega Tower distance, see BattleSystemEnhancedEncounters.js) still decides
-    // WHAT turns up and where, this only decides how hard it hits back. The
-    // year-driven spawn era is untouched too, the sandbox merely lifts its level
-    // cap so the whole roster stays reachable at any date.
-    const SANDBOX_RIVAL_LEVEL = 92;   // Eris
-    const SANDBOX_CURVE       = 1.35; // how steeply the level gap becomes stats
-    const SANDBOX_MAX_MULT    = 60;   // ceiling, so a level 1 critter stays sane
-
-    function isSandboxMode() {
-        return !!(window.$gameSystem && $gameSystem._isSandboxMode);
-    }
-
-    // The level the sandbox fauna has to keep up with: Eris, or whoever in the
-    // party has already outgrown her.
-    function sandboxRivalLevel() {
-        let level = SANDBOX_RIVAL_LEVEL;
-        const members = window.$gameParty ? $gameParty.members() : [];
-        for (const actor of members) {
-            if (actor && actor.level > level) level = actor.level;
-        }
-        return level;
-    }
-
-    // <Level:X> of an enemy. paramBase is hit constantly during a battle, so the
-    // parse is cached on the shared $dataEnemies entry (notes never change at
-    // runtime), the same way the encounter engine caches its own note lookups.
-    function sandboxEnemyLevel(enemy) {
-        const data = enemy && enemy.enemy ? enemy.enemy() : null;
-        if (!data) return 1;
-        if (data._sandboxLevel !== undefined) return data._sandboxLevel;
-        const note = data.note || "";
-        const BSE = window.BattleSystemEnhanced;
-        let level;
-        if (BSE && BSE.Helpers && BSE.Helpers.getEnemyLevel) {
-            level = BSE.Helpers.getEnemyLevel(note) || 1;
-        } else {
-            const m = note.match(/<Level:\s*(\d+)>/i);
-            level = m ? Number(m[1]) : 1;
-        }
-        data._sandboxLevel = level;
-        return level;
-    }
-
-    // Stat multiplier for one enemy in sandbox mode: closes the gap between its
-    // own level and the rival's, and leaves anything already at that level (or
-    // above it) exactly as authored.
-    //
-    // The Enemy Difficulty option steers how much of the gap is actually closed,
-    // so the slider keeps meaning something in the sandbox: at its neutral
-    // middle the gap closes in full, a nerfed slider closes proportionally less
-    // of it, a buffed one overshoots. GameOptions.js already scales the base
-    // stats by that same slider, this only weights the sandbox buff on top.
-    function sandboxEnemyStatMultiplier(enemy, paramId) {
-        if (!isSandboxMode()) return 1;
-        const level = sandboxEnemyLevel(enemy);
-        const rival = sandboxRivalLevel();
-        if (level >= rival) return 1;
-        const gap = Math.min(SANDBOX_MAX_MULT,
-            Math.pow(rival / Math.max(1, level), SANDBOX_CURVE));
-        const difficulty = (window.GameOptions && GameOptions.enemyStatMultiplier)
-            ? GameOptions.enemyStatMultiplier() : 1;
-        let mult = 1 + (gap - 1) * difficulty;
-        // Agility and luck ride a much gentler curve: scaled at the full rate
-        // they would take every turn before the party ever acts.
-        if (paramId === 6 || paramId === 7) mult = Math.sqrt(mult);
-        return Math.max(1, mult);
-    }
-
-    // Wraps the Enemy Difficulty scaling GameOptions.js installs on paramBase,
-    // so buffs, states and Health_Core's limb damage still layer on top.
-    const _Game_Enemy_paramBase_sandbox = Game_Enemy.prototype.paramBase;
-    Game_Enemy.prototype.paramBase = function (paramId) {
-        const base = _Game_Enemy_paramBase_sandbox.call(this, paramId);
-        const mult = sandboxEnemyStatMultiplier(this, paramId);
-        return mult === 1 ? base : Math.round(base * mult);
-    };
-
-    // Exposed for the sandbox status panel and any UI that wants to show what
-    // the fauna is currently being scaled to.
-    window.SandboxScaling = {
-        isActive: isSandboxMode,
-        rivalLevel: sandboxRivalLevel,
-        multiplierFor: sandboxEnemyStatMultiplier
     };
 
     // =========================================================================
@@ -745,10 +661,6 @@
                             <div style="display: flex; justify-content: space-between;">
                                 <span style="font-weight: bold;">PSI (Luck):</span>
                                 <span>${$gameParty.leader() ? $gameParty.leader().luk : 10}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span style="font-weight: bold;">Enemies Scaled To:</span>
-                                <span>Lv. ${sandboxRivalLevel()}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between;">
                                 <span style="font-weight: bold;">Spawn:</span>

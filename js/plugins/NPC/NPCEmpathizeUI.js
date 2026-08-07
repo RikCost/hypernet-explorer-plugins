@@ -249,6 +249,21 @@
     return rows;
   }
 
+  // A party member is not an NPC to be guessed at: the specializations they show
+  // are the ones the player trained (SpecializationMenu's own reading of class
+  // floor + trait floor + trained level), never the 3-6 flavour picks a stranger
+  // of that name was dealt.
+  function _getActorSpecializations(actor) {
+    if (!actor || !window.Specializations?.ready || !actor.specializationLevel) return [];
+    const rows = [];
+    window.Specializations.list.forEach(spec => {
+      const lvl = actor.specializationLevel(spec.id);
+      if (lvl > 1) rows.push({ name: spec.name, levelName: window.Specializations.levelName(lvl) });
+    });
+    rows.sort((a, b) => a.name.localeCompare(b.name));
+    return rows;
+  }
+
   function _factionDisplayName(faction) {
     if (!faction) return '?';
     const localized = window._NPCSocietyDataLoader?.getFactionName?.(faction);
@@ -979,16 +994,49 @@
   // Left panel
   // ============================================================================
 
+  // The attribute names the game shows everywhere else (js/i18n/<lang>/stats.json,
+  // the same bank the status screen reads), not the engine's own ATK/DEF/MAT/MDF:
+  // the panel was printing a different set of labels over the same six numbers
+  // the character sheet already names STR/CON/DEX/INT/WIS/PSI. That bank sits at
+  // the i18n root, which window.T does not cover, so it is read the same way this
+  // file already reads enemyArchetypes.json: once, lazily, on the render thread.
+  let _statsI18nCache = null;
+  let _statsI18nLang  = null;
+  function _statLabels() {
+    const lang = ConfigManager.language || 'en';
+    if (_statsI18nCache === null || _statsI18nLang !== lang) {
+      _statsI18nCache = {};
+      _statsI18nLang  = lang;
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `js/i18n/${lang}/stats.json`, false);
+        xhr.send();
+        if (xhr.status === 200 || xhr.status === 0) _statsI18nCache = JSON.parse(xhr.responseText);
+      } catch (_) { /* fall back to the English names below */ }
+    }
+    const s = _statsI18nCache;
+    return {
+      atk: s['ATT']     || 'STR',
+      def: s['DEF']     || 'CON',
+      agi: s['AGILITY'] || 'DEX',
+      mat: s['M.ATT']   || 'INT',
+      mdf: s['M.DEF']   || 'WIS',
+      luk: s['LUCK']    || 'PSI',
+    };
+  }
+
   // The character sheet numbers, paired off into two columns so the whole set
   // fits the narrow left page under the portrait. The level is not repeated
   // here, it is already in the name block right above. Lives on the left rather
-  // than in the Info tab so it is readable whatever tab is open.
+  // than in the Info tab so it is readable whatever tab is open. Ordered the way
+  // the status screen orders them, so one character reads the same in both.
   function _buildStatsGridHTML(profile, T) {
     if (!profile || profile.level === undefined) return '';
+    const L = _statLabels();
     const rows = [
-      ['ATK', profile.atk], ['DEF', profile.def],
-      ['MAT', profile.mat], ['MDF', profile.mdf],
-      ['AGI', profile.agi], ['LUK', profile.luk],
+      [L.atk, profile.atk], [L.def, profile.def],
+      [L.agi, profile.agi], [L.mat, profile.mat],
+      [L.mdf, profile.mdf], [L.luk, profile.luk],
       [T.arcaneLbl,       profile.arcane],
       [T.substanceLbl,    profile.substance],
       [T.stealthLbl,      profile.stealth],
@@ -1548,6 +1596,10 @@
   }
 
   Scene_NPCEmpathize.prototype._buildInfoHTML = function (displayName, subParts, profile, T, dl, opinion, lang, classId, npcName, preset) {
+    // Looking at a real party member: everything the player owns on that
+    // character (specializations, what they are carrying) is read off the actor
+    // rather than off the society roll for somebody of the same name.
+    const actorObj = this._actorId != null ? $gameActors.actor(this._actorId) : null;
     const wealthLabels = [T.destitute, T.poor, T.workingClass, T.middleClass, T.wealthy];
     const wealthLabel  = wealthLabels[profile?.wealthTierBase ?? 2] ?? '';
     const morality     = profile?.moralityScore ?? 0;
@@ -1677,7 +1729,9 @@
     }
 
     let specsHTML = '';
-    const npcSpecs = _getNpcSpecializations(profile, classId ?? profile?.assignedClassId, dl, npcName);
+    const npcSpecs = actorObj
+      ? _getActorSpecializations(actorObj)
+      : _getNpcSpecializations(profile, classId ?? profile?.assignedClassId, dl, npcName);
     if (npcSpecs.length) {
       specsHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.specializations}</div><div class="npc-tag-wrap">`;
       for (const s of npcSpecs) specsHTML += `<span class="npc-tag">${_escapeHtml(s.name)} <span style="opacity:0.6;">(${_escapeHtml(s.levelName)})</span></span>`;
@@ -1685,11 +1739,16 @@
     }
 
     let equipHTML = '';
-    if (profile && window.NPCSocietyGetEquip) {
-      const equip      = window.NPCSocietyGetEquip(displayName, classId ?? profile.assignedClassId, profile.wealthTierBase);
+    if (actorObj || (profile && window.NPCSocietyGetEquip)) {
       const equipItems = [];
-      if (equip.weaponId) { const w = $dataWeapons?.[equip.weaponId]; if (w) equipItems.push(w); }
-      for (const id of (equip.armorIds || [])) { const a = $dataArmors?.[id]; if (a) equipItems.push(a); }
+      if (actorObj) {
+        // What the player actually equipped, gaps and all.
+        for (const e of actorObj.equips()) if (e) equipItems.push(e);
+      } else {
+        const equip = window.NPCSocietyGetEquip(displayName, classId ?? profile.assignedClassId, profile.wealthTierBase);
+        if (equip.weaponId) { const w = $dataWeapons?.[equip.weaponId]; if (w) equipItems.push(w); }
+        for (const id of (equip.armorIds || [])) { const a = $dataArmors?.[id]; if (a) equipItems.push(a); }
+      }
       if (equipItems.length) {
         equipHTML = `<hr class="npc-r-sep"><div class="npc-sec-hdr">${T.equipment}</div><div class="npc-tag-wrap">`;
         for (const e of equipItems) equipHTML += `<span class="npc-tag">${_iconSpan(e.iconIndex || 0, 15)}${_escapeHtml(e.name)}</span>`;
@@ -2224,7 +2283,88 @@
       ${section(T.pastIllness, past.length ? `<div class="npc-badge-row">${past.map(pastBadge).join('')}</div>` : '', T.noPast)}`;
   };
 
+  // A party member's anatomy is not rolled: Health_Core keeps every limb and
+  // organ on the actor (actor._bodyParts, a severed part being one deleted from
+  // it), so the page reads the wounds the player's character actually carries
+  // instead of a stranger's seeded anatomy.
+  Scene_NPCEmpathize.prototype._buildActorBiologicsHTML = function (T, actor) {
+    const headerHTML = `<div class="npc-sec-hdr">${T.biologicsTitle}</div><hr class="npc-r-sep">`;
+    const HC   = window.HealthCore;
+    const keys = HC?.getActorArchetypeKeys ? HC.getActorArchetypeKeys(actor) : ['Humanoid']; // i18n-ignore: EnemyArchetypes.json id
+    const label = keys
+      .map(k => (HC?.getArchetypeDisplayName ? HC.getArchetypeDisplayName(k) : k))
+      .join(' / ');
+
+    const held = actor._bodyParts || {};
+    // Every part the archetype says they should have, so an amputation shows as
+    // a missing limb rather than simply vanishing off the list.
+    const expected = {};
+    for (const key of keys) {
+      const table = window.Health?.EnemyArchetypes?.[key]?.parts;
+      if (table) for (const [k, part] of Object.entries(table)) if (!expected[k]) expected[k] = part;
+    }
+    const rows = [];
+    for (const [key, part] of Object.entries(Object.keys(expected).length ? expected : held)) {
+      const live = held[key];
+      if (!live) { rows.push({ key, part, missing: true, cond: 0 }); continue; }
+      const max  = live.maxHp || 1;
+      rows.push({
+        key,
+        part: { name: live.name ?? part?.name, vital: live.vital ?? part?.vital },
+        missing: false,
+        cond: Math.max(0, Math.min(100, Math.round((live.currentHp / max) * 100))),
+      });
+    }
+    if (!rows.length) {
+      return `${headerHTML}<p style="opacity:0.6;font-style:italic;margin-top:12px;">${_escapeHtml(T.noBiologics)}</p>`;
+    }
+
+    let condSum = 0, condCount = 0;
+    for (const row of rows) { if (!row.missing) { condSum += row.cond; condCount++; } }
+    const overall = condCount ? Math.round(condSum / condCount) : 0;
+
+    const condColor = v => v >= 85 ? '#5a9a2a' : v >= 65 ? '#b8860b' : '#d9534f';
+    // The traveller's own bars, not a scale against a notional 2000 HP: nothing
+    // here is guessed, so nothing here is drawn against a guessed maximum.
+    const vitalsHTML = `
+      <div class="npc-bio-vitals">
+        ${_meterRow('HP', Math.round((actor.hp / Math.max(1, actor.mhp)) * 100), '#d9534f')}
+        ${_meterRow('MP', Math.round((actor.mp / Math.max(1, actor.mmp)) * 100), '#4070d0')}
+        ${_meterRow(T.biologicsCondition, overall, condColor(overall))}
+      </div>`;
+
+    return `
+      ${headerHTML}
+      <div class="npc-bio-archetype">${_escapeHtml(T.biologicsArchetype)}: <b>${_escapeHtml(label)}</b></div>
+      ${vitalsHTML}
+      <div class="npc-routine-sub-hdr">${_escapeHtml(T.biologicsParts)}</div>
+      <div class="npc-bio-grid">${_bioPartRowsHTML(rows, T, condColor)}</div>`;
+  };
+
+  function _bioPartRowsHTML(rows, T, condColor) {
+    return rows.map(({ key, part, missing, cond }) => {
+      const label    = _escapeHtml(_archetypePartName(part, key));
+      const vitalTag = part.vital ? `<span class="npc-bio-vital-tag">${_escapeHtml(T.biologicsVitalTag)}</span>` : '';
+      if (missing) {
+        return `
+          <div class="npc-bio-part npc-bio-missing">
+            <span class="npc-bio-part-name">${label}</span>
+            <span class="npc-bio-missing-lbl">${_escapeHtml(T.biologicsMissing)}</span>
+          </div>`;
+      }
+      return `
+        <div class="npc-bio-part">
+          <span class="npc-bio-part-name">${label}${vitalTag}</span>
+          <div class="npc-vital-track" style="flex:1;"><div class="npc-vital-fill" style="width:${cond}%;background:${condColor(cond)};"></div></div>
+          <span class="npc-vital-pct">${cond}%</span>
+        </div>`;
+    }).join('');
+  }
+
   Scene_NPCEmpathize.prototype._buildBiologicsTabHTML = function (T, profile, npcName) {
+    const actorObj = this._actorId != null ? $gameActors.actor(this._actorId) : null;
+    if (actorObj) return this._buildActorBiologicsHTML(T, actorObj);
+
     const headerHTML = `<div class="npc-sec-hdr">${T.biologicsTitle}</div><hr class="npc-r-sep">`;
     const archetype  = profile?.archetype || 'Humanoid'; // i18n-ignore: EnemyArchetypes.json id
     const parts      = window.Health?.EnemyArchetypes?.[archetype]?.parts;
@@ -2270,30 +2410,12 @@
         ${_meterRow(T.biologicsCondition, overall, condColor(overall))}
       </div>`;
 
-    const partRows = rows.map(({ key, part, missing, cond }) => {
-      const label    = _escapeHtml(_archetypePartName(part, key));
-      const vitalTag = part.vital ? `<span class="npc-bio-vital-tag">${_escapeHtml(T.biologicsVitalTag)}</span>` : '';
-      if (missing) {
-        return `
-          <div class="npc-bio-part npc-bio-missing">
-            <span class="npc-bio-part-name">${label}</span>
-            <span class="npc-bio-missing-lbl">${_escapeHtml(T.biologicsMissing)}</span>
-          </div>`;
-      }
-      return `
-        <div class="npc-bio-part">
-          <span class="npc-bio-part-name">${label}${vitalTag}</span>
-          <div class="npc-vital-track" style="flex:1;"><div class="npc-vital-fill" style="width:${cond}%;background:${condColor(cond)};"></div></div>
-          <span class="npc-vital-pct">${cond}%</span>
-        </div>`;
-    }).join('');
-
     return `
       ${headerHTML}
       <div class="npc-bio-archetype">${_escapeHtml(T.biologicsArchetype)}: <b>${_escapeHtml(archetype)}</b></div>
       ${vitalsHTML}
       <div class="npc-routine-sub-hdr">${_escapeHtml(T.biologicsParts)}</div>
-      <div class="npc-bio-grid">${partRows}</div>`;
+      <div class="npc-bio-grid">${_bioPartRowsHTML(rows, T, condColor)}</div>`;
   };
 
   // ============================================================================

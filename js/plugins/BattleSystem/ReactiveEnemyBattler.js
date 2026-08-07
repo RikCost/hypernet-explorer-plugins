@@ -1331,9 +1331,11 @@
     };
 
     // Effekseer derives an effect's screen position from targetSpritePosition. In
-    // 3D mode, pin an enemy-targeted effect to its struck limb's screen position
-    // at the moment of impact and HOLD it there (no per-frame mesh tracking, so
-    // the effect does not slide along with the model's stagger/recoil animation).
+    // 3D mode, centre the effect on the enemy model's body (not a specific limb)
+    // so skill animations are centred on the enemy even in multi-battle where
+    // enemies are spread across the field. The position is resolved ONCE and held
+    // (no per-frame mesh tracking), so the effect does not slide along with the
+    // model's stagger/recoil animation.
     const _Sprite_Animation_targetSpritePosition = Sprite_Animation.prototype.targetSpritePosition;
     Sprite_Animation.prototype.targetSpritePosition = function(sprite) {
         const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
@@ -1343,12 +1345,12 @@
             let pos = this._fxLockedPos;
             const seq = battler._fxHitSeq || 0;
             // Lock on the first resolvable frame; re-center exactly once if a new
-            // hit lands while this same animation is still playing (so it tracks
-            // the correct limb regardless of animation-vs-damage ordering). Any
-            // other frame reuses the locked position verbatim -> the effect stays
-            // put even as the 3D model moves.
+            // hit lands while this same animation is still playing. Pass null for
+            // partKey so getBattlerPartPosition always returns the model centre
+            // (not a random limb), keeping skill/Effekseer effects centred on the
+            // enemy even in multi-battle.
             if (!pos || seq !== this._fxLockedSeq) {
-                const resolved = spriteset.getBattlerPartPosition(battler, battler._fxLastHitPart);
+                const resolved = spriteset.getBattlerPartPosition(battler, null);
                 if (resolved) {
                     this._fxLockedPos = pos = resolved;
                     this._fxLockedSeq = seq;

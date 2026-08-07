@@ -342,6 +342,57 @@
     const classId = actor.currentClass()?.id;
     if (classId) profile.assignedClassId = classId;
     if (actor.currentExp) profile.exp = actor.currentExp();
+
+    // Body and gender are the character sheet's, so the romance page and the
+    // pronouns the panel writes with match the person the player made.
+    if (actor.gender) profile.gender = actor.gender();
+    const archetypeKeys = window.HealthCore?.getActorArchetypeKeys?.(actor);
+    if (archetypeKeys?.length) profile.archetype = archetypeKeys[0];
+
+    // The four traits the player chose at creation (TraitSelector writes them
+    // onto the actor), not the four the society dealt a stranger of that name:
+    // they are what the status screen prints and what the compatibility maths
+    // already reads off the actor. A recruited NPC whose actor carries none
+    // keeps the rolled set, which is the only record they have.
+    const traitIds = (actor._selectedTraits ?? [])
+      .map(t => t && t.id).filter(id => id != null);
+    if (traitIds.length) profile.traitIds = traitIds;
+
+    // The skills the character actually knows. levelSkillBrackets is the sim's
+    // ladder of what an NPC picks up as it levels; a traveller levels up in the
+    // party instead, so it would only list spells they cannot cast.
+    if (actor.skills) {
+      profile.skillIds = actor.skills().map(s => s && s.id).filter(id => id != null);
+      profile.levelSkillBrackets = {};
+    }
+
+    // Needs are the actor's own (TimeDateSystem), on the same 0-100 scale the
+    // profile keeps them, so the panel never reports a traveller starving while
+    // their character sheet says they are fed.
+    const NEED_FIELDS = {
+      hunger:  'hungerPercent',  sleep:   'sleepPercent', hygiene: 'hygienePercent',
+      social:  'socialPercent',  leisure: 'leisurePercent',
+    };
+    for (const [field, fn] of Object.entries(NEED_FIELDS)) {
+      if (typeof actor[fn] !== 'function') continue;
+      profile[field] = Math.max(0, Math.min(100, Math.round(actor[fn]())));
+    }
+    // Same reading tickNeeds takes of an NPC, against the actor's own figures,
+    // so the badge does not announce a hunger the character does not have.
+    if (profile.hunger < 25)     profile.currentNeed = 'food';
+    else if (profile.sleep < 20) profile.currentNeed = 'sleep';
+    else                         profile.currentNeed = null;
+
+    // A traveller carries the party purse, so their means are the party's rather
+    // than the wealth band the roll gave them.
+    if ($gameParty?.gold) {
+      const gold = $gameParty.gold();
+      profile.money = gold;
+      // Same bands the generator hands out starting money from (wealthGoldBase),
+      // split at the midpoint between one tier's base and the next.
+      const edges = [25000, 250000, 2500000, 25000000];
+      profile.wealthTierBase = edges.filter(edge => gold >= edge).length;
+    }
   }
 
   function _generateEquipment(eventName, classId, wealthTierBase) {

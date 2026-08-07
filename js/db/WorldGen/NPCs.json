@@ -11,7 +11,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -41,7 +41,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -71,7 +71,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -101,7 +101,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -131,7 +131,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -150,7 +150,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_1363": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -161,7 +161,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -182,7 +182,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_1702": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -193,7 +193,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -214,7 +214,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_1895": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -225,7 +225,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -246,7 +246,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_375": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -257,7 +257,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -278,7 +278,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_496": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -289,7 +289,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -310,7 +310,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_55": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -321,7 +321,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -342,7 +342,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_608": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -353,7 +353,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -374,7 +374,7 @@
     "markovDB": "npc"
   },
   "Other/$Char_730": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -385,7 +385,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -406,7 +406,7 @@
     "markovDB": "npc"
   },
   "Other/$Creatures": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -417,7 +417,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -438,7 +438,7 @@
     "markovDB": "zombie_alien"
   },
   "Objects/$Sink": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -449,7 +449,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -470,7 +470,7 @@
     "markovDB": "npc"
   },
   "Objects/$Treadmill": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -481,7 +481,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -502,7 +502,7 @@
     "markovDB": "npc"
   },
   "Actor1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "WarSniper",
       "UniversityStudent",
@@ -513,7 +513,7 @@
       "ElvenArcher",
       "ArmorDiver"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -536,7 +536,7 @@
     "markovDB": "npc"
   },
   "Actor1RMVX": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Mage",
       "Ranger",
@@ -547,7 +547,7 @@
       "WastelandKnight",
       "WarPilot"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -571,7 +571,7 @@
     "markovDB": "npc"
   },
   "Actor2": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ElvenBarbarian",
       "SunCultist",
@@ -582,7 +582,7 @@
       "Page",
       "ValiantKnight"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -605,7 +605,7 @@
     "markovDB": "npc2"
   },
   "Actor2RMVX": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ElvenGuard",
       "ElvenVeteran",
@@ -616,7 +616,7 @@
       "ArmsTerader",
       "Astrologist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -637,7 +637,7 @@
     "markovDB": "npc2"
   },
   "Actor3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Botanist",
       "CharmingPrince",
@@ -648,7 +648,7 @@
       "Infiltrator",
       "Gunman"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -672,7 +672,7 @@
     "markovDB": "npc3"
   },
   "Actor3RMVX": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "DJ",
       "WarWitch",
@@ -683,7 +683,7 @@
       "ElvenSwordsman",
       "Catboy"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -707,7 +707,7 @@
     "markovDB": "npc3"
   },
   "Animals01Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CatButton",
       "DogTail",
@@ -718,7 +718,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -739,7 +739,7 @@
     "markovDB": "companion"
   },
   "Animals01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CatButton",
       "DogTail",
@@ -750,7 +750,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -771,7 +771,7 @@
     "markovDB": "companion"
   },
   "GrayAnimals01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CatButton",
       "DogTail",
@@ -782,7 +782,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -803,7 +803,7 @@
     "markovDB": "companion"
   },
   "Archivist": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Archeologist",
       "Archivist",
@@ -814,7 +814,7 @@
       "Strangelove",
       "TarotWitch"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -837,7 +837,7 @@
     "markovDB": "archivist"
   },
   "Other/Characters_ghosts_48x48": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "VoidAstronaut",
       "VoidAbstracter",
@@ -848,7 +848,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -871,7 +871,7 @@
     "markovDB": "zombie_alien"
   },
   "Other/Chefs_48x48": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -882,7 +882,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -903,7 +903,7 @@
     "markovDB": "chef"
   },
   "Dungeon_HeroMan1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CarPilot",
       "CarPilot",
@@ -914,7 +914,7 @@
       "CarPilot",
       "CarPilot"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -936,7 +936,7 @@
     "markovDB": "dungeon_explorer"
   },
   "Other/Dungeon_HeroMan1Attack": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -947,7 +947,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -969,7 +969,7 @@
     "markovDB": "dungeon_explorer"
   },
   "Dungeon_Monsters1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "GoblinJester",
       "GoblinKnight",
@@ -979,7 +979,7 @@
       "Lich",
       "Lich"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1001,7 +1001,7 @@
     "markovDB": "semiwild_goblin"
   },
   "Dungeon_Monsters2": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcBrawler",
       "GoblinArtist",
@@ -1012,7 +1012,7 @@
       "7",
       "8"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1036,7 +1036,7 @@
     "markovDB": "zombie_alien"
   },
   "Dungeon_MushroomMan": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "VoidSpawn",
       "2",
@@ -1047,7 +1047,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1069,7 +1069,7 @@
     "markovDB": "zombie_alien"
   },
   "Dungeon_Slimes1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Slime",
       "Slime",
@@ -1080,7 +1080,7 @@
       "Slime",
       "Slime"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -1103,7 +1103,7 @@
     "markovDB": "zombie_alien"
   },
   "emPath": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Em",
       "Em",
@@ -1114,7 +1114,7 @@
       "AdventurerStreamer",
       "Astrologist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -1135,7 +1135,7 @@
     "markovDB": "em"
   },
   "Evil01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcWarrior",
       "Lich",
@@ -1146,7 +1146,7 @@
       "BotExplorer",
       "Ninja"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1168,7 +1168,7 @@
     "markovDB": "thug"
   },
   "Evil01Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "WanderingKnight",
       "Lich",
@@ -1178,7 +1178,7 @@
       "BotSpacer",
       "BotScientist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1200,7 +1200,7 @@
     "markovDB": "thug"
   },
   "Fantasy_Characters1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CarPilot",
       "Bubba",
@@ -1211,7 +1211,7 @@
       "Innkeeper",
       "HighCommand"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1233,7 +1233,7 @@
     "markovDB": "medieval"
   },
   "Fantasy_Characters2": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Librarian",
       "TravelingSalesman",
@@ -1244,7 +1244,7 @@
       "7",
       "RoyalPage"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1265,7 +1265,7 @@
     "markovDB": "medieval"
   },
   "Fantasy_Characters3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ElvenBotanic",
       "SchoolTeacher",
@@ -1276,7 +1276,7 @@
       "ElvenGuard",
       "ElvenEnchantress"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1299,7 +1299,7 @@
     "markovDB": "elven_ambassador"
   },
   "Fantasy_Characters4": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Coroner",
       "NobleScout",
@@ -1310,7 +1310,7 @@
       "StreetShopkeeper",
       "RoyalChef"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1334,7 +1334,7 @@
     "markovDB": "medieval"
   },
   "Fantasy_Character_Base": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Wrestler",
       "7",
@@ -1345,7 +1345,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1366,7 +1366,7 @@
     "markovDB": "medieval"
   },
   "Other/Fantasy_Rabbits": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1377,7 +1377,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1398,7 +1398,7 @@
     "markovDB": "companion"
   },
   "FarmAnimals01RM": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1409,7 +1409,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1430,7 +1430,7 @@
     "markovDB": "companion"
   },
   "FarmAnimals02RM": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Horse",
       "Horse",
@@ -1441,7 +1441,7 @@
       "Horse",
       "Horse"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -1462,7 +1462,7 @@
     "markovDB": "companion"
   },
   "FarmCharacters01RM": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ArcticWorker",
       "GeniusGeneral",
@@ -1473,7 +1473,7 @@
       "Fisherman",
       "Hairdresser"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1497,7 +1497,7 @@
     "markovDB": "npc4"
   },
   "GrayEvil01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcWarrior",
       "Lich",
@@ -1508,7 +1508,7 @@
       "BotExplorer",
       "Ninja"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1531,7 +1531,7 @@
     "markovDB": "thug"
   },
   "GrayHeroes01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "SewerExplorer",
       "PunkCultist",
@@ -1542,7 +1542,7 @@
       "Mage",
       "Astrologist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -1564,7 +1564,7 @@
     "markovDB": "dungeon_explorer"
   },
   "GrayHeroes02": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Priest",
       "Nun",
@@ -1575,7 +1575,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1599,7 +1599,7 @@
     "markovDB": "medieval"
   },
   "GrayNPCs01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "PeasantWarrior",
       "Lawyer",
@@ -1610,7 +1610,7 @@
       "Scientist",
       "Reporter"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -1633,7 +1633,7 @@
     "markovDB": "npc"
   },
   "GrayNPCs02": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "King",
       "Queen",
@@ -1644,7 +1644,7 @@
       "Maid",
       "LeatherDaddy"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1665,7 +1665,7 @@
     "markovDB": "decadent_noble"
   },
   "GrayNPCs03": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "CityScavenger",
       "GoblinJester",
@@ -1676,7 +1676,7 @@
       "PirateAdventurer",
       "Journalist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1700,7 +1700,7 @@
     "markovDB": "npc3"
   },
   "Heroes01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcStudent",
       "OrcBartender",
@@ -1711,7 +1711,7 @@
       "ORcBibliotecary",
       "OrcSamurai"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -1734,7 +1734,7 @@
     "markovDB": "npc"
   },
   "Heroes01Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Scarf",
       "Jeweler",
@@ -1745,7 +1745,7 @@
       "Archeologist",
       "Astrologist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -1767,7 +1767,7 @@
     "markovDB": "npc1"
   },
   "Heroes02": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcJester",
       "OrcNun",
@@ -1777,7 +1777,7 @@
       "OrcNomad",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1800,7 +1800,7 @@
     "markovDB": "npc2"
   },
   "Heroes02Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Priest",
       "Nun",
@@ -1811,7 +1811,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1835,7 +1835,7 @@
     "markovDB": "npc3"
   },
   "Other/mer_8_3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1846,7 +1846,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1867,7 +1867,7 @@
     "markovDB": "npc"
   },
   "Other/mer_8_chars3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1878,7 +1878,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1899,7 +1899,7 @@
     "markovDB": "npc"
   },
   "Other/mer_8_shadow_3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1910,7 +1910,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1931,7 +1931,7 @@
     "markovDB": "npc"
   },
   "Other/mer_human_3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1942,7 +1942,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1963,7 +1963,7 @@
     "markovDB": "npc"
   },
   "Other/Monsterpack": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -1974,7 +1974,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -1995,7 +1995,7 @@
     "markovDB": "zombie_alien"
   },
   "Other/Monsterpack2": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -2006,7 +2006,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2027,7 +2027,7 @@
     "markovDB": "zombie_alien"
   },
   "Other/Monsters02": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -2038,7 +2038,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2059,7 +2059,7 @@
     "markovDB": "zombie_alien"
   },
   "Other/MV_Graveyard_Zombies_Skeleton": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -2070,7 +2070,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2091,7 +2091,7 @@
     "markovDB": "zombie_alien"
   },
   "NPCs01": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "GoblinPeaesant",
       "GoblinPeasant",
@@ -2102,7 +2102,7 @@
       "GoblinMerchant",
       "GoblinBarman"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2125,7 +2125,7 @@
     "markovDB": "semiwild_goblin"
   },
   "NPCs01Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Fisherman",
       "BioCadet",
@@ -2136,7 +2136,7 @@
       "Employee",
       "FastfoodWorker"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2157,7 +2157,7 @@
     "markovDB": "npc1"
   },
   "NPCs02": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "GoblinShogun",
       "GoblinWitch",
@@ -2168,7 +2168,7 @@
       "GoblinMatriarch",
       "OrcBrawler"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2193,7 +2193,7 @@
     "markovDB": "semiwild_goblin"
   },
   "NPCs02Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "King",
       "Queen",
@@ -2204,7 +2204,7 @@
       "Maid",
       "LeatherDaddy"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2225,7 +2225,7 @@
     "markovDB": "decadent_noble"
   },
   "NPCs03": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ElvenBotanic",
       "ElvenStylist",
@@ -2236,7 +2236,7 @@
       "OrcSamurai",
       "OrcBartender"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2262,7 +2262,7 @@
     "markovDB": "npc3"
   },
   "NPCs03Color": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Catboy",
       "GnomeExplorer",
@@ -2273,7 +2273,7 @@
       "Tracker",
       "Mafia"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -2294,7 +2294,7 @@
     "markovDB": "npc4"
   },
   "Occult_Characters": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Trucker",
       "ExoticMerchant",
@@ -2305,7 +2305,7 @@
       "Archivist",
       "Astrologist"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2329,7 +2329,7 @@
     "markovDB": "medieval"
   },
   "Occult_Enemies": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcMonk",
       "BioWarrior",
@@ -2340,7 +2340,7 @@
       "Enchantress",
       "Enchantress"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -2366,7 +2366,7 @@
     "markovDB": "zombie_alien"
   },
   "Occult_Golem": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "BotMage",
       "BotMage",
@@ -2377,7 +2377,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2399,7 +2399,7 @@
     "markovDB": "futuristic"
   },
   "Occult_Mech": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "BotMage",
       "BotMage",
@@ -2410,7 +2410,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -2432,7 +2432,7 @@
     "markovDB": "futuristic"
   },
   "People1": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcStudent",
       "OrcBartender",
@@ -2443,7 +2443,7 @@
       "ORcBibliotecary",
       "OrcSamurai"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -2466,7 +2466,7 @@
     "markovDB": "npc"
   },
   "People2": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcStudent",
       "OrcBartender",
@@ -2477,7 +2477,7 @@
       "ORcBibliotecary",
       "OrcSamurai"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -2500,7 +2500,7 @@
     "markovDB": "npc1"
   },
   "People3": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcStudent",
       "OrcBartender",
@@ -2511,7 +2511,7 @@
       "ORcBibliotecary",
       "OrcSamurai"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -2534,7 +2534,7 @@
     "markovDB": "npc2"
   },
   "Police": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RoyalGuard",
       "ElvenGuard",
@@ -2545,7 +2545,7 @@
       "DesertGuard",
       "OttomanGuard"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2566,7 +2566,7 @@
     "markovDB": "police"
   },
   "School01RM": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Priest",
       "Pro",
@@ -2577,7 +2577,7 @@
       "JungleExplorer",
       "Announcer"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2599,7 +2599,7 @@
     "markovDB": "npc3"
   },
   "School01RM-GB": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "OrcExplorer",
       "OrcMercenary",
@@ -2610,7 +2610,7 @@
       "OrcSeer",
       "OrcSecretary"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -2633,7 +2633,7 @@
     "markovDB": "npc4"
   },
   "School01RM-Gray": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Priest",
       "Pro",
@@ -2644,7 +2644,7 @@
       "JungleExplorer",
       "Announcer"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -3252,7 +3252,7 @@
     "markovDB": "futuristic"
   },
   "Other/!$Em": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Em"
     ],
@@ -4071,7 +4071,7 @@
     "markovDB": "em"
   },
   "Other/SpriteBase": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "7",
@@ -4082,7 +4082,7 @@
       "7",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4103,7 +4103,7 @@
     "markovDB": "npc"
   },
   "Other/Static_Characters_npcs": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "7",
       "2",
@@ -4113,7 +4113,7 @@
       "6",
       "7"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4137,7 +4137,7 @@
     "busts": [
       "Actor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4155,7 +4155,7 @@
     "busts": [
       "AdventurerStreamer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4173,7 +4173,7 @@
     "busts": [
       "AlienMindmaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -4191,7 +4191,7 @@
     "busts": [
       "AlienMystic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -4209,7 +4209,7 @@
     "busts": [
       "AlienXori"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -4227,7 +4227,7 @@
     "busts": [
       "AndroidBrainrot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4245,7 +4245,7 @@
     "busts": [
       "AndroidCEO"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4264,7 +4264,7 @@
     "busts": [
       "AndroidDancer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4283,7 +4283,7 @@
     "busts": [
       "AndroidEmotion"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4301,7 +4301,7 @@
     "busts": [
       "AndroidFailure"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4319,7 +4319,7 @@
     "busts": [
       "AndroidFish"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4337,7 +4337,7 @@
     "busts": [
       "AndroidHero"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4355,7 +4355,7 @@
     "busts": [
       "AndroidInquisitor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4370,11 +4370,11 @@
     "markovDB": "priest2"
   },
   "Skab/!$AndroidJournalist": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AndroidJournalist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4394,7 +4394,7 @@
     "busts": [
       "AndroidOffice"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4412,7 +4412,7 @@
     "busts": [
       "AndroidPsychologist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4431,7 +4431,7 @@
     "busts": [
       "AndroidPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4449,7 +4449,7 @@
     "busts": [
       "AndroidSerial"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4467,7 +4467,7 @@
     "busts": [
       "AndroidTriangle"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4485,7 +4485,7 @@
     "busts": [
       "AndroidVoid"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4503,7 +4503,7 @@
     "busts": [
       "AndroidWardroid"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4521,7 +4521,7 @@
     "busts": [
       "AndroidWorker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -4539,7 +4539,7 @@
     "busts": [
       "Announcer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4557,7 +4557,7 @@
     "busts": [
       "Archeologist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4575,7 +4575,7 @@
     "busts": [
       "Archer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4593,7 +4593,7 @@
     "busts": [
       "ArchivistArmorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4611,7 +4611,7 @@
     "busts": [
       "ArchivistDiver"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4629,7 +4629,7 @@
     "busts": [
       "ArchivistDJ"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4647,7 +4647,7 @@
     "busts": [
       "ArchivistLibrarian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4665,7 +4665,7 @@
     "busts": [
       "ArchivistNinja"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4683,7 +4683,7 @@
     "busts": [
       "ArchivistPilot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4701,7 +4701,7 @@
     "busts": [
       "ArchivistPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4719,7 +4719,7 @@
     "busts": [
       "ArchivistRecruit"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4737,7 +4737,7 @@
     "busts": [
       "ArchivistScavenger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4755,7 +4755,7 @@
     "busts": [
       "ArchivistScout"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4773,7 +4773,7 @@
     "busts": [
       "ArchivistStrategist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4791,7 +4791,7 @@
     "busts": [
       "ArchPriest"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4809,7 +4809,7 @@
     "busts": [
       "ArmorDiver"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4828,7 +4828,7 @@
     "busts": [
       "ArmorGuardian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4846,7 +4846,7 @@
     "busts": [
       "ArmsTerader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4864,7 +4864,7 @@
     "busts": [
       "Astrologist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4882,7 +4882,7 @@
     "busts": [
       "Astronaut1"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4900,7 +4900,7 @@
     "busts": [
       "Astronomer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4918,7 +4918,7 @@
     "busts": [
       "AugmentedSniper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -4937,7 +4937,7 @@
     "busts": [
       "Backpacker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4955,7 +4955,7 @@
     "busts": [
       "BackwoodsPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4973,7 +4973,7 @@
     "busts": [
       "BanditLeader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -4992,7 +4992,7 @@
     "busts": [
       "Banker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5010,7 +5010,7 @@
     "busts": [
       "Biker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5028,7 +5028,7 @@
     "busts": [
       "BikerPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5046,7 +5046,7 @@
     "busts": [
       "BikerSkull"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5064,7 +5064,7 @@
     "busts": [
       "Billionaire"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5082,7 +5082,7 @@
     "busts": [
       "BioCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5101,7 +5101,7 @@
     "busts": [
       "BiologistOld"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5119,7 +5119,7 @@
     "busts": [
       "BioPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5137,7 +5137,7 @@
     "busts": [
       "BioslaveCoded"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5156,7 +5156,7 @@
     "busts": [
       "BioSmith"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5174,7 +5174,7 @@
     "busts": [
       "Biosuit"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5193,7 +5193,7 @@
     "busts": [
       "BioWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5211,7 +5211,7 @@
     "busts": [
       "Blacksmith"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5229,7 +5229,7 @@
     "busts": [
       "BorderControl"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5247,7 +5247,7 @@
     "busts": [
       "BotActor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5266,7 +5266,7 @@
     "busts": [
       "Botanist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5284,7 +5284,7 @@
     "busts": [
       "BotAssistant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5302,7 +5302,7 @@
     "busts": [
       "BotBritannia"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5320,7 +5320,7 @@
     "busts": [
       "BotCEO"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5339,7 +5339,7 @@
     "busts": [
       "BotDJ"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5358,7 +5358,7 @@
     "busts": [
       "BotEducator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5376,7 +5376,7 @@
     "busts": [
       "BotEmbarassed"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5394,7 +5394,7 @@
     "busts": [
       "BotExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5412,7 +5412,7 @@
     "busts": [
       "BotIlluminated"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5430,7 +5430,7 @@
     "busts": [
       "BotJournalist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5449,7 +5449,7 @@
     "busts": [
       "BotLCD"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5467,7 +5467,7 @@
     "busts": [
       "BotMage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5486,7 +5486,7 @@
     "busts": [
       "BotManifestation"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5504,7 +5504,7 @@
     "busts": [
       "BotParty"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5522,7 +5522,7 @@
     "busts": [
       "BotProjection"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5540,7 +5540,7 @@
     "busts": [
       "BotScientist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5559,7 +5559,7 @@
     "busts": [
       "BotSpacer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5577,7 +5577,7 @@
     "busts": [
       "BotStellar"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -5595,7 +5595,7 @@
     "busts": [
       "Bouncer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5614,7 +5614,7 @@
     "busts": [
       "BrainSurgeon"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5632,7 +5632,7 @@
     "busts": [
       "Bubba"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5650,7 +5650,7 @@
     "busts": [
       "Businessman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5668,7 +5668,7 @@
     "busts": [
       "Butcher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5686,7 +5686,7 @@
     "busts": [
       "Butler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5704,7 +5704,7 @@
     "busts": [
       "Cardinal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5722,7 +5722,7 @@
     "busts": [
       "CarPilot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5740,7 +5740,7 @@
     "busts": [
       "CastleGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5759,7 +5759,7 @@
     "busts": [
       "CatButton"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -5777,7 +5777,7 @@
     "busts": [
       "CatCommando"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -5795,7 +5795,7 @@
     "busts": [
       "CatGuy"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -5813,7 +5813,7 @@
     "busts": [
       "Catman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -5831,7 +5831,7 @@
     "busts": [
       "CEO"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5849,7 +5849,7 @@
     "busts": [
       "CharmingPrince"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5867,7 +5867,7 @@
     "busts": [
       "Chief"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5885,7 +5885,7 @@
     "busts": [
       "CityBackpacker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -5903,7 +5903,7 @@
     "busts": [
       "CityCop"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5921,7 +5921,7 @@
     "busts": [
       "CityDJ"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5939,7 +5939,7 @@
     "busts": [
       "CityInventor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5957,7 +5957,7 @@
     "busts": [
       "CityMage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5975,7 +5975,7 @@
     "busts": [
       "CityScavenger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -5993,7 +5993,7 @@
     "busts": [
       "Cleaner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6011,7 +6011,7 @@
     "busts": [
       "ClonedGuy"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6030,7 +6030,7 @@
     "busts": [
       "Colonel"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6048,7 +6048,7 @@
     "busts": [
       "CombatMedic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6066,7 +6066,7 @@
     "busts": [
       "Commodore"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6084,7 +6084,7 @@
     "busts": [
       "ConspiracyTheorist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6102,7 +6102,7 @@
     "busts": [
       "Coroner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6120,7 +6120,7 @@
     "busts": [
       "CreepyJester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6138,7 +6138,7 @@
     "busts": [
       "Crew"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6156,7 +6156,7 @@
     "busts": [
       "Criminal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6175,7 +6175,7 @@
     "busts": [
       "Cultist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6193,7 +6193,7 @@
     "busts": [
       "CyberNinja"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6211,7 +6211,7 @@
     "busts": [
       "CyberPaesant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6229,7 +6229,7 @@
     "busts": [
       "CyberSamurai"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6248,7 +6248,7 @@
     "busts": [
       "CyborgActivist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6266,7 +6266,7 @@
     "busts": [
       "DataAnalyst"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6284,7 +6284,7 @@
     "busts": [
       "DazedSpacer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6303,7 +6303,7 @@
     "busts": [
       "Dealer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6322,7 +6322,7 @@
     "busts": [
       "DecrepitGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6341,7 +6341,7 @@
     "busts": [
       "DeepOne"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -6360,7 +6360,7 @@
     "busts": [
       "Demigod"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6378,7 +6378,7 @@
     "busts": [
       "DesertGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6397,7 +6397,7 @@
     "busts": [
       "DesertNomad"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6415,7 +6415,7 @@
     "busts": [
       "DesertTrader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6433,7 +6433,7 @@
     "busts": [
       "Detective"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6451,7 +6451,7 @@
     "busts": [
       "DimensionalExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6470,7 +6470,7 @@
     "busts": [
       "DisembodiedHead"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -6489,7 +6489,7 @@
     "busts": [
       "DJ"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6507,7 +6507,7 @@
     "busts": [
       "DogTail"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -6525,7 +6525,7 @@
     "busts": [
       "Doppelganger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -6544,7 +6544,7 @@
     "busts": [
       "DrillSergeant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6562,7 +6562,7 @@
     "busts": [
       "DrillSergeant7"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6580,7 +6580,7 @@
     "busts": [
       "DrivingInstructor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6598,7 +6598,7 @@
     "busts": [
       "DrugDealer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6617,7 +6617,7 @@
     "busts": [
       "DwarvenSmith"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6635,7 +6635,7 @@
     "busts": [
       "DwarvenThinkerer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6653,7 +6653,7 @@
     "busts": [
       "EggSoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6672,7 +6672,7 @@
     "busts": [
       "ElvenArcher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6690,7 +6690,7 @@
     "busts": [
       "ElvenArtist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6708,7 +6708,7 @@
     "busts": [
       "ElvenBarbarian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6726,7 +6726,7 @@
     "busts": [
       "ElvenBrawler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6745,7 +6745,7 @@
     "busts": [
       "ElvenCleric"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6763,7 +6763,7 @@
     "busts": [
       "ElvenCommando"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6782,7 +6782,7 @@
     "busts": [
       "ElvenCrossbowman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6801,7 +6801,7 @@
     "busts": [
       "ElvenDeathlord"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6820,7 +6820,7 @@
     "busts": [
       "ElvenDiplomat1"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -6839,7 +6839,7 @@
     "busts": [
       "ElvenDiplomat2"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6858,7 +6858,7 @@
     "busts": [
       "ElvenEnchantress"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -6876,7 +6876,7 @@
     "busts": [
       "ElvenGhoul"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -6894,7 +6894,7 @@
     "busts": [
       "ElvenGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -6913,7 +6913,7 @@
     "busts": [
       "ElvenGuardian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -6931,7 +6931,7 @@
     "busts": [
       "ElvenHolywarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -6950,7 +6950,7 @@
     "busts": [
       "ElvenJester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -6968,7 +6968,7 @@
     "busts": [
       "ElvenJeweler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -6987,7 +6987,7 @@
     "busts": [
       "ElvenKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7005,7 +7005,7 @@
     "busts": [
       "ElvenMadman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7023,7 +7023,7 @@
     "busts": [
       "ElvenModel"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7042,7 +7042,7 @@
     "busts": [
       "ElvenMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7060,7 +7060,7 @@
     "busts": [
       "ElvenNinja"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7078,7 +7078,7 @@
     "busts": [
       "ElvenNoble"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7096,7 +7096,7 @@
     "busts": [
       "ElvenNomad"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7115,7 +7115,7 @@
     "busts": [
       "ElvenOperasinger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7133,7 +7133,7 @@
     "busts": [
       "ElvenPikeman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7152,7 +7152,7 @@
     "busts": [
       "ElvenPoet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7170,7 +7170,7 @@
     "busts": [
       "ElvenRecruit"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7189,7 +7189,7 @@
     "busts": [
       "ElvenRogue"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7207,7 +7207,7 @@
     "busts": [
       "ElvenScout"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7225,7 +7225,7 @@
     "busts": [
       "ElvenSellsword"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7244,7 +7244,7 @@
     "busts": [
       "ElvenShopkeeper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7262,7 +7262,7 @@
     "busts": [
       "ElvenSinger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7280,7 +7280,7 @@
     "busts": [
       "ElvenSpellsword"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7300,7 +7300,7 @@
     "busts": [
       "ElvenStylist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7319,7 +7319,7 @@
     "busts": [
       "ElvenSwordmaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7338,7 +7338,7 @@
     "busts": [
       "ElvenSwordsman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7357,7 +7357,7 @@
     "busts": [
       "ElvenTrader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7375,7 +7375,7 @@
     "busts": [
       "ElvenTraveler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7394,7 +7394,7 @@
     "busts": [
       "ElvenVampire"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7412,7 +7412,7 @@
     "busts": [
       "ElvenVeteran"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 0,
@@ -7431,7 +7431,7 @@
     "busts": [
       "ElvenWarlock"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elven",
     "Gender": 1,
@@ -7449,7 +7449,7 @@
     "busts": [
       "Employee"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7467,7 +7467,7 @@
     "busts": [
       "Engineer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7485,7 +7485,7 @@
     "busts": [
       "ElvenSpellblade"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7501,7 +7501,7 @@
     "busts": [
       "ExoticMerchant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -7519,7 +7519,7 @@
     "busts": [
       "ExoticTrader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -7537,7 +7537,7 @@
     "busts": [
       "FairyCEO"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7551,11 +7551,11 @@
     "markovDB": "fae_queen"
   },
   "Skab/!$Farmacist": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Farmacist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7573,7 +7573,7 @@
     "busts": [
       "FastfoodWorker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7591,7 +7591,7 @@
     "busts": [
       "FieldAgent"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7609,7 +7609,7 @@
     "busts": [
       "FootSoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7627,7 +7627,7 @@
     "busts": [
       "ForestRanger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7645,7 +7645,7 @@
     "busts": [
       "FortuneSoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7663,7 +7663,7 @@
     "busts": [
       "FortuneTeller"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7681,7 +7681,7 @@
     "busts": [
       "Gambler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7699,7 +7699,7 @@
     "busts": [
       "General"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7717,7 +7717,7 @@
     "busts": [
       "Genetist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7735,7 +7735,7 @@
     "busts": [
       "GeniusGeneral"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7753,7 +7753,7 @@
     "busts": [
       "Gladiator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7771,7 +7771,7 @@
     "busts": [
       "GoblinArchmage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7790,7 +7790,7 @@
     "busts": [
       "GoblinArtist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7808,7 +7808,7 @@
     "busts": [
       "GoblinBard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7826,7 +7826,7 @@
     "busts": [
       "GoblinBarman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7844,7 +7844,7 @@
     "busts": [
       "GoblinCleric"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7862,7 +7862,7 @@
     "busts": [
       "GoblinCourier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7880,7 +7880,7 @@
     "busts": [
       "GoblinDiplomat"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7898,7 +7898,7 @@
     "busts": [
       "GoblinEccentric"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7916,7 +7916,7 @@
     "busts": [
       "GoblinGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7935,7 +7935,7 @@
     "busts": [
       "GoblinHacker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7953,7 +7953,7 @@
     "busts": [
       "GoblinJester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -7971,7 +7971,7 @@
     "busts": [
       "GoblinKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -7989,7 +7989,7 @@
     "busts": [
       "GoblinMatriarch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8008,7 +8008,7 @@
     "busts": [
       "GoblinMerchant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8026,7 +8026,7 @@
     "busts": [
       "GoblinNoblewoman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8044,7 +8044,7 @@
     "busts": [
       "GoblinNun"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8062,7 +8062,7 @@
     "busts": [
       "GoblinPeaesant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8081,7 +8081,7 @@
     "busts": [
       "GoblinPeasant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8100,7 +8100,7 @@
     "busts": [
       "GoblinPirate"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8118,7 +8118,7 @@
     "busts": [
       "GoblinRaider"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8137,7 +8137,7 @@
     "busts": [
       "GoldTrader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8155,7 +8155,7 @@
     "busts": [
       "Guard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8174,7 +8174,7 @@
     "busts": [
       "Guardian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8192,7 +8192,7 @@
     "busts": [
       "Guerrilla"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8210,7 +8210,7 @@
     "busts": [
       "GuerrillaWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8228,7 +8228,7 @@
     "busts": [
       "Gunman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8246,7 +8246,7 @@
     "busts": [
       "GymInstructor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8264,7 +8264,7 @@
     "busts": [
       "Hairdresser"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8282,7 +8282,7 @@
     "busts": [
       "Hillbilly"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8300,7 +8300,7 @@
     "busts": [
       "Hippie"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8318,7 +8318,7 @@
     "busts": [
       "HippieMusician"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8336,7 +8336,7 @@
     "busts": [
       "Hitman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8354,7 +8354,7 @@
     "busts": [
       "HornedKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8372,7 +8372,7 @@
     "busts": [
       "Horse"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -8390,7 +8390,7 @@
     "busts": [
       "Hunter"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8408,7 +8408,7 @@
     "busts": [
       "HypernetExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8427,7 +8427,7 @@
     "busts": [
       "HypernetFanatic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8445,7 +8445,7 @@
     "busts": [
       "Infiltrator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8463,7 +8463,7 @@
     "busts": [
       "Innkeeper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8481,7 +8481,7 @@
     "busts": [
       "Inquisitor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8499,7 +8499,7 @@
     "busts": [
       "InsectoidBee"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -8517,7 +8517,7 @@
     "busts": [
       "InsectoidScavenger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -8535,7 +8535,7 @@
     "busts": [
       "InsectoidSpacer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -8554,7 +8554,7 @@
     "busts": [
       "Instructor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8572,7 +8572,7 @@
     "busts": [
       "Inventor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8590,7 +8590,7 @@
     "busts": [
       "Jester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8608,7 +8608,7 @@
     "busts": [
       "JesterDiplomat"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8626,7 +8626,7 @@
     "busts": [
       "Jeweler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8644,7 +8644,7 @@
     "busts": [
       "Jogger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8662,7 +8662,7 @@
     "busts": [
       "Journalist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8680,7 +8680,7 @@
     "busts": [
       "Judge"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8698,7 +8698,7 @@
     "busts": [
       "JungleExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8717,7 +8717,7 @@
     "busts": [
       "King"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8735,7 +8735,7 @@
     "busts": [
       "LabRat"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8753,7 +8753,7 @@
     "busts": [
       "Lawyer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8771,7 +8771,7 @@
     "busts": [
       "Librarian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8789,7 +8789,7 @@
     "busts": [
       "Lobotomy"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8807,7 +8807,7 @@
     "busts": [
       "LobotomyWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8825,7 +8825,7 @@
     "busts": [
       "Mage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8843,7 +8843,7 @@
     "busts": [
       "MageSage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8862,7 +8862,7 @@
     "busts": [
       "Maid"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8880,7 +8880,7 @@
     "busts": [
       "MailGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8899,7 +8899,7 @@
     "busts": [
       "Manager"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8917,7 +8917,7 @@
     "busts": [
       "Mannequin"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -8935,7 +8935,7 @@
     "busts": [
       "Marine"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8953,7 +8953,7 @@
     "busts": [
       "Mastermind"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -8971,7 +8971,7 @@
     "busts": [
       "Matchmaker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -8989,7 +8989,7 @@
     "busts": [
       "Medic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9007,7 +9007,7 @@
     "busts": [
       "MercenarySoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9025,7 +9025,7 @@
     "busts": [
       "MetroPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9043,7 +9043,7 @@
     "busts": [
       "MilitaryAdvisor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9061,7 +9061,7 @@
     "busts": [
       "MonkeyDoctor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -9080,7 +9080,7 @@
     "busts": [
       "MonkMystic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9098,7 +9098,7 @@
     "busts": [
       "MoonCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9116,7 +9116,7 @@
     "busts": [
       "MoonCultist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9134,7 +9134,7 @@
     "busts": [
       "MotherNun"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9152,7 +9152,7 @@
     "busts": [
       "Mummy"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9170,7 +9170,7 @@
     "busts": [
       "Musician"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9188,7 +9188,7 @@
     "busts": [
       "Mystic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9206,7 +9206,7 @@
     "busts": [
       "Netrunner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9224,7 +9224,7 @@
     "busts": [
       "Ninja"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9242,7 +9242,7 @@
     "busts": [
       "NobleGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9260,7 +9260,7 @@
     "busts": [
       "NobleHeir"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9278,7 +9278,7 @@
     "busts": [
       "NobleKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9296,7 +9296,7 @@
     "busts": [
       "NobleScout"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9314,7 +9314,7 @@
     "busts": [
       "NuclearWorker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9332,7 +9332,7 @@
     "busts": [
       "OldChef"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9350,7 +9350,7 @@
     "busts": [
       "OldCommander"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9368,7 +9368,7 @@
     "busts": [
       "OldGladiator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9386,7 +9386,7 @@
     "busts": [
       "OldPatient"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9422,7 +9422,7 @@
     "busts": [
       "Operator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9440,7 +9440,7 @@
     "busts": [
       "OPSec"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9458,7 +9458,7 @@
     "busts": [
       "Optic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9476,7 +9476,7 @@
     "busts": [
       "Oracle"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9494,7 +9494,7 @@
     "busts": [
       "OrcAdventurer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9512,7 +9512,7 @@
     "busts": [
       "OrcBartender"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9530,7 +9530,7 @@
     "busts": [
       "ORcBibliotecary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9548,7 +9548,7 @@
     "busts": [
       "OrcBrawler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9567,7 +9567,7 @@
     "busts": [
       "OrcClown"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9585,7 +9585,7 @@
     "busts": [
       "OrcCook"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9603,7 +9603,7 @@
     "busts": [
       "OrcCriminal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9622,7 +9622,7 @@
     "busts": [
       "OrcExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9640,7 +9640,7 @@
     "busts": [
       "OrcJester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9658,7 +9658,7 @@
     "busts": [
       "OrcMercenary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9676,7 +9676,7 @@
     "busts": [
       "OrcMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9694,7 +9694,7 @@
     "busts": [
       "OrcNomad"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9712,7 +9712,7 @@
     "busts": [
       "OrcNun"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9730,7 +9730,7 @@
     "busts": [
       "OrcPeasant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9748,7 +9748,7 @@
     "busts": [
       "OrcPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9766,7 +9766,7 @@
     "busts": [
       "OrcRogue"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9784,7 +9784,7 @@
     "busts": [
       "OrcSeer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9802,7 +9802,7 @@
     "busts": [
       "OrcStudent"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9820,7 +9820,7 @@
     "busts": [
       "OrcSwordsman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9838,7 +9838,7 @@
     "busts": [
       "OrcVampire"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9856,7 +9856,7 @@
     "busts": [
       "OrcVestal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9874,7 +9874,7 @@
     "busts": [
       "OrcVeteran"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9892,7 +9892,7 @@
     "busts": [
       "OrcWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9910,7 +9910,7 @@
     "busts": [
       "OrcWorker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9928,7 +9928,7 @@
     "busts": [
       "OttomanGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9947,7 +9947,7 @@
     "busts": [
       "Page"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -9965,7 +9965,7 @@
     "busts": [
       "Paleontologist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -9983,7 +9983,7 @@
     "busts": [
       "Paramedic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10001,7 +10001,7 @@
     "busts": [
       "Paramedic2"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10019,7 +10019,7 @@
     "busts": [
       "Paratrooper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10037,7 +10037,7 @@
     "busts": [
       "Partygoer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10055,7 +10055,7 @@
     "busts": [
       "Patient"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10073,7 +10073,7 @@
     "busts": [
       "PeasantWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10091,7 +10091,7 @@
     "busts": [
       "Pensioner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10109,7 +10109,7 @@
     "busts": [
       "Pilot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10127,7 +10127,7 @@
     "busts": [
       "Pinman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10145,7 +10145,7 @@
     "busts": [
       "Pirate"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10163,7 +10163,7 @@
     "busts": [
       "PirateHacker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10181,7 +10181,7 @@
     "busts": [
       "PirateSage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10199,7 +10199,7 @@
     "busts": [
       "PizzaRider"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10217,7 +10217,7 @@
     "busts": [
       "Priest"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10235,7 +10235,7 @@
     "busts": [
       "Priestess"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10253,7 +10253,7 @@
     "busts": [
       "Prince"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10271,7 +10271,7 @@
     "busts": [
       "Princess"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10289,7 +10289,7 @@
     "busts": [
       "Pro"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10307,7 +10307,7 @@
     "busts": [
       "PSIWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10325,7 +10325,7 @@
     "busts": [
       "PunkCultist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10343,7 +10343,7 @@
     "busts": [
       "PunkGirl"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10361,7 +10361,7 @@
     "busts": [
       "Queen"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10379,7 +10379,7 @@
     "busts": [
       "Ranger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10397,7 +10397,7 @@
     "busts": [
       "Rebreather"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10415,7 +10415,7 @@
     "busts": [
       "Recon"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10433,7 +10433,7 @@
     "busts": [
       "Recruit"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10451,7 +10451,7 @@
     "busts": [
       "Regent"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10469,7 +10469,7 @@
     "busts": [
       "Repoman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10487,7 +10487,7 @@
     "busts": [
       "Reporter"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10505,7 +10505,7 @@
     "busts": [
       "ReptilianCommando"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -10523,7 +10523,7 @@
     "busts": [
       "ReptilianMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -10541,7 +10541,7 @@
     "busts": [
       "Revolutionary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10559,7 +10559,7 @@
     "busts": [
       "RevolutionaryCommando"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10577,7 +10577,7 @@
     "busts": [
       "Ritualist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10595,7 +10595,7 @@
     "busts": [
       "Robber"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10613,7 +10613,7 @@
     "busts": [
       "RoborProtector"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -10631,7 +10631,7 @@
     "busts": [
       "RogueBlacksmith"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10649,7 +10649,7 @@
     "busts": [
       "Ronin"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10667,7 +10667,7 @@
     "busts": [
       "RoyalChef"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10685,7 +10685,7 @@
     "busts": [
       "RoyalGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10700,11 +10700,11 @@
     "markovDB": "guard"
   },
   "Skab/!$RoyalJester": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RoyalJester"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10722,7 +10722,7 @@
     "busts": [
       "RoyalPage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10740,7 +10740,7 @@
     "busts": [
       "Sage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10758,7 +10758,7 @@
     "busts": [
       "Scarf"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10776,7 +10776,7 @@
     "busts": [
       "Scavenger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10794,7 +10794,7 @@
     "busts": [
       "ScavengerSOldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10812,7 +10812,7 @@
     "busts": [
       "ScienceTeacher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10830,7 +10830,7 @@
     "busts": [
       "Scientist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10848,7 +10848,7 @@
     "busts": [
       "Scout"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10866,7 +10866,7 @@
     "busts": [
       "ScubaDiver"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10884,7 +10884,7 @@
     "busts": [
       "ScubaRepairer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10902,7 +10902,7 @@
     "busts": [
       "SealedCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10920,7 +10920,7 @@
     "busts": [
       "Secretary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10938,7 +10938,7 @@
     "busts": [
       "Selene"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -10956,7 +10956,7 @@
     "busts": [
       "Sergeant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10974,7 +10974,7 @@
     "busts": [
       "SewerExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10993,7 +10993,7 @@
     "busts": [
       "SewerPaesant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11011,7 +11011,7 @@
     "busts": [
       "ShadyCultist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11029,7 +11029,7 @@
     "busts": [
       "Shogun"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11047,7 +11047,7 @@
     "busts": [
       "Skeleton"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11065,7 +11065,7 @@
     "busts": [
       "Slime"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -11085,7 +11085,7 @@
     "busts": [
       "Sniper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11103,7 +11103,7 @@
     "busts": [
       "SnobStylist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11121,7 +11121,7 @@
     "busts": [
       "SoldierCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11139,7 +11139,7 @@
     "busts": [
       "SpaceCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11157,7 +11157,7 @@
     "busts": [
       "SpaceExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11176,7 +11176,7 @@
     "busts": [
       "SpaceMiner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11190,11 +11190,11 @@
     "markovDB": "steelworker"
   },
   "Skab/!$Spacer": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Spacer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11213,7 +11213,7 @@
     "busts": [
       "SpacerAdventurer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11232,7 +11232,7 @@
     "busts": [
       "SpacerGeneral"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11250,7 +11250,7 @@
     "busts": [
       "SpacerKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11268,7 +11268,7 @@
     "busts": [
       "SpacerMechanic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11286,7 +11286,7 @@
     "busts": [
       "SpacerMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11304,7 +11304,7 @@
     "busts": [
       "SpacerOldman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11323,7 +11323,7 @@
     "busts": [
       "SpacerPilot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11342,7 +11342,7 @@
     "busts": [
       "SpacerSalesman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11361,7 +11361,7 @@
     "busts": [
       "SpacerScientist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11379,7 +11379,7 @@
     "busts": [
       "SpacerTrooper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11398,7 +11398,7 @@
     "busts": [
       "SpecialForces"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11416,7 +11416,7 @@
     "busts": [
       "Spellcaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11434,7 +11434,7 @@
     "busts": [
       "Spiritist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11452,7 +11452,7 @@
     "busts": [
       "Stablemaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11470,7 +11470,7 @@
     "busts": [
       "StoicGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11489,7 +11489,7 @@
     "busts": [
       "Strangelove"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11507,7 +11507,7 @@
     "busts": [
       "StreetExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11526,7 +11526,7 @@
     "busts": [
       "StreetInventor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11544,7 +11544,7 @@
     "busts": [
       "StreetMage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11562,7 +11562,7 @@
     "busts": [
       "StreetMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11580,7 +11580,7 @@
     "busts": [
       "StreetSamurai"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11598,7 +11598,7 @@
     "busts": [
       "StreetSeer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11616,7 +11616,7 @@
     "busts": [
       "StreetShopkeeper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11634,7 +11634,7 @@
     "busts": [
       "StreetSoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11652,7 +11652,7 @@
     "busts": [
       "StreetWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11670,7 +11670,7 @@
     "busts": [
       "Stylist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11688,7 +11688,7 @@
     "busts": [
       "SunCultist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11706,7 +11706,7 @@
     "busts": [
       "Superhero"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11724,7 +11724,7 @@
     "busts": [
       "Surgeon"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11742,7 +11742,7 @@
     "busts": [
       "SurvivalGuide"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11760,7 +11760,7 @@
     "busts": [
       "Survivalist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11778,7 +11778,7 @@
     "busts": [
       "Survivor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11796,7 +11796,7 @@
     "busts": [
       "SushiCook"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11814,7 +11814,7 @@
     "busts": [
       "TavernCook"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11832,7 +11832,7 @@
     "busts": [
       "TaxiDriver"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11850,7 +11850,7 @@
     "busts": [
       "TaxiDriver2"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11868,7 +11868,7 @@
     "busts": [
       "Techmaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11886,7 +11886,7 @@
     "busts": [
       "TechnoBarbarian"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11904,7 +11904,7 @@
     "busts": [
       "TecnoGeneral"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11922,7 +11922,7 @@
     "busts": [
       "TestSubject"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11940,7 +11940,7 @@
     "busts": [
       "TicketMaster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -11958,7 +11958,7 @@
     "busts": [
       "TowerController"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11976,7 +11976,7 @@
     "busts": [
       "Towner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -11994,7 +11994,7 @@
     "busts": [
       "ToxicScavenger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12012,7 +12012,7 @@
     "busts": [
       "Tracker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12030,7 +12030,7 @@
     "busts": [
       "Trader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12048,7 +12048,7 @@
     "busts": [
       "Trainer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12066,7 +12066,7 @@
     "busts": [
       "Translator"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12084,7 +12084,7 @@
     "busts": [
       "TravelingBard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12102,7 +12102,7 @@
     "busts": [
       "TravelingSalesman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12120,7 +12120,7 @@
     "busts": [
       "TribeArcher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12138,7 +12138,7 @@
     "busts": [
       "TribePunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12156,7 +12156,7 @@
     "busts": [
       "Trucker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12174,7 +12174,7 @@
     "busts": [
       "TruckerShopkeeper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12192,7 +12192,7 @@
     "busts": [
       "TruckerWanderer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12210,7 +12210,7 @@
     "busts": [
       "TwoFaced"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -12228,7 +12228,7 @@
     "busts": [
       "UniversityStudent"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12246,7 +12246,7 @@
     "busts": [
       "ValiantKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12264,7 +12264,7 @@
     "busts": [
       "VentureSoldier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12282,7 +12282,7 @@
     "busts": [
       "Vestal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12300,7 +12300,7 @@
     "busts": [
       "VillageChief"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12318,7 +12318,7 @@
     "busts": [
       "VillageIdiot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12336,7 +12336,7 @@
     "busts": [
       "VillageSmith"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12354,7 +12354,7 @@
     "busts": [
       "VillageSpiritist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12372,7 +12372,7 @@
     "busts": [
       "VillageTavernkeeper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12390,7 +12390,7 @@
     "busts": [
       "VoidAbstracter"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12409,7 +12409,7 @@
     "busts": [
       "VoidAstronaut"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12427,7 +12427,7 @@
     "busts": [
       "VoidCalamari"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12445,7 +12445,7 @@
     "busts": [
       "VoidHorror"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12464,7 +12464,7 @@
     "busts": [
       "VoidScreamer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12482,7 +12482,7 @@
     "busts": [
       "VoidSpawn"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -12501,7 +12501,7 @@
     "busts": [
       "Volunteer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12519,7 +12519,7 @@
     "busts": [
       "VRExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12538,7 +12538,7 @@
     "busts": [
       "Vyking"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12556,7 +12556,7 @@
     "busts": [
       "WanderingKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12574,7 +12574,7 @@
     "busts": [
       "WanderingSwordsman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12592,7 +12592,7 @@
     "busts": [
       "WarCadet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12610,7 +12610,7 @@
     "busts": [
       "WarEngineer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12628,7 +12628,7 @@
     "busts": [
       "WarFanatic"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12646,7 +12646,7 @@
     "busts": [
       "WarGeneral"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12664,7 +12664,7 @@
     "busts": [
       "WarInventor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12682,7 +12682,7 @@
     "busts": [
       "WarJournalist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12700,7 +12700,7 @@
     "busts": [
       "WarMage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12719,7 +12719,7 @@
     "busts": [
       "WarSniper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12737,7 +12737,7 @@
     "busts": [
       "WarVeteran"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12755,7 +12755,7 @@
     "busts": [
       "WarWitch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12773,7 +12773,7 @@
     "busts": [
       "WastelandAssassin1"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12792,7 +12792,7 @@
     "busts": [
       "WastelandAssassin2"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12811,7 +12811,7 @@
     "busts": [
       "WastelandCitizen"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12829,7 +12829,7 @@
     "busts": [
       "WastelandKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12847,7 +12847,7 @@
     "busts": [
       "WastelandMage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12865,7 +12865,7 @@
     "busts": [
       "Wastelandman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12883,7 +12883,7 @@
     "busts": [
       "WastelandModel"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12901,7 +12901,7 @@
     "busts": [
       "WastelandNible"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12919,7 +12919,7 @@
     "busts": [
       "WastelandPilot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12937,7 +12937,7 @@
     "busts": [
       "WastelandThinkerer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12955,7 +12955,7 @@
     "busts": [
       "WasterKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -12973,7 +12973,7 @@
     "busts": [
       "WasterlandYogi"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -12991,7 +12991,7 @@
     "busts": [
       "Welder"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13009,7 +13009,7 @@
     "busts": [
       "WildArcher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13027,7 +13027,7 @@
     "busts": [
       "Wiseman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13045,7 +13045,7 @@
     "busts": [
       "Witch2"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13063,7 +13063,7 @@
     "busts": [
       "Witch3"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13081,7 +13081,7 @@
     "busts": [
       "Witch4"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13099,7 +13099,7 @@
     "busts": [
       "WoodArcher"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13117,7 +13117,7 @@
     "busts": [
       "Woodworker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13135,7 +13135,7 @@
     "busts": [
       "Wrestler"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13153,7 +13153,7 @@
     "busts": [
       "Yogi"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13171,7 +13171,7 @@
     "busts": [
       "1"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13239,7 +13239,7 @@
     "busts": [
       "4"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13257,7 +13257,7 @@
     "busts": [
       "5"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13275,7 +13275,7 @@
     "busts": [
       "6"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13293,7 +13293,7 @@
     "busts": [
       "7"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13311,7 +13311,7 @@
     "busts": [
       "8"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13329,7 +13329,7 @@
     "busts": [
       "Adept"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13347,7 +13347,7 @@
     "busts": [
       "Admiral"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13383,7 +13383,7 @@
     "busts": [
       "ArchivistDoctor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13401,7 +13401,7 @@
     "busts": [
       "ArchivistTrickster"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13419,7 +13419,7 @@
     "busts": [
       "BotCamera"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13437,7 +13437,7 @@
     "busts": [
       "BotCrustal"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13455,7 +13455,7 @@
     "busts": [
       "BotGolem"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13473,7 +13473,7 @@
     "busts": [
       "BotMarionette"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13491,7 +13491,7 @@
     "busts": [
       "BotPuppet"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13509,7 +13509,7 @@
     "busts": [
       "BotReinforced"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13527,7 +13527,7 @@
     "busts": [
       "BotSteampunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -13545,7 +13545,7 @@
     "busts": [
       "CatGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -13564,7 +13564,7 @@
     "busts": [
       "CatMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -13582,7 +13582,7 @@
     "busts": [
       "CrazedMadman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13654,7 +13654,7 @@
     "busts": [
       "DesertDancer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13672,7 +13672,7 @@
     "busts": [
       "DesertMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13690,7 +13690,7 @@
     "busts": [
       "DesertNecromancer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13708,7 +13708,7 @@
     "busts": [
       "DesertScout"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13726,7 +13726,7 @@
     "busts": [
       "DesertWitch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13744,7 +13744,7 @@
     "busts": [
       "DevilHero"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -13762,7 +13762,7 @@
     "busts": [
       "DevilTrainer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13780,7 +13780,7 @@
     "busts": [
       "DevilVIllager"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13798,7 +13798,7 @@
     "busts": [
       "DevilWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13834,7 +13834,7 @@
     "busts": [
       "DogKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -13852,7 +13852,7 @@
     "busts": [
       "DogNoble"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -13870,7 +13870,7 @@
     "busts": [
       "DwarvenArtificier"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13888,7 +13888,7 @@
     "busts": [
       "DwarvenDrunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13906,7 +13906,7 @@
     "busts": [
       "DwarvenExplorer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13925,7 +13925,7 @@
     "busts": [
       "DwarvenGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13944,7 +13944,7 @@
     "busts": [
       "DwarvenMajor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13962,7 +13962,7 @@
     "busts": [
       "DwarvenMiner"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13980,7 +13980,7 @@
     "busts": [
       "DwarvenSage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -13998,7 +13998,7 @@
     "busts": [
       "DwarvenSinger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14016,7 +14016,7 @@
     "busts": [
       "DwarvenValkirie"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14034,7 +14034,7 @@
     "busts": [
       "DwarvenWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14052,7 +14052,7 @@
     "busts": [
       "DwarvenWitch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14070,7 +14070,7 @@
     "busts": [
       "ElephantKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elephant",
     "Gender": 3,
@@ -14090,7 +14090,7 @@
     "busts": [
       "ElephantMascotte"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elephant",
     "Gender": 3,
@@ -14109,7 +14109,7 @@
     "busts": [
       "ElephantMonk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elephant",
     "Gender": 3,
@@ -14129,7 +14129,7 @@
     "busts": [
       "ElephantWeird"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Elephant",
     "Gender": 3,
@@ -14164,7 +14164,7 @@
     "busts": [
       "ExoticAbstracter"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14182,7 +14182,7 @@
     "busts": [
       "ExoticBlank"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14200,7 +14200,7 @@
     "busts": [
       "ExoticCalamari"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14218,7 +14218,7 @@
     "busts": [
       "Exoticerson"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14236,7 +14236,7 @@
     "busts": [
       "ExoticGhost"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14254,7 +14254,7 @@
     "busts": [
       "ExoticGod"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14272,7 +14272,7 @@
     "busts": [
       "ExoticHorror"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14290,7 +14290,7 @@
     "busts": [
       "ExoticScreamer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14328,7 +14328,7 @@
     "busts": [
       "ExoticSpacer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14347,7 +14347,7 @@
     "busts": [
       "ExoticSpawn"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14365,7 +14365,7 @@
     "busts": [
       "Exoticstronaut"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14383,7 +14383,7 @@
     "busts": [
       "ExoticWorm"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -14401,7 +14401,7 @@
     "busts": [
       "ForestIdiot"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14419,7 +14419,7 @@
     "busts": [
       "GnomeAccountant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 0,
@@ -14437,7 +14437,7 @@
     "busts": [
       "GnomeArtist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14455,7 +14455,7 @@
     "busts": [
       "GnomeChef"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14474,7 +14474,7 @@
     "busts": [
       "GnomeGuard"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 0,
@@ -14492,7 +14492,7 @@
     "busts": [
       "GnomeMercenary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 0,
@@ -14511,7 +14511,7 @@
     "busts": [
       "GnomeNoble"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14529,7 +14529,7 @@
     "busts": [
       "GnomePirate"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14547,7 +14547,7 @@
     "busts": [
       "GnomePrincess"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14565,7 +14565,7 @@
     "busts": [
       "GnomeSinger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14583,7 +14583,7 @@
     "busts": [
       "GnomeSniper"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 1,
@@ -14601,7 +14601,7 @@
     "busts": [
       "GnomeTrader"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 0,
@@ -14620,7 +14620,7 @@
     "busts": [
       "GnomeVillager"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Gnome",
     "Gender": 0,
@@ -14677,7 +14677,7 @@
     "busts": [
       "HolyKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14695,7 +14695,7 @@
     "busts": [
       "InsectoidMantis"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Insectoid",
     "Gender": 3,
@@ -14714,7 +14714,7 @@
     "busts": [
       "Islander"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14732,7 +14732,7 @@
     "busts": [
       "KingsHand"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14768,7 +14768,7 @@
     "busts": [
       "MercenaryWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14786,7 +14786,7 @@
     "busts": [
       "Monk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14804,7 +14804,7 @@
     "busts": [
       "NobleSinger"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14822,7 +14822,7 @@
     "busts": [
       "NordicArtist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14840,7 +14840,7 @@
     "busts": [
       "NordicFarmer"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14858,7 +14858,7 @@
     "busts": [
       "NordicKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14876,7 +14876,7 @@
     "busts": [
       "NordicSergeant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14894,7 +14894,7 @@
     "busts": [
       "NordicWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14912,7 +14912,7 @@
     "busts": [
       "OgreBrute"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14930,7 +14930,7 @@
     "busts": [
       "OgreMalformed"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14948,7 +14948,7 @@
     "busts": [
       "OgreVillager"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -14966,7 +14966,7 @@
     "busts": [
       "OgreWitch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -14984,7 +14984,7 @@
     "busts": [
       "OldMercenary"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15002,7 +15002,7 @@
     "busts": [
       "OldNun"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15020,7 +15020,7 @@
     "busts": [
       "OperaGoddess"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15038,7 +15038,7 @@
     "busts": [
       "OrcBerserker"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15056,7 +15056,7 @@
     "busts": [
       "PunkVillager"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15074,7 +15074,7 @@
     "busts": [
       "PunkWitch"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15128,7 +15128,7 @@
     "busts": [
       "Sheepman"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 3,
@@ -15146,7 +15146,7 @@
     "busts": [
       "StoicWarrior"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15164,7 +15164,7 @@
     "busts": [
       "SunsetKnight"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15182,7 +15182,7 @@
     "busts": [
       "UndeadConstruct"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 2,
@@ -15200,7 +15200,7 @@
     "busts": [
       "UndeadRevenant"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15218,7 +15218,7 @@
     "busts": [
       "UndeadSage"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15236,7 +15236,7 @@
     "busts": [
       "UndeadSkeleton"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15254,7 +15254,7 @@
     "busts": [
       "VampireArcanist"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15272,7 +15272,7 @@
     "busts": [
       "VikingPaladin"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15290,7 +15290,7 @@
     "busts": [
       "VillageInventor"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 1,
@@ -15308,7 +15308,7 @@
     "busts": [
       "VykingRaider"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15326,7 +15326,7 @@
     "busts": [
       "WastelanderPunk"
     ],
-    "beta": false,
+    "beta": true,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -15340,7 +15340,7 @@
     "markovDB": "rude_guy"
   },
   "Skab/!$11": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "11"
     ],
@@ -15356,7 +15356,7 @@
     "markovDB": "npc"
   },
   "Skab/!$14": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "14"
     ],
@@ -15372,7 +15372,7 @@
     "markovDB": "npc"
   },
   "Skab/!$19": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "19"
     ],
@@ -15388,7 +15388,7 @@
     "markovDB": "npc"
   },
   "Skab/!$21": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "21"
     ],
@@ -15404,7 +15404,7 @@
     "markovDB": "npc"
   },
   "Skab/!$28": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "28"
     ],
@@ -15420,7 +15420,7 @@
     "markovDB": "npc"
   },
   "Skab/!$32": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "32"
     ],
@@ -15436,7 +15436,7 @@
     "markovDB": "npc"
   },
   "Skab/!$33": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "33"
     ],
@@ -15452,7 +15452,7 @@
     "markovDB": "npc"
   },
   "Skab/!$46": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "46"
     ],
@@ -15468,7 +15468,7 @@
     "markovDB": "npc"
   },
   "Skab/!$49": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "49"
     ],
@@ -15484,7 +15484,7 @@
     "markovDB": "npc"
   },
   "Skab/!$59": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "59"
     ],
@@ -15500,7 +15500,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AleisteirCrowleyArcane": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AleisteirCrowleyArcane"
     ],
@@ -15516,7 +15516,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AleisterCrowley": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AleisterCrowley"
     ],
@@ -15532,7 +15532,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Andreotti": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Andreotti"
     ],
@@ -15548,7 +15548,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiArcane": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AndreottiArcane"
     ],
@@ -15564,7 +15564,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiPope": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AndreottiPope"
     ],
@@ -15580,7 +15580,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiSitting": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AndreottiSitting"
     ],
@@ -15596,7 +15596,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Berlusconi": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Berlusconi"
     ],
@@ -15612,7 +15612,7 @@
     "markovDB": "npc"
   },
   "Skab/!$BillClinton": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "BillClinton"
     ],
@@ -15628,7 +15628,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Ciampi": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Ciampi"
     ],
@@ -15644,7 +15644,7 @@
     "markovDB": "npc"
   },
   "Skab/!$DivingSuiteMoving": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "DivingSuiteMoving"
     ],
@@ -15660,7 +15660,7 @@
     "markovDB": "npc"
   },
   "Skab/!$DivingSuiteStill": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "DivingSuiteStill"
     ],
@@ -15676,7 +15676,7 @@
     "markovDB": "npc"
   },
   "Skab/!$ElonMusk": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "ElonMusk"
     ],
@@ -15692,7 +15692,7 @@
     "markovDB": "npc"
   },
   "Skab/!$GeorgeWBush": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "GeorgeWBush"
     ],
@@ -15708,7 +15708,7 @@
     "markovDB": "npc"
   },
   "Skab/!$KofiAnnan": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "KofiAnnan"
     ],
@@ -15724,7 +15724,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHack": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "MargheritaHack"
     ],
@@ -15740,7 +15740,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHackEVA": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "MargheritaHackEVA"
     ],
@@ -15756,7 +15756,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHackSpace": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "MargheritaHackSpace"
     ],
@@ -15772,7 +15772,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MarioDraghi": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "MarioDraghi"
     ],
@@ -15788,7 +15788,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MarioDraghiAscended": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "MarioDraghiAscended"
     ],
@@ -15804,7 +15804,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Ratzinger": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Ratzinger"
     ],
@@ -15820,7 +15820,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RatzingerAngelus": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "RatzingerAngelus"
     ],
@@ -15836,7 +15836,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RichardBenson": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "RichardBenson"
     ],
@@ -15868,7 +15868,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RitaLeviMontalcini": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "RitaLeviMontalcini"
     ],
@@ -15884,7 +15884,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RitaLeviMontalciniScientist": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "RitaLeviMontalciniScientist"
     ],
@@ -15900,7 +15900,7 @@
     "markovDB": "npc"
   },
   "Skab/!$VillageSpritist": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "VillageSpritist"
     ],

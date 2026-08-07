@@ -136,27 +136,27 @@
     emPath: { cutoff: null },
   };
 
-  // Sprite sheets offered in the grid are driven by NPCs.json: only entries
-  // flagged "npc": true are selectable. window.WorldGen.NPCs is loaded
-  // synchronously by DataService before plugin IIFEs run (same source the
-  // NPCSystem character pool uses). SPRITE_SHEET_CONFIG is kept only as an
+  // Sprite sheets offered in the grid are driven by NPCs.json. window.WorldGen.NPCs
+  // is loaded synchronously by DataService before plugin IIFEs run (same source
+  // the NPCSystem character pool uses). SPRITE_SHEET_CONFIG is kept only as an
   // optional per-sheet cutoff override (see loop below); it no longer decides
   // which sheets appear. Falls back to the config keys if the DB is unavailable.
-  // Restrict the grid to Skab-folder sheets only. These are the curated single
-  // ($) portrait sheets; limiting to them keeps the option list small so the
-  // scene loads quickly instead of lazy-loading hundreds of npc:true sheets.
-  // Beta sheets (the ones outside the original folder, NPCs.json → beta) come
-  // in whatever folder they sit in: the grid is the one place they are offered,
-  // since nothing deals them automatically unless the world enabled them. The
-  // grid still lazy-loads a page at a time, so the longer list costs nothing to
-  // enter.
+  // Only characters flagged "npc": true are offered. Beta sheets (NPCs.json →
+  // beta) are additionally offered only when the world was created with beta
+  // sprites enabled (window.SpriteCatalog.betaEnabled()), since a world that
+  // opted out was populated without them. The grid still lazy-loads a page at
+  // a time, so the longer list costs nothing to enter.
   const npcDatabase = window.WorldGen && window.WorldGen.NPCs;
-  const isSkabSheet = (name) => name.startsWith("Skab/");
-  const isBetaSheet = (name) => !!(npcDatabase && npcDatabase[name] && npcDatabase[name].beta === true);
+  const betaEnabled = !!(window.SpriteCatalog && window.SpriteCatalog.betaEnabled());
   const spriteSheets = (npcDatabase
-    ? Object.keys(npcDatabase).filter((k) => npcDatabase[k].npc === true)
+    ? Object.keys(npcDatabase).filter((k) => {
+        const entry = npcDatabase[k];
+        if (!entry) return false;
+        // Always offer NPC characters; beta sheets only when the world enabled them.
+        return entry.npc === true || (betaEnabled && entry.beta === true);
+      })
     : Object.keys(SPRITE_SHEET_CONFIG)
-  ).filter((name) => isSkabSheet(name) || isBetaSheet(name));
+  );
 
   // Build a comprehensive list of all sprite options (file + index) considering cutoffs
   const spriteOptions = [];

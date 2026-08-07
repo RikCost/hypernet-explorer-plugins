@@ -508,7 +508,7 @@
         'background-image:radial-gradient(ellipse at center,' +
         'transparent 40%,var(--bg-brown-vignette-10) 100%);' +
         'padding:16px 20px;' +
-        'font-family:\'Lora\',serif;font-weight:bold;color:var(--text-primary-hover);line-height:1.4;' +
+        'font-family:\'Lora\',serif;font-weight:bold;color:var(--text-primary-hover);line-height:1.2;' +
         'transform:translateX(115%);opacity:0;' +
         'transition:transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;';
     this._htmlHelpRoot = root;
@@ -608,13 +608,18 @@
       const pad = this.padding || 12;
       const s = this._htmlHelpRoot.style;
 
-      // Match the skill selection menu width (340 * sc.sx) exactly.
-      const fixedW = 340 * sc.sx;
+      // The box belongs to the list page under it, so it takes that page's
+      // width and stands directly on its top edge (window.BattleListPage,
+      // published by whichever of the skill / item pages is open). A page whose
+      // height follows its contents would otherwise leave the description
+      // stranded halfway up the screen.
+      const page = window.BattleListPage || { MARGIN: 20, GAP: 10, width: 420, height: 460 };
+      const fixedW = page.width * sc.sx;
 
       // Anchor the box by its bottom-right corner (just above the skill selector)
       // and let width/height grow with the content so the box autosizes to its text.
-      const rightEdgeX = sc.ox + (Graphics.width * sc.sx) - (20 * sc.sx);
-      const bottomEdgeY = sc.oy + (Graphics.height * sc.sy) - (460 * sc.sy) - (20 * sc.sy) - (10 * sc.sy);
+      const rightEdgeX = sc.ox + (Graphics.width * sc.sx) - (page.MARGIN * sc.sx);
+      const bottomEdgeY = sc.oy + (Graphics.height - page.height - page.MARGIN - page.GAP) * sc.sy;
 
       const rightStr = Math.max(0, window.innerWidth - rightEdgeX) + 'px';
       const bottomStr = Math.max(0, window.innerHeight - bottomEdgeY) + 'px';
@@ -1077,8 +1082,11 @@
           this._lastSx = sc.sx;
           this._lastSy = sc.sy;
 
-          const scaledW = 340 * sc.sx;
-          const scaledH = 460 * sc.sy;
+          const ITEM_W = 340, ITEM_H = 460;
+          const scaledW = ITEM_W * sc.sx;
+          const scaledH = ITEM_H * sc.sy;
+          // The description box stands on this page while it is the open one.
+          if (window.BattleListPage) window.BattleListPage.set(ITEM_W, ITEM_H);
 
           const targetLeft = sc.ox + (Graphics.width * sc.sx) - scaledW - (20 * sc.sx);
           const targetTop = sc.oy + (Graphics.height * sc.sy) - scaledH - (20 * sc.sy);
@@ -1464,6 +1472,15 @@
 
   Sprite_BattleBar.prototype.update = function () {
     Sprite.prototype.update.call(this);
+    // A monster that has left the field takes its bar with it: killed, or talked
+    // round and hidden (EnemyTalkSystem). The scene sweeps the bars too, but it
+    // does so AFTER its children have updated and not at all while another plugin
+    // is driving the scene (Health_Monsters' Check panel), so the bar and the DOM
+    // text it carries would outlive the creature by a frame or by a whole panel.
+    // Decided here, they go in the same frame the battler does.
+    if (this._battler && !this._isPlayer) {
+      this.visible = this._battler.isAlive();
+    }
     if (this._htmlOverlay) this._htmlOverlay.update();
     if (this._statHtmlOverlay) this._statHtmlOverlay.update();
     if (this._tpOrbHtmlOverlay) this._tpOrbHtmlOverlay.update();

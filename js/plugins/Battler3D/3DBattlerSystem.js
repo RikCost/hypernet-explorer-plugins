@@ -1243,6 +1243,10 @@
             }
             const p = Math.min(1, this.animTime / DEATH_FADE_TIME);
             for (const m of this._deathMats) m.opacity = Math.min(m.opacity, 1 - p);
+            // Faded out is not gone: a fully transparent body is still submitted
+            // to the renderer every frame, and with a whole troop those corpses
+            // add up. Take it off the field once the fade has finished.
+            if (p >= 1 && this.model) this.model.visible = false;
         }
 
         // ── Main per-frame update (shared) ───────────────────────────────────
@@ -2229,6 +2233,23 @@
         }, 100);
     };
 
+    // A pack is drawn slightly smaller than the same creature met alone. Three
+    // or four monsters at their solo size fill the field edge to edge, and the
+    // spread (spreadEnemyModels) can only answer that by squeezing them into
+    // each other's air; taking a little off every model first buys that room
+    // back and leaves the fight readable. Gentle on purpose: a duo is barely
+    // touched, and nothing ever drops below TROOP_SCALE_FLOOR of its natural
+    // size, so a big monster still reads as a big monster. Applied at build time
+    // (create3DEnemies), so spreadEnemyModels measures the size the creature is
+    // actually drawn at and the HUD's compact bars land on its real feet.
+    const TROOP_SCALE_STEP = 0.93;  // compounded per monster past the first
+    const TROOP_SCALE_FLOOR = 0.72;
+
+    function troopScaleFactor(count) {
+        if (!(count > 1)) return 1;
+        return Math.max(TROOP_SCALE_FLOOR, Math.pow(TROOP_SCALE_STEP, count - 1));
+    }
+
     Spriteset_Battle.prototype.create3DEnemies = function() {
         // Scene may have been disposed/nulled between the setTimeout and now.
         if (!this._battle3DScene || this._battle3DScene._disposed) return;
@@ -2254,6 +2275,16 @@
         const procCount = enemies.filter(e => resolveArchetype(e)).length;
         let procSlot = 0;
 
+        // A crowd is drawn a little smaller than a lone monster (see
+        // troopScaleFactor). Counted over the creatures that actually get a
+        // model, so a troop member with no 3D body never shrinks the ones beside
+        // it. Every model in the fight takes the same factor, procedural or
+        // authored GLB, so the troop keeps its relative sizes.
+        const modelCount = enemies.filter(
+            e => e.enemy().meta['3d_model'] || resolveArchetype(e)
+        ).length;
+        const crowdScale = troopScaleFactor(modelCount);
+
         for (let i = 0; i < enemies.length; i++) {
             const enemy = enemies[i];
             const data = enemy.enemy().meta;
@@ -2265,6 +2296,7 @@
             if (data['3d_model'] || def) {
                 let scale = Number(data['3d_scale'] || 0);
                 if (!scale) scale = def ? (def.scale || 1.0) : 1.0; // per-archetype default
+                scale *= crowdScale;
                 const offsetY = Number(data['3d_offset_y'] || 0);
 
                 let battlerModel;
@@ -2323,9 +2355,21 @@
             }
         }
 
-        // Models load asynchronously, so the real spacing is settled once they
-        // are all in the scene and can be measured.
-        Promise.all(pending).then(() => this.spreadEnemyModels());
+        // Models load asynchronously. After they all resolve, run the spread
+        // pass immediately (settles geometry-free/inline procedural models that
+        // are already in the scene), then once more on the next animation frame
+        // (so GLB-loaded geometry bounding boxes are fully measurable).
+        Promise.all(pending).then(() => {
+            this.spreadEnemyModels();
+            // Second pass on the next frame: some GLB models or procedural
+            // sub-meshes only land in the scene graph after the first render tick,
+            // so a deferred re-spread catches them and produces a clean layout.
+            requestAnimationFrame(() => {
+                if (this._battle3DScene && !this._battle3DScene._disposed) {
+                    this.spreadEnemyModels();
+                }
+            });
+        });
     };
 
     // A troop used to stand on a fixed 2.4-unit pitch, which a big creature
@@ -2333,8 +2377,12 @@
     // ended up drawn one inside the other. Lay the procedural models out by the
     // width they actually measure, leaving real air between neighbours, and keep
     // the row inside what the 45 degree camera sees at the creatures' plane.
-    const ENEMY_SPREAD_GUESS = 3.6; // opening pitch, before anything is measured
-    const ENEMY_SPREAD_GAP = 1.2;   // clear air between two neighbours
+    // Z-depth stagger applied per procedural slot so that even if x-spread
+    // produces a very tight result, same-species enemies read as separate models.
+    const ENEMY_SPREAD_Z_STEP = 0.6; // depth step per slot (rear = higher z index)
+
+    const ENEMY_SPREAD_GUESS = 4.2; // opening pitch, before anything is measured
+    const ENEMY_SPREAD_GAP = 1.6;   // clear air between two neighbours
     const ENEMY_SPREAD_HALF_SPAN = 5.6;
     const ENEMY_SPREAD_FALLBACK_W = 2.2; // for a model that measures as nothing
 
@@ -2344,6 +2392,7 @@
 
         const enemies = $gameTroop.members();
         const row = [];
+        let zSlot = 0;
         for (let i = 0; i < enemies.length; i++) {
             // Enemies placed from their 2D slot (authored GLB models) keep the
             // troop layout they were given; only the procedural row is spread.
@@ -2357,7 +2406,10 @@
             // A model whose geometry is not centred on its root would drift when
             // placed by centre, so carry the offset and take it back out below.
             const centerOffset = box.isEmpty() ? 0 : (box.max.x + box.min.x) / 2 - root.position.x;
+            // Apply a z-depth stagger so overlapping enemies are always distinct.
+            root.position.z = zSlot * ENEMY_SPREAD_Z_STEP;
             row.push({ root, width, centerOffset });
+            zSlot++;
         }
 
         if (row.length > 1) {
@@ -2378,6 +2430,9 @@
                 cursor += e.width + gap;
             }
             debugLog(`Spread ${row.length} enemy models over ${(span * squeeze).toFixed(2)} units`);
+        } else if (row.length === 1) {
+            // Single enemy: reset z depth to 0 and centre on screen.
+            row[0].root.position.z = 0;
         }
 
         // The HUD reads this to know the field has stopped moving and its
@@ -2498,26 +2553,49 @@
     // (models present, mesh exists), so 2D/Sprites mode callers transparently
     // fall back to the battler sprite. Used by blood/effect plugins to localise
     // splatters and gibs onto the limb that was actually struck or severed.
+    //
+    // When partKey is null/undefined, ALWAYS returns the model's centre position
+    // (not a random limb), so skill/Effekseer animations are centred on the enemy
+    // even in multi-battle where enemies are spread across the field.
     Spriteset_Battle.prototype.getBattlerPartPosition = function(battler, partKey) {
         if (!this._battle3DScene || !this._battle3DSprite) return null;
         if (typeof THREE === 'undefined') return null;
-        if (!this._battle3DScene.hasModels()) return null; // not in 3D this battle
+        if (!this._battle3DScene.hasModels()) return null;
         const model = this.get3DModel(battler);
         if (!model) return null;
         const cam = this._battle3DScene.camera;
         if (!cam) return null;
 
-        let mesh = (partKey && model._partMeshMap) ? model._partMeshMap[partKey] : null;
+        // Reuse a scratch vector: this runs many times per hit (blood/gib FX).
+        const v = _partPosScratch || (_partPosScratch = new THREE.Vector3());
+
+        // When no specific part is requested, always centre on the model root
+        // (lifted to body centre). This ensures skill/Effekseer animations are
+        // centred on the enemy, not offset to a random limb.
+        if (!partKey) {
+            if (model.model) {
+                model.model.getWorldPosition(v);
+                v.y += 1; // lift from the base toward the body centre
+            } else {
+                return null;
+            }
+            v.project(cam);
+            if (!isFinite(v.x) || !isFinite(v.y) || v.z > 1) return null;
+            const px = (v.x * 0.5 + 0.5) * Graphics.width;
+            const py = (-v.y * 0.5 + 0.5) * Graphics.height;
+            return { x: px + this._battle3DSprite.x, y: py + this._battle3DSprite.y };
+        }
+
+        // Specific part requested: look it up in the part mesh map.
+        let mesh = model._partMeshMap ? model._partMeshMap[partKey] : null;
         if (!mesh && model._partMeshMap) {
-            // No mesh for this part (or no part given yet): fall back to any limb
-            // so effects still land on the model rather than the hidden 2D slot.
+            // No mesh for this part: fall back to any limb so effects still land
+            // on the model rather than the hidden 2D slot.
             for (const k in model._partMeshMap) {
                 if (model._partMeshMap[k]) { mesh = model._partMeshMap[k]; break; }
             }
         }
 
-        // Reuse a scratch vector: this runs many times per hit (blood/gib FX).
-        const v = _partPosScratch || (_partPosScratch = new THREE.Vector3());
         if (mesh) {
             mesh.getWorldPosition(v);
         } else if (model.model) {
@@ -2640,45 +2718,58 @@
         this._3dAttackStarted = false;
     };
 
-    const _Sprite_Enemy_updateBitmap = Sprite_Enemy.prototype.updateBitmap;
-    Sprite_Enemy.prototype.updateBitmap = function() {
-        _Sprite_Enemy_updateBitmap.call(this);
+    // What the model is doing is read every frame from the battler it belongs to:
+    // the swing it is taking, the death it is falling into, the exit it is walking
+    // out of. This hangs off update() rather than updateBitmap() because the bitmap
+    // hook is not ours alone - ReactiveEnemyBattler loads after this plugin and
+    // REPLACES Sprite_Enemy#updateBitmap outright (it swaps in its own hit/idle
+    // sheets and never chains), which silently took the 3D attack animations and,
+    // worse, the death fade with it. A killed monster then stood on the field for
+    // the rest of the fight; with a lone enemy the battle ended on the spot and
+    // nobody saw it, but a troop (see BattleSystemEnhanced section 7) kept its
+    // corpses standing. update() is wrapped by every plugin in the chain, so the
+    // model always hears about it.
+    const _Sprite_Enemy_update_3D = Sprite_Enemy.prototype.update;
+    Sprite_Enemy.prototype.update = function() {
+        _Sprite_Enemy_update_3D.call(this);
+        this.update3DBattlerState();
+    };
 
-        if (this._battler && SceneManager._scene._spriteset) {
-            const model = SceneManager._scene._spriteset.get3DModel(this._battler);
+    Sprite_Enemy.prototype.update3DBattlerState = function() {
+        const spriteset = SceneManager._scene && SceneManager._scene._spriteset;
+        if (!this._battler || !spriteset || !spriteset.get3DModel) return;
+        const model = spriteset.get3DModel(this._battler);
+        if (!model) return;
 
-            if (model) {
-                if (this._battler.isActing() && !this._3dAttackStarted) {
-                    this._3dAttackStarted = true;
-                    const action = this._battler.currentAction();
+        if (this._battler.isActing() && !this._3dAttackStarted) {
+            this._3dAttackStarted = true;
+            const action = this._battler.currentAction();
 
-                    // Bosses cycle a palette of magic/skill casts; others keep the
-                    // simple magic->specialattack / else->attack mapping.
-                    const anim = pick3DActionAnim(this._battler, action, model);
-                    model.playAnimation(anim, false, () => {
-                        model.playIdleAnimation();
-                        this._3dAttackStarted = false;
-                    });
-                } else if (!this._battler.isActing()) {
-                    this._3dAttackStarted = false;
-                }
+            // Bosses cycle a palette of magic/skill casts; others keep the
+            // simple magic->specialattack / else->attack mapping.
+            const anim = pick3DActionAnim(this._battler, action, model);
+            model.playAnimation(anim, false, () => {
+                model.playIdleAnimation();
+                this._3dAttackStarted = false;
+            });
+        } else if (!this._battler.isActing()) {
+            this._3dAttackStarted = false;
+        }
 
-                if (this._battler.isDead()) {
-                    model.playAnimation('death', false);
-                    // GLB models have no procedural fade; start the whole-model
-                    // fade-off explicitly so they vanish on death too (fires for
-                    // both HP-loss deaths and lethal body-part kills).
-                    if (model.startDeathFade) model.startDeathFade();
-                } else if (this._battler.isHidden()) {
-                    // Taken off the field alive: a monster talked round mid-fight
-                    // (EnemyTalkSystem) is hidden rather than killed, and the rest
-                    // of its pack fights on, so the model has to go the same way
-                    // the 2D sprite's "disappear" effect takes it. Nothing plays
-                    // over it: the creature walked out, it did not fall.
-                    if (model.startDeathFade) model.startDeathFade();
-                    else if (model.model) model.model.visible = false;
-                }
-            }
+        if (this._battler.isDead()) {
+            model.playAnimation('death', false);
+            // GLB models have no procedural fade; start the whole-model
+            // fade-off explicitly so they vanish on death too (fires for
+            // both HP-loss deaths and lethal body-part kills).
+            if (model.startDeathFade) model.startDeathFade();
+        } else if (this._battler.isHidden()) {
+            // Taken off the field alive: a monster talked round mid-fight
+            // (EnemyTalkSystem) is hidden rather than killed, and the rest
+            // of its pack fights on, so the model has to go the same way
+            // the 2D sprite's "disappear" effect takes it. Nothing plays
+            // over it: the creature walked out, it did not fall.
+            if (model.startDeathFade) model.startDeathFade();
+            else if (model.model) model.model.visible = false;
         }
     };
 

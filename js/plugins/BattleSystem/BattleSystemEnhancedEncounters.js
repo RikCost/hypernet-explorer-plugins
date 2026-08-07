@@ -53,14 +53,16 @@
  * Reinforcements (Scene_Battle fights only)
  * ----------------------------------------------------------------------------
  * A fight started against a map "Enemy" event drags in every other roaming
- * monster standing less than JOIN_RANGE (6) tiles from the party, up to
- * JOIN_MAX (3) of them, nearest first. Their troops are appended to the one the
- * battle was started with and the combined troop is written into a single
- * scratch $dataTroops slot, reused for every reinforced battle. Each joiner's
- * map event is settled the way the triggering one is: deleted on a win or a
- * recruit, locked with its wounds kept on a flee. A tactical map battle
- * (MapBattleMode.js) already fights everyone where they stand and is never
- * reinforced this way.
+ * monster of the SAME enemy type standing less than JOIN_RANGE (8) tiles from
+ * the party, up to a total of BATTLE_MAX_MEMBERS (3) fighters across the whole
+ * battle (base troop + joiners). Joiners are taken nearest-first. Their troops
+ * are appended to the one the battle was started with and the combined troop is
+ * written into a single scratch $dataTroops slot, reused for every reinforced
+ * battle. Each joiner's map event is settled the way the triggering one is:
+ * deleted on a win or a recruit, locked with its wounds kept on a flee. Enemies
+ * that died before a flee are turned into map corpses on return. A tactical map
+ * battle (MapBattleMode.js) already fights everyone where they stand and is
+ * never reinforced this way.
  *
  * Loading order:
  *   1. BattleSystemEnhanced.js (Core)
@@ -1334,8 +1336,9 @@
     // where they stand, and startPersistentBattle redirects to it before ever
     // reaching this code.
 
-    BSE.Data.JOIN_RANGE = 12; // tiles; a monster closer than this joins in
-    BSE.Data.JOIN_MAX   = 3; // at most this many extra troops per battle
+    BSE.Data.JOIN_RANGE = 8;  // tiles; a monster closer than this joins in
+    BSE.Data.JOIN_MAX   = 2;  // at most this many extra troops per battle
+    BSE.Data.BATTLE_MAX_MEMBERS = 3; // hard cap: base + joiners combined
 
     // The scratch $dataTroops slot the combined troop is written into. One slot
     // is reserved per session and rewritten for every reinforced battle rather
@@ -1359,40 +1362,67 @@
     };
 
     // The enemy events that join a battle started against `triggerEventId`.
-    // Nearest first, live enemies only, capped at JOIN_MAX.
+    // Only same-troop-type enemies within JOIN_RANGE tiles join. Joiners are
+    // capped so the total troop-member count (base + all joiners) never
+    // exceeds BATTLE_MAX_MEMBERS. Nearest first.
     BSE.Functions.getJoiningEnemyEvents = function(triggerEventId) {
         if (!$gameMap || !$gamePlayer) return [];
         const range = BSE.Data.JOIN_RANGE;
+        const maxMembers = BSE.Data.BATTLE_MAX_MEMBERS || 3;
+
+        // Get the base troop so we can match type and count its members.
+        const triggerEvent = $gameMap.event(triggerEventId);
+        const baseTroopId  = triggerEvent ? triggerEvent._fixedTroopId : 0;
+        const baseTroop    = baseTroopId ? $dataTroops[baseTroopId] : null;
+        if (!baseTroop || !baseTroop.members.length) return [];
+
+        // The lead enemy species of the triggering troop — only events whose
+        // first enemy matches join (same-enemy-type grouping).
+        const baseTroopFirstEnemyId = baseTroop.members[0].enemyId;
+
+        let usedSlots = baseTroop.members.length; // slots already occupied by base
         const near = [];
         for (const ev of $gameMap.events()) {
             if (!ev || ev.eventId() === triggerEventId) continue;
             if (!isLiveEnemyEvent(ev)) continue;
             const troop = $dataTroops[ev._fixedTroopId];
             if (!troop || !troop.members.length) continue;
+            // Only same-type troops join (matching lead enemy id).
+            if (troop.members[0].enemyId !== baseTroopFirstEnemyId) continue;
             const dx = ev.x - $gamePlayer.x, dy = ev.y - $gamePlayer.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist >= range) continue;
-            near.push({ event: ev, dist: dist });
+            near.push({ event: ev, dist: dist, memberCount: troop.members.length });
         }
         near.sort((a, b) => a.dist - b.dist);
-        return near.slice(0, BSE.Data.JOIN_MAX).map(n => n.event);
+
+        // Pick nearest joiners until the battle cap is reached.
+        const joiners = [];
+        for (const n of near) {
+            if (joiners.length >= BSE.Data.JOIN_MAX) break;
+            if (usedSlots + n.memberCount > maxMembers) break;
+            joiners.push(n.event);
+            usedSlots += n.memberCount;
+        }
+        return joiners;
     };
 
-    // Where a joining monster stands on the battlefield. The base troop keeps
-    // the positions its database entry gave it; the newcomers are dealt out to
-    // either side of it, staggered in depth so three of them never line up.
-    function joinerPosition(baseMembers, slot) {
-        const w = Graphics.boxWidth || 816;
-        const h = Graphics.boxHeight || 624;
-        let cx = w / 2, cy = h * 0.55;
-        if (baseMembers.length) {
-            cx = baseMembers.reduce((s, m) => s + m.x, 0) / baseMembers.length;
-            cy = baseMembers.reduce((s, m) => s + m.y, 0) / baseMembers.length;
-        }
-        const side = (slot % 2 === 0) ? 1 : -1;          // right, left, right...
-        const step = Math.floor(slot / 2) + 1;
-        const x = cx + side * step * 168;
-        const y = cy + ((slot % 2 === 0) ? -34 : 34);
+    // Evenly spread ALL members of a combined troop (base + joiners) across the
+    // 2D battle field so they never overlap. `totalMembers` is the final count,
+    // `slot` is this member's index (0-based). Each slot gets a fixed horizontal
+    // pitch centred on the screen.
+    function joinerPosition(baseMembers, slot, totalMembers) {
+        const w  = Graphics.boxWidth  || 816;
+        const h  = Graphics.boxHeight || 624;
+        const cy = h * 0.50;
+        const n  = totalMembers || (baseMembers.length + 1);
+        // Distribute across 80 % of the screen width, centred.
+        const usable = w * 0.80;
+        const pitch  = n > 1 ? usable / (n - 1) : 0;
+        const startX = (w - usable) / 2;
+        const x = n > 1 ? startX + slot * pitch : w / 2;
+        // Stagger depth slightly on alternating slots.
+        const y = cy + (slot % 2 === 0 ? -28 : 28);
         return {
             x: Math.max(64, Math.min(w - 64, Math.round(x))),
             y: Math.max(120, Math.min(h - 80, Math.round(y)))
@@ -1408,12 +1438,24 @@
         if (!base || !joinEvents || !joinEvents.length) {
             return { troopId: baseTroopId, joined: [] };
         }
-        const members = base.members.map(m => Object.assign({}, m));
+
+        // Count total members so joinerPosition can spread everyone evenly.
+        let totalMembers = base.members.length;
+        for (const ev of joinEvents) {
+            const t = $dataTroops[ev._fixedTroopId];
+            if (t) totalMembers += t.members.filter(m => $dataEnemies[m.enemyId]).length;
+        }
+
+        // Assign evenly-spread 2D positions across ALL members (base included).
+        const members = base.members.map((m, i) => {
+            const pos = joinerPosition(base.members, i, totalMembers);
+            return Object.assign({}, m, { x: pos.x, y: pos.y });
+        });
         // Species keys ride along per member: a reinforced troop can mix two
         // procedural alien species, which one key on the troop cannot express.
         const speciesKeys = members.map(() => base._alienSpeciesKey || null);
         const joined = [];
-        let slot = 0;
+        let slot = base.members.length; // joiner slots start after base members
 
         for (const ev of joinEvents) {
             const troop = $dataTroops[ev._fixedTroopId];
@@ -1421,7 +1463,7 @@
             const memberIndexes = [];
             for (const m of troop.members) {
                 if (!$dataEnemies[m.enemyId]) continue;
-                const pos = joinerPosition(base.members, slot++);
+                const pos = joinerPosition(base.members, slot++, totalMembers);
                 memberIndexes.push(members.length);
                 members.push({ enemyId: m.enemyId, x: pos.x, y: pos.y, hidden: false });
                 speciesKeys.push(troop._alienSpeciesKey || null);

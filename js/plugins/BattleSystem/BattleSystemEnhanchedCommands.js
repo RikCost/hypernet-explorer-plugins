@@ -157,8 +157,11 @@
     }
 
     // One command per skill type (Magic, Skills, ...), each opening that type's
-    // carried loadout (CategorizedBattleSkills.js). A type with nothing carried
-    // greys out rather than opening an empty list.
+    // carried loadout (CategorizedBattleSkills.js). A type holding nothing the
+    // actor can pay for greys out but still OPENS: the list is where the reason
+    // is legible, one greyed cost per skill, and each unaffordable skill buzzes
+    // there instead. Only a type with nothing carried refuses to open, since
+    // there would be nothing to read.
     const skillTypes = this._actor.skillTypes();
     for (let i = skillTypes.length - 1; i >= 0; i--) {
       const stypeId = skillTypes[i];
@@ -166,13 +169,17 @@
       const carried = window.BattleLoadout
         ? window.BattleLoadout.battleSkills(this._actor, stypeId)
         : this._actor.skills().filter(skill => skill && skill.stypeId === stypeId);
-      this.addCommandWithIcon("", "skill", carried.some(isUsableSkill), stypeId, iconIndex);
+      const listed = carried.filter(isUsableSkill);
+      this.addCommandWithIcon("", "skill", listed.length > 0, stypeId, iconIndex,
+        !this.hasCastableSkill(listed));
     }
 
     // The Basic kit is its own top-level command: those are the engine's
     // fallback moves and are always carried, so they never crowd a loadout.
-    const hasBasic = this._actor.skills().some(skill => isUsableSkill(skill) && getSkillCategory(skill) === "Basic"); // i18n-ignore: <category:Basic> note tag
-    this.addCommandWithIcon("", "basic", hasBasic, null, 248);
+    const basicKit = this._actor.skills()
+      .filter(skill => isUsableSkill(skill) && getSkillCategory(skill) === "Basic"); // i18n-ignore: <category:Basic> note tag
+    this.addCommandWithIcon("", "basic", basicKit.length > 0, null, 248,
+      !this.hasCastableSkill(basicKit));
 
     // Backpack/Item: disabled (greyed + buzzer) when the party holds no
     // battle-usable item. Mirrors Window_BattleItem.includes ($gameParty.canUse).
@@ -188,8 +195,29 @@
     this.addCommandWithIcon("", "escape", true, null, 140);
   };
 
-  Window_ActorCommand.prototype.addCommandWithIcon = function (name, symbol, enabled, ext, iconIndex) {
-    this._list.push({ name, symbol, enabled, ext, iconIndex });
+  // Whether a skill/magic/basic list holds anything the actor can act with this
+  // instant, the same question Game_Action asks when the turn resolves (MP/TP
+  // payable, skill type not sealed, skill not sealed, weapon type allowed,
+  // usable in battle). Nothing castable dims the row without locking it.
+  Window_ActorCommand.prototype.hasCastableSkill = function (skills) {
+    if (!this._actor || !skills || skills.length === 0) return false;
+    return skills.some(skill => isUsableSkill(skill) && this._actor.canUse(skill));
+  };
+
+  // The command under the cursor, or true when there is nothing to read: used by
+  // the handlers as a second line of defence against input routed past
+  // isCurrentItemEnabled by another plugin.
+  Window_ActorCommand.prototype.isCurrentCommandEnabled = function () {
+    if (!this._list) return true;
+    const cmd = this._list[this.index()];
+    return !cmd || cmd.enabled !== false;
+  };
+
+  // `enabled` is the gate the input layer reads (a disabled row buzzes and opens
+  // nothing); `dim` is the look alone, for a row that still opens but has
+  // nothing usable behind it.
+  Window_ActorCommand.prototype.addCommandWithIcon = function (name, symbol, enabled, ext, iconIndex, dim) {
+    this._list.push({ name, symbol, enabled, ext, iconIndex, dim: !!dim });
   };
 
   Window_ActorCommand.prototype.getCommandName = function (symbol, ext) {
@@ -307,6 +335,9 @@
     for (let i = 0; i < this._list.length; i++) {
       const cmd       = this._list[i];
       const isSel     = (i === this.index());
+      // Locked and merely-nothing-usable both read as greyed; only the first
+      // refuses to open.
+      const isLit     = cmd.enabled !== false && !cmd.dim;
       const { accent, rgb } = getCommandColors(cmd.symbol);
 
       // Outer item container
@@ -357,7 +388,7 @@
         const col   = iconIdx % ICON_SHEET_COLS;
         const row   = Math.floor(iconIdx / ICON_SHEET_COLS);
         const icon  = document.createElement('div');
-        icon.className = 'actorcmd-icon' + (cmd.enabled ? '' : ' dim');
+        icon.className = 'actorcmd-icon' + (isLit ? '' : ' dim');
         icon.style.width  = ICON_PX + 'px';
         icon.style.height = ICON_PX + 'px';
         // The whole sheet is scaled down with the cell, so the cell offsets
@@ -372,7 +403,7 @@
       // doesn't know about, e.g. plugin-injected commands)
       const name  = this.getCommandName(cmd.symbol, cmd.ext) || cmd.name || "";
       const label = document.createElement('div');
-      label.className = 'actorcmd-label' + (cmd.enabled ? '' : ' dim');
+      label.className = 'actorcmd-label' + (isLit ? '' : ' dim');
       label.style.fontSize = LABEL_PX + 'px';
       label.textContent = (typeof translateText === 'function') ? translateText(name) : name;
       item.appendChild(label);
@@ -538,9 +569,8 @@
   // robust against other plugins that might route past isCurrentItemEnabled.
   Scene_Battle.prototype._bseCurrentCommandEnabled = function () {
     const win = this._actorCommandWindow;
-    if (!win || !win._list) return true;
-    const cmd = win._list[win.index()];
-    return !cmd || cmd.enabled !== false;
+    if (!win) return true;
+    return win.isCurrentCommandEnabled();
   };
 
   // Open the skill window showing only Basic-category skills across all skill types.
@@ -607,6 +637,12 @@
     } else {
       this.endCommandSelection();
     }
+  };
+
+  const _Window_ActorCommand_processOk = Window_ActorCommand.prototype.processOk;
+  Window_ActorCommand.prototype.processOk = function () {
+    _Window_ActorCommand_processOk.call(this);
+    TouchInput.clear();
   };
 
   //=============================================================================

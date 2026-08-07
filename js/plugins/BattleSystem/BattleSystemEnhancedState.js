@@ -412,6 +412,31 @@
             return !enemy || !enemy.isAlive();
         });
 
+        // Shared corpse helper — used for both flee (dead enemies mid-battle)
+        // and win (all enemies cleared). An enemy whose HP is still > 0 survived
+        // and gets no corpse; only those killed before the battle ended do.
+        const dropCorpse = (evMapId, evId, troopIndex) => {
+            if (!evId || !evMapId) return;
+            const deadEvent = $gameMap.event(evId);
+            if (!deadEvent || !deadEvent._characterName) return;
+            const deadTroop = deadEvent._fixedTroopId ? $dataTroops[deadEvent._fixedTroopId] : null;
+            const deadEnemy = (deadTroop && deadTroop.members.length > 0)
+                ? $dataEnemies[deadTroop.members[0].enemyId] : null;
+            const troopMember = $gameTroop && $gameTroop.members()[troopIndex];
+            const enemyAlive = troopMember && troopMember.hp > 0;
+            if (enemyAlive) return;
+            BSE.State.mapCorpses.push({
+                mapId: evMapId,
+                x: deadEvent.x,
+                y: deadEvent.y,
+                spriteName: deadEvent._characterName,
+                spriteIndex: deadEvent._characterIndex,
+                hue: deadEvent._characterHue || 0,
+                bloodColor: getCorpseBloodColor(deadEnemy),
+                enemyId: (deadTroop && deadTroop.members[0]) ? deadTroop.members[0].enemyId : 0
+            });
+        };
+
         if (result === 1 && bId) { // Fled, or a recruit that emptied the field
             const baseIndexes = [];
             for (let i = 0; i < baseSize; i++) baseIndexes.push(i);
@@ -425,6 +450,10 @@
                     }
                 }
             } else {
+                // Drop a corpse for any base enemy that died during the battle
+                // before we fled, so their map event becomes a body on return.
+                for (let i = 0; i < baseSize; i++) dropCorpse(mId, eId, i);
+
                 const persistentData = pData[bId] || { enemyHp: {} };
                 // Only the troop that started the fight belongs to this event's
                 // record; the members past it came from the joining events and are
@@ -440,6 +469,9 @@
                     clearJoinedEvent(j);
                     return;
                 }
+                // Drop corpses for any joined enemies that died before we fled.
+                j.memberIndexes.forEach(ti => dropCorpse(j.mapId, j.eventId, ti));
+
                 const jData = pData[j.persistentId] || { enemyHp: {} };
                 j.memberIndexes.forEach((troopIndex, i) => {
                     const enemy = $gameTroop.members()[troopIndex];
@@ -452,30 +484,6 @@
             const r = BSE.State.battleRewards;
             r.exp = 0; r.gold = 0; r.items = []; r.knowledge = 0;
         } else if (result === 0 && bId) { // Win
-            // Capture corpse data. `troopIndex` is where in the battle troop
-            // that event's own lead monster stood, so a joined event leaves a
-            // corpse for the creature that actually fell there.
-            const dropCorpse = (evMapId, evId, troopIndex) => {
-                if (!evId || !evMapId) return;
-                const deadEvent = $gameMap.event(evId);
-                if (!deadEvent || !deadEvent._characterName) return;
-                const deadTroop = deadEvent._fixedTroopId ? $dataTroops[deadEvent._fixedTroopId] : null;
-                const deadEnemy = (deadTroop && deadTroop.members.length > 0)
-                    ? $dataEnemies[deadTroop.members[0].enemyId] : null;
-                const troopMember = $gameTroop && $gameTroop.members()[troopIndex];
-                const enemyEscaped = troopMember && troopMember.hp > 0;
-                if (enemyEscaped) return;
-                BSE.State.mapCorpses.push({
-                    mapId: evMapId,
-                    x: deadEvent.x,
-                    y: deadEvent.y,
-                    spriteName: deadEvent._characterName,
-                    spriteIndex: deadEvent._characterIndex,
-                    hue: deadEvent._characterHue || 0,
-                    bloodColor: getCorpseBloodColor(deadEnemy),
-                    enemyId: (deadTroop && deadTroop.members[0]) ? deadTroop.members[0].enemyId : 0
-                });
-            };
             dropCorpse(mId, eId, 0);
             joined.forEach(j => dropCorpse(j.mapId, j.eventId, j.memberIndexes[0]));
 

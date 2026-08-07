@@ -573,6 +573,10 @@
     const LOADOUT_MAX = 7;
     const GROUP_MAGIC = 'Magic', GROUP_SKILL = 'Skill'; // i18n-ignore: skill-type group ids
 
+    // Width of the battle skill page, in game pixels. The description box above
+    // it matches, so a line of help text breaks where the skill names do.
+    const PAGE_WIDTH = 420;
+
     // "Magic" for a skill type whose name reads as magic, "Skill" otherwise.
     function _getStypeIdCategoryGroup(stypeId) {
         if (!stypeId) return null;
@@ -810,6 +814,26 @@
         return `background: url('img/system/IconSet.png') -${x}px -${y}px no-repeat; width: 32px; height: 32px; display: inline-block; vertical-align: middle; image-rendering: pixelated; transform: scale(0.75); margin-right: 4px;`;
     }
 
+    // ── The battle list page geometry (idempotent across plugins) ─────────────
+    // The skill page, the item page (BattleSystemEnhancedHUD) and the
+    // description box that sits on top of them are three panels that have to
+    // agree: whichever list is open publishes the corner it occupies, in game
+    // pixels, and the description box reads it. Without this the box is placed
+    // against a size the page no longer has and drifts away from what it
+    // describes.
+    if (!window.BattleListPage) {
+        window.BattleListPage = {
+            MARGIN: 20,   // from the screen's right and bottom edges
+            GAP: 10,      // between the description box and the page below it
+            width: 420,
+            height: 460,
+            set(width, height) {
+                this.width = width;
+                this.height = height;
+            }
+        };
+    }
+
     const _Window_BattleSkill_initialize = Window_BattleSkill.prototype.initialize;
     Window_BattleSkill.prototype.initialize = function (rect) {
         _Window_BattleSkill_initialize.call(this, rect);
@@ -966,25 +990,29 @@
         const skill = this.itemAt(index);
         if (!skill) return;
         const rect = this.itemLineRect(index);
-        // Every carried skill is selectable; whether it can be paid for is read
-        // off the greyed cost, not off a locked row.
-        this.changePaintOpacity(true);
+        // A skill the actor cannot pay for is drawn faded, the same answer the
+        // HTML row gives, so the canvas fallback never reads as selectable when
+        // the row it mirrors is locked.
+        this.changePaintOpacity(this.isEnabled(skill));
         this.drawItemName(skill, rect.x, rect.y, rect.width - this.costWidth());
         this.drawSkillCost(skill, rect.x, rect.y, rect.width);
         this.changePaintOpacity(1);
     };
 
-    // These four shadow the Window_SkillList overrides installed further down
-    // (which serve the menu scene): the captures above hold the base RPG Maker
-    // behaviour, which is what a battle wants.
-    const _Window_BattleSkill_isEnabled = Window_BattleSkill.prototype.isEnabled;
+    // These shadow the Window_SkillList overrides installed further down (which
+    // serve the menu scene); the battle list wants the base RPG Maker rule.
+    // A carried skill the actor cannot afford right now is a locked row: it can
+    // still be browsed and read, but Window_SkillList.isCurrentItemEnabled sends
+    // OK on it to playBuzzerSound(), so nothing is chosen, no action is set and
+    // the turn is not spent.
     Window_BattleSkill.prototype.isEnabled = function (item) {
-        return true;
+        return !!(item && this._actor && this._actor.canUse(item));
     };
 
     const _Window_BattleSkill_processOk = Window_BattleSkill.prototype.processOk;
     Window_BattleSkill.prototype.processOk = function () {
         _Window_BattleSkill_processOk.call(this);
+        TouchInput.clear();
     };
 
     const _Window_BattleSkill_processCancel = Window_BattleSkill.prototype.processCancel;
@@ -1030,9 +1058,12 @@
         const root = this._htmlSkillRoot;
         if (!root) return;
         // Rows are recreated fresh (transparent), so force update() to re-apply
-        // the selection highlight and font size on its next pass.
+        // the selection highlight and font size on its next pass. The page is
+        // sized off the rows, so the layout pass has to run again too: a list
+        // that shed or gained entries is a page of a different height.
         this._lastSkillIdx = null;
         this._prevSkillHiIdx = null;
+        this._lastSkillSy = null;
         root.innerHTML = '';
 
         root.style.display = 'grid';
@@ -1145,20 +1176,50 @@
         const scaledFont = Math.round(baseFontSize * sc.sy * 0.85);
 
         if (layoutChanged) {
+            const page = window.BattleListPage;
             const pad = this.padding || 12;
+            const padY = Math.round(pad * sc.sy);
+            const padX = Math.round(pad * sc.sx);
             // Define portrait narrow page dimensions
-            const scaledW = 420 * sc.sx;
-            const scaledH = 460 * sc.sy;
+            const scaledW = PAGE_WIDTH * sc.sx;
+
+            s.width = scaledW + 'px';
+            s.padding = padY + 'px ' + padX + 'px';
+
+            // The rows carry the new font before anything is measured off them.
+            if (this._htmlSkillEls) {
+                this._htmlSkillEls.forEach(el => { el.style.fontSize = scaledFont + 'px'; });
+            }
+
+            // The page is as tall as the loadout it shows. A full carry is
+            // LOADOUT_MAX skills or LOADOUT_MAX magic, so that many rows always
+            // fit without scrolling; a shorter list shrinks to what it holds
+            // instead of leaving the page half empty, and the Basic kit (which
+            // answers to no loadout) stops at that same height and scrolls.
+            const els = this._htmlSkillEls || [];
+            const shown = Math.min(els.length, LOADOUT_MAX);
+            let rowsH = 0;
+            if (shown > 0) {
+                const last = els[shown - 1];
+                rowsH = last.offsetTop + last.offsetHeight - padY;
+            }
+            // Border-box: the 3px frame on both sides counts toward the height.
+            const frameH = padY * 2 + 6;
+            const minH = Math.round(120 * sc.sy);
+            const maxH = (Graphics.height - 40) * sc.sy;
+            const scaledH = Math.max(minH, Math.min(rowsH + frameH, maxH));
+
+            // The description box sits on top of this page, so it is told the
+            // corner the page ended up occupying.
+            page.set(PAGE_WIDTH, scaledH / sc.sy);
 
             // Position bottom-right, aligned with bottom-right commands
-            const targetLeft = sc.ox + (Graphics.width * sc.sx) - scaledW - (20 * sc.sx);
-            const targetTop = sc.oy + (Graphics.height * sc.sy) - scaledH - (20 * sc.sy);
+            const targetLeft = sc.ox + (Graphics.width * sc.sx) - scaledW - (page.MARGIN * sc.sx);
+            const targetTop = sc.oy + (Graphics.height * sc.sy) - scaledH - (page.MARGIN * sc.sy);
 
             s.left = targetLeft + 'px';
             s.top = targetTop + 'px';
-            s.width = scaledW + 'px';
             s.height = scaledH + 'px';
-            s.padding = Math.round(pad * sc.sy) + 'px ' + Math.round(pad * sc.sx) + 'px';
 
             // Trigger slide-in/open transition styles
             s.transform = 'translateX(0)';
@@ -1168,10 +1229,9 @@
 
         if (this._htmlSkillEls) {
             const prevIdx = idxChanged ? this._prevSkillHiIdx : idx;
-            // Only recolour the two rows whose highlight state flips, and only
-            // restamp every row's font size when the scale actually changed.
+            // Only recolour the two rows whose highlight state flips; the font
+            // size is stamped by the layout pass above, which measures off it.
             this._htmlSkillEls.forEach((el, i) => {
-                if (layoutChanged) el.style.fontSize = scaledFont + 'px';
                 if (i === idx) {
                     el.style.background = 'var(--bg-subtle-translucent-15)';
                     el.style.borderColor = 'var(--border-subtle)';
