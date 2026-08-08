@@ -34,6 +34,7 @@
   },
   "cmd": {
     "levelUp": "Level Up",
+    "allSkills": "All Skills",
     "use": "Use",
     "cancel": "Cancel",
     "carry": "Carry",

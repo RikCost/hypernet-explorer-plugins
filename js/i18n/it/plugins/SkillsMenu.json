@@ -1,5 +1,6 @@
 {
   "title": "Abilità",
+  
   "back": "Indietro",
   "unit": {
     "ap": "AP"
@@ -35,6 +36,7 @@
   "cmd": {
     "levelUp": "Avanzamento",
     "use": "Usa",
+    "allSkills": "Tutte le abilità",
     "cancel": "Annulla",
     "carry": "Equipaggia",
     "bench": "Ritira"

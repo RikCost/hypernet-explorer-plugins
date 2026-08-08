@@ -2059,6 +2059,48 @@
   // Override Sell Window
   //=============================================================================
 
+  // The engine's category window only ever registers the "Items" command: its
+  // makeCommandList checks just the first table slot and adds a single entry.
+  // The DOM overlay draws all four sell tabs (Items / Weapons / Armors / Key
+  // Items) and lets the player pick one, but the native window underneath kept
+  // only one command, so every tab still filtered through "item" and gear never
+  // reached the sell list. Register all four commands while a shop is open so
+  // currentSymbol() returns the tab the player actually chose.
+  const _Window_ItemCategory_makeCommandList = Window_ItemCategory.prototype.makeCommandList;
+  Window_ItemCategory.prototype.makeCommandList = function () {
+    if (!(SceneManager._scene instanceof Scene_Shop)) {
+      _Window_ItemCategory_makeCommandList.call(this);
+      return;
+    }
+    if (this.needsCommand("item")) {
+      this.addCommand(TextManager.item, "item");
+    }
+    if (this.needsCommand("weapon")) {
+      this.addCommand(TextManager.weapon, "weapon");
+    }
+    if (this.needsCommand("armor")) {
+      this.addCommand(TextManager.armor, "armor");
+    }
+    if (this.needsCommand("keyItem")) {
+      this.addCommand(TextManager.keyItem, "keyItem");
+    }
+  };
+
+  // Key items cannot be sold. Override isEnabled so they are greyed out and
+  // cannot be selected for sale in the shop window, and override includes to
+  // remove them from the sell list entirely.
+  const _Window_ShopSell_isEnabled = Window_ShopSell.prototype.isEnabled;
+  Window_ShopSell.prototype.isEnabled = function (item) {
+    if (item && DataManager.isItem(item) && item.itypeId === 2) return false;
+    return _Window_ShopSell_isEnabled.call(this, item);
+  };
+
+  const _Window_ShopSell_includes = Window_ShopSell.prototype.includes;
+  Window_ShopSell.prototype.includes = function (item) {
+    if (item && DataManager.isItem(item) && item.itypeId === 2) return false;
+    return _Window_ShopSell_includes.call(this, item);
+  };
+
   Window_ShopSell.prototype.maxCols = function () {
     return 1;
   };

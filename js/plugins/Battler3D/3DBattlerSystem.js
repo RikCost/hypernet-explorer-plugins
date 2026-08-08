@@ -1111,13 +1111,26 @@
         // ── Hit-flash ────────────────────────────────────────────────────────
         flashBodyPart(partKey) {
             if (!partKey) return;
-            const mesh = this._partMeshMap[partKey];
+            let mesh = this._partMeshMap[partKey];
+            // If the specific part key isn't mapped, fall back to the first visible
+            // mesh in the part map so every 3D model still flashes red on hit even
+            // when its archetype uses different part keys than the health system.
+            if (!mesh || !mesh.visible || !mesh.material) {
+                for (const k in this._partMeshMap) {
+                    const m = this._partMeshMap[k];
+                    if (m && m.visible && m.material) { mesh = m; break; }
+                }
+            }
             if (!mesh || !mesh.visible || !mesh.material) return;
+            // If the mesh uses multiple materials, store them all.
+            // Save the original colors so we can restore them when the flash ends.
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            const origColors = mats.map(m => m.color ? m.color.clone() : null);
             const existing = this._flashMeshes.find(f => f.mesh === mesh);
             if (existing) {
                 existing.timer = 0.45; // restart if hit again before fade finishes
             } else {
-                this._flashMeshes.push({ mesh, timer: 0.45 });
+                this._flashMeshes.push({ mesh, mats, origColors, timer: 0.45 });
             }
         }
 
@@ -1126,11 +1139,23 @@
                 const f = this._flashMeshes[i];
                 f.timer -= deltaTime;
                 if (f.timer <= 0) {
-                    if (f.mesh.material) f.mesh.material.emissive.setRGB(0, 0, 0);
+                    // Restore original colors on all materials.
+                    for (let j = 0; j < f.mats.length; j++) {
+                        const m = f.mats[j];
+                        if (m && m.color && f.origColors[j]) {
+                            m.color.copy(f.origColors[j]);
+                        }
+                    }
                     this._flashMeshes.splice(i, 1);
                 } else {
                     const intensity = f.timer / 0.45; // 1 -> 0 over flash duration
-                    if (f.mesh.material) f.mesh.material.emissive.setRGB(intensity, 0, 0);
+                    // Tint the material color toward red (works on ALL material types
+                    // including MeshBasicMaterial which has no emissive property).
+                    for (const m of f.mats) {
+                        if (!m || !m.color) continue;
+                        const r = Math.min(1, intensity);
+                        m.color.setRGB(r, 0, 0);
+                    }
                 }
             }
         }

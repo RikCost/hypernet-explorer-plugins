@@ -188,8 +188,8 @@
       birthDate: "1991-04-22", // Date of birth
       nationId: "Italy", // Nation of birth (key into HistorySimulator_COUNTRIES)
       gender: 1, // 0=Male 1=Female 2=Non-binary 3=Cocoon
-      sexualOrientation: "heterosexual", // key into js/db/NPC/Orientations.json (sexual)
-      romanticOrientation: "heteroromantic", // key into js/db/NPC/Orientations.json (romantic)
+      sexualOrientation: "homosexual", // key into js/db/NPC/Orientations.json (sexual)
+      romanticOrientation: "homoromantic", // key into js/db/NPC/Orientations.json (romantic)
       money: 5000000,
       items: [],
       weapons: [],
@@ -335,7 +335,7 @@
         { id: 82, level: 2 },  // Dancing
       ],
       busts: "RichardBenson",
-    },
+    }, /*
     {
       id: 8,
       name: "Silvio Berlusconi",
@@ -429,9 +429,9 @@
         skin("banker", "MarioDraghi"),
         skin("ascended", "MarioDraghiAscended"),
       ],
-    },
+    },*/
     {
-      id: 11,
+      id: 8,
       name: "Pope Petrus II",
       classId: 59, // Priest
       sprite: "Skab/!$Ratzinger",
@@ -461,7 +461,7 @@
       busts: "Ratzinger",
     },
     {
-      id: 12,
+      id: 9,
       name: "Rita Levi-Montalcini",
       classId: 42, // Scientist (Nobel-laureate neurologist)
       sprite: "Skab/!$RitaLeviMontalcini",
@@ -495,7 +495,7 @@
       ],
     },
     {
-      id: 13,
+      id: 10,
       name: "Aleister Crowley",
       classId: 8, // Cultist (founder of Thelema)
       sprite: "Skab/!$AleisterCrowley",
@@ -514,7 +514,7 @@
       weapons: [],
       armors: [{ id: 531, amount: 1 }], // Robes of the Great Beast
       equips: [null, null, null, null, null],
-      skills: [],
+      skills: [1404, 1405, 1477, 1492, 1513, 1558, 1567, 1570, 1580, 1600, 1617, 1655, 1668, 1679, 1685, 1700, 1707],
       traits: [81, 118, 104, 174], // Charismatic, Heretic, Drug Dependent, Infamous
       specializations: [
         { id: 165, level: 5 }, // Magic Theory (Master)
@@ -530,7 +530,7 @@
       ],
     },
     {
-      id: 14,
+      id: 11,
       name: "Kofi Annan",
       classId: 39, // Sage (elder statesman / diplomat)
       sprite: "Skab/!$KofiAnnan",
@@ -560,7 +560,7 @@
       busts: "KofiAnnan",
     },
     {
-      id: 15,
+      id: 12,
       name: "George W. Bush",
       classId: 32, // Commander (wartime president)
       sprite: "Skab/!$GeorgeWBush",

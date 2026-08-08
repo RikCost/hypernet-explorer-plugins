@@ -1158,9 +1158,6 @@ Window_BattleLog.prototype.resetFontSettings = function() {
             sprite.update(lineHeight * i - this._logScrollY, maxLine);
         }
         
-        if (this.numLines() > 0 && this._logSprites[1].isPassed()) {
-           this.shiftLine();
-        }
     };
     
     Window_BattleLog.prototype._updateContentsBack = function() {
@@ -1229,9 +1226,6 @@ Window_BattleLog.prototype.resetFontSettings = function() {
         this._currentSubject = subject;
 
         const numMethods = this._methods.length;
-
-        // Replace the previous actor's log content with this action's content
-        this.push('clearForNewAction');
 
         // Get colored name directly from cache
         let subjectName;

@@ -564,33 +564,25 @@
     // Battle loadout ,  what a character actually carries into a fight
     //=============================================================================
     // Knowing a skill and having it to hand are two different things. At most
-    // LOADOUT_MAX skills and LOADOUT_MAX magic are carried at once and only
-    // those reach the battle menus; the rest are known and benched. Two kinds of
-    // skill are always carried and spend no slot: the Basic kit (the engine's
-    // own fallback moves, which have their own battle command) and anything a
-    // weapon or a state grants, which comes and goes with what is worn.
+    // LOADOUT_MAX skills can be carried at once; everything else is known but
+    // benched. Two kinds of skill are always carried and spend no slot: the
+    // Basic kit (the engine's own fallback moves) and anything a weapon or a
+    // state grants, which comes and goes with what is worn.
     // The carried ids live on $gameSystem, so a loadout travels with the save.
-    const LOADOUT_MAX = 7;
-    const GROUP_MAGIC = 'Magic', GROUP_SKILL = 'Skill'; // i18n-ignore: skill-type group ids
+    const LOADOUT_MAX = 14;
 
     // Width of the battle skill page, in game pixels. The description box above
     // it matches, so a line of help text breaks where the skill names do.
     const PAGE_WIDTH = 420;
 
-    // "Magic" for a skill type whose name reads as magic, "Skill" otherwise.
-    function _getStypeIdCategoryGroup(stypeId) {
-        if (!stypeId) return null;
-        const name = $dataSystem.skillTypes[stypeId] || '';
-        return name.toLowerCase().includes('magic') ? GROUP_MAGIC : GROUP_SKILL;
-    }
-
     // The explicit tag, not getSkillCategory's catch-all: an untagged skill is
     // an ordinary skill, not a member of the engine's basic kit.
     const isBasicSkill = skill => !!skill && /<category\s*:\s*Basic\s*>/i.test(skill.note || '');
 
-    function loadoutGroupOf(skill) {
-        return _getStypeIdCategoryGroup(skill && skill.stypeId) === GROUP_MAGIC ? GROUP_MAGIC : GROUP_SKILL;
-    }
+    // Esoteric skills are an occult roll of their own. They are hidden from the
+    // role tabs (Offensive/Healing/Support) and only surface in the Esoteric tab
+    // and the "All Skills" overview.
+    const isEsotericSkill = skill => !!skill && /<esoteric\b/i.test(skill.note || '');
 
     function isAlwaysCarried(actor, skill) {
         if (!skill) return false;
@@ -606,8 +598,8 @@
 
     // The raw carried list, in the order the skills were taken up. A character
     // who has never had one (an old save, or one built before this ran) is
-    // seeded with the first LOADOUT_MAX of each group they know, so nobody
-    // walks into a fight with empty hands.
+    // seeded with the first LOADOUT_MAX skills they know, so nobody walks into
+    // a fight with empty hands.
     function loadoutIds(actor) {
         if (!actor || typeof $gameSystem === 'undefined' || !$gameSystem) return [];
         const store = loadoutStore();
@@ -617,13 +609,10 @@
     }
 
     function seedLoadout(actor) {
-        const counts = {};
         const picked = [];
         for (const skill of actor.skills()) {
             if (!skill || isDummySkill(skill) || isAlwaysCarried(actor, skill)) continue;
-            const group = loadoutGroupOf(skill);
-            if ((counts[group] || 0) >= LOADOUT_MAX) continue;
-            counts[group] = (counts[group] || 0) + 1;
+            if (picked.length >= LOADOUT_MAX) break;
             picked.push(skill.id);
         }
         return picked;
@@ -631,9 +620,7 @@
 
     const BattleLoadout = {
         MAX: LOADOUT_MAX,
-        GROUP_MAGIC: GROUP_MAGIC,
-        GROUP_SKILL: GROUP_SKILL,
-        groupOf: loadoutGroupOf,
+
         isAlwaysCarried: isAlwaysCarried,
         isBasic: isBasicSkill,
 
@@ -653,16 +640,16 @@
             return loadoutIds(actor).includes(skill.id);
         },
 
-        count(actor, group) {
-            return this.ids(actor).filter(id => loadoutGroupOf($dataSkills[id]) === group).length;
+        count(actor) {
+            return this.ids(actor).length;
         },
 
-        hasRoom(actor, group) {
-            return this.count(actor, group) < LOADOUT_MAX;
+        hasRoom(actor) {
+            return this.count(actor) < LOADOUT_MAX;
         },
 
-        // 'locked' , always carried, there is nothing to decide. 'full' , that
-        // half of the loadout is already at capacity. Otherwise 'on' / 'off'.
+        // 'locked' , always carried, there is nothing to decide. 'full' , the
+        // loadout is already at capacity. Otherwise 'on' / 'off'.
         toggle(actor, skill) {
             if (!actor || !skill) return 'locked';
             if (isAlwaysCarried(actor, skill)) return 'locked';
@@ -672,20 +659,20 @@
                 list.splice(i, 1);
                 return 'off';
             }
-            if (!this.hasRoom(actor, loadoutGroupOf(skill))) return 'full';
+            if (list.length >= LOADOUT_MAX) return 'full';
             list.push(skill.id);
             return 'on';
         },
 
-        // A freshly learned skill is taken up at once while its half of the
-        // loadout has room; past that it is learned and left on the bench.
+        // A freshly learned skill is taken up at once while the loadout has
+        // room; past that it is learned and left on the bench.
         autoActivate(actor, skillId) {
             const skill = $dataSkills[skillId];
             if (!actor || !skill || isDummySkill(skill)) return false;
             if (isAlwaysCarried(actor, skill)) return false;
             const list = loadoutIds(actor);
             if (list.includes(skillId)) return false;
-            if (!this.hasRoom(actor, loadoutGroupOf(skill))) return false;
+            if (list.length >= LOADOUT_MAX) return false;
             list.push(skillId);
             return true;
         },
@@ -1588,14 +1575,14 @@
                 color: var(--text-card-medium);
                 font-weight: normal;
             }
-
-            .skills-grid-container {
+  .skills-grid-container {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 grid-gap: 10px;
                 align-content: start;
                 padding-bottom: 10px;
             }
+
 
             .discipline-card, .skill-card-slot {
                 background: var(--bg-panel);
@@ -1643,27 +1630,6 @@
                 color: var(--text-card-medium);
                 background: transparent;
             }
-            .loadout-summary {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 14px;
-                flex-wrap: wrap;
-                font-family: 'Lora', serif;
-                font-size: 0.78rem;
-                font-weight: bold;
-                color: var(--text-primary-hover);
-                margin-bottom: 10px;
-            }
-            .loadout-summary .loadout-count.full {
-                color: var(--text-gold-dark);
-            }
-            .loadout-summary .loadout-hint {
-                font-weight: normal;
-                font-style: italic;
-                color: var(--text-card-medium);
-            }
-
             .discipline-card:hover, .skill-card-slot:hover {
                 background: var(--bg-primary-hover-translucent-35);
                 border-color: var(--text-primary-hover);
@@ -1829,8 +1795,13 @@
         const actor = this.actor();
         if (!actor) return [];
 
-        const list = ROLE_KEYS.map(key => ({ name: getRoleDisplayName(key), ext: key, type: "role" }));
+        const list = [];
+        // "All Skills" tab first, showing every known skill regardless of role
+        list.push({ name: T('SkillsMenu.cmd.allSkills'), ext: "all", type: "all" });
+        ROLE_KEYS.forEach(key => list.push({ name: getRoleDisplayName(key), ext: key, type: "role" }));
         list.push({ name: T('SkillsMenu.cmd.levelUp'), ext: "levelup", type: "levelup" });
+        // Esoteric tab: occult skills hidden from the role tabs
+        list.push({ name: "Esoteric", ext: "esoteric", type: "esoteric" });
 
         return list;
     };
@@ -1838,6 +1809,16 @@
     Scene_Skill.prototype.isUILevelUpTab = function () {
         const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
         return !!type && type.ext === "levelup";
+    };
+
+    Scene_Skill.prototype.isUIAllSkillsTab = function () {
+        const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
+        return !!type && type.ext === "all";
+    };
+
+    Scene_Skill.prototype.isUIEsotericTab = function () {
+        const type = this.getUISkillTypes()[this._dndSelectedTypeIndex];
+        return !!type && type.ext === "esoteric";
     };
 
     // A Level Up row is a {skill, level, isLearned} record; every other row is
@@ -1861,8 +1842,18 @@
                 .filter(entry => entry.skill && !isDummySkill(entry.skill))
                 .sort((a, b) => a.level !== b.level ? a.level - b.level : a.skill.name.localeCompare(b.skill.name));
         }
+        if (type.ext === "all") {
+            return actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && !isBasicSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        }
+        if (type.ext === "esoteric") {
+            return actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && isEsotericSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        }
         return actor.skills()
-            .filter(skill => skill && !isDummySkill(skill) && getSkillRole(skill) === type.ext)
+            .filter(skill => skill && !isDummySkill(skill) && !isEsotericSkill(skill) && getSkillRole(skill) === type.ext)
             .sort((a, b) => a.name.localeCompare(b.name));
     };
 
@@ -1871,12 +1862,6 @@
         if (skill.mpCost > 0) return `${skill.mpCost} MP`;
         if (skill.tpCost > 0) return `${skill.tpCost} AP`;
         return "";
-    };
-
-    Scene_Skill.prototype.uiLoadoutGroupLabel = function (group) {
-        return group === BattleLoadout.GROUP_MAGIC
-            ? T('SkillsMenu.loadout.magic')
-            : T('SkillsMenu.loadout.skills');
     };
 
     Scene_Skill.prototype.getUISkillActions = function () {
@@ -1891,12 +1876,11 @@
             if (actor.canUse(skill)) actions.push("use");
             if (!BattleLoadout.isAlwaysCarried(actor, skill)) actions.push("loadout");
         }
-        actions.push("back");
         return actions;
     };
 
-    // Take a skill up or put it down. A full half of the loadout refuses, and
-    // says which half and how full, rather than silently doing nothing.
+    // Take a skill up or put it down. A full loadout refuses rather than
+    // silently doing nothing.
     Scene_Skill.prototype.toggleUILoadout = function (skill) {
         const actor = this.actor();
         if (!skill || !actor) return;
@@ -1909,7 +1893,7 @@
             SoundManager.playBuzzer();
             if (window.ParchmentToast) {
                 window.ParchmentToast.show(T('SkillsMenu.loadout.full', {
-                    group: this.uiLoadoutGroupLabel(BattleLoadout.groupOf(skill)),
+                    group: T('SkillsMenu.loadout.skills'),
                     max: BattleLoadout.MAX
                 }), { severity: "warning" });
             }
@@ -1929,6 +1913,14 @@
         this.toggleUILoadout(skill);
     };
 
+    // A skill "calls a common event" when one of its effects reserves one
+    // (effect code 44). The reservation is picked up by the map interpreter,
+    // so such a skill can only play out once this menu is left behind.
+    Scene_Skill.prototype._skillCallsCommonEvent = function (skill) {
+        if (!skill || !skill.effects) return false;
+        return skill.effects.some(eff => eff && eff.code === 44);
+    };
+
     Scene_Skill.prototype.triggerUISkillAction = function (action) {
         const list = this.getUISkillsOnlyList();
         const skill = this.uiSkillOf(list[this._dndSelectedIndex]);
@@ -1937,6 +1929,31 @@
         const actor = this.actor();
 
         if (action === "use") {
+            if (this._skillCallsCommonEvent(skill)) {
+                // A common-event skill must not stay inside the menu: the
+                // event it reserves is run by the map interpreter, which only
+                // runs once the menu is gone. Cast it, then pop all the way
+                // back to Scene_Map so the reserved event actually plays out.
+                // The scene stack is Scene_Map -> Scene_Menu -> Scene_Skill,
+                // so we need to pop both Scene_Skill and Scene_Menu.
+                // SceneManager.pop() is deferred (sets _nextScene), so the
+                // second pop() overwrites the first and the engine transitions
+                // directly from Scene_Skill to Scene_Map in one frame.
+                SoundManager.playOk();
+                actor.useItem(skill);
+                actor.paySkillCost(skill);
+                // Applying the skill to the caster reserves the common event
+                // (the direct-use path above never calls apply, so do it here).
+                const commonEventAction = new Game_Action(actor);
+                commonEventAction.setItemObject(skill);
+                commonEventAction.applyGlobal();                
+                // Pop Scene_Skill from the stack, then Scene_Menu.
+                // The second pop() overwrites the first goto()'s _nextScene,
+                // so the transition goes: Scene_Skill -> Scene_Map directly.
+                SceneManager.pop();
+                SceneManager.pop();
+                return;
+            }
             if (skill.scope === 1 || skill.scope === 7 || skill.scope === 8 || skill.scope === 9 || skill.scope === 10 || skill.scope === 11) {
                 SoundManager.playOk();
                 this._dndTargetingMode = true;
@@ -2146,16 +2163,34 @@
             </div>
         `;
 
-        // How full each half of the loadout is, so the budget is never a guess.
-        const skillCount = BattleLoadout.count(actor, BattleLoadout.GROUP_SKILL);
-        const magicCount = BattleLoadout.count(actor, BattleLoadout.GROUP_MAGIC);
-        const loadoutSummaryHTML = isLevelUp ? "" : `
-            <div class="loadout-summary">
-                <span class="loadout-count ${skillCount >= BattleLoadout.MAX ? "full" : ""}">${T('SkillsMenu.loadout.count', { group: T('SkillsMenu.loadout.skills'), n: skillCount, max: BattleLoadout.MAX })}</span>
-                <span class="loadout-count ${magicCount >= BattleLoadout.MAX ? "full" : ""}">${T('SkillsMenu.loadout.count', { group: T('SkillsMenu.loadout.magic'), n: magicCount, max: BattleLoadout.MAX })}</span>
-                <span class="loadout-hint">${T('SkillsMenu.loadout.hint')}</span>
-            </div>
-        `;
+        // How full the loadout is, shown as a 2-row x 7-column icon grid.
+        const loadoutIds = BattleLoadout.ids(actor);
+        const loadoutCount = loadoutIds.length;
+        let loadoutGridHTML = "";
+        if (!isLevelUp) {
+            // Build 14 cells (2 rows × 7 columns), the first loadoutCount filled
+            // with the carried skill icons, the rest empty.
+            let cells = "";
+            for (let i = 0; i < LOADOUT_MAX; i++) {
+                let cellHTML = '<div class="loadout-cell" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--border-gold-amber-30);border-radius:4px;background:var(--bg-panel);margin:2px;">';
+                if (i < loadoutIds.length) {
+                    const skill = $dataSkills[loadoutIds[i]];
+                    if (skill) {
+                        const iconCanvasId = `loadout-icon-${i}`;
+                        cellHTML += `<canvas id="${iconCanvasId}" width="32" height="32" style="width:32px;height:32px;image-rendering:pixelated;"></canvas>`;
+                    }
+                }
+                cellHTML += '</div>';
+                cells += cellHTML;
+            }
+            loadoutGridHTML = `
+                <div style="text-align:center;margin-bottom:10px;">
+                    <div style="display:inline-grid;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(2,40px);gap:2px;align-items:center;justify-items:center;">
+                        ${cells}
+                    </div>
+                </div>
+            `;
+        }
 
         const leftPageHeaderHTML = `
             <div style="position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 2px dashed var(--border-gold-amber-30); padding-bottom: 8px; margin-bottom: 12px; min-height: 40px; width: 100%;">
@@ -2165,7 +2200,7 @@
               <h2 class="title" style="border: none; margin: 0; padding: 0; text-align: center;">${skillsTitle}</h2>
             </div>
             ${skillTypesRowHTML}
-            ${loadoutSummaryHTML}
+            ${loadoutGridHTML}
         `;
 
         const leftPageHTML = `
@@ -2233,15 +2268,40 @@
 
             const actions = this.getUISkillActions();
             let actionsHTML = "";
+
+            // Build MP/AP counter line
+            const mp = actor.mp;
+            const mmp = actor.mmp;
+            const tp = actor.tp;
+            const mtp = actor.maxTp ? actor.maxTp() : 100;
+            const mpCost = actor.skillMpCost(skill);
+            const tpCost = actor.skillTpCost(skill);
+            const canPayMp = mpCost <= mp;
+            const canPayTp = tpCost <= tp;
+            const mpColor = mpCost > 0 ? (canPayMp ? 'var(--text-success-active)' : 'var(--text-danger-hover)') : 'var(--text-card-medium)';
+            const tpColor = tpCost > 0 ? (canPayTp ? 'var(--text-success-active)' : 'var(--text-danger-hover)') : 'var(--text-card-medium)';
+            const mpCounter = `<span style="color:${mpColor}; font-weight:bold;">MP ${mp}/${mmp}</span>`;
+            const tpCounter = `<span style="color:${tpColor}; font-weight:bold;">AP ${tp}/${mtp}</span>`;
+            const costIndicator = (mpCost > 0 || tpCost > 0)
+                ? `<span style="color:var(--text-card-medium); font-size:0.8em;"> (cost: ${mpCost > 0 ? mpCost + ' MP' : ''}${mpCost > 0 && tpCost > 0 ? ' ' : ''}${tpCost > 0 ? tpCost + ' AP' : ''})</span>`
+                : '';
+
+            const mpApCounterHTML = `
+                <div style="display:flex; justify-content:center; gap:20px; padding:6px 0; margin-bottom:10px; border-bottom:1px solid var(--border-gold-amber-30); font-family:'Lora',serif; font-size:0.85rem;">
+                    ${mpCounter}${costIndicator}
+                    <span style="color:var(--text-card-medium);">|</span>
+                    ${tpCounter}
+                </div>
+            `;
+
             actions.forEach((action, idx) => {
                 const isFocused = (this._dndActiveSection === "actions" && this._dndSelectedActionIndex === idx) ? "selected" : "";
                 let label = "";
-                if (action === "use") label = T('SkillsMenu.action.useSkill');
-                else if (action === "loadout") {
+                if (action === "use") {
+                    label = T('SkillsMenu.action.useSkill');
+                } else if (action === "loadout") {
                     label = BattleLoadout.isActive(actor, skill)
                         ? T('SkillsMenu.action.bench') : T('SkillsMenu.action.carry');
-                } else if (action === "back") {
-                    label = T('SkillsMenu.action.back');
                 }
 
                 actionsHTML += `
@@ -2266,6 +2326,8 @@
                     <div class="inspect-lore" style="flex-grow: 1; max-height: 100px; overflow-y: auto; padding-right:5px; margin-bottom: 15px;">
                         ${escapeHtml(desc)}
                     </div>
+
+                    ${mpApCounterHTML}
 
                     <div class="inspect-detailed-info" style="flex-grow: 1; overflow-y: auto; padding-right:5px; margin-bottom: 15px; font-family: 'Lora', serif; font-size: 0.95rem;">
                         ${detailedInfoHTML}
@@ -2309,6 +2371,13 @@
                 const item = isLevelUp ? entry.skill : entry;
                 if (item) this.drawUISkillIcon(item.iconIndex, `skill-canvas-${idx}`);
             });
+            // Draw loadout grid icons
+            if (!isLevelUp) {
+                loadoutIds.forEach((skillId, i) => {
+                    const skill = $dataSkills[skillId];
+                    if (skill) this.drawUISkillIcon(skill.iconIndex, `loadout-icon-${i}`);
+                });
+            }
         } else {
             // Left page already drawn! Update only selection classes in-place
             // (companion tabs live on the right page and are rebuilt above).
@@ -2492,14 +2561,41 @@
 
             const actions = this.getUISkillActions();
             let actionsHTML = "";
+
+            // Build MP/AP counter line
+            const mp = actor.mp;
+            const mmp = actor.mmp;
+            const tp = actor.tp;
+            const mtp = actor.maxTp ? actor.maxTp() : 100;
+            const mpCost = actor.skillMpCost(skill);
+            const tpCost = actor.skillTpCost(skill);
+            const canPayMp = mpCost <= mp;
+            const canPayTp = tpCost <= tp;
+            const mpColor = mpCost > 0 ? (canPayMp ? 'var(--text-success-active)' : 'var(--text-danger-hover)') : 'var(--text-card-medium)';
+            const tpColor = tpCost > 0 ? (canPayTp ? 'var(--text-success-active)' : 'var(--text-danger-hover)') : 'var(--text-card-medium)';
+            const mpCounter = `<span style="color:${mpColor}; font-weight:bold;">MP ${mp}/${mmp}</span>`;
+            const tpCounter = `<span style="color:${tpColor}; font-weight:bold;">AP ${tp}/${mtp}</span>`;
+            const costIndicator = (mpCost > 0 || tpCost > 0)
+                ? `<span style="color:var(--text-card-medium); font-size:0.8em;"> (cost: ${mpCost > 0 ? mpCost + ' MP' : ''}${mpCost > 0 && tpCost > 0 ? ' ' : ''}${tpCost > 0 ? tpCost + ' AP' : ''})</span>`
+                : '';
+
+            const mpApCounterHTML = `
+                <div style="display:flex; justify-content:center; gap:20px; padding:6px 0; margin-bottom:10px; border-bottom:1px solid var(--border-gold-amber-30); font-family:'Lora',serif; font-size:0.85rem;">
+                    ${mpCounter}${costIndicator}
+                    <span style="color:var(--text-card-medium);">|</span>
+                    ${tpCounter}
+                </div>
+            `;
+
             actions.forEach((action, idx) => {
                 const isFocused = (this._dndActiveSection === "actions" && this._dndSelectedActionIndex === idx) ? "selected" : "";
                 let label = "";
-                if (action === "use") label = T('SkillsMenu.action.useSkill');
-                else if (action === "loadout") {
+                if (action === "use") {
+                    label = T('SkillsMenu.action.useSkill');
+                } else if (action === "loadout") {
                     label = BattleLoadout.isActive(actor, skill)
                         ? T('SkillsMenu.action.bench') : T('SkillsMenu.action.carry');
-                } else if (action === "back") label = T('SkillsMenu.action.back');
+                }
                 actionsHTML += `<div class="inspect-btn ${isFocused}" onclick="SceneManager._scene.triggerUISkillAction('${action}')">${label}</div>`;
             });
 
@@ -2518,6 +2614,8 @@
                     <div class="inspect-lore" style="flex-grow: 1; max-height: 100px; overflow-y: auto; padding-right:5px; margin-bottom: 15px;">
                         ${escapeHtml(desc)}
                     </div>
+
+                    ${mpApCounterHTML}
 
                     <div class="inspect-detailed-info" style="flex-grow: 1; overflow-y: auto; padding-right:5px; margin-bottom: 15px; font-family: 'Lora', serif; font-size: 0.95rem;">
                         ${detailedInfoHTML}
@@ -2645,13 +2743,13 @@
             } else if (section === "skills") {
                 const list = skillsOnlyList;
                 if (dir === "left") {
-                    if (scene._dndSelectedIndex % 2 === 1) {
+                    if (scene._dndSelectedIndex > 0) {
                         SoundManager.playCursor();
                         scene._dndSelectedIndex--;
                         scene.refreshUISkill();
                     }
                 } else if (dir === "right") {
-                    if (scene._dndSelectedIndex % 2 === 0 && scene._dndSelectedIndex < list.length - 1) {
+                    if (scene._dndSelectedIndex < list.length - 1) {
                         SoundManager.playCursor();
                         scene._dndSelectedIndex++;
                         scene.refreshUISkill();
@@ -2665,21 +2763,19 @@
                         }
                     }
                 } else if (dir === "down") {
-                    if (scene._dndSelectedIndex + 2 < list.length) {
-                        SoundManager.playCursor();
-                        scene._dndSelectedIndex += 2;
-                        scene.refreshUISkill();
+                    if (list[scene._dndSelectedIndex]) {
+                        const actions = scene.getUISkillActions();
+                        if (actions.length > 0) {
+                            SoundManager.playCursor();
+                            scene._dndActiveSection = "actions";
+                            scene._dndSelectedActionIndex = 0;
+                            scene.refreshUISkill();
+                        }
                     }
                 } else if (dir === "up") {
-                    if (scene._dndSelectedIndex >= 2) {
-                        SoundManager.playCursor();
-                        scene._dndSelectedIndex -= 2;
-                        scene.refreshUISkill();
-                    } else {
-                        SoundManager.playCursor();
-                        scene._dndActiveSection = "types";
-                        scene.refreshUISkill();
-                    }
+                    SoundManager.playCursor();
+                    scene._dndActiveSection = "types";
+                    scene.refreshUISkill();
                 }
             } else if (section === "actions") {
                 const actions = scene.getUISkillActions();
@@ -2807,7 +2903,9 @@
     // skills belong to the same three purposes, so they are listed together.
     Window_SkillType.prototype.makeCommandList = function () {
         if (!this._actor) return;
+        this.addCommand(T('SkillsMenu.cmd.allSkills'), "skill", true, "all");
         ROLE_KEYS.forEach(key => this.addCommand(getRoleDisplayName(key), "skill", true, key));
+        this.addCommand("Esoteric", "skill", true, "esoteric");
         this.addCommand(T('SkillsMenu.cmd.levelUp'), "skill", true, "levelup");
     };
 
@@ -2887,9 +2985,17 @@
         }
         if (this._stypeId === "levelup") {
             this._data = this._makeLearnableSkillsList();
+        } else if (this._stypeId === "all") {
+            this._data = this._actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && !isBasicSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
+        } else if (this._stypeId === "esoteric") {
+            this._data = this._actor.skills()
+                .filter(skill => skill && !isDummySkill(skill) && isEsotericSkill(skill))
+                .sort((a, b) => a.name.localeCompare(b.name));
         } else if (ROLE_KEYS.includes(this._stypeId)) {
             this._data = this._actor.skills()
-                .filter(skill => skill && !isDummySkill(skill) && getSkillRole(skill) === this._stypeId)
+                .filter(skill => skill && !isDummySkill(skill) && !isEsotericSkill(skill) && getSkillRole(skill) === this._stypeId)
                 .sort((a, b) => a.name.localeCompare(b.name));
         } else {
             this._data = BattleLoadout.battleSkills(this._actor, this._stypeId);

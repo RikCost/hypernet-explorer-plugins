@@ -4370,7 +4370,7 @@
     "markovDB": "priest2"
   },
   "Skab/!$AndroidJournalist": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "AndroidJournalist"
     ],
@@ -7551,7 +7551,7 @@
     "markovDB": "fae_queen"
   },
   "Skab/!$Farmacist": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Farmacist"
     ],
@@ -10700,7 +10700,7 @@
     "markovDB": "guard"
   },
   "Skab/!$RoyalJester": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "RoyalJester"
     ],
@@ -10862,11 +10862,11 @@
     "markovDB": "npc"
   },
   "Skab/!$ScubaDiver": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ScubaDiver"
     ],
-    "beta": true,
+    "beta": false,
     "animations": false,
     "Archetype": "Humanoid",
     "Gender": 0,
@@ -10880,7 +10880,7 @@
     "markovDB": "npc"
   },
   "Skab/!$ScubaRepairer": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "ScubaRepairer"
     ],
@@ -11190,7 +11190,7 @@
     "markovDB": "steelworker"
   },
   "Skab/!$Spacer": {
-    "npc": false,
+    "npc": true,
     "busts": [
       "Spacer"
     ],
@@ -15500,7 +15500,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AleisteirCrowleyArcane": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AleisteirCrowleyArcane"
     ],
@@ -15516,7 +15516,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AleisterCrowley": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AleisterCrowley"
     ],
@@ -15532,7 +15532,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Andreotti": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Andreotti"
     ],
@@ -15548,7 +15548,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiArcane": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AndreottiArcane"
     ],
@@ -15564,7 +15564,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiPope": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AndreottiPope"
     ],
@@ -15580,7 +15580,7 @@
     "markovDB": "npc"
   },
   "Skab/!$AndreottiSitting": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "AndreottiSitting"
     ],
@@ -15596,7 +15596,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Berlusconi": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Berlusconi"
     ],
@@ -15612,7 +15612,7 @@
     "markovDB": "npc"
   },
   "Skab/!$BillClinton": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "BillClinton"
     ],
@@ -15628,7 +15628,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Ciampi": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Ciampi"
     ],
@@ -15724,7 +15724,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHack": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "MargheritaHack"
     ],
@@ -15740,7 +15740,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHackEVA": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "MargheritaHackEVA"
     ],
@@ -15756,7 +15756,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MargheritaHackSpace": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "MargheritaHackSpace"
     ],
@@ -15772,7 +15772,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MarioDraghi": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "MarioDraghi"
     ],
@@ -15788,7 +15788,7 @@
     "markovDB": "npc"
   },
   "Skab/!$MarioDraghiAscended": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "MarioDraghiAscended"
     ],
@@ -15804,7 +15804,7 @@
     "markovDB": "npc"
   },
   "Skab/!$Ratzinger": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "Ratzinger"
     ],
@@ -15820,7 +15820,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RatzingerAngelus": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RatzingerAngelus"
     ],
@@ -15836,7 +15836,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RichardBenson": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RichardBenson"
     ],
@@ -15868,7 +15868,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RitaLeviMontalcini": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RitaLeviMontalcini"
     ],
@@ -15884,7 +15884,7 @@
     "markovDB": "npc"
   },
   "Skab/!$RitaLeviMontalciniScientist": {
-    "npc": true,
+    "npc": false,
     "busts": [
       "RitaLeviMontalciniScientist"
     ],
